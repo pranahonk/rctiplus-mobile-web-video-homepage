@@ -1,0 +1,16 @@
+$primary-bg-color: #282828;
+$primary-text-color: #ffffff;
+
+.login-box {
+    background-color: $primary-bg-color;
+    color: $primary-text-color;
+    width: 400px;
+    height: 500px;
+    object-fit: contain;
+    border-radius: 30px;
+    padding: 20px;
+}
+
+.login-box > h3 {
+    text-align: center;
+}

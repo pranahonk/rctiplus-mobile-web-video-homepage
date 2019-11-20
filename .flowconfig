@@ -1,0 +1,13 @@
+[ignore]
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+module.file_ext=.css
+module.name_mapper='.*\(.css\)' -> 'CSSModule'
+module.system=haste
+suppress_comment= \\(.\\|\n\\)*\\$FlowIgnore
