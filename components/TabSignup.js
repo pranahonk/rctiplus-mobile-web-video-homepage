@@ -7,7 +7,7 @@ import {
   NavLink,
   FormGroup,
   Label,
-  Input, 
+  Input,
   FormText,
   Card,
   Button,
@@ -53,9 +53,10 @@ const Example = props => {
         <TabPane tabId="1">
           <Row>
             <Col sm="12">
-              <FormGroup>
+              <FormGroup className="frmInput1">
                 <Label for="email">Phone Number</Label>
                 <Input
+                  className="inpt-form"
                   type="text"
                   name="text"
                   id="phone_number"
@@ -68,9 +69,10 @@ const Example = props => {
         <TabPane tabId="2">
           <Row>
             <Col sm="12">
-              <FormGroup>
+              <FormGroup className="frmInput1">
                 <Label for="email">Email</Label>
                 <Input
+                  className="inpt-form"
                   type="text"
                   name="email"
                   id="email"

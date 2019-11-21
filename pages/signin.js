@@ -45,7 +45,8 @@ class Signin extends React.Component {
                             <Label for="password">Password</Label>
                             <Input type="password" name="password" id="password" placeholder="Enter password" />
                         </FormGroup>
-                        <Button>Login</Button>
+						<p class="text-center"><a href="/forgot-password" class="text-white">Forgot Password?</a></p>
+                        <Button className="btn-next">Login</Button>
 						<p class="text-center">Dont have an account? <a href="/signup" class="text-red">Sign up</a> here</p>
                     </Form>
                 </div> 
