@@ -4,11 +4,12 @@ $primary-text-color: #ffffff;
 .login-box {
     background-color: $primary-bg-color;
     color: $primary-text-color;
-    width: 400px;
+    width: 80%;
     height: 500px;
     object-fit: contain;
     border-radius: 30px;
-    padding: 20px;
+	padding: 20px;
+	margin:0px auto;
 }
 
 .login-box > h3 {

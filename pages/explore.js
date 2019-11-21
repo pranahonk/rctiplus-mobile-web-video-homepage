@@ -1,17 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
-import Nav from '../components/Nav';
+import NavBack from '../components/NavBack';
 import Layout from '../components/Layout';
-/*
- *load carousel
- *start here
- */
-import Carousel from '../components/Carousel';
-import '../assets/scss/carousel.scss';
-/*
- *load carousel
- *end here
- */
 // https://medium.com/@bhavikbamania/a-beginner-guide-for-redux-with-next-js-4d018e1342b2
 
 class Home extends React.Component {
@@ -31,8 +21,7 @@ class Home extends React.Component {
   render() {
     return (
       <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
-        <Nav />
-        <Carousel />
+        <NavBack />
         <p>text</p>
         <p>text</p>
         <p>text</p>

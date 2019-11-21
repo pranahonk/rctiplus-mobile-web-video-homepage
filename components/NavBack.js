@@ -32,14 +32,8 @@ class NavbarDef extends Component {
         <div className="left-top-link">
           <div className="logo-top-wrapper">
             <NavbarBrand href="/">
-              <img className="logo-top" src="static/logo/rcti.png" />
+              Back to Home
             </NavbarBrand>
-          </div>
-        </div>
-        <div className="right-top-link">
-          <div className="btn-link-top-nav">
-            <NavbarBrand href="/signin">Sign In</NavbarBrand>
-            <NavbarBrand href="/explore">Explore</NavbarBrand>
           </div>
         </div>
       </Navbar>

@@ -1,0 +1,49 @@
+$primary-bg-color: #282828;
+$primary-text-color: #ffffff;
+body{
+	background-color: $primary-bg-color;
+
+}
+.logo-top-wrapper{
+	width:25%;
+}
+.logo-top{
+	width:100%;
+}
+.left-top-link{
+	float:left;
+	width:45%;
+}
+.right-top-link{
+	float:right;
+	width:45%;
+	text-align:right;
+}
+.btn-link-top-nav{
+	font-size:10px;
+}
+.navbar-brand {
+    display: inline-block;
+    padding-top: 0.1rem; 
+    padding-bottom: 0.1rem; 
+    margin-right: 1rem;
+    font-size: 0.75rem; 
+    line-height: inherit;
+    white-space: nowrap;
+}
+.title{
+	color:#fff;
+}
+.tab-content{
+	color:#fff
+}
+
+.nav-tab-wrapper{
+	width:80%;
+}
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link{
+	color: #fff;
+	background-color:none;
+	opacity:0.5;
+    border-color: none;
+}

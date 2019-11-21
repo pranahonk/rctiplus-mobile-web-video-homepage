@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import actions from '../redux/actions';
 import initialize from '../utils/initialize';
 import Layout from '../components/Layout';
+import NavBack from '../components/NavBack';
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 import '../assets/scss/login.scss';
@@ -32,6 +33,7 @@ class Signin extends React.Component {
     render() {
         return (
             <Layout title="Sign In">
+				<NavBack />
                 <div className="login-box">
                     <h3>Login</h3>
                     <Form>
@@ -44,6 +46,7 @@ class Signin extends React.Component {
                             <Input type="password" name="password" id="password" placeholder="Enter password" />
                         </FormGroup>
                         <Button>Login</Button>
+						<p class="text-center">Dont have an account? <a href="/signup" class="text-red">Sign up</a> here</p>
                     </Form>
                 </div> 
             </Layout>
