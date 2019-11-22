@@ -1,8 +1,56 @@
 import Router from 'next/router';
-import axios from 'axios';
-import { AUTHENTICATE, DEAUTHENTICATE, USER } from '../types';
-import { API } from '../../config';
+import ax from 'axios';
+import { AUTHENTICATE, DEAUTHENTICATE, USER, WRONG_AUTHENTICATION } from '../types';
+import { API, VISITOR_TOKEN } from '../../config';
 import { setCookie, removeCookie } from '../../utils/cookie';
+
+const axios = ax.create({
+    baseURL: API + '/api',
+    headers: {
+        'Authorization': VISITOR_TOKEN
+    }
+});
+
+const test = () => {
+    return dispatch => {
+        axios.get('/v1/test-get-otp')
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+};
+
+const login = ({ emailphone, password }) => {
+    return dispatch => new Promise((resolve, reject) => {
+        axios.post('/v1/login', {
+                emailphone: emailphone,
+                password: password,
+                device_id: 'test',
+                platform: 'web'
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                const data = response.data;
+                if (data.status.code == 0) {
+                    dispatch({ type: AUTHENTICATE, data: data, token: data.data.access_token });
+                }
+                else {
+                    dispatch({ type: WRONG_AUTHENTICATION, message: data.status.message_client, code: data.status.code });
+                }
+                resolve(response);
+            })
+            .catch(error => {
+                console.log(error);
+                reject(error);
+            });
+    });
+};
 
 // register user
 const register = ({ firstname, lastname, mobile_no, email_id, password, confirm_password }, type) => {
@@ -123,5 +171,7 @@ export default {
     authenticate,
     deauthenticate,
     reauthenticate,
-    getUser
+    getUser,
+    test,
+    login
 };

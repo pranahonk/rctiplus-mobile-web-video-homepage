@@ -25,3 +25,5 @@ coverage
 
 # next
 .next/
+
+cypress/integration/examples/*

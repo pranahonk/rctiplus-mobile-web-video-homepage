@@ -1,106 +1,66 @@
 import React from 'react'
-import Head from 'next/head'
-import Nav from '../components/nav'
+import { connect } from 'react-redux';
+import Head from 'next/head';
+import Lazyload from 'react-lazyload';
+import contentActions from '../redux/actions/contentActions';
+import initialize from '../utils/initialize';
+import Layout from '../components/Layout';
+import Stories from '../components/Stories';
 
 // https://medium.com/@bhavikbamania/a-beginner-guide-for-redux-with-next-js-4d018e1342b2
 
 
-
 class Home extends React.Component {
 
+	static getInitialProps(ctx) {
+		initialize(ctx);
+	}
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			contents: [],
+			meta: null,
+		};
+	}
+
 	componentDidMount() {
-		// if ("serviceWorker" in navigator) {
-		// 	navigator.serviceWorker
-		// 		.register("/service-worker.js")
-		// 		.then(registration => {
-		// 			console.log("service worker registration successful");
-		// 		})
-		// 		.catch(err => {
-		// 			console.warn("service worker registration failed", err.message);
-		// 		});
-		// }
+		this.props.getContents(1)
+			.then(response => {
+				this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta });
+			});
 	}
 
 	render() {
+		const contents = this.state.contents;
+		const meta = this.state.meta;
+
 		return (
-			<div>
-				<Nav />
-				<div className="hero">
-					<h1 className="title">Welcome to Next.js!</h1>
-					<p className="description">
-						To get started, edit <code>pages/index.js</code> and save to reload.
-      </p>
-
-					<div className="row">
-						<a href="https://nextjs.org/docs" className="card">
-							<h3>Documentation &rarr;</h3>
-							<p>Learn more about Next.js in the documentation.</p>
-						</a>
-						<a href="https://nextjs.org/learn" className="card">
-							<h3>Next.js Learn &rarr;</h3>
-							<p>Learn about Next.js by following an interactive tutorial!</p>
-						</a>
-						<a
-							href="https://github.com/zeit/next.js/tree/master/examples"
-							className="card"
-						>
-							<h3>Examples &rarr;</h3>
-							<p>Find other example boilerplates on the Next.js GitHub.</p>
-						</a>
-					</div>
+			<Layout title="Home">
+				<Head>
+					<script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
+				</Head>
+				<div>
+					<i className="fas fa-play-circle" aria-hidden="true"></i>
+					<Stories />
+					{contents.map(row => (
+						<div key={row.id}>
+							<h4>{row.title}</h4>
+							{row.content.map(c => (
+								<div key={c.content_id}>
+									<h5>{c.content_title}</h5>
+									<Lazyload>
+										<img src={meta.image_path + '300' + c.landscape_image} />
+									</Lazyload>
+								</div>
+							))}
+						</div>
+					))}
 				</div>
-
-				<style jsx>{`
-      .hero {
-        width: 100%;
-        color: #333;
-      }
-      .title {
-        margin: 0;
-        width: 100%;
-        padding-top: 80px;
-        line-height: 1.15;
-        font-size: 48px;
-      }
-      .title,
-      .description {
-        text-align: center;
-      }
-      .row {
-        max-width: 880px;
-        margin: 80px auto 40px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-      }
-      .card {
-        padding: 18px 18px 24px;
-        width: 220px;
-        text-align: left;
-        text-decoration: none;
-        color: #434343;
-        border: 1px solid #9b9b9b;
-      }
-      .card:hover {
-        border-color: #067df7;
-      }
-      .card h3 {
-        margin: 0;
-        color: #067df7;
-        font-size: 18px;
-      }
-      .card p {
-        margin: 0;
-        padding: 12px 0 0;
-        font-size: 13px;
-        color: #333;
-      }
-    `}</style>
-			</div>
-
+			</Layout>
 		);
 	}
 
 }
 
-export default Home
+export default connect(state => state, contentActions)(Home);

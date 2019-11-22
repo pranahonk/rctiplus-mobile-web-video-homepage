@@ -62,52 +62,7 @@ const Layout = ({ children, title, isAuthenticated, deauthenticate }) => {
                 <link rel="icon" href="static/icons/rcti_32.png" />
                 <link rel="manifest" href="static/manifest.json" />
             </Head>
-            <Navbar color="dark" dark expand="md">
-                <NavbarBrand href="/">Home</NavbarBrand>
-                <NavbarToggler onClick={toggle} />
-                <Collapse isOpen={isOpen} navbar>
-                    <Nav className="mr-auto" navbar>
-                        {!isAuthenticated && (
-                            <NavItem>
-                                <NavLink href="/signin">Sign In</NavLink>
-                            </NavItem>)}
-
-                        {isAuthenticated && (
-                            <NavItem>
-                                <NavLink onClick={deauthenticate}>Sign Out</NavLink>
-                            </NavItem>)}
-
-                        <UncontrolledDropdown nav inNavbar>
-                            <DropdownToggle nav caret>
-                                Options
-                            </DropdownToggle>
-                            <DropdownMenu right>
-                                <DropdownItem>
-                                    Option 1
-                                </DropdownItem>
-                                <DropdownItem>
-                                    Option 2
-                                </DropdownItem>
-                                <DropdownItem divider />
-                                <DropdownItem>
-                                    Reset
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                    </Nav>
-                    {/* <NavbarText>Simple Text</NavbarText> */}
-                </Collapse>
-            </Navbar>
-            <div className="tabs is-centered">
-                <ul>
-                    <Link href="/"><a>Home</a></Link>
-                    {!isAuthenticated && <Link href="/signin"><a>Sign In</a></Link>}
-                    {!isAuthenticated && <Link href="/signup"><a>Sign Up</a></Link>}
-                    {isAuthenticated && <Link href="/users"><a>Profile</a></Link>}
-                    {isAuthenticated && <li onClick={deauthenticate}><a>Sign Out</a></li>}
-                </ul>
-            </div>
-            <div className="has-text-centered">
+            <div>
                 {children}
             </div>
         </div>
