@@ -23,9 +23,6 @@ import {
  *end here
  */
 class NavbarDef extends Component {
-  static propTypes = {
-    showThumbs: false,
-  };
   render() {
     return (
       <Navbar color="dark" dark expand="md">
