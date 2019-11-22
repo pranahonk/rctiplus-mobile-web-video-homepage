@@ -4,8 +4,20 @@ import Head from 'next/head';
 import Lazyload from 'react-lazyload';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
-import Layout from '../components/Layout';
+import Nav from '../components/Nav/NavDefault';
+import Layout from '../components/Templates/Layout';
 import Stories from '../components/Stories';
+
+/*
+ *load carousel
+ *start here
+ */
+import Carousel from '../components/Gallery/Carousel';
+import '../assets/scss/carousel.scss';
+/*
+ *load carousel
+ *end here
+ */
 
 // https://medium.com/@bhavikbamania/a-beginner-guide-for-redux-with-next-js-4d018e1342b2
 
@@ -36,11 +48,13 @@ class Home extends React.Component {
 		const meta = this.state.meta;
 
 		return (
-			<Layout title="Home">
+			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
 				<Head>
 					<script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
 				</Head>
 				<div>
+					<Nav />
+					<Carousel />
 					<i className="fas fa-play-circle" aria-hidden="true"></i>
 					<Stories />
 					{contents.map(row => (
