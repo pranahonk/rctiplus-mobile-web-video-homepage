@@ -8005,11 +8005,6 @@ react-ga@^2.6.0:
   resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-2.6.0.tgz#c3fe830ead2ad25117e1d33280d9698de9b28496"
   integrity sha512-GWHBWZDFjDGMkIk1LzroIn0mNTygKw3adXuqvGvheFZvlbpqMPbHsQsTdQBIxRRdXGQM/Zq+dQLRPKbwIHMTaw==
 
-react-insta-stories@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/react-insta-stories/-/react-insta-stories-2.0.1.tgz#d6cdb440e06052c2a71b5798db4660628bfecee8"
-  integrity sha512-Z4gEPTpI8VW668QoOYHHcTTB41yGmwiJKnnXHHcU1Rqf2Ox4pPJ2oOoC7sPuEMvnvU7y4hW9l+eYSK32t57I9Q==
-
 react-is@16.8.6, react-is@^16.8.1, react-is@^16.8.6:
   version "16.8.6"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.6.tgz#5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"

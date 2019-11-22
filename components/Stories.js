@@ -1,5 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Head from 'next/head';
+import storiesActions from '../redux/actions/storiesActions';
 
 class Stories extends React.Component {
     constructor(props) {
@@ -16,101 +18,74 @@ class Stories extends React.Component {
 
     componentDidMount() {
         const Zuck = require('zuck.js');
-        this.setState({
-            stories: [
-                Zuck.buildTimelineItem(
-                    "ramon",
-                    "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/users/1.jpg",
-                    "Ramon",
-                    "https://ramon.codes",
-                    this.timestamp(),
-                    [
-                        ["ramon-1", "photo", 3, "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/1.jpg", "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/1.jpg", '', false, false, this.timestamp()],
-                        ["ramon-2", "video", 0, "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/2.mp4", "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/2.jpg", '', false, false, this.timestamp()],
-                        ["ramon-3", "photo", 3, "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/3.png", "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/3.png", 'https://ramon.codes', 'Visit my Portfolio', false, this.timestamp()]
-                    ]
-                ),
-                Zuck.buildTimelineItem(
-                    "gorillaz",
-                    "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/users/2.jpg",
-                    "Gorillaz",
-                    "",
-                    this.timestamp(),
-                    [
-                        ["gorillaz-1", "video", 0, "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/4.mp4", "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/4.jpg", '', false, false, this.timestamp()],
-                        ["gorillaz-2", "photo", 3, "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/5.jpg", "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/5.jpg", '', false, false, this.timestamp()],
-                    ]
-                ),
-                Zuck.buildTimelineItem(
-                    "ladygaga",
-                    "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/users/3.jpg",
-                    "Lady Gaga",
-                    "",
-                    this.timestamp(),
-                    [
-                        ["ladygaga-1", "photo", 5, "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/6.jpg", "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/6.jpg", '', false, false, this.timestamp()],
-                        ["ladygaga-2", "photo", 3, "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/7.jpg", "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/7.jpg", 'http://ladygaga.com', false, false, this.timestamp()],
-                    ]
-                ),
-                Zuck.buildTimelineItem(
-                    "starboy",
-                    "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/users/4.jpg",
-                    "The Weeknd",
-                    "",
-                    this.timestamp(),
-                    [
-                        ["starboy-1", "photo", 5, "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/8.jpg", "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/8.jpg", '', false, false, this.timestamp()]
-                    ]
-                ),
-                Zuck.buildTimelineItem(
-                    "riversquomo",
-                    "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/users/5.jpg",
-                    "Rivers Cuomo",
-                    "",
-                    this.timestamp(),
-                    [
-                        ["riverscuomo", "photo", 10, "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/9.jpg", "https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/stories/9.jpg", '', false, false, this.timestamp()]
-                    ]
-                )
-            ]
-        }, () => {
-            let currentSkin = this.getCurrentSkin(); // from demo
-            this.storiesApi = new Zuck(this.storiesElement, {
-                backNative: true,
-                previousTap: true,
-                skin: currentSkin['name'],
-                autoFullScreen: currentSkin['params']['autoFullScreen'],
-                avatars: currentSkin['params']['avatars'],
-                paginationArrows: currentSkin['params']['paginationArrows'],
-                list: currentSkin['params']['list'],
-                cubeEffect: currentSkin['params']['cubeEffect'],
-                localStorage: true,
-                stories: this.state.stories,
-                reactive: true,
-                callbacks: {
-                    onDataUpdate: function (currentState, callback) {
-                        this.setState(state => {
-                            state.stories = currentState;
-                            return state;
-                        }, () => {
-                            callback();
-                        });
-                    }.bind(this)
+        this.props.getStories().then(response => {
+            console.log(this.props.stories);
+            const stories = this.props.stories.data;
+            let timelines = [];
+            for (let i = 0; i < stories.length; i++) {
+                const story = stories[i];
+                let items = [];
+                for (let j = 0; j < story.story.length; j++) {
+
+                    items.push([
+                        story.story[j].id,
+                        story.story[j].link_video != null ? 'video' : 'photo',
+                        10,
+                        story.story[j].link_video != null ? (this.props.stories.video_path + story.story[j].link_video) : (this.props.stories.video_path + story.story[j].story_img),
+                        story.story[j].link_video != null ? (this.props.stories.video_path + story.story[j].link_video) : (this.props.stories.video_path + story.story[j].story_img),
+                        false, false,
+                        false,
+                        story.story[j].release_date
+                    ]);
                 }
+
+                let programImg = '';
+                if (story.program_img != null) {
+                    programImg = this.props.stories.video_path + story.program_img;
+                }
+                else {
+                    programImg = 'static/placeholders/placeholder_potrait.png';
+                }
+
+                timelines.push(Zuck.buildTimelineItem(
+                    story.program_id,
+                    programImg,
+                    story.program_title,
+                    '',
+                    false,
+                    items
+                ));
+            }
+
+            this.setState({
+                stories: timelines
+            }, () => {
+                let currentSkin = this.getCurrentSkin(); // from demo
+                this.storiesApi = new Zuck(this.storiesElement, {
+                    backNative: true,
+                    previousTap: true,
+                    skin: currentSkin['name'],
+                    autoFullScreen: currentSkin['params']['autoFullScreen'],
+                    avatars: currentSkin['params']['avatars'],
+                    paginationArrows: currentSkin['params']['paginationArrows'],
+                    list: currentSkin['params']['list'],
+                    cubeEffect: currentSkin['params']['cubeEffect'],
+                    localStorage: true,
+                    stories: this.state.stories,
+                    reactive: true,
+                    callbacks: {
+                        onDataUpdate: function (currentState, callback) {
+                            this.setState(state => {
+                                state.stories = currentState;
+                                return state;
+                            }, () => {
+                                callback();
+                            });
+                        }.bind(this)
+                    }
+                });
             });
         });
-
-    }
-
-    timestamp() {
-        let timeIndex = 0;
-        let shifts = [35, 60, 60 * 3, 60 * 60 * 2, 60 * 60 * 25, 60 * 60 * 24 * 4, 60 * 60 * 24 * 10];
-
-        let now = new Date();
-        let shift = shifts[timeIndex++] || 0;
-        let date = new Date(now - shift * 1000);
-
-        return date.getTime() / 1000;
     }
 
     getCurrentSkin() {
@@ -216,9 +191,8 @@ class Stories extends React.Component {
         return (
             <div>
                 <Head>
-                    <link rel="stylesheet" href="https://rawgit.com/ramon82/zuck.js/master/dist/zuck.min.css" />
-                    <link rel="stylesheet" href="https://rawgit.com/ramon82/zuck.js/master/dist/skins/snapgram.css" />
-
+                    <link rel="stylesheet" href="static/css/zuck.min.css" />
+                    <link rel="stylesheet" href="static/css/snapgram.css" />
                 </Head>
                 <div ref={node => this.storiesElement = node} id="stories-react" className="storiesWrapper">
                     {timelineItems}
@@ -228,4 +202,4 @@ class Stories extends React.Component {
     }
 }
 
-export default Stories;
+export default connect(state => state, storiesActions)(Stories);

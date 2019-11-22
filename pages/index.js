@@ -49,7 +49,7 @@ class Home extends React.Component {
 							{row.content.map(c => (
 								<div key={c.content_id}>
 									<h5>{c.content_title}</h5>
-									<Lazyload>
+									<Lazyload height={200}>
 										<img src={meta.image_path + '300' + c.landscape_image} />
 									</Lazyload>
 								</div>

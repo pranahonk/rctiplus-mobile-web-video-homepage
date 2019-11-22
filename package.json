@@ -51,7 +51,6 @@
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-ga": "^2.6.0",
-    "react-insta-stories": "^2.0.1",
     "react-lazyload": "^2.6.5",
     "react-redux": "^5.0.6",
     "reactstrap": "^7.0.2",
