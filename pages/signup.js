@@ -58,7 +58,9 @@ class Signup extends React.Component {
               />
             </FormGroup>
             <Button className="btn-next">NEXT</Button>
-            <p class="text-center">
+			<p class="text-center fnt-10 el-margin-20 el-white">By clicking the Sign Up button, you agree to our 
+			<a href="/terms-&amp;-conditions" class="text-red fnt-11">Terms &amp; Conditions</a> and <a href="/privacy-policy" class="text-red fnt-11">Privacy Policy</a></p>
+            <p class="text-center fnt-12">
               Have an account?{' '}
               <a href="/signin" class="text-red">
                 Sign In

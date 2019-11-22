@@ -35,19 +35,19 @@ class Signin extends React.Component {
             <Layout title="Sign In">
 				<NavBack />
                 <div className="login-box">
-                    <h3>Login</h3>
+                    <h3>Sign In</h3>
                     <Form>
                         <FormGroup>
                             <Label for="email">Email or Phone Number</Label>
-                            <Input type="text" name="email" id="email" placeholder="Enter email" />
+                            <Input className="inpt-form" type="text" name="email" id="email" placeholder="Enter email or phone number" />
                         </FormGroup>
                         <FormGroup>
                             <Label for="password">Password</Label>
-                            <Input type="password" name="password" id="password" placeholder="Enter password" />
+                            <Input className="inpt-form" type="password" name="password" id="password" placeholder="Enter password" />
                         </FormGroup>
-						<p class="text-center"><a href="/forgot-password" class="text-white">Forgot Password?</a></p>
+						<p class="text-center"><a href="/forgot-password" class="text-white fnt-12">Forgot Password?</a></p>
                         <Button className="btn-next">Login</Button>
-						<p class="text-center">Dont have an account? <a href="/signup" class="text-red">Sign up</a> here</p>
+						<p class="text-center">Dont have an account? <a href="/signup" class="text-red fnt-12">Sign up</a> here</p>
                     </Form>
                 </div> 
             </Layout>

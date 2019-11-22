@@ -5,8 +5,8 @@ import Head from 'next/head';
 *load scss style 
 *start here
 */
-import '../assets/scss/custom.scss';
-import '../assets/scss/global.scss';
+import '../../assets/scss/custom.scss';
+import '../../assets/scss/global.scss';
 /*
 *load scss style 
 *end here
@@ -16,7 +16,7 @@ import '../assets/scss/global.scss';
 *start here
 */
 import { connect } from 'react-redux';
-import actions from '../redux/actions';
+import actions from '../../redux/actions';
 /*
 *load redux 
 *end here
@@ -25,7 +25,7 @@ import actions from '../redux/actions';
 *load default nav 
 *start here
 */
-import NavbarDefault from '../components/Nav';
+import NavbarDefault from '../Nav/NavDefault';
 /*
 *load default nav 
 *end here

@@ -74,11 +74,60 @@ body{
 	width: 100%;
 	background-color: #fa262f;
 	border:1px solid transparent;
-	border-radius:8px;
+	border-radius:12px;
 }
 .frmInput1{
 	padding-top:40px;
 }
 .inpt-form{
 	background: transparent;
+}
+
+/*
+* font - size custom
+*/
+
+.fnt-8{
+	font-size: 8px;;
+}
+.fnt-9{
+	font-size: 9px;;
+}
+.fnt-10{
+	font-size: 10px;;
+}
+.fnt-11{
+	font-size: 11px;;
+}
+.fnt-12{
+	font-size: 12px;;
+}
+
+/*
+* custom margin
+*/
+.el-margin-10{
+	margin:20px;
+}
+.el-margin-20{
+	margin:20px;
+}
+.el-margin-30{
+	margin:20px;
+}
+
+/*
+* custom color
+*/
+.el-white{
+	color:white;
+}
+.el-grey{
+	color: grey;
+}
+.el-red{
+	color:red;
+}
+.el-green{
+	color: green;
 }
