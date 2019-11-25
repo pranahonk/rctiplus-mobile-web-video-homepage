@@ -189,7 +189,7 @@ class Stories extends React.Component {
             );
         });
         return (
-            <div>
+            <div className="stories-wrapper">
                 <Head>
                     <link rel="stylesheet" href="static/css/zuck.min.css" />
                     <link rel="stylesheet" href="static/css/snapgram.css" />

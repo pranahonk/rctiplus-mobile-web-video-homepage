@@ -128,6 +128,36 @@ body{
 .el-red{
 	color:red;
 }
+.name{
+	color:#fff;	
+}
 .el-green{
 	color: green;
+}
+.thumbs-wrapper .carousel-status{
+	display:none;
+}
+.stories-wrapper{
+	padding:4%;
+	width:100%;
+	color:#fff;
+}
+.content-wrapper{
+	padding:1%;
+	height:100%;
+}
+.content-title{
+	padding-left:15px;
+	color:#fff;
+	font-size:14px;
+}
+.content{
+	margin:15px;
+}
+.img-content-title{
+	width:100%;
+}
+.content-sub-title{
+	color:#fff;
+	font-size:10px;
 }

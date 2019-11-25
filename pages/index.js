@@ -55,13 +55,13 @@ class Home extends React.Component {
 					<i className="fas fa-play-circle" aria-hidden="true"></i>
 					<Stories />
 					{contents.map(row => (
-						<div key={row.id}>
-							<h4>{row.title}</h4>
+						<div key={row.id} className="content-wrapper">
+							<h4 className="content-title">{row.title}</h4>
 							{row.content.map(c => (
-								<div key={c.content_id}>
-									<h5>{c.content_title}</h5>
+								<div key={c.content_id} className="content">
+									<h5 className="content-sub-title">{c.content_title}</h5>
 									<Lazyload height={200}>
-										<img src={meta.image_path + '300' + c.landscape_image} />
+										<img className="img-content-title" src={meta.image_path + '300' + c.landscape_image} />
 									</Lazyload>
 								</div>
 							))}

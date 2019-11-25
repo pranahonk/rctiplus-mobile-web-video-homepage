@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
-import NavBack from '../components/NavBack';
-import Layout from '../components/Layout';
+import NavBack from '../components/Nav/NavBack';
+import Layout from '../components/Templates/Layout';
 // https://medium.com/@bhavikbamania/a-beginner-guide-for-redux-with-next-js-4d018e1342b2
 
 class Home extends React.Component {
