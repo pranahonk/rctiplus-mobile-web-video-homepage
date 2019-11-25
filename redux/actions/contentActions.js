@@ -54,6 +54,25 @@ const getContents = page => {
     });
 };
 
+const getBanner = (page = 1, length = 10) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/banner?page=${page}&length=${length}`);
+            if (response.data.status.code === 0) {
+                dispatch({ type: 'BANNER', data: response.data.data, meta: response.data.meta });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
+};
+
 export default {
-    getContents
+    getContents,
+    getBanner
 };

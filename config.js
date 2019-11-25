@@ -3,6 +3,7 @@
 export const FE = 'https://rc-rctiplus.com';
 export const VERSION = '0.9.2';
 export const API = 'https://rc-api.rctiplus.com';
+// export const API = 'https://api.rctiplus.com';
 export const NEWS_API = 'https://rc-api-news.rctiplus.id';
 export const REWARDS_API = 'https://rc-api-rewards.rctiplus.id';
 export const STATIC = 'https://rc-static.rctiplus.id';
