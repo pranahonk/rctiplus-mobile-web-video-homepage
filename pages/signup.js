@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Layout from '../components/Layout';
+import Layout from '../components/Templates/Layout';
 import NavBack from '../components/Nav/NavBack';
 import TabSignup from '../components/Tab/TabSignup';
 import actions from '../redux/actions';

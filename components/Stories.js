@@ -31,8 +31,8 @@ class Stories extends React.Component {
                         story.story[j].id,
                         story.story[j].link_video != null ? 'video' : 'photo',
                         10,
-                        story.story[j].link_video != null ? (this.props.stories.video_path + story.story[j].link_video) : (this.props.stories.video_path + story.story[j].story_img),
-                        story.story[j].link_video != null ? (this.props.stories.video_path + story.story[j].link_video) : (this.props.stories.video_path + story.story[j].story_img),
+                        story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.video_path + story.story[j].story_img),
+                        story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.video_path + story.story[j].story_img),
                         false, false,
                         false,
                         story.story[j].release_date
@@ -189,7 +189,7 @@ class Stories extends React.Component {
             );
         });
         return (
-            <div>
+            <div className="stories-wrapper">
                 <Head>
                     <link rel="stylesheet" href="static/css/zuck.min.css" />
                     <link rel="stylesheet" href="static/css/snapgram.css" />
