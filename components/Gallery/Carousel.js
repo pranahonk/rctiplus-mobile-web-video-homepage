@@ -29,7 +29,7 @@ class Crs extends Component {
 		return (
 			<Carousel autoPlay>
 				{this.state.banner.map(b => (
-					<div>
+					<div key={b.id}>
 						<img src={this.state.meta.image_path + '300' + b.portrait_image} />
 						<p className="legend">{b.title}</p>
 					</div>
