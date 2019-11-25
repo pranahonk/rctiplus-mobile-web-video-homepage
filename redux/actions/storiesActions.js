@@ -2,7 +2,8 @@ import ax from 'axios';
 import { API, VISITOR_TOKEN } from '../../config';
 
 const axios = ax.create({
-    baseURL: API + '/api',
+    // baseURL: API + '/api',
+    baseURL: 'https://api.rctiplus.com/api',
     headers: {
         'Authorization': VISITOR_TOKEN
     }

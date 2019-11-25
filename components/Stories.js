@@ -19,7 +19,6 @@ class Stories extends React.Component {
     componentDidMount() {
         const Zuck = require('zuck.js');
         this.props.getStories().then(response => {
-            console.log(this.props.stories);
             const stories = this.props.stories.data;
             let timelines = [];
             for (let i = 0; i < stories.length; i++) {
@@ -31,12 +30,13 @@ class Stories extends React.Component {
                         story.story[j].id,
                         story.story[j].link_video != null ? 'video' : 'photo',
                         10,
-                        story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.video_path + story.story[j].story_img),
-                        story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.video_path + story.story[j].story_img),
+                        story.story[j].link_video != null ? (story.story[j].link_video) : (story.story[j].story_img),
+                        story.story[j].link_video != null ? (story.story[j].link_video) : (story.story[j].story_img),
                         false, false,
                         false,
                         story.story[j].release_date
                     ]);
+
                 }
 
                 let programImg = '';

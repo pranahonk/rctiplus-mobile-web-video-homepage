@@ -1,25 +1,41 @@
 import React, { Component, Children } from 'react';
+import { connect } from 'react-redux';
+import contentActions from '../../redux/actions/contentActions';
 import { Carousel } from 'react-responsive-carousel';
+
+
 class Crs extends Component {
-  render() {
-    return (
-      <Carousel autoPlay>
-        <div>
-          <img src="static/sample/1.jpg" />
-          <p className="legend">
-            1
-          </p>
-        </div>
-        <div>
-          <img src="static/sample/2.jpg" />
-          <p className="legend">Legend 2</p>
-        </div>
-        <div>
-          <img src="static/sample/3.jpg" />
-          <p className="legend">Legend 3</p>
-        </div>
-      </Carousel>
-    );
-  }
+	
+	constructor(props) {
+		super(props);
+		this.state = {
+			banner: [],
+			meta: null
+		};
+	}
+
+	componentDidMount() {
+		this.props.getBanner()
+			.then(response => {
+				const contents = this.props.contents;
+				this.setState({
+					banner: contents.banner,
+					meta: contents.meta
+				});
+			});
+	}
+	
+	render() {
+		return (
+			<Carousel autoPlay>
+				{this.state.banner.map(b => (
+					<div key={b.id}>
+						<img src={this.state.meta.image_path + '300' + b.portrait_image} />
+						<p className="legend">{b.title}</p>
+					</div>
+				))}
+			</Carousel>
+		);
+	}
 }
-export default Crs;
+export default connect(state => state, contentActions)(Crs);
