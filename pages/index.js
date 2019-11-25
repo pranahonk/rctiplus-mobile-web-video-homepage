@@ -49,9 +49,6 @@ class Home extends React.Component {
 
 		return (
 			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
-				<Head>
-					<script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
-				</Head>
 				<div>
 					<Nav />
 					<Carousel />

@@ -76,6 +76,7 @@ const Layout = ({ children, title, isAuthenticated, deauthenticate }) => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <link rel="icon" href="static/icons/favicon.png" />
         <link rel="manifest" href="static/manifest.json" />
+        <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
       </Head>
       <div className="has-text-centered">{children}</div>
     </div>
