@@ -6,12 +6,10 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case 'REGISTER':
-            return Object.assign({}, state, { data: action.data, meta: action.meta });
-        case 'CHECK_USER':
-        case 'FORGOT_PASSWORD':
-        case 'CREATE_NEW_PASSWORD':
+        case 'UPDATE_PROFILE':
             return Object.assign({}, state, { status: action.status });
+        case 'USER_DATA':
+            return Object.assign({}, state, { data: action.data, meta: action.meta });
         default:
             return state;
     }

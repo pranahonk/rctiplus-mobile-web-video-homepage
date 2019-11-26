@@ -17,9 +17,11 @@ export const removeCookie = key => {
     }
 };
 
-export const getCookie = (key, req) => {
-    return process.browser ? getCookieFromBrowser(key) : getCookieFromServer(key, req);
-};
+// export const getCookie = (key, req) => {
+//     return process.browser ? getCookieFromBrowser(key) : getCookieFromServer(key, req);
+// };
+
+export const getCookie = key => getCookieFromBrowser(key);
 
 const getCookieFromServer = (key, req) => {
     if (!req.headers.cookie) {

@@ -1,10 +1,14 @@
 import ax from 'axios';
 import { API, VISITOR_TOKEN } from '../../config';
+import { getCookie } from '../../utils/cookie';
+
+const tokenKey = 'ACCESS_TOKEN';
+const accessToken = getCookie(tokenKey);
 
 const axios = ax.create({
     baseURL: API + '/api',
     headers: {
-        'Authorization': VISITOR_TOKEN
+        'Authorization': accessToken == undefined ? VISITOR_TOKEN : accessToken
     }
 });
 
@@ -54,6 +58,29 @@ const getContents = page => {
     });
 };
 
+const getHomepageContents = (id, platform = 'mweb', page = 1, length = 21) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/homepage/${id}/contents?platform=${platform}&page=${page}&length=${length}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_HOMEPAGE_CONTENTS',
+                    data: response.data.data,
+                    meta: response.data.meta,
+                    status: response.data.status
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const getBanner = (page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -72,7 +99,176 @@ const getBanner = (page = 1, length = 10) => {
     });
 };
 
+const getEpisodeDetail = episodeId => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/episode/${episodeId}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_EPISODE_DETAIL',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getEpisodeUrl = episodeId => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/episode/${episodeId}/url`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_EPISODE_URL',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getExtraDetail = extraId => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/extra/${extraId}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_EXTRA_DETAIL',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getExtraUrl = extraId => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/extra/${extraId}/url`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_EXTRA_URL',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getClipDetail = clipId => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/clip/${clipId}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_CLIP_ID',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getClipUrl = clipId => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/clip/${clipId}/url`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_CLIP_URL',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getPhotoDetail = (photoId, infos = 'id,program_id,title,summary,release_date,program_icon_image,photos') => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/photo/${photoId}?infos=${infos}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_PHOTO_DETAIL',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 export default {
     getContents,
-    getBanner
+    getHomepageContents,
+    getBanner,
+    getEpisodeDetail,
+    getEpisodeUrl,
+    getExtraDetail,
+    getExtraUrl,
+    getClipDetail,
+    getClipUrl,
+    getPhotoDetail
 };
