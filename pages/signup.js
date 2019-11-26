@@ -57,6 +57,16 @@ class Signup extends React.Component {
                 placeholder="Enter password"
               />
             </FormGroup>
+			<FormGroup>
+              <Label for="password">Re-Type Password</Label>
+              <Input
+                className="inpt-form"
+                type="password"
+                name="password2"
+                id="password2"
+                placeholder="Re-Type Password"
+              />
+            </FormGroup>
             <Button className="btn-next">NEXT</Button>
 			<p className="text-center fnt-10 el-margin-20 el-white">By clicking the Sign Up button, you agree to our 
 			<a href="/terms-&amp;-conditions" className="text-red fnt-11">Terms &amp; Conditions</a> and <a href="/privacy-policy" className="text-red fnt-11">Privacy Policy</a></p>

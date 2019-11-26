@@ -29,14 +29,14 @@ class NavbarDef extends Component {
         <div className="left-top-link">
           <div className="logo-top-wrapper">
             <NavbarBrand href="/">
-              <img className="logo-top" src="static/logo/rcti.png" />
+              <img className="logo-top" src="/static/logo/rcti.png" />
             </NavbarBrand>
           </div>
         </div>
         <div className="right-top-link">
           <div className="btn-link-top-nav">
             <NavbarBrand href="/signin">Sign In</NavbarBrand>
-            <NavbarBrand href="/explore">Explore</NavbarBrand>
+            <NavbarBrand href="/explore"><i class="fas fa-search"></i></NavbarBrand>
           </div>
         </div>
       </Navbar>

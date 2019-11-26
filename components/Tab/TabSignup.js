@@ -28,7 +28,7 @@ const Example = props => {
   return (
     <div className="nav-tab-wrapper">
       <Nav tabs>
-        <NavItem>
+        <NavItem className="nav-signup-item">
           <NavLink
             className={classnames({ active: activeTab === '1' })}
             onClick={() => {
@@ -38,7 +38,7 @@ const Example = props => {
             Phone Number
           </NavLink>
         </NavItem>
-        <NavItem>
+        <NavItem className="nav-signup-item">
           <NavLink
             className={classnames({ active: activeTab === '2' })}
             onClick={() => {
