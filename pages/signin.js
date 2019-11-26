@@ -9,62 +9,83 @@ import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import '../assets/scss/login.scss';
 
 class Signin extends React.Component {
+  static getInitialProps(ctx) {
+    initialize(ctx);
+  }
 
-    static getInitialProps(ctx) {
-        initialize(ctx);
+  constructor(props) {
+    super(props);
+    this.state = {
+      emailphone: '',
+      password: '',
+      is_password_invalid: false,
     };
+  }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            emailphone: '',
-            password: '',
-            is_password_invalid: false
-        };
-    }
+  componentDidMount() {
+    this.props.test();
+  }
 
-    componentDidMount() {
-        this.props.test();
-    }
+  handleSubmit(e) {
+    e.preventDefault();
+    const data = {
+      emailphone: this.state.emailphone,
+      password: this.state.password,
+    };
+    this.props.login(data).then(response => {
+      if (this.props.authentication.code === 7) {
+        this.setState({ is_password_invalid: true });
+      }
+    });
+  }
 
-    handleSubmit(e) {
-        e.preventDefault();
-        const data = {
-            emailphone: this.state.emailphone,
-            password: this.state.password
-        };
-        this.props.login(data)
-            .then(response => {
-                if (this.props.authentication.code === 7) {
-                    this.setState({ is_password_invalid: true });
-                }
-            });
-    }
-
-    render() {
-        return (
-            <Layout title="Sign In">
-				<NavBack />
-                <div className="login-box">
-                    <h3>Sign In</h3>
-                    <Form>
-                        <FormGroup>
-                            <Label for="email">Email or Phone Number</Label>
-                            <Input className="inpt-form" type="text" name="email" id="email" placeholder="Enter email or phone number" />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="password">Password</Label>
-                            <Input className="inpt-form" type="password" name="password" id="password" placeholder="Enter password" />
-                        </FormGroup>
-						<p className="text-center"><a href="/forgot-password" className="text-white fnt-12">Forgot Password?</a></p>
-                        <Button className="btn-next">Login</Button>
-						<p className="text-center">Dont have an account? <a href="/signup" className="text-red fnt-12">Sign up</a> here</p>
-                    </Form>
-                </div> 
-            </Layout>
-        );
-    }
-
+  render() {
+    return (
+      <Layout title="Sign In">
+        <NavBack />
+        <div class="wrapper-content">
+          <div className="login-box">
+            <h3>Sign In</h3>
+            <Form>
+              <FormGroup>
+                <Label for="email">Email or Phone Number</Label>
+                <Input
+                  className="inpt-form"
+                  type="text"
+                  name="email"
+                  id="email"
+                  placeholder="Enter email or phone number"
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label for="password">Password</Label>
+                <Input
+                  className="inpt-form"
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="Enter password"
+                />
+              </FormGroup>
+              <p className="text-center">
+                <a href="/forgot-password" className="text-white fnt-12">
+                  Forgot Password?
+                </a>
+              </p>
+              <Button className="btn-next">Login</Button>
+              <p className="text-center">
+                Dont have an account?
+                <a href="/signup" className="text-red fnt-12">
+                  Sign up
+                </a>
+                here
+              </p>
+            </Form>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 }
 
 export default connect(state => state, actions)(Signin);

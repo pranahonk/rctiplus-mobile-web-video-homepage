@@ -31,6 +31,7 @@ import NavbarDefault from '../Nav/NavDefault';
 *end here
 */
 
+import Footer from '../../components/Footer/Default';
 
 const Layout = ({ children, title, isAuthenticated, deauthenticate }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -79,6 +80,8 @@ const Layout = ({ children, title, isAuthenticated, deauthenticate }) => {
         <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
       </Head>
       <div className="has-text-centered">{children}</div>
+	  
+	  <Footer/>
     </div>
   );
 };
