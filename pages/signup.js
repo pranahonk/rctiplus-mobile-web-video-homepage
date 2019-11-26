@@ -1,10 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Layout from '../components/Templates/Layout';
-import NavBack from '../components/Nav/NavBack';
-import TabSignup from '../components/Tab/TabSignup';
 import actions from '../redux/actions';
 import initialize from '../utils/initialize';
+
+//load default layout
+import Layout from '../components/Layouts/Default';
+
+//load navbar default
+import NavBack from '../components/Includes/Navbar/NavBack';
+
+//load tab signup 
+import TabSignup from '../components/Includes/Tab/TabSignup';
+
+//load reactstrap components
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 class Signup extends React.Component {
@@ -71,10 +79,10 @@ class Signup extends React.Component {
 			<p className="text-center fnt-10 el-margin-20 el-white">By clicking the Sign Up button, you agree to our 
 			<a href="/terms-&amp;-conditions" className="text-red fnt-11">Terms &amp; Conditions</a> and <a href="/privacy-policy" className="text-red fnt-11">Privacy Policy</a></p>
             <p className="text-center fnt-12">
-              Have an account?{' '}
+              Have an account ? 
               <a href="/signin" className="text-red">
-                Sign In
-              </a>{' '}
+                Sign In 
+              </a>
               here
             </p>
           </Form>

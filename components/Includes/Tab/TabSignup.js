@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../../../assets/scss/components/signup.scss';
 import {
   TabContent,
   TabPane,

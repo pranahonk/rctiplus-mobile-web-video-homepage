@@ -1,4 +1,5 @@
 import React, { Component, Children } from 'react';
+import '../../../assets/scss/components/footer.scss';
 
 /*
  *load reactstrap

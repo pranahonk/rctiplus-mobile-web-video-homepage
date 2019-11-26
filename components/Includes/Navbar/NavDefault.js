@@ -1,4 +1,5 @@
 import React, { Component, Children } from 'react';
+import '../../../assets/scss/components/navbar.scss';
 
 /*
  *load reactstrap
@@ -36,11 +37,11 @@ class NavbarDef extends Component {
         <div className="right-top-link">
           <div className="btn-link-top-nav">
             <NavbarBrand href="/signin">Sign In</NavbarBrand>
-            <NavbarBrand href="/explore"><i class="fas fa-search"></i></NavbarBrand>
+            <NavbarBrand href="/explore"><i className="fas fa-search"></i></NavbarBrand>
           </div>
         </div>
       </Navbar>
-    );
+    )
   }
 }
 export default NavbarDef;

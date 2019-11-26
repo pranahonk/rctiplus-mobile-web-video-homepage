@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Head from 'next/head';
-import storiesActions from '../redux/actions/storiesActions';
+import storiesActions from '../../../redux/actions/storiesActions';
 
 class Stories extends React.Component {
     constructor(props) {

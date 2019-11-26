@@ -29,7 +29,7 @@ class NavbarDef extends Component {
         <div className="left-top-link">
           <div className="logo-top-wrapper">
             <NavbarBrand href="/">
-			<i class="fas fa-arrow-left"></i>
+			<i className="fas fa-arrow-left"></i>
             </NavbarBrand>
           </div>
         </div>

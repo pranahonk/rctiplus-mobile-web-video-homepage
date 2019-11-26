@@ -1,13 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Layout from '../../components/Templates/Layout';
-import Nav from '../../components/Nav/NavDefault';
-import TabSignup from '../../components/Tab/TabSignup';
 import actions from '../../redux/actions';
 import initialize from '../../utils/initialize';
+
+//load default layout
+import Layout from '../../components/Layouts/Default';
+
+//load navbar default
+import Nav from '../../components/Includes/Navbar/NavDefault';
+
+//load reactstrap
 import { Button, ListGroup, ListGroupItem } from 'reactstrap';
 
-class Signup extends React.Component {
+class Profile extends React.Component {
   static getInitialProps(ctx) {
     initialize(ctx);
   }
@@ -54,28 +59,28 @@ class Signup extends React.Component {
               Points
             </ListGroupItem>
             <ListGroupItem tag="a" href="/user/history" action>
-              <i class="fas fa-history"></i> History
+              <i className="fas fa-history"></i> History
             </ListGroupItem>
             <ListGroupItem tag="a" href="/user/download" action>
-              <i class="fas fa-download"></i> Download
+              <i className="fas fa-download"></i> Download
             </ListGroupItem>
             <ListGroupItem tag="a" href="/user/my-list" action>
-              <i class="fas fa-list"></i> My List
+              <i className="fas fa-list"></i> My List
             </ListGroupItem>
             <ListGroupItem tag="a" href="/user/continue-watching" action>
-              <i class="far fa-clock"></i> Continue Watching
+              <i className="far fa-clock"></i> Continue Watching
             </ListGroupItem>
             <ListGroupItem tag="a" href="/user/term&cond" action>
-            <i class="fas fa-exclamation-circle"></i>  Term & Conditions
+            <i className="fas fa-exclamation-circle"></i>  Term & Conditions
             </ListGroupItem>
             <ListGroupItem tag="a" href="/user/privacy-policy" action>
-            <i class="fas fa-lock"></i>  Privacy Policy
+            <i className="fas fa-lock"></i>  Privacy Policy
             </ListGroupItem>
             <ListGroupItem tag="a" href="/user/help" action>
-            <i class="far fa-comment-alt"></i>  Help
+            <i className="far fa-comment-alt"></i>  Help
             </ListGroupItem>
             <ListGroupItem tag="a" href="/user/faq" action>
-            <i class="far fa-question-circle"></i>  FAQ
+            <i className="far fa-question-circle"></i>  FAQ
             </ListGroupItem>
 			<ListGroupItem tag="a" href="/user/faq" action>
             <center>Version 1.2</center>
@@ -87,4 +92,4 @@ class Signup extends React.Component {
   }
 }
 
-export default connect(state => state, actions)(Signup);
+export default connect(state => state, actions)(Profile);

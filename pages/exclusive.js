@@ -4,9 +4,13 @@ import Head from 'next/head';
 import Lazyload from 'react-lazyload';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
-import NavDefault from '../components/Nav/NavDefault';
-import Layout from '../components/Templates/Layout';
-import Stories from '../components/Stories';
+
+//load default layout
+import Layout from '../components/Layouts/Default';
+
+//load navbar default
+import NavDefault from '../components/Includes/Navbar/NavDefault';
+
 import {
   TabContent,
   TabPane,
@@ -24,18 +28,9 @@ import {
   Row,
   Col,
 } from 'reactstrap';
-/*
- *load carousel
- *start here
- */
-import Carousel from '../components/Gallery/Carousel';
-import '../assets/scss/carousel.scss';
-/*
- *load carousel
- *end here
- */
 
-// https://medium.com/@bhavikbamania/a-beginner-guide-for-redux-with-next-js-4d018e1342b2
+//load home page scss
+import '../assets/scss/components/homepage.scss';
 
 class Exclusive extends React.Component {
   static getInitialProps(ctx) {
@@ -69,7 +64,7 @@ class Exclusive extends React.Component {
           <NavDefault />
           <div class="wrapper-content">
             <div className="nav-exclusive-wrapper">
-              <Nav tabs>
+              <Nav tabs id="exclusive">
                 <NavItem className="exclusive-item">
                   <NavLink active>All</NavLink>
                 </NavItem>

@@ -1,39 +1,18 @@
 import React, { Component, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-/*
-*load scss style 
-*start here
-*/
+//load scss style 
 import '../../assets/scss/custom.scss';
 import '../../assets/scss/global.scss';
-/*
-*load scss style 
-*end here
-*/
-/*
-*load redux 
-*start here
-*/
+
+//load redux 
 import { connect } from 'react-redux';
 import actions from '../../redux/actions';
-/*
-*load redux 
-*end here
-*/
-/*
-*load default nav 
-*start here
-*/
-import NavbarDefault from '../Nav/NavDefault';
-/*
-*load default nav 
-*end here
-*/
 
-import Footer from '../../components/Footer/Default';
+//load footer
+import Footer from '../../components/Includes/Footer/Default';
 
-const Layout = ({ children, title, isAuthenticated, deauthenticate }) => {
+const Default = ({ children, title, isAuthenticated, deauthenticate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
@@ -83,11 +62,11 @@ const Layout = ({ children, title, isAuthenticated, deauthenticate }) => {
 	  
 	  <Footer/>
     </div>
-  );
-};
+  )
+}
 
 const mapStateToProps = state => ({
   isAuthenticated: !!state.authentication.token,
-});
+})
 
-export default connect(mapStateToProps, actions)(Layout);
+export default connect(mapStateToProps, actions)(Default);
