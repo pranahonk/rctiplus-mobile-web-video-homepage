@@ -1,0 +1,64 @@
+$primary-bg-color: #282828;
+$primary-text-color: #979797;
+$primary-font-family: Helvetica !important;
+$default-text-color-login: #ffffff;
+$primary-text-color-login: #DB2828;
+$primary-btn-bg-color-login: #DB2828;
+$primary-btn-border-color-login: #DB2828;
+$text-placeholder-color-login: #a8a8a8;
+
+.login-box {
+    margin: 0px auto;
+    background-color: $primary-bg-color;
+    color: $primary-text-color;
+    width: 90%;
+    height: 500px;
+    object-fit: contain;
+    border-radius: 30px;
+    padding: 20px;
+}
+.form-control {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.375rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 0.5px solid #495057;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.login-box>h3 {
+    text-align: center;
+}
+
+Input {
+    background-color: $primary-bg-color !important;
+    color: $default-text-color-login !important;
+}
+
+Input::placeholder {
+    color: $text-placeholder-color-login !important;
+}
+
+.btn-primary {
+    background-color: $primary-btn-bg-color-login;
+    border-color: $primary-btn-border-color-login;
+    width: 100%;
+}
+
+.form-text {
+    text-align: center;
+}
+
+.form-text a {
+    color: inherit;
+}
+
+.form-text p a {
+    color: $primary-text-color-login;
+}

@@ -4,23 +4,12 @@ import Head from 'next/head';
 import Lazyload from 'react-lazyload';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
-import Nav from '../components/Nav/NavDefault';
-import Layout from '../components/Templates/Layout';
-import Stories from '../components/Stories';
 
-/*
- *load carousel
- *start here
- */
-import Carousel from '../components/Gallery/Carousel';
-import '../assets/scss/carousel.scss';
-/*
- *load carousel
- *end here
- */
+//load default layout
+import Layout from '../components/Layouts/Default';
 
-// https://medium.com/@bhavikbamania/a-beginner-guide-for-redux-with-next-js-4d018e1342b2
-
+//load navbar default
+import NavDefault from '../components/Includes/Navbar/NavDefault';
 
 class More extends React.Component {
 
@@ -50,8 +39,7 @@ class More extends React.Component {
 		return (
 			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
 				<div>
-					<Nav />
-					
+					<NavDefault />
 				</div>
 			</Layout>
 		);

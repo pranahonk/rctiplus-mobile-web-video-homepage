@@ -1,22 +1,13 @@
 import React from 'react';
 import Head from 'next/head';
-import NavBack from '../components/Nav/NavBack';
-import Layout from '../components/Templates/Layout';
-// https://medium.com/@bhavikbamania/a-beginner-guide-for-redux-with-next-js-4d018e1342b2
+//load default layout
+import Layout from '../components/Layouts/Default';
+
+//load navbar default
+import NavBack from '../components/Includes/Navbar/NavBack';
 
 class Home extends React.Component {
-  componentDidMount() {
-    // if ("serviceWorker" in navigator) {
-    // 	navigator.serviceWorker
-    // 		.register("/service-worker.js")
-    // 		.then(registration => {
-    // 			console.log("service worker registration successful");
-    // 		})
-    // 		.catch(err => {
-    // 			console.warn("service worker registration failed", err.message);
-    // 		});
-    // }
-  }
+  componentDidMount() { }
 
   render() {
     return (

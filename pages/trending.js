@@ -4,9 +4,14 @@ import Head from 'next/head';
 import Lazyload from 'react-lazyload';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
-import NavDefault from '../components/Nav/NavDefault';
-import Layout from '../components/Templates/Layout';
-import Stories from '../components/Stories';
+
+//load default layout
+import Layout from '../components/Layouts/Default';
+
+//load navbar default
+import NavDefault from '../components/Includes/Navbar/NavDefault';
+
+//load reactstrap
 import {
   TabContent,
   TabPane,
@@ -24,18 +29,9 @@ import {
   Row,
   Col,
 } from 'reactstrap';
-/*
- *load carousel
- *start here
- */
-import Carousel from '../components/Gallery/Carousel';
-import '../assets/scss/carousel.scss';
-/*
- *load carousel
- *end here
- */
 
-// https://medium.com/@bhavikbamania/a-beginner-guide-for-redux-with-next-js-4d018e1342b2
+//load home page scss
+import '../assets/scss/components/homepage.scss';
 
 class Trending extends React.Component {
   static getInitialProps(ctx) {
@@ -67,28 +63,28 @@ class Trending extends React.Component {
       <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
         <div>
           <NavDefault />
-          <div class="wrapper-content">
+          <div className="wrapper-content">
             <div className="nav-exclusive-wrapper">
-              <Nav tabs>
+              <Nav tabs id="trending">
                 <NavItem className="exclusive-item">
-                  <NavLink active Navid="1">
+                  <NavLink active id="1">
                     All
                   </NavLink>
                 </NavItem>
                 <NavItem className="exclusive-item">
-                  <NavLink Navid="2">Clip</NavLink>
+                  <NavLink id="2">Clip</NavLink>
                 </NavItem>
                 <NavItem className="exclusive-item">
-                  <NavLink Navid="3">Photo</NavLink>
+                  <NavLink id="3">Photo</NavLink>
                 </NavItem>
                 <NavItem className="exclusive-item">
-                  <NavLink Navid="4">Entertainment</NavLink>
+                  <NavLink id="4">Entertainment</NavLink>
                 </NavItem>
                 <NavItem className="exclusive-item">
-                  <NavLink Navid="5">News</NavLink>
+                  <NavLink id="5">News</NavLink>
                 </NavItem>
                 <NavItem className="exclusive-item">
-                  <NavLink Navid="6">Bloopers</NavLink>
+                  <NavLink id="6">Bloopers</NavLink>
                 </NavItem>
               </Nav>
               <TabContent activeTab="1">
@@ -115,7 +111,7 @@ class Trending extends React.Component {
           </div>
         </div>
       </Layout>
-    );
+    )
   }
 }
 

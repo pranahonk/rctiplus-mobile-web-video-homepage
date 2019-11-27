@@ -1,7 +1,8 @@
 import React, { Component, Children } from 'react';
 import { connect } from 'react-redux';
-import contentActions from '../../redux/actions/contentActions';
+import contentActions from '../../../redux/actions/contentActions';
 import { Carousel } from 'react-responsive-carousel';
+import '../../../assets/scss/plugins/carousel/carousel.scss';
 
 
 class Crs extends Component {
@@ -27,7 +28,7 @@ class Crs extends Component {
 	
 	render() {
 		return (
-			<Carousel autoPlay>
+			<Carousel autoPlay >
 				{this.state.banner.map(b => (
 					<div key={b.id}>
 						<img src={this.state.meta.image_path + '593' + b.portrait_image} />
