@@ -8,7 +8,7 @@ const accessToken = getCookie(tokenKey);
 const axios = ax.create({
     baseURL: API + '/api',
     headers: {
-        'Authorization': accessToken == undefined ? VISITOR_TOKEN : accessToken
+        'Authorization': VISITOR_TOKEN
     }
 });
 

@@ -1,15 +1,11 @@
 import ax from 'axios';
 import { API, VISITOR_TOKEN } from '../../config';
-import { getCookie } from '../../utils/cookie';
-
-const tokenKey = 'ACCESS_TOKEN';
-const accessToken = getCookie(tokenKey);
 
 const axios = ax.create({
     // baseURL: API + '/api',
     baseURL: 'https://api.rctiplus.com/api',
     headers: {
-        'Authorization': accessToken == undefined ? VISITOR_TOKEN : accessToken
+        'Authorization': VISITOR_TOKEN
     }
 });
 

@@ -12,7 +12,8 @@ class Stories extends React.Component {
         this.storiesApi = null;
 
         this.state = {
-            stories: []
+            stories: [],
+            resolution: 593
         }
     }
 
@@ -30,15 +31,14 @@ class Stories extends React.Component {
                         story.story[j].id,
                         story.story[j].link_video != null ? 'video' : 'photo',
                         10,
-                        story.story[j].link_video != null ? (story.story[j].link_video) : (story.story[j].story_img),
-                        story.story[j].link_video != null ? (story.story[j].link_video) : (story.story[j].story_img),
+                        story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.image_path + this.state.resolution + story.story[j].story_img),
+                        story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.image_path + this.state.resolution + story.story[j].story_img),
                         false, false,
                         false,
                         story.story[j].release_date
                     ]);
 
                 }
-
                 let programImg = '';
                 if (story.program_img != null) {
                     programImg = this.props.stories.video_path + story.program_img;

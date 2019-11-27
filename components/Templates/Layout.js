@@ -86,8 +86,4 @@ const Layout = ({ children, title, isAuthenticated, deauthenticate }) => {
   );
 };
 
-const mapStateToProps = state => ({
-  isAuthenticated: !!state.authentication.token,
-});
-
-export default connect(mapStateToProps, actions)(Layout);
+export default connect(state => state, actions)(Layout);

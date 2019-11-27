@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import Head from 'next/head';
 import Lazyload from 'react-lazyload';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
@@ -24,7 +23,7 @@ import '../assets/scss/carousel.scss';
 
 class Home extends React.Component {
 
-	static getInitialProps(ctx) {
+	static async getInitialProps(ctx) {
 		initialize(ctx);
 	}
 

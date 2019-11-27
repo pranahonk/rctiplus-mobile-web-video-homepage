@@ -1,28 +1,42 @@
-import React, { Component, Children } from 'react';
+import React, { Component } from 'react';
+import Router from 'next/router';
+import { connect } from 'react-redux';
+import actions from '../../redux/actions';
+import { getCookie, removeCookie } from '../../utils/cookie';
 
 /*
  *load reactstrap
  *start here
  */
 import {
-  Collapse,
   Navbar,
-  NavbarToggler,
   NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  NavbarText,
 } from 'reactstrap';
 /*
  *load reactstrap
  *end here
  */
 class NavbarDef extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      token: getCookie('ACCESS_TOKEN')
+    };
+  }
+
+  signOut() {
+    const deviceId = 1;
+    console.log(getCookie('ACCESS_TOKEN'));
+    this.props.logout(deviceId)
+      .then(() => {
+        Router.push('/signin');
+      })
+      .catch(error => {
+        removeCookie('ACCESS_TOKEN');
+      });
+  }
+
   render() {
     return (
       <Navbar color="dark" dark expand="md">
@@ -35,12 +49,12 @@ class NavbarDef extends Component {
         </div>
         <div className="right-top-link">
           <div className="btn-link-top-nav">
-            <NavbarBrand href="/signin">Sign In</NavbarBrand>
-            <NavbarBrand href="/explore"><i class="fas fa-search"></i></NavbarBrand>
+            {this.state.token ? (<NavbarBrand onClick={this.signOut.bind(this)} href="#">Sign Out</NavbarBrand>) : (<NavbarBrand href="/signin">Sign In</NavbarBrand>)}
+            <NavbarBrand href="/explore"><i className="fas fa-search" aria-hidden></i></NavbarBrand>
           </div>
         </div>
       </Navbar>
     );
   }
 }
-export default NavbarDef;
+export default connect(state => state, actions)(NavbarDef);

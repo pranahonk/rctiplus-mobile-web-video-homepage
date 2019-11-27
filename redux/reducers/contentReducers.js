@@ -1,5 +1,5 @@
 const initialState = {
-    homepage_content: null,
+    homepage_content: [],
     banner: null,
     meta: null,
     data: null,

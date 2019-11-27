@@ -2,7 +2,7 @@ import Router from 'next/router';
 import ax from 'axios';
 import { AUTHENTICATE, DEAUTHENTICATE, WRONG_AUTHENTICATION } from '../types';
 import { API, VISITOR_TOKEN } from '../../config';
-import { setCookie, removeCookie } from '../../utils/cookie';
+import { setCookie, removeCookie, getCookie } from '../../utils/cookie';
 
 const axios = ax.create({
     baseURL: API + '/api',
@@ -12,6 +12,8 @@ const axios = ax.create({
 });
 
 const tokenKey = 'ACCESS_TOKEN';
+const accessToken = getCookie(tokenKey);
+console.log('AUTH ACTIONS [ACCESS TOKEN]:', accessToken);
 
 const test = () => {
     return dispatch => {
@@ -25,13 +27,13 @@ const test = () => {
     };
 };
 
-const login = ({ emailphone, password }) => {
+const login = ({ emailphone, password, deviceId = 1 }) => {
     return dispatch => new Promise((resolve, reject) => {
         axios.post('/v1/login', {
                 emailphone: emailphone,
                 password: password,
-                device_id: 'test',
-                platform: 'web'
+                device_id: deviceId,
+                platform: 'mweb'
             }, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -40,6 +42,7 @@ const login = ({ emailphone, password }) => {
             .then(response => {
                 const data = response.data;
                 if (data.status.code == 0) {
+                    console.log(data.data);
                     setCookie(tokenKey, data.data.access_token);
                     dispatch({ type: AUTHENTICATE, data: data, token: data.data.access_token });
                 }
@@ -63,7 +66,8 @@ const logout = (device_id, platform = 'mweb') => {
                 platform: platform
             }, {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': getCookie(tokenKey)
                 }
             });
 

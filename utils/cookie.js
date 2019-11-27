@@ -15,6 +15,8 @@ export const removeCookie = key => {
             expires: 1
         });
     }
+
+    cookie.remove(key);
 };
 
 // export const getCookie = (key, req) => {
