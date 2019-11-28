@@ -104,14 +104,14 @@ class Signin extends React.Component {
 							<p className="text-center">
 								<a href="/forgot-password" className="text-white fnt-12">
 									Forgot Password?
-                				</a>
+								</a>
 							</p>
 							<Button className="btn-next">Login</Button>
 							<p className="text-center">
 								Dont have an account?
-                				<a href="/signup" className="text-red fnt-12">
+								<a href="/signup" className="text-red fnt-12">
 									Sign up
-                				</a>
+								</a>
 								here
 							</p>
 						</Form>

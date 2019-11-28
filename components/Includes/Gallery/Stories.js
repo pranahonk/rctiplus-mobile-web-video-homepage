@@ -35,7 +35,8 @@ class Stories extends React.Component {
                         story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.image_path + this.state.resolution + story.story[j].story_img),
                         false, false,
                         false,
-                        story.story[j].release_date
+                        story.story[j].release_date,
+                        story.story[j].title
                     ]);
 
                 }
@@ -162,7 +163,7 @@ class Stories extends React.Component {
             story.items.forEach((storyItem) => {
                 storyItems.push(
                     <li key={storyItem.id} data-id={storyItem.id} data-time={storyItem.time} className={(storyItem.seen ? 'seen' : '')}>
-                        <a href={storyItem.src} data-type={storyItem.type} data-length={storyItem.length} data-link={storyItem.link} data-linktext={storyItem.linkText}>
+                        <a href={storyItem.src} data-type={storyItem.type} data-length={storyItem.length} data-link={storyItem.link} data-linktext={storyItem.linkText} data-title={'hh3'}>
                             <img src={storyItem.preview} />
                         </a>
                     </li>
