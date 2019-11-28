@@ -16,6 +16,18 @@ import Carousel from '../components/Includes/Gallery/Carousel';
 //load stories zuck js (only in home page)
 import Stories from '../components/Includes/Gallery/Stories';
 
+//load stories panel 1 (only in home page)
+import Panel1 from '../components/Panels/Pnl_1';
+
+//load stories panel 2 (only in home page)
+import Panel2 from '../components/Panels/Pnl_2';
+
+//load stories panel 3 (only in home page)
+import Panel3 from '../components/Panels/Pnl_3';
+
+//load stories panel 4 (only in home page)
+import Panel4 from '../components/Panels/Pnl_4';
+
 //load home page scss
 import '../assets/scss/components/homepage.scss';
 
@@ -51,19 +63,10 @@ class Index extends React.Component {
 					<Carousel />
 					<i className="fas fa-play-circle" aria-hidden="true"></i>
 					<Stories />
-					{contents.map(row => (
-						<div key={row.id} className="content-wrapper">
-							<h4 className="content-title">{row.title}</h4>
-							{row.content.map(c => (
-								<div key={c.content_id} className="content">
-									<h5 className="content-sub-title">{c.content_title}</h5>
-									<Lazyload height={200}>
-										<img className="img-content-title" src={meta.image_path + '300' + c.landscape_image} />
-									</Lazyload>
-								</div>
-							))}
-						</div>
-					))}
+					<Panel1 />
+					<Panel2 />
+					<Panel3 />
+					<Panel4 />
 				</div>
 			</Layout>
 		);

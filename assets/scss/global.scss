@@ -156,13 +156,13 @@ body {
 }
 
 .content-title {
-    padding-left: 15px;
+    padding-left: 10px;
     color: #fff;
     font-size: 14px;
 }
 
 .content {
-    margin: 15px;
+    margin: 10px;
 }
 
 .img-content-title {
@@ -205,4 +205,47 @@ body {
 
 .thumbs-wrapper {
     display: none;
+}
+
+.homepage-content-hll{
+	padding:10px;
+	width:100%;
+}
+.wrapper{
+	margin-bottom:10%;
+}
+.pnl_2{
+	width:50%;
+}
+#pnl_horizontal_landscape .carousel .slide {
+    min-width: 35%;
+	height:100%;
+    margin: 3px;
+    position: relative;
+    text-align: center;
+    background: #000;
+}
+
+#pnl_horizontal .carousel .slide {
+    min-width: 35%;
+	height:100%;
+    margin: 3px;
+    position: relative;
+    text-align: center;
+    background: #000;
+}
+h5{
+	font-size:14px;
+}
+.homepage-content{
+	margin-bottom: 20px;
+}
+.txt-slider-panel{
+	color:#fff;
+	border-left:1px solid red;
+	border-left-width: 2px;
+	margin:10px;
+	font-size:12px;
+	text-align: left;
+	padding-left:10px;
 }

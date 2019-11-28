@@ -58,7 +58,7 @@ const Default = ({ children, title, isAuthenticated, deauthenticate }) => {
 				<link rel="manifest" href="static/manifest.json" />
 				<script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
 			</Head>
-			<div className="has-text-centered">{children}</div>
+			<div className="wrapper has-text-centered">{children}</div>
 
 			<Footer />
 		</div>
