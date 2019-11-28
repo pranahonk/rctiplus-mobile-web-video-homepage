@@ -1,8 +1,8 @@
 import Router from 'next/router';
 import ax from 'axios';
-import { AUTHENTICATE, DEAUTHENTICATE, USER, WRONG_AUTHENTICATION } from '../types';
+import { AUTHENTICATE, DEAUTHENTICATE, WRONG_AUTHENTICATION } from '../types';
 import { API, VISITOR_TOKEN } from '../../config';
-import { setCookie, removeCookie } from '../../utils/cookie';
+import { setCookie, removeCookie, getCookie } from '../../utils/cookie';
 
 const axios = ax.create({
     baseURL: API + '/api',
@@ -10,6 +10,10 @@ const axios = ax.create({
         'Authorization': VISITOR_TOKEN
     }
 });
+
+const tokenKey = 'ACCESS_TOKEN';
+const accessToken = getCookie(tokenKey);
+console.log('AUTH ACTIONS [ACCESS TOKEN]:', accessToken);
 
 const test = () => {
     return dispatch => {
@@ -23,13 +27,13 @@ const test = () => {
     };
 };
 
-const login = ({ emailphone, password }) => {
+const login = ({ emailphone, password, deviceId = 1 }) => {
     return dispatch => new Promise((resolve, reject) => {
         axios.post('/v1/login', {
                 emailphone: emailphone,
                 password: password,
-                device_id: 'test',
-                platform: 'web'
+                device_id: deviceId,
+                platform: 'mweb'
             }, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -38,6 +42,8 @@ const login = ({ emailphone, password }) => {
             .then(response => {
                 const data = response.data;
                 if (data.status.code == 0) {
+                    console.log(data.data);
+                    setCookie(tokenKey, data.data.access_token);
                     dispatch({ type: AUTHENTICATE, data: data, token: data.data.access_token });
                 }
                 else {
@@ -52,126 +58,36 @@ const login = ({ emailphone, password }) => {
     });
 };
 
-// register user
-const register = ({ firstname, lastname, mobile_no, email_id, password, confirm_password }, type) => {
-    if (type !== 'register') {
-        throw new Error('Wrong API call!');
-    }
-
-    return dispatch => {
-        axios.post(`${API}/${type}`, { firstname, lastname, mobile_no, email_id, password, confirm_password })
-            .then(response => {
-                Router.push('/signin');
-                console.log(response.data.meta.message);
-            })
-            .catch(error => {
-                switch (error.response.status) {
-                    case 422:
-                        alert(error.response.data.meta.message);
-                        break;
-                    case 401:
-                        alert(error.response.data.meta.message);
-                        break;
-                    case 500:
-                        alert('Interval server error! Try again!');
-                        break;
-                    default:
-                        alert(error.response.data.meta.message);
-                        break;
+const logout = (device_id, platform = 'mweb') => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v1/logout`, {
+                device_id: device_id,
+                platform: platform
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': getCookie(tokenKey)
                 }
             });
-    };
-};
 
-const authenticate = ({ email_id, password }, type) => {
-    if (type !== 'login') {
-        throw new Error('Wrong API call!');
-    }
-
-    return dispatch => {
-        console.log(email_id);
-        axios.post(`${API}/api/${type}`, { email_id, password })
-            .then(response => {
-                console.log(response);
-                const token = response.data.token;
-                console.log(token);
-                setCookie('token', token);
-                Router.push('/users');
-                dispatch({ type: AUTHENTICATE, payload: token });
-            })
-            .catch(error => {
-                console.log(error);
-                switch (error.response.status) {
-                    case 422:
-                        alert(error.response.data.meta.message);
-                        break;
-                    case 401:
-                        alert(error.response.data.meta.message);
-                        break;
-                    case 500:
-                        alert('Interval server error! Try again!');
-                        break;
-                    default:
-                        alert(error.response.data.meta.message);
-                        break;
-                }
-            });
-    };
-};
-
-const reauthenticate = token => {
-    return dispatch => {
-        dispatch({ type: AUTHENTICATE, payload: token });
-    };
-};
-
-const deauthenticate = () => {
-    return dispatch => {
-        removeCookie('token');
-        Router.push('/');
-        dispatch({ type: DEAUTHENTICATE });
-    };
-};
-
-const getUser = ({ token }, type) => {
-    console.log(token);
-    return dispatch => {
-        axios.get(`${API}/${type}`, {
-            headers: {
-                'Authorization': 'bearer ' + token
+            if (response.data.status.code === 0) {
+                removeCookie(tokenKey);
+                dispatch({ type: DEAUTHENTICATE });
+                resolve(response);
             }
-        })
-            .then(response => {
-                dispatch({ type: USER, payload: response.data.data.user });
-            })
-            .catch(error => {
-                switch (error.response.status) {
-                    case 401:
-                        Router.push('/');
-                        break;
-                    case 422:
-                        alert(error.response.data.meta.message);
-                        break;
-                    case 500:
-                        alert('Interval server error! Try again!');
-                    case 503:
-                        alert(error.response.data.meta.message);
-                        Router.push('/');
-                        break;
-                    default:
-                        alert(error.response.data.meta.message);
-                        break;
-                }
-            });
-    };
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
 };
 
 export default {
-    register,
-    authenticate,
-    deauthenticate,
-    reauthenticate,
-    getUser,
     test,
-    login
+    login,
+    logout
 };

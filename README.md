@@ -1,3 +1,17 @@
+## How to Run This Project
+First you must install all packages with npm
+`npm install`
+
+### Development
+`npm run dev`
+
+### Production
+`npm run start`
+
+### Run Cypress E2E Tester
+`npm run cypress:open`
+
+---
 
 **Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
 

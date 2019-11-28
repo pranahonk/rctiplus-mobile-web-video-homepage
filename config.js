@@ -21,3 +21,28 @@ export const CONVIVA_TRACKING_KEY = '25f1bbffdca1e0a4d059c0d8f802234bbb97dcf1';
 export const CONVIVA_TRACKING_HOST = 'mnc-test.testonly.conviva.com';
 
 export const VISITOR_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjAsInRva2VuIjoiZmUyZWMwM2E5ZTliYTUxYiIsInBsIjoid2ViIn0.5bAp_UT0o8DfAxx5UAQDG5U-mc0ZjxxdKivuA7Y3v_g';
+
+    // {
+    //     "emailphone": "user.test@rctiplus.com",
+    //     "password": "user.123",
+    //     "device_id": "string",
+    //     "platform": "mweb"
+    // }
+
+    // {
+    //     "data": {
+    //       "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjk5LCJwbCI6Im13ZWIiLCJkaWQiOiJzdHJpbmcifQ.MC9xSg3YvV9CrlymjtS0nouuqiFBpHvd44eJALj8ANk",
+    //       "user_id": 99,
+    //       "username": "Uwwuuuwuu",
+    //       "photoURL": "99_Screenshot_20190523-182656_Instagram_20190809001606.jpg",
+    //       "emailphone": "user.test@rctiplus.com"
+    //     },
+    //     "meta": {
+    //       "image_path": "https://rc-static.rctiplus.id/avatar/"
+    //     },
+    //     "status": {
+    //       "code": 0,
+    //       "message_server": "Success",
+    //       "message_client": "Success"
+    //     }
+    //   }

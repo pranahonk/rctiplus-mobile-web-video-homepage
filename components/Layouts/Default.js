@@ -13,60 +13,56 @@ import actions from '../../redux/actions';
 import Footer from '../../components/Includes/Footer/Default';
 
 const Default = ({ children, title, isAuthenticated, deauthenticate }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(!isOpen);
+	const [isOpen, setIsOpen] = useState(false);
+	const toggle = () => setIsOpen(!isOpen);
 
-  useEffect(
-    () =>
-      function() {
-        if (typeof window !== 'undefined') {
-          window.addEventListener('beforeinstallprompt', async e => {
-            // beforeinstallprompt Event fired
-            try {
-              // e.userChoice will return a Promise.
-              const choiceResult = await e.userChoice;
-              if (choiceResult.outcome === 'dismissed') {
-                /* eslint-disable no-console */
-                console.log('User cancelled home screen install');
-                /* eslint-enable no-console */
-              } else {
-                /* eslint-disable no-console */
-                console.log('User added to home screen');
-                /* eslint-enable no-console */
-              }
-            } catch (error) {
-              /* eslint-disable no-console */
-              console.error(
-                'user choice prompt promise failed to resolve, error: ',
-                error,
-              );
-              /* eslint-enable no-console */
-            }
-          });
-        }
-      },
-    [],
-  );
+	useEffect(
+		() =>
+			function () {
+				if (typeof window !== 'undefined') {
+					window.addEventListener('beforeinstallprompt', async e => {
+						// beforeinstallprompt Event fired
+						try {
+							// e.userChoice will return a Promise.
+							const choiceResult = await e.userChoice;
+							if (choiceResult.outcome === 'dismissed') {
+								/* eslint-disable no-console */
+								console.log('User cancelled home screen install');
+								/* eslint-enable no-console */
+							} else {
+								/* eslint-disable no-console */
+								console.log('User added to home screen');
+								/* eslint-enable no-console */
+							}
+						} catch (error) {
+							/* eslint-disable no-console */
+							console.error(
+								'user choice prompt promise failed to resolve, error: ',
+								error,
+							);
+							/* eslint-enable no-console */
+						}
+					});
+				}
+			},
+		[],
+	);
 
-  return (
-    <div>
-      <Head>
-        <title>{title}</title>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <link rel="icon" href="static/icons/favicon.png" />
-        <link rel="manifest" href="static/manifest.json" />
-        <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
-      </Head>
-      <div className="wrapper">{children}</div>
-	  
-	  <Footer/>
-    </div>
-  )
+	return (
+		<div>
+			<Head>
+				<title>{title}</title>
+				<meta charSet="utf-8" />
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+				<link rel="icon" href="static/icons/favicon.png" />
+				<link rel="manifest" href="static/manifest.json" />
+				<script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
+			</Head>
+			<div className="has-text-centered">{children}</div>
+
+			<Footer />
+		</div>
+	)
 }
 
-const mapStateToProps = state => ({
-  isAuthenticated: !!state.authentication.token,
-})
-
-export default connect(mapStateToProps, actions)(Default);
+export default connect(state => state, actions)(Default);
