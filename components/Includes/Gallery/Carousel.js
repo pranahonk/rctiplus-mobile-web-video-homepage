@@ -28,7 +28,7 @@ class Crs extends Component {
 	
 	render() {
 		return (
-			<Carousel autoPlay >
+			<Carousel autoPlay showThumbs={false} showIndicators={false} stopOnHover={true} infiniteLoop={true}>
 				{this.state.banner.map(b => (
 					<div key={b.id}>
 						<img src={this.state.meta.image_path + '593' + b.portrait_image} />
