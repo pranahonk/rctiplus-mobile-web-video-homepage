@@ -20,6 +20,7 @@ class Pnl_3 extends React.Component {
           showArrows={false}
           showStatus={false}
           swipeScrollTolerance={1}
+		  swipeable={true}
         >
           <Lazyload height={100} className="pnl_3">
             <img src="/static/sample/hl1.jpg" />

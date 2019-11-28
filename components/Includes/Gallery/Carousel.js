@@ -33,6 +33,7 @@ class Crs extends Component {
         showArrows={false}
         showStatus={false}
 		swipeScrollTolerance={1}
+		swipeable={true}
       >
         {this.state.banner.map(b => (
           <div key={b.id}>

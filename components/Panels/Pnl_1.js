@@ -19,7 +19,8 @@ class Pnl_1 extends React.Component {
           stopOnHover={true}
           showArrows={false}
           showStatus={false}
-          swipeScrollTolerance={1}
+		  swipeScrollTolerance={1}
+		  swipeable={true}
         >
           <Lazyload height={200}>
             <img src="/static/sample/live1.jpg" />
