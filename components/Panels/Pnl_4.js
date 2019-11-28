@@ -12,7 +12,7 @@ class Pnl_4 extends React.Component {
   render() {
     return (
       <div className="homepage-content" id="vertical">
-        <h4 className="content-title">Panel horizontal_landscape_large</h4>
+        <h4 className="content-title">Panel vertical</h4>
         <Carousel
           showThumbs={false}
           showIndicators={false}
