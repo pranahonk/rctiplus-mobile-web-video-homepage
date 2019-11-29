@@ -1,11 +1,12 @@
 import Router from 'next/router';
 import ax from 'axios';
 import { AUTHENTICATE, DEAUTHENTICATE, WRONG_AUTHENTICATION } from '../types';
-import { API, VISITOR_TOKEN } from '../../config';
+import { API, DEV_API, VISITOR_TOKEN } from '../../config';
 import { setCookie, removeCookie, getCookie } from '../../utils/cookie';
 
 const axios = ax.create({
-    baseURL: API + '/api',
+    // baseURL: API + '/api',
+    baseURL: DEV_API + '/api',
     headers: {
         'Authorization': VISITOR_TOKEN
     }
@@ -15,22 +16,10 @@ const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
 console.log('AUTH ACTIONS [ACCESS TOKEN]:', accessToken);
 
-const test = () => {
-    return dispatch => {
-        axios.get('/v1/test-get-otp')
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    };
-};
-
-const login = ({ emailphone, password, deviceId = 1 }) => {
+const login = ({ emailphone, password, deviceId = '1' }) => {
     return dispatch => new Promise((resolve, reject) => {
-        axios.post('/v1/login', {
-                emailphone: emailphone,
+        axios.post('/v2/login', {
+                username: emailphone,
                 password: password,
                 device_id: deviceId,
                 platform: 'mweb'
@@ -42,7 +31,6 @@ const login = ({ emailphone, password, deviceId = 1 }) => {
             .then(response => {
                 const data = response.data;
                 if (data.status.code == 0) {
-                    console.log(data.data);
                     setCookie(tokenKey, data.data.access_token);
                     dispatch({ type: AUTHENTICATE, data: data, token: data.data.access_token });
                 }
@@ -52,6 +40,7 @@ const login = ({ emailphone, password, deviceId = 1 }) => {
                 resolve(response);
             })
             .catch(error => {
+                console.log('ERROR');
                 console.log(error);
                 reject(error);
             });
@@ -87,7 +76,6 @@ const logout = (device_id, platform = 'mweb') => {
 };
 
 export default {
-    test,
     login,
     logout
 };

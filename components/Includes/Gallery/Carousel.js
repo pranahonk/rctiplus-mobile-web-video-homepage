@@ -1,4 +1,5 @@
-import React, { Component, Children } from 'react';
+import React, { Component } from 'react';
+import Img from 'react-image';
 import { connect } from 'react-redux';
 import contentActions from '../../../redux/actions/contentActions';
 import { Carousel } from 'react-responsive-carousel';
@@ -32,12 +33,12 @@ class Crs extends Component {
         stopOnHover={true}
         showArrows={false}
         showStatus={false}
-		swipeScrollTolerance={1}
-		swipeable={true}
+        swipeScrollTolerance={1}
+        swipeable={true}
       >
         {this.state.banner.map(b => (
           <div key={b.id}>
-            <img src={this.state.meta.image_path + '593' + b.portrait_image} />
+            <Img src={[this.state.meta.image_path + '593' + b.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
             <p className="legend">{b.title}</p>
           </div>
         ))}

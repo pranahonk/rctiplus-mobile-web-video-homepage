@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import Lazyload from 'react-lazyload';
+import BottomScrollListener from 'react-bottom-scroll-listener';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
 
@@ -41,15 +41,39 @@ class Index extends React.Component {
 		super(props);
 		this.state = {
 			contents: [],
+			page: 1,
+			fetchAllowed: true,
 			meta: null,
+			resolution: 593
 		};
 	}
 
 	componentDidMount() {
-		this.props.getContents(1)
+		this.props.getContents(this.state.page)
 			.then(response => {
 				this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta });
 			});
+	}
+
+	bottomScrollFetch() {
+		const page = this.state.page + 1;
+		if (this.state.fetchAllowed) {
+			this.props.getContents(page)
+				.then(response => {
+					const homepageContents = this.state.contents;
+					if (this.props.contents.homepage_content.length > 0) {
+						homepageContents.push.apply(homepageContents, this.props.contents.homepage_content);
+						this.setState({
+							contents: homepageContents,
+							page: page
+						});
+					}
+					else {
+						this.setState({ fetchAllowed: false });
+					}
+					
+				});
+		}
 	}
 
 	render() {
@@ -59,14 +83,48 @@ class Index extends React.Component {
 		return (
 			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
 				<div>
+					<BottomScrollListener 
+						offset={20}
+						onBottom={this.bottomScrollFetch.bind(this)} />
 					<Nav />
 					<Carousel />
 					<i className="fas fa-play-circle" aria-hidden="true"></i>
 					<Stories />
-					<Panel1 />
-					<Panel2 />
-					<Panel3 />
-					<Panel4 />
+					{contents.map(content => {
+						switch (content.display_type) {
+							case 'horizontal_landscape_large':
+								return <Panel1 
+											key={content.id} 
+											title={content.title}
+											content={content.content}
+											imagePath={meta.image_path}
+											resolution={this.state.resolution}/>;
+
+							case 'horizontal_landscape':
+									return <Panel2 
+												key={content.id} 
+												title={content.title}
+												content={content.content}
+												imagePath={meta.image_path}
+												resolution={this.state.resolution}/>;
+
+							case 'horizontal':
+									return <Panel3 
+												key={content.id} 
+												title={content.title}
+												content={content.content}
+												imagePath={meta.image_path}
+												resolution={this.state.resolution}/>;
+
+							case 'vertical':
+									return <Panel4 
+											key={content.id} 
+											title={content.title} 
+											content={content.content}
+											imagePath={meta.image_path}
+											resolution={this.state.resolution}/>;
+						}
+					})}
 				</div>
 			</Layout>
 		);

@@ -8,7 +8,7 @@ const accessToken = getCookie(tokenKey);
 const axios = ax.create({
     baseURL: API + '/api',
     headers: {
-        'Authorization': VISITOR_TOKEN
+        'Authorization': accessToken ? accessToken : VISITOR_TOKEN
     }
 });
 
@@ -18,12 +18,12 @@ axios.interceptors.response.use(response => {
     // console.log(error.response);
 });
 
-const getContents = page => {
+const getContents = (page = 1, length = 20, platform = 'mweb') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/homepage?page=${page}`);
+            const response = await axios.get(`/v1/homepage?platform=${platform}&page=${page}&length=${length}`);
+            let contents = [];
             if (response.data.status.code === 0) {
-                let contents = [];
                 const data = response.data.data;
                 for (let i = 0; i < data.length; i++) {
                     let content = {}
@@ -46,7 +46,7 @@ const getContents = page => {
                 dispatch({ type: 'HOMEPAGE_CONTENT', data: contents, meta: response.data.meta });
             }
             else {
-
+                dispatch({ type: 'HOMEPAGE_CONTENT', data: contents, meta: null });
             }
 
             resolve(response);

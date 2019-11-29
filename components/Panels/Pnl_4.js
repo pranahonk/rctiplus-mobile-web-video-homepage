@@ -1,10 +1,9 @@
 import React from 'react';
+import Img from 'react-image';
 import { connect } from 'react-redux';
-import Head from 'next/head';
 import Lazyload from 'react-lazyload';
 import { Carousel } from 'react-responsive-carousel';
 import contentActions from '../../redux/actions/contentActions';
-import initialize from '../../utils/initialize';
 
 /* vertical  */
 
@@ -12,7 +11,7 @@ class Pnl_4 extends React.Component {
   render() {
     return (
       <div className="homepage-content" id="vertical">
-        <h4 className="content-title">Panel vertical</h4>
+        <h4 className="content-title">{this.props.title}</h4>
         <Carousel
           showThumbs={false}
           showIndicators={false}
@@ -20,22 +19,17 @@ class Pnl_4 extends React.Component {
           showArrows={false}
           showStatus={false}
           swipeScrollTolerance={1}
-		  swipeable={true}
+          swipeable={true}
         >
-          <Lazyload height={200}>
-            <img src="/static/sample/live1.jpg" />
-            <div className="txt-slider-panel">
-              <h5>Title top</h5>
-              <p>this is just short desc</p>
-            </div>
-          </Lazyload>
-          <Lazyload height={200} once>
-            <img src="/static/sample/live2.jpg" />
-            <div className="txt-slider-panel">
-              <h5>Title top</h5>
-              <p>this is just short desc</p>
-            </div>
-          </Lazyload>
+          {this.props.content.map(c => (
+            <Lazyload key={c.content_id} height={200}>
+              <Img src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+              <div className="txt-slider-panel">
+                <h5>{c.program_title ? c.program_title : this.props.title}</h5>
+                <p>{c.content_title}</p>
+              </div>
+            </Lazyload>
+          ))}
         </Carousel>
       </div>
     );

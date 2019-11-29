@@ -38,10 +38,6 @@ class Signin extends React.Component {
 		}
 	}
 
-	componentDidMount() {
-		this.props.test();
-	}
-
 	handleSubmit(e) {
 		e.preventDefault();
 		const data = {

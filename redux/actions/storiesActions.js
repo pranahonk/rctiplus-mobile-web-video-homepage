@@ -15,7 +15,6 @@ const getStories = (page = 1, length = 10) => {
             const response = await axios.get(`/v1/stories?page=${page}&length=${length}`);
             if (response.data.status.code === 0) {
                 const data = response.data.data;
-                console.log(data);
                 dispatch({ 
                     type: 'STORIES', 
                     data: data,
