@@ -1,0 +1,27 @@
+.play-btn {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 100%;
+    position: absolute;
+}
+
+.play-btn-1 {
+    @extend .play-btn;
+    top: 27%;
+    left: 45%;
+    font-size: 2.5rem !important;
+}
+
+.play-btn-2 {
+    @extend .play-btn;
+    top: 10%;
+    left: 40%;
+    font-size: 24px;
+}
+
+.play-btn-4 {
+    @extend .play-btn;
+    top: 25%;
+    left: 45%;
+    font-size: 2.5rem !important;
+}

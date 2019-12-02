@@ -4,13 +4,16 @@ import { connect } from 'react-redux';
 import Lazyload from 'react-lazyload';
 import { Carousel } from 'react-responsive-carousel';
 import contentActions from '../../redux/actions/contentActions';
+import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
+
+import '../../assets/scss/components/panel.scss';
 
 /* horizontal_landscape  */
 
 class Pnl_1 extends React.Component {
   render() {
     return (
-      <div className="homepage-content" id="pnl_horizontal_landscape">
+      <div className="homepage-content" id="pnl_horizontal_landscape" style={{ marginBottom: 100 }}>
         <h4 className="content-title">{this.props.title}</h4>
         <Carousel
           showThumbs={false}
@@ -23,9 +26,13 @@ class Pnl_1 extends React.Component {
         >
           {this.props.content.map(c => (
             <Lazyload key={c.content_id} height={100} className="pnl_2">
-              <Img src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+              <div>
+                <Img src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+                <PlayCircleOutlineIcon className="play-btn-2"/>
+              </div>
+              
               <div className="txt-slider-panel">
-                <h5>{c.program_title ? c.program_title : this.props.title}</h5>
+                <p><strong>{c.program_title ? c.program_title : this.props.title}</strong></p>
                 <p>{c.content_title}</p>
               </div>
             </Lazyload>

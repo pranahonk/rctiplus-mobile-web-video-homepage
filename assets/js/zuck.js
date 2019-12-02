@@ -3,7 +3,6 @@
     https://github.com/ramon82/zuck.js
     MIT License
 */
-
 module.exports = (window => {
     /* Utilities */
     const query = function (qs) {
@@ -1138,8 +1137,12 @@ module.exports = (window => {
           setDuration();
           video.addEventListener('loadedmetadata', setDuration);
           zuck.internalData['currentVideoElement'] = video;
-  
-          video.play();
+          
+          const isPlaying = video.currentTime > 0 && !video.paused && !video.ended && video.readyState > 2;
+
+          if (!isPlaying) {
+            video.play();
+          }
   
           if (unmute && unmute.target) {
             unmuteVideoItem(video, storyViewer);
@@ -1162,11 +1165,19 @@ module.exports = (window => {
         video.muted = false;
         video.volume = 1.0;
         video.removeAttribute('muted');
-        video.play();
+        let isPlaying = video.currentTime > 0 && !video.paused && !video.ended && video.readyState > 2;
+
+        if (!isPlaying) {
+          video.play();
+        }
+        
   
         if (video.paused) {
           video.muted = true;
-          video.play();
+          isPlaying = video.currentTime > 0 && !video.paused && !video.ended && video.readyState > 2;
+          if (!isPlaying) {
+            video.play();
+          }
         }
   
         if (storyViewer) {

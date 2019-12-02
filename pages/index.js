@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import BottomScrollListener from 'react-bottom-scroll-listener';
+import LoadingBar from 'react-top-loading-bar';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
 
@@ -58,6 +59,7 @@ class Index extends React.Component {
 	bottomScrollFetch() {
 		const page = this.state.page + 1;
 		if (this.state.fetchAllowed) {
+			this.LoadingBar.continuousStart();
 			this.props.getContents(page)
 				.then(response => {
 					const homepageContents = this.state.contents;
@@ -65,20 +67,26 @@ class Index extends React.Component {
 						homepageContents.push.apply(homepageContents, this.props.contents.homepage_content);
 						this.setState({
 							contents: homepageContents,
-							page: page
+							page: page,
+							fetchAllowed: page != this.state.meta.pagination.total_page
 						});
+						
 					}
 					else {
 						this.setState({ fetchAllowed: false });
 					}
-					
+					this.LoadingBar.complete();
+				})
+				.catch(error => {
+					this.LoadingBar.complete();
+					console.log(error);
 				});
 		}
 	}
 
 	render() {
 		const contents = this.state.contents;
-		const meta = this.state.meta;
+		const meta = this.state.meta || {};
 
 		return (
 			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
@@ -86,9 +94,13 @@ class Index extends React.Component {
 					<BottomScrollListener 
 						offset={20}
 						onBottom={this.bottomScrollFetch.bind(this)} />
+					<LoadingBar
+						progress={0}
+						height={3}
+						color='#fff'
+						onRef={ref => (this.LoadingBar = ref)}/>
 					<Nav />
 					<Carousel />
-					<i className="fas fa-play-circle" aria-hidden="true"></i>
 					<Stories />
 					{contents.map(content => {
 						switch (content.display_type) {

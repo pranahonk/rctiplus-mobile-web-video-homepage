@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import actions from '../redux/actions';
 import initialize from '../utils/initialize';
 import { getCookie } from '../utils/cookie';
+import LoadingBar from 'react-top-loading-bar';
 
 //load default layout
 import Layout from '../components/Layouts/Default';
@@ -29,13 +30,18 @@ class Signin extends React.Component {
 			emailphone: 'user.test@rctiplus.com',
 			password: 'user.123',
 			is_password_invalid: false,
-			view_raw: false
+			view_raw: false,
+			progress_bar: 30
 		};
 
 		const token = getCookie('ACCESS_TOKEN');
 		if (token) {
 			Router.push('/');
 		}
+	}
+
+	componentDidMount() {
+		this.LoadingBar.complete();
 	}
 
 	handleSubmit(e) {
@@ -63,6 +69,11 @@ class Signin extends React.Component {
 	render() {
 		return (
 			<Layout title="Sign In">
+				<LoadingBar
+					progress={this.state.progress_bar}
+					height={3}
+					color='#fff'
+					onRef={ref => (this.LoadingBar = ref)}/>
 				<NavBack />
 				<div className="wrapper-content">
 					<div className="login-box">

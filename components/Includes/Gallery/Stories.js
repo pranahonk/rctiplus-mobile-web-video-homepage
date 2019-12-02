@@ -18,7 +18,7 @@ class Stories extends React.Component {
     }
 
     componentDidMount() {
-        const Zuck = require('zuck.js');
+        const Zuck = require('../../../assets/js/zuck');
         this.props.getStories().then(response => {
             const stories = this.props.stories.data;
             let timelines = [];
