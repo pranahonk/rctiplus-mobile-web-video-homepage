@@ -5,6 +5,8 @@ import LoadingBar from 'react-top-loading-bar';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
 
+import ReactJWPlayer from 'react-jw-player';
+
 //load default layout
 import Layout from '../components/Layouts/Default';
 
@@ -102,6 +104,10 @@ class Index extends React.Component {
 					<Nav />
 					<Carousel />
 					<Stories />
+					{/* <ReactJWPlayer 
+						playerId="example-id" 
+						playerScript="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"
+						playlist="https://cdn.jwplayer.com/v2/playlists/ZTs6tMfb"/> */}
 					{contents.map(content => {
 						switch (content.display_type) {
 							case 'horizontal_landscape_large':

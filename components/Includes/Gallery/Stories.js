@@ -82,7 +82,17 @@ class Stories extends React.Component {
                             }, () => {
                                 callback();
                             });
-                        }.bind(this)
+                        }.bind(this),
+                        onOpen: function(storyId, callback) {
+                            console.log('OPEN');
+                            document.body.style.overflow = 'hidden'; // disable scroll when opening a story
+                            callback();
+                        },
+                        onClose: function(storyId, callback) {
+                            console.log('CLOSED');
+                            document.body.style.overflow = 'unset'; // enable scroll after closing the story
+                            callback();
+                        }
                     }
                 });
             });

@@ -143,7 +143,7 @@ module.exports = (window => {
     
         if (option('cubeEffect')) {
           const scaling = to3d === 0 ? 'scale(0.95)' : 'scale(0.930,0.930)';
-    
+
           setVendorVariable(
             query('#zuck-modal-content').style,
             'Transform',
