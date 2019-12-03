@@ -107,7 +107,7 @@ class Signin extends React.Component {
                 				</a>
 							</p>
 							<Button className="btn-next">Login</Button>
-							<p className="text-center">
+							<p className="text-center padding-top-10">
 								Dont have an account?
                 				<a href="/signup" className="text-red fnt-12">
 									Sign up

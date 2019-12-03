@@ -12,16 +12,34 @@ $primary-btn-border-color-login: #DB2828;
 $text-placeholder-color-login: #a8a8a8;
 
 .navbar {
-	position: fixed;
-	background-color: $primary-bg-color;
+    position: static;
+    background-color: $primary-bg-color;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-	padding: 0.5rem 1rem;
-	z-index: 999;
+    padding: 0.5rem 1rem;
+    z-index: 999;
 }
-
+.topDownload{
+	background-color: #fff;
+	color:#000;
+	padding:10px;
+	text-align: center;
+}
+.logo-topDownload{
+	width:15%;
+	margin-top:-5px;
+	float:left;
+}
+.topDownload-txt{
+	float:left;
+	width:70%;
+	font-size: 12px;
+	text-align: left;
+	padding-left:5px;
+	margin-top: -5px;
+}
 body {
     background-color: $primary-bg-color;
     font-family: $primary-font-family;
@@ -39,7 +57,10 @@ body {
     float: left;
     width: 45%;
 }
-
+.top-link {
+    float: left;
+    width: 100%;
+}
 .right-top-link {
     float: right;
     width: 45%;
@@ -57,7 +78,7 @@ body {
 }
 
 .wrapper-content {
-    margin-top: 12%;
+    padding-top: 5%;
     z-index: 99999;
     color: #fff;
     margin-left: 1%;
@@ -69,7 +90,7 @@ body {
 }
 
 .btn-next {
-    width: 100%;
+    width: 80%;
     background-color: #fa262f;
     border: 1px solid transparent;
     border-radius: 12px;
@@ -137,6 +158,22 @@ body {
 
 .el-green {
     color: green;
+}
+
+.padding-top-10 {
+    padding-top: 10px;
+}
+
+.padding-5 {
+    padding: 5px;
+}
+
+.padding-10 {
+    padding: 10px;
+}
+
+.border-rounder-5 {
+    border-radius: 5px
 }
 
 .text-red {
@@ -265,4 +302,92 @@ h5 {
     font-size: 12px;
     text-align: left;
     padding-left: 10px;
+}
+
+.react-datepicker-wrapper {
+    display: inline-block;
+    padding: 0;
+    border: 0;
+	width:100%
+}
+.birthdate {
+    border-radius: 5px;
+    padding: 5px;
+	color: white;
+	background: transparent;
+	width:100%;
+}
+.btn-next-position{
+	width:100%;
+	text-align: center;
+	margin-bottom:10%;
+}
+.inpt-form{
+	
+    background-color: transparent;
+	color:#fff;
+}
+.inpt-form-token-code{
+	width: 18%;
+	margin:14px;
+	text-align: center;
+	font-size: 52px;
+    display: inline;
+    background-color: transparent;
+    border-color: transparent;
+	border-bottom: solid;
+	color:#fff;
+}
+.lbl_rsndcode{
+	width:100%;
+	margin:0px auto;
+	text-align:center;
+	color:#fff;
+}
+.time-resendcode{
+	color:red;
+}
+.header-nav-verif{
+	color: #fff;
+	width: 80%;
+	float:right;
+	text-align: center;
+	position: static;
+	top:10px;
+}
+.imgSuccess{
+	padding:10px;
+	margin:10px;
+	width:100%;
+	text-align: center;
+}
+.icn_success{
+	padding-top:100px;
+	padding-bottom: 100px;
+}
+.choose_interest{
+	color:#fff;
+}
+.txt-content-interest{
+	color:#fff;
+	font-size: 12px ;
+	padding:30px;
+}
+.interest-list{
+	padding:20px;
+	color:#fff;
+}
+.ls-inter{
+	width:100%;
+}
+.list-detail-interest{
+	text-align: center;
+	margin:0px auto;
+	width:100%;
+}
+.btn-outline-secondary{
+	margin-left:22px;
+	margin-right:12px;
+	margin-bottom:10px;
+	width:39%;
 }
