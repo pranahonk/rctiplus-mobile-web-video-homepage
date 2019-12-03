@@ -9,7 +9,7 @@ import Layout from '../components/Layouts/Default';
 //load navbar default
 import NavBack from '../components/Includes/Navbar/NavBack';
 
-//load tab signup 
+//load tab signup
 import TabSignup from '../components/Includes/Tab/TabSignup';
 
 //load reactstrap components
@@ -47,45 +47,64 @@ class Signup extends React.Component {
       'register',
     );
   }
+  state = {
+    startDate: new Date(),
+  };
 
+  handleChange = date => {
+    this.setState({
+      startDate: date,
+    });
+  };
   render() {
     return (
       <Layout title="Sign Up">
         <NavBack />
-        <div className="login-box">
-          <Form>
-            <TabSignup />
-            <FormGroup>
-              <Label for="password">Password</Label>
-              <Input
-                className="inpt-form"
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Enter password"
-              />
-            </FormGroup>
-			<FormGroup>
-              <Label for="password">Re-Type Password</Label>
-              <Input
-                className="inpt-form"
-                type="password"
-                name="password2"
-                id="password2"
-                placeholder="Re-Type Password"
-              />
-            </FormGroup>
-            <Button className="btn-next">NEXT</Button>
-			<p className="text-center fnt-10 el-margin-20 el-white">By clicking the Sign Up button, you agree to our 
-			<a href="/terms-&amp;-conditions" className="text-red fnt-11">Terms &amp; Conditions</a> and <a href="/privacy-policy" className="text-red fnt-11">Privacy Policy</a></p>
-            <p className="text-center fnt-12">
-              Have an account ? 
-              <a href="/signin" className="text-red">
-                Sign In 
-              </a>
-              here
-            </p>
-          </Form>
+        <div className="wrapper-content">
+          <div className="login-box">
+            <h3>Sign Up</h3>
+            <Form>
+              <TabSignup />
+              <FormGroup>
+                <Label for="password">Password</Label>
+                <Input
+                  className="inpt-form"
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="Enter password"
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label for="password">Re-Type Password</Label>
+                <Input
+                  className="inpt-form"
+                  type="password"
+                  name="password2"
+                  id="password2"
+                  placeholder="Re-Type Password"
+                />
+              </FormGroup>
+              <Button className="btn-next">NEXT</Button>
+              <p className="text-center fnt-10 el-margin-20 el-white">
+                By clicking the Sign Up button, you agree to our
+                <a href="/terms-&amp;-conditions" className="text-red fnt-11">
+                  Terms &amp; Conditions
+                </a>
+                and
+                <a href="/privacy-policy" className="text-red fnt-11">
+                  Privacy Policy
+                </a>
+              </p>
+              <p className="text-center fnt-12">
+                Have an account ?
+                <a href="/signin" className="text-red">
+                  Sign In
+                </a>
+                here
+              </p>
+            </Form>
+          </div>
         </div>
       </Layout>
     );

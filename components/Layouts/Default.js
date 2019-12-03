@@ -6,7 +6,7 @@ import { Offline } from "react-detect-offline";
 import '../../assets/scss/custom.scss';
 import '../../assets/scss/global.scss';
 
-//load redux 
+//load redux
 import { connect } from 'react-redux';
 import actions from '../../redux/actions';
 
@@ -75,7 +75,7 @@ const Default = ({ children, title }) => {
 					<div className="col-md-12 col-xs-12">No connection! Check your network or find a better signal!</div>
 				</div>
 			
-			<div className="wrapper has-text-centered">{children}</div>
+			<div id="wr" className="wrapper has-text-centered">{children}</div>
 
 			<Footer />
 		</div>

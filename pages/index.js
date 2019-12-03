@@ -10,6 +10,9 @@ import ReactJWPlayer from 'react-jw-player';
 //load default layout
 import Layout from '../components/Layouts/Default';
 
+//load download app el
+import NavDownloadApp from '../components/Includes/Navbar/NavDownloadApp';
+
 //load navbar default
 import Nav from '../components/Includes/Navbar/NavDefault';
 
@@ -101,6 +104,7 @@ class Index extends React.Component {
 						height={3}
 						color='#fff'
 						onRef={ref => (this.LoadingBar = ref)}/>
+					<NavDownloadApp />
 					<Nav />
 					<Carousel />
 					<Stories />
