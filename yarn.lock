@@ -1680,7 +1680,7 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zeit/next-css@1.0.1":
+"@zeit/next-css@1.0.1", "@zeit/next-css@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@zeit/next-css/-/next-css-1.0.1.tgz#4f784e841e7ca1b21b3468a902e2c1fa95a3e75c"
   integrity sha512-yfHPRy/ne/5SddVClsoy+fpU7e0Cs1gkWA67/wm2uIu+9rznF45yQLxHEt5dPGF3h6IiIh7ZtIgA8VV8YKq87A==
@@ -8377,7 +8377,7 @@ prop-types-exact@1.2.0, prop-types-exact@^1.2.0:
     object.assign "^4.1.0"
     reflect.ownkeys "^0.2.0"
 
-prop-types@15.7.2, prop-types@^15.5.4, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@15.7.2, prop-types@^15.5.4, prop-types@^15.5.8, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -8575,6 +8575,14 @@ react-bottom-scroll-listener@^3.0.0:
   dependencies:
     lodash.debounce "^4.0.8"
 
+react-countdown-now@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/react-countdown-now/-/react-countdown-now-2.1.2.tgz#b93d153fbb7a8d359beb32ecbf1de29d15f026c7"
+  integrity sha512-BgRnsxV2vnvyJAefDBigTX+ngX6eGd2xl6DIFdZPIZkbx0mzxlMEeoEQG01JyeHDjqaXFUpIonIbx1yYyaMwzg==
+  dependencies:
+    lodash.isequal "^4.5.0"
+    prop-types "^15.7.2"
+
 react-datepicker@^2.10.1:
   version "2.10.1"
   resolved "https://registry.yarnpkg.com/react-datepicker/-/react-datepicker-2.10.1.tgz#5db917a8e10af8b311715f4bdae8b8dfe64f9357"
@@ -8662,13 +8670,6 @@ react-mobile-datepicker@^4.0.2:
   resolved "https://registry.yarnpkg.com/react-mobile-datepicker/-/react-mobile-datepicker-4.0.2.tgz#b2574405088dfbeb17d257d7e743bb5c798c2b1e"
   integrity sha512-B83IF3fCcq7U2Q/ZX83PUfcdaHhXpTgYXqkZW1AffOSappDtKYd7Tc1IgSBCBnON8UghWdFbj0xtnkofZsLzzw==
 
-react-mobile-picker@^0.1.12:
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/react-mobile-picker/-/react-mobile-picker-0.1.12.tgz#424cdf324cd71e11585aecde91ead7845c64387c"
-  integrity sha512-YRv96yUhDbOLLdWqYf/5tikZTPMqBDZHiDKFPjafRp7tpYhZh3rODA9SrAmsHGtZbaWYnE1rlE1Knf5pvKEMJA==
-  dependencies:
-    prop-types "^15.6.0"
-
 react-onclickoutside@^6.9.0:
   version "6.9.0"
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.9.0.tgz#a54bc317ae8cf6131a5d78acea55a11067f37a1f"
@@ -8750,6 +8751,11 @@ react-transition-group@^4.3.0:
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
+
+react-verification-code-input@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/react-verification-code-input/-/react-verification-code-input-1.2.2.tgz#4b868d486c8502d5ae0250c160e8570c2057932a"
+  integrity sha512-DZcywqkqWR4jytSo2yZo8geI66i7sqzf/XSiYSfxDx0OgdYPE1wo56CoSiGeWHcnRv6gMMQ5/6rC0g78bxN3hA==
 
 react@16.8.1:
   version "16.8.1"
@@ -9898,6 +9904,11 @@ supports-color@^7.1.0:
   integrity sha512-oRSIpR8pxT1Wr2FquTNnGet79b3BWljqOuoW/h4oBhxJ/HUbX5nX6JSruTkvXDCFMwDPvsaTTbvMLKZWSy0R5g==
   dependencies:
     has-flag "^4.0.0"
+
+sweetalert2@^9.4.3:
+  version "9.4.3"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-9.4.3.tgz#209e0561a5971deb20cc33dc45a77c1b6d6d79b2"
+  integrity sha512-edh+30p2tlE7CyNsTDVUb6SGO/c9wuCF4qiketagLvsK/xcesrSPvF8u9Ljk83HX26CfOicKWulmxz+Z+MAWVw==
 
 symbol-observable@1.0.1:
   version "1.0.1"

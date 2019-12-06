@@ -1,9 +1,14 @@
 const withOffline = require('next-offline');
 const withSass = require('@zeit/next-sass');
+const withCSS = require('@zeit/next-css');
 
-const nextConfig = {
+let nextConfig = {
   // next-offline options:
   dontAutoRegisterSw: true, // since we want runtime registration
 };
 
-module.exports = withSass(withOffline(nextConfig));
+nextConfig = withOffline(nextConfig);
+nextConfig = withSass(nextConfig);
+nextConfig = withCSS(nextConfig);
+
+module.exports = nextConfig;

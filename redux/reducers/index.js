@@ -9,18 +9,20 @@ import historyReducer from './historyReducer';
 import searchReducer from './searchReducer';
 import quizReducer from './quizReducer';
 import liveAndChatReducer from './liveAndChatReducer';
+import notificationReducer from './notificationReducer';
 
 const rootReducer = combineReducers({
     authentication: authReducer,
     contents: contentReducer,
     stories: storiesReducer,
-    register: registerReducer,
+    registration: registerReducer,
     user: userReducer,
     bookmarks: bookmarkReducer,
     histories: historyReducer,
     searches: searchReducer,
     quizzes: quizReducer,
-    chats: liveAndChatReducer
+    chats: liveAndChatReducer,
+    notification: notificationReducer
 });
 
 export default rootReducer;

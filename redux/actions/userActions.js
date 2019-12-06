@@ -1,16 +1,17 @@
 import ax from 'axios';
-import { API, VISITOR_TOKEN } from '../../config';
+import { API, DEV_API, VISITOR_TOKEN } from '../../config';
 import { getCookie } from '../../utils/cookie';
-
-const axios = ax.create({
-    baseURL: API + '/api',
-    headers: {
-        'Authorization': VISITOR_TOKEN
-    }
-});
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
+
+const axios = ax.create({
+    // baseURL: API + '/api',
+    baseURL: DEV_API + '/api',
+    headers: {
+        'Authorization': accessToken == undefined ? VISITOR_TOKEN : accessToken
+    }
+});
 
 const updateUserProfile = (username, dob, gender, location) => {
     return dispatch => new Promise(async (resolve, reject) => {
@@ -68,7 +69,31 @@ const getUserData = () => {
     });
 }
 
+const getInterests = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/user/interest`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'INTERESTS',
+                    data: response.data.data,
+                    meta: response.data.meta,
+                    status: response.data.status
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 export default {
     updateUserProfile,
-    getUserData
+    getUserData,
+    getInterests
 };

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 //load reactstrap
 import { Navbar, NavbarBrand } from 'reactstrap';
@@ -7,7 +6,7 @@ import { Navbar, NavbarBrand } from 'reactstrap';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import StatusNotification from './StatusNotification';
 
-class NavBackInterest extends Component {
+class AppNavbar extends Component {
 	render() {
 		return (
 			<div className="nav-fixed-top">
@@ -20,7 +19,7 @@ class NavBackInterest extends Component {
 						</div>
 					</div>
 					<div className="header-nav-verif">
-						<p>Choose Interest</p>
+						<p>{this.props.title}</p>
 					</div>
 				</Navbar>
 				<StatusNotification/>
@@ -28,4 +27,4 @@ class NavBackInterest extends Component {
 		);
 	}
 }
-export default NavBackInterest;
+export default AppNavbar;

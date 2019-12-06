@@ -1,7 +1,14 @@
 const initialState = {
     data: null,
     meta: null,
-    status: null
+    status: null,
+    otp: null,
+    username: null,
+    password: null,
+    fullname: null,
+    dob: null,
+    gender: null,
+    device_id: null
 };
 
 export default (state = initialState, action) => {
@@ -12,6 +19,8 @@ export default (state = initialState, action) => {
         case 'FORGOT_PASSWORD':
         case 'CREATE_NEW_PASSWORD':
             return Object.assign({}, state, { status: action.status });
+        case 'USERNAME':
+            return Object.assign({}, state, { username: action.username });
         default:
             return state;
     }

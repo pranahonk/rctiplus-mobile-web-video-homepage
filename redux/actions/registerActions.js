@@ -8,6 +8,20 @@ const axios = ax.create({
     }
 });
 
+const setUsername = username => {
+    return dispatch => dispatch({
+        type: 'USERNAME',
+        username: username
+    });
+};
+
+const setPassword = password => {
+    return dispatch => dispatch({
+        type: 'PASSWORD',
+        password: password
+    });
+};
+
 const register = ({ emailphone, password, username, otp, interest = [1, 3], device_id, platform = 'web' }) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -198,5 +212,7 @@ export default {
     verifyOtp,
     checkUser,
     forgotPassword,
-    createNewPassword
+    createNewPassword,
+    setUsername,
+    setPassword
 };

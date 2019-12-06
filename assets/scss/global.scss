@@ -11,6 +11,10 @@ $primary-btn-border-color-login: #DB2828;
 
 $text-placeholder-color-login: #a8a8a8;
 
+.text-default-rcti {
+    color: $primary-text-color;
+}
+
 .navbar {
     position: static;
     background-color: $primary-bg-color;
@@ -47,6 +51,7 @@ body {
 
 .logo-top-wrapper {
     width: 25%;
+    margin-top: -10px;
 }
 
 .logo-top {
@@ -57,10 +62,7 @@ body {
     float: left;
     width: 45%;
 }
-.top-link {
-    float: left;
-    width: 100%;
-}
+
 .right-top-link {
     float: right;
     width: 45%;
@@ -90,12 +92,30 @@ body {
 }
 
 .btn-next {
-    width: 80%;
-    background-color: #fa262f;
+    width: 100%;
+    background-color: #fa262f !important;
     border: 1px solid transparent;
     border-radius: 12px;
 }
 
+.btn-primary-edit {
+    border-radius: 0;
+    color: white;
+    border-radius: 6px;
+    padding: 3px;
+}
+
+.btn-link-edit {
+    border: none;
+}
+
+.btn-outline {
+    background-color: transparent !important;
+    color: #0079ff !important;
+    font-size: 0.875rem !important;
+    padding: 0.25rem 0.5rem;
+    margin: 10px;
+}
 
 /*
 * font - size custom
@@ -153,7 +173,7 @@ body {
 }
 
 .el-red {
-    color: red;
+    color: #DB2828;
 }
 
 .el-green {
@@ -296,7 +316,7 @@ h5 {
 
 .txt-slider-panel {
     color: #fff;
-    border-left: 1px solid red;
+    border-left: 1px solid #DB2828;
     border-left-width: 2px;
     margin: 10px;
     font-size: 12px;
@@ -345,16 +365,21 @@ h5 {
 	color:#fff;
 }
 .time-resendcode{
-	color:red;
+	color:#DB2828 !important;
 }
 .header-nav-verif{
 	color: #fff;
 	width: 80%;
-	float:right;
+	float: right;
 	text-align: center;
 	position: static;
-	top:10px;
 }
+
+.header-nav-verif p {
+    margin-top: 10px;
+    margin-left: -50px;
+}
+
 .imgSuccess{
 	padding:10px;
 	margin:10px;
@@ -421,4 +446,22 @@ h5 {
 	margin-right:12px;
 	margin-bottom:10px;
 	width:39%;
+}
+
+.nav-container {
+    height: 55px;
+    z-index: 1030 !important;
+}
+
+.nav-shadow {
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+
+.nav-fixed-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
 }

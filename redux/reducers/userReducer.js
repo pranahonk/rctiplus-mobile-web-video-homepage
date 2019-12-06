@@ -10,6 +10,8 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { status: action.status });
         case 'USER_DATA':
             return Object.assign({}, state, { data: action.data, meta: action.meta });
+        case 'INTERESTS':
+            return Object.assign({}, state, { data: action.data, meta: action.meta, status: action.status });
         default:
             return state;
     }

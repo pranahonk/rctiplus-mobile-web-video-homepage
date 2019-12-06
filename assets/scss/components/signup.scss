@@ -2,7 +2,7 @@
     margin-bottom: -1px;
     width: 50%;
     text-align: center;
-    color: #fff important;
+    color: #fff !important;
 }
 .frmInput1 {
     padding-top: 40px;
@@ -14,13 +14,69 @@
     margin-bottom: -1px;
     width: 50%;
     text-align: center;
-	color: #fff !important;
+    color: #495057 !important;
 }
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
-    color: #495057;
+    color: #fff;
     background-color:transparent; 
-	border-bottom: 1px solid red
+	border-bottom: 1px solid #DB2828
 }
 .nav-tabs .nav-link {
     border: 1px none transparent;
+}
+
+.addon {
+    padding: 3px;
+    border-width: 0.5px;
+    border-color: #495057;
+}
+
+.addon-left {
+    @extend .addon;
+    border-right-color: transparent;
+}
+
+.addon-right {
+    @extend .addon;
+    border-left-color: transparent;
+}
+
+.addon-left-input {
+    border-left-color: transparent !important;
+}
+
+.addon-right-input {
+    border-right-color: transparent !important;
+}
+
+.otp-input {
+    text-align: center !important;
+    width: 100% !important;
+    margin-left: -5px;
+}
+
+.otp-input input {
+    margin: 5px;
+    border-radius: 0 !important;
+    border-color: transparent !important;
+    background-color: #282828 !important;
+    border-bottom-color: white !important;
+    color: white !important;
+    caret-color: white !important;
+}
+
+.block-btn {
+    width: 100%;
+}
+
+.swal2-title {
+    font-size: 16px !important;
+    color: black !important;
+}
+
+.swal2-content {
+    font-size: 14px !important;
+    color: black !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
 }

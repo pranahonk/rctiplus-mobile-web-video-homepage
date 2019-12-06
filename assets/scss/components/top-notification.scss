@@ -1,0 +1,23 @@
+.top-notification-container {
+    width: 100%;
+    height: 20px;
+    z-index: -10;
+    position: relative;
+    color: #eee;
+    font-size: 11px;
+    text-align: center;
+    padding: 3px;
+    transition: transform 1s;
+}
+
+.notification-success {
+    background-color: #4e8d05;
+}
+
+.notification-danger {
+    background-color: #DB2828;
+}
+
+.notification-hide {
+    transform: translateY(-20px);
+}
