@@ -37,6 +37,9 @@ import Panel4 from '../components/Panels/Pnl_4';
 //load home page scss
 import '../assets/scss/components/homepage.scss';
 
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
+
 class Index extends React.Component {
 
 	static async getInitialProps(ctx) {
@@ -55,10 +58,33 @@ class Index extends React.Component {
 	}
 
 	componentDidMount() {
+		Swal.fire({
+			title: 'OTP Limits',
+			text: 'Carefully check your Email for verification code. You only have 3 attempts',
+			showCancelButton: true,
+			confirmButtonText: 'Not Now',
+			cancelButtonText: 'Request New OTP',
+			buttonsStyling: false,
+			customClass: {
+				confirmButton: 'btn-next block-btn btn-primary-edit',
+				cancelButton: 'btn-outline block-btn btn-link-edit',
+				header: 'alert-header'
+			},
+			width: '85%'
+		})
+		.then(result => {
+			// not now clicked
+			if (!result.value) {
+				console.log('request new otp');
+			}
+		});
+		
 		this.props.getContents(this.state.page)
 			.then(response => {
 				this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta });
 			});
+
+		
 	}
 
 	bottomScrollFetch() {

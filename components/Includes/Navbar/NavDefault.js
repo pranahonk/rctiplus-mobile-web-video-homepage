@@ -55,17 +55,16 @@ class NavbarDef extends Component {
 					</div>
 					<div className="right-top-link">
 						<div className="btn-link-top-nav">
-							<NavbarBrand style={{ color: 'white' }} href="/explore">
-								<SearchIcon/>
-							</NavbarBrand>
 							{this.state.token ? (
-								<NavbarBrand style={{ color: 'white' }} onClick={this.signOut.bind(this)} href="#">
+								<NavbarBrand style={{ color: 'white', fontSize: 13 }} onClick={this.signOut.bind(this)} href="#">
 									Sign Out
 								</NavbarBrand>
 							) : (
-								<NavbarBrand style={{ color: 'white' }} href="/signin">Sign In</NavbarBrand>
+								<NavbarBrand style={{ color: 'white', fontSize: 13 }} href="/signin">Sign In</NavbarBrand>
 							)}
-							
+							<NavbarBrand style={{ color: 'white' }} href="/explore">
+								<SearchIcon style={{ fontSize: 20 }}/>
+							</NavbarBrand>
 						</div>
 					</div>
 				</Navbar>
