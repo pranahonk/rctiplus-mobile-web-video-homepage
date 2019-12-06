@@ -6,28 +6,28 @@ import Layout from '../../../components/Layouts/Default';
 //load navbar default
 import AppNavbar from '../../../components/Includes/Navbar';
 
+import Checkmark from '../../../components/Includes/Common/Checkmark';
+
 //load reactstrap components
 import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
 
 export default class Step1 extends Component {
 	render() {
 		return (
-			<Layout title="Register Step 1">
-				<AppNavbar title="TEST" />
+			<Layout title="Registration Completed">
+				<AppNavbar title="Verification" />
 				<div className="wrapper-content">
-					<div className="login-box">
-						<div className="imgSuccess">
-							<h3>
-								Thank You For <br /> Registration
-							</h3>
-							<img className="icn_success" src="/static/icons/success.png" />
-						</div>
+					<div style={{ textAlign: 'center', marginTop: 65 }}>
+						<h4 style={{ marginBottom: 45 }}>
+							<strong>Thank You</strong><br />
+							for Registration.
+						</h4>
+						<Checkmark />
 					</div>
+					<FormGroup className="btn-next-position" style={{ marginTop: 50, width: '80%', margin: '50px auto' }}>
+						<Button className="btn-next">Done</Button>
+					</FormGroup>
 				</div>
-
-				<FormGroup className="btn-next-position">
-					<Button className="btn-next">NEXT</Button>
-				</FormGroup>
 			</Layout>
 		);
 	}

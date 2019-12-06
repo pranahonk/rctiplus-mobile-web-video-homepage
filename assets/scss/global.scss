@@ -50,8 +50,8 @@ body {
 }
 
 .logo-top-wrapper {
-    width: 25%;
-    margin-top: -10px;
+    width: 35%;
+    margin-top: -5px;
 }
 
 .logo-top {
@@ -380,17 +380,6 @@ h5 {
     margin-left: -50px;
 }
 
-.imgSuccess{
-	padding:10px;
-	margin:10px;
-	font-size:11px;
-	text-align: left;
-    padding-left:10px;
-    overflow-y: hidden;
-    height: 70px;
-    line-height: 1;
-}
-
 .no-bg {
     background-color: transparent;
     border-left: none;
@@ -451,6 +440,7 @@ h5 {
 .nav-container {
     height: 55px;
     z-index: 1030 !important;
+    transition: background 0.3s;
 }
 
 .nav-shadow {
@@ -464,4 +454,5 @@ h5 {
     top: 0;
     left: 0;
     right: 0;
+    z-index: 1030;
 }

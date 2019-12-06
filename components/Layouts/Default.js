@@ -75,7 +75,7 @@ const Default = ({ children, title }) => {
 					<div className="col-md-12 col-xs-12">No connection! Check your network or find a better signal!</div>
 				</div> */}
 			
-			<div style={{ overflowX: 'hidden' }} id="wr" className="wrapper has-text-centered">{children}</div>
+			<div style={{ overflowX: 'hidden', marginTop: -5 }} id="wr" className="wrapper has-text-centered">{children}</div>
 
 			<Footer />
 		</div>

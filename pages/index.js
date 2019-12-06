@@ -104,7 +104,7 @@ class Index extends React.Component {
 						height={3}
 						color='#fff'
 						onRef={ref => (this.LoadingBar = ref)}/>
-					<NavDownloadApp />
+					{/* <NavDownloadApp /> */}
 					<Nav />
 					<Carousel />
 					<Stories />

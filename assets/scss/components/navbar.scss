@@ -14,5 +14,14 @@
     margin-bottom: -1px;
     width: 50%;
     text-align: center;
-    color: #fff important;
+    color: #fff !important;
+}
+
+.nav-home-container {
+    color: #fff !important;
+}
+
+.nav-transparent {
+    background: linear-gradient(rgba(0, 0, 0, 0.54) 0px, rgba(0, 0, 0, 0.03) 65%, rgba(27, 27, 28, 0) 69%, rgba(235, 233, 249, 0)) !important;
+    box-shadow: none;
 }

@@ -8,53 +8,70 @@ import '../../../assets/scss/components/navbar.scss';
 //load reactstrap
 import { Navbar, NavbarBrand } from 'reactstrap';
 
+import StatusNotification from './StatusNotification';
+import SearchIcon from '@material-ui/icons/Search';
+
 class NavbarDef extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      token: getCookie('ACCESS_TOKEN'),
-    };
-  }
+	constructor(props) {
+		super(props);
+		this.state = {
+			token: getCookie('ACCESS_TOKEN'),
+			is_top: true
+		};
+	}
 
-  signOut() {
-    const deviceId = 1;
-    console.log(getCookie('ACCESS_TOKEN'));
-    this.props
-      .logout(deviceId)
-      .then(() => {
-        Router.push('/signin');
-      })
-      .catch(error => {
-        removeCookie('ACCESS_TOKEN');
-      });
-  }
+	signOut() {
+		const deviceId = 1;
+		console.log(getCookie('ACCESS_TOKEN'));
+		this.props
+			.logout(deviceId)
+			.then(() => {
+				Router.push('/signin');
+			})
+			.catch(error => {
+				removeCookie('ACCESS_TOKEN');
+			});
+	}
 
-  render() {
-    return (
-      <Navbar expand="md">
-        <div className="left-top-link">
-          <div className="logo-top-wrapper">
-            <NavbarBrand href="/">
-              <img className="logo-top" src="/static/logo/rcti.png" />
-            </NavbarBrand>
-          </div>
-        </div>
-        <div className="right-top-link">
-          <div className="btn-link-top-nav">
-            {this.state.token ? (
-              <NavbarBrand onClick={this.signOut.bind(this)} href="#">
-                Sign Out
-              </NavbarBrand>
-            ) : (
-              <NavbarBrand href="/signin">Sign In</NavbarBrand>
-            )}
-            <NavbarBrand href="/explore">
-              <i className="fas fa-search" aria-hidden></i>
-            </NavbarBrand>
-          </div>
-        </div>
-      </Navbar>
-    );
-  }
+	componentDidMount() {
+		document.addEventListener('scroll', () => {
+			const isTop = window.scrollY < 150;
+			if (isTop !== this.state.is_top) {
+				this.setState({ is_top: isTop });
+			}
+		});
+	}
+
+	render() {
+		return (
+			<div className="nav-home-container nav-fixed-top">
+				<Navbar expand="md" className={'nav-container nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
+					<div className="left-top-link">
+						<div className="logo-top-wrapper">
+							<NavbarBrand href="/">
+								<img className="logo-top" src="/static/logo/rcti.png" />
+							</NavbarBrand>
+						</div>
+					</div>
+					<div className="right-top-link">
+						<div className="btn-link-top-nav">
+							<NavbarBrand style={{ color: 'white' }} href="/explore">
+								<SearchIcon/>
+							</NavbarBrand>
+							{this.state.token ? (
+								<NavbarBrand style={{ color: 'white' }} onClick={this.signOut.bind(this)} href="#">
+									Sign Out
+								</NavbarBrand>
+							) : (
+								<NavbarBrand style={{ color: 'white' }} href="/signin">Sign In</NavbarBrand>
+							)}
+							
+						</div>
+					</div>
+				</Navbar>
+				<StatusNotification/>
+			</div>
+		);
+	}
 }
 export default connect(state => state, actions)(NavbarDef);
