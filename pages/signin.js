@@ -74,10 +74,9 @@ class Signin extends React.Component {
 					height={3}
 					color='#fff'
 					onRef={ref => (this.LoadingBar = ref)}/>
-				<NavBack />
-				<div className="wrapper-content">
+				<NavBack title="Login"/>
+				<div className="wrapper-content" style={{ marginTop: 40 }}>
 					<div className="login-box">
-						<h3>Sign In</h3>
 						<Form onSubmit={this.handleSubmit.bind(this)}>
 							<FormGroup>
 								<Label for="email">Email or Phone Number</Label>
@@ -114,11 +113,11 @@ class Signin extends React.Component {
 								</a>
 							</p>
 							<Button className="btn-next block-btn">Login</Button>
-							<p className="text-center padding-top-10">
-								Dont have an account?
-								<a href="/signup" className="text-red fnt-12">
+							<p className="text-center padding-top-10" style={{ fontSize: '0.9rem' }}>
+								Don't have an account?&nbsp;
+								<a href="/signup" className="text-red">
 									Sign up
-								</a>
+								</a>&nbsp;
 								here
 							</p>
 						</Form>

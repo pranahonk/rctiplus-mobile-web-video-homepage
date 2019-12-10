@@ -1,12 +1,14 @@
 import ax from 'axios';
-import { API, VISITOR_TOKEN } from '../../config';
+import { API, DEV_API, VISITOR_TOKEN } from '../../config';
 import { getCookie } from '../../utils/cookie';
+import { showConfirmAlert } from '../../utils/helpers';
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
 
 const axios = ax.create({
-    baseURL: API + '/api',
+    // baseURL: API + '/api',
+    baseURL: DEV_API + '/api',
     headers: {
         'Authorization': accessToken ? accessToken : VISITOR_TOKEN
     }
@@ -36,6 +38,9 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                                     ...data[i]
                                 };
                                 contents.push(content);
+                            }
+                            else if (res.data.status.code === 13) {
+                                showConfirmAlert('Please check and verify your email to continue Sign In. If you haven\'t get an email, please click resend', '', () => {}, false, 'OK', 'Resend');
                             }
                         }
                         catch (e) {

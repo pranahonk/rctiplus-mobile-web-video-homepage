@@ -1,63 +1,120 @@
 import React, { Component } from 'react';
+import Router from 'next/router';
+import { connect } from 'react-redux';
+import registerActions from '../../../redux/actions/registerActions';
+import notificationActions from '../../../redux/actions/notificationActions';
+import { showConfirmAlert } from '../../../utils/helpers';
+
+
 
 //load default layout
 import Layout from '../../../components/Layouts/Default';
 
 //load navbar default
-import NavBackVerification from '../../../components/Includes/Navbar/NavBackVerification';
+import NavBackVerification from '../../../components/Includes/Navbar';
 
 //load reactstrap components
 import { Button, Form, FormGroup } from 'reactstrap';
 
 import ReactCodeInput from 'react-verification-code-input';
-import Countdown from 'react-countdown-now';
-import '../../../assets/scss/components/signup.scss';
+import '../../../assets/scss/components/otp_steps.scss'; // TODO: kadang tidak ke-load
 
-import Swal from 'sweetalert2/dist/sweetalert2.js';
-import 'sweetalert2/src/sweetalert2.scss';
+import Countdown, { zeroPad } from 'react-countdown-now';
 
-export default class Step1 extends Component {
+
+
+
+class Step2 extends Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			otp: ''
+			otp: '',
+			username: '',
+			alert_message: 'Carefully check your Email for verification code. You only have 3 attempts',
+			interval: 60,
+			countdown_key: 0,
+			current_time: Date.now()
 		};
+
+	}
+
+	componentDidMount() {
+		console.log(this.props.registration);
+		this.setState({ username: this.props.registration.username }, () => {
+			let username = this.state.username;
+			if (this.props.registration.username_type === 'PHONE_NUMBER') {
+				username = '62' + username;
+			}
+			this.props.getOtp(username);
+		});
 	}
 
 	submitOtp(e) {
 		e.preventDefault();
-		console.log(this.state.otp);
+		let username = this.state.username;
+		if (this.props.registration.username_type === 'PHONE_NUMBER') {
+			username = '62' + username;
+		}
+
+		this.props.verifyOtp(username, this.state.otp)
+			.then(response => {
+				if (response.data.status.code != 0) {
+					this.props.showNotification(response.data.status.message_client, false);
+					setTimeout(() => {
+						this.props.hideNotification();
+					}, 5000);
+				}
+				else {
+					this.props.register({
+						username: username,
+						password: this.props.registration.password,
+						fullname: this.props.registration.fullname,
+						gender: this.props.registration.gender,
+						dob: this.props.registration.dob,
+						otp: this.state.otp,
+						device_id: '1'
+					})
+					.then(response => {
+						Router.push('/register/Interest');
+					})
+					.catch(error => {
+						console.log(error);
+					});
+					
+				}
+			})
+			.catch(error => {
+				console.log(error);
+			});
 	}
 
-	componentDidMount() {
-		Swal.fire({
-			title: 'OTP Limits',
-			text: 'Carefully check your Email for verification code. You only have 3 attempts',
-			showCancelButton: true,
-			confirmButtonText: 'Not Now',
-			cancelButtonText: 'Request New OTP',
-			buttonsStyling: false,
-			customClass: {
-				confirmButton: 'btn-next block-btn btn-primary-edit',
-				cancelButton: 'btn-outline block-btn btn-link-edit',
-				header: 'alert-header'
-			},
-			width: '85%'
-		})
-		.then(result => {
-			// not now clicked
-			if (!result.value) {
-				console.log('request new otp');
-			}
-		});
+	showAlert() {
+		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
+			this.props.getOtp(this.state.username)
+				.then(response => {
+					let newState = {};
+					if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
+						newState = {
+							current_time: Date.now(),
+							countdown_key: this.state.countdown_key + 1
+						};
+					}
+
+					newState['alert_message'] = response.data.status.message_client;
+					this.setState(newState);
+				})
+				.catch(error => {
+					console.log(error);
+				});
+		}, true, 'Not Now', 'Request New OTP');
 	}
 
 	render() {
 		return (
 			<Layout title="Register Step 2">
-				<NavBackVerification />
-				<div className="wrapper-content container" style={{ width: '100%' }}>
+				<NavBackVerification title="Verification"/>
+				<div className="wrapper-content" style={{ width: '100%', marginTop: 50 }}>
 					<div className="login-box" style={{ width: '100%' }}>
 						<p className="text-default-rcti">Verify your account, enter your code below</p>
 						<p style={{ fontSize: 14 }} className="text-default-rcti">Verification code was sent via SMS to your phone number: <span style={{ color: 'white' }}>+62 822 7883 3803</span></p>
@@ -71,12 +128,16 @@ export default class Step1 extends Component {
 							<FormGroup>
 								<label className="lbl_rsndcode">
 									Resend code <Countdown
-										date={Date.now() + 450000}
-										renderer={({ hours, minutes, seconds, completed }) => (<span>{minutes}:<span className="time-resendcode">{seconds}</span></span>)}></Countdown>
+										key={this.state.countdown_key}
+										date={this.state.current_time + (this.state.interval * 1000)}
+										renderer={({ hours, minutes, seconds, completed }) => {
+											if (completed) {
+												return (<p className="text-default-rcti" style={{ fontSize: 12, textAlign: 'center' }}><span className="el-red">Change Phone Number</span> or <span onClick={this.showAlert.bind(this)} className="el-red">Resend Code</span></p>);
+											}
+
+											return (<span>{zeroPad(minutes)}:<span className="time-resendcode">{zeroPad(seconds)}</span></span>);
+										}}></Countdown>
 								</label>
-							</FormGroup>
-							<FormGroup>
-								<p className="text-default-rcti" style={{ fontSize: 12, textAlign: 'center' }}><span className="el-red">Change Phone Number</span> or <span className="el-red">Resend Code</span></p>
 							</FormGroup>
 							<FormGroup className="btn-next-position">
 								<Button className="btn-next block-btn">Verify</Button>
@@ -88,3 +149,8 @@ export default class Step1 extends Component {
 		);
 	}
 }
+
+export default connect(state => state, {
+	...registerActions,
+	...notificationActions
+})(Step2);

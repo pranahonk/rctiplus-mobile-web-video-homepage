@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Router from 'next/router';
 
 //load default layout
 import Layout from '../../../components/Layouts/Default';
@@ -12,6 +13,12 @@ import Checkmark from '../../../components/Includes/Common/Checkmark';
 import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
 
 export default class Step1 extends Component {
+
+	goToHome() {
+		console.log('Go to home');
+		Router.push('/');
+	}
+
 	render() {
 		return (
 			<Layout title="Registration Completed">
@@ -25,7 +32,7 @@ export default class Step1 extends Component {
 						<Checkmark />
 					</div>
 					<FormGroup className="btn-next-position" style={{ marginTop: 50, width: '80%', margin: '50px auto' }}>
-						<Button className="btn-next">Done</Button>
+						<Button onClick={this.goToHome.bind(this)} className="btn-next">Done</Button>
 					</FormGroup>
 				</div>
 			</Layout>

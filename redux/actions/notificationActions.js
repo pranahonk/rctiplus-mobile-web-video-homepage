@@ -4,7 +4,8 @@ const showNotification = (content, success = true) => {
             type: 'SHOW_NOTIFICATION',
             content: content,
             show: true,
-            success: success
+            success: success,
+            size: content.length <= 60 ? 'small' : 'medium'
         });
     };
 };

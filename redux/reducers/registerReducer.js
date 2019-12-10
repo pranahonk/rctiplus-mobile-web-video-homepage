@@ -8,7 +8,8 @@ const initialState = {
     fullname: null,
     dob: null,
     gender: null,
-    device_id: null
+    device_id: null,
+    username_type: null
 };
 
 export default (state = initialState, action) => {
@@ -21,6 +22,16 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { status: action.status });
         case 'USERNAME':
             return Object.assign({}, state, { username: action.username });
+        case 'PASSWORD':
+            return Object.assign({}, state, { password: action.password });
+        case 'FULLNAME':
+            return Object.assign({}, state, { fullname: action.fullname });
+        case 'GENDER':
+            return Object.assign({}, state, { gender: action.gender });
+        case 'DOB':
+            return Object.assign({}, state, { dob: action.dob });
+        case 'USERNAME_TYPE':
+            return Object.assign({}, state, { username_type: action.username_type });
         default:
             return state;
     }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Router from 'next/router';
 import { connect } from 'react-redux';
 import userActions from '../../redux/actions/userActions';
 import notificationActions from '../../redux/actions/notificationActions';
@@ -10,12 +11,9 @@ import Layout from '../../components/Layouts/Default';
 import NavBackInterest from '../../components/Includes/Navbar/NavBackInterest';
 
 //load reactstrap components
-import { Button, Form, FormGroup, Row, Col, Container } from 'reactstrap';
+import { Button, FormGroup, Row, Col, Container } from 'reactstrap';
 
 import '../../assets/scss/components/interest.scss';
-
-import Swal from 'sweetalert2/dist/sweetalert2.js';
-import 'sweetalert2/src/sweetalert2.scss';
 
 class Interest extends Component {
 
@@ -26,33 +24,6 @@ class Interest extends Component {
 			selected_interests: [],
 			selected_interest_components: []
 		};
-
-		this.dummyInterests = [
-			{
-				id: 1,
-				name: 'Comedy'
-			},
-			{
-				id: 2,
-				name: 'Drama'
-			},
-			{
-				id: 3,
-				name: 'Horror'
-			},
-			{
-				id: 4,
-				name: 'Thriller'
-			},
-			{
-				id: 5,
-				name: 'Romance'
-			},
-			{
-				id: 6,
-				name: 'Entertainment'
-			}
-		];
 	}
 
 	componentDidMount() {
@@ -107,34 +78,49 @@ class Interest extends Component {
 		});
 	}
 
-	showNotification() {
-		this.props.showNotification('Your data has been saved');
+	showNotification(e) {
+		e.preventDefault();
+		console.log('SELECTED INTERESTS:', this.state.selected_interests);
 		const hideNotification = this.props.hideNotification;
-		setTimeout(function() {
-			hideNotification();
-		}, 3000);
-	}
-
-	showAlert() {
-		Swal.fire({
-			title: 'Choose Interests',
-			text: 'Cannot choose more than 3 interests',
-			confirmButtonText: 'OK',
-			buttonsStyling: false,
-			customClass: {
-				confirmButton: 'btn-next block-btn btn-primary-edit',
-				header: 'alert-header',
-				content: 'alert-content'
-			},
-			width: '85%'
-		});
+		if (this.state.selected_interests.length < 3) {
+			this.props.showNotification('You must select 3 interests', false);
+			setTimeout(function() {
+				hideNotification();
+			}, 3000);
+		}
+		else {
+			let interestsId = [];
+			for (let i = 0; i < this.state.selected_interests.length; i++) {
+				interestsId.push(this.state.selected_interests[i].id);
+			}
+			this.props.setInterest(interestsId)
+				.then(response => {
+					if (response.data.status.code === 0) {
+						this.props.showNotification('Your data has been saved');
+						Router.push('/register/phone/step3');
+					}
+					else {
+						this.props.showNotification('Error while saving interests. Please try again! (Response code = )' + response.data.status.code, false);
+					}
+					setTimeout(function() {
+						hideNotification();
+					}, 3000);
+				})
+				.catch(error => {
+					this.props.showNotification('Error while saving interests. Please try again!', false);
+					setTimeout(function() {
+						hideNotification();
+					}, 3000);
+				});
+		}
+		
 	}
 
 	render() {
 		return (
 			<Layout title="Your Interest">
 				<NavBackInterest />
-				<div className="wrapper-content">
+				<div className="wrapper-content" style={{ marginTop: 40 }}>
 					<div className="login-box">
 						<div className="choose_interest">
 							<p className="txt-content-interest">
@@ -148,7 +134,7 @@ class Interest extends Component {
 						<FormGroup>
 							<Container>
 								<Row>
-									{this.dummyInterests.map((interest, index) => (
+									{this.state.interests.map((interest, index) => (
 										<Col xs="6" key={index}>
 											<Button onClick={this.selectInterest.bind(this, interest, index)} className={'interest' + ' ' + (this.state.selected_interest_components.indexOf(index) != -1 ? 'interest-selected' : '')}>{interest.name}</Button>
 										</Col>

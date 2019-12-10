@@ -5,6 +5,9 @@ import { Offline } from "react-detect-offline";
 //load scss style 
 import '../../assets/scss/custom.scss';
 import '../../assets/scss/global.scss';
+import 'sweetalert2/src/sweetalert2.scss';
+
+import '../../assets/scss/components/alert.scss';
 
 //load redux
 import { connect } from 'react-redux';

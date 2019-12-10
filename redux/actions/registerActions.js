@@ -1,8 +1,12 @@
 import ax from 'axios';
-import { API, VISITOR_TOKEN } from '../../config';
+import { API, DEV_API, VISITOR_TOKEN } from '../../config';
+import { setCookie, removeCookie, getCookie } from '../../utils/cookie';
+
+const tokenKey = 'ACCESS_TOKEN';
 
 const axios = ax.create({
-    baseURL: API + '/api',
+    // baseURL: API + '/api',
+    baseURL: DEV_API + '/api',
     headers: {
         'Authorization': VISITOR_TOKEN
     }
@@ -22,17 +26,40 @@ const setPassword = password => {
     });
 };
 
-const register = ({ emailphone, password, username, otp, interest = [1, 3], device_id, platform = 'web' }) => {
+const setFullname = fullname => {
+    return dispatch => dispatch({
+        type: 'FULLNAME',
+        fullname: fullname
+    });
+};
+
+const setGender = gender => {
+    return dispatch => dispatch({
+        type: 'GENDER',
+        gender: gender
+    });
+};
+
+const setDob = dob => {
+    return dispatch => dispatch({
+        type: 'DOB',
+        dob: dob
+    });
+};
+
+const setUsernameType = type => {
+    return dispatch => dispatch({
+        type: 'USERNAME_TYPE',
+        username_type: type
+    });
+};
+
+const getOtp = (username, type = 'registration') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v1/register`, {
-                emailphone: emailphone,
-                password: password,
+            const response = await axios.post(`/v2/otp`, { 
                 username: username,
-                otp: otp,
-                interest: interest,
-                device_id: device_id,
-                platform: platform
+                type: type
             }, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -40,6 +67,36 @@ const register = ({ emailphone, password, username, otp, interest = [1, 3], devi
             });
 
             if (response.data.status.code === 0) {
+                dispatch({ type: 'GET_OTP' });
+            }
+
+            resolve(response);
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const register = ({ username, password, fullname, gender, dob, otp, device_id }) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v2/register`, {
+                password: password,
+                username: username,
+                fullname: fullname,
+                gender: gender,
+                dob: dob,
+                otp: otp,
+                device_id: device_id
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.data.status.code === 0) {
+                setCookie(tokenKey, response.data.data.access_token);
                 dispatch({ 
                     type: 'REGISTER', 
                     data: response.data.data, 
@@ -104,44 +161,25 @@ const getPhoneOtp = phonenumber => {
     });
 };
 
-const verifyOtp = (phonenumber, otp, reset = true) => {
+const verifyOtp = (username, otp) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v1/otp`, {
-                phone: phonenumber,
-                otp: otp,
-                reset: reset
+            const response = await axios.post(`/v2/verify-otp`, {
+                username: username,
+                otp: otp
             }, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
 
+            // code = 26 (wrong otp)
+            // code = 1 (otp max length is 4)
             if (response.data.status.code === 0) {
                 dispatch({ type: 'VERIFY_OTP' });
-                resolve(response);
             }
-            else {
-                reject(response);
-            }
-        }
-        catch (error) {
-            reject(error);
-        }
-    });
-};
 
-const checkUser = emailphone => {
-    return dispatch => new Promise(async (resolve, reject) => {
-        try {
-            const response = await axios.get(`/v1/user/exist?emailphone=${emailphone}`);
-            if (response.data.status.code === 0) {
-                dispatch({ type: 'CHECK_USER', status: response.data.status });
-                resolve(response);
-            }
-            else {
-                reject(response);
-            }
+            resolve(response);
         }
         catch (error) {
             reject(error);
@@ -209,10 +247,14 @@ export default {
     register,
     resendVerifyEmail,
     getPhoneOtp,
+    getOtp,
     verifyOtp,
-    checkUser,
     forgotPassword,
     createNewPassword,
     setUsername,
-    setPassword
+    setPassword,
+    setFullname,
+    setGender,
+    setDob,
+    setUsernameType
 };

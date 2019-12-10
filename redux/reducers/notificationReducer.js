@@ -1,7 +1,8 @@
 const initialState = {
     content: '',
     show: false,
-    success: true
+    success: true,
+    size: 'small'
 };
 
 export default (state = initialState, action) => {
@@ -10,7 +11,8 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, {
                 content: action.content,
                 show: action.show,
-                success: action.success
+                success: action.success,
+                size: action.size
             });    
         
         case 'HIDE_NOTIFICATION':
