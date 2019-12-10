@@ -105,7 +105,7 @@ const register = ({ username, password, fullname, gender, dob, otp, device_id })
                 resolve(response);
             }
             else {
-                reject(error);
+                reject(response);
             }
         }
         catch (error) {

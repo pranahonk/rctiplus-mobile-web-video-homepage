@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import initialize from '../utils/initialize';
-import Layout from '../components/Templates/Layout';
 import actions from '../redux/actions';
 
 class Users extends React.Component {

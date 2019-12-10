@@ -15,7 +15,7 @@ class NavbarDef extends Component {
 					<div className="top-link">
 						<div className="logo-top-wrapper">
 							<NavbarBrand onClick={() => Router.back()} style={{ color: 'white' }}>
-								<ArrowBackIcon />
+								<ArrowBackIcon onClick={() => Router.back()} />
 							</NavbarBrand>
 						</div>
 					</div>

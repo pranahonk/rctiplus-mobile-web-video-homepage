@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
+import { showAlert } from '../../utils/helpers';
 import userActions from '../../redux/actions/userActions';
 import notificationActions from '../../redux/actions/notificationActions';
 
@@ -14,6 +15,7 @@ import NavBackInterest from '../../components/Includes/Navbar/NavBackInterest';
 import { Button, FormGroup, Row, Col, Container } from 'reactstrap';
 
 import '../../assets/scss/components/interest.scss';
+// import '../../assets/scss/components/signin.scss';
 
 class Interest extends Component {
 
@@ -58,7 +60,7 @@ class Interest extends Component {
 				selectedInterestComponents.splice(selectedIndex, 1);
 			}
 			else {
-				this.showAlert();
+				showAlert('Cannot choose more than 3 interests', 'Choose Interests');
 			}
 		}
 		else {
@@ -100,7 +102,7 @@ class Interest extends Component {
 						Router.push('/register/phone/step3');
 					}
 					else {
-						this.props.showNotification('Error while saving interests. Please try again! (Response code = )' + response.data.status.code, false);
+						this.props.showNotification(response.data.status.message_client + '. Please try again! (Response code = ' + response.data.status.code + ')', false);
 					}
 					setTimeout(function() {
 						hideNotification();
@@ -121,7 +123,7 @@ class Interest extends Component {
 			<Layout title="Your Interest">
 				<NavBackInterest />
 				<div className="wrapper-content" style={{ marginTop: 40 }}>
-					<div className="login-box">
+					<div className="login-box" style={{ width: '100%' }}>
 						<div className="choose_interest">
 							<p className="txt-content-interest">
 								Welcome,

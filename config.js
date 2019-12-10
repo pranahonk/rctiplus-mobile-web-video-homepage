@@ -23,6 +23,8 @@ export const CONVIVA_TRACKING_HOST = 'mnc-test.testonly.conviva.com';
 
 export const VISITOR_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjAsInRva2VuIjoiZmUyZWMwM2E5ZTliYTUxYiIsInBsIjoid2ViIn0.5bAp_UT0o8DfAxx5UAQDG5U-mc0ZjxxdKivuA7Y3v_g';
 
+// {"data":{"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjUxODYsInBsIjoid2ViIiwiZGlkIjoiMSJ9.NuacJDAzV3044mvAbBlYiaDpUFVfRu8A4NkBo3RXSRM","user_id":5186,"photoURL":null,"username":"6282278833803"},"meta":{"image_path":"https:\/\/rc-static.rctiplus.id\/avatar\/"},"status":{"code":0,"message_server":"Success","message_client":"Success"}}
+
     // {
     //     "emailphone": "user.test@rctiplus.com",
     //     "password": "user.123",

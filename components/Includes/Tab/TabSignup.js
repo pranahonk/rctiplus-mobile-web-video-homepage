@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import registerActions from '../../../redux/actions/registerActions';
 import userActions from '../../../redux/actions/userActions';
 import '../../../assets/scss/components/signup.scss';
+
 import {
 	TabContent,
 	TabPane,
@@ -145,7 +146,7 @@ class TabSignup extends React.Component {
 									<Label for="email">Phone Number</Label>
 									<InputGroup>
 										<InputGroupAddon addonType="prepend">
-											<InputGroupText className="inpt-form addon-left">+62</InputGroupText>
+											<InputGroupText className={'inpt-form addon-left ' + (!this.state.phone_number_invalid && !!this.props.registration.username ? 'valid-border-color' : (this.state.phone_number_invalid ? 'invalid-border-color' : ''))}>+62</InputGroupText>
 										</InputGroupAddon>
 										<Input
 											className="inpt-form addon-left-input"

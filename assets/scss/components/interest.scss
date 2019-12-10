@@ -1,6 +1,41 @@
-.interest {
-    border: 1px solid #979797;
+$primary-bg-color: #282828;
+$primary-text-color: #979797;
+$primary-font-family: Helvetica !important;
+$default-text-color-login: #ffffff;
+$primary-text-color-login: #DB2828;
+$primary-btn-bg-color-login: #DB2828;
+$primary-btn-border-color-login: #DB2828;
+$text-placeholder-color-login: #a8a8a8;
+
+.login-box {
+    margin: 0px auto;
+    background-color: $primary-bg-color;
+    color: $primary-text-color;
+    width: 90%;
+    height: 500px;
+    object-fit: contain;
+    border-radius: 30px;
+    padding: 20px;
+}
+
+.btn-primary {
+    background-color: $primary-btn-bg-color-login;
+    border-color: $primary-btn-border-color-login;
     width: 100%;
+}
+
+.interest {
+    border: 1px solid #979797 !important;
+    width: 100% !important;
+    background-color: transparent;
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #a8a8a8;
+}
+
+.interest:hover {
+    border: 1px solid #979797 !important;
+    width: 100% !important;
     background-color: transparent;
     font-size: 14px;
     margin-bottom: 10px;
@@ -8,13 +43,18 @@
 }
 
 .interest-selected {
-    border: 1px solid #4e8d05;
+    border: 1px solid #4e8d05 !important;
+    color: #4e8d05;
+}
+
+.interest-selected:hover {
+    border: 1px solid #4e8d05 !important;
     color: #4e8d05;
 }
 
 .btn-secondary:hover {
-    @extend .interest;
-    border: 1px solid yellow;
+    // @extend .interest;
+    // border: 1px solid yellow !important;
     box-shadow: none;
 }
 
@@ -28,5 +68,9 @@ div.col-6 {
 }
 
 .alert-content {
+    font-size: 12px !important;
+}
+
+.swal2-content {
     font-size: 12px !important;
 }

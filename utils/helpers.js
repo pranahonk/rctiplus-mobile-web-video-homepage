@@ -3,6 +3,23 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 
 // import '../assets/scss/components/alert.scss';
 
+export const showAlert = (text, title, confirmText = 'OK') => {
+    let options = {
+        text: text,
+        title: title,
+        showCancelButton: false,
+        confirmButtonText: confirmText,
+        buttonsStyling: false,
+        customClass: {
+            confirmButton: 'btn-next block-btn btn-primary-edit',
+            cancelButton: 'block-btn btn-link-edit btn-cancel',
+            header: 'alert-header'
+        },
+        width: '85%'
+    };
+    Swal.fire(options);
+};
+
 export const showConfirmAlert = (text, title, callback, buttonInverse = false, confirmText = 'OK', cancelText = 'Cancel') => {
     let options = {
         text: text,

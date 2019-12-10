@@ -79,6 +79,14 @@ class Step2 extends Component {
 						Router.push('/register/Interest');
 					})
 					.catch(error => {
+						if (error.status == 200) {
+							this.props.showNotification(error.data.status.message_client, false);
+							setTimeout(() => {
+								this.props.hideNotification();
+							}, 5000);
+							Router.push('/register/Interest');
+						}
+						
 						console.log(error);
 					});
 					
@@ -90,8 +98,14 @@ class Step2 extends Component {
 	}
 
 	showAlert() {
+		let username = this.state.username;
+		if (this.props.registration.username_type === 'PHONE_NUMBER') {
+			username = '62' + username;
+		}
+
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
-			this.props.getOtp(this.state.username)
+			// code = 1 (please wait a minute)
+			this.props.getOtp(username)
 				.then(response => {
 					let newState = {};
 					if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
@@ -111,13 +125,29 @@ class Step2 extends Component {
 	}
 
 	render() {
+		let text = 'Verification code was sent to your email';
+		let username = this.state.username;
+
+		if (this.props.registration.username_type === 'PHONE_NUMBER') {
+			text = 'Verification code was sent via SMS to your phone number';
+			let newUsername = '';
+			for (let i = 0; i < username.length; i++) {
+				newUsername += username[i];
+				if (i == 2 || i == 6) {
+					newUsername += ' ';
+				}
+			}
+
+			username = '+62 ' + newUsername;
+		}
+
 		return (
 			<Layout title="Register Step 2">
 				<NavBackVerification title="Verification"/>
 				<div className="wrapper-content" style={{ width: '100%', marginTop: 50 }}>
 					<div className="login-box" style={{ width: '100%' }}>
 						<p className="text-default-rcti">Verify your account, enter your code below</p>
-						<p style={{ fontSize: 14 }} className="text-default-rcti">Verification code was sent via SMS to your phone number: <span style={{ color: 'white' }}>+62 822 7883 3803</span></p>
+						<p style={{ fontSize: 14 }} className="text-default-rcti">{text} <span style={{ color: 'white' }}>{username}</span></p>
 						<Form onSubmit={this.submitOtp.bind(this)}>
 							<FormGroup>
 								<ReactCodeInput

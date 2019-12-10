@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Router from 'next/router';
 
 //load reactstrap
 import { Navbar, NavbarBrand } from 'reactstrap';
@@ -13,8 +14,8 @@ class NavBackInterest extends Component {
 				<Navbar expand="md" className="nav-container nav-shadow">
 					<div className="top-link">
 						<div className="logo-top-wrapper">
-							<NavbarBrand href="/" style={{ color: 'white' }}>
-								<ArrowBackIcon />
+							<NavbarBrand onClick={() => Router.back()} style={{ color: 'white' }}>
+								<ArrowBackIcon onClick={() => Router.back()} />
 							</NavbarBrand>
 						</div>
 					</div>
