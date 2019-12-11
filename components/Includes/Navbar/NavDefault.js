@@ -22,7 +22,6 @@ class NavbarDef extends Component {
 
 	signOut() {
 		const deviceId = 1;
-		console.log(getCookie('ACCESS_TOKEN'));
 		this.props
 			.logout(deviceId)
 			.then(() => {

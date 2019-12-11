@@ -23,7 +23,7 @@ import {
 import classnames from 'classnames';
 
 import { Subject }  from 'rxjs';
-import { debounceTime, throttleTime } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
 class TabSignup extends React.Component {
 
@@ -77,7 +77,6 @@ class TabSignup extends React.Component {
 				if (this.props.registration.username) {
 					this.props.checkUser(username)
 						.then(response => {
-							console.log(response);
 							if (response.status === 200) {
 								const message = response.data.status.message_client;
 								if (response.data.status.code === 0) {

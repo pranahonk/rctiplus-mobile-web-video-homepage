@@ -17,7 +17,7 @@ import NavBackVerification from '../../../components/Includes/Navbar';
 import { Button, Form, FormGroup } from 'reactstrap';
 
 import ReactCodeInput from 'react-verification-code-input';
-import '../../../assets/scss/components/otp_steps.scss'; // TODO: kadang tidak ke-load
+import '../../../assets/scss/components/otp_steps.scss';
 
 import Countdown, { zeroPad } from 'react-countdown-now';
 
@@ -128,7 +128,7 @@ class Step2 extends Component {
 
 	render() {
 		let text = 'Verification code was sent to your email';
-		let username = this.state.username;
+		let username = this.state.username || '';
 
 		if (this.props.registration.username_type === 'PHONE_NUMBER') {
 			text = 'Verification code was sent via SMS to your phone number';
@@ -164,7 +164,7 @@ class Step2 extends Component {
 										date={this.state.current_time + (this.state.interval * 1000)}
 										renderer={({ hours, minutes, seconds, completed }) => {
 											if (completed) {
-												return (<p className="text-default-rcti" style={{ fontSize: 12, textAlign: 'center' }}><span className="el-red">Change Phone Number</span> or <span onClick={this.showAlert.bind(this)} className="el-red">Resend Code</span></p>);
+												return (<p className="text-default-rcti" style={{ fontSize: 12, textAlign: 'center' }}><span onClick={() => Router.push('/register/change-username')} className="el-red">Change {this.props.registration.username_type === 'PHONE_NUMBER' ? 'Phone Number' : 'Email'}</span> or <span onClick={this.showAlert.bind(this)} className="el-red">Resend Code</span></p>);
 											}
 
 											return (<span>{zeroPad(minutes)}:<span className="time-resendcode">{zeroPad(seconds)}</span></span>);

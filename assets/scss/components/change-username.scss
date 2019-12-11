@@ -1,0 +1,64 @@
+@import '../svg_icons.scss';
+
+$primary-bg-color: #282828;
+$primary-text-color: #979797;
+$primary-font-family: Helvetica !important;
+$default-text-color-login: #eee;
+$primary-text-color-login: #DB2828;
+$primary-btn-bg-color-login: #DB2828;
+$primary-btn-border-color-login: #DB2828;
+$text-placeholder-color-login: #a8a8a8;
+
+.container-box {
+    margin: 0px auto;
+    background-color: $primary-bg-color;
+    color: $primary-text-color;
+    width: 90%;
+    height: 500px;
+    object-fit: contain;
+    border-radius: 30px;
+    padding: 20px;
+    margin-top: 70px;
+}
+
+.form-control {
+    border-radius: 0;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom-width: 1.5px;
+    background: transparent;
+    border-color: #495057;
+    color: $default-text-color-login !important;
+}
+
+.form-control:hover {
+    box-shadow: none !important;
+    background: transparent;
+}
+
+.form-text {
+    text-align: left;
+    color: $default-text-color-login !important;
+    font-size: 12px;
+}
+
+.form-text ul {
+    padding-left: 15px;
+}
+
+.form-label {
+    color: $default-text-color-login;
+}
+
+.addon {
+    padding: 6px;
+    border-color: #495057;
+    background: transparent;
+    color: $default-text-color-login;
+}
+
+.addon-left {
+    @extend .addon;
+    border-right-color: transparent;
+}
