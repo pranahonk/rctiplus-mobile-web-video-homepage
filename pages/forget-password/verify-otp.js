@@ -70,6 +70,7 @@ class VerifyOtp extends React.Component {
         let text = 'Verification code was sent to your email';
         let username = this.state.username || '';
         
+        // set phone number format
         if (this.props.registration.username_type === 'PHONE_NUMBER') {
             text = 'Verification code was sent via SMS to your phone number';
             let newUsername = '';
