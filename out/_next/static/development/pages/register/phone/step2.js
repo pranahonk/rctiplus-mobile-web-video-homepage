@@ -51,27 +51,37 @@ function (_Component) {
   }
 
   Object(_babel_runtime_corejs2_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(FooterNav, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var script = document.createElement('script');
+      script.innerHTML = "\n\t\t\tvar _comscore=_comscore||[];_comscore.push({c1:\"2\",c2:\"9013027\"}),function(){var c=document.createElement(\"script\"),e=document.getElementsByTagName(\"script\")[0];c.async=!0,c.src=(\"https:\"==document.location.protocol?\"https://sb\":\"http://b\")+\".scorecardresearch.com/beacon.js\",e.parentNode.insertBefore(c,e)}();\n\t\t";
+      var noscript = document.createElement('noscript');
+      noscript.innerHTML = "<img alt=\"Share\" src=\"https://b.scorecardresearch.com/p?c1=2&c2=9013027&cv=2.0&cj=1\" />";
+      document.body.appendChild(script);
+      document.body.appendChild(noscript);
+    }
+  }, {
     key: "render",
     value: function render() {
       return __jsx("div", {
         className: "nav-footer",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 16
+          lineNumber: 30
         },
         __self: this
       }, __jsx("div", {
         className: "footer-wrapper-list",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 17
+          lineNumber: 31
         },
         __self: this
       }, __jsx("a", {
         href: "/",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 18
+          lineNumber: 32
         },
         __self: this
       }, __jsx("img", {
@@ -79,21 +89,21 @@ function (_Component) {
         src: "/static/btn/home/nav.png",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 19
+          lineNumber: 33
         },
         __self: this
       }))), __jsx("div", {
         className: "footer-wrapper-list",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 23
+          lineNumber: 37
         },
         __self: this
       }, __jsx("a", {
         href: "/exclusive",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 24
+          lineNumber: 38
         },
         __self: this
       }, __jsx("img", {
@@ -101,21 +111,21 @@ function (_Component) {
         src: "/static/btn/exclusive/nav.png",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 25
+          lineNumber: 39
         },
         __self: this
       }))), __jsx("div", {
         className: "footer-wrapper-list",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 32
+          lineNumber: 46
         },
         __self: this
       }, __jsx("a", {
         href: "/live-tv",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 33
+          lineNumber: 47
         },
         __self: this
       }, __jsx("img", {
@@ -123,21 +133,21 @@ function (_Component) {
         src: "/static/btn/live-tv/nav.png",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 34
+          lineNumber: 48
         },
         __self: this
       }))), __jsx("div", {
         className: "footer-wrapper-list",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 41
+          lineNumber: 55
         },
         __self: this
       }, __jsx("a", {
         href: "/trending",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 42
+          lineNumber: 56
         },
         __self: this
       }, __jsx("img", {
@@ -145,21 +155,21 @@ function (_Component) {
         src: "/static/btn/trending/nav.png",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 43
+          lineNumber: 57
         },
         __self: this
       }))), __jsx("div", {
         className: "footer-wrapper-list",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 50
+          lineNumber: 64
         },
         __self: this
       }, __jsx("a", {
         href: "/more",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 51
+          lineNumber: 65
         },
         __self: this
       }, __jsx("img", {
@@ -167,7 +177,7 @@ function (_Component) {
         src: "/static/btn/more/nav.png",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 52
+          lineNumber: 66
         },
         __self: this
       }))));
@@ -287,10 +297,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_corejs2_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime-corejs2/helpers/esm/inherits */ "./node_modules/@babel/runtime-corejs2/helpers/esm/inherits.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var reactstrap__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! reactstrap */ "./node_modules/reactstrap/es/index.js");
-/* harmony import */ var _material_ui_icons_ArrowBack__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @material-ui/icons/ArrowBack */ "./node_modules/@material-ui/icons/ArrowBack.js");
-/* harmony import */ var _material_ui_icons_ArrowBack__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_material_ui_icons_ArrowBack__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _StatusNotification__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./StatusNotification */ "./components/Includes/Navbar/StatusNotification.js");
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! next/router */ "./node_modules/next/dist/client/router.js");
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var reactstrap__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! reactstrap */ "./node_modules/reactstrap/es/index.js");
+/* harmony import */ var _material_ui_icons_ArrowBack__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @material-ui/icons/ArrowBack */ "./node_modules/@material-ui/icons/ArrowBack.js");
+/* harmony import */ var _material_ui_icons_ArrowBack__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_material_ui_icons_ArrowBack__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _StatusNotification__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./StatusNotification */ "./components/Includes/Navbar/StatusNotification.js");
 
 
 
@@ -298,6 +310,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var _jsxFileName = "/home/azhary/Projects/rctiplus-pwa2/components/Includes/Navbar/index.js";
 var __jsx = react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement;
+
  //load reactstrap
 
 
@@ -322,64 +335,69 @@ function (_Component) {
         className: "nav-fixed-top",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 12
-        },
-        __self: this
-      }, __jsx(reactstrap__WEBPACK_IMPORTED_MODULE_6__["Navbar"], {
-        expand: "md",
-        className: "nav-container nav-shadow",
-        __source: {
-          fileName: _jsxFileName,
           lineNumber: 13
         },
         __self: this
-      }, __jsx("div", {
-        className: "top-link",
+      }, __jsx(reactstrap__WEBPACK_IMPORTED_MODULE_7__["Navbar"], {
+        expand: "md",
+        className: "nav-container nav-shadow",
         __source: {
           fileName: _jsxFileName,
           lineNumber: 14
         },
         __self: this
       }, __jsx("div", {
-        className: "logo-top-wrapper",
+        className: "top-link",
         __source: {
           fileName: _jsxFileName,
           lineNumber: 15
         },
         __self: this
-      }, __jsx(reactstrap__WEBPACK_IMPORTED_MODULE_6__["NavbarBrand"], {
-        href: "/",
-        style: {
-          color: 'white'
-        },
+      }, __jsx("div", {
+        className: "logo-top-wrapper",
         __source: {
           fileName: _jsxFileName,
           lineNumber: 16
         },
         __self: this
-      }, __jsx(_material_ui_icons_ArrowBack__WEBPACK_IMPORTED_MODULE_7___default.a, {
+      }, __jsx(reactstrap__WEBPACK_IMPORTED_MODULE_7__["NavbarBrand"], {
+        onClick: function onClick() {
+          return next_router__WEBPACK_IMPORTED_MODULE_6___default.a.back();
+        },
+        style: {
+          color: 'white'
+        },
         __source: {
           fileName: _jsxFileName,
           lineNumber: 17
+        },
+        __self: this
+      }, __jsx(_material_ui_icons_ArrowBack__WEBPACK_IMPORTED_MODULE_8___default.a, {
+        onClick: function onClick() {
+          return next_router__WEBPACK_IMPORTED_MODULE_6___default.a.back();
+        },
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 18
         },
         __self: this
       })))), __jsx("div", {
         className: "header-nav-verif",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 21
+          lineNumber: 22
         },
         __self: this
       }, __jsx("p", {
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 22
+          lineNumber: 23
         },
         __self: this
-      }, this.props.title))), __jsx(_StatusNotification__WEBPACK_IMPORTED_MODULE_8__["default"], {
+      }, this.props.title))), __jsx(_StatusNotification__WEBPACK_IMPORTED_MODULE_9__["default"], {
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 25
+          lineNumber: 26
         },
         __self: this
       }));
@@ -43004,6 +43022,18 @@ function (_Component) {
           }).then(function (response) {
             next_router__WEBPACK_IMPORTED_MODULE_14___default.a.push('/register/Interest');
           })["catch"](function (error) {
+            if (error.status == 200) {
+              _this3.props.showNotification(error.data.status.message_client, false);
+
+              setTimeout(function () {
+                _this3.props.hideNotification();
+              }, 5000);
+
+              if (error.data.status.code === 0) {
+                next_router__WEBPACK_IMPORTED_MODULE_14___default.a.push('/register/Interest');
+              }
+            }
+
             console.log(error);
           });
         }
@@ -43016,9 +43046,15 @@ function (_Component) {
     value: function showAlert() {
       var _this4 = this;
 
+      var username = this.state.username;
+
+      if (this.props.registration.username_type === 'PHONE_NUMBER') {
+        username = '62' + username;
+      }
+
       Object(_utils_helpers__WEBPACK_IMPORTED_MODULE_18__["showConfirmAlert"])(this.state.alert_message, 'OTP Limits', function () {
         // code = 1 (please wait a minute)
-        _this4.props.getOtp(_this4.state.username).then(function (response) {
+        _this4.props.getOtp(username).then(function (response) {
           var newState = {};
 
           if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
@@ -43041,7 +43077,7 @@ function (_Component) {
     value: function render() {
       var _this5 = this;
 
-      var text = '';
+      var text = 'Verification code was sent to your email';
       var username = this.state.username;
 
       if (this.props.registration.username_type === 'PHONE_NUMBER') {
@@ -43063,14 +43099,14 @@ function (_Component) {
         title: "Register Step 2",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 132
+          lineNumber: 147
         },
         __self: this
       }, __jsx(_components_Includes_Navbar__WEBPACK_IMPORTED_MODULE_20__["default"], {
         title: "Verification",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 133
+          lineNumber: 148
         },
         __self: this
       }), __jsx("div", {
@@ -43081,7 +43117,7 @@ function (_Component) {
         },
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 134
+          lineNumber: 149
         },
         __self: this
       }, __jsx("div", {
@@ -43091,14 +43127,14 @@ function (_Component) {
         },
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 135
+          lineNumber: 150
         },
         __self: this
       }, __jsx("p", {
         className: "text-default-rcti",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 136
+          lineNumber: 151
         },
         __self: this
       }, "Verify your account, enter your code below"), __jsx("p", {
@@ -43108,7 +43144,7 @@ function (_Component) {
         className: "text-default-rcti",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 137
+          lineNumber: 152
         },
         __self: this
       }, text, " ", __jsx("span", {
@@ -43117,20 +43153,20 @@ function (_Component) {
         },
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 137
+          lineNumber: 152
         },
         __self: this
       }, username)), __jsx(reactstrap__WEBPACK_IMPORTED_MODULE_21__["Form"], {
         onSubmit: this.submitOtp.bind(this),
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 138
+          lineNumber: 153
         },
         __self: this
       }, __jsx(reactstrap__WEBPACK_IMPORTED_MODULE_21__["FormGroup"], {
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 139
+          lineNumber: 154
         },
         __self: this
       }, __jsx(react_verification_code_input__WEBPACK_IMPORTED_MODULE_22__["default"], {
@@ -43143,20 +43179,20 @@ function (_Component) {
         className: "otp-input",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 140
+          lineNumber: 155
         },
         __self: this
       })), __jsx(reactstrap__WEBPACK_IMPORTED_MODULE_21__["FormGroup"], {
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 145
+          lineNumber: 160
         },
         __self: this
       }, __jsx("label", {
         className: "lbl_rsndcode",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 146
+          lineNumber: 161
         },
         __self: this
       }, "Resend code ", __jsx(react_countdown_now__WEBPACK_IMPORTED_MODULE_24__["default"], {
@@ -43177,14 +43213,14 @@ function (_Component) {
               },
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 152
+                lineNumber: 167
               },
               __self: this
             }, __jsx("span", {
               className: "el-red",
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 152
+                lineNumber: 167
               },
               __self: this
             }, "Change Phone Number"), " or ", __jsx("span", {
@@ -43192,7 +43228,7 @@ function (_Component) {
               className: "el-red",
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 152
+                lineNumber: 167
               },
               __self: this
             }, "Resend Code"));
@@ -43201,35 +43237,35 @@ function (_Component) {
           return __jsx("span", {
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 155
+              lineNumber: 170
             },
             __self: this
           }, Object(react_countdown_now__WEBPACK_IMPORTED_MODULE_24__["zeroPad"])(minutes), ":", __jsx("span", {
             className: "time-resendcode",
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 155
+              lineNumber: 170
             },
             __self: this
           }, Object(react_countdown_now__WEBPACK_IMPORTED_MODULE_24__["zeroPad"])(seconds)));
         },
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 147
+          lineNumber: 162
         },
         __self: this
       }))), __jsx(reactstrap__WEBPACK_IMPORTED_MODULE_21__["FormGroup"], {
         className: "btn-next-position",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 159
+          lineNumber: 174
         },
         __self: this
       }, __jsx(reactstrap__WEBPACK_IMPORTED_MODULE_21__["Button"], {
         className: "btn-next block-btn",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 160
+          lineNumber: 175
         },
         __self: this
       }, "Verify"))))));
@@ -43669,7 +43705,7 @@ var register = function register(_ref2) {
                   });
                   resolve(response);
                 } else {
-                  reject(error);
+                  reject(response);
                 }
 
                 _context2.next = 10;
@@ -44164,7 +44200,7 @@ var showConfirmAlert = function showConfirmAlert(text, title, callback) {
 
 /***/ }),
 
-/***/ 11:
+/***/ 16:
 /*!**************************************************************************************************************************************************************************!*\
   !*** multi next-client-pages-loader?page=%2Fregister%2Fphone%2Fstep2&absolutePagePath=%2Fhome%2Fazhary%2FProjects%2Frctiplus-pwa2%2Fpages%2Fregister%2Fphone%2Fstep2.js ***!
   \**************************************************************************************************************************************************************************/
@@ -44187,5 +44223,5 @@ module.exports = dll_a033e8e19027288d04b0;
 
 /***/ })
 
-},[[11,"static/runtime/webpack.js","styles"]]]);
+},[[16,"static/runtime/webpack.js","styles"]]]);
 //# sourceMappingURL=step2.js.map

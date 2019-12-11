@@ -77,37 +77,42 @@ class TabSignup extends React.Component {
 				if (this.props.registration.username) {
 					this.props.checkUser(username)
 						.then(response => {
-							if (response.status === 200 && response.data.status.code === 1) {
+							console.log(response);
+							if (response.status === 200) {
 								const message = response.data.status.message_client;
-								if (this.state.activeTab == '1') {
-									this.setState({
-										phone_number_invalid: message != 'Your Username is Available',
-										phone_invalid_message: message
-									});
+								if (response.data.status.code === 0) {
+									if (this.state.activeTab == '1') {
+										this.setState({
+											phone_number_invalid: message != 'Your phone is Available',
+											phone_invalid_message: message
+										});
+									}
+									else if (this.state.activeTab == '2') {
+										this.setState({
+											email_invalid: message != 'Your email is Available',
+											email_invalid_message: message
+										});
+									}
 								}
-								else if (this.state.activeTab == '2') {
-									this.setState({
-										email_invalid: message != 'Your Username is Available',
-										email_invalid_message: message
-									});
+								else if (response.data.status.code === 1) {
+									if (this.state.activeTab == '1') {
+										this.setState({
+											phone_number_invalid: true,
+											phone_invalid_message: message
+										});
+									}
+									else if (this.state.activeTab == '2') {
+										this.setState({
+											email_invalid: true,
+											email_invalid_message: message
+										});
+									}
 								}
+								
 							}
 						})
 						.catch(error => {
-							if (error.status === 200 && error.data.status.code === 1) {
-								if (this.state.activeTab == '1') {
-									this.setState({
-										phone_number_invalid: true,
-										phone_invalid_message: error.data.status.message_client
-									});
-								}
-								else if (this.state.activeTab == '2') {
-									this.setState({
-										email_invalid: true,
-										email_invalid_message: error.data.status.message_client
-									});
-								}
-							}
+							console.log(error);
 						});
 				}
 			});

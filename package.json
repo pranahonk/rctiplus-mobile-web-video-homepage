@@ -17,7 +17,16 @@
     "start": "npm run build && cross-env NODE_ENV=production node ./server/index.js",
     "start:static": "npm run export && cross-env NODE_ENV=production node ./server/static",
     "deploy": "now --public",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "installllll": "yarn build-all",
+    "next": "yarn build-firebase && yarn && yarn dev",
+    "preserve": "yarn build-all",
+    "serve": "firebase serve",
+    "predeploy": "yarn build-all",
+    "firebase:deploy": "firebase deploy",
+    "build-all": "yarn build-next && yarn build-firebase",
+    "build-next": "yarn && yarn build",
+    "build-firebase": "cd \"functions\" && yarn"
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",

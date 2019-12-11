@@ -84,7 +84,9 @@ class Step2 extends Component {
 							setTimeout(() => {
 								this.props.hideNotification();
 							}, 5000);
-							Router.push('/register/Interest');
+							if (error.data.status.code === 0) {
+								Router.push('/register/Interest');
+							}
 						}
 						
 						console.log(error);

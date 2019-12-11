@@ -110,13 +110,8 @@ const checkUser = username => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v2/user/exist?username=${username}`);
-            if (response.data.status.code === 1) {
-                dispatch({ type: 'CHECK_USER', status: response.data.status });
-                resolve(response);
-            }
-            else {
-                reject(response);
-            }
+            dispatch({ type: 'CHECK_USER', status: response.data.status });
+            resolve(response);
         }
         catch (error) {
             reject(error);

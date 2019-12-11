@@ -1,115 +1,115 @@
 self.__precacheManifest = [
   {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/_app.js",
-    "revision": "95b11cebf6c40d834325"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/_error.js",
-    "revision": "f079f9f731377615bee0"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/exclusive.js",
-    "revision": "3597ed9c47d0acdc8dff"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/explore.js",
-    "revision": "764f5ba32c44490b1f20"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/index.js",
-    "revision": "283f92cc306a736fea2c"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/live-tv.js",
-    "revision": "73953a48e6e6c5c5164c"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/more.js",
-    "revision": "43506de7dcc37f6c41fc"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/register/Interest.js",
-    "revision": "f0e5fefffc8da09a6475"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/register/phone/step1.js",
-    "revision": "eb202c6ffd27db6dcd64"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/register/phone/step2.js",
-    "revision": "c415091558f501c40564"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/register/phone/step3.js",
-    "revision": "dc70d636e15f4de274fb"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/signin.js",
-    "revision": "81933861a0435cebcaf3"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/signup.js",
-    "revision": "606ccc5eac00f4b66486"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/trending.js",
-    "revision": "8024e3e968ecc33abfc7"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/user/continue-watching.js",
-    "revision": "6b9103f0065937c11c81"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/user/download.js",
-    "revision": "1c8ce4ced129b97a9ff4"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/user/faq.js",
-    "revision": "feee67bc561b9c27c3c1"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/user/help.js",
-    "revision": "1bc4d0fe290221b042b1"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/user/history.js",
-    "revision": "a89e0156d41eea32786f"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/user/my-list.js",
-    "revision": "fe893f5fb901945286e1"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/user/privacy-policy.js",
-    "revision": "a4252b95a9e4badab223"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/user/profile.js",
-    "revision": "815dcb78570e026f5874"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/user/term-cond.js",
-    "revision": "63790227a79d9be5547c"
-  },
-  {
-    "url": "/_next/static/Cw7sEQB97-mXlBdGp8cjb/pages/users.js",
-    "revision": "f2300afecc5e49071bbf"
-  },
-  {
-    "url": "/_next/static/chunks/commons.ed0b0bef788edeeda4b6.js",
-    "revision": "5d87fd3d54a8c7eecdc6"
+    "url": "/_next/static/chunks/commons.2a3c6baf81f504709dff.js",
+    "revision": "85e7291967ec47d21441"
   },
   {
     "url": "/_next/static/chunks/styles.fb2ff37b6b7bca4482ce.js",
-    "revision": "dbd20ad7fe7f8406f276"
+    "revision": "792b8976ca50b6cbf04a"
   },
   {
     "url": "/_next/static/css/commons.823690c0.chunk.css",
-    "revision": "5d87fd3d54a8c7eecdc6"
+    "revision": "85e7291967ec47d21441"
   },
   {
-    "url": "/_next/static/css/styles.cc0737c8.chunk.css",
-    "revision": "dbd20ad7fe7f8406f276"
+    "url": "/_next/static/css/styles.016294db.chunk.css",
+    "revision": "792b8976ca50b6cbf04a"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/_app.js",
+    "revision": "537017c06a4ac98ce829"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/_error.js",
+    "revision": "ca333474badd284a27d7"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/exclusive.js",
+    "revision": "4784961625e88b7bfb02"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/explore.js",
+    "revision": "f1e78409958b61a671ec"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/index.js",
+    "revision": "fca2a43d70c3cd5c08bf"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/live-tv.js",
+    "revision": "bd19ab5e8c22bbf9c8d7"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/more.js",
+    "revision": "a2e488205e0238a5400b"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/register/Interest.js",
+    "revision": "f5e6d9111970077ea7b4"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/register/phone/step1.js",
+    "revision": "565269b44b13ba14089a"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/register/phone/step2.js",
+    "revision": "9d4c086aad5e4e370672"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/register/phone/step3.js",
+    "revision": "3ba2a98a55a6559dfb79"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/signin.js",
+    "revision": "09d9438363a55bde1474"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/signup.js",
+    "revision": "3ec001a901bdf1d428fb"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/trending.js",
+    "revision": "1a0b25bc5d16b422b9fb"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/user/continue-watching.js",
+    "revision": "6511fbf5c7568cc1f0e0"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/user/download.js",
+    "revision": "6382402d9e88a14f1e94"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/user/faq.js",
+    "revision": "ac9b153eae63c6d3cb46"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/user/help.js",
+    "revision": "1e05283d244e751a7df7"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/user/history.js",
+    "revision": "e50d33770838cd2106fc"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/user/my-list.js",
+    "revision": "2bb43462488520f44a2b"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/user/privacy-policy.js",
+    "revision": "9b89aaa2a81b65d29797"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/user/profile.js",
+    "revision": "932d2885ea41f7c8a17b"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/user/term-cond.js",
+    "revision": "b542534b7b06ba911c56"
+  },
+  {
+    "url": "/_next/static/fTmtYenAsU_Mjna-fmptR/pages/users.js",
+    "revision": "e2b562c69a570c08cc75"
   },
   {
     "url": "/_next/static/runtime/main-0a817d6e1ac1ce9be089.js",
