@@ -54,6 +54,13 @@ const setUsernameType = type => {
     });
 };
 
+const setOtp = otp => {
+    return dispatch => dispatch({
+        type: 'OTP',
+        otp: otp
+    });
+};
+
 const getOtp = (username, type = 'registration') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -243,6 +250,29 @@ const createNewPassword = (token, otp, device_id, newPassword, platform = 'mweb'
     });
 };
 
+const createForgotPassword = (username, new_password, otp) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v2/forgot-password`, {
+                username: username,
+                new_password: new_password,
+                otp: otp
+            });
+
+            if (response.data.status.code === 0) {
+                dispatch({ type: 'CREATE_NEW_PASSWORD', status: response.data.status });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+}; 
+
 export default {
     register,
     resendVerifyEmail,
@@ -251,10 +281,12 @@ export default {
     verifyOtp,
     forgotPassword,
     createNewPassword,
+    createForgotPassword,
     setUsername,
     setPassword,
     setFullname,
     setGender,
     setDob,
-    setUsernameType
+    setUsernameType,
+    setOtp
 };

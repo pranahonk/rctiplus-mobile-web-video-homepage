@@ -97,6 +97,10 @@ const setInterest = interests => {
         try {
             const response = await axios.post(`/v2/interest`, {
                 interest: interests
+            }, {
+                headers: {
+                    'Authorization': getCookie(tokenKey)
+                }
             });
             resolve(response);
         }

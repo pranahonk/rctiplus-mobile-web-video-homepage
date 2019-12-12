@@ -30,12 +30,14 @@ class ForgetPassword extends React.Component {
     }
 
     onChangeUsername(e) {
-        this.setState({ username: e.target.value }, () => this.subject.next());
+        this.setState({ username: e.target.value }, () => {
+            this.props.setUsername(this.state.username);
+            this.subject.next()
+        });
     }
 
     submitUsername(e) {
         e.preventDefault();
-        this.props.setUsername(this.state.username);
         Router.push('/forget-password/verify-otp');
     }
 
@@ -51,9 +53,8 @@ class ForgetPassword extends React.Component {
                                 if (message == 'please try again, phone has been taken' || message == 'please try again, email has been taken') {
                                     this.setState({
                                         username_invalid: false,
-                                        username_invalid_message: ''
+                                        username_invalid_message: 'Username exist'
                                     });
-                                    console.log('test');
                                     this.props.setUsernameType(message == 'please try again, email has been taken' ? 'EMAIL' : 'PHONE_NUMBER');
                                 }
                                 else {

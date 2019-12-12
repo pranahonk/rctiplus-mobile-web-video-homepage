@@ -32,6 +32,8 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { dob: action.dob });
         case 'USERNAME_TYPE':
             return Object.assign({}, state, { username_type: action.username_type });
+        case 'OTP':
+            return Object.assign({}, state, { otp: action.otp });
         default:
             return state;
     }

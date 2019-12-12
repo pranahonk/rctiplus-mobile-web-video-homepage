@@ -34,35 +34,37 @@ class VerifyOtp extends React.Component {
     componentDidMount() {
         console.log(this.props.registration);
         this.setState({ username: this.props.registration.username }, () => {
-            this.props.forgotPassword(this.state.username, '1');
+            this.props.getOtp(this.state.username);
         });
     }
 
     submitOtp(e) {
         e.preventDefault();
+        Router.push('/forget-password/change-password');
+    }
+
+    onChangeOtp(otp) {
+        this.setState({ otp: otp }, () => {
+            this.props.setOtp(this.state.otp);
+        });
     }
 
     showAlert() {
         let username = this.state.username;
         console.log(username);
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
-            this.props.forgotPassword(username, '1')
+            this.props.getOtp(username)
                 .then(response => {
-                    // code = 0 (Success)
-                    // code = 23 (Please try again later (after 3 minutes))
-
                     let newState = {};
-                    if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
+                    if (response.status === 200) {
                         newState = {
-							current_time: Date.now(),
-							countdown_key: this.state.countdown_key + 1
-						};
+                            current_time: Date.now(),
+                            countdown_key: this.state.countdown_key + 1
+                        };
                     }
-
-                    newState['alert_message'] = response.data.status.message_client;
-                    this.setState(newState);
                 })
                 .catch(error => console.log(error));
+
         }, true, 'Not Now', 'Request New OTP');
     }
 
@@ -94,7 +96,7 @@ class VerifyOtp extends React.Component {
                         <FormGroup>
                             <ReactCodeInput
                                 fields={4}
-                                onChange={otp => this.setState({ otp: otp })}
+                                onChange={this.onChangeOtp.bind(this)}
                                 className="otp-input" />
                         </FormGroup>
                         <FormGroup>

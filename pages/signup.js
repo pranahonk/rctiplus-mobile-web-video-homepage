@@ -91,7 +91,7 @@ class Signup extends React.Component {
 								<InputGroup>
 									<Input
 										className="inpt-form"
-										type="password"
+										type={this.state.view_raw ? 'text' : 'password'}
 										name="password"
 										id="password"
 										placeholder="Enter password"
@@ -106,7 +106,7 @@ class Signup extends React.Component {
 								<InputGroup>
 									<Input
 										className="inpt-form"
-										type="password"
+										type={this.state.view_raw ? 'text' : 'password'}
 										name="password2"
 										id="password2"
 										placeholder="Re-type password"

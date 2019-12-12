@@ -108,7 +108,7 @@ class Signin extends React.Component {
 								</InputGroup>
 							</FormGroup>
 							<p className="text-center">
-								<a href="/forgot-password" className="text-white fnt-12">
+								<a href="/forget-password" className="text-white fnt-12">
 									Forgot Password?
 								</a>
 							</p>
