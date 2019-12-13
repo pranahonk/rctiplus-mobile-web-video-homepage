@@ -34,7 +34,8 @@ class Detail extends React.Component {
             genre: [],
             release_date: '',
             meta: {},
-            resolution: 152
+            resolution: 152,
+            episodes: []
         };
     }
 
@@ -59,6 +60,9 @@ class Detail extends React.Component {
         this.props.getProgramEpisodes(23)
             .then(response => {
                 console.log(response);
+                if (response.status === 200 && response.data.status.code === 0) {
+                    this.setState({ episodes: response.data.data });
+                }
             })
             .catch(error => console.log(error));
     }
@@ -118,14 +122,14 @@ class Detail extends React.Component {
                         <p className="list-expand">
                             Season 1 <ExpandMoreIcon />
                         </p>
-                        {[1, 2].map(x => (
-                            <div key={x}>
+                        {this.state.episodes.map(e => (
+                            <div key={e.id}>
                                 <Row>
                                     <Col>
                                         <Img src={['http://placehold.it/140x84']} />
                                     </Col>
                                     <Col>
-                                        <p className="item-title">S01:E01 Akum dan temen-temen pergi mencari idoy</p>
+                                        <p className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                         <div className="item-action-buttons">
                                             <div className="action-button">
                                                 <ThumbUpIcon className="action-icon" />
@@ -141,7 +145,7 @@ class Detail extends React.Component {
                                 </Row>
                                 <Row>
                                     <Col>
-                                        <p className="item-description">Lorem ipsum dolar sit amet Lorem ipsum dolar sit Lorem ipsum dolar sit amet Lorem ipsum dolar sit Lorem ipsum dolar sit amet Lorem ipsum dolar sit.</p>
+                                        <p className="item-description">{e.summary}</p>
                                     </Col>
                                 </Row>
                             </div>
