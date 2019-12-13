@@ -156,6 +156,7 @@ $jumbotron-height: 560px;
     background-color: #3a3a3a;
     color: white;
     padding: 20px;
+    margin-bottom: 10px;
 }
 
 .related-title {
@@ -173,6 +174,10 @@ $jumbotron-height: 560px;
     margin-left: -15px;
 }
 
+.related-program-thumbnail {
+    max-height: 140px;
+}
+
 .carousel .slide {
     min-width: 35%;
     max-width: 35%;
@@ -181,4 +186,24 @@ $jumbotron-height: 560px;
     position: relative;
     text-align: center;
     background: #171717;
+}
+
+.modal-dialog {
+    margin: 0rem;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.modal-body {
+    padding: 0rem;
+    padding-top: 45%;
+}
+
+.modal-content {
+    height: 100vh;
+    border-radius: 0;
+    background-color: #282828;
+    color: white;
 }

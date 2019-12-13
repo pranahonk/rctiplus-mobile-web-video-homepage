@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import Img from 'react-image';
 import Lazyload from 'react-lazyload';
 import { Carousel } from 'react-responsive-carousel';
+import ReactJWPlayer from 'react-jw-player';
 
 import contentActions from '../redux/actions/contentActions';
+import searchActions from '../redux/actions/searchActions';
 
 //load default layout
 import Layout from '../components/Layouts/Default';
@@ -16,8 +18,9 @@ import ShareIcon from '@material-ui/icons/Share';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
-import { Button, Row, Col } from 'reactstrap';
+import { Button, Row, Col, Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import '../assets/scss/plugins/carousel/carousel.scss';
 import '../assets/scss/components/detail.scss'
@@ -31,17 +34,23 @@ class Detail extends React.Component {
             summary: '',
             portrait_image: '',
             starring: [],
+            trailer_url: '',
             genre: [],
             release_date: '',
             meta: {},
             resolution: 152,
-            episodes: []
+            episodes: [],
+            related_programs: [],
+            modal: false
         };
+
+        this.player = null;
     }
 
     componentDidMount() {
         this.props.getProgramDetail(23)
             .then(response => {
+                console.log(response);
                 if (response.status === 200 && response.data.status.code === 0) {
                     const data = response.data.data;
                     this.setState({
@@ -51,45 +60,81 @@ class Detail extends React.Component {
                         starring: data.starring,
                         genre: data.genre,
                         release_date: data.release_date,
+                        trailer_url: data.trailer_url,
                         meta: response.data.meta
                     });
+
+                    this.props.getProgramEpisodes(23)
+                        .then(response => {
+                            if (response.status === 200 && response.data.status.code === 0) {
+                                this.setState({ episodes: response.data.data });
+                            }
+                        })
+                        .catch(error => console.log(error));
+
+                    this.props.getRelatedProgram(23)
+                        .then(response => {
+                            if (response.status === 200 && response.data.status.code === 0) {
+                                this.setState({ related_programs: response.data.data });
+                            }
+                        })
+                        .catch(error => console.log(error))
                 }
             })
             .catch(error => console.log(error));
 
-        this.props.getProgramEpisodes(23)
-            .then(response => {
-                console.log(response);
-                if (response.status === 200 && response.data.status.code === 0) {
-                    this.setState({ episodes: response.data.data });
-                }
-            })
-            .catch(error => console.log(error));
+
+    }
+
+    toggle() {
+        this.setState({ modal: !this.state.modal }, () => {
+            if (this.state.modal) {
+                setTimeout(() => {
+                    if (this.player != null) {
+                        this.player.play();
+                    }
+                }, 1000);
+            }
+        });
     }
 
     render() {
         return (
             <Layout title="Program Detail">
                 <Navbar />
+                <Modal isOpen={this.state.modal} toggle={this.toggle.bind(this)}>
+                    <ModalHeader toggle={this.toggle.bind(this)}>
+                        <ArrowBackIcon onClick={this.toggle.bind(this)}/>
+                    </ModalHeader>
+                    <ModalBody>
+                        <ReactJWPlayer 
+                            playerId="example-id" 
+                            isAutoPlay={false}
+                            onReady={() => this.player = window.jwplayer('example-id')}
+                            playerScript="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"
+                            file={this.state.trailer_url}/>
+                    </ModalBody>
+                </Modal>
+
                 <div style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
                 <div className="content">
                     <div className="content-thumbnail">
-                        <Img src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, 'http://placehold.it/152x227']} />
+                        <Img src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, 'https://placehold.it/152x227']} />
                     </div>
                     <div className="watch-button-container">
-                        <Button className="watch-button">
+                        <Button onClick={this.toggle.bind(this)} className="watch-button">
                             <PlayCircleFilledIcon /> Watch Trailer
                         </Button>
                     </div>
                     <p className="content-title"><strong>{this.state.title}</strong></p>
-                    <p className="content-genre">| {this.state.release_date} | 
+                    <p className="content-genre">| {this.state.release_date} |
                         &nbsp;{this.state.genre.map((g, i) => {
-                            let str = g.name;
-                            if (i < this.state.genre.length - 1) {
-                                str += ' - ';
-                            }
-                            return str;
-                        })}&nbsp;
+                        let str = g.name;
+                        if (i < this.state.genre.length - 1) {
+                            str += ' - ';
+                        }
+                        return str;
+                    })}&nbsp;
                     |</p>
                     <p className="content-description">{this.state.summary}</p>
                     <p className="content-description">Starring: {this.state.starring.map((s, i) => {
@@ -126,7 +171,7 @@ class Detail extends React.Component {
                             <div key={e.id}>
                                 <Row>
                                     <Col>
-                                        <Img src={['http://placehold.it/140x84']} />
+                                        <Img src={[this.state.meta.image_path + '140' + e.landscape_image, 'https://placehold.it/140x84']} />
                                     </Col>
                                     <Col>
                                         <p className="item-title">S{e.season}:E{e.episode} {e.title}</p>
@@ -157,7 +202,7 @@ class Detail extends React.Component {
                         </Button>
                     </div>
                 </div>
-            
+
                 <div className="related-box">
                     <div className="related-menu">
                         <p className="related-title"><strong>Related</strong></p>
@@ -171,9 +216,9 @@ class Detail extends React.Component {
                                 showStatus={false}
                                 swipeScrollTolerance={1}
                                 swipeable={true}>
-                                {[1, 2, 3, 4].map(x => (
-                                    <Lazyload key={x} height={100}>
-                                        <Img src={['/static/placeholders/placeholder_potrait.png']} />
+                                {this.state.related_programs.map(rp => (
+                                    <Lazyload key={rp.id} height={100}>
+                                        <Img src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
                                     </Lazyload>
                                 ))}
                             </Carousel>
@@ -186,4 +231,7 @@ class Detail extends React.Component {
 
 }
 
-export default connect(state => state, contentActions)(Detail);
+export default connect(state => state, {
+    ...contentActions,
+    ...searchActions
+})(Detail);
