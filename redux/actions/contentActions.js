@@ -265,6 +265,40 @@ const getPhotoDetail = (photoId, infos = 'id,program_id,title,summary,release_da
     });
 };
 
+const getProgramDetail = programId => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/program/${programId}/detail`);
+            if (response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getProgramEpisodes = programId => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/program/${programId}/episode`);
+            if (response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 export default {
     getContents,
     getHomepageContents,
@@ -275,5 +309,7 @@ export default {
     getExtraUrl,
     getClipDetail,
     getClipUrl,
-    getPhotoDetail
+    getPhotoDetail,
+    getProgramDetail,
+    getProgramEpisodes
 };

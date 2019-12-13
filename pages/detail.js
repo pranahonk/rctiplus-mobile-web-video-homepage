@@ -4,6 +4,8 @@ import Img from 'react-image';
 import Lazyload from 'react-lazyload';
 import { Carousel } from 'react-responsive-carousel';
 
+import contentActions from '../redux/actions/contentActions';
+
 //load default layout
 import Layout from '../components/Layouts/Default';
 import Navbar from '../components/Includes/Navbar/NavDetail';
@@ -17,28 +19,82 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 
 import { Button, Row, Col } from 'reactstrap';
 
+import '../assets/scss/plugins/carousel/carousel.scss';
 import '../assets/scss/components/detail.scss'
 
 class Detail extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            title: '',
+            summary: '',
+            portrait_image: '',
+            starring: [],
+            genre: [],
+            release_date: '',
+            meta: {},
+            resolution: 152
+        };
+    }
+
+    componentDidMount() {
+        this.props.getProgramDetail(23)
+            .then(response => {
+                if (response.status === 200 && response.data.status.code === 0) {
+                    const data = response.data.data;
+                    this.setState({
+                        title: data.title,
+                        summary: data.summary,
+                        portrait_image: data.portrait_image,
+                        starring: data.starring,
+                        genre: data.genre,
+                        release_date: data.release_date,
+                        meta: response.data.meta
+                    });
+                }
+            })
+            .catch(error => console.log(error));
+
+        this.props.getProgramEpisodes(23)
+            .then(response => {
+                
+            })
+            .catch(error => console.log(error));
+    }
 
     render() {
         return (
             <Layout title="Program Detail">
                 <Navbar />
-                <div style={{ backgroundImage: 'url(http://placehold.it/500)' }} className="bg-jumbotron"></div>
+                <div style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
                 <div className="content">
                     <div className="content-thumbnail">
-                        <Img src={['http://placehold.it/152x227']} />
+                        <Img src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, 'http://placehold.it/152x227']} />
                     </div>
                     <div className="watch-button-container">
                         <Button className="watch-button">
                             <PlayCircleFilledIcon /> Watch Trailer
                         </Button>
                     </div>
-                    <p className="content-title"><strong>Dunia Terbalik</strong></p>
-                    <p className="content-genre">| 2017 | Drama - Komedi - Keluarga |</p>
-                    <p className="content-description">Dunia Terbalik adalah program series komedi yang mengangkat cerita tentang para suami yang ditinggalkan istrinya untuk bekerja di luar negeri. Dimulai dari kisah Akum, Aceng, Idoy dan satu musuh bebuyutan Aceng, Dadang. Mereka harus mendidik anak serta mengurus urusan rumah tangga yang biasanya menjadi urusan para wanita. Sementara istrinya harus menafkahi keluarga.</p>
-                    <p className="content-description">Artis: Artis 1, Artis 2, Artis 3, etc.</p>
+                    <p className="content-title"><strong>{this.state.title}</strong></p>
+                    <p className="content-genre">| {this.state.release_date} | 
+                        &nbsp;{this.state.genre.map((g, i) => {
+                            let str = g.name;
+                            if (i < this.state.genre.length - 1) {
+                                str += ' - ';
+                            }
+                            return str;
+                        })}&nbsp;
+                    |</p>
+                    <p className="content-description">{this.state.summary}</p>
+                    <p className="content-description">Starring: {this.state.starring.map((s, i) => {
+                        let str = s.name;
+                        if (i < this.state.starring.length - 1) {
+                            str += ', ';
+                        }
+                        return str;
+                    })}</p>
                     <div className="action-buttons">
                         <div className="action-button">
                             <ThumbUpIcon className="action-icon" />
@@ -126,4 +182,4 @@ class Detail extends React.Component {
 
 }
 
-export default connect(state => state, {})(Detail);
+export default connect(state => state, contentActions)(Detail);
