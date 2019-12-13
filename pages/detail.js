@@ -58,7 +58,7 @@ class Detail extends React.Component {
 
         this.props.getProgramEpisodes(23)
             .then(response => {
-                
+                console.log(response);
             })
             .catch(error => console.log(error));
     }
