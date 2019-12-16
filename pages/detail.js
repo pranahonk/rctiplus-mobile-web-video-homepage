@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import Img from 'react-image';
 import Lazyload from 'react-lazyload';
 import { Carousel } from 'react-responsive-carousel';
-import ReactJWPlayer from 'react-jw-player';
 
 import contentActions from '../redux/actions/contentActions';
 import searchActions from '../redux/actions/searchActions';
@@ -11,6 +10,8 @@ import searchActions from '../redux/actions/searchActions';
 //load default layout
 import Layout from '../components/Layouts/Default';
 import Navbar from '../components/Includes/Navbar/NavDetail';
+import PlayerModal from '../components/Modals';
+import ActionModal from '../components/Modals/ActionModal';
 
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
@@ -18,9 +19,8 @@ import ShareIcon from '@material-ui/icons/Share';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
-import { Button, Row, Col, Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { Button, Row, Col } from 'reactstrap';
 
 import '../assets/scss/plugins/carousel/carousel.scss';
 import '../assets/scss/components/detail.scss'
@@ -41,7 +41,8 @@ class Detail extends React.Component {
             resolution: 152,
             episodes: [],
             related_programs: [],
-            modal: false
+            modal: false,
+            rate_modal: false
         };
 
         this.player = null;
@@ -98,23 +99,24 @@ class Detail extends React.Component {
         });
     }
 
+    toggleRateModal() {
+        this.setState({ rate_modal: !this.state.rate_modal });
+    }
+
     render() {
         return (
             <Layout title="Program Detail">
                 <Navbar />
-                <Modal isOpen={this.state.modal} toggle={this.toggle.bind(this)}>
-                    <ModalHeader toggle={this.toggle.bind(this)}>
-                        <ArrowBackIcon onClick={this.toggle.bind(this)}/>
-                    </ModalHeader>
-                    <ModalBody>
-                        <ReactJWPlayer 
-                            playerId="example-id" 
-                            isAutoPlay={false}
-                            onReady={() => this.player = window.jwplayer('example-id')}
-                            playerScript="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"
-                            file={this.state.trailer_url}/>
-                    </ModalBody>
-                </Modal>
+                <PlayerModal 
+                    open={this.state.modal}
+                    toggle={this.toggle.bind(this)}
+                    onReady={() => this.player = window.jwplayer('example-id')}
+                    playerId="example-id"
+                    videoUrl={this.state.trailer_url}/>
+
+                <ActionModal 
+                    open={this.state.rate_modal}
+                    toggle={this.toggleRateModal.bind(this)}/>
 
                 <div style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
                 <div className="content">
@@ -146,7 +148,7 @@ class Detail extends React.Component {
                     })}</p>
                     <div className="action-buttons">
                         <div className="action-button">
-                            <ThumbUpIcon className="action-icon" />
+                            <ThumbUpIcon onClick={this.toggleRateModal.bind(this)} className="action-icon" />
                             <p>Rate</p>
                         </div>
                         <div className="action-button">

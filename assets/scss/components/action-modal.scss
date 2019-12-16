@@ -1,0 +1,25 @@
+.modal-body {
+    text-align: center;
+}
+
+.modal-icon {
+    border-radius: 100%;
+    border: 1px solid white;
+    padding: 25px;
+    width: 100px !important;
+    height: 100px !important;
+    margin: 15px;
+}
+
+.close-container {
+    position: fixed;
+    bottom: 0;
+    margin-bottom: 35px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.close-icon {
+    width: 60px !important;
+    height: 60px !important;
+}
