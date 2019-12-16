@@ -1,5 +1,7 @@
 // https://medium.com/@bhavikbamania/a-beginner-guide-for-redux-with-next-js-4d018e1342b2
 
+export const BASE_URL = 'http://localhost:3000';
+
 export const FE = 'https://rc-rctiplus.com';
 export const VERSION = '0.9.2';
 export const API = 'https://rc-api.rctiplus.com';

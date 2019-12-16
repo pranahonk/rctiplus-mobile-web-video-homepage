@@ -4,6 +4,7 @@ import Img from 'react-image';
 import Lazyload from 'react-lazyload';
 import { Carousel } from 'react-responsive-carousel';
 import Router, { withRouter } from 'next/router';
+import Head from 'next/head';
 
 import { showAlert } from '../../utils/helpers';
 
@@ -29,6 +30,8 @@ import { Button, Row, Col } from 'reactstrap';
 import '../../assets/scss/plugins/carousel/carousel.scss';
 import '../../assets/scss/components/detail.scss'
 
+import { BASE_URL } from '../../config';
+
 class Detail extends React.Component {
 
     constructor(props) {
@@ -51,7 +54,10 @@ class Detail extends React.Component {
             season: 1,
             episode_page: 1,
             length: 5,
-            show_more_allowed: true
+            show_more_allowed: true,
+            caption: '',
+            url: '',
+            hashtags: []
         };
 
         this.player = null;
@@ -134,8 +140,13 @@ class Detail extends React.Component {
         this.setState({ rate_modal: !this.state.rate_modal });
     }
 
-    toggleActionSheet() {
-        this.setState({ action_sheet: !this.state.action_sheet });
+    toggleActionSheet(caption = '', url = '', hashtags = []) {
+        this.setState({ 
+            action_sheet: !this.state.action_sheet,
+            caption: caption,
+            url: url,
+            hashtags: hashtags
+        });
     }
 
     render() {
@@ -163,8 +174,11 @@ class Detail extends React.Component {
                     toggle={this.toggleRateModal.bind(this)}/>
 
                 <ActionSheet
+                    caption={this.state.caption}
+                    url={this.state.url}
                     open={this.state.action_sheet}
-                    toggle={this.toggleActionSheet.bind(this)}/>
+                    hashtags={this.state.hashtags}
+                    toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'])}/>
 
                 <div style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
                 <div className="content">
@@ -204,7 +218,7 @@ class Detail extends React.Component {
                             <p>My List</p>
                         </div>
                         <div className="action-button">
-                            <ShareIcon onClick={this.toggleActionSheet.bind(this)} className="action-icon" />
+                            <ShareIcon onClick={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
                             <p>Share</p>
                         </div>
                     </div>
@@ -230,7 +244,7 @@ class Detail extends React.Component {
                                                 <PlaylistAddIcon className="action-icon" />
                                             </div>
                                             <div className="action-button">
-                                                <ShareIcon className="action-icon" />
+                                                <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
                                             </div>
                                             <div className="action-button">
                                                 <GetAppIcon onClick={this.showOpenPlaystoreAlert.bind(this)} className="action-icon" />
@@ -249,7 +263,7 @@ class Detail extends React.Component {
                     {showMoreButton}
                     
                 </div>
-
+                
                 <div className="related-box">
                     <div className="related-menu">
                         <p className="related-title"><strong>Related</strong></p>
@@ -280,10 +294,6 @@ class Detail extends React.Component {
     }
 
 }
-
-Detail.getInitialProps = context => {
-    console.log(context);
-};
 
 export default connect(state => state, {
     ...contentActions,
