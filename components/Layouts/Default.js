@@ -61,7 +61,6 @@ const Default = ({ children, title }) => {
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 				<link rel="icon" href="/static/logo/rcti.png?v=1.0" />
 				<link rel="manifest" href="/static/manifest.json" />
-				<script src="https://use.fontawesome.com/e1f61e4a83.js"></script>
 			</Head>
 				{/* <Offline onChange={(online) => {
 					noConnectionRef.current.classList.remove('no-connection-open');

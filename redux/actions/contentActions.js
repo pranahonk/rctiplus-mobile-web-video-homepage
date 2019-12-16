@@ -282,10 +282,10 @@ const getProgramDetail = programId => {
     });
 };
 
-const getProgramEpisodes = programId => {
+const getProgramEpisodes = (programId, season = 1, page = 1, length = 5, infos = 'id,program_id,title,portrait_image,landscape_image,summary,season,episode,duration') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/program/${programId}/episode`);
+            const response = await axios.get(`/v1/program/${programId}/episode?season=${season}&page=${page}&length=${length}&infos=${infos}`);
             if (response.data.status.code === 0) {
                 resolve(response);
             }

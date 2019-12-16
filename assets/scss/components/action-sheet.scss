@@ -1,9 +1,13 @@
-.modal {
+.modal-edit {
     transform: translate(0, 60%) !important;
 }
 
-.modal-body {
-    padding: 10px;
+.modal-body-edit {
+    padding: 5px;
+}
+
+.sheet-title {
+    font-size: 18px;
 }
 
 .sheet-action-button {
@@ -13,5 +17,9 @@
     display: inline-block;
     width: 55px;
     height: 55px;
+    margin: 10px;
+}
+
+.close-icon-button {
     margin: 10px;
 }

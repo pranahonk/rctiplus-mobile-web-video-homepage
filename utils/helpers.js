@@ -3,11 +3,11 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 
 // import '../assets/scss/components/alert.scss';
 
-export const showAlert = (text, title, confirmText = 'OK') => {
+export const showAlert = (text, title, confirmText = 'OK', cancelText = '', confirmCallback = () => {}) => {
     let options = {
         text: text,
         title: title,
-        showCancelButton: false,
+        showCancelButton: cancelText != '',
         confirmButtonText: confirmText,
         buttonsStyling: false,
         customClass: {
@@ -17,7 +17,12 @@ export const showAlert = (text, title, confirmText = 'OK') => {
         },
         width: '85%'
     };
-    Swal.fire(options);
+    Swal.fire(options)
+        .then(result => {
+            if (result.value) {
+                confirmCallback();
+            }
+        });
 };
 
 export const showConfirmAlert = (text, title, callback, buttonInverse = false, confirmText = 'OK', cancelText = 'Cancel') => {
@@ -41,14 +46,14 @@ export const showConfirmAlert = (text, title, callback, buttonInverse = false, c
     }
     
     Swal.fire(options)
-    .then(result => {
-        let whichButton = result.value;        
-        if (buttonInverse) {
-            whichButton = !result.value;
-        }
+        .then(result => {
+            let whichButton = result.value;        
+            if (buttonInverse) {
+                whichButton = !result.value;
+            }
 
-        if (whichButton) {
-            callback();
-        }
-    });
+            if (whichButton) {
+                callback();
+            }
+        });
 };
