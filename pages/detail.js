@@ -12,6 +12,7 @@ import Layout from '../components/Layouts/Default';
 import Navbar from '../components/Includes/Navbar/NavDetail';
 import PlayerModal from '../components/Modals';
 import ActionModal from '../components/Modals/ActionModal';
+import ActionSheet from '../components/Modals/ActionSheet';
 
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
@@ -42,7 +43,8 @@ class Detail extends React.Component {
             episodes: [],
             related_programs: [],
             modal: false,
-            rate_modal: false
+            rate_modal: false,
+            action_sheet: false
         };
 
         this.player = null;
@@ -84,7 +86,7 @@ class Detail extends React.Component {
             })
             .catch(error => console.log(error));
 
-
+        this.setState({ action_sheet: true });
     }
 
     toggle() {
@@ -117,6 +119,10 @@ class Detail extends React.Component {
                 <ActionModal 
                     open={this.state.rate_modal}
                     toggle={this.toggleRateModal.bind(this)}/>
+
+                <ActionSheet
+                    open={this.state.action_sheet}
+                    toggle={() => {}}/>
 
                 <div style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
                 <div className="content">

@@ -1,3 +1,17 @@
 .modal {
-    transform: translate(0, 60%);
+    transform: translate(0, 60%) !important;
+}
+
+.modal-body {
+    padding: 10px;
+}
+
+.sheet-action-button {
+    font-size: 35px;
+    border: 1px solid #fff;
+    border-radius: 100%;
+    display: inline-block;
+    width: 55px;
+    height: 55px;
+    margin: 10px;
 }

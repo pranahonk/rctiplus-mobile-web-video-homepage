@@ -20,10 +20,27 @@ class ActionSheet extends React.Component {
         return (
             <Modal isOpen={this.props.open} toggle={this.props.toggle}>
                 <ModalBody>
-                    <ThumbUpAltOutlinedIcon className="modal-icon"/>
-                    <ThumbDownOutlinedIcon className="modal-icon"/>
-                    <div className="close-container">
-                        <CancelIcon className="close-icon" onClick={this.props.toggle}/>
+                    <p className="sheet-title">Share this program</p>
+                    <div className="sheet-action-button-container">
+                        <div className="sheet-action-button">
+                            <i className="fa fa-facebook"></i>
+                        </div>
+                        <div className="sheet-action-button">
+                            <i className="fa fa-twitter"></i>
+                        </div>
+                        <div className="sheet-action-button">
+                            <i className="fab fa-line"></i>
+                        </div>
+                        <br/>
+                        <div className="sheet-action-button">
+                            <i className="fa fa-envelope"></i>
+                        </div>
+                        <div className="sheet-action-button">
+                            <i className="fa fa-whatsapp"></i>
+                        </div>
+                        <div className="sheet-action-button">
+                            <i className="fa fa-copy"></i>
+                        </div>
                     </div>
                 </ModalBody>
             </Modal>
