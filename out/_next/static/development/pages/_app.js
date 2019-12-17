@@ -10501,6 +10501,11 @@ var initialState = {
         username_type: action.username_type
       });
 
+    case 'OTP':
+      return _babel_runtime_corejs2_core_js_object_assign__WEBPACK_IMPORTED_MODULE_0___default()({}, state, {
+        otp: action.otp
+      });
+
     default:
       return state;
   }

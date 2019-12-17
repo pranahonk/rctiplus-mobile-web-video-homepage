@@ -5,6 +5,7 @@ import Lazyload from 'react-lazyload';
 import { Carousel } from 'react-responsive-carousel';
 import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
+import fetch from 'isomorphic-unfetch';
 
 import { showAlert } from '../../utils/helpers';
 
@@ -30,9 +31,24 @@ import { Button, Row, Col } from 'reactstrap';
 import '../../assets/scss/plugins/carousel/carousel.scss';
 import '../../assets/scss/components/detail.scss'
 
-import { BASE_URL } from '../../config';
+import { BASE_URL, DEV_API, VISITOR_TOKEN } from '../../config';
+import { getCookie } from '../../utils/cookie';
 
 class Detail extends React.Component {
+
+    static async getInitialProps(ctx) {
+        const programId = ctx.query.id;
+        const accessToken = getCookie('ACCESS_TOKEN');
+        const res = await fetch(`${DEV_API}/api/v1/program/${programId}/detail`, {
+            method: 'GET',
+            headers: {
+                'Authorization': accessToken ? accessToken : VISITOR_TOKEN
+            }
+        });
+        const error_code = res.statusCode > 200 ? res.statusCode : false;
+        const data = await res.json();
+        return { initial: data };
+    }
 
     constructor(props) {
         super(props);
@@ -61,6 +77,7 @@ class Detail extends React.Component {
         };
 
         this.player = null;
+        console.log(this.props.initial);
     }
 
     showMore() {
@@ -159,8 +176,12 @@ class Detail extends React.Component {
                             </div>);
         }
 
+        // https://www.it-consultis.com/blog/best-seo-practices-for-react-websites
         return (
-            <Layout title="Program Detail">
+            <Layout title={this.props.initial.data.title + ' | Program Pilihan'}>
+                <Head>
+                    <meta name="description" content={this.props.initial.data.summary}/>
+                </Head>
                 <Navbar />
                 <PlayerModal 
                     open={this.state.modal}
@@ -183,7 +204,7 @@ class Detail extends React.Component {
                 <div style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
                 <div className="content">
                     <div className="content-thumbnail">
-                        <Img src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, 'https://placehold.it/152x227']} />
+                        <Img className="content-thumbnail-image" src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
                     </div>
                     <div className="watch-button-container">
                         <Button onClick={this.toggle.bind(this)} className="watch-button">
@@ -270,6 +291,7 @@ class Detail extends React.Component {
                         {/* <p className="related-subtitle">Show more &gt;</p> */}
                         <div className="related-slider">
                             <Carousel
+                                id="detail-carousel"
                                 showThumbs={false}
                                 showIndicators={false}
                                 stopOnHover={true}

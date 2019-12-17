@@ -44,6 +44,11 @@ $jumbotron-height: 560px;
     text-align: center;
 }
 
+.content-thumbnail-image {
+    width: 152px;
+    height: 227px;
+}
+
 .content-title {
     margin-top: 10px;
     font-size: 15px;
@@ -178,10 +183,10 @@ $jumbotron-height: 560px;
     max-height: 140px;
 }
 
-.carousel .slide {
-    min-width: 35%;
-    max-width: 35%;
-    height: 70%;
+.related-slider .slide {
+    min-width: 100px;
+    max-width: 100px;
+    height: 130px;
     margin: 3px;
     position: relative;
     text-align: center;

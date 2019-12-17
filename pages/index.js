@@ -35,7 +35,7 @@ import Panel3 from '../components/Panels/Pnl_3';
 import Panel4 from '../components/Panels/Pnl_4';
 
 //load home page scss
-import '../assets/scss/components/homepage.scss';
+// import '../assets/scss/components/homepage.scss';
 
 class Index extends React.Component {
 
