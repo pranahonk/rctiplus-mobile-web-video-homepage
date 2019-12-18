@@ -29,7 +29,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import { Button, Row, Col } from 'reactstrap';
 
 import '../../assets/scss/plugins/carousel/carousel.scss';
-import '../../assets/scss/components/detail.scss'
+import '../../assets/scss/components/detail.scss';
 
 import { BASE_URL, DEV_API, VISITOR_TOKEN } from '../../config';
 import { getCookie } from '../../utils/cookie';
@@ -77,7 +77,6 @@ class Detail extends React.Component {
         };
 
         this.player = null;
-        console.log(this.props.initial);
     }
 
     showMore() {

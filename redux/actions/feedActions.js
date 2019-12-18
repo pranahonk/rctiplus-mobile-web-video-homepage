@@ -3,19 +3,23 @@ import { API, VISITOR_TOKEN } from '../../config';
 import { getCookie } from '../../utils/cookie';
 
 const tokenKey = 'ACCESS_TOKEN';
-const accessToken = getCookie(tokenKey);
 
 const axios = ax.create({
     baseURL: API + '/api',
     headers: {
-        'Authorization': accessToken == undefined ? VISITOR_TOKEN : accessToken
+        'Authorization': VISITOR_TOKEN
     }
 });
 
 const getFeeds = (page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/feed?page=${page}&length=${length}`);
+            const accessToken = getCookie(tokenKey);
+            const response = await axios.get(`/v1/feed?page=${page}&length=${length}`, {
+                headers: {
+                    'Authorization': accessToken ? accessToken : VISITOR_TOKEN
+                }
+            });
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_FEEDS',
@@ -35,10 +39,15 @@ const getFeeds = (page = 1, length = 10) => {
     });
 };
 
-const getExclusives = (type, page = 1, length = 10) => {
+const getExclusives = (type = 'all', page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/exclusive?type=${type}&page=${page}&length=${length}`);
+            const accessToken = getCookie(tokenKey);
+            const response = await axios.get(`/v1/exclusive?type=${type}&page=${page}&length=${length}`, {
+                headers: {
+                    'Authorization': accessToken ? accessToken : VISITOR_TOKEN
+                }
+            });
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_EXCLUSIVES',
@@ -61,7 +70,12 @@ const getExclusives = (type, page = 1, length = 10) => {
 const getExclusiveCategory = () => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/exclusive/category`);
+            const accessToken = getCookie(tokenKey);
+            const response = await axios.get(`/v1/exclusive/category`, {
+                headers: {
+                    'Authorization': accessToken ? accessToken : VISITOR_TOKEN
+                }
+            });
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_EXCLUSIVE_CATEGORY',

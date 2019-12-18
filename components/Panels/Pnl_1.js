@@ -12,39 +12,39 @@ import '../../assets/scss/components/panel.scss';
 
 class Pnl_1 extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
+	constructor(props) {
+		super(props);
+	}
 
-  render() {
-    return (
-      <div className="homepage-content" id="horizontal_landscape_large">
-        <h4 className="content-title">{this.props.title}</h4>
-        <Carousel
-          showThumbs={false}
-          showIndicators={false}
-          stopOnHover={true}
-          showArrows={false}
-          showStatus={false}
-          swipeScrollTolerance={1}
-          swipeable={true}
-        >
-          {this.props.content.map(c => (
-            <Lazyload key={c.content_id} height={200}>
-              <div>
-                <Img src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
-                <PlayCircleOutlineIcon className="play-btn-1" />
-              </div>
-              <div className="txt-slider-panel no-bg">
-                <h5>{c.program_title ? c.program_title : this.props.title}</h5>
-                <p>{c.content_title}</p>
-              </div>
-            </Lazyload>
-          ))}
-        </Carousel>
-      </div>
-    );
-  }
+	render() {
+		return (
+			<div className="homepage-content" id="horizontal_landscape_large">
+				<h4 className="content-title">{this.props.title}</h4>
+				<Carousel
+					showThumbs={false}
+					showIndicators={false}
+					stopOnHover={true}
+					showArrows={false}
+					showStatus={false}
+					swipeScrollTolerance={1}
+					swipeable={true}
+				>
+					{this.props.content.map(c => (
+						<Lazyload key={c.content_id} height={200}>
+							<div>
+								<Img src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+								<PlayCircleOutlineIcon className="play-btn-1" />
+							</div>
+							<div className="txt-slider-panel no-bg">
+								<h5>{c.program_title ? c.program_title : this.props.title}</h5>
+								<p>{c.content_title}</p>
+							</div>
+						</Lazyload>
+					))}
+				</Carousel>
+			</div>
+		);
+	}
 }
 
 export default connect(state => state, contentActions)(Pnl_1);
