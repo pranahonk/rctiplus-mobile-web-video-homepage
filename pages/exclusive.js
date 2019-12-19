@@ -26,8 +26,6 @@ import {
 import ShareIcon from '@material-ui/icons/Share';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 
-//load home page scss
-import '../assets/scss/components/homepage.scss';
 import '../assets/scss/components/exclusive.scss';
 
 class Exclusive extends React.Component {
@@ -210,7 +208,7 @@ class Exclusive extends React.Component {
 								<div className="program-container">
 									{this.state.feeds['All'] && this.state.feeds['All'].map(feed => (
 										<Row key={feed.id} className="program-item row-edit">
-											<Col>
+											<Col className="col-edit">
 												<Row>
 													<Col xs="2">
 														<Img className="program-rounded-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
@@ -248,12 +246,12 @@ class Exclusive extends React.Component {
 										<div className="program-container">
 											{this.state.feeds[c.name] && this.state.feeds[c.name].map(feed => (
 												<Row key={feed.id} className="program-item row-edit">
-													<Col>
+													<Col className="col-edit">
 														<Row>
 															<Col xs="2">
 																<Img className="program-rounded-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
 															</Col>
-															<Col xs="8">
+															<Col xs="7">
 																<div className="program-label">
 																	<div className="program-title">
 																		<strong>
@@ -263,8 +261,8 @@ class Exclusive extends React.Component {
 																	<TimeAgo className="program-subtitle" date={Date.now() - 4500000} />
 																</div>
 															</Col>
-															<Col>
-																<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label program-share-button" />
+															<Col className="program-share-button">
+																<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label"/>
 															</Col>
 														</Row>
 														<div onClick={this.toggle.bind(this, feed.link_video)}>

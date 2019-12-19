@@ -7,6 +7,22 @@ $primary-btn-bg-color-login: #DB2828;
 $primary-btn-border-color-login: #DB2828;
 $text-placeholder-color-login: #a8a8a8;
 
+ul#exclusive .exclusive-item{
+	margin-bottom: -1px;
+	width: auto;
+	text-align: center;
+	color: #fff important;
+	font-size:11px;
+}
+
+ul#trending .exclusive-item{
+	margin-bottom: -1px;
+	width: auto;
+	text-align: center;
+	color: #fff important;
+	font-size:11px;
+}
+
 .nav-exclusive-wrapper {
     margin-top: 70px;
 }
@@ -42,13 +58,14 @@ $text-placeholder-color-login: #a8a8a8;
 }
 
 .container-box {
-    margin: 0px auto;
+    margin: 0px auto !important;
     background-color: $primary-bg-color;
     color: $primary-text-color;
     width: 100%;
     height: 500px;
     object-fit: contain;
     border-radius: 30px;
+    padding: 0 !important;
 }
 
 .content-tab-exclusive {
@@ -82,6 +99,7 @@ $text-placeholder-color-login: #a8a8a8;
 
 .program-share-button {
     color: white;
+    margin-left: -15px !important;
 }
 
 .program-rounded-thumbnail {
@@ -116,4 +134,8 @@ $text-placeholder-color-login: #a8a8a8;
 
 .row-edit {
     margin-left: 0;
+}
+
+.col-edit {
+    padding: 0 !important;
 }
