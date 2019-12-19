@@ -67,7 +67,7 @@ class Exclusive extends React.Component {
 		this.props.getExclusiveCategory()
 			.then(response => {
 				const dictFeeds = {};
-				const categories = [{ name: 'WKWK' }, { name: 'All' }];
+				const categories = [{ name: 'All' }];
 				categories.push.apply(categories, response.data.data);
 				for (let i = 0; i < categories.length; i++) {
 					dictFeeds[categories[i].name] = [];
