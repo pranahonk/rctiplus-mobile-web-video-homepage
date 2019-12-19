@@ -5,9 +5,8 @@ import feedActions from '../redux/actions/feedActions';
 import initialize from '../utils/initialize';
 import TimeAgo from 'react-timeago';
 import Img from 'react-image';
+import BottomScrollListener from 'react-bottom-scroll-listener';
 import classnames from 'classnames';
-import Lazyload from 'react-lazyload';
-import TextTruncate from 'react-text-truncate';
 
 import Layout from '../components/Layouts/Default';
 import NavDefault from '../components/Includes/Navbar/NavDefault';
@@ -43,7 +42,9 @@ class Exclusive extends React.Component {
 			active_tab: '1',
 			contents: [],
 			meta: null,
-			feeds: [],
+			categories: [],
+			feeds: {},
+			feed_states: {},
 			categorical_feeds: {},
 			resolution: 593,
 			modal: false,
@@ -61,35 +62,85 @@ class Exclusive extends React.Component {
 		this.props.getContents(1).then(() => {
 			this.setState({
 				contents: this.props.contents.homepage_content,
-				meta: this.props.contents.meta,
+				meta: this.props.contents.meta
 			});
 		});
 
-		this.props.getExclusives()
+		this.props.getExclusiveCategory()
 			.then(response => {
-				let categoricalFeeds = {};
-				const feeds = this.props.feeds.data;
-				for (let i = 0; i < feeds.length; i++) {
-
+				const dictFeeds = {};
+				const categories = response.data.data;
+				for (let i = 0; i < categories.length; i++) {
+					dictFeeds[categories[i].name] = [];
 				}
-				console.log(feeds);
-				this.setState({
-					feeds: feeds,
-					meta: this.props.feeds.meta
+
+				this.setState({ categories: categories }, () => {
+					this.props.getExclusives()
+						.then(response => {
+							const categoricalFeeds = {};
+							const feeds = response.data.data;
+							for (let i = 0; i < feeds.length; i++) {
+								if (feeds[i].type in categoricalFeeds) {
+									categoricalFeeds[feeds[i].type].push(feeds[i]);
+								}
+								else {
+									categoricalFeeds[feeds[i].type] = [feeds[i]];
+								}
+							}
+
+							const dictFeeds = this.state.feeds;
+							dictFeeds['All'] = feeds;
+
+							const dictFeedStates = this.state.feed_states;
+							dictFeedStates['All'] = response.data.meta;
+
+							this.setState({
+								feeds: dictFeeds,
+								feed_states: dictFeedStates,
+								meta: this.props.feeds.meta
+							});
+						})
+						.catch(error => console.log(error));
 				});
 			})
 			.catch(error => console.log(error));
+
+
 	}
 
-	toggleTab(tab) {
+	bottomScrollFetch(tabName) {
+		console.log(tabName);
+	}
+
+	toggleTab(tab, tabName = 'All') {
 		if (this.state.active_tab !== tab) {
-			this.setState({ active_tab: tab });
+			this.setState({ active_tab: tab }, () => {
+				if (!this.state.feed_states[tabName]) {
+					this.props.getExclusives(tabName)
+						.then(response => {
+							const feeds = response.data.data;
+							const dictFeeds = this.state.feeds;
+							dictFeeds[tabName] = feeds;
+
+							const dictFeedStates = this.state.feed_states;
+							dictFeedStates[tabName] = response.data.meta;
+
+							this.setState({
+								feeds: dictFeeds,
+								feed_states: dictFeedStates,
+								meta: this.props.feeds.meta
+							});
+						})
+						.catch(error => console.log(error));
+				}
+				
+			});
 		}
 	}
 
 	toggle(video_url = '') {
-        this.setState({ modal: !this.state.modal }, () => {
-            if (this.state.modal) {
+		this.setState({ modal: !this.state.modal }, () => {
+			if (this.state.modal) {
 				this.setState({ trailer_url: video_url }, () => {
 					setTimeout(() => {
 						if (this.player != null) {
@@ -97,129 +148,140 @@ class Exclusive extends React.Component {
 						}
 					}, 1000);
 				});
-            }
-        });
-    }
+			}
+		});
+	}
 
 	toggleActionSheet(caption = '', url = '', hashtags = []) {
-        this.setState({ 
-            action_sheet: !this.state.action_sheet,
-            caption: caption,
-            url: url,
-            hashtags: hashtags
-        });
-    }
+		this.setState({
+			action_sheet: !this.state.action_sheet,
+			caption: caption,
+			url: url,
+			hashtags: hashtags
+		});
+	}
 
 	render() {
 		return (
 			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
-				<NavDefault disableScrollListener/>
-				
-				<PlayerModal 
-                    open={this.state.modal}
-                    toggle={this.toggle.bind(this)}
-                    onReady={() => this.player = window.jwplayer('example-id')}
-                    playerId="example-id"
-                    videoUrl={this.state.trailer_url}/>
+				<NavDefault disableScrollListener />
+
+				{this.state.categories.map((c, i) => (
+					<BottomScrollListener 
+						key={i}
+						offset={50}
+						onBottom={this.bottomScrollFetch.bind(this, c.name)} />
+				))}
+
+				<PlayerModal
+					open={this.state.modal}
+					toggle={this.toggle.bind(this)}
+					onReady={() => this.player = window.jwplayer('example-id')}
+					playerId="example-id"
+					videoUrl={this.state.trailer_url} />
 
 				<ActionSheet
-                    caption={this.state.caption}
-                    url={this.state.url}
-                    open={this.state.action_sheet}
-                    hashtags={this.state.hashtags}
-                    toggle={this.toggleActionSheet.bind(this, '', '', ['rcti'])}/>
+					caption={this.state.caption}
+					url={this.state.url}
+					open={this.state.action_sheet}
+					hashtags={this.state.hashtags}
+					toggle={this.toggleActionSheet.bind(this, '', '', ['rcti'])} />
 
 				<div className="nav-exclusive-wrapper">
 					<Nav tabs id="exclusive">
+
 						<NavItem className="exclusive-item">
-							<NavLink 
-								onClick={this.toggleTab.bind(this, '1')}
+							<NavLink
+								onClick={this.toggleTab.bind(this, '1', 'All')}
 								className={classnames({ active: this.state.active_tab == '1' })}>All</NavLink>
 						</NavItem>
-						<NavItem className="exclusive-item">
-							<NavLink
-								onClick={this.toggleTab.bind(this, '2')}
-								className={classnames({ active: this.state.active_tab == '2' })}>Clip</NavLink>
-						</NavItem>
-						<NavItem className="exclusive-item">
-							<NavLink
-								onClick={this.toggleTab.bind(this, '3')}
-								className={classnames({ active: this.state.active_tab == '3' })}>Photo</NavLink>
-						</NavItem>
-						<NavItem className="exclusive-item">
-							<NavLink
-								onClick={this.toggleTab.bind(this, '4')}
-								className={classnames({ active: this.state.active_tab == '4' })}>Entertainment</NavLink>
-						</NavItem>
-						<NavItem className="exclusive-item">
-							<NavLink
-								onClick={this.toggleTab.bind(this, '5')}
-								className={classnames({ active: this.state.active_tab == '5' })}>News</NavLink>
-						</NavItem>
-						<NavItem className="exclusive-item">
-							<NavLink
-								onClick={this.toggleTab.bind(this, '6')}
-								className={classnames({ active: this.state.active_tab == '6' })}>Bloopers</NavLink>
-						</NavItem>
+						{this.state.categories.map((c, i) => (
+							<NavItem key={i} className="exclusive-item">
+								<NavLink
+									onClick={this.toggleTab.bind(this, i + 2, c.name)}
+									className={classnames({ active: this.state.active_tab == i + 2 })}>{c.name}</NavLink>
+							</NavItem>
+						))}
+
 					</Nav>
 					<TabContent className="container-box" activeTab={this.state.active_tab}>
 						<TabPane tabId="1">
 							<div className="content-tab-exclusive">
 								<div className="program-container">
-									{this.state.feeds.map(feed => (
-										<Lazyload key={feed.id} height={20}>
-											<Row className="program-item row-edit">
-												<Col>
-													<Row>
-														<Col xs="2">
-															<Img className="program-rounded-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
-														</Col>
-														<Col xs="8">
-															<div className="program-label">
-																<p className="program-title">
-																	<strong>
-																		<TextTruncate 
-																			line={2}
-																			element="span"
-																			truncateText="..."
-																			text={feed.title}/>
-																	</strong>
-																</p>
-																<TimeAgo className="program-subtitle" date={Date.now() - 4500000}/>
+									{this.state.feeds['All'] && this.state.feeds['All'].map(feed => (
+										<Row key={feed.id} className="program-item row-edit">
+											<Col>
+												<Row>
+													<Col xs="2">
+														<Img className="program-rounded-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
+													</Col>
+													<Col xs="8">
+														<div className="program-label">
+															<div className="program-title">
+																<strong>
+																	{feed.title.substring(0, 25) + (feed.title.length > 25 ? '...' : '')}
+																</strong>
 															</div>
-														</Col>
-														<Col>
-															<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label program-share-button"/>
-														</Col>
-													</Row>
-													<div onClick={this.toggle.bind(this, feed.link_video)}>
-														<Img className="program-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.portrait_image, '/static/placeholders/placeholder_landscape.png']} />
-														<PlayCircleOutlineIcon className="play-btn-icon" />
-													</div>
-													<span className="program-title program-title-bottom">{feed.summary}</span>
-												</Col>
-											</Row>
-										</Lazyload>
+															<TimeAgo className="program-subtitle" date={Date.now() - 4500000} />
+														</div>
+													</Col>
+													<Col>
+														<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label program-share-button" />
+													</Col>
+												</Row>
+												<div onClick={this.toggle.bind(this, feed.link_video)}>
+													<Img className="program-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.portrait_image, '/static/placeholders/placeholder_landscape.png']} />
+													<PlayCircleOutlineIcon className="play-btn-icon" />
+												</div>
+												<span className="program-title program-title-bottom">{feed.summary}</span>
+											</Col>
+										</Row>
 									))}
-									
+
 								</div>
 							</div>
 						</TabPane>
-						<TabPane tabId="2">
-							<div className="content-tab-exclusive">tab Clip</div>
-						</TabPane>
-						<TabPane tabId="3">
-							<div className="content-tab-exclusive">tab Photo</div>
-						</TabPane>
-						<TabPane tabId="4">
-							<div className="content-tab-exclusive">tab Entertainment</div>
-						</TabPane>
-						<TabPane tabId="5">
-							<div className="content-tab-exclusive">tab News</div>
-						</TabPane>
-						<TabPane tabId="6">
-							<div className="content-tab-exclusive">tab Bloopers</div>
-						</TabPane>
+						{this.state.categories.map((c, i) => (
+							<TabPane key={i} tabId={i + 2}>
+								<div className="content-tab-exclusive">
+									<div className="content-tab-exclusive">
+										<div className="program-container">
+											{this.state.feeds[c.name] && this.state.feeds[c.name].map(feed => (
+												<Row key={feed.id} className="program-item row-edit">
+													<Col>
+														<Row>
+															<Col xs="2">
+																<Img className="program-rounded-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
+															</Col>
+															<Col xs="8">
+																<div className="program-label">
+																	<div className="program-title">
+																		<strong>
+																			{feed.title.substring(0, 25) + (feed.title.length > 25 ? '...' : '')}
+																		</strong>
+																	</div>
+																	<TimeAgo className="program-subtitle" date={Date.now() - 4500000} />
+																</div>
+															</Col>
+															<Col>
+																<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label program-share-button" />
+															</Col>
+														</Row>
+														<div onClick={this.toggle.bind(this, feed.link_video)}>
+															<Img className="program-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.portrait_image, '/static/placeholders/placeholder_landscape.png']} />
+															<PlayCircleOutlineIcon className="play-btn-icon" />
+														</div>
+														<span className="program-title program-title-bottom">{feed.summary}</span>
+													</Col>
+												</Row>
+											))}
+
+										</div>
+									</div>
+								</div>
+							</TabPane>
+						))}
+
 					</TabContent>
 				</div>
 			</Layout>

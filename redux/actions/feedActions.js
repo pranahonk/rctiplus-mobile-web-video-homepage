@@ -48,6 +48,7 @@ const getExclusives = (type = 'all', page = 1, length = 10) => {
                     'Authorization': accessToken ? accessToken : VISITOR_TOKEN
                 }
             });
+
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_EXCLUSIVES',
@@ -76,6 +77,7 @@ const getExclusiveCategory = () => {
                     'Authorization': accessToken ? accessToken : VISITOR_TOKEN
                 }
             });
+
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_EXCLUSIVE_CATEGORY',

@@ -55,14 +55,10 @@ class Index extends React.Component {
 	}
 
 	componentDidMount() {
-		
-		
 		this.props.getContents(this.state.page)
 			.then(response => {
 				this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta });
 			});
-
-		
 	}
 
 	bottomScrollFetch() {

@@ -85,7 +85,6 @@
     "react-redux": "^5.0.6",
     "react-responsive-carousel": "^3.1.51",
     "react-share": "^3.0.1",
-    "react-text-truncate": "^0.15.0",
     "react-timeago": "^4.4.0",
     "react-top-loading-bar": "^1.2.0",
     "react-verification-code-input": "^1.2.2",
