@@ -37,7 +37,7 @@ class Exclusive extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			active_tab: '1',
+			active_tab: 1,
 			contents: [],
 			meta: null,
 			categories: [],
@@ -67,7 +67,8 @@ class Exclusive extends React.Component {
 		this.props.getExclusiveCategory()
 			.then(response => {
 				const dictFeeds = {};
-				const categories = response.data.data;
+				const categories = [{ name: 'All' }];
+				categories.push.apply(categories, response.data.data);
 				for (let i = 0; i < categories.length; i++) {
 					dictFeeds[categories[i].name] = [];
 				}
@@ -106,8 +107,26 @@ class Exclusive extends React.Component {
 
 	}
 
-	bottomScrollFetch(tabName) {
-		console.log(tabName);
+	bottomScrollFetch(tab) {
+		console.log('Bottom Reached:', tab);
+		if (tab) {
+			this.props.getExclusives(tab.name, this.state.feed_states[tab.name].pagination.current_page + 1)
+				.then(response => {
+					const feeds = response.data.data;
+					const dictFeeds = this.state.feeds;
+					dictFeeds[tab.name].push.apply(dictFeeds[tab.name], feeds);
+
+					const dictFeedStates = this.state.feed_states;
+					dictFeedStates[tab.name] = response.data.meta;
+
+					this.setState({
+						feeds: dictFeeds,
+						feed_states: dictFeedStates,
+						meta: this.props.feeds.meta
+					});
+				})
+				.catch(error => console.log(error));
+		}
 	}
 
 	toggleTab(tab, tabName = 'All') {
@@ -163,13 +182,10 @@ class Exclusive extends React.Component {
 		return (
 			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
 				<NavDefault disableScrollListener />
-
-				{this.state.categories.map((c, i) => (
-					<BottomScrollListener 
-						key={i}
-						offset={50}
-						onBottom={this.bottomScrollFetch.bind(this, c.name)} />
-				))}
+				
+				<BottomScrollListener 
+					offset={20}
+					onBottom={this.bottomScrollFetch.bind(this, this.state.categories[this.state.active_tab - 1])} />
 
 				<PlayerModal
 					open={this.state.modal}
@@ -188,59 +204,18 @@ class Exclusive extends React.Component {
 				<div className="nav-exclusive-wrapper">
 					<Nav tabs id="exclusive">
 
-						<NavItem className="exclusive-item">
-							<NavLink
-								onClick={this.toggleTab.bind(this, '1', 'All')}
-								className={classnames({ active: this.state.active_tab == '1' })}>All</NavLink>
-						</NavItem>
 						{this.state.categories.map((c, i) => (
 							<NavItem key={i} className="exclusive-item">
 								<NavLink
-									onClick={this.toggleTab.bind(this, i + 2, c.name)}
-									className={classnames({ active: this.state.active_tab == i + 2 })}>{c.name}</NavLink>
+									onClick={this.toggleTab.bind(this, i + 1, c.name)}
+									className={classnames({ active: this.state.active_tab == i + 1 })}>{c.name}</NavLink>
 							</NavItem>
 						))}
 
 					</Nav>
 					<TabContent className="container-box" activeTab={this.state.active_tab}>
-						<TabPane tabId="1">
-							<div className="content-tab-exclusive">
-								<div className="program-container">
-									{this.state.feeds['All'] && this.state.feeds['All'].map(feed => (
-										<Row key={feed.id} className="program-item row-edit">
-											<Col className="col-edit">
-												<Row>
-													<Col xs="2">
-														<Img className="program-rounded-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
-													</Col>
-													<Col xs="8">
-														<div className="program-label">
-															<div className="program-title">
-																<strong>
-																	{feed.title.substring(0, 25) + (feed.title.length > 25 ? '...' : '')}
-																</strong>
-															</div>
-															<TimeAgo className="program-subtitle" date={Date.now() - 4500000} />
-														</div>
-													</Col>
-													<Col>
-														<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label program-share-button" />
-													</Col>
-												</Row>
-												<div onClick={this.toggle.bind(this, feed.link_video)}>
-													<Img className="program-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.portrait_image, '/static/placeholders/placeholder_landscape.png']} />
-													<PlayCircleOutlineIcon className="play-btn-icon" />
-												</div>
-												<span className="program-title program-title-bottom">{feed.summary}</span>
-											</Col>
-										</Row>
-									))}
-
-								</div>
-							</div>
-						</TabPane>
 						{this.state.categories.map((c, i) => (
-							<TabPane key={i} tabId={i + 2}>
+							<TabPane key={i} tabId={i + 1}>
 								<div className="content-tab-exclusive">
 									<div className="content-tab-exclusive">
 										<div className="program-container">
