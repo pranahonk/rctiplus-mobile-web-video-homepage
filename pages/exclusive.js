@@ -6,6 +6,7 @@ import initialize from '../utils/initialize';
 import TimeAgo from 'react-timeago';
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
+import LoadingBar from 'react-top-loading-bar';
 import classnames from 'classnames';
 
 import Layout from '../components/Layouts/Default';
@@ -54,6 +55,7 @@ class Exclusive extends React.Component {
 		};
 
 		this.player = null;
+		this.LoadingBar = null;
 	}
 
 	componentDidMount() {
@@ -67,7 +69,7 @@ class Exclusive extends React.Component {
 		this.props.getExclusiveCategory()
 			.then(response => {
 				const dictFeeds = {};
-				const categories = [{ name: 'SEMOGA BERHASIL' }, { name: 'All' }];
+				const categories = [{ name: 'All' }];
 				categories.push.apply(categories, response.data.data);
 				for (let i = 0; i < categories.length; i++) {
 					dictFeeds[categories[i].name] = [];
@@ -183,6 +185,12 @@ class Exclusive extends React.Component {
 			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
 				<NavDefault disableScrollListener />
 				
+				<LoadingBar
+					progress={0}
+					height={3}
+					color='#fff'
+					onRef={ref => (this.LoadingBar = ref)}/>
+
 				<BottomScrollListener 
 					offset={20}
 					onBottom={this.bottomScrollFetch.bind(this, this.state.categories[this.state.active_tab - 1])} />

@@ -61,7 +61,7 @@ ul#trending .exclusive-item{
     margin: 0px auto !important;
     background-color: $primary-bg-color;
     color: $primary-text-color;
-    width: 100%;
+    width: 100% !important;
     height: 100%;
     object-fit: contain;
     border-radius: 30px;

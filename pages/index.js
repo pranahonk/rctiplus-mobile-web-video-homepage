@@ -5,8 +5,6 @@ import LoadingBar from 'react-top-loading-bar';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
 
-import ReactJWPlayer from 'react-jw-player';
-
 //load default layout
 import Layout from '../components/Layouts/Default';
 
