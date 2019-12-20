@@ -133,7 +133,7 @@ class Exclusive extends React.Component {
 				})
 				.catch(error => {
 					this.LoadingBar.complete();
-					console.log(error);
+					console.log(error); //
 				});
 		}
 	}
