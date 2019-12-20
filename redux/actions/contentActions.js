@@ -299,6 +299,23 @@ const getProgramEpisodes = (programId, season = 1, page = 1, length = 5, infos =
     });
 };
 
+const getProgramSeason = programId => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/program/${programId}/season`);
+            if (response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 export default {
     getContents,
     getHomepageContents,
@@ -311,5 +328,6 @@ export default {
     getClipUrl,
     getPhotoDetail,
     getProgramDetail,
-    getProgramEpisodes
+    getProgramEpisodes,
+    getProgramSeason
 };

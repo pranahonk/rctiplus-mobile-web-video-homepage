@@ -1,0 +1,27 @@
+.modal-body-select {
+    text-align: center;
+}
+
+.close-container-select {
+    position: fixed;
+    bottom: 0;
+    margin-bottom: 35px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.close-icon-select {
+    width: 60px !important;
+    height: 60px !important;
+}
+
+.season-list {
+    height: 70%;
+    padding: 20px;
+    overflow-y: scroll;
+}
+
+.season-list h4 {
+    margin-bottom: 35px;
+    font-weight: bold;
+}

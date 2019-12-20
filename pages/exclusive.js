@@ -188,8 +188,8 @@ class Exclusive extends React.Component {
 		});
 	}
 
-	goToDetail(id) {
-		Router.push('/detail/' + id);
+	goToDetail(programId) {
+		Router.push('/detail/' + programId);
 	}
 
 	render() {
@@ -247,7 +247,7 @@ class Exclusive extends React.Component {
 																<Img className="program-rounded-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
 															</Col>
 															<Col xs="7">
-																<div onClick={this.goToDetail.bind(this, feed.id)} className="program-label">
+																<div onClick={this.goToDetail.bind(this, feed.program_id)} className="program-label">
 																	<div className="program-title">
 																		<strong>
 																			{feed.title.substring(0, 30) + (feed.title.length > 30 ? '...' : '')}

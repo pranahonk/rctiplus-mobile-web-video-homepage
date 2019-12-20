@@ -19,6 +19,7 @@ import Layout from '../../components/Layouts/Default';
 import Navbar from '../../components/Includes/Navbar/NavDetail';
 import PlayerModal from '../../components/Modals';
 import ActionModal from '../../components/Modals/ActionModal';
+import SelectModal from '../../components/Modals/SelectModal';
 import ActionSheet from '../../components/Modals/ActionSheet';
 
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
@@ -49,7 +50,7 @@ class Detail extends React.Component {
         });
         const error_code = res.statusCode > 200 ? res.statusCode : false;
         const data = await res.json();
-        if (!error_code || data.status.code == 1) {
+        if (error_code || data.status.code == 1) {
             return { initial: false };
         }
 
@@ -72,6 +73,7 @@ class Detail extends React.Component {
             related_programs: [],
             modal: false,
             rate_modal: false,
+            select_modal: true,
             action_sheet: false,
             season: 1,
             episode_page: 1,
@@ -83,7 +85,6 @@ class Detail extends React.Component {
         };
 
         this.player = null;
-        console.log(this.props.initial);
     }
 
     showMore() {
@@ -125,7 +126,6 @@ class Detail extends React.Component {
 
                     this.props.getProgramEpisodes(this.props.router.query.id, this.state.season, this.state.episode_page, this.state.length)
                         .then(response => {
-                            console.log(response);
                             if (response.status === 200 && response.data.status.code === 0) {
                                 this.setState({ 
                                     episodes: response.data.data,
@@ -143,6 +143,12 @@ class Detail extends React.Component {
                         })
                         .catch(error => console.log(error))
                 }
+            })
+            .catch(error => console.log(error));
+    
+        this.props.getProgramSeason(this.props.router.query.id)
+            .then(response => {
+                console.log(response);
             })
             .catch(error => console.log(error));
     }
@@ -170,6 +176,10 @@ class Detail extends React.Component {
             url: url,
             hashtags: hashtags
         });
+    }
+
+    toggleSelectModal() {
+        this.setState({ select_modal: !this.state.select_modal });
     }
 
     render() {
@@ -207,6 +217,10 @@ class Detail extends React.Component {
                 <ActionModal 
                     open={this.state.rate_modal}
                     toggle={this.toggleRateModal.bind(this)}/>
+
+                <SelectModal 
+                    open={this.state.select_modal}
+                    toggle={this.toggleSelectModal.bind(this)}/>
 
                 <ActionSheet
                     caption={this.state.caption}
@@ -269,10 +283,10 @@ class Detail extends React.Component {
                         {this.state.episodes.map(e => (
                             <div key={e.id}>
                                 <Row>
-                                    <Col>
-                                        <Img src={[this.state.meta.image_path + '140' + e.landscape_image, 'https://placehold.it/140x84']} />
+                                    <Col xs={6}>
+                                        <Img className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                     </Col>
-                                    <Col>
+                                    <Col xs={6}>
                                         <p className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                         <div className="item-action-buttons">
                                             <div className="action-button">

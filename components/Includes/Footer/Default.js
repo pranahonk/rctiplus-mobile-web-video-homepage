@@ -54,7 +54,7 @@ class FooterNav extends Component {
 						<img className="nav-footer-icon" src="/static/btn/more/nav.png" />
 					</a>
 				</div>
-				
+
 
 				{/* <script dangerouslySetInnerHTML={{__html: `
 					var _comscore=_comscore||[];_comscore.push({c1:"2",c2:"9013027"}),function(){var c=document.createElement("script"),e=document.getElementsByTagName("script")[0];c.async=!0,c.src=("https:"==document.location.protocol?"https://sb":"http://b")+".scorecardresearch.com/beacon.js",e.parentNode.insertBefore(c,e)}();
@@ -65,7 +65,7 @@ class FooterNav extends Component {
 					window.AF.Banner.showBanner();
 				`}}></script> */}
 
-				
+				<script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
 			</div>
 		);
 	}
