@@ -11,7 +11,7 @@ export default class Error extends React.Component {
 
     render() {
         return (
-            <Layout title="~-|| Page Not Found ||-~">
+            <Layout title="Page Not Found">
                 <div className="wrapper-content" style={{ margin: 0 }}>
                     <div style={{ 
                         textAlign: 'center',
