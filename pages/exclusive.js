@@ -8,6 +8,7 @@ import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import classnames from 'classnames';
+import { Carousel } from 'react-responsive-carousel';
 
 import Layout from '../components/Layouts/Default';
 import NavDefault from '../components/Includes/Navbar/NavDefault';
@@ -89,6 +90,8 @@ class Exclusive extends React.Component {
 								}
 							}
 
+							console.log(categoricalFeeds);
+
 							const dictFeeds = this.state.feeds;
 							dictFeeds['All'] = feeds;
 
@@ -156,7 +159,7 @@ class Exclusive extends React.Component {
 						})
 						.catch(error => console.log(error));
 				}
-				
+
 			});
 		}
 	}
@@ -188,14 +191,14 @@ class Exclusive extends React.Component {
 		return (
 			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
 				<NavDefault disableScrollListener />
-				
+
 				<LoadingBar
 					progress={0}
 					height={3}
 					color='#fff'
-					onRef={ref => (this.LoadingBar = ref)}/>
+					onRef={ref => (this.LoadingBar = ref)} />
 
-				<BottomScrollListener 
+				<BottomScrollListener
 					offset={20}
 					onBottom={this.bottomScrollFetch.bind(this, this.state.categories[this.state.active_tab - 1])} />
 
@@ -226,6 +229,51 @@ class Exclusive extends React.Component {
 
 					</Nav>
 					<TabContent className="container-box" activeTab={this.state.active_tab}>
+						<TabPane tabId={1}>
+							<div className="content-tab-exclusive">
+								<div className="content-tab-exclusive">
+									<div className="program-container">
+										<Row className="program-item row-edit">
+											<Col className="col-edit">
+												<Row>
+													<Col xs="2">
+														<Img className="program-rounded-thumbnail" src={['', '/static/placeholders/placeholder_landscape.png']} />
+													</Col>
+													<Col xs="7">
+														<div className="program-label">
+															<div className="program-title">
+																<strong>
+																	Test
+																</strong>
+															</div>
+															<TimeAgo className="program-subtitle" date={Date.now() - 4500000} />
+														</div>
+													</Col>
+													<Col className="program-share-button">
+														<ShareIcon className="program-label" />
+													</Col>
+												</Row>
+												<Carousel
+													autoPlay
+													showThumbs={false}
+													showIndicators={false}
+													stopOnHover={true}
+													showArrows={false}
+													showStatus={false}
+													swipeScrollTolerance={1}
+													swipeable={true}>
+													<Img src={['', '/static/placeholders/placeholder_potrait.png']} />
+													<Img src={['', '/static/placeholders/placeholder_potrait.png']} />
+												</Carousel>
+												<span className="program-title program-title-bottom">Summary</span>
+											</Col>
+										</Row>
+
+									</div>
+								</div>
+							</div>
+						</TabPane>
+
 						{this.state.categories.map((c, i) => (
 							<TabPane key={i} tabId={i + 1}>
 								<div className="content-tab-exclusive">
@@ -249,7 +297,7 @@ class Exclusive extends React.Component {
 																</div>
 															</Col>
 															<Col className="program-share-button">
-																<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label"/>
+																<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label" />
 															</Col>
 														</Row>
 														<div onClick={this.toggle.bind(this, feed.link_video)}>
