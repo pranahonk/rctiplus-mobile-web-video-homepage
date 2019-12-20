@@ -11,7 +11,7 @@ export default class Error extends React.Component {
 
     render() {
         return (
-            <Layout title="Page Not Found">
+            <Layout title="~ Page Not Found ~">
                 <div className="wrapper-content" style={{ margin: 0 }}>
                     <div style={{ 
                         textAlign: 'center',
@@ -22,7 +22,7 @@ export default class Error extends React.Component {
                         }}>
                         <SentimentVeryDissatisfiedIcon style={{ fontSize: '4rem' }}/>
 						<h5>
-							<strong>Sorry, we can not find what are you looking for.</strong><br/><br/>
+							<strong>Sorry, we can not find what you are looking for.</strong><br/><br/>
 							<Button onClick={() => Router.back()} className="btn-next block-btn">Go Back</Button>
 						</h5>
 					</div>
