@@ -79,7 +79,6 @@ class Detail extends React.Component {
             selected_season: 1,
             episode_page: 1,
             length: 5,
-            show_more_allowed: true,
             caption: '',
             url: '',
             hashtags: []
@@ -89,16 +88,16 @@ class Detail extends React.Component {
     }
 
     showMore() {
-        this.props.getProgramEpisodes(this.props.router.query.id, this.state.season, this.state.episode_page + 1, this.state.length)
+        this.props.getProgramEpisodes(this.props.router.query.id, this.props.contents.selected_season, this.props.contents.current_page, this.state.length)
             .then(response => {
                 if (response.status === 200 && response.data.status.code === 0) {
-                    let episodes = this.state.episodes;
-                    episodes.push.apply(episodes, response.data.data);
+                    let episodes = this.props.contents.episodes;
                     this.setState({ 
                         episodes: episodes,
-                        episode_page: this.state.episode_page + 1,
-                        show_more_allowed: response.data.data.length >= this.state.length 
+                        episode_page: this.props.contents.current_page,
+                        selected_season: this.props.contents.selected_season
                     });
+                    this.props.setShowMoreAllowed(response.data.data.length >= this.state.length )
                 }
             })
             .catch(error => console.log(error));
@@ -125,13 +124,16 @@ class Detail extends React.Component {
                         meta: response.data.meta
                     });
 
-                    this.props.getProgramEpisodes(this.props.router.query.id, this.state.selected_season, this.state.episode_page, this.state.length)
+                    this.props.getProgramEpisodes(this.props.router.query.id, this.props.contents.selected_season, this.props.contents.current_page, this.state.length)
                         .then(response => {
                             if (response.status === 200 && response.data.status.code === 0) {
                                 this.setState({ 
-                                    episodes: response.data.data,
-                                    show_more_allowed: response.data.data.length >= this.state.length 
+                                    episodes: this.props.contents.episodes,
+                                    selected_season: this.props.contents.selected_season, 
+                                    episode_page: this.props.contents.current_page
                                 });
+                                console.log(this.props.contents);
+                                this.props.setShowMoreAllowed(this.props.contents.episodes.length >= this.state.length);
                             }
                         })
                         .catch(error => console.log(error));
@@ -151,7 +153,7 @@ class Detail extends React.Component {
             .then(response => {
                 if (response.status === 200 && response.data.status.code === 0) {
                     const data = response.data.data;
-                    this.setState({ seasons: data }, () => console.log(this.state.seasons));
+                    this.setState({ seasons: data });
                 }
             })
             .catch(error => console.log(error));
@@ -196,7 +198,7 @@ class Detail extends React.Component {
         }
 
         let showMoreButton = '';
-        if (this.state.show_more_allowed) {
+        if (this.props.contents.show_more_allowed) {
             showMoreButton = (<div className="list-footer">
                                 <Button onClick={this.showMore.bind(this)} size="sm" className="show-more-button">
                                     <ExpandMoreIcon /> Show More
@@ -223,6 +225,7 @@ class Detail extends React.Component {
                     toggle={this.toggleRateModal.bind(this)}/>
 
                 <SelectModal 
+                    episodeListLength={this.state.length}
                     open={this.state.select_modal}
                     data={this.state.seasons}
                     toggle={this.toggleSelectModal.bind(this)}/>
@@ -283,9 +286,9 @@ class Detail extends React.Component {
                     </div>
                     <div className="list-content">
                         <p className="list-expand" onClick={this.toggleSelectModal.bind(this)}>
-                            Season {this.state.selected_season} <ExpandMoreIcon />
+                            Season {this.props.contents.selected_season} <ExpandMoreIcon />
                         </p>
-                        {this.state.episodes.map(e => (
+                        {this.props.contents.episodes.map(e => (
                             <div key={e.id}>
                                 <Row>
                                     <Col xs={6}>

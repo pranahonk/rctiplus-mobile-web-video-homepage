@@ -287,6 +287,12 @@ const getProgramEpisodes = (programId, season = 1, page = 1, length = 5, infos =
         try {
             const response = await axios.get(`/v1/program/${programId}/episode?season=${season}&page=${page}&length=${length}&infos=${infos}`);
             if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_PROGRAM_EPISODES',
+                    episodes: response.data.data,
+                    current_page: page + 1,
+                    selected_season: season
+                });
                 resolve(response);
             }
             else {
@@ -316,6 +322,24 @@ const getProgramSeason = programId => {
     });
 };
 
+const selectSeason = season => {
+    return dispatch => new Promise((resolve, reject) => {
+        const dispatched = {
+            type: 'SELECT_SEASON',
+            season: season
+        };
+        dispatch(dispatched);
+        resolve(dispatched);
+    });
+};
+
+const setShowMoreAllowed = allowed => {
+    return dispatch => dispatch({ 
+        type: 'SET_SHOW_MORE_ALLOWED',
+        allowed: allowed 
+    });
+}
+
 export default {
     getContents,
     getHomepageContents,
@@ -329,5 +353,7 @@ export default {
     getPhotoDetail,
     getProgramDetail,
     getProgramEpisodes,
-    getProgramSeason
+    getProgramSeason,
+    selectSeason,
+    setShowMoreAllowed
 };
