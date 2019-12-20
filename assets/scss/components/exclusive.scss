@@ -74,6 +74,7 @@ ul#trending .exclusive-item{
 
 .program-item {
     margin-top: 20px;
+    width: 100%;
 }
 
 .program-label {
@@ -86,6 +87,7 @@ ul#trending .exclusive-item{
 .program-title {
     color: white;
     margin-bottom: -5px;
+    font-size: 12px;
 }
 
 .program-title-bottom {
@@ -94,7 +96,7 @@ ul#trending .exclusive-item{
 
 .program-subtitle {
     color: white;
-    font-size: 12px;
+    font-size: 10px;
 }
 
 .program-share-button {
@@ -137,4 +139,21 @@ ul#trending .exclusive-item{
 
 .col-edit {
     padding: 0 !important;
+}
+
+.col-edit .carousel {
+    margin-top: 10px;
+}
+
+.col-edit .control-dots {
+    padding: 0;
+}
+
+.col-edit .carousel-status {
+    margin: 10px;
+    margin-right: 25px;
+}
+
+.col-edit .slide {
+    text-align: left;
 }

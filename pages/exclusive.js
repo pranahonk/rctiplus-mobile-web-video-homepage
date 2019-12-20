@@ -1,4 +1,5 @@
 import React from 'react';
+import Router from 'next/router';
 import { connect } from 'react-redux';
 import contentActions from '../redux/actions/contentActions';
 import feedActions from '../redux/actions/feedActions';
@@ -113,7 +114,7 @@ class Exclusive extends React.Component {
 	}
 
 	bottomScrollFetch(tab) {
-		if (tab) {
+		if (tab && this.state.feed_states[tab.name]) {
 			this.LoadingBar.continuousStart();
 			this.props.getExclusives(tab.name, this.state.feed_states[tab.name].pagination.current_page + 1)
 				.then(response => {
@@ -187,6 +188,10 @@ class Exclusive extends React.Component {
 		});
 	}
 
+	goToDetail(id) {
+		Router.push('/detail/' + id);
+	}
+
 	render() {
 		return (
 			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
@@ -229,51 +234,6 @@ class Exclusive extends React.Component {
 
 					</Nav>
 					<TabContent className="container-box" activeTab={this.state.active_tab}>
-						<TabPane tabId={1}>
-							<div className="content-tab-exclusive">
-								<div className="content-tab-exclusive">
-									<div className="program-container">
-										<Row className="program-item row-edit">
-											<Col className="col-edit">
-												<Row>
-													<Col xs="2">
-														<Img className="program-rounded-thumbnail" src={['', '/static/placeholders/placeholder_landscape.png']} />
-													</Col>
-													<Col xs="7">
-														<div className="program-label">
-															<div className="program-title">
-																<strong>
-																	Test
-																</strong>
-															</div>
-															<TimeAgo className="program-subtitle" date={Date.now() - 4500000} />
-														</div>
-													</Col>
-													<Col className="program-share-button">
-														<ShareIcon className="program-label" />
-													</Col>
-												</Row>
-												<Carousel
-													autoPlay
-													showThumbs={false}
-													showIndicators={false}
-													stopOnHover={true}
-													showArrows={false}
-													showStatus={false}
-													swipeScrollTolerance={1}
-													swipeable={true}>
-													<Img src={['', '/static/placeholders/placeholder_potrait.png']} />
-													<Img src={['', '/static/placeholders/placeholder_potrait.png']} />
-												</Carousel>
-												<span className="program-title program-title-bottom">Summary</span>
-											</Col>
-										</Row>
-
-									</div>
-								</div>
-							</div>
-						</TabPane>
-
 						{this.state.categories.map((c, i) => (
 							<TabPane key={i} tabId={i + 1}>
 								<div className="content-tab-exclusive">
@@ -287,23 +247,42 @@ class Exclusive extends React.Component {
 																<Img className="program-rounded-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
 															</Col>
 															<Col xs="7">
-																<div className="program-label">
+																<div onClick={this.goToDetail.bind(this, feed.id)} className="program-label">
 																	<div className="program-title">
 																		<strong>
-																			{feed.title.substring(0, 25) + (feed.title.length > 25 ? '...' : '')}
+																			{feed.title.substring(0, 30) + (feed.title.length > 30 ? '...' : '')}
 																		</strong>
 																	</div>
-																	<TimeAgo className="program-subtitle" date={Date.now() - 4500000} />
+																	<TimeAgo className="program-subtitle" date={Date.now() - feed.created_at} />
 																</div>
 															</Col>
 															<Col className="program-share-button">
 																<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label" />
 															</Col>
 														</Row>
-														<div onClick={this.toggle.bind(this, feed.link_video)}>
-															<Img className="program-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.portrait_image, '/static/placeholders/placeholder_landscape.png']} />
-															<PlayCircleOutlineIcon className="play-btn-icon" />
-														</div>
+														{feed.type == 'photo' ?
+															(<Carousel
+																autoPlay
+																showThumbs={false}
+																showIndicators={true}
+																stopOnHover={true}
+																showArrows={false}
+																showStatus={true}
+																swipeScrollTolerance={1}
+																swipeable={true}>
+																{feed.images.map((img, i) => (
+																	<Img key={i} className="program-carousel-image" src={[this.state.meta.image_path + this.state.resolution + img, '/static/placeholders/placeholder_potrait.png']} />
+																))}
+															</Carousel>)
+															:
+															(
+																<div onClick={this.toggle.bind(this, feed.link_video)}>
+																	<Img className="program-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.portrait_image, '/static/placeholders/placeholder_landscape.png']} />
+																	<PlayCircleOutlineIcon className="play-btn-icon" />
+																</div>
+															)
+														}
+														
 														<span className="program-title program-title-bottom">{feed.summary}</span>
 													</Col>
 												</Row>
