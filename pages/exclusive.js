@@ -110,8 +110,8 @@ class Exclusive extends React.Component {
 	}
 
 	bottomScrollFetch(tab) {
-		console.log('Bottom Reached:', tab);
 		if (tab) {
+			this.LoadingBar.continuousStart();
 			this.props.getExclusives(tab.name, this.state.feed_states[tab.name].pagination.current_page + 1)
 				.then(response => {
 					const feeds = response.data.data;
@@ -126,8 +126,12 @@ class Exclusive extends React.Component {
 						feed_states: dictFeedStates,
 						meta: this.props.feeds.meta
 					});
+					this.LoadingBar.complete();
 				})
-				.catch(error => console.log(error));
+				.catch(error => {
+					this.LoadingBar.complete();
+					console.log(error);
+				});
 		}
 	}
 
