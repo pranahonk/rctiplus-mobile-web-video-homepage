@@ -21,7 +21,7 @@ export default class Error extends React.Component {
                         transform: 'translate(-50%, -50%)' 
                         }}>
                         <SentimentVeryDissatisfiedIcon style={{ fontSize: '4rem' }}/>
-						<h5>
+						<h5>berhasil donkkkkkkkk
 							<strong>Sorry, we can not find what you are looking for.</strong><br/><br/>
 							<Button onClick={() => Router.back()} className="btn-next block-btn">Go Back</Button>
 						</h5>
