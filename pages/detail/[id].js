@@ -9,6 +9,8 @@ import fetch from 'isomorphic-unfetch';
 
 import { showAlert } from '../../utils/helpers';
 
+import Error from '../error';
+
 import contentActions from '../../redux/actions/contentActions';
 import searchActions from '../../redux/actions/searchActions';
 
@@ -47,6 +49,10 @@ class Detail extends React.Component {
         });
         const error_code = res.statusCode > 200 ? res.statusCode : false;
         const data = await res.json();
+        if (!error_code || data.status.code == 1) {
+            return { initial: false };
+        }
+
         return { initial: data };
     }
 
@@ -77,6 +83,7 @@ class Detail extends React.Component {
         };
 
         this.player = null;
+        console.log(this.props.initial);
     }
 
     showMore() {
@@ -166,6 +173,14 @@ class Detail extends React.Component {
     }
 
     render() {
+        if (this.props.initial == false) {
+            return (
+                <div>
+                    <Error/>
+                </div>
+            );
+        }
+
         let showMoreButton = '';
         if (this.state.show_more_allowed) {
             showMoreButton = (<div className="list-footer">
