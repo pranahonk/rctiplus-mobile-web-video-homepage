@@ -12,9 +12,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development node ./server/index.js",
+    "dev:3001": "cross-env NODE_ENV=development PORT=3001 node ./server/index.js",
     "build": "next build",
     "export": "npm run build && next export",
     "start": "npm run build && cross-env NODE_ENV=production node ./server/index.js",
+    "start:3001": "npm run build && cross-env NODE_ENV=production PORT=3001 node ./server/index.js",
     "start:static": "npm run export && cross-env NODE_ENV=production node ./server/static",
     "deploy": "now --public",
     "cypress:open": "cypress open",
