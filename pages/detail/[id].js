@@ -70,12 +70,13 @@ class Detail extends React.Component {
             meta: {},
             resolution: 152,
             episodes: [],
+            seasons: [],
             related_programs: [],
             modal: false,
             rate_modal: false,
-            select_modal: true,
+            select_modal: false,
             action_sheet: false,
-            season: 1,
+            selected_season: 1,
             episode_page: 1,
             length: 5,
             show_more_allowed: true,
@@ -124,7 +125,7 @@ class Detail extends React.Component {
                         meta: response.data.meta
                     });
 
-                    this.props.getProgramEpisodes(this.props.router.query.id, this.state.season, this.state.episode_page, this.state.length)
+                    this.props.getProgramEpisodes(this.props.router.query.id, this.state.selected_season, this.state.episode_page, this.state.length)
                         .then(response => {
                             if (response.status === 200 && response.data.status.code === 0) {
                                 this.setState({ 
@@ -148,7 +149,10 @@ class Detail extends React.Component {
     
         this.props.getProgramSeason(this.props.router.query.id)
             .then(response => {
-                console.log(response);
+                if (response.status === 200 && response.data.status.code === 0) {
+                    const data = response.data.data;
+                    this.setState({ seasons: data }, () => console.log(this.state.seasons));
+                }
             })
             .catch(error => console.log(error));
     }
@@ -220,6 +224,7 @@ class Detail extends React.Component {
 
                 <SelectModal 
                     open={this.state.select_modal}
+                    data={this.state.seasons}
                     toggle={this.toggleSelectModal.bind(this)}/>
 
                 <ActionSheet
@@ -277,8 +282,8 @@ class Detail extends React.Component {
                         <p className="menu-title">Episode</p>
                     </div>
                     <div className="list-content">
-                        <p className="list-expand">
-                            Season 1 <ExpandMoreIcon />
+                        <p className="list-expand" onClick={this.toggleSelectModal.bind(this)}>
+                            Season {this.state.selected_season} <ExpandMoreIcon />
                         </p>
                         {this.state.episodes.map(e => (
                             <div key={e.id}>

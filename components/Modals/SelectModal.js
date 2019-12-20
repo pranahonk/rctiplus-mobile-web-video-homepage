@@ -19,7 +19,7 @@ class SelectModal extends React.Component {
             <Modal className="select-modal" isOpen={this.props.open} toggle={this.props.toggle}>
                 <ModalBody>
                     <div className="season-list">
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map(s => (<h4>Season {s}</h4>))}
+                        {this.props.data.map((d, i) => (<h4 key={i}>Season {d.season}</h4>))}
                     </div>
                     <div className="close-container-select">
                         <CancelIcon className="close-icon-select" onClick={this.props.toggle}/>
@@ -31,4 +31,5 @@ class SelectModal extends React.Component {
 
 }
 
+// redux for passing the selected data
 export default connect(state => state, {})(SelectModal);
