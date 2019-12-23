@@ -10,41 +10,41 @@ $primary-btn-border-color-login: #DB2828;
 $text-placeholder-color-login: #a8a8a8;
 
 .container-box {
-    margin: 0px auto;
-    background-color: $primary-bg-color;
-    color: $primary-text-color;
-    width: 90%;
-    height: 500px;
-    object-fit: contain;
-    border-radius: 30px;
-    padding: 20px;
-    margin-top: 70px;
+    margin: 0px auto !important;
+    background-color: $primary-bg-color !important;
+    color: $primary-text-color !important;
+    width: 90% !important;
+    height: 500px !important;
+    object-fit: contain !important;
+    border-radius: 30px !important;
+    padding: 20px !important;
+    margin-top: 70px !important;
 }
 
 .form-control {
-    border-radius: 0;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    border-bottom-width: 1.5px;
-    background: transparent;
-    border-color: #495057;
+    border-radius: 0 !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom-width: 1.5px !important;
+    background: transparent !important;
+    border-color: #495057 !important;
     color: $default-text-color-login !important;
 }
 
 .form-control:hover {
     box-shadow: none !important;
-    background: transparent;
+    background: transparent !important;
 }
 
 .form-text {
-    text-align: left;
+    text-align: left !important;
     color: $default-text-color-login !important;
-    font-size: 12px;
+    font-size: 12px !important;
 }
 
 .form-text ul {
-    padding-left: 15px;
+    padding-left: 15px !important;
 }
 
 .form-label {
@@ -52,13 +52,13 @@ $text-placeholder-color-login: #a8a8a8;
 }
 
 .addon {
-    padding: 6px;
-    border-color: #495057;
-    background: transparent;
-    color: $default-text-color-login;
+    padding: 6px !important;
+    border-color: #495057 !important;
+    background: transparent !important;
+    color: $default-text-color-login !important;
 }
 
 .addon-left {
     @extend .addon;
-    border-right-color: transparent;
+    border-right-color: transparent !important;
 }
