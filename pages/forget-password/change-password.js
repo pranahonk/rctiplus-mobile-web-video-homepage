@@ -83,14 +83,14 @@ class ChangePassword extends React.Component {
         return (
             <Layout title="Change Password">
                 <NavBack title="Forget Password"/>
-                <div className="container-box">
+                <div className="container-box-c">
                     <p>Please enter your new password</p>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
                         <FormGroup>
                             <Label className="label" for="password">Password</Label>
                             <InputGroup>
                                 <Input
-                                    className="inpt-form"
+                                    className="inpt-form form-control-c"
                                     type={this.state.view_raw ? 'text' : 'password'}
                                     name="password"
                                     id="password"
@@ -105,7 +105,7 @@ class ChangePassword extends React.Component {
                             <Label className="label" for="password">Re-type Password</Label>
                             <InputGroup>
                                 <Input
-                                    className="inpt-form"
+                                    className="inpt-form form-control-c"
                                     type={this.state.view_raw ? 'text' : 'password'}
                                     name="password2"
                                     id="password2"
