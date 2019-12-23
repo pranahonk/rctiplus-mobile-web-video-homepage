@@ -21,9 +21,6 @@ import '../../../assets/scss/components/otp_steps.scss';
 
 import Countdown, { zeroPad } from 'react-countdown-now';
 
-
-
-
 class Step2 extends Component {
 
 	constructor(props) {
