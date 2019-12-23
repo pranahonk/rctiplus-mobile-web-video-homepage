@@ -322,6 +322,73 @@ const getProgramSeason = programId => {
     });
 };
 
+// TODO: get program extras, clips, & photos, and their details (SEE API DOC)
+const getProgramExtra = (programId, page = 1, length = 5) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/program/${programId}/extra?page=${page}&length=${length}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_PROGRAM_EXTRAS',
+                    extras: response.data.data,
+                    current_extra_page: page + 1
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getProgramPhoto = (programId, page = 1, length = 5) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/program/${programId}/photo?page=${page}&length=${length}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_PROGRAM_PHOTOS',
+                    photos: response.data.data,
+                    current_photos_page: page + 1
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getProgramClip = (programId, page = 1, length = 5) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/program/${programId}/clip?page=${page}&length=${length}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_PROGRAM_CLIPS',
+                    clips: response.data.data,
+                    current_clips_page: page + 1
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const selectSeason = season => {
     return dispatch => new Promise((resolve, reject) => {
         const dispatched = {
@@ -333,11 +400,32 @@ const selectSeason = season => {
     });
 };
 
-const setShowMoreAllowed = allowed => {
-    return dispatch => dispatch({ 
-        type: 'SET_SHOW_MORE_ALLOWED',
-        allowed: allowed 
-    });
+const setShowMoreAllowed = (allowed, type = 'EPISODES') => {
+    switch (type) {
+        case 'EPISODES':
+            return dispatch => dispatch({ 
+                type: 'SET_SHOW_MORE_ALLOWED',
+                allowed: allowed 
+            });
+    
+        case 'EXTRAS':
+            return dispatch => dispatch({
+                type: 'SET_SHOW_MORE_EXTRA_ALLOWED',
+                allowed: allowed
+            });
+
+        case 'PHOTOS':
+            return dispatch => dispatch({
+                type: 'SET_SHOW_MORE_PHOTO_ALLOWED',
+                allowed: allowed
+            });
+
+        case 'CLIPS':
+            return dispatch => dispatch({
+                type: 'SET_SHOW_MORE_CLIP_ALLOWED',
+                allowed: allowed
+            });
+    }
 }
 
 export default {
@@ -354,6 +442,9 @@ export default {
     getProgramDetail,
     getProgramEpisodes,
     getProgramSeason,
+    getProgramExtra,
+    getProgramPhoto,
+    getProgramClip,
     selectSeason,
     setShowMoreAllowed
 };
