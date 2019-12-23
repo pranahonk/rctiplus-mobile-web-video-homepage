@@ -9,19 +9,19 @@ $primary-btn-bg-color-login: #DB2828;
 $primary-btn-border-color-login: #DB2828;
 $text-placeholder-color-login: #a8a8a8;
 
-.container-box {
-    margin: 0px auto !important;
-    background-color: $primary-bg-color !important;
-    color: $primary-text-color !important;
-    width: 90% !important;
-    height: 500px !important;
-    object-fit: contain !important;
-    border-radius: 30px !important;
-    padding: 20px !important;
-    margin-top: 70px !important;
+.container-box-c {
+    margin: 0px auto;
+    background-color: $primary-bg-color;
+    color: $primary-text-color;
+    width: 90%;
+    height: 500px;
+    object-fit: contain;
+    border-radius: 30px;
+    padding: 20px;
+    margin-top: 70px;
 }
 
-.form-control {
+.form-control-c {
     border-radius: 0 !important;
     border-top: none !important;
     border-left: none !important;
@@ -32,33 +32,33 @@ $text-placeholder-color-login: #a8a8a8;
     color: $default-text-color-login !important;
 }
 
-.form-control:hover {
+.form-control-c:hover {
     box-shadow: none !important;
-    background: transparent !important;
+    background: transparent;
 }
 
-.form-text {
-    text-align: left !important;
+.form-text-c {
+    text-align: left;
     color: $default-text-color-login !important;
-    font-size: 12px !important;
+    font-size: 12px;
 }
 
-.form-text ul {
-    padding-left: 15px !important;
+.form-text-c ul {
+    padding-left: 15px;
 }
 
-.form-label {
+.form-label-c {
     color: $default-text-color-login;
 }
 
-.addon {
-    padding: 6px !important;
-    border-color: #495057 !important;
-    background: transparent !important;
-    color: $default-text-color-login !important;
+.addon-c {
+    padding: 6px;
+    border-color: #495057;
+    background: transparent;
+    color: $default-text-color-login;
 }
 
-.addon-left {
-    @extend .addon;
-    border-right-color: transparent !important;
+.addon-left-c {
+    @extend .addon-c;
+    border-right-color: transparent;
 }

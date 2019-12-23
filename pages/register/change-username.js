@@ -84,22 +84,22 @@ class ChangeUsername extends React.Component {
         return (
             <Layout title={'Change ' + (this.props.registration.username_type == 'PHONE_NUMBER' ? 'Phone Number' : 'Email')}>
                 <NavBack title={'Change ' + (this.props.registration.username_type == 'PHONE_NUMBER' ? 'Phone Number' : 'Email')} />
-                <div className="container-box">
+                <div className="container-box-c">
                     <Form onSubmit={this.submitChangeUsername.bind(this)}>
                         <FormGroup>
-                            <Label className="form-label" for="phone">{(this.props.registration.username_type == 'PHONE_NUMBER' ? 'Phone Number' : 'Email')}</Label>
+                            <Label className="form-label-c" for="phone">{(this.props.registration.username_type == 'PHONE_NUMBER' ? 'Phone Number' : 'Email')}</Label>
                             <InputGroup>
                                 <InputGroupAddon addonType="prepend">
-                                    <InputGroupText className="form-control addon-left">+62</InputGroupText>
+                                    <InputGroupText className="form-control-c addon-left-c">+62</InputGroupText>
                                 </InputGroupAddon>
                                 <Input
                                     onChange={this.onChangeUsername.bind(this)}
                                     valid={!this.state.username_invalid && !!this.state.username}
                                     invalid={this.state.username_invalid}
-                                    className="form-control" />
+                                    className="form-control-c" />
                                 {/* <FormFeedback valid={!this.state.username_invalid && !!this.state.username}>{this.state.username_invalid_message}</FormFeedback> */}
                             </InputGroup>
-                            <FormText className="form-text">
+                            <FormText className="form-text-c">
                                 <ul>
                                     <li>Make sure the phone number is active because we will sent you verification code to verified and secure your account</li>
                                 </ul>
