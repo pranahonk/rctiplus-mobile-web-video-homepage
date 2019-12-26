@@ -32,7 +32,17 @@ class ForgetPassword extends React.Component {
     onChangeUsername(e) {
         this.setState({ username: e.target.value }, () => {
             this.props.setUsername(this.state.username);
-            this.subject.next()
+            if (this.state.username.length < 6) {
+                this.setState({
+                    username_invalid: true,
+                    username_invalid_message: 'Username must at least 6 characters'
+                }, () => this.subject.next());
+            }
+            else {
+                this.setState({
+                    username_invalid_message: ''
+                }, () => this.subject.next());
+            }
         });
     }
 
@@ -45,7 +55,7 @@ class ForgetPassword extends React.Component {
         this.subject
             .pipe(debounceTime(500))
             .subscribe(() => {
-                if (this.state.username) {
+                if (this.state.username && this.state.username.length >= 6) {
                     this.props.checkUser(this.state.username)
                         .then(response => {
                             if (response.status === 200) {
@@ -66,8 +76,8 @@ class ForgetPassword extends React.Component {
                                     }
                                     else {
                                         this.setState({
-                                            username_invalid: false,
-                                            username_invalid_message: ''
+                                            username_invalid: true,
+                                            username_invalid_message: 'Username does not exist'
                                         });
                                         
                                     }
