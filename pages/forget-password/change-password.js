@@ -87,32 +87,32 @@ class ChangePassword extends React.Component {
                     <p>Please enter your new password</p>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
                         <FormGroup>
-                            <Label className="label" for="password">Password</Label>
+                            <Label className="label-c" for="password">Password</Label>
                             <InputGroup>
                                 <Input
-                                    className="inpt-form form-control-c"
+                                    className="form-control-cp"
                                     type={this.state.view_raw ? 'text' : 'password'}
                                     name="password"
                                     id="password"
                                     placeholder="Enter password"
                                     invalid={this.state.at_least_eight_invalid}
                                     onChange={this.onPasswordChange.bind(this)} />
-                                <div onClick={this.togglePassword.bind(this)} className={'view-raw ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.at_least_eight_invalid ? 'invalid-border-color' : '')}></div>
+                                <div onClick={this.togglePassword.bind(this)} className={'view-raw-c ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.at_least_eight_invalid ? 'invalid-border-color' : '')}></div>
                                 <FormFeedback>Password must at least 8 characters</FormFeedback>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="label" for="password">Re-type Password</Label>
+                            <Label className="label-c" for="password">Re-type Password</Label>
                             <InputGroup>
                                 <Input
-                                    className="inpt-form form-control-c"
+                                    className="form-control-cp"
                                     type={this.state.view_raw ? 'text' : 'password'}
                                     name="password2"
                                     id="password2"
                                     placeholder="Re-type password"
                                     invalid={this.state.password_match_invalid}
                                     onChange={this.onConfirmPasswordChange.bind(this)} />
-                                <div onClick={this.togglePassword.bind(this)} className={'view-raw ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.password_match_invalid ? 'invalid-border-color' : '')}></div>
+                                <div onClick={this.togglePassword.bind(this)} className={'view-raw-c ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.password_match_invalid ? 'invalid-border-color' : '')}></div>
                                 <FormFeedback>Password must match</FormFeedback>
                             </InputGroup>
                         </FormGroup>

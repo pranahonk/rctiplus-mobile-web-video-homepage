@@ -14,7 +14,7 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 //load reactstrap components
 import { Button, Form, FormGroup } from 'reactstrap';
 
-import '../../assets/scss/components/verify-otp.scss';
+import '../../assets/scss/components/verify-otp-password.scss';
 
 
 class VerifyOtp extends React.Component {
@@ -89,7 +89,7 @@ class VerifyOtp extends React.Component {
         return (
             <Layout title="Verify OTP">
                 <NavBack title="Verify OTP"/>
-                <div className="container-box">
+                <div className="container-box-c">
                     <p>Verify your account, enter your code below</p>
                     <p style={{ fontSize: 14 }} className="text-default-rcti">{text} <span style={{ color: 'white' }}>{username}</span></p>
                     <Form onSubmit={this.submitOtp.bind(this)}>
@@ -97,7 +97,7 @@ class VerifyOtp extends React.Component {
                             <ReactCodeInput
                                 fields={4}
                                 onChange={this.onChangeOtp.bind(this)}
-                                className="otp-input" />
+                                className="otp-input-c" />
                         </FormGroup>
                         <FormGroup>
                             <label className="lbl_rsndcode">
