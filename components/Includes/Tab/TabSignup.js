@@ -22,7 +22,7 @@ import {
 } from 'reactstrap';
 import classnames from 'classnames';
 
-import { Subject }  from 'rxjs';
+import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 class TabSignup extends React.Component {
@@ -30,7 +30,7 @@ class TabSignup extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			activeTab: '1',
+			activeTab: '2',
 			phone_number_invalid: false,
 			phone_invalid_message: '',
 			email_invalid: false,
@@ -107,7 +107,7 @@ class TabSignup extends React.Component {
 										});
 									}
 								}
-								
+
 							}
 						})
 						.catch(error => {
@@ -124,21 +124,21 @@ class TabSignup extends React.Component {
 					<NavItem className="nav-signup-item">
 						<NavLink
 							style={{ fontSize: '0.8rem' }}
-							className={classnames({ active: this.state.activeTab === '1' })}
-							onClick={() => {
-								this.toggle('1');
-							}}>
-							Phone Number
-						</NavLink>
-					</NavItem>
-					<NavItem className="nav-signup-item">
-						<NavLink
-							style={{ fontSize: '0.8rem' }}
 							className={classnames({ active: this.state.activeTab === '2' })}
 							onClick={() => {
 								this.toggle('2');
 							}}>
 							Email
+						</NavLink>
+					</NavItem>
+					<NavItem className="nav-signup-item">
+						<NavLink
+							style={{ fontSize: '0.8rem' }}
+							className={classnames({ active: this.state.activeTab === '1' })}
+							onClick={() => {
+								this.toggle('1');
+							}}>
+							Phone Number
 						</NavLink>
 					</NavItem>
 				</Nav>

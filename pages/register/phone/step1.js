@@ -229,6 +229,7 @@ class Step1 extends Component {
 										type="text"
 										name="birthdate"
 										id="BirthDate"
+										readOnly
 										placeholder="yyyy-mm-dd"
 										defaultValue={this.state.formatted_date}
 										invalid={this.state.birthdate_invalid}
@@ -251,6 +252,7 @@ class Step1 extends Component {
 										name="gender"
 										placeholder="Select gender"
 										id="gender"
+										readOnly
 										defaultValue={this.state.gender}
 										invalid={this.state.gender_invalid}
 										onClick={this.handleOpenGender.bind(this)} />

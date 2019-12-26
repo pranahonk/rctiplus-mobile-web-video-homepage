@@ -14,6 +14,7 @@ import Error from '../../error';
 
 import contentActions from '../../../redux/actions/contentActions';
 import searchActions from '../../../redux/actions/searchActions';
+import likeActions from '../../../redux/actions/likeActions';
 
 //load default layout
 import Layout from '../../../components/Layouts/Default';
@@ -24,6 +25,9 @@ import SelectModal from '../../../components/Modals/SelectModal';
 import ActionSheet from '../../../components/Modals/ActionSheet';
 
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
+import ThumbDownOutlinedIcon from '@material-ui/icons/ThumbDownOutlined';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import ShareIcon from '@material-ui/icons/Share';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
@@ -62,7 +66,7 @@ class Detail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            active_tab: 4,
+            active_tab: 1,
             title: '',
             summary: '',
             portrait_image: '',
@@ -96,7 +100,9 @@ class Detail extends React.Component {
                 'extra': [],
                 'clip': [],
                 'photo': []
-            }
+            },
+            like_history: [],
+            tabs: []
         };
 
         this.player = null;
@@ -137,8 +143,39 @@ class Detail extends React.Component {
                         genre: data.genre,
                         release_date: data.release_date,
                         trailer_url: data.trailer_url,
-                        meta: response.data.meta
+                        meta: response.data.meta,
+                        tabs: []
+                    }, () => {
+                        let tabs = [];
+                        const { episode, extra, clip, photo } = response.data.data;
+                        
+                        console.log({ episode, extra, clip, photo });
+
+                        if (episode > 0) {
+                            tabs.push(<NavItem key={1} className="menu-title">
+                                        <NavLink onClick={this.toggleTab.bind(this, 1, 'Episode')} className={classnames({ active: this.state.active_tab == 1 })}>Episode</NavLink>
+                                    </NavItem>);
+                        }
+                        if (extra > 0) {
+                            tabs.push(<NavItem key={2} className="menu-title">
+                                        <NavLink onClick={this.toggleTab.bind(this, 2, 'Extra')} className={classnames({ active: this.state.active_tab == 2 })}>Extras</NavLink>
+                                    </NavItem>);
+                        }
+                        if (clip > 0) {
+                            tabs.push(<NavItem key={3} className="menu-title">
+                                        <NavLink onClick={this.toggleTab.bind(this, 3, 'Clip')} className={classnames({ active: this.state.active_tab == 3 })}>Clips</NavLink>
+                                    </NavItem>);
+                        }
+                        if (photo > 0) {
+                            tabs.push(<NavItem key={4} className="menu-title">
+                                        <NavLink onClick={this.toggleTab.bind(this, 4, 'Photo')} className={classnames({ active: this.state.active_tab == 4 })}>Photos</NavLink>
+                                    </NavItem>);
+                        }
+
+                        this.setState({ tabs: tabs });
                     });
+
+                    this.props.getLikeHistory(this.props.router.query.id);
 
                     this.props.getProgramEpisodes(this.props.router.query.id, this.props.contents.selected_season, this.props.contents.current_page, this.state.length)
                         .then(response => {
@@ -166,7 +203,6 @@ class Detail extends React.Component {
                                     extras: this.props.contents.extras,
                                     extra_page: this.props.contents.current_extra_page
                                 });
-                                console.log('EXTRAS:', this.props.contents.extras);
                                 this.props.setShowMoreAllowed(this.props.contents.extras.length >= this.state.extra_length, 'EXTRAS');
                             }
                         })
@@ -182,7 +218,6 @@ class Detail extends React.Component {
                                     photos: this.props.contents.photos,
                                     photo_page: this.props.contents.current_photo_page
                                 });
-                                console.log('PHOTOS:', this.props.contents.photos);
                                 this.props.setShowMoreAllowed(this.props.contents.photos.length >= this.state.photo_length, 'PHOTOS');
                             }
                         })
@@ -198,7 +233,6 @@ class Detail extends React.Component {
                                     clips: this.props.contents.clips,
                                     clip_page: this.props.contents.current_clip_page
                                 });
-                                console.log('CLIPS:', this.props.contents.clips);
                                 this.props.setShowMoreAllowed(this.props.contents.clips.length >= this.state.clip_length, 'CLIPS');
                             }
                         })
@@ -238,7 +272,12 @@ class Detail extends React.Component {
     }
 
     toggleRateModal() {
-        this.setState({ rate_modal: !this.state.rate_modal });
+        if (this.props.likes.data && this.props.likes.data.length > 0 && !this.state.rate_modal) {
+            this.props.postLike(this.props.router.query.id, 'program', 'INDIFFERENT');
+        }
+        else {
+            this.setState({ rate_modal: !this.state.rate_modal });
+        }
     }
 
     toggleActionSheet(caption = '', url = '', hashtags = []) {
@@ -262,6 +301,24 @@ class Detail extends React.Component {
         }
     }
 
+    checkLikeStatus() {
+        let thumbs = null;
+        if (this.props.likes.data && this.props.likes.data.length > 0) {
+            const likeStatus = this.props.likes.data[0];
+            if (likeStatus.status === 'LIKE') {
+                thumbs = <ThumbUpIcon onClick={this.toggleRateModal.bind(this)} className="action-icon" />;
+            }
+            else if (likeStatus.status === 'DISLIKE') {
+                thumbs = <ThumbDownIcon onClick={this.toggleRateModal.bind(this)} className="action-icon" />;
+            }
+        }
+        else {
+            thumbs = <ThumbUpAltOutlinedIcon onClick={this.toggleRateModal.bind(this)} className="action-icon" />;
+        }
+
+        return thumbs;
+    }
+
     render() {
         if (this.props.initial == false) {
             return (
@@ -280,6 +337,8 @@ class Detail extends React.Component {
                             </div>);
         }
 
+        const thumbs = this.checkLikeStatus();
+
         // https://www.it-consultis.com/blog/best-seo-practices-for-react-websites
         return (
             <Layout title={this.props.initial.data.title + ' | Program Pilihan'}>
@@ -296,6 +355,8 @@ class Detail extends React.Component {
 
                 <ActionModal 
                     open={this.state.rate_modal}
+                    programId={this.props.router.query.id}
+                    type={'program'}
                     toggle={this.toggleRateModal.bind(this)}/>
 
                 <SelectModal 
@@ -341,7 +402,7 @@ class Detail extends React.Component {
                     })}</p>
                     <div className="action-buttons">
                         <div className="action-button">
-                            <ThumbUpIcon onClick={this.toggleRateModal.bind(this)} className="action-icon" />
+                            {thumbs}
                             <p>Rate</p>
                         </div>
                         <div className="action-button">
@@ -356,18 +417,7 @@ class Detail extends React.Component {
                 </div>
                 <div className="list-box">
                     <Nav tabs className="list-menu">
-                        <NavItem className="menu-title">
-                            <NavLink onClick={this.toggleTab.bind(this, 1, 'Episode')} className={classnames({ active: this.state.active_tab == 1 })}>Episode</NavLink>
-                        </NavItem>
-                        <NavItem className="menu-title">
-                            <NavLink onClick={this.toggleTab.bind(this, 2, 'Extra')} className={classnames({ active: this.state.active_tab == 2 })}>Extras</NavLink>
-                        </NavItem>
-                        <NavItem className="menu-title">
-                            <NavLink onClick={this.toggleTab.bind(this, 3, 'Clip')} className={classnames({ active: this.state.active_tab == 3 })}>Clips</NavLink>
-                        </NavItem>
-                        <NavItem className="menu-title">
-                            <NavLink onClick={this.toggleTab.bind(this, 4, 'Photo')} className={classnames({ active: this.state.active_tab == 4 })}>Photos</NavLink>
-                        </NavItem>
+                        {this.state.tabs}
                     </Nav>
                     <TabContent className="list-content" activeTab={this.state.active_tab}>
                         <TabPane tabId={1}>
@@ -503,5 +553,6 @@ class Detail extends React.Component {
 
 export default connect(state => state, {
     ...contentActions,
-    ...searchActions
+    ...searchActions,
+    ...likeActions
 })(withRouter(Detail));
