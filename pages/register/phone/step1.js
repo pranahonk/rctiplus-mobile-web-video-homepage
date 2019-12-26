@@ -143,9 +143,11 @@ class Step1 extends Component {
 		}
 
 		if (formValid) {
-			showConfirmAlert('Are you sure you want to continue? Make sure to check your entry before continue.', '', () => {
-				Router.push('/register/phone/step2');
-			});
+			// showConfirmAlert('Are you sure you want to continue? Make sure to check your entry before continue.', '', () => {
+			// 	Router.push('/register/phone/step2');
+			// });
+
+			Router.push('/register/phone/step2');
 		}
 		else {
 			let newState = {};
@@ -215,6 +217,7 @@ class Step1 extends Component {
 										type="text"
 										name="fullname"
 										id="fullname"
+										maxLength="25"
 										placeholder="Insert full name"
 										onChange={this.handleFullnameChange.bind(this)}
 										invalid={this.state.fullname_invalid}/>

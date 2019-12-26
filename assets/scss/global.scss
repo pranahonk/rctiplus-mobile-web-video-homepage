@@ -1,5 +1,5 @@
 $primary-bg-color: #282828;
-$primary-text-color: #979797;
+$primary-text-color: #ffffff;
 $primary-font-family: Helvetica !important;
 
 $default-text-color-login: #ffffff;
@@ -460,4 +460,10 @@ h5 {
 
 .stories.carousel .story>.item-link>.item-preview {
     height: 100%;
+}
+
+.form-control:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: #495057;
 }

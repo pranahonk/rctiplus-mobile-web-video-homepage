@@ -58,6 +58,39 @@ class TabSignup extends React.Component {
 		this.subject.next();
 	}
 
+	validateUsername(response) {
+		console.log(response);
+		const message = response.data.status.message_client;
+		if (response.data.status.code === 0) {
+			if (this.state.activeTab == '1') {
+				this.setState({
+					phone_number_invalid: message != 'Your phone is Available',
+					phone_invalid_message: message
+				});
+			}
+			else if (this.state.activeTab == '2') {
+				this.setState({
+					email_invalid: message != 'Your email is Available',
+					email_invalid_message: message
+				});
+			}
+		}
+		else if (response.data.status.code === 1) {
+			if (this.state.activeTab == '1') {
+				this.setState({
+					phone_number_invalid: true,
+					phone_invalid_message: message
+				});
+			}
+			else if (this.state.activeTab == '2') {
+				this.setState({
+					email_invalid: true,
+					email_invalid_message: message
+				});
+			}
+		}
+	}
+
 	componentDidMount() {
 		if (this.state.activeTab == '1') {
 			this.props.setUsernameType('PHONE_NUMBER');
@@ -78,36 +111,7 @@ class TabSignup extends React.Component {
 					this.props.checkUser(username)
 						.then(response => {
 							if (response.status === 200) {
-								const message = response.data.status.message_client;
-								if (response.data.status.code === 0) {
-									if (this.state.activeTab == '1') {
-										this.setState({
-											phone_number_invalid: message != 'Your phone is Available',
-											phone_invalid_message: message
-										});
-									}
-									else if (this.state.activeTab == '2') {
-										this.setState({
-											email_invalid: message != 'Your email is Available',
-											email_invalid_message: message
-										});
-									}
-								}
-								else if (response.data.status.code === 1) {
-									if (this.state.activeTab == '1') {
-										this.setState({
-											phone_number_invalid: true,
-											phone_invalid_message: message
-										});
-									}
-									else if (this.state.activeTab == '2') {
-										this.setState({
-											email_invalid: true,
-											email_invalid_message: message
-										});
-									}
-								}
-
+								this.validateUsername(response);
 							}
 						})
 						.catch(error => {
@@ -150,7 +154,7 @@ class TabSignup extends React.Component {
 									<Label for="email">Phone Number</Label>
 									<InputGroup>
 										<InputGroupAddon addonType="prepend">
-											<InputGroupText className={'inpt-form addon-left ' + (!this.state.phone_number_invalid && !!this.props.registration.username ? 'valid-border-color' : (this.state.phone_number_invalid ? 'invalid-border-color' : ''))}>+62</InputGroupText>
+											<InputGroupText className={'inpt-form addon-left ' + (!this.state.phone_number_invalid && !!this.props.registration.username ? 'valid-border-color..' : (this.state.phone_number_invalid ? 'invalid-border-color' : ''))}>+62</InputGroupText>
 										</InputGroupAddon>
 										<Input
 											className="inpt-form addon-left-input"
@@ -158,10 +162,12 @@ class TabSignup extends React.Component {
 											name="text"
 											id="phone_number"
 											placeholder="Enter your phone number"
-											valid={!this.state.phone_number_invalid && !!this.props.registration.username}
+											// valid={!this.state.phone_number_invalid && !!this.props.registration.username}
 											invalid={this.state.phone_number_invalid}
 											onChange={this.onChangeUsername.bind(this)} />
-										<FormFeedback valid={!this.state.phone_number_invalid && !!this.props.registration.username}>{this.state.phone_invalid_message}</FormFeedback>
+										<FormFeedback 
+										// valid={!this.state.phone_number_invalid && !!this.props.registration.username}
+										>{this.state.phone_invalid_message}</FormFeedback>
 									</InputGroup>
 								</FormGroup>
 							</Col>
