@@ -67,6 +67,7 @@ class Step2 extends Component {
 						this.setState({ submit_message: response.data.status.message_client, is_submitting: false });
 					}
 					else {
+						console.log(this.props.registration);
 						this.props.register({
 							username: username,
 							password: this.props.registration.password,

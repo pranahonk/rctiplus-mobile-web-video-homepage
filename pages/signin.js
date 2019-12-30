@@ -6,6 +6,8 @@ import initialize from '../utils/initialize';
 import { getCookie } from '../utils/cookie';
 import LoadingBar from 'react-top-loading-bar';
 
+import { showAlert } from '../utils/helpers';
+
 //load default layout
 import Layout from '../components/Layouts/Default';
 
@@ -74,11 +76,19 @@ class Signin extends React.Component {
 						break;
 					
 					case 1: // code = 1 (Please try again, username is incorrect)
-					case 9: // code = 9 (Invalid, User Has Not Been Registered)
 						this.setState({
 							is_password_invalid: false,
 							is_username_invalid: true,
 							username_invalid_message: this.props.authentication.message
+						});
+						break;
+					case 9: // code = 9 (Invalid, User Has Not Been Registered)
+						this.setState({
+							is_password_invalid: false,
+							is_username_invalid: false,
+							username_invalid_message: this.props.authentication.message
+						}, () => {
+							showAlert('User has not been registered', 'Invalid');
 						});
 						break;
 				}
@@ -141,7 +151,7 @@ class Signin extends React.Component {
 									Forgot Password?
 								</a>
 							</p>
-							<Button className="btn-next block-btn" style={{ marginTop: 20 }}>Log In</Button>
+							<Button disabled={this.state.emailphone.length < 6} className="btn-next block-btn" style={{ marginTop: 20 }}>Log In</Button>
 							<p className="text-center fnt-10 el-margin-20 el-white" style={{ fontSize: 12 }}>
 								Don't have an account?<br/>
 								<a href="/signup" className="text-red">

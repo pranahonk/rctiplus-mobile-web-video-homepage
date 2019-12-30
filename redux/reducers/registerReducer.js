@@ -5,11 +5,14 @@ const initialState = {
     otp: null,
     username: null,
     password: null,
-    fullname: null,
-    dob: null,
-    gender: null,
+    fullname: '',
+    dob: '',
+    gender: '',
     device_id: null,
-    username_type: null
+    username_type: null,
+    email_invalid: false,
+    phone_invalid: false,
+    active_tab: '2'
 };
 
 export default (state = initialState, action) => {
@@ -34,6 +37,12 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { username_type: action.username_type });
         case 'OTP':
             return Object.assign({}, state, { otp: action.otp });
+        case 'SET_EMAIL_STATUS':
+            return Object.assign({}, state, { email_invalid: action.invalid });
+        case 'SET_PHONE_STATUS':
+            return Object.assign({}, state, { phone_invalid: action.invalid });
+        case 'SET_ACTIVE_TAB':
+            return Object.assign({}, state, { active_tab: action.tab });
         default:
             return state;
     }

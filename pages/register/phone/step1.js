@@ -127,20 +127,20 @@ class Step1 extends Component {
 		let birthdateValid = true;
 		let genderValid = true;
 
-		if (this.state.fullname == '') {
-			formValid = false;
-			fullnameValid = false;
-		}
+		// if (this.state.fullname == '') {
+		// 	formValid = false;
+		// 	fullnameValid = false;
+		// }
 
-		if (this.state.birthdate == '') {
-			formValid = false;
-			birthdateValid = false;
-		}
+		// if (this.state.birthdate == '') {
+		// 	formValid = false;
+		// 	birthdateValid = false;
+		// }
 
-		if (this.state.gender == '') {
-			formValid = false;
-			genderValid = false;
-		}
+		// if (this.state.gender == '') {
+		// 	formValid = false;
+		// 	genderValid = false;
+		// }
 
 		if (formValid) {
 			// showConfirmAlert('Are you sure you want to continue? Make sure to check your entry before continue.', '', () => {

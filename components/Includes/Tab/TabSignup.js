@@ -43,6 +43,7 @@ class TabSignup extends React.Component {
 	toggle(tab) {
 		if (this.state.activeTab !== tab) {
 			this.setState({ activeTab: tab }, () => {
+				this.props.setActiveTab(tab);
 				if (this.state.activeTab == '1') {
 					this.props.setUsernameType('PHONE_NUMBER');
 				}
@@ -59,33 +60,40 @@ class TabSignup extends React.Component {
 	}
 
 	validateUsername(response) {
-		console.log(response);
 		const message = response.data.status.message_client;
 		if (response.data.status.code === 0) {
 			if (this.state.activeTab == '1') {
 				this.setState({
 					phone_number_invalid: message != 'Your phone is Available',
 					phone_invalid_message: message
+				}, () => {
+					this.props.setPhoneInvalid(message != 'Your phone is Available');
 				});
 			}
 			else if (this.state.activeTab == '2') {
 				this.setState({
 					email_invalid: message != 'Your email is Available',
 					email_invalid_message: message
+				}, () => {
+					this.props.setEmailInvalid(message != 'Your email is Available');
 				});
 			}
 		}
-		else if (response.data.status.code === 1) {
+		else if (response.data.status.code === 1 || response.data.status.code === 2) {
 			if (this.state.activeTab == '1') {
 				this.setState({
 					phone_number_invalid: true,
 					phone_invalid_message: message
+				}, () => {
+					this.props.setPhoneInvalid(true);
 				});
 			}
 			else if (this.state.activeTab == '2') {
 				this.setState({
 					email_invalid: true,
 					email_invalid_message: message
+				}, () => {
+					this.props.setEmailInvalid(true);
 				});
 			}
 		}
