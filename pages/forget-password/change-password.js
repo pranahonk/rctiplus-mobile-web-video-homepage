@@ -117,7 +117,7 @@ class ChangePassword extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Button disabled={this.state.password == '' || this.state.confirm_password == '' || (this.state.password != this.state.confirm_password) || this.state.password_match_invalid || this.state.at_least_eight_invalid} className="btn-next block-btn">Submit</Button>
+                            <Button disabled={this.state.password == '' || this.state.confirm_password == '' || (this.state.password != this.state.confirm_password) || this.state.password_match_invalid || this.state.at_least_eight_invalid} className="btn-next block-btn">Save</Button>
                         </FormGroup>
                     </Form>
                 </div>
