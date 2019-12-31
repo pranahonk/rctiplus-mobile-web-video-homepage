@@ -132,12 +132,12 @@ const getEpisodeUrl = episodeId => {
         try {
             const response = await axios.get(`/v1/episode/${episodeId}/url`);
             if (response.data.status.code === 0) {
-                dispatch({
-                    type: 'GET_EPISODE_URL',
-                    data: response.data.data, 
-                    meta: response.data.meta, 
-                    status: response.data.status
-                });
+                // dispatch({
+                //     type: 'GET_EPISODE_URL',
+                //     data: response.data.data, 
+                //     meta: response.data.meta, 
+                //     status: response.data.status
+                // });
                 resolve(response);
             }
             else {
@@ -178,12 +178,12 @@ const getExtraUrl = extraId => {
         try {
             const response = await axios.get(`/v1/extra/${extraId}/url`);
             if (response.data.status.code === 0) {
-                dispatch({
-                    type: 'GET_EXTRA_URL',
-                    data: response.data.data, 
-                    meta: response.data.meta, 
-                    status: response.data.status
-                });
+                // dispatch({
+                //     type: 'GET_EXTRA_URL',
+                //     data: response.data.data, 
+                //     meta: response.data.meta, 
+                //     status: response.data.status
+                // });
                 resolve(response);
             }
             else {
@@ -224,12 +224,12 @@ const getClipUrl = clipId => {
         try {
             const response = await axios.get(`/v1/clip/${clipId}/url`);
             if (response.data.status.code === 0) {
-                dispatch({
-                    type: 'GET_CLIP_URL',
-                    data: response.data.data, 
-                    meta: response.data.meta, 
-                    status: response.data.status
-                });
+                // dispatch({
+                //     type: 'GET_CLIP_URL',
+                //     data: response.data.data, 
+                //     meta: response.data.meta, 
+                //     status: response.data.status
+                // });
                 resolve(response);
             }
             else {

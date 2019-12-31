@@ -27,7 +27,6 @@ import ActionSheet from '../../../components/Modals/ActionSheet';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
-import ThumbDownOutlinedIcon from '@material-ui/icons/ThumbDownOutlined';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import ShareIcon from '@material-ui/icons/Share';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
@@ -66,7 +65,7 @@ class Detail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            active_tab: 1,
+            active_tab: '1',
             title: '',
             summary: '',
             portrait_image: '',
@@ -80,6 +79,7 @@ class Detail extends React.Component {
             seasons: [],
             related_programs: [],
             modal: false,
+            player_modal: false,
             rate_modal: false,
             select_modal: false,
             action_sheet: false,
@@ -102,10 +102,12 @@ class Detail extends React.Component {
                 'photo': []
             },
             like_history: [],
-            tabs: []
+            tabs: [],
+            response_data: {},
+            selected_episode: {}
         };
 
-        this.player = null;
+        this.player = this.player2 = null;
         this.tabs = ['episode', 'extra', 'clip', 'photo'];
     }
 
@@ -144,35 +146,8 @@ class Detail extends React.Component {
                         release_date: data.release_date,
                         trailer_url: data.trailer_url,
                         meta: response.data.meta,
-                        tabs: []
-                    }, () => {
-                        let tabs = [];
-                        const { episode, extra, clip, photo } = response.data.data;
-                        
-                        console.log({ episode, extra, clip, photo });
-
-                        if (episode > 0) {
-                            tabs.push(<NavItem key={1} className="menu-title">
-                                        <NavLink onClick={this.toggleTab.bind(this, 1, 'Episode')} className={classnames({ active: this.state.active_tab == 1 })}>Episode</NavLink>
-                                    </NavItem>);
-                        }
-                        if (extra > 0) {
-                            tabs.push(<NavItem key={2} className="menu-title">
-                                        <NavLink onClick={this.toggleTab.bind(this, 2, 'Extra')} className={classnames({ active: this.state.active_tab == 2 })}>Extras</NavLink>
-                                    </NavItem>);
-                        }
-                        if (clip > 0) {
-                            tabs.push(<NavItem key={3} className="menu-title">
-                                        <NavLink onClick={this.toggleTab.bind(this, 3, 'Clip')} className={classnames({ active: this.state.active_tab == 3 })}>Clips</NavLink>
-                                    </NavItem>);
-                        }
-                        if (photo > 0) {
-                            tabs.push(<NavItem key={4} className="menu-title">
-                                        <NavLink onClick={this.toggleTab.bind(this, 4, 'Photo')} className={classnames({ active: this.state.active_tab == 4 })}>Photos</NavLink>
-                                    </NavItem>);
-                        }
-
-                        this.setState({ tabs: tabs });
+                        tabs: [],
+                        response_data: response.data.data
                     });
 
                     this.props.getLikeHistory(this.props.router.query.id);
@@ -188,6 +163,7 @@ class Detail extends React.Component {
                                     selected_season: this.props.contents.selected_season, 
                                     episode_page: this.props.contents.current_page
                                 });
+                                console.log(this.props.contents.episodes);
                                 this.props.setShowMoreAllowed(this.props.contents.episodes.length >= this.state.length, 'EPISODES');
                             }
                         })
@@ -280,6 +256,40 @@ class Detail extends React.Component {
         }
     }
 
+    togglePlayerModal(data, type = 'episode') {
+        console.log(data);
+        this.setState({ player_modal: !this.state.player_modal }, () => {
+            if (this.state.player_modal) {
+                switch (type) {
+                    case 'episode':
+                        this.props.getEpisodeUrl(data.id)
+                            .then(response => {
+                                this.setState({ selected_episode: response.data.data });
+                            })
+                            .catch(error => console.log(error));
+                        break;
+
+                    case 'extra':
+                        this.props.getExtraUrl(data.id)
+                            .then(response => {
+                                this.setState({ selected_episode: response.data.data });
+                            })
+                            .catch(error => console.log(error));
+                        break;
+
+                    case 'clip':
+                        this.props.getClipUrl(data.id)
+                            .then(response => {
+                                this.setState({ selected_episode: response.data.data });
+                            })
+                            .catch(error => console.log(error));
+                        break;
+                }
+                
+            }
+        });
+    }
+
     toggleActionSheet(caption = '', url = '', hashtags = []) {
         this.setState({ 
             action_sheet: !this.state.action_sheet,
@@ -320,6 +330,30 @@ class Detail extends React.Component {
     }
 
     render() {
+        const { episode, extra, clip, photo } = this.state.response_data;
+        const tabs = [];
+
+        if (episode > 0) {
+            tabs.push(<NavItem key={'nav-1'} className="menu-title">
+                        <NavLink onClick={this.toggleTab.bind(this, '1', 'Episode')} className={classnames({ active: this.state.active_tab === '1' })}>Episode</NavLink>
+                    </NavItem>);
+        }
+        if (extra > 0) {
+            tabs.push(<NavItem key={'nav-2'} className="menu-title">
+                        <NavLink onClick={this.toggleTab.bind(this, '2', 'Extra')} className={classnames({ active: this.state.active_tab === '2' })}>Extras</NavLink>
+                    </NavItem>);
+        }
+        if (clip > 0) {
+            tabs.push(<NavItem key={'nav-3'} className="menu-title">
+                        <NavLink onClick={this.toggleTab.bind(this, '3', 'Clip')} className={classnames({ active: this.state.active_tab === '3' })}>Clips</NavLink>
+                    </NavItem>);
+        }
+        if (photo > 0) {
+            tabs.push(<NavItem key={'nav-4'} className="menu-title">
+                        <NavLink onClick={this.toggleTab.bind(this, '4', 'Photo')} className={classnames({ active: this.state.active_tab === '4' })}>Photos</NavLink>
+                    </NavItem>);
+        }
+
         if (this.props.initial == false) {
             return (
                 <div>
@@ -352,6 +386,13 @@ class Detail extends React.Component {
                     onReady={() => this.player = window.jwplayer('example-id')}
                     playerId="example-id"
                     videoUrl={this.state.trailer_url}/>
+
+                <PlayerModal 
+                    open={this.state.player_modal}
+                    toggle={this.togglePlayerModal.bind(this)}
+                    onReady={() => this.player2 = window.jwplayer('example-id2')}
+                    playerId="example-id2"
+                    videoUrl={this.state.selected_episode ? this.state.selected_episode.url : ''}/>
 
                 <ActionModal 
                     open={this.state.rate_modal}
@@ -417,15 +458,15 @@ class Detail extends React.Component {
                 </div>
                 <div className="list-box">
                     <Nav tabs className="list-menu">
-                        {this.state.tabs}
+                        {tabs}
                     </Nav>
                     <TabContent className="list-content" activeTab={this.state.active_tab}>
-                        <TabPane tabId={1}>
+                        <TabPane tabId={'1'}>
                             <p className="list-expand" onClick={this.toggleSelectModal.bind(this)}>
                                 Season {this.props.contents.selected_season} <ExpandMoreIcon />
                             </p>
                             {this.state.contents['episode'].map(e => (
-                                <div key={e.id}>
+                                <div key={e.id} onClick={this.togglePlayerModal.bind(this, e, 'episode')}>
                                     <Row>
                                         <Col xs={6}>
                                             <Img className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
@@ -453,9 +494,9 @@ class Detail extends React.Component {
                                 </div>
                             ))}
                         </TabPane>
-                        <TabPane tabId={2}>
+                        <TabPane tabId={'2'}>
                             {this.state.contents['extra'].map(e => (
-                                <div key={e.id}>
+                                <div key={e.id} onClick={this.togglePlayerModal.bind(this, e, 'extra')}>
                                     <Row>
                                         <Col xs={6}>
                                             <Img className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
@@ -478,9 +519,9 @@ class Detail extends React.Component {
                                 </div>
                             ))}
                         </TabPane>
-                        <TabPane tabId={3}>
+                        <TabPane tabId={'3'}>
                             {this.state.contents['clip'].map(e => (
-                                <div key={e.id}>
+                                <div key={e.id} onClick={this.togglePlayerModal.bind(this, e, 'clip')}>
                                     <Row>
                                         <Col xs={6}>
                                             <Img className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
@@ -503,7 +544,7 @@ class Detail extends React.Component {
                                 </div>
                             ))}
                         </TabPane>
-                        <TabPane tabId={4}>
+                        <TabPane tabId={'4'}>
                             <Row>
                                 {this.state.contents['photo'].map(e => (
                                     <Col xs={6} key={e.id}>
@@ -533,7 +574,7 @@ class Detail extends React.Component {
                                 showStatus={false}
                                 swipeScrollTolerance={1}
                                 onClickItem={(index) => {
-                                    Router.push('/detail/' + this.state.related_programs[index].id);
+                                    Router.push('/detail/program/' + this.state.related_programs[index].id);
                                 }}
                                 swipeable={true}>
                                 {this.state.related_programs.map(rp => (
