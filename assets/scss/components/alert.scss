@@ -20,3 +20,14 @@
 	padding: 3px;
 	border-radius: 5px;
 }
+
+.swal2-confirm, .swal2-cancel, .swal2-cancel-custom {
+	margin-top: 15px !important;
+	width: 85%;
+}
+
+.swal2-cancel-custom {
+	background: transparent;
+	border: transparent;
+	color: #127ceb;
+}

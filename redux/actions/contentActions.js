@@ -1,7 +1,7 @@
 import ax from 'axios';
 import { API, DEV_API, VISITOR_TOKEN } from '../../config';
 import { getCookie } from '../../utils/cookie';
-import { showConfirmAlert } from '../../utils/helpers';
+import { showConfirmAlert, showSignInAlert } from '../../utils/helpers';
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
@@ -40,7 +40,11 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                                 contents.push(content);
                             }
                             else if (res.data.status.code === 13) {
-                                showConfirmAlert('Please check and verify your email to continue Sign In. If you haven\'t get an email, please click resend', '', () => {}, false, 'OK', 'Resend');
+                                showSignInAlert(`Please <b>Sign In</b><br/>
+                                Woops! Gonna sign in first!<br/>
+                                Only a click away and you<br/>
+                                can continue to enjoy<br/>
+                                <b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
                             }
                         }
                         catch (e) {
