@@ -7,20 +7,42 @@ import { Carousel } from 'react-responsive-carousel';
 
 import ShareIcon from '@material-ui/icons/Share';
 
+import ActionSheet from '../../Modals/ActionSheet';
+
 class PhotoFeed extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(this.props.createdAt);
+        this.state = {
+            url: this.props.shareLink,
+            action_sheet: false,
+            hashtags: []
+        };
     }
+
+    toggleActionSheet(caption = '', url = '', hashtags = []) {
+		this.setState({
+			action_sheet: !this.state.action_sheet,
+			caption: caption,
+			url: url,
+			hashtags: hashtags
+		});
+	}
 
     render() {
         return (
             <Row className="program-item row-edit">
+                <ActionSheet
+					caption={this.props.title}
+					url={this.state.url}
+					open={this.state.action_sheet}
+					hashtags={this.state.hashtags}
+					toggle={this.toggleActionSheet.bind(this, '', '', ['rcti'])} />
+
                 <Col className="col-edit">
                     <Row>
                         <Col xs="2">
-                            <Img className="program-rounded-thumbnail" src={['/static/placeholders/placeholder_landscape.png']} />
+                            <Img className="program-rounded-thumbnail" src={[this.props.meta.image_path + this.props.resolution + this.props.iconImage, '/static/placeholders/placeholder_landscape.png']} />
                         </Col>
                         <Col xs="7">
                             <div className="program-label">
@@ -33,7 +55,7 @@ class PhotoFeed extends React.Component {
                             </div>
                         </Col>
                         <Col className="program-share-button">
-                            <ShareIcon className="program-label" />
+                            <ShareIcon className="program-label" onClick={this.toggleActionSheet.bind(this, this.props.title, this.state.url, ['rcti'])}/>
                         </Col>
                     </Row>
                         <Carousel

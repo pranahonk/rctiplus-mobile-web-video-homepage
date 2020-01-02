@@ -47,6 +47,7 @@ class PhotoList extends React.Component {
         if (this.state.program) {
             this.props.getProgramPhoto(this.props.initial.data.id)
                 .then(response => {
+                    console.log(response);
                     this.setState({ 
                         photos: response.data.data,
                         meta: response.data.meta 
@@ -54,7 +55,6 @@ class PhotoList extends React.Component {
                 })
                 .catch(error => console.log(error));
         }
-        
     }
 
     render() {
@@ -65,12 +65,15 @@ class PhotoList extends React.Component {
                     {this.state.photos.map(p => (
                         <PhotoFeed 
                             key={p.id}
+                            program={this.state.program}
                             resolution={593}
                             meta={this.state.meta}
                             title={p.title}
                             createdAt={p.release_date}
                             images={p.photos}
-                            summary={p.summary}/>
+                            summary={p.summary}
+                            shareLink={p.share_link}
+                            iconImage={p.program_icon_image}/>
                     ))}
                     
                 </div>

@@ -19,11 +19,6 @@ class ActionModal extends React.Component {
         super(props);
     }
 
-    componentDidMount() {
-        
-        
-    }
-
     postLike(status) {
         this.props.postLike(this.props.programId, this.props.type, status)
             .then(response => {
