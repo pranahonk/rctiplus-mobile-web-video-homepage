@@ -247,6 +247,10 @@ class Detail extends React.Component {
         });
     }
 
+    goToPhotoList(id) {
+        Router.push('/detail/' + this.props.router.query.id + '/photo/' + id);
+    }
+
     toggleRateModal() {
         if (this.props.likes.data && this.props.likes.data.length > 0 && !this.state.rate_modal) {
             this.props.postLike(this.props.router.query.id, 'program', 'INDIFFERENT');
@@ -547,7 +551,7 @@ class Detail extends React.Component {
                         <TabPane tabId={'4'}>
                             <Row>
                                 {this.state.contents['photo'].map(e => (
-                                    <Col xs={6} key={e.id}>
+                                    <Col xs={6} key={e.id} onClick={this.goToPhotoList.bind(this, e.id)}>
                                         <div>
                                             <Img className="list-item-thumbnail list-item-photo" src={[this.state.meta.image_path + '140' + e.program_icon_image, '/static/placeholders/placeholder_landscape.png']} />
                                             <PhotoLibraryIcon className="img-icon"/>
