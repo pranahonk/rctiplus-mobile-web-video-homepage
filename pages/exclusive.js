@@ -188,7 +188,7 @@ class Exclusive extends React.Component {
 	}
 
 	goToDetail(programId) {
-		Router.push('/detail/' + programId);
+		Router.push('/detail/program/' + programId);
 	}
 
 	render() {

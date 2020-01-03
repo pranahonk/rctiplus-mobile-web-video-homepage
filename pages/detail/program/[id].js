@@ -15,6 +15,7 @@ import Error from '../../error';
 import contentActions from '../../../redux/actions/contentActions';
 import searchActions from '../../../redux/actions/searchActions';
 import likeActions from '../../../redux/actions/likeActions';
+import bookmarkActions from '../../../redux/actions/bookmarkActions';
 
 //load default layout
 import Layout from '../../../components/Layouts/Default';
@@ -28,6 +29,7 @@ import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import ShareIcon from '@material-ui/icons/Share';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
@@ -104,7 +106,12 @@ class Detail extends React.Component {
             like_history: [],
             tabs: [],
             response_data: {},
-            selected_episode: {}
+            selected_episode: {},
+            mylist_data: {},
+            program_in_list: false,
+            bookmarked_episode: [],
+            bookmarked_extra: [],
+            bookmarked_clip: []
         };
 
         this.player = this.player2 = null;
@@ -132,7 +139,24 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
-        
+        this.props.getMyList(this.props.router.query.id)
+            .then(response => {
+                this.setState({ mylist_data: response.data.data }, () => {
+                    console.log(this.state.mylist_data);
+                    const bookmarkIndex = this.state.mylist_data.program.findIndex(b => b.id == this.props.router.query.id);
+                    if (bookmarkIndex !== -1) {
+                        this.setState({ program_in_list: this.state.mylist_data.program[bookmarkIndex].is_bookmark == 1 });
+                    }
+
+                    this.setState({
+                        bookmarked_episode: this.state.mylist_data.episode,
+                        bookmarked_extra: this.state.mylist_data.extra,
+                        bookmarked_clip: this.state.mylist_data.clip
+                    });
+                });
+            })
+            .catch(error => console.log(error));
+
         this.props.getProgramDetail(this.props.router.query.id)
             .then(response => {
                 if (response.status === 200 && response.data.status.code === 0) {
@@ -163,7 +187,6 @@ class Detail extends React.Component {
                                     selected_season: this.props.contents.selected_season, 
                                     episode_page: this.props.contents.current_page
                                 });
-                                console.log(this.props.contents.episodes);
                                 this.props.setShowMoreAllowed(this.props.contents.episodes.length >= this.state.length, 'EPISODES');
                             }
                         })
@@ -251,6 +274,77 @@ class Detail extends React.Component {
         Router.push('/detail/' + this.props.router.query.id + '/photo/' + id);
     }
 
+    addToMyList(id, type) {
+        this.props.bookmark(id, type)
+            .then(response => {
+                switch (type) {
+                    case 'program':
+                        this.setState({ program_in_list: true });
+                        break;
+                    
+                    case 'episode':
+                        const bookmarkedEpisode = this.state.bookmarked_episode;
+                        bookmarkedEpisode.push({ id: id, last_duration: 0, is_bookmark: 1 });
+                        this.setState({ bookmarked_episode: bookmarkedEpisode });
+                        break;
+
+                    case 'extra':
+                        const bookmarkedExtra = this.state.bookmarked_extra;
+                        bookmarkedExtra.push({ id: id, last_duration: 0, is_bookmark: 1 });
+                        this.setState({ bookmarked_extra: bookmarkedExtra });
+                        break;
+
+                    case 'clip':
+                        const bookmarkedClip = this.state.bookmarked_clip;
+                        bookmarkedClip.push({ id: id, last_duration: 0, is_bookmark: 1 });
+                        this.setState({ bookmarked_clip: bookmarkedClip });
+                        break;
+                }
+                
+            })
+            .catch(error => console.log(error));
+    }
+
+    deleteFromMyList(id, type) {
+        this.props.deleteBookmark(id, type)
+            .then(response => {
+                switch (type) {
+                    case 'program':
+                        this.setState({ program_in_list: false });
+                        break;
+
+                    case 'episode':
+                        const bookmarkedEpisode = this.state.bookmarked_episode;
+                        const indexEpisode = bookmarkedEpisode.findIndex(b => b.id == id);
+                        if (indexEpisode !== -1) {
+                            bookmarkedEpisode.splice(indexEpisode, 1);
+                            this.setState({ bookmarked_episode: bookmarkedEpisode });
+                        }
+                        break;
+
+                    case 'extra':
+                        const bookmarkedExtra = this.state.bookmarked_extra;
+                        const indexExtra = bookmarkedExtra.findIndex(b => b.id == id);
+                        if (indexExtra !== -1) {
+                            bookmarkedExtra.splice(indexExtra, 1);
+                            this.setState({ bookmarked_extra: bookmarkedExtra });
+                        }
+                        break;
+
+                    case 'clip':
+                        const bookmarkedClip = this.state.bookmarked_clip;
+                        const indexClip = bookmarkedClip.findIndex(b => b.id == id);
+                        if (indexClip !== -1) {
+                            bookmarkedClip.splice(indexClip, 1);
+                            this.setState({ bookmarked_clip: bookmarkedClip });
+                        }
+                        break;
+                }
+                
+            })
+            .catch(error => console.log(error));
+    }
+
     toggleRateModal() {
         if (this.props.likes.data && this.props.likes.data.length > 0 && !this.state.rate_modal) {
             this.props.postLike(this.props.router.query.id, 'program', 'INDIFFERENT');
@@ -261,7 +355,6 @@ class Detail extends React.Component {
     }
 
     togglePlayerModal(data, type = 'episode') {
-        console.log(data);
         this.setState({ player_modal: !this.state.player_modal }, () => {
             if (this.state.player_modal) {
                 switch (type) {
@@ -336,27 +429,43 @@ class Detail extends React.Component {
     render() {
         const { episode, extra, clip, photo } = this.state.response_data;
         const tabs = [];
+        const tabsObj = {
+            'Episode': episode,
+            'Extra': extra,
+            'Clip': clip,
+            'Photo': photo
+        };
 
-        if (episode > 0) {
-            tabs.push(<NavItem key={'nav-1'} className="menu-title">
-                        <NavLink onClick={this.toggleTab.bind(this, '1', 'Episode')} className={classnames({ active: this.state.active_tab === '1' })}>Episode</NavLink>
+        let idx = 1;
+        for (let key in tabsObj) {
+            if (tabsObj[key] > 0) {
+                tabs.push(<NavItem key={key} className="menu-title">
+                        <NavLink onClick={this.toggleTab.bind(this, idx.toString(), key)} className={classnames({ active: this.state.active_tab === idx.toString() })}>{key}</NavLink>
                     </NavItem>);
+                idx++;
+            }
         }
-        if (extra > 0) {
-            tabs.push(<NavItem key={'nav-2'} className="menu-title">
-                        <NavLink onClick={this.toggleTab.bind(this, '2', 'Extra')} className={classnames({ active: this.state.active_tab === '2' })}>Extras</NavLink>
-                    </NavItem>);
-        }
-        if (clip > 0) {
-            tabs.push(<NavItem key={'nav-3'} className="menu-title">
-                        <NavLink onClick={this.toggleTab.bind(this, '3', 'Clip')} className={classnames({ active: this.state.active_tab === '3' })}>Clips</NavLink>
-                    </NavItem>);
-        }
-        if (photo > 0) {
-            tabs.push(<NavItem key={'nav-4'} className="menu-title">
-                        <NavLink onClick={this.toggleTab.bind(this, '4', 'Photo')} className={classnames({ active: this.state.active_tab === '4' })}>Photos</NavLink>
-                    </NavItem>);
-        }
+
+        // if (episode > 0) {
+        //     tabs.push(<NavItem key={'nav-1'} className="menu-title">
+        //                 <NavLink onClick={this.toggleTab.bind(this, '1', 'Episode')} className={classnames({ active: this.state.active_tab === '1' })}>Episode</NavLink>
+        //             </NavItem>);
+        // }
+        // if (extra > 0) {
+        //     tabs.push(<NavItem key={'nav-2'} className="menu-title">
+        //                 <NavLink onClick={this.toggleTab.bind(this, '2', 'Extra')} className={classnames({ active: this.state.active_tab === '2' })}>Extras</NavLink>
+        //             </NavItem>);
+        // }
+        // if (clip > 0) {
+        //     tabs.push(<NavItem key={'nav-3'} className="menu-title">
+        //                 <NavLink onClick={this.toggleTab.bind(this, '3', 'Clip')} className={classnames({ active: this.state.active_tab === '3' })}>Clips</NavLink>
+        //             </NavItem>);
+        // }
+        // if (photo > 0) {
+        //     tabs.push(<NavItem key={'nav-4'} className="menu-title">
+        //                 <NavLink onClick={this.toggleTab.bind(this, '4', 'Photo')} className={classnames({ active: this.state.active_tab === '4' })}>Photos</NavLink>
+        //             </NavItem>);
+        // }
 
         if (this.props.initial == false) {
             return (
@@ -451,7 +560,7 @@ class Detail extends React.Component {
                             <p>Rate</p>
                         </div>
                         <div className="action-button">
-                            <PlaylistAddIcon className="action-icon" />
+                            {this.state.program_in_list ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, this.props.router.query.id, 'program')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, this.props.router.query.id, 'program')} />)}
                             <p>My List</p>
                         </div>
                         <div className="action-button">
@@ -470,16 +579,16 @@ class Detail extends React.Component {
                                 Season {this.props.contents.selected_season} <ExpandMoreIcon />
                             </p>
                             {this.state.contents['episode'].map(e => (
-                                <div key={e.id} onClick={this.togglePlayerModal.bind(this, e, 'episode')}>
+                                <div key={e.id}>
                                     <Row>
-                                        <Col xs={6}>
+                                        <Col xs={6} onClick={this.togglePlayerModal.bind(this, e, 'episode')}>
                                             <Img className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
-                                            <p className="item-title">S{e.season}:E{e.episode} {e.title}</p>
+                                            <p onClick={this.togglePlayerModal.bind(this, e, 'episode')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
-                                                    <PlaylistAddIcon className="action-icon" />
+                                                    {this.state.bookmarked_episode.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'episode')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'episode')} />)}
                                                 </div>
                                                 <div className="action-button">
                                                     <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
@@ -500,16 +609,16 @@ class Detail extends React.Component {
                         </TabPane>
                         <TabPane tabId={'2'}>
                             {this.state.contents['extra'].map(e => (
-                                <div key={e.id} onClick={this.togglePlayerModal.bind(this, e, 'extra')}>
+                                <div key={e.id}>
                                     <Row>
-                                        <Col xs={6}>
+                                        <Col xs={6} onClick={this.togglePlayerModal.bind(this, e, 'extra')}>
                                             <Img className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
-                                            <p className="item-title">S{e.season}:E{e.episode} {e.title}</p>
+                                            <p onClick={this.togglePlayerModal.bind(this, e, 'extra')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
-                                                    <PlaylistAddIcon className="action-icon" />
+                                                    {this.state.bookmarked_extra.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'extra')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'extra')} />)}
                                                 </div>
                                                 <div className="action-button">
                                                     <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
@@ -525,16 +634,16 @@ class Detail extends React.Component {
                         </TabPane>
                         <TabPane tabId={'3'}>
                             {this.state.contents['clip'].map(e => (
-                                <div key={e.id} onClick={this.togglePlayerModal.bind(this, e, 'clip')}>
+                                <div key={e.id}>
                                     <Row>
-                                        <Col xs={6}>
+                                        <Col xs={6} onClick={this.togglePlayerModal.bind(this, e, 'clip')}>
                                             <Img className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
-                                            <p className="item-title">S{e.season}:E{e.episode} {e.title}</p>
+                                            <p onClick={this.togglePlayerModal.bind(this, e, 'clip')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
-                                                    <PlaylistAddIcon className="action-icon" />
+                                                    {this.state.bookmarked_clip.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'clip')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'clip')} />)}
                                                 </div>
                                                 <div className="action-button">
                                                     <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
@@ -599,5 +708,6 @@ class Detail extends React.Component {
 export default connect(state => state, {
     ...contentActions,
     ...searchActions,
-    ...likeActions
+    ...likeActions,
+    ...bookmarkActions
 })(withRouter(Detail));

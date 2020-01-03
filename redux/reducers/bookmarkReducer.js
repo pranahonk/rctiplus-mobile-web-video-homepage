@@ -8,6 +8,7 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case 'MY_LIST':
         case 'BOOKMARK':
+        case 'DELETE_BOOKMARK':
         case 'GET_BOOKMARKS':
         case 'GET_BOOKMARK':
         case 'GET_LIST_BOOKMARK':

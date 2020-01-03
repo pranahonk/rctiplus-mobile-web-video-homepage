@@ -1,16 +1,23 @@
 import ax from 'axios';
-import { API, VISITOR_TOKEN } from '../../config';
+import { DEV_API, API, VISITOR_TOKEN } from '../../config';
 import { getCookie } from '../../utils/cookie';
-
-const axios = ax.create({
-    baseURL: API + '/api',
-    headers: {
-        'Authorization': VISITOR_TOKEN
-    }
-});
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
+
+const axios = ax.create({
+    // baseURL: API + '/api',
+    baseURL: DEV_API + '/api',
+    headers: {
+        'Authorization': accessToken ? accessToken : VISITOR_TOKEN
+    }
+});
+
+axios.interceptors.response.use(response => {
+    return response;
+}, error => {
+    // console.log(error.response);
+});
 
 const bookmark = (id, type) => {
     return dispatch => new Promise(async (resolve, reject) => {
@@ -21,7 +28,7 @@ const bookmark = (id, type) => {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': accessToken
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
                 }
             });
 
@@ -44,12 +51,41 @@ const bookmark = (id, type) => {
     });
 };
 
+const deleteBookmark = (id, type) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.delete(`/v1/bookmark?id=${id}&type=${type}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
+                }
+            });
+
+            if (response.data.status.code === 0) {
+                dispatch({ 
+                    type: 'DELETE_BOOKMARK', 
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const getBookmarks = () => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/bookmarks`, {
                 headers: {
-                    'Authorization': accessToken
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
                 }
             });
 
@@ -77,7 +113,7 @@ const getMyList = programId => {
         try {
             const response = await axios.get(`/v1/mylist/${programId}`, {
                 headers: {
-                    'Authorization': accessToken
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
                 }
             });
 
@@ -105,7 +141,7 @@ const getListBookmark = (page = 1, length = 10, order = 'date', dir = 'DESC') =>
         try {
             const response = await axios.get(`/v1/listbookmark?page=${page}&length=${length}&order=${order}&dir=${dir}`, {
                 headers: {
-                    'Authorization': accessToken
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
                 }
             });
             
@@ -133,7 +169,7 @@ const getListBookmarkById = (programId, page = 1, length = 10, order = 'date', d
         try {
             const response = await axios.get(`/v1/listbookmark/${programId}?page=${page}&length=${length}&order=${order}&dir=${dir}`, {
                 headers: {
-                    'Authorization': accessToken
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
                 }
             });
 
@@ -161,7 +197,7 @@ const getBookmark = programId => {
         try {
             const response = await axios.get(`/v1/bookmark/${programId}`, {
                 headers: {
-                    'Authorization': accessToken
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
                 }
             });
 
@@ -186,6 +222,7 @@ const getBookmark = programId => {
 
 export default {
     bookmark,
+    deleteBookmark,
     getBookmarks,
     getBookmark,
     getMyList,
