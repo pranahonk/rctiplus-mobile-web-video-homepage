@@ -1144,6 +1144,7 @@ module.exports = (window => {
             video.play();
           }
   
+          unmuteVideoItem(video, storyViewer);
           if (unmute && unmute.target) {
             unmuteVideoItem(video, storyViewer);
           }

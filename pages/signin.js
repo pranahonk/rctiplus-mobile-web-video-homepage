@@ -122,7 +122,7 @@ class Signin extends React.Component {
 										type="text"
 										name="email"
 										id="email"
-										placeholder="Enter email or phone number"
+										placeholder="insert email or phone number"
 										defaultValue={this.state.emailphone}
 										invalid={this.state.is_username_invalid}
 										onChange={this.onChangeUsername.bind(this)}/>
@@ -138,7 +138,7 @@ class Signin extends React.Component {
 										type={this.state.view_raw ? 'text' : 'password'}
 										name="password"
 										id="password"
-										placeholder="Enter password"
+										placeholder="insert password"
 										defaultValue={this.state.password}
 										onChange={e => this.setState({ password: e.target.value })}
 										invalid={this.state.is_password_invalid}/>
