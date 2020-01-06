@@ -27,3 +27,4 @@ coverage
 .next/
 
 cypress/integration/examples/*
+/nbproject/private/
