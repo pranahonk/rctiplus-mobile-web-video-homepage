@@ -578,7 +578,7 @@ class Detail extends React.Component {
                             <p className="list-expand" onClick={this.toggleSelectModal.bind(this)}>
                                 Season {this.props.contents.selected_season} <ExpandMoreIcon />
                             </p>
-                            {this.state.contents['episode'].map(e => (
+                            {this.props.contents.episodes.map(e => (
                                 <div key={e.id}>
                                     <Row>
                                         <Col xs={6} onClick={this.togglePlayerModal.bind(this, e, 'episode')}>
