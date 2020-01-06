@@ -33,12 +33,17 @@ class NavbarDef extends Component {
 	}
 
 	componentDidMount() {
-		document.addEventListener('scroll', () => {
-			const isTop = window.scrollY < 150;
-			if (isTop !== this.state.is_top) {
-				this.setState({ is_top: isTop });
-			}
-		});
+		if (!this.props.disableScrollListener) {
+			document.addEventListener('scroll', () => {
+				const isTop = window.scrollY < 150;
+				if (isTop !== this.state.is_top) {
+					this.setState({ is_top: isTop });
+				}
+			});
+		}
+		else {
+			this.setState({ is_top: false });
+		}
 	}
 
 	render() {

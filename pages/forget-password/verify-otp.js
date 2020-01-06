@@ -14,7 +14,7 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 //load reactstrap components
 import { Button, Form, FormGroup } from 'reactstrap';
 
-import '../../assets/scss/components/verify-otp.scss';
+import '../../assets/scss/components/verify-otp-password.scss';
 
 
 class VerifyOtp extends React.Component {
@@ -27,7 +27,9 @@ class VerifyOtp extends React.Component {
             otp: '',
             interval: 60,
 			countdown_key: 0,
-			current_time: Date.now()
+            current_time: Date.now(),
+            submit_message: '',
+			is_submitting: false
         };
     }
 
@@ -69,53 +71,66 @@ class VerifyOtp extends React.Component {
     }
 
     render() {
-        let text = 'Verification code was sent to your email';
-        let username = this.state.username || '';
-        
-        // set phone number format
-        if (this.props.registration.username_type === 'PHONE_NUMBER') {
-            text = 'Verification code was sent via SMS to your phone number';
-            let newUsername = '';
-			for (let i = 2; i < username.length; i++) {
+        let text = 'Please enter verification code, <br>sent via email:';
+		let username = this.state.username || '';
+
+		let actionElement = null;
+		if (this.state.is_submitting) {
+			actionElement = <p className="text-default-rcti" style={{ textAlign: 'center', color: '#6dd400' }}>verifying...</p>;
+		}
+		else {
+			actionElement = (
+				<div>
+					<p className="text-default-rcti" style={{ textAlign: 'center' }}>{this.state.submit_message}</p>
+	
+					<FormGroup>
+						<label className="lbl_rsndcode">
+							<Countdown
+								key={this.state.countdown_key}
+								date={this.state.current_time + (this.state.interval * 1000)}
+								renderer={({ hours, minutes, seconds, completed }) => {
+									if (completed) {
+										return (<p className="text-default-rcti" style={{ textAlign: 'center' }}>did not receive any code<br/><span onClick={this.showAlert.bind(this)} className="el-red">send me code</span></p>);
+									}
+	
+									return (<span>Resend code <span className="time-resendcode">{zeroPad(minutes)}:<span>{zeroPad(seconds)}</span></span></span>);
+								}}></Countdown>
+						</label>
+					</FormGroup>
+					<FormGroup className="btn-next-position">
+						<Button className="btn-next block-btn">Verify</Button>
+					</FormGroup>
+				</div>
+			);
+		}
+		
+
+		if (this.props.registration.username_type === 'PHONE_NUMBER') {
+			text = 'Please enter verification code, <br>sent via SMS:';
+			let newUsername = '';
+			for (let i = 0; i < username.length; i++) {
 				newUsername += username[i];
-				if (i == 2 + 2 || i == 6 + 2) {
+				if (i == 2 || i == 6) {
 					newUsername += ' ';
 				}
 			}
 
-			username = '+62 ' + newUsername;
-        }
+			username = '';
+		}
 
         return (
             <Layout title="Verify OTP">
                 <NavBack title="Verify OTP"/>
-                <div className="container-box">
-                    <p>Verify your account, enter your code below</p>
-                    <p style={{ fontSize: 14 }} className="text-default-rcti">{text} <span style={{ color: 'white' }}>{username}</span></p>
+                <div className="container-box-c">
+                    <p style={{ fontSize: 14 }} className="text-default-rcti" dangerouslySetInnerHTML={{__html: text}}></p>
                     <Form onSubmit={this.submitOtp.bind(this)}>
                         <FormGroup>
                             <ReactCodeInput
                                 fields={4}
                                 onChange={this.onChangeOtp.bind(this)}
-                                className="otp-input" />
+                                className="otp-input-c" />
                         </FormGroup>
-                        <FormGroup>
-                            <label className="lbl_rsndcode">
-                                Resend code <Countdown
-                                    key={this.state.countdown_key}
-                                    date={this.state.current_time + (this.state.interval * 1000)}
-                                    renderer={({ hours, minutes, seconds, completed }) => {
-                                        if (completed) {
-                                            return (<p className="text-default-rcti" style={{ fontSize: 12, textAlign: 'center' }}><span onClick={() => Router.push('/forget-password')} className="el-red">Change {this.props.registration.username_type === 'PHONE_NUMBER' ? 'Phone Number' : 'Email'}</span> or <span onClick={this.showAlert.bind(this)} className="el-red">Resend Code</span></p>);
-                                        }
-
-                                        return (<span>{zeroPad(minutes)}:<span className="time-resendcode">{zeroPad(seconds)}</span></span>);
-                                    }}></Countdown>
-                            </label>
-                        </FormGroup>
-                        <FormGroup className="btn-next-position">
-                            <Button className="btn-next block-btn">Verify</Button>
-                        </FormGroup>
+                        {actionElement}
                     </Form>
                 </div>
             </Layout>

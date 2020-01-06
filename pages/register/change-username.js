@@ -25,7 +25,6 @@ class ChangeUsername extends React.Component {
             username: this.props.registration.username
         };
         this.subject = new Subject();
-        this.props.setUsernameType('PHONE_NUMBER');
     }
 
     onChangeUsername(e) {
@@ -42,6 +41,7 @@ class ChangeUsername extends React.Component {
     }
 
     componentDidMount() {
+        console.log(this.props.registration);
         this.subject
             .pipe(debounceTime(500))
             .subscribe(() => {
@@ -81,29 +81,57 @@ class ChangeUsername extends React.Component {
     }
 
     render() {
+
+        let inputElement;
+
+        if (this.props.registration.username_type == 'EMAIL') {
+            console.log('email');
+            inputElement = (
+                <div>
+                    <Input
+                        onChange={this.onChangeUsername.bind(this)}
+                        valid={!this.state.username_invalid && !!this.state.username}
+                        invalid={this.state.username_invalid}
+                        className="form-control-c" />
+                    <FormText className="form-text-c">
+                        <ul>
+                            <li>Make sure the email is active because we will sent you verification code to verify and secure your account</li>
+                        </ul>
+                    </FormText>
+                </div>
+            );
+        }
+        else {
+            console.log('phone');
+            inputElement = (
+                <div>
+                    <InputGroup>
+                        <InputGroupAddon addonType="prepend">
+                            <InputGroupText className="form-control-c addon-left-c">+62</InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                            onChange={this.onChangeUsername.bind(this)}
+                            valid={!this.state.username_invalid && !!this.state.username}
+                            invalid={this.state.username_invalid}
+                            className="form-control-c" />
+                    </InputGroup>
+                    <FormText className="form-text-c">
+                        <ul>
+                            <li>Make sure the phone number is active because we will sent you verification code to verify and secure your account</li>
+                        </ul>
+                    </FormText>
+                </div>
+            );
+        }
+
         return (
             <Layout title={'Change ' + (this.props.registration.username_type == 'PHONE_NUMBER' ? 'Phone Number' : 'Email')}>
                 <NavBack title={'Change ' + (this.props.registration.username_type == 'PHONE_NUMBER' ? 'Phone Number' : 'Email')} />
-                <div className="container-box">
+                <div className="container-box-c">
                     <Form onSubmit={this.submitChangeUsername.bind(this)}>
                         <FormGroup>
-                            <Label className="form-label" for="phone">{(this.props.registration.username_type == 'PHONE_NUMBER' ? 'Phone Number' : 'Email')}</Label>
-                            <InputGroup>
-                                <InputGroupAddon addonType="prepend">
-                                    <InputGroupText className="form-control addon-left">+62</InputGroupText>
-                                </InputGroupAddon>
-                                <Input
-                                    onChange={this.onChangeUsername.bind(this)}
-                                    valid={!this.state.username_invalid && !!this.state.username}
-                                    invalid={this.state.username_invalid}
-                                    className="form-control" />
-                                {/* <FormFeedback valid={!this.state.username_invalid && !!this.state.username}>{this.state.username_invalid_message}</FormFeedback> */}
-                            </InputGroup>
-                            <FormText className="form-text">
-                                <ul>
-                                    <li>Make sure the phone number is active because we will sent you verification code to verified and secure your account</li>
-                                </ul>
-                            </FormText>
+                            <Label className="form-label-c" for="phone">{(this.props.registration.username_type == 'PHONE_NUMBER' ? 'Phone Number' : 'Email')}</Label>
+                            {inputElement}
                         </FormGroup>
                         <FormGroup>
                             <Button className="btn-next block-btn">Save</Button>

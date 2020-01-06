@@ -32,7 +32,9 @@ const handle = app.getRequestHandler();
     );
 
     // default request handler by next handler:
-    server.get('*', (req, res) => handle(req, res));
+    server.get('*', (req, res) => {
+      return handle(req, res);
+    });
 
     server.listen(port, err => {
       if (err) {

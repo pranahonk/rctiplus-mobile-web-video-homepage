@@ -73,7 +73,8 @@ class Signup extends React.Component {
 
 	next(e) {
 		e.preventDefault();
-		if (this.state.password === this.state.confirm_password && this.props.registration.username !== null && this.props.registration.password !== null && !this.state.password_match_invalid && !this.state.at_least_eight_invalid) {
+		console.log(this.props.registration);
+		if (this.state.password === this.state.confirm_password && this.props.registration.username !== null && this.props.registration.password !== null && !this.state.password_match_invalid && !this.state.at_least_eight_invalid && ((this.props.registration.active_tab == '1' && !this.props.registration.phone_invalid) || (this.props.registration.active_tab == '2' && !this.props.registration.email_invalid))) {
 			Router.push('/register/phone/step1');
 		}
 	}
@@ -117,7 +118,7 @@ class Signup extends React.Component {
 								</InputGroup>
 							</FormGroup>
 							<Button className="btn-next block-btn">NEXT</Button>
-							<p className="text-center fnt-10 el-margin-20 el-white">
+							{/* <p className="text-center fnt-10 el-margin-20 el-white">
 								By clicking the Sign Up button, you agree to our&nbsp;
 								<a href="/terms-&amp;-conditions" className="text-red fnt-11">
 									Terms &amp; Conditions
@@ -133,7 +134,7 @@ class Signup extends React.Component {
 									Sign In
 								</a>&nbsp;
 								here
-							</p>
+							</p> */}
 						</Form>
 					</div>
 				</div>

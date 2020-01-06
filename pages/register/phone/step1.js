@@ -40,8 +40,9 @@ class Step1 extends Component {
 		const monthMap = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 		this.genderMap = {
-			'5': 'Male',
-			'11': 'Female'
+			'0': 'Female',
+			'6': 'Male',
+			'12': 'Female'
 		};
 
 		this.dateConfig = {
@@ -127,25 +128,27 @@ class Step1 extends Component {
 		let birthdateValid = true;
 		let genderValid = true;
 
-		if (this.state.fullname == '') {
-			formValid = false;
-			fullnameValid = false;
-		}
+		// if (this.state.fullname == '') {
+		// 	formValid = false;
+		// 	fullnameValid = false;
+		// }
 
-		if (this.state.birthdate == '') {
-			formValid = false;
-			birthdateValid = false;
-		}
+		// if (this.state.birthdate == '') {
+		// 	formValid = false;
+		// 	birthdateValid = false;
+		// }
 
-		if (this.state.gender == '') {
-			formValid = false;
-			genderValid = false;
-		}
+		// if (this.state.gender == '') {
+		// 	formValid = false;
+		// 	genderValid = false;
+		// }
 
 		if (formValid) {
-			showConfirmAlert('Are you sure you want to continue? Make sure to check your entry before continue.', '', () => {
-				Router.push('/register/phone/step2');
-			});
+			// showConfirmAlert('Are you sure you want to continue? Make sure to check your entry before continue.', '', () => {
+			// 	Router.push('/register/phone/step2');
+			// });
+
+			Router.push('/register/phone/step2');
 		}
 		else {
 			let newState = {};
@@ -215,6 +218,7 @@ class Step1 extends Component {
 										type="text"
 										name="fullname"
 										id="fullname"
+										maxLength="25"
 										placeholder="Insert full name"
 										onChange={this.handleFullnameChange.bind(this)}
 										invalid={this.state.fullname_invalid}/>
@@ -229,6 +233,7 @@ class Step1 extends Component {
 										type="text"
 										name="birthdate"
 										id="BirthDate"
+										readOnly
 										placeholder="yyyy-mm-dd"
 										defaultValue={this.state.formatted_date}
 										invalid={this.state.birthdate_invalid}
@@ -251,6 +256,7 @@ class Step1 extends Component {
 										name="gender"
 										placeholder="Select gender"
 										id="gender"
+										readOnly
 										defaultValue={this.state.gender}
 										invalid={this.state.gender_invalid}
 										onClick={this.handleOpenGender.bind(this)} />

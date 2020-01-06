@@ -32,7 +32,17 @@ class ForgetPassword extends React.Component {
     onChangeUsername(e) {
         this.setState({ username: e.target.value }, () => {
             this.props.setUsername(this.state.username);
-            this.subject.next()
+            if (this.state.username.length < 6) {
+                this.setState({
+                    username_invalid: true,
+                    username_invalid_message: 'Username must at least 6 characters'
+                }, () => this.subject.next());
+            }
+            else {
+                this.setState({
+                    username_invalid_message: ''
+                }, () => this.subject.next());
+            }
         });
     }
 
@@ -45,7 +55,7 @@ class ForgetPassword extends React.Component {
         this.subject
             .pipe(debounceTime(500))
             .subscribe(() => {
-                if (this.state.username) {
+                if (this.state.username && this.state.username.length >= 6) {
                     this.props.checkUser(this.state.username)
                         .then(response => {
                             if (response.status === 200) {
@@ -66,8 +76,8 @@ class ForgetPassword extends React.Component {
                                     }
                                     else {
                                         this.setState({
-                                            username_invalid: false,
-                                            username_invalid_message: ''
+                                            username_invalid: true,
+                                            username_invalid_message: 'Username does not exist'
                                         });
                                         
                                     }
@@ -85,7 +95,7 @@ class ForgetPassword extends React.Component {
         return (
             <Layout title="Forget Password">
                 <NavBack title="Forget Password"/>
-                <div className="container-box">
+                <div className="container-box-cp">
                     <Form onSubmit={this.submitUsername.bind(this)}>
                         <FormGroup>
                             <Label for="username">Email or Phone Number</Label>
@@ -94,7 +104,7 @@ class ForgetPassword extends React.Component {
                                     onChange={this.onChangeUsername.bind(this)}
                                     valid={!this.state.username_invalid && !!this.state.username}
                                     invalid={this.state.username_invalid}
-                                    className="form-control"/>
+                                    className="form-control-cp"/>
                                 <FormFeedback valid={!this.state.username_invalid && !!this.state.username}>{this.state.username_invalid_message}</FormFeedback>
                             </InputGroup>
                         </FormGroup>

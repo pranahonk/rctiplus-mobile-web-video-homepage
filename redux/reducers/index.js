@@ -10,6 +10,8 @@ import searchReducer from './searchReducer';
 import quizReducer from './quizReducer';
 import liveAndChatReducer from './liveAndChatReducer';
 import notificationReducer from './notificationReducer';
+import feedReducer from './feedReducer';
+import likeReducer from './likeReducer';
 
 const rootReducer = combineReducers({
     authentication: authReducer,
@@ -22,7 +24,9 @@ const rootReducer = combineReducers({
     searches: searchReducer,
     quizzes: quizReducer,
     chats: liveAndChatReducer,
-    notification: notificationReducer
+    notification: notificationReducer,
+    feeds: feedReducer,
+    likes: likeReducer
 });
 
 export default rootReducer;

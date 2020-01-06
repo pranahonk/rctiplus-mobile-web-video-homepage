@@ -12,6 +12,27 @@ const axios = ax.create({
     }
 });
 
+const setActiveTab = tab => {
+    return dispatch => dispatch({
+        type: 'SET_ACTIVE_TAB',
+        tab: tab
+    });
+};
+
+const setEmailInvalid = invalid => {
+    return dispatch => dispatch({
+        type: 'SET_EMAIL_STATUS',
+        invalid: invalid
+    });
+};
+
+const setPhoneInvalid = invalid => {
+    return dispatch => dispatch({
+        type: 'SET_PHONE_STATUS',
+        invalid: invalid
+    });
+};
+
 const setUsername = username => {
     return dispatch => dispatch({
         type: 'USERNAME',
@@ -288,5 +309,8 @@ export default {
     setGender,
     setDob,
     setUsernameType,
-    setOtp
+    setOtp,
+    setEmailInvalid,
+    setPhoneInvalid,
+    setActiveTab
 };

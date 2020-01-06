@@ -1,7 +1,7 @@
 import ax from 'axios';
 import { API, DEV_API, VISITOR_TOKEN } from '../../config';
 import { getCookie } from '../../utils/cookie';
-import { showConfirmAlert } from '../../utils/helpers';
+import { showConfirmAlert, showSignInAlert } from '../../utils/helpers';
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
@@ -40,7 +40,11 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                                 contents.push(content);
                             }
                             else if (res.data.status.code === 13) {
-                                showConfirmAlert('Please check and verify your email to continue Sign In. If you haven\'t get an email, please click resend', '', () => {}, false, 'OK', 'Resend');
+                                showSignInAlert(`Please <b>Sign In</b><br/>
+                                Woops! Gonna sign in first!<br/>
+                                Only a click away and you<br/>
+                                can continue to enjoy<br/>
+                                <b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
                             }
                         }
                         catch (e) {
@@ -132,12 +136,12 @@ const getEpisodeUrl = episodeId => {
         try {
             const response = await axios.get(`/v1/episode/${episodeId}/url`);
             if (response.data.status.code === 0) {
-                dispatch({
-                    type: 'GET_EPISODE_URL',
-                    data: response.data.data, 
-                    meta: response.data.meta, 
-                    status: response.data.status
-                });
+                // dispatch({
+                //     type: 'GET_EPISODE_URL',
+                //     data: response.data.data, 
+                //     meta: response.data.meta, 
+                //     status: response.data.status
+                // });
                 resolve(response);
             }
             else {
@@ -178,12 +182,12 @@ const getExtraUrl = extraId => {
         try {
             const response = await axios.get(`/v1/extra/${extraId}/url`);
             if (response.data.status.code === 0) {
-                dispatch({
-                    type: 'GET_EXTRA_URL',
-                    data: response.data.data, 
-                    meta: response.data.meta, 
-                    status: response.data.status
-                });
+                // dispatch({
+                //     type: 'GET_EXTRA_URL',
+                //     data: response.data.data, 
+                //     meta: response.data.meta, 
+                //     status: response.data.status
+                // });
                 resolve(response);
             }
             else {
@@ -224,12 +228,12 @@ const getClipUrl = clipId => {
         try {
             const response = await axios.get(`/v1/clip/${clipId}/url`);
             if (response.data.status.code === 0) {
-                dispatch({
-                    type: 'GET_CLIP_URL',
-                    data: response.data.data, 
-                    meta: response.data.meta, 
-                    status: response.data.status
-                });
+                // dispatch({
+                //     type: 'GET_CLIP_URL',
+                //     data: response.data.data, 
+                //     meta: response.data.meta, 
+                //     status: response.data.status
+                // });
                 resolve(response);
             }
             else {
@@ -282,10 +286,33 @@ const getProgramDetail = programId => {
     });
 };
 
-const getProgramEpisodes = programId => {
+const getProgramEpisodes = (programId, season = 1, page = 1, length = 5, infos = 'id,program_id,title,portrait_image,landscape_image,summary,season,episode,duration') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/program/${programId}/episode`);
+            const response = await axios.get(`/v1/program/${programId}/episode?season=${season}&page=${page}&length=${length}&infos=${infos}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_PROGRAM_EPISODES',
+                    episodes: response.data.data,
+                    current_page: page + 1,
+                    selected_season: season
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getProgramSeason = programId => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/program/${programId}/season`);
             if (response.data.status.code === 0) {
                 resolve(response);
             }
@@ -299,6 +326,112 @@ const getProgramEpisodes = programId => {
     });
 };
 
+// TODO: get program extras, clips, & photos, and their details (SEE API DOC)
+const getProgramExtra = (programId, page = 1, length = 5) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/program/${programId}/extra?page=${page}&length=${length}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_PROGRAM_EXTRAS',
+                    extras: response.data.data,
+                    current_extra_page: page + 1
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getProgramPhoto = (programId, page = 1, length = 5) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/program/${programId}/photo?page=${page}&length=${length}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_PROGRAM_PHOTOS',
+                    photos: response.data.data,
+                    current_photos_page: page + 1
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getProgramClip = (programId, page = 1, length = 5) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/program/${programId}/clip?page=${page}&length=${length}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_PROGRAM_CLIPS',
+                    clips: response.data.data,
+                    current_clips_page: page + 1
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const selectSeason = season => {
+    return dispatch => new Promise((resolve, reject) => {
+        const dispatched = {
+            type: 'SELECT_SEASON',
+            season: season
+        };
+        dispatch(dispatched);
+        resolve(dispatched);
+    });
+};
+
+const setShowMoreAllowed = (allowed, type = 'EPISODES') => {
+    switch (type) {
+        case 'EPISODES':
+            return dispatch => dispatch({ 
+                type: 'SET_SHOW_MORE_ALLOWED',
+                allowed: allowed 
+            });
+    
+        case 'EXTRAS':
+            return dispatch => dispatch({
+                type: 'SET_SHOW_MORE_EXTRA_ALLOWED',
+                allowed: allowed
+            });
+
+        case 'PHOTOS':
+            return dispatch => dispatch({
+                type: 'SET_SHOW_MORE_PHOTO_ALLOWED',
+                allowed: allowed
+            });
+
+        case 'CLIPS':
+            return dispatch => dispatch({
+                type: 'SET_SHOW_MORE_CLIP_ALLOWED',
+                allowed: allowed
+            });
+    }
+}
+
 export default {
     getContents,
     getHomepageContents,
@@ -311,5 +444,11 @@ export default {
     getClipUrl,
     getPhotoDetail,
     getProgramDetail,
-    getProgramEpisodes
+    getProgramEpisodes,
+    getProgramSeason,
+    getProgramExtra,
+    getProgramPhoto,
+    getProgramClip,
+    selectSeason,
+    setShowMoreAllowed
 };

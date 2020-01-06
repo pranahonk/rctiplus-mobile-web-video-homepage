@@ -1,5 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { showSignInAlert } from '../../utils/helpers';
+
+import likeActions from '../../redux/actions/likeActions';
 
 import { Modal, ModalBody } from 'reactstrap';
 
@@ -16,12 +19,31 @@ class ActionModal extends React.Component {
         super(props);
     }
 
+    postLike(status) {
+        this.props.postLike(this.props.programId, this.props.type, status)
+            .then(response => {
+                this.props.getLikeHistory(this.props.programId)
+                    .then(_ => this.props.toggle())
+                    .catch(error => this.props.toggle());
+            })
+            .catch(error => {
+                console.log(error);
+                if (error.data && error.data.status.code === 13) {
+                    showSignInAlert(`Please <b>Sign In</b><br/>
+                    Woops! Gonna sign in first!<br/>
+                    Only a click away and you<br/>
+                    can continue to enjoy<br/>
+                    <b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+                }
+            });
+    }
+
     render() {
         return (
             <Modal isOpen={this.props.open} toggle={this.props.toggle}>
                 <ModalBody>
-                    <ThumbUpAltOutlinedIcon className="modal-icon"/>
-                    <ThumbDownOutlinedIcon className="modal-icon"/>
+                    <ThumbUpAltOutlinedIcon onClick={this.postLike.bind(this, 'LIKE')} className="modal-icon"/>
+                    <ThumbDownOutlinedIcon onClick={this.postLike.bind(this, 'DISLIKE')} className="modal-icon"/>
                     <div className="close-container">
                         <CancelIcon className="close-icon" onClick={this.props.toggle}/>
                     </div>
@@ -32,4 +54,4 @@ class ActionModal extends React.Component {
 
 }
 
-export default connect(state => state, {})(ActionModal);
+export default connect(state => state, likeActions)(ActionModal);

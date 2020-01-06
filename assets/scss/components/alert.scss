@@ -1,13 +1,13 @@
 .swal2-title {
-	color: #d6d6d6 !important;
+	color: black !important;
 }
 
 .swal2-popup {
-	background-color: #282828 !important;
+	background-color: rgba(248, 248, 248, 0.82) !important;
 }
 
-.swal2-content {
-	color: #d6d6d6 !important;
+.swal2-content, #swal2-content {
+	color: black !important;
 }
 
 .btn-cancel {
@@ -19,4 +19,26 @@
 	margin-top: 10px;
 	padding: 3px;
 	border-radius: 5px;
+}
+
+.btn-cancel-c {
+	background-color: transparent !important;
+	color: #007aff;
+	width: 100%;
+	margin-left: 0;
+	margin-right: 0;
+	margin-top: 10px;
+	padding: 3px;
+	border-radius: 5px;
+}
+
+.swal2-confirm, .swal2-cancel, .swal2-cancel-custom {
+	margin-top: 15px !important;
+	width: 85%;
+}
+
+.swal2-cancel-custom {
+	background: transparent;
+	border: transparent;
+	color: #127ceb;
 }

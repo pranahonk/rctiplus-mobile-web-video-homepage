@@ -6,6 +6,8 @@ import initialize from '../utils/initialize';
 import { getCookie } from '../utils/cookie';
 import LoadingBar from 'react-top-loading-bar';
 
+import { showAlert } from '../utils/helpers';
+
 //load default layout
 import Layout from '../components/Layouts/Default';
 
@@ -30,6 +32,9 @@ class Signin extends React.Component {
 			emailphone: 'user.test@rctiplus.com',
 			password: 'user.123',
 			is_password_invalid: false,
+			password_invalid_message: '',
+			is_username_invalid: false,
+			username_invalid_message: '',
 			view_raw: false,
 			progress_bar: 30
 		};
@@ -44,6 +49,10 @@ class Signin extends React.Component {
 		this.LoadingBar.complete();
 	}
 
+	onChangeUsername(e) {
+		this.setState({ emailphone: e.target.value });
+	}
+
 	handleSubmit(e) {
 		e.preventDefault();
 		const data = {
@@ -56,7 +65,34 @@ class Signin extends React.Component {
 				Router.push('/');
 			}
 			else {
-				this.setState({ is_password_invalid: true });
+				
+				switch (this.props.authentication.code) {
+					case 7: // code = 7 (Please Try Again Password Is Incorrect)
+						this.setState({
+							is_username_invalid: false,
+							is_password_invalid: true,
+							password_invalid_message: this.props.authentication.message
+						});
+						break;
+					
+					case 1: // code = 1 (Please try again, username is incorrect)
+						this.setState({
+							is_password_invalid: false,
+							is_username_invalid: true,
+							username_invalid_message: this.props.authentication.message
+						});
+						break;
+					case 9: // code = 9 (Invalid, User Has Not Been Registered)
+						this.setState({
+							is_password_invalid: false,
+							is_username_invalid: false,
+							username_invalid_message: this.props.authentication.message
+						}, () => {
+							showAlert('User has not been registered', 'Invalid', 'OK', '', () => {}, true);
+						});
+						break;
+				}
+
 			}
 		});
 	}
@@ -80,15 +116,19 @@ class Signin extends React.Component {
 						<Form onSubmit={this.handleSubmit.bind(this)}>
 							<FormGroup>
 								<Label for="email">Email or Phone Number</Label>
-								<Input
-									className="inpt-form"
-									type="text"
-									name="email"
-									id="email"
-									placeholder="Enter email or phone number"
-									defaultValue={this.state.emailphone}
-									onChange={e => this.setState({ emailphone: e.target.value })}
-								/>
+								<InputGroup>
+									<Input
+										className="inpt-form"
+										type="text"
+										name="email"
+										id="email"
+										placeholder="Enter email or phone number"
+										defaultValue={this.state.emailphone}
+										invalid={this.state.is_username_invalid}
+										onChange={this.onChangeUsername.bind(this)}/>
+									<FormFeedback>{this.state.username_invalid_message}</FormFeedback>
+								</InputGroup>
+								
 							</FormGroup>
 							<FormGroup>
 								<Label for="password">Password</Label>
@@ -101,10 +141,9 @@ class Signin extends React.Component {
 										placeholder="Enter password"
 										defaultValue={this.state.password}
 										onChange={e => this.setState({ password: e.target.value })}
-										invalid={this.state.is_password_invalid}
-									/>
+										invalid={this.state.is_password_invalid}/>
 									<div onClick={this.togglePassword.bind(this)} className={'view-raw ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye')}></div>
-									<FormFeedback>Wrong password, please try again</FormFeedback>
+									<FormFeedback>{this.state.password_invalid_message}</FormFeedback>
 								</InputGroup>
 							</FormGroup>
 							<p className="text-center">
@@ -112,13 +151,22 @@ class Signin extends React.Component {
 									Forgot Password?
 								</a>
 							</p>
-							<Button className="btn-next block-btn">Login</Button>
-							<p className="text-center padding-top-10" style={{ fontSize: '0.9rem' }}>
-								Don't have an account?&nbsp;
+							<Button disabled={this.state.emailphone.length < 6} className="btn-next block-btn" style={{ marginTop: 20 }}>Log In</Button>
+							<p className="text-center fnt-10 el-margin-20 el-white" style={{ fontSize: 12 }}>
+								Don't have an account?<br/>
 								<a href="/signup" className="text-red">
-									Sign up
+									Register
+								</a> here.&nbsp;
+							</p>
+							<p className="text-center fnt-10 el-margin-20 el-white" style={{ fontSize: 11, marginTop: 50 }}>
+								By clicking the Log In button, you agree to our&nbsp;
+								<a href="/terms-&amp;-conditions" className="text-red fnt-11">
+									Terms &amp; Conditions
 								</a>&nbsp;
-								here
+								and&nbsp;
+								<a href="/privacy-policy" className="text-red fnt-11">
+									Privacy Policy
+								</a>&nbsp;
 							</p>
 						</Form>
 					</div>

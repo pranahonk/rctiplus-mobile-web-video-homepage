@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<url><loc>http://localhost:3000/detail/[id]</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/exclusive</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/explore</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/forget-password/change-password</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/forget-password/index</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/forget-password/verify-otp</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/index</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/live-tv</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/more</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/register/Interest</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/register/change-username</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/register/phone/step1</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/register/phone/step2</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/register/phone/step3</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/signin</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/signup</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/trending</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/user/continue-watching</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/user/download</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/user/faq</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/user/help</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/user/history</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/user/my-list</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/user/privacy-policy</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/user/profile</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/user/term-cond</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url><url><loc>http://localhost:3000/users</loc>
+                
+                
+                
+                <lastmod>2019-12-16</lastmod>
+                </url></urlset>

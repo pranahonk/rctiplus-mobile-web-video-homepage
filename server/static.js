@@ -29,9 +29,10 @@ const DOCS_PATH = '../out/';
       express.static(path.join(__dirname, DOCS_PATH, '_next/')),
     );
 
-    app.get('/*', (req, res) =>
-      res.sendFile(path.join(__dirname, DOCS_PATH, 'index.html')),
-    );
+    app.get('/*', (req, res) => {
+      console.log('URL:', req.url);
+      return res.sendFile(path.join(__dirname, DOCS_PATH, 'index.html'));
+    });
 
     app.listen(port, err => {
       if (err) {
