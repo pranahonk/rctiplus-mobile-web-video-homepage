@@ -40,8 +40,9 @@ class Step1 extends Component {
 		const monthMap = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 		this.genderMap = {
-			'5': 'Male',
-			'11': 'Female'
+			'0': 'Female',
+			'6': 'Male',
+			'12': 'Female'
 		};
 
 		this.dateConfig = {

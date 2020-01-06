@@ -88,7 +88,7 @@ class Signin extends React.Component {
 							is_username_invalid: false,
 							username_invalid_message: this.props.authentication.message
 						}, () => {
-							showAlert('User has not been registered', 'Invalid');
+							showAlert('User has not been registered', 'Invalid', 'OK', '', () => {}, true);
 						});
 						break;
 				}

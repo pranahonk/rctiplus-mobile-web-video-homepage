@@ -4,6 +4,7 @@ import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
+import { showSignInAlert } from '../utils/helpers';
 
 //load default layout
 import Layout from '../components/Layouts/Default';

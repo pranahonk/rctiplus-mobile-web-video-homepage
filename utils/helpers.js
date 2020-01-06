@@ -4,7 +4,7 @@ import Router from 'next/router';
 
 // import '../assets/scss/components/alert.scss';
 
-export const showAlert = (text, title, confirmText = 'OK', cancelText = '', confirmCallback = () => {}) => {
+export const showAlert = (text, title, confirmText = 'OK', cancelText = '', confirmCallback = () => {}, styleInverse = false) => {
     let options = {
         text: text,
         title: title,
@@ -18,6 +18,15 @@ export const showAlert = (text, title, confirmText = 'OK', cancelText = '', conf
         },
         width: '85%'
     };
+
+    if (styleInverse) {
+        options.customClass = {
+            confirmButton: 'block-btn btn-link-edit btn-cancel btn-alert-c btn-cancel-c',
+            cancelButton: 'btn-next block-btn btn-primary-edit btn-alert-c',
+            header: 'alert-header'
+        };
+    }
+
     Swal.fire(options)
         .then(result => {
             if (result.value) {
