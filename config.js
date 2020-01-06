@@ -30,7 +30,7 @@ export const CONVIVA_TRACKING_HOST = 'mnc-test.testonly.conviva.com';
 
 export const VISITOR_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjAsInRva2VuIjoiZmUyZWMwM2E5ZTliYTUxYiIsInBsIjoid2ViIn0.5bAp_UT0o8DfAxx5UAQDG5U-mc0ZjxxdKivuA7Y3v_g';
 
-
+export const IS_SHOWN = true;
 
 
 // SEO CONSTANTS

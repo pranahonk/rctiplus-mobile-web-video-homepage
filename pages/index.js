@@ -4,7 +4,7 @@ import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
-import { showSignInAlert } from '../utils/helpers';
+
 
 //load default layout
 import Layout from '../components/Layouts/Default';
@@ -51,6 +51,8 @@ class Index extends React.Component {
 			meta: null,
 			resolution: 593
 		};
+
+		console.log(process.env.STORIES_SHOWN);
 	}
 
 	componentDidMount() {
@@ -106,7 +108,7 @@ class Index extends React.Component {
 					{/* <NavDownloadApp /> */}
 					<Nav />
 					<Carousel />
-					<Stories />
+					<Stories hide={true} />
 					{/* <ReactJWPlayer 
 						playerId="example-id" 
 						playerScript="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"
