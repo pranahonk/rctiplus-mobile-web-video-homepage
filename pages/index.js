@@ -51,8 +51,6 @@ class Index extends React.Component {
 			meta: null,
 			resolution: 593
 		};
-
-		console.log(process.env.STORIES_SHOWN);
 	}
 
 	componentDidMount() {
@@ -108,7 +106,7 @@ class Index extends React.Component {
 					{/* <NavDownloadApp /> */}
 					<Nav />
 					<Carousel />
-					<Stories hide={true} />
+					<Stories />
 					{/* <ReactJWPlayer 
 						playerId="example-id" 
 						playerScript="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"
