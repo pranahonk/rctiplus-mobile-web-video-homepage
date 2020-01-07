@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import initialize from '../../utils/initialize';
+import userActions from '../../redux/actions/userActions';
+import othersActions from '../../redux/actions/othersActions';
 
 //load default layout
 import Layout from '../../components/Layouts/Default';
@@ -41,12 +43,47 @@ class EditProfile extends React.Component {
             gender_invalid_message: '',
             location: '',
             location_invalid: false,
-            location_invalid_message: ''
+            location_invalid_message: '',
+            location_data: []
         };
     }
 
-    handleSubmit(e) {
+    componentDidMount() {
+        this.props.getUserData()
+            .then(response => {
+                if (response.status === 200) {
+                    const data = response.data.data;
+                    console.log(data);
+                    this.setState({
+                        email: data.email,
+                        phone_number: data.phone_number,
+                        fullname: data.display_name,
+                        birthdate: new Date(data.dob * 1000),
+                        gender: data.gender,
+                        location: data.location
+                    });
+                }
+            })
+            .catch(error => console.log(error));
+    
+        this.props.getLocations()
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({ location_data: response.data.data });
+                }
+            })
+            .catch(error => console.log(error));
+    }
 
+    handleSubmit(e) {
+        
+    }
+
+    formatDate(date) {
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const day = ('0' + date.getDate()).slice(-2);
+        return year + '-' + month + '-' + day;
     }
 
     onChangeEmail(e) {
@@ -70,6 +107,7 @@ class EditProfile extends React.Component {
     }
 
     onChangeLocation(e) {
+        console.log(e.target.value);
         this.setState({ location: e.target.value });
     }
 
@@ -86,8 +124,8 @@ class EditProfile extends React.Component {
                             <Label className="form-label" for="email">Email</Label>
                             <InputGroup>
                                 <Input
+                                    value={this.state.email}
                                     onChange={this.onChangeEmail.bind(this)}
-                                    valid={!this.state.email_invalid && !!this.state.email}
                                     invalid={this.state.email_invalid}
                                     className="form-control-ep" />
                                 <FormFeedback valid={!this.state.email_invalid && !!this.state.email}>{this.state.email_invalid_message}</FormFeedback>
@@ -97,8 +135,8 @@ class EditProfile extends React.Component {
                             <Label className="form-label" for="phone_number">Phone Number</Label>
                             <InputGroup>
                                 <Input
+                                    value={this.state.phone_number ? this.state.phone_number : ''}
                                     onChange={this.onChangePhoneNumber.bind(this)}
-                                    valid={!this.state.phone_number_invalid && !!this.state.phone_number}
                                     invalid={this.state.phone_number_invalid}
                                     className="form-control-ep" />
                                 <FormFeedback valid={!this.state.phone_number_invalid && !!this.state.phone_number}>{this.state.phone_number_invalid_message}</FormFeedback>
@@ -108,21 +146,20 @@ class EditProfile extends React.Component {
                             <Label className="form-label" for="fullname">Full Name</Label>
                             <InputGroup>
                                 <Input
+                                    value={this.state.fullname}
                                     onChange={this.onChangeFullname.bind(this)}
-                                    valid={!this.state.fullname_invalid && !!this.state.fullname}
                                     invalid={this.state.fullname_invalid}
                                     className="form-control-ep" />
                                 <FormFeedback valid={!this.state.fullname_invalid && !!this.state.fullname}>{this.state.fullname_invalid_message}</FormFeedback>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label" for="birthdate">Birth Date</Label>
+                            <Label className="form-label" for="birthdate">Birth Day</Label>
                             <DatePicker
                                 showMonthDropdown
                                 showYearDropdown
                                 dropdownMode="select"
                                 dateFormat="dd/MM/yyyy"
-                                valid={!this.state.birthdate_invalid && !!this.state.birthdate}
                                 invalid={this.state.birthdate_invalid}
                                 selected={this.state.birthdate}
                                 onChange={this.onChangeBirthdate.bind(this)}
@@ -132,10 +169,15 @@ class EditProfile extends React.Component {
                             <Label className="form-label" for="gender">Gender</Label>
                             <InputGroup>
                                 <Input
+                                    type="select"
+                                    value={this.state.gender}
                                     onChange={this.onChangeGender.bind(this)}
-                                    valid={!this.state.gender_invalid && !!this.state.gender}
                                     invalid={this.state.gender_invalid}
-                                    className="form-control-ep" />
+                                    className="form-control-ep">
+                                    <option></option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                </Input>
                                 <FormFeedback valid={!this.state.gender_invalid && !!this.state.gender}>{this.state.gender_invalid_message}</FormFeedback>
                             </InputGroup>
                         </FormGroup>
@@ -143,10 +185,14 @@ class EditProfile extends React.Component {
                             <Label className="form-label" for="location">Location</Label>
                             <InputGroup>
                                 <Input
+                                    type="select"
+                                    value={this.state.location ? this.state.location : ''}
                                     onChange={this.onChangeLocation.bind(this)}
-                                    valid={!this.state.location_invalid && !!this.state.location}
                                     invalid={this.state.location_invalid}
-                                    className="form-control-ep" />
+                                    className="form-control-ep">
+                                    <option></option>
+                                    {this.state.location_data.map((l, i) => <option key={i}>{l}</option>)}
+                                </Input>
                                 <FormFeedback valid={!this.state.location_invalid && !!this.state.location}>{this.state.location_invalid_message}</FormFeedback>
                             </InputGroup>
                         </FormGroup>
@@ -161,4 +207,7 @@ class EditProfile extends React.Component {
 
 }
 
-export default connect(state => state, {})(EditProfile);
+export default connect(state => state, {
+    ...userActions,
+    ...othersActions
+})(EditProfile);

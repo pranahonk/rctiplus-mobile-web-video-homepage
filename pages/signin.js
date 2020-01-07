@@ -29,8 +29,8 @@ class Signin extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			emailphone: 'user.test@rctiplus.com',
-			password: 'user.123',
+			emailphone: '',
+			password: '',
 			is_password_invalid: false,
 			password_invalid_message: '',
 			is_username_invalid: false,

@@ -39,6 +39,11 @@ $default-text-color-login: #eee;
     border-color: #282828;
 }
 
+.form-control-ep > option {
+    background-color: #171717;
+    border-color: #171717;
+}
+
 .react-datepicker__header {
     @extend .react-datepicker;
 }
