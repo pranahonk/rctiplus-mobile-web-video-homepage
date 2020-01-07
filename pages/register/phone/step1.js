@@ -269,7 +269,7 @@ class Step1 extends Component {
 								</InputGroup>
 							</FormGroup>
 							<FormGroup className="btn-next-position">
-								<Button className="btn-next block-btn">NEXT</Button>
+								<Button disabled={this.state.fullname && this.state.fullname.length < 4} className="btn-next block-btn">NEXT</Button>
 							</FormGroup>
 						</Form>
 					</div>

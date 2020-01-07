@@ -29,25 +29,58 @@ class VerifyOtp extends React.Component {
 			countdown_key: 0,
             current_time: Date.now(),
             submit_message: '',
-			is_submitting: false
+            is_submitting: false,
+            req_otp_status: 0
         };
     }
 
     componentDidMount() {
         console.log(this.props.registration);
         this.setState({ username: this.props.registration.username }, () => {
-            this.props.getOtp(this.state.username);
+            this.props.getOtp(this.state.username)
+                .then(response => {
+                    if (response.status === 200) {
+                        this.setState({ 
+                            alert_message: response.data.status.message_server,
+                            req_otp_status: response.data.status.code 
+                        });
+                    }
+                })
+                .catch(error => console.log(error));
         });
     }
 
-    submitOtp(e) {
-        e.preventDefault();
-        Router.push('/forget-password/change-password');
+    submitOtp() {
+        Router.push('/forget-password/verification-success');
     }
 
     onChangeOtp(otp) {
-        this.setState({ otp: otp }, () => {
+        this.setState({ otp: otp, is_submitting: otp && otp.length >= 4 }, () => {
             this.props.setOtp(this.state.otp);
+            if (this.state.is_submitting) {
+                this.props.verifyOtp(this.state.username, this.state.otp)
+                    .then(response => {
+                        if (response.status === 200) {
+                            switch (response.data.status.code) {
+                                case 0:
+                                    this.submitOtp();
+                                    break;
+
+                                default:
+                                    this.setState({  
+                                        is_submitting: false,
+                                        submit_message: 'Invalid verification code'
+                                    });
+                                    break;
+                            }
+                            
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.setState({ is_submitting: false });
+                    });
+            }
         });
     }
 
@@ -61,13 +94,16 @@ class VerifyOtp extends React.Component {
                     if (response.status === 200) {
                         newState = {
                             current_time: Date.now(),
-                            countdown_key: this.state.countdown_key + 1
+                            countdown_key: this.state.countdown_key + 1,
+                            alert_message: response.data.status.message_server,
+                            req_otp_status: response.data.status.code
                         };
+                        this.setState(newState);
                     }
                 })
                 .catch(error => console.log(error));
 
-        }, true, 'Not Now', 'Request New OTP');
+        }, true, this.state.req_otp_status == 0 ? 'Not Now' : 'OK', this.state.req_otp_status == 0 ? 'Request New OTP' : '');
     }
 
     render() {
@@ -97,9 +133,9 @@ class VerifyOtp extends React.Component {
 								}}></Countdown>
 						</label>
 					</FormGroup>
-					<FormGroup className="btn-next-position">
+					{/* <FormGroup className="btn-next-position">
 						<Button className="btn-next block-btn">Verify</Button>
-					</FormGroup>
+					</FormGroup> */}
 				</div>
 			);
 		}

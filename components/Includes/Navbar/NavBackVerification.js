@@ -13,7 +13,7 @@ class NavBackVerification extends Component {
 				<div className="top-link">
 					<div className="logo-top-wrapper">
 						<NavbarBrand onClick={() => Router.back()} style={{ color: 'white' }}>
-							<ArrowBackIcon onClick={() => Router.back()} />
+							<ArrowBackIcon/>
 						</NavbarBrand>
 					</div>
 				</div>

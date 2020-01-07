@@ -1,15 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import Head from 'next/head';
-import Lazyload from 'react-lazyload';
-import contentActions from '../redux/actions/contentActions';
+import ReactJWPlayer from 'react-jw-player';
 import initialize from '../utils/initialize';
+import liveAndChatActions from '../redux/actions/liveAndChatActions';
 
 //load default layout
 import Layout from '../components/Layouts/Default';
 
 //load navbar default
-import Nav from '../components/Includes/Navbar/NavDefault';
+import NavDefault from '../components/Includes/Navbar/NavDefault';
 
 class Live extends React.Component {
 
@@ -26,21 +25,15 @@ class Live extends React.Component {
 	}
 
 	componentDidMount() {
-		this.props.getContents(1)
-			.then(response => {
-				this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta });
-			});
+		
 	}
 
 	render() {
-		const contents = this.state.contents;
-		const meta = this.state.meta;
-
 		return (
 			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
-				<div>
-					<Nav />
-					<div class="wrapper-content">Live TV</div>
+				<NavDefault />
+				<div className="wrapper-content">
+					Live TV
 				</div>
 			</Layout>
 		);
@@ -48,4 +41,4 @@ class Live extends React.Component {
 
 }
 
-export default connect(state => state, contentActions)(Live);
+export default connect(state => state, liveAndChatActions)(Live);

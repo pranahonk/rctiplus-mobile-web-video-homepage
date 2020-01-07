@@ -33,7 +33,8 @@ class Step2 extends Component {
 			countdown_key: 0,
 			current_time: Date.now(),
 			submit_message: '',
-			is_submitting: false
+			is_submitting: false,
+			req_otp_status: 0
 		};
 
 	}
@@ -45,12 +46,28 @@ class Step2 extends Component {
 			if (this.props.registration.username_type === 'PHONE_NUMBER') {
 				username = '62' + username;
 			}
-			this.props.getOtp(username);
+			this.props.getOtp(username)
+				.then(response => {
+					if (response.status === 200) {
+						this.setState({ 
+							alert_message: response.data.status.message_server,
+							req_otp_status: response.data.status.code 
+						});
+					}
+				})
+				.catch(error => console.log(error));
 		});
 	}
 
-	submitOtp(e) {
-		e.preventDefault();
+	onChangeOtp(otp) {
+		this.setState({ otp: otp }, () => {
+			if (this.state.otp.length >= 4) {
+				this.submitOtp();
+			}
+		});
+	}
+
+	submitOtp() {
 		this.setState({ is_submitting: true }, () => {
 			let username = this.state.username;
 			if (this.props.registration.username_type === 'PHONE_NUMBER') {
@@ -64,7 +81,7 @@ class Step2 extends Component {
 						// setTimeout(() => {
 						// 	this.props.hideNotification();
 						// }, 5000);
-						this.setState({ submit_message: response.data.status.message_client, is_submitting: false });
+						this.setState({ submit_message: 'Invalid verification code', is_submitting: false });
 					}
 					else {
 						console.log(this.props.registration);
@@ -162,9 +179,9 @@ class Step2 extends Component {
 								}}></Countdown>
 						</label>
 					</FormGroup>
-					<FormGroup className="btn-next-position">
+					{/* <FormGroup className="btn-next-position">
 						<Button className="btn-next block-btn">Verify</Button>
-					</FormGroup>
+					</FormGroup> */}
 				</div>
 			);
 		}
@@ -194,7 +211,7 @@ class Step2 extends Component {
 							<FormGroup>
 								<ReactCodeInput
 									fields={4}
-									onChange={otp => this.setState({ otp: otp })}
+									onChange={this.onChangeOtp.bind(this)}
 									className="otp-input" />
 							</FormGroup>
 							

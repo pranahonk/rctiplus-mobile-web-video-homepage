@@ -24,6 +24,7 @@ class ChangePassword extends React.Component {
             password_match_invalid: false,
             at_least_eight_invalid: false,
             view_raw: false,
+            view_raw_re: false
         };
     }
 
@@ -55,9 +56,13 @@ class ChangePassword extends React.Component {
         
     }
 
-    togglePassword(e) {
-		e.preventDefault();
-		this.setState({ view_raw: !this.state.view_raw });
+    togglePassword(type = '') {
+        if (type == 're') {
+            this.setState({ view_raw_re: !this.state.view_raw_re });
+        }
+        else {
+            this.setState({ view_raw: !this.state.view_raw });
+        }
 	}
 
     onPasswordChange(e) {
@@ -84,17 +89,17 @@ class ChangePassword extends React.Component {
             <Layout title="Change Password">
                 <NavBack title="Forget Password"/>
                 <div className="container-box-c">
-                    <p>Please enter your new password</p>
+                    <p>Enter password</p>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
                         <FormGroup>
-                            <Label className="label-c" for="password">Password</Label>
+                            <Label className="label-c" for="password">New Password</Label>
                             <InputGroup>
                                 <Input
                                     className="form-control-cp"
                                     type={this.state.view_raw ? 'text' : 'password'}
                                     name="password"
                                     id="password"
-                                    placeholder="Enter password"
+                                    placeholder="insert password"
                                     invalid={this.state.at_least_eight_invalid}
                                     onChange={this.onPasswordChange.bind(this)} />
                                 <div onClick={this.togglePassword.bind(this)} className={'view-raw-c ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.at_least_eight_invalid ? 'invalid-border-color' : '')}></div>
@@ -102,17 +107,17 @@ class ChangePassword extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="label-c" for="password">Re-type Password</Label>
+                            <Label className="label-c" for="password">Re-type New Password</Label>
                             <InputGroup>
                                 <Input
                                     className="form-control-cp"
-                                    type={this.state.view_raw ? 'text' : 'password'}
+                                    type={this.state.view_raw_re ? 'text' : 'password'}
                                     name="password2"
                                     id="password2"
-                                    placeholder="Re-type password"
+                                    placeholder="insert password"
                                     invalid={this.state.password_match_invalid}
                                     onChange={this.onConfirmPasswordChange.bind(this)} />
-                                <div onClick={this.togglePassword.bind(this)} className={'view-raw-c ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.password_match_invalid ? 'invalid-border-color' : '')}></div>
+                                <div onClick={this.togglePassword.bind(this, 're')} className={'view-raw-c ' + (this.state.view_raw_re ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.password_match_invalid ? 'invalid-border-color' : '')}></div>
                                 <FormFeedback>Password must match</FormFeedback>
                             </InputGroup>
                         </FormGroup>

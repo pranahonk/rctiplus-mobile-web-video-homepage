@@ -1,0 +1,35 @@
+$primary-bg-color: #282828;
+$primary-text-color: #979797;
+$default-text-color-login: #eee;
+
+.container-box-ep {
+    margin: 0px auto;
+    background-color: $primary-bg-color;
+    color: $primary-text-color;
+    width: 95%;
+    height: 500px;
+    object-fit: contain;
+    border-radius: 30px;
+    padding: 20px;
+    margin-top: 70px;
+}
+
+.form-control-ep {
+    border-radius: 0;
+    background: transparent;
+    border-color: #495057;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    color: $default-text-color-login !important;
+    padding: 0;
+}
+
+.form-control-ep:hover {
+    background: transparent;
+}
+
+.form-label {
+    margin: 0;
+    font-size: 12px;
+}

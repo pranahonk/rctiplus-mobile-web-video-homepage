@@ -37,7 +37,7 @@ export const showAlert = (text, title, confirmText = 'OK', cancelText = '', conf
 
 export const showConfirmAlert = (text, title, callback, buttonInverse = false, confirmText = 'OK', cancelText = 'Cancel', html = false, styleInverse = false) => {
     let options = {
-        showCancelButton: true,
+        showCancelButton: cancelText ? true : false,
         confirmButtonText: confirmText,
         cancelButtonText: cancelText,
         buttonsStyling: false,

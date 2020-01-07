@@ -28,6 +28,7 @@ class Signup extends React.Component {
 			password: '',
 			confirm_password: '',
 			view_raw: false,
+			view_raw_re: false,
 			start_date: new Date(),
 			password_match_invalid: false,
 			at_least_eight_invalid: false
@@ -47,9 +48,13 @@ class Signup extends React.Component {
 		});
 	};
 
-	togglePassword(e) {
-		e.preventDefault();
-		this.setState({ view_raw: !this.state.view_raw });
+	togglePassword(type = '') {
+		if (type === 're') {
+			this.setState({ view_raw_re: !this.state.view_raw_re });
+		}
+		else {
+			this.setState({ view_raw: !this.state.view_raw });
+		}
 	}
 
 	onPasswordChange(e) {
@@ -95,7 +100,7 @@ class Signup extends React.Component {
 										type={this.state.view_raw ? 'text' : 'password'}
 										name="password"
 										id="password"
-										placeholder="Enter password"
+										placeholder="insert password"
 										invalid={this.state.at_least_eight_invalid}
 										onChange={this.onPasswordChange.bind(this)} />
 									<div onClick={this.togglePassword.bind(this)} className={'view-raw ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.at_least_eight_invalid ? 'invalid-border-color' : '')}></div>
@@ -107,17 +112,17 @@ class Signup extends React.Component {
 								<InputGroup>
 									<Input
 										className="inpt-form"
-										type={this.state.view_raw ? 'text' : 'password'}
+										type={this.state.view_raw_re ? 'text' : 'password'}
 										name="password2"
 										id="password2"
-										placeholder="Re-type password"
+										placeholder="insert password"
 										invalid={this.state.password_match_invalid}
 										onChange={this.onConfirmPasswordChange.bind(this)} />
-									<div onClick={this.togglePassword.bind(this)} className={'view-raw ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.password_match_invalid ? 'invalid-border-color' : '')}></div>
+									<div onClick={this.togglePassword.bind(this, 're')} className={'view-raw ' + (this.state.view_raw_re ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.password_match_invalid ? 'invalid-border-color' : '')}></div>
 									<FormFeedback>Password must match</FormFeedback>
 								</InputGroup>
 							</FormGroup>
-							<Button className="btn-next block-btn">NEXT</Button>
+							<Button disabled={!this.props.registration.username || this.props.registration.username.length < 6} className="btn-next block-btn">NEXT</Button>
 							{/* <p className="text-center fnt-10 el-margin-20 el-white">
 								By clicking the Sign Up button, you agree to our&nbsp;
 								<a href="/terms-&amp;-conditions" className="text-red fnt-11">

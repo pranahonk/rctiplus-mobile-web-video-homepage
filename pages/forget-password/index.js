@@ -77,7 +77,8 @@ class ForgetPassword extends React.Component {
                                     else {
                                         this.setState({
                                             username_invalid: true,
-                                            username_invalid_message: 'Username does not exist'
+                                            username_invalid_message: ''
+                                            // username_invalid_message: 'Username does not exist'
                                         });
                                         
                                     }
@@ -102,10 +103,10 @@ class ForgetPassword extends React.Component {
                             <InputGroup>
                                 <Input 
                                     onChange={this.onChangeUsername.bind(this)}
-                                    valid={!this.state.username_invalid && !!this.state.username}
+                                    valid={false && !this.state.username_invalid && !!this.state.username}
                                     invalid={this.state.username_invalid}
                                     className="form-control-cp"/>
-                                <FormFeedback valid={!this.state.username_invalid && !!this.state.username}>{this.state.username_invalid_message}</FormFeedback>
+                                <FormFeedback valid={false && !this.state.username_invalid && !!this.state.username}>{this.state.username_invalid_message}</FormFeedback>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
