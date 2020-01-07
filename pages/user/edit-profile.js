@@ -61,8 +61,8 @@ class EditProfile extends React.Component {
         this.setState({ fullname: e.target.value });
     }
 
-    onChangeBirthdate(e) {
-        this.setState({ birthdate: e.target.value });
+    onChangeBirthdate(date) {
+        this.setState({ birthdate: date });
     }
 
     onChangeGender(e) {
@@ -79,11 +79,9 @@ class EditProfile extends React.Component {
                 <NavBack title="Edit Profile" />
                 <div className="wrapper-content container-box-ep" style={{ marginTop: 50 }}>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
-                        <DatePicker
-                            selected={this.state.birthdate}
-                            onChange={this.onChangeBirthdate.bind(this)}
-                            withPortal
-                        />
+                        <FormGroup>
+                            
+                        </FormGroup>
                         <FormGroup>
                             <Label className="form-label" for="email">Email</Label>
                             <InputGroup>
@@ -119,14 +117,16 @@ class EditProfile extends React.Component {
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label" for="birthdate">Birth Date</Label>
-                            <InputGroup>
-                                <Input
-                                    onChange={this.onChangeBirthdate.bind(this)}
-                                    valid={!this.state.birthdate_invalid && !!this.state.birthdate}
-                                    invalid={this.state.birthdate_invalid}
-                                    className="form-control-ep" />
-                                <FormFeedback valid={!this.state.birthdate_invalid && !!this.state.birthdate}>{this.state.birthdate_invalid_message}</FormFeedback>
-                            </InputGroup>
+                            <DatePicker
+                                showMonthDropdown
+                                showYearDropdown
+                                dropdownMode="select"
+                                dateFormat="dd/MM/yyyy"
+                                valid={!this.state.birthdate_invalid && !!this.state.birthdate}
+                                invalid={this.state.birthdate_invalid}
+                                selected={this.state.birthdate}
+                                onChange={this.onChangeBirthdate.bind(this)}
+                                withPortal/>
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label" for="gender">Gender</Label>

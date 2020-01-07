@@ -33,3 +33,38 @@ $default-text-color-login: #eee;
     margin: 0;
     font-size: 12px;
 }
+
+.react-datepicker {
+    background-color: #282828;
+    border-color: #282828;
+}
+
+.react-datepicker__header {
+    @extend .react-datepicker;
+}
+
+.react-datepicker__day {
+    color: #ffffff;
+}
+
+.react-datepicker__day-name, .react-datepicker__current-month, .react-datepicker__year-read-view--selected-year {
+    @extend .react-datepicker__day;
+}
+
+.react-datepicker__year-read-view--selected-year {
+    margin: 5px;
+}
+
+.react-datepicker__day--selected {
+    background-color: #DB2828;
+}
+
+.react-datepicker__input-container > input {
+    @extend .form-control-ep;
+    width: 100%;
+    border-bottom-width: 1px;
+}
+
+.react-datepicker__input-container > input:hover {
+    background: transparent;
+}
