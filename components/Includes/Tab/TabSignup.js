@@ -169,7 +169,7 @@ class TabSignup extends React.Component {
 											type="number"
 											name="text"
 											id="phone_number"
-											placeholder="Enter your phone number"
+											placeholder="insert phone number"
 											// valid={!this.state.phone_number_invalid && !!this.props.registration.username}
 											invalid={this.state.phone_number_invalid}
 											onChange={this.onChangeUsername.bind(this)} />
@@ -192,7 +192,7 @@ class TabSignup extends React.Component {
 											type="email"
 											name="email"
 											id="email"
-											placeholder="Enter email"
+											placeholder="insert email"
 											invalid={this.state.email_invalid}
 											onChange={this.onChangeUsername.bind(this)} />
 										<FormFeedback>{this.state.email_invalid_message}</FormFeedback>

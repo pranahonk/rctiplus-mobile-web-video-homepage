@@ -26,14 +26,13 @@ class Stories extends React.Component {
                 const story = stories[i];
                 let items = [];
                 for (let j = 0; j < story.story.length; j++) {
-
                     items.push([
                         story.story[j].id,
                         story.story[j].link_video != null ? 'video' : 'photo',
                         10,
                         story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.image_path + this.state.resolution + story.story[j].story_img),
                         story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.image_path + this.state.resolution + story.story[j].story_img),
-                        false, false,
+                        story.story[j].link_url ? (story.story[j].link_url) : false, 'Click Here',
                         false,
                         story.story[j].release_date,
                         story.story[j].title

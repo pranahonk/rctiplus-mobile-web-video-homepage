@@ -34,7 +34,7 @@ class NavbarDetail extends Component {
 					<div className="top-link">
 						<div className={'logo-top-wrapper ' + (this.state.is_top ? 'back-arrow-transparent' : '')}>
 							<NavbarBrand onClick={() => Router.back()} style={{ color: 'white' }}>
-								<ArrowBackIcon onClick={() => Router.back()} />
+								<ArrowBackIcon/>
 							</NavbarBrand>
 						</div>
 					</div>

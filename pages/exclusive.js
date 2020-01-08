@@ -238,8 +238,8 @@ class Exclusive extends React.Component {
 								<div className="content-tab-exclusive">
 									<div className="content-tab-exclusive">
 										<div className="program-container">
-											{this.state.feeds[c.name] && this.state.feeds[c.name].map(feed => (
-												<Row key={feed.id} className="program-item row-edit">
+											{this.state.feeds[c.name] && this.state.feeds[c.name].map((feed, idx) => (
+												<Row key={feed.id} className={'program-item row-edit ' + (idx % 2 == 0 ? 'row-striped' : '')}>
 													<Col className="col-edit">
 														<Row>
 															<Col xs="2">

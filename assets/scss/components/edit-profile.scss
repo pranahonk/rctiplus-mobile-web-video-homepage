@@ -1,0 +1,75 @@
+$primary-bg-color: #282828;
+$primary-text-color: #979797;
+$default-text-color-login: #eee;
+
+.container-box-ep {
+    margin: 0px auto;
+    background-color: $primary-bg-color;
+    color: $primary-text-color;
+    width: 95%;
+    height: 500px;
+    object-fit: contain;
+    border-radius: 30px;
+    padding: 20px;
+    margin-top: 70px;
+}
+
+.form-control-ep {
+    border-radius: 0;
+    background: transparent;
+    border-color: #495057;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    color: $default-text-color-login !important;
+    padding: 0;
+}
+
+.form-control-ep:hover {
+    background: transparent;
+}
+
+.form-label {
+    margin: 0;
+    font-size: 12px;
+}
+
+.react-datepicker {
+    background-color: #282828;
+    border-color: #282828;
+}
+
+.form-control-ep > option {
+    background-color: #171717;
+    border-color: #171717;
+}
+
+.react-datepicker__header {
+    @extend .react-datepicker;
+}
+
+.react-datepicker__day {
+    color: #ffffff;
+}
+
+.react-datepicker__day-name, .react-datepicker__current-month, .react-datepicker__year-read-view--selected-year {
+    @extend .react-datepicker__day;
+}
+
+.react-datepicker__year-read-view--selected-year {
+    margin: 5px;
+}
+
+.react-datepicker__day--selected {
+    background-color: #DB2828;
+}
+
+.react-datepicker__input-container > input {
+    @extend .form-control-ep;
+    width: 100%;
+    border-bottom-width: 1px;
+}
+
+.react-datepicker__input-container > input:hover {
+    background: transparent;
+}

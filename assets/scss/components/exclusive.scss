@@ -73,8 +73,10 @@ ul#trending .exclusive-item{
 }
 
 .program-item {
-    margin-top: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     width: 100%;
+    border-bottom: 1px solid black;
 }
 
 .program-label {
@@ -135,6 +137,10 @@ ul#trending .exclusive-item{
 
 .row-edit {
     margin-left: 0;
+}
+
+.row-striped {
+    background-color: #3a3a3a;
 }
 
 .col-edit {

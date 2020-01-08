@@ -2,21 +2,20 @@ import React, { Component } from 'react';
 import Router from 'next/router';
 
 //load default layout
-import Layout from '../../../components/Layouts/Default';
+import Layout from '../../components/Layouts/Default';
 
 //load navbar default
-import AppNavbar from '../../../components/Includes/Navbar';
+import AppNavbar from '../../components/Includes/Navbar';
 
-import Checkmark from '../../../components/Includes/Common/Checkmark';
+import Checkmark from '../../components/Includes/Common/Checkmark';
 
 //load reactstrap components
-import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
+import { Button, FormGroup } from 'reactstrap';
 
-export default class Step1 extends Component {
+export default class VerificationSuccess extends Component {
 
-	goToHome() {
-		console.log('Go to home');
-		Router.push('/register/Interest');
+	goToChangePassword() {
+		Router.push('/forget-password/change-password');
 	}
 
 	render() {
@@ -27,12 +26,12 @@ export default class Step1 extends Component {
 					<div style={{ textAlign: 'center', marginTop: 65 }}>
 						<h4 style={{ marginBottom: 45 }}>
 							<strong>Thank You</strong><br />
-							for Registration.
+							Verification is successful.
 						</h4>
 						<Checkmark />
 					</div>
 					<FormGroup className="btn-next-position" style={{ marginTop: 50, width: '80%', margin: '50px auto' }}>
-						<Button onClick={this.goToHome.bind(this)} className="btn-next">Done</Button>
+						<Button onClick={this.goToChangePassword.bind(this)} className="btn-next">Done</Button>
 					</FormGroup>
 				</div>
 			</Layout>

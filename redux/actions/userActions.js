@@ -21,11 +21,6 @@ const updateUserProfile = (username, dob, gender, location) => {
                 dob: dob,
                 gender: gender,
                 location: location
-            }, {
-                headers: {
-                    'Authorization': accessToken,
-                    'Content-Type': 'application/json'
-                }
             });
 
             if (response.data.status.code === 0) {
@@ -45,7 +40,7 @@ const updateUserProfile = (username, dob, gender, location) => {
 const getUserData = () => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/user`, {
+            const response = await axios.get(`/v2/user`, {
                 headers: {
                     'Authorization': accessToken
                 }

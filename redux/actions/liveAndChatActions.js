@@ -1,12 +1,13 @@
 import ax from 'axios';
-import { API, VISITOR_TOKEN } from '../../config';
+import { DEV_API, API, VISITOR_TOKEN } from '../../config';
 import { getCookie } from '../../utils/cookie';
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
 
 const axios = ax.create({
-    baseURL: API + '/api',
+    // baseURL: API + '/api',
+    baseURL: DEV_API + '/api',
     headers: {
         'Authorization': accessToken == undefined ? VISITOR_TOKEN : accessToken
     }
