@@ -16,11 +16,11 @@ $default-text-color-login: #eee;
 
 .form-control-ep {
     border-radius: 0;
-    background: transparent;
-    border-color: #495057;
-    border-top: none;
-    border-left: none;
-    border-right: none;
+    background: transparent !important;
+    border-color: #495057 !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
     color: $default-text-color-login !important;
     padding: 0;
 }
