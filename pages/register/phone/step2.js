@@ -95,7 +95,7 @@ class Step2 extends Component {
 							device_id: '1'
 						})
 						.then(response => {
-							Router.push('/register/Interest');
+							Router.push('/register/phone/step3');
 						})
 						.catch(error => {
 							if (error.status == 200) {
@@ -105,7 +105,7 @@ class Step2 extends Component {
 									// 	this.props.hideNotification();
 									// }, 5000);
 									if (error.data.status.code === 0) {
-										Router.push('/register/Interest');
+										Router.push('/register/phone/step3');
 									}
 								});
 								

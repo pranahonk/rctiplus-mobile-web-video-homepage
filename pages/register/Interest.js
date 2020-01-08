@@ -99,7 +99,7 @@ class Interest extends Component {
 				.then(response => {
 					if (response.data.status.code === 0) {
 						this.props.showNotification('Your data has been saved');
-						Router.push('/register/phone/step3');
+						Router.push('/');
 					}
 					else {
 						this.props.showNotification(response.data.status.message_client + '. Please try again! (Response code = ' + response.data.status.code + ')', false);
@@ -145,7 +145,7 @@ class Interest extends Component {
 							</Container>
 						</FormGroup>
 						<FormGroup className="btn-next-position">
-							<Button onClick={this.showNotification.bind(this)} className="btn-next">Save</Button>
+							<Button disabled={this.state.selected_interests.length < 3} onClick={this.showNotification.bind(this)} className="btn-next">Save</Button>
 						</FormGroup>
 					</div>
 				</div>

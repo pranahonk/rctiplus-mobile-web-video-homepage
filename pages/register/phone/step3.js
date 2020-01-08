@@ -16,7 +16,7 @@ export default class Step1 extends Component {
 
 	goToHome() {
 		console.log('Go to home');
-		Router.push('/');
+		Router.push('/register/Interest');
 	}
 
 	render() {

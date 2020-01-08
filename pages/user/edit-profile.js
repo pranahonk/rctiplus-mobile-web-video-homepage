@@ -76,6 +76,7 @@ class EditProfile extends React.Component {
     }
 
     handleSubmit(e) {
+        e.preventDefault();
         
     }
 
@@ -170,7 +171,7 @@ class EditProfile extends React.Component {
                             <InputGroup>
                                 <Input
                                     type="select"
-                                    value={this.state.gender}
+                                    value={this.state.gender ? this.state.gender.charAt(0).toUpperCase() + this.state.gender.substring(1) : ''}
                                     onChange={this.onChangeGender.bind(this)}
                                     invalid={this.state.gender_invalid}
                                     className="form-control-ep">

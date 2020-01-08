@@ -16,7 +16,7 @@ const axios = ax.create({
 const updateUserProfile = (username, dob, gender, location) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v2/user`, {
+            const response = await axios.post(`/v1/user`, {
                 username: username,
                 dob: dob,
                 gender: gender,
