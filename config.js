@@ -12,7 +12,6 @@ export const DEV_API = 'https://rc-api.rctiplus.com';
 // export const API = 'https://api.rctiplus.com';
 
 // export const DEV_API = 'https://dev-api.rctiplus.com';
-export const DEV_API = 'https://rc-api.rctiplus.com';
 
 
 export const NEWS_API = 'https://rc-api-news.rctiplus.id';
