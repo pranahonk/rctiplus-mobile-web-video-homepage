@@ -12,6 +12,7 @@ import liveAndChatReducer from './liveAndChatReducer';
 import notificationReducer from './notificationReducer';
 import feedReducer from './feedReducer';
 import likeReducer from './likeReducer';
+import othersReducer from './othersReducer';
 
 const rootReducer = combineReducers({
     authentication: authReducer,
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
     chats: liveAndChatReducer,
     notification: notificationReducer,
     feeds: feedReducer,
-    likes: likeReducer
+    likes: likeReducer,
+    others: othersReducer
 });
 
 export default rootReducer;

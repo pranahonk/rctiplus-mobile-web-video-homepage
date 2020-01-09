@@ -13,6 +13,48 @@ const axios = ax.create({
     }
 });
 
+const setValue = (index, value) => {
+    return dispatch => dispatch({
+        type: 'SET_VALUE',
+        index: index,
+        value: value
+    });
+};
+
+const setUserProfile = (nickname, fullname, dob, gender, phone_number, email, otp, location) => {
+    return dispatch => dispatch({
+        type: 'SET_PROFILE',
+        nickname: nickname,
+        fullname: fullname,
+        dob: dob,
+        gender: gender,
+        phone_number: phone_number,
+        email: email,
+        otp: otp,
+        location: location
+    });
+};
+
+const updateUserData = (key, value) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const data = {};
+            data[key] = value;
+            const response = await axios.post(`/v2/user`, data);
+            
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const updateUserProfile = (username, dob, gender, location) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -123,5 +165,8 @@ export default {
     getUserData,
     getInterests,
     checkUser,
-    setInterest
+    setInterest,
+    setUserProfile,
+    setValue,
+    updateUserData
 };
