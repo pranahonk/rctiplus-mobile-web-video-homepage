@@ -16,8 +16,8 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 //load reactstrap components
 import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback } from 'reactstrap';
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
-import Camera from 'react-html5-camera-photo';
-import 'react-html5-camera-photo/build/css/index.css';
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 import '../../assets/scss/components/edit-profile.scss';
 
@@ -54,8 +54,12 @@ class EditProfile extends React.Component {
             location_invalid_message: '',
             location_data: [],
             otp: '',
-            show_action_sheet: false
+            show_action_sheet: false,
+            input_photo_accept: 'image/*',
+            profile_photo_src: ''
         };
+
+        this.inputPhotoElement = null;
     }
 
     componentDidMount() {
@@ -134,18 +138,24 @@ class EditProfile extends React.Component {
         Router.push('/user/edit/form-field');
     }
 
-    handleCameraTakePhoto(dataUri) {
-        console.log('take photo');
+    handleCameraTakePhoto(e, index) {
+        console.log('take photo', index);
+        console.log(e.target.files[0]);
+        this.setState({ profile_photo_src: e.target.value });
     }
 
     render() {
         return (
             <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
                 <NavBack title="Edit Profile" />
-                {/* <Camera style={{ zIndex: 999 }} isFullscreen onTakePhoto={(dataUri) => { handleCameraTakePhoto(dataUri); }}/> */}
-                <Actionsheet show={this.state.show_action_sheet} menus={[{ content: 'Camera', onClick: () => console.log('camera') }, { content: 'Gallery', onClick: () => console.log('gallery') }]} onRequestClose={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })} cancelText="Cancel"/>
+                <Actionsheet show={this.state.show_action_sheet} menus={[{ content: 'Camera', onClick: () => {
+                    this.setState({ input_photo_accept: 'image/*;capture=camera' }, () => this.inputPhotoElement.click());
+                } }, { content: 'Gallery', onClick: () => {
+                    this.setState({ input_photo_accept: 'image/*' }, () => this.inputPhotoElement.click());
+                } }]} onRequestClose={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })} cancelText="Cancel"/>
                 <div className="wrapper-content container-box-ep" style={{ marginTop: 50 }}>
-                <input type="file" accept="image/*;capture=camera"/>
+                    <input onChange={this.handleCameraTakePhoto.bind(this)} ref={input => this.inputPhotoElement = input} id="profile-photo-data" type="file" accept={this.state.input_photo_accept} style={{ display: 'none' }}/>
+                    <ReactCrop src={this.state.profile_photo_src}/>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
                         <FormGroup className="profile-photo-container">
                             <div className="profile-photo" onClick={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })}>
