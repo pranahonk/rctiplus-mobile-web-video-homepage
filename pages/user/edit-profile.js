@@ -56,7 +56,7 @@ class EditProfile extends React.Component {
             otp: '',
             show_action_sheet: false,
             input_photo_accept: 'image/*',
-            profile_photo_src: ''
+            profile_photo_src: 'http://placehold.it/200'
         };
 
         this.inputPhotoElement = null;
@@ -140,8 +140,13 @@ class EditProfile extends React.Component {
 
     handleCameraTakePhoto(e, index) {
         console.log('take photo', index);
-        console.log(e.target.files[0]);
-        this.setState({ profile_photo_src: e.target.value });
+        console.log(e.target.value.replace('C:\\fakepath\\', ''));
+        const reader = new FileReader();
+        const self = this;
+        reader.onload = function(x) {
+            self.setState({ profile_photo_src: x.target.result });
+        };
+        reader.readAsDataURL(e.target.files[0]);
     }
 
     render() {
