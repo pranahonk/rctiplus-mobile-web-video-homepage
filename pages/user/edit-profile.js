@@ -2,6 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import initialize from '../../utils/initialize';
+import Actionsheet from '../../assets/js/react-actionsheet/lib';
+
 import userActions from '../../redux/actions/userActions';
 import othersActions from '../../redux/actions/othersActions';
 
@@ -13,8 +15,9 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 
 //load reactstrap components
 import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback } from 'reactstrap';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import CameraAltIcon from '@material-ui/icons/CameraAlt';
+import Camera from 'react-html5-camera-photo';
+import 'react-html5-camera-photo/build/css/index.css';
 
 import '../../assets/scss/components/edit-profile.scss';
 
@@ -50,7 +53,8 @@ class EditProfile extends React.Component {
             location_invalid: false,
             location_invalid_message: '',
             location_data: [],
-            otp: ''
+            otp: '',
+            show_action_sheet: false
         };
     }
 
@@ -130,12 +134,26 @@ class EditProfile extends React.Component {
         Router.push('/user/edit/form-field');
     }
 
+    handleCameraTakePhoto(dataUri) {
+        console.log('take photo');
+    }
+
     render() {
         return (
             <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
                 <NavBack title="Edit Profile" />
+                {/* <Camera style={{ zIndex: 999 }} isFullscreen onTakePhoto={(dataUri) => { handleCameraTakePhoto(dataUri); }}/> */}
+                <Actionsheet show={this.state.show_action_sheet} menus={[{ content: 'Camera', onClick: () => console.log('camera') }, { content: 'Gallery', onClick: () => console.log('gallery') }]} onRequestClose={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })} cancelText="Cancel"/>
                 <div className="wrapper-content container-box-ep" style={{ marginTop: 50 }}>
+                <input type="file" accept="image/*;capture=camera"/>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
+                        <FormGroup className="profile-photo-container">
+                            <div className="profile-photo" onClick={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })}>
+                                <img className="profile-photo" src="http://placehold.it/100"/>
+                                <CameraAltIcon className="profile-photo-button"/>
+                            </div>
+                            
+                        </FormGroup>
                         <FormGroup>
                             <Label className="form-label" for="nickname">Nickname (Live Chat)</Label>
                             <InputGroup>

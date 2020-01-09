@@ -27,7 +27,6 @@ class FormField extends React.Component {
             value_invalid: false,
             value_invalid_message: ''
         };
-        console.log(this.state);
     }
 
     formatDate(date) {
@@ -48,6 +47,7 @@ class FormField extends React.Component {
         e.preventDefault();
         this.props.showNotification('*Checking nickname availability...');
         let value = this.state.value;
+        
         switch (this.props.user.data_key[this.props.others.index]) {
             case 'dob':
                 value = this.formatDate(this.state.value);
@@ -56,13 +56,38 @@ class FormField extends React.Component {
             case 'gender':
                 value = value.toLowerCase();
                 break;
+
+            case 'phone_number':
+                value = '62' + value;
+            case 'email':
+                this.props.checkUser(value)
+                    .then(response => {
+                        console.log(response);
+                        if (response.status === 200 && response.data.status.code !== 0) {
+                            this.props.showNotification(response.data.status.message_server, false);
+                        }
+                        else {
+                            this.props.setUsername(value);
+                            if (this.props.user.data_key[this.props.others.index] === 'phone_number') {
+                                this.props.setUsernameType('PHONE_NUMBER');
+                            }
+                            else {
+                                this.props.setUsernameType('EMAIL');
+                            }
+                            Router.push('/user/edit/verify-otp');
+                        }
+                        setTimeout(() => this.props.hideNotification(), 3000);
+                    })
+                    .catch(error => {
+                        if (error.status == 200) {
+                            this.props.showNotification(error.data.status.message_server, false);
+                        }
+                        setTimeout(() => this.props.hideNotification(), 3000);
+                        console.log(error);
+                    });
+                return;
         }
 
-        switch (this.props.others.field_type) {
-            case 'phone':
-                value = '62' + value;
-                break;
-        }
 
         this.props.updateUserData(this.props.user.data_key[this.props.others.index], value)
             .then(response => {
@@ -74,17 +99,21 @@ class FormField extends React.Component {
                     this.props.showNotification(error.data.status.message_server, false);
                 }
                 setTimeout(() => this.props.hideNotification(), 3000);
-                console.log(error)
+                console.log(error);
             });
     }
 
     componentDidMount() {
         console.log(this.props.others);
+        let value = this.state.value;
         if (this.props.user.data_key[this.props.others.index] == 'gender') {
-            let value = this.state.value;
             value = value.charAt(0).toUpperCase() + value.substring(1);
-            this.setState({ value: value });
         }
+        else if (this.props.user.data_key[this.props.others.index] == 'phone_number' && value && value.length > 2) {
+            value = value.substring(2);
+        }
+
+        this.setState({ value: value });
     }
 
     render() {
@@ -141,6 +170,7 @@ class FormField extends React.Component {
                                 type="number"
                                 name="text"
                                 id="phone_number"
+                                value={this.state.value}
                                 placeholder={this.props.others.placeholder}
                                 onChange={this.onChange.bind(this)}
                                 invalid={this.state.value_invalid} />

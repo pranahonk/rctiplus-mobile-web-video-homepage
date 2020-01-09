@@ -35,11 +35,14 @@ const setUserProfile = (nickname, fullname, dob, gender, phone_number, email, ot
     });
 };
 
-const updateUserData = (key, value) => {
+const updateUserData = (key, value, otp = null) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const data = {};
             data[key] = value;
+            if (otp) {
+                data['otp'] = otp;
+            }
             const response = await axios.post(`/v2/user`, data);
             
             if (response.status === 200 && response.data.status.code === 0) {

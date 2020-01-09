@@ -73,3 +73,25 @@ $default-text-color-login: #eee;
 .react-datepicker__input-container > input:hover {
     background: transparent;
 }
+
+.profile-photo-container {
+    text-align: center;
+}
+
+.profile-photo {
+    border-radius: 100%;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.profile-photo-button {
+    background-color: #DB2828;
+    color: white;
+    padding: 3px;
+    border-radius: 100%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
