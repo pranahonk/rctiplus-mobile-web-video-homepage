@@ -35,6 +35,13 @@ const setUserProfile = (nickname, fullname, dob, gender, phone_number, email, ot
     });
 };
 
+const setUserProfilePhoto = src => {
+    return dispatch => dispatch({
+        type: 'SET_PROFILE_PHOTO_SRC',
+        src: src
+    });
+};
+
 const updateUserData = (key, value, otp = null) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -171,5 +178,6 @@ export default {
     setInterest,
     setUserProfile,
     setValue,
-    updateUserData
+    updateUserData,
+    setUserProfilePhoto
 };

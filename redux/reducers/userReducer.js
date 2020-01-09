@@ -10,7 +10,8 @@ const initialState = {
     phone_number: '',
     email: '',
     otp: '',
-    location: ''
+    location: '',
+    profile_photo_src: ''
 };
 
 export default (state = initialState, action) => {
@@ -37,6 +38,9 @@ export default (state = initialState, action) => {
             let newValue = {};
             newValue[state.data_key[action.index]] = action.value;
             return Object.assign({}, state, newValue);
+
+        case 'SET_PROFILE_PHOTO_SRC':
+            return Object.assign({}, state, { profile_photo_src: action.src });
         default:
             return state;
     }

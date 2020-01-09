@@ -16,8 +16,6 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 //load reactstrap components
 import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback } from 'reactstrap';
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
-import ReactCrop from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
 
 import '../../assets/scss/components/edit-profile.scss';
 
@@ -144,7 +142,10 @@ class EditProfile extends React.Component {
         const reader = new FileReader();
         const self = this;
         reader.onload = function(x) {
-            self.setState({ profile_photo_src: x.target.result });
+            self.setState({ profile_photo_src: x.target.result }, () => {
+                self.props.setUserProfilePhoto(self.state.profile_photo_src);
+                Router.push('/user/photo/crop');
+            });
         };
         reader.readAsDataURL(e.target.files[0]);
     }
@@ -160,7 +161,7 @@ class EditProfile extends React.Component {
                 } }]} onRequestClose={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })} cancelText="Cancel"/>
                 <div className="wrapper-content container-box-ep" style={{ marginTop: 50 }}>
                     <input onChange={this.handleCameraTakePhoto.bind(this)} ref={input => this.inputPhotoElement = input} id="profile-photo-data" type="file" accept={this.state.input_photo_accept} style={{ display: 'none' }}/>
-                    <ReactCrop src={this.state.profile_photo_src}/>
+                    
                     <Form onSubmit={this.handleSubmit.bind(this)}>
                         <FormGroup className="profile-photo-container">
                             <div className="profile-photo" onClick={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })}>
