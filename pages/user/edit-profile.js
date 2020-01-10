@@ -65,7 +65,6 @@ class EditProfile extends React.Component {
             .then(response => {
                 if (response.status === 200) {
                     const data = response.data.data;
-                    console.log(data);
                     this.setState({
                         email: data.email,
                         phone_number: data.phone_number,
@@ -73,7 +72,8 @@ class EditProfile extends React.Component {
                         fullname: data.display_name,
                         birthdate: new Date(data.dob ? data.dob * 1000 : Date.now()),
                         gender: data.gender,
-                        location: data.location
+                        location: data.location,
+                        profile_photo_src: data.photo_url ? data.photo_url : this.state.profile_photo_src
                     }, () => {
                         this.props.setUserProfile(this.state.nickname, this.state.fullname, this.state.birthdate, this.state.gender, this.state.phone_number, this.state.email, this.state.otp, this.state.location);
                     });
@@ -165,7 +165,7 @@ class EditProfile extends React.Component {
                     <Form onSubmit={this.handleSubmit.bind(this)}>
                         <FormGroup className="profile-photo-container">
                             <div className="profile-photo" onClick={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })}>
-                                <img className="profile-photo" src="http://placehold.it/100"/>
+                                <img className="profile-photo" src={this.state.profile_photo_src}/>
                                 <CameraAltIcon className="profile-photo-button"/>
                             </div>
                             

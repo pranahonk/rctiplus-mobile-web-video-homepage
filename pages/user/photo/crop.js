@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Router from 'next/router';
 
 import userActions from '../../../redux/actions/userActions';
+import notificationActions from '../../../redux/actions/notificationActions';
 
 //load default layout
 import Layout from '../../../components/Layouts/Default';
@@ -27,7 +29,8 @@ class Crop extends React.Component {
                 unit: '%',
                 width: 100
             },
-            cropped_photo_url: ''
+            cropped_photo_url: '',
+            blob: null
         };
 
         this.imageRef = null;
@@ -35,11 +38,14 @@ class Crop extends React.Component {
 
     onImageLoaded = (image) => {
         this.imageRef = image;
-        let size = image.width;
-        if (size < image.height) {
-            size = image.height;
+        let size = {};
+        if (image.width < image.height) {
+            size['width'] = 100;
         }
-        this.setState({ crop: { aspect: 1, unit: 'px', width: size, height: size } });
+        else {
+            size['height'] = 100;
+        }
+        this.setState({ crop: { aspect: 1, unit: '%', ...size } });
         return false;
     }
 
@@ -86,11 +92,33 @@ class Crop extends React.Component {
                     return;
                 }
                 blob.name = filename;
-                window.URL.revokeObjectURL(this.fileUrl);
-                this.fileUrl = window.URL.createObjectURL(blob);
-                resolve(this.fileUrl);
+                this.setState({ blob: blob });
+                resolve(blob);
             }, 'image/jpeg');
         });
+    }
+
+    uploadProfilePhoto() {
+        this.props.progressNotification('Uploading...');
+        let file = new File([this.state.blob], 'cropped-photo.jpeg');
+        this.props.uploadProfilePhoto(file)
+            .then(response => {
+                if (response.status === 200 && response.data.status.code === 0) {
+                    this.props.showNotification('Upload success');
+                    setTimeout(() => this.props.hideNotification(), 3000);
+                    Router.back();
+                }
+                else {
+                    this.props.showNotification('Upload error, please try again later', false);
+                    setTimeout(() => this.props.hideNotification(), 3000);
+                }
+                
+            })
+            .catch(error => {
+                console.log(error);
+                this.props.showNotification('Upload error, please try again later', false);
+                setTimeout(() => this.props.hideNotification(), 3000);
+            });
     }
 
     render() {
@@ -100,8 +128,8 @@ class Crop extends React.Component {
                 <div className="wrapper-content container-box-ep" style={{ marginTop: 50 }}>
                     <ReactCrop className="crop-image" src={this.state.profile_photo_src} crop={this.state.crop} onChange={this.onCropChange} circularCrop onImageLoaded={this.onImageLoaded} onComplete={this.onCropComplete}/>
                     <div className="btn-group-crop">
-                        <Button className="btn-cancel-crop">Cancel</Button>
-                        <Button className="btn-next btn-save-crop">Save</Button>
+                        <Button onClick={() => Router.back()} className="btn-cancel-crop">Cancel</Button>
+                        <Button onClick={this.uploadProfilePhoto.bind(this)} className="btn-next btn-save-crop">Save</Button>
                     </div>
                     
                 </div>
@@ -112,5 +140,6 @@ class Crop extends React.Component {
 }
 
 export default connect(state => state, {
-    ...userActions
+    ...userActions,
+    ...notificationActions
 })(Crop);

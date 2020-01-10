@@ -42,6 +42,26 @@ const setUserProfilePhoto = src => {
     });
 };
 
+const uploadProfilePhoto = file => {
+    let data = new FormData();
+    data.append('photo', file);
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v1/user/photo`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const updateUserData = (key, value, otp = null) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -179,5 +199,6 @@ export default {
     setUserProfile,
     setValue,
     updateUserData,
-    setUserProfilePhoto
+    setUserProfilePhoto,
+    uploadProfilePhoto
 };

@@ -21,7 +21,13 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { show: action.show, progress: false });
         
         case 'PROGRESS_NOTIFICATION':
-            return Object.assign({}, state, { show: action.show, progress: true });
+            return Object.assign({}, state, { 
+                show: action.show, 
+                progress: true, 
+                success: false,
+                size: action.size,
+                content: action.content 
+            });
 
         default:
             return state;
