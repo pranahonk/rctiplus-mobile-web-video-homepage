@@ -54,7 +54,7 @@ class EditProfile extends React.Component {
             otp: '',
             show_action_sheet: false,
             input_photo_accept: 'image/*',
-            profile_photo_src: 'http://placehold.it/200'
+            profile_photo_src: 'https://cdn.zeplin.io/5c7fab96082323628629989f/assets/DDD7D5C6-7114-402B-A0C4-4EC7DE7707BC.svg'
         };
 
         this.inputPhotoElement = null;

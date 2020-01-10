@@ -18,9 +18,9 @@ $default-text-color-login: #eee;
     border-radius: 0;
     background: transparent;
     border-color: #495057;
-    border-top: none;
-    border-left: none;
-    border-right: none;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
     padding: 2px;
     color: $default-text-color-login !important;
 }

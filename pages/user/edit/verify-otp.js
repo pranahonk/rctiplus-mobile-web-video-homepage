@@ -38,14 +38,13 @@ class VerifyOtp extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.registration);
         this.setState({ username: this.props.registration.username }, () => {
             this.props.getOtp(this.state.username, 'edit-profile')
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
-                            alert_message: response.data.status.message_server,
-                            req_otp_status: response.data.status.code 
+                            alert_message: response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client),
+							req_otp_status: response.data.status.code  
                         });
                     }
                 })
@@ -56,7 +55,6 @@ class VerifyOtp extends React.Component {
     submitOtp() {
         this.props.updateUserData(this.props.user.data_key[this.props.others.index], this.state.username, this.state.otp)
             .then(response => {
-                console.log(response);
                 this.props.showNotification('*Your data is saved');
                 setTimeout(() => this.props.hideNotification(), 3000);
                 Router.push('/user/edit/verification-success');
@@ -103,25 +101,53 @@ class VerifyOtp extends React.Component {
 
     showAlert() {
         let username = this.state.username;
-        console.log(username);
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
             this.props.getOtp(username, 'edit-profile')
                 .then(response => {
                     let newState = {};
-                    if (response.status === 200) {
-                        newState = {
-                            current_time: Date.now(),
-                            countdown_key: this.state.countdown_key + 1,
-                            alert_message: response.data.status.message_server,
-                            req_otp_status: response.data.status.code
-                        };
-                        this.setState(newState);
-                    }
+                    if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
+						newState = {
+							current_time: Date.now(),
+							countdown_key: this.state.countdown_key + 1
+						};
+					}
+
+					newState['alert_message'] = response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client);
+					this.setState(newState);
                 })
                 .catch(error => console.log(error));
 
         }, true, this.state.req_otp_status == 0 ? 'Not Now' : 'OK', this.state.req_otp_status == 0 ? 'Request New OTP' : '');
     }
+
+    generateAlertMessage(message) {
+		let attempts = '';
+		let index = -1;
+		if ((index = message.indexOf('You have')) != -1) {
+			if (message.indexOf('You have 1') != -1) {
+				attempts = 'This is your last attempts';
+			}
+			else {
+				attempts = message.substring(index);
+			}
+			
+			if (this.props.registration.username_type === 'PHONE_NUMBER') {
+				attempts = 'Carefully check your sms for verification code. ' + attempts;
+			}
+			else {
+				attempts = 'Carefully check your email for verification code. ' + attempts;
+			}
+
+			if (message.indexOf('You have 0') != -1) {
+				attempts = 'You have reached maximum attempts. please, try again later after 1 hours';
+				this.setState({ req_otp_status: 1 });
+			}
+		}
+		else {
+			attempts = message;
+		}
+		return attempts;
+	}
 
     render() {
         let text = 'Please enter verification code, <br>sent via email:';
