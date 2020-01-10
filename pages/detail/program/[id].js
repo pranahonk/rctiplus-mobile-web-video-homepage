@@ -529,14 +529,14 @@ class Detail extends React.Component {
                 <div style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
                 <div className="content">
                     <div className="content-thumbnail">
-                        <Img className="content-thumbnail-image" src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
+                        <Img alt={this.state.title} className="content-thumbnail-image" src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
                     </div>
                     <div className="watch-button-container">
                         <Button onClick={this.toggle.bind(this)} className="watch-button">
                             <PlayCircleFilledIcon /> Watch Trailer
                         </Button>
                     </div>
-                    <p className="content-title"><strong>{this.state.title}</strong></p>
+                    <h1 className="content-title">{this.state.title}</h1>
                     <p className="content-genre">| {this.state.release_date} |
                         &nbsp;{this.state.genre.map((g, i) => {
                         let str = g.name;
@@ -582,7 +582,7 @@ class Detail extends React.Component {
                                 <div key={e.id}>
                                     <Row>
                                         <Col xs={6} onClick={this.togglePlayerModal.bind(this, e, 'episode')}>
-                                            <Img className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+                                            <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
                                             <p onClick={this.togglePlayerModal.bind(this, e, 'episode')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
@@ -612,7 +612,7 @@ class Detail extends React.Component {
                                 <div key={e.id}>
                                     <Row>
                                         <Col xs={6} onClick={this.togglePlayerModal.bind(this, e, 'extra')}>
-                                            <Img className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+                                            <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
                                             <p onClick={this.togglePlayerModal.bind(this, e, 'extra')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
@@ -637,7 +637,7 @@ class Detail extends React.Component {
                                 <div key={e.id}>
                                     <Row>
                                         <Col xs={6} onClick={this.togglePlayerModal.bind(this, e, 'clip')}>
-                                            <Img className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+                                            <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
                                             <p onClick={this.togglePlayerModal.bind(this, e, 'clip')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
@@ -692,7 +692,7 @@ class Detail extends React.Component {
                                 swipeable={true}>
                                 {this.state.related_programs.map(rp => (
                                     <Lazyload key={rp.id} height={100}>
-                                        <Img src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
+                                        <Img alt={rp.title} src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
                                     </Lazyload>
                                 ))}
                             </Carousel>

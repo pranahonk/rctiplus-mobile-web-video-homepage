@@ -66,7 +66,7 @@ const Default = ({ children, title }) => {
                         {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]}/>))}
                         <link rel="icon" href="/static/logo/rcti.png?v=1.0" />
                         <link rel="manifest" href="/static/manifest.json" />
-
+                        <link rel="canonical" href="http://www.rctiplus.com/page-1"></link>
                         <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
                 </Head>
                         {/* <Offline onChange={(online) => {
