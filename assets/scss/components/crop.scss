@@ -1,0 +1,41 @@
+$primary-bg-color: #282828;
+$primary-text-color: #979797;
+$default-text-color-login: #eee;
+
+.container-box-ep {
+    margin: 0px auto;
+    background-color: $primary-bg-color;
+    color: $primary-text-color;
+    width: 95%;
+    height: 500px;
+    object-fit: contain;
+    border-radius: 30px;
+    padding: 20px;
+    margin-top: 70px;
+}
+
+.ReactCrop {
+    width: 100%;
+}
+
+.crop-image .ReactCrop__image {
+    width: 100%;
+}
+
+.btn-cancel-crop {
+    background-color: #ffffff;
+    color: #fa262f;
+    width: 45%;
+    border-radius: 12px;
+    display: inline-block;
+    margin: 5px;
+}
+
+.btn-save-crop {
+    width: 45%;
+    margin: 5px;
+}
+
+.btn-group-crop {
+    text-align: center;
+}
