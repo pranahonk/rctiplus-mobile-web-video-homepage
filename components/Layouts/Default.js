@@ -15,6 +15,7 @@ import actions from '../../redux/actions';
 
 //load footer
 import Footer from '../../components/Includes/Footer/Default';
+//import Analytics from '../../components/Includes/Google/Analytics';
 
 import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, MAIN_TITLE, OPEN_GRAPH } from '../../config';
 
@@ -58,16 +59,16 @@ const Default = ({ children, title }) => {
 	return (
             <div>
                 <Head>
-                        <title>{title}</title>
-                        <meta charSet="utf-8" />
-                        <meta name="author" content={AUTHOR}/>
-                        <meta name="viewport" content={VIEWPORT} />
-                        <meta name="description" content={MAIN_DESCRIPTION} />
-                        {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]}/>))}
-                        <link rel="icon" href="/static/logo/rcti.png?v=1.0" />
-                        <link rel="manifest" href="/static/manifest.json" />
-
-                        <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
+                    <title>{title}</title>
+                    <meta charSet="utf-8" />
+                    <meta name="author" content={AUTHOR}/>
+                    <meta name="viewport" content={VIEWPORT} />
+                    <meta name="description" content={MAIN_DESCRIPTION} />
+                    {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]}/>))}
+                    <link rel="icon" href="/static/logo/rcti.png?v=1.0" />
+                    <link rel="manifest" href="/static/manifest.json" />
+                    <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
+                    
                 </Head>
                         {/* <Offline onChange={(online) => {
                                 noConnectionRef.current.classList.remove('no-connection-open');
