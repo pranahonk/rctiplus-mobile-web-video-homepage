@@ -15,6 +15,7 @@ import actions from '../../redux/actions';
 
 //load footer
 import Footer from '../../components/Includes/Footer/Default';
+//import Analytics from '../../components/Includes/Google/Analytics';
 
 import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, MAIN_TITLE, OPEN_GRAPH } from '../../config';
 

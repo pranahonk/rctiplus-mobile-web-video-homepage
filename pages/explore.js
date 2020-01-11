@@ -6,7 +6,7 @@ import Layout from '../components/Layouts/Default';
 //load navbar default
 import NavBack from '../components/Includes/Navbar/NavBack';
 
-class Home extends React.Component {
+class Explore extends React.Component {
   componentDidMount() { }
 
   render() {
@@ -58,4 +58,4 @@ class Home extends React.Component {
   }
 }
 
-export default Home;
+export default Explore;

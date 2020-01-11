@@ -68,7 +68,6 @@ render() {
              `}}></script> */}
 
             <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
-            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         </div>
             );
     }

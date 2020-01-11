@@ -5,7 +5,6 @@ import LoadingBar from 'react-top-loading-bar';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
 
-
 //load default layout
 import Layout from '../components/Layouts/Default';
 
@@ -36,6 +35,8 @@ import Panel4 from '../components/Panels/Pnl_4';
 //load ads (only in home page)
 import StickyAds from '../components/Includes/Banner/StickyAds';
 
+//load live tv schedule
+import ScheduleTV from '../components/Includes/Schedules/LiveTv';
 //load home page scss
 // import '../assets/scss/components/homepage.scss';
 
@@ -98,8 +99,10 @@ class Index extends React.Component {
                         {/* <NavDownloadApp /> */}
                         <Nav />
                         <Carousel />
-                        <Stories />
+                        <ScheduleTV />
+                        <h3>process.env.is_show_sticky_ads</h3>
                         <StickyAds /> 
+                        <Stories />
                         {/* <ReactJWPlaye playerId="example-id" playerScript="https://cdn.jwplayer.com/libraries/Vp85L1U1.js" playlist="https://cdn.jwplayer.com/v2/playlists/ZTs6tMfb"/> */}
                         {contents.map(content => {
                             switch (content.display_type) {

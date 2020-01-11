@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import Head from 'next/head';
 import storiesActions from '../../../redux/actions/storiesActions';
 
+//load stories style
+import '../../../assets/scss/components/stories.scss';
+
 class Stories extends React.Component {
     constructor(props) {
         super(props);
@@ -92,7 +95,24 @@ class Stories extends React.Component {
                             document.body.style.overflow = 'unset'; // enable scroll after closing the story
                             callback();
                         }
-                    }
+                    },
+                    language: { // if you need to translate :)
+                        unmute: 'Touch to unmute',
+                        keyboardTip: 'Press space to see next',
+                        visitLink: 'Visit link',
+                        time: {
+                          ago:'ago', 
+                          hour:'hour', 
+                          hours:'hours', 
+                          minute:'minute', 
+                          minutes:'minutes', 
+                          fromnow: 'from now', 
+                          seconds:'seconds', 
+                          yesterday: 'yesterday', 
+                          tomorrow: 'tomorrow', 
+                          days:'days'
+                        }
+                      }
                 });
             });
         });
@@ -114,7 +134,7 @@ class Stories extends React.Component {
             Snapgram: {
                 avatars: true,
                 list: false,
-                autoFullScreen: false,
+                autoFullScreen:false,
                 cubeEffect: true,
                 paginationArrows: false
             },
@@ -201,7 +221,7 @@ class Stories extends React.Component {
         return (
             <div className="stories-wrapper">
                 <Head>
-                    <link rel="stylesheet" href="static/css/zuck.min.css" />
+                    <link rel="stylesheet" href="static/css/zuck.css" />
                     <link rel="stylesheet" href="static/css/snapgram.css" />
                 </Head>
                 <div ref={node => this.storiesElement = node} id="stories-react" className="storiesWrapper">
