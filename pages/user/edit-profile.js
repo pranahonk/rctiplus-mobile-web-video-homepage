@@ -1,8 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux';
+import Router from 'next/router';
 import initialize from '../../utils/initialize';
+import Actionsheet from '../../assets/js/react-actionsheet/lib';
+
+import actions from '../../redux/actions';
 import userActions from '../../redux/actions/userActions';
 import othersActions from '../../redux/actions/othersActions';
+
+import { removeCookie } from '../../utils/cookie';
 
 //load default layout
 import Layout from '../../components/Layouts/Default';
@@ -12,10 +18,10 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 
 //load reactstrap components
 import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback } from 'reactstrap';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import CameraAltIcon from '@material-ui/icons/CameraAlt';
 
 import '../../assets/scss/components/edit-profile.scss';
+
 
 class EditProfile extends React.Component {
 
@@ -26,6 +32,9 @@ class EditProfile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            nickname: '',
+            nickname_invalid: false,
+            nickname_invalid_message: '',
             email: '',
             email_invalid: false,
             email_invalid_message: '',
@@ -44,8 +53,14 @@ class EditProfile extends React.Component {
             location: '',
             location_invalid: false,
             location_invalid_message: '',
-            location_data: []
+            location_data: [],
+            otp: '',
+            show_action_sheet: false,
+            input_photo_accept: 'image/*',
+            profile_photo_src: 'https://cdn.zeplin.io/5c7fab96082323628629989f/assets/DDD7D5C6-7114-402B-A0C4-4EC7DE7707BC.svg'
         };
+
+        this.inputPhotoElement = null;
     }
 
     componentDidMount() {
@@ -57,15 +72,19 @@ class EditProfile extends React.Component {
                     this.setState({
                         email: data.email,
                         phone_number: data.phone_number,
+                        nickname: data.nickname ? data.nickname : '',
                         fullname: data.display_name,
-                        birthdate: new Date(data.dob * 1000),
+                        birthdate: new Date(data.dob ? data.dob * 1000 : Date.now()),
                         gender: data.gender,
-                        location: data.location
+                        location: data.location,
+                        profile_photo_src: data.photo_url ? data.photo_url : this.state.profile_photo_src
+                    }, () => {
+                        this.props.setUserProfile(this.state.nickname, this.state.fullname, this.state.birthdate, this.state.gender, this.state.phone_number, this.state.email, this.state.otp, this.state.location);
                     });
                 }
             })
             .catch(error => console.log(error));
-    
+
         this.props.getLocations()
             .then(response => {
                 if (response.status === 200) {
@@ -77,14 +96,18 @@ class EditProfile extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        
+
     }
 
     formatDate(date) {
         const year = date.getFullYear();
         const month = ('0' + (date.getMonth() + 1)).slice(-2);
         const day = ('0' + date.getDate()).slice(-2);
-        return year + '-' + month + '-' + day;
+        return day + '/' + month + '/' + year;
+    }
+
+    onChangeNickname(e) {
+        this.setState({ nickname: e.target.value });
     }
 
     onChangeEmail(e) {
@@ -112,41 +135,84 @@ class EditProfile extends React.Component {
         this.setState({ location: e.target.value });
     }
 
+    goToFormField(index, label, fieldType, notes, placeholder, needOtp = false, selectData = []) {
+        this.props.setField(index, label, fieldType, notes, placeholder, needOtp, selectData);
+        Router.push('/user/edit/form-field');
+    }
+
+    handleCameraTakePhoto(e, index) {
+        console.log('take photo', index);
+        console.log(e.target.value.replace('C:\\fakepath\\', ''));
+        const reader = new FileReader();
+        const self = this;
+        reader.onload = function(x) {
+            self.setState({ profile_photo_src: x.target.result }, () => {
+                self.props.setUserProfilePhoto(self.state.profile_photo_src);
+                Router.push('/user/photo/crop');
+            });
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+
     render() {
         return (
             <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
-                <NavBack title="Edit Profile" />
+                <NavBack 
+                    visible 
+                    title="Edit Profile"
+                    dropdownMenu={[
+                        {
+                            label: 'Change Password',
+                            callback: () => { Router.push('/user/change-password') }
+                        },
+                        {
+                            label: 'Log Out',
+                            callback: () => {
+                                const deviceId = 1;
+                                this.props.logout(deviceId)
+                                    .then(() => Router.push('/signin'))
+                                    .catch(() => removeCookie('ACCESS_TOKEN'));
+                            }
+                        }
+                    ]}/>
+                <Actionsheet show={this.state.show_action_sheet} menus={[{ content: 'Camera', onClick: () => {
+                    this.setState({ input_photo_accept: 'image/*;capture=camera' }, () => this.inputPhotoElement.click());
+                } }, { content: 'Gallery', onClick: () => {
+                    this.setState({ input_photo_accept: 'image/*' }, () => this.inputPhotoElement.click());
+                } }]} onRequestClose={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })} cancelText="Cancel"/>
                 <div className="wrapper-content container-box-ep" style={{ marginTop: 50 }}>
+                    <input onChange={this.handleCameraTakePhoto.bind(this)} ref={input => this.inputPhotoElement = input} id="profile-photo-data" type="file" accept={this.state.input_photo_accept} style={{ display: 'none' }}/>
+                    
                     <Form onSubmit={this.handleSubmit.bind(this)}>
-                        <FormGroup>
+                        <FormGroup className="profile-photo-container">
+                            <div className="profile-photo" onClick={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })}>
+                                <img className="profile-photo" src={this.state.profile_photo_src}/>
+                                <CameraAltIcon className="profile-photo-button"/>
+                            </div>
                             
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label" for="email">Email</Label>
+                            <Label className="form-label" for="nickname">Nickname (Live Chat)</Label>
                             <InputGroup>
                                 <Input
-                                    value={this.state.email}
-                                    onChange={this.onChangeEmail.bind(this)}
-                                    invalid={this.state.email_invalid}
+                                    onClick={this.goToFormField.bind(this, 0, 'Nickname (Live Chat)', 'text', `
+                                        <ul>
+                                            <li>You may change your username back after 14 days</li>
+                                            <li>Username has never been used with another user</li>
+                                        </ul>
+                                    `, 'insert nickname', false)}
+                                    value={this.state.nickname}
+                                    onChange={this.onChangeNickname.bind(this)}
+                                    invalid={this.state.nickname_invalid}
                                     className="form-control-ep" />
-                                <FormFeedback valid={!this.state.email_invalid && !!this.state.email}>{this.state.email_invalid_message}</FormFeedback>
-                            </InputGroup>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label className="form-label" for="phone_number">Phone Number</Label>
-                            <InputGroup>
-                                <Input
-                                    value={this.state.phone_number ? this.state.phone_number : ''}
-                                    onChange={this.onChangePhoneNumber.bind(this)}
-                                    invalid={this.state.phone_number_invalid}
-                                    className="form-control-ep" />
-                                <FormFeedback valid={!this.state.phone_number_invalid && !!this.state.phone_number}>{this.state.phone_number_invalid_message}</FormFeedback>
+                                <FormFeedback valid={!this.state.nickname_invalid && !!this.state.nickname}>{this.state.nickname_invalid_message}</FormFeedback>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label" for="fullname">Full Name</Label>
                             <InputGroup>
                                 <Input
+                                    onClick={this.goToFormField.bind(this, 1, 'Full Name', 'text', ``, 'insert full name', false)}
                                     value={this.state.fullname}
                                     onChange={this.onChangeFullname.bind(this)}
                                     invalid={this.state.fullname_invalid}
@@ -155,22 +221,23 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label" for="birthdate">Birth Day</Label>
-                            <DatePicker
-                                showMonthDropdown
-                                showYearDropdown
-                                dropdownMode="select"
-                                dateFormat="dd/MM/yyyy"
-                                invalid={this.state.birthdate_invalid}
-                                selected={this.state.birthdate}
-                                onChange={this.onChangeBirthdate.bind(this)}
-                                withPortal/>
+                            <Label className="form-label" for="birthdate">Birthdate</Label>
+                            <InputGroup>
+                                <Input
+                                    onClick={this.goToFormField.bind(this, 2, 'Birthdate', 'date', ``, 'dd/mm/yy', false)}
+                                    value={this.formatDate(this.state.birthdate)}
+                                    onChange={this.onChangeBirthdate.bind(this)}
+                                    invalid={this.state.birthdate_invalid}
+                                    className="form-control-ep" />
+                                <FormFeedback valid={!this.state.birthdate_invalid && !!this.state.birthdate}>{this.state.birthdate_invalid_message}</FormFeedback>
+                            </InputGroup>
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label" for="gender">Gender</Label>
                             <InputGroup>
                                 <Input
                                     type="select"
+                                    onClick={this.goToFormField.bind(this, 3, 'Gender', 'select', ``, 'select gender', false, ['select gender', 'Male', 'Female'])}
                                     value={this.state.gender ? this.state.gender.charAt(0).toUpperCase() + this.state.gender.substring(1) : ''}
                                     onChange={this.onChangeGender.bind(this)}
                                     invalid={this.state.gender_invalid}
@@ -182,11 +249,12 @@ class EditProfile extends React.Component {
                                 <FormFeedback valid={!this.state.gender_invalid && !!this.state.gender}>{this.state.gender_invalid_message}</FormFeedback>
                             </InputGroup>
                         </FormGroup>
-                        <FormGroup>
+                        {/* <FormGroup>
                             <Label className="form-label" for="location">Location</Label>
                             <InputGroup>
                                 <Input
                                     type="select"
+                                    onClick={this.goToFormField.bind(this, 7, 'Location', 'select', ``, 'select location', false, this.state.location_data)}
                                     value={this.state.location ? this.state.location : ''}
                                     onChange={this.onChangeLocation.bind(this)}
                                     invalid={this.state.location_invalid}
@@ -195,6 +263,34 @@ class EditProfile extends React.Component {
                                     {this.state.location_data.map((l, i) => <option key={i}>{l}</option>)}
                                 </Input>
                                 <FormFeedback valid={!this.state.location_invalid && !!this.state.location}>{this.state.location_invalid_message}</FormFeedback>
+                            </InputGroup>
+                        </FormGroup> */}
+                        <FormGroup>
+                            <Label className="form-label" for="email">Email</Label>
+                            <InputGroup>
+                                <Input
+                                    onClick={this.goToFormField.bind(this, 5, 'Email', 'email', ``, 'insert email', true)}
+                                    value={this.state.email}
+                                    onChange={this.onChangeEmail.bind(this)}
+                                    invalid={this.state.email_invalid}
+                                    className="form-control-ep" />
+                                <FormFeedback valid={!this.state.email_invalid && !!this.state.email}>{this.state.email_invalid_message}</FormFeedback>
+                            </InputGroup>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label" for="phone_number">Phone Number</Label>
+                            <InputGroup>
+                                <Input
+                                    onClick={this.goToFormField.bind(this, 4, 'Phone Number', 'phone', `
+                                        <ul>
+                                            <li>Make sure the phone number is active because we will sent you verification code to verify and secure your account</li>
+                                        </ul>
+                                    `, 'insert phone number', true)}
+                                    value={this.state.phone_number ? this.state.phone_number : ''}
+                                    onChange={this.onChangePhoneNumber.bind(this)}
+                                    invalid={this.state.phone_number_invalid}
+                                    className="form-control-ep" />
+                                <FormFeedback valid={!this.state.phone_number_invalid && !!this.state.phone_number}>{this.state.phone_number_invalid_message}</FormFeedback>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
@@ -210,5 +306,6 @@ class EditProfile extends React.Component {
 
 export default connect(state => state, {
     ...userActions,
-    ...othersActions
+    ...othersActions,
+    ...actions
 })(EditProfile);

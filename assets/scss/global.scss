@@ -371,7 +371,7 @@ h5 {
 }
 .header-nav-verif{
 	color: #fff;
-	width: 80%;
+	// width: 80%;
 	float: right;
 	text-align: center;
 	position: static;
@@ -379,7 +379,6 @@ h5 {
 
 .header-nav-verif p {
     margin-top: 10px;
-    margin-left: -50px;
 }
 
 .no-bg {
@@ -467,4 +466,23 @@ h5 {
     outline: none !important;
     box-shadow: none !important;
     border-color: #495057;
+}
+
+.right-menu {
+    display: inline;
+    color: white;
+    margin-right: 0;
+}
+
+.right-menu .btn-secondary, .right-menu .button-secondary:hover, .right-menu .btn-secondary:not(:disabled):not(.disabled):active {
+    background: transparent;
+    border: none ;
+}
+
+.right-menu .dropdown-menu {
+    background-color: #393939;
+}
+
+.right-menu .dropdown-item {
+    color: white;
 }

@@ -1,12 +1,12 @@
 $primary-bg-color: #282828;
-$primary-text-color: #979797;
+$primary-text-color: #ffffff;
 $default-text-color-login: #eee;
 
-.container-box-ep {
+.container-box-ff {
     margin: 0px auto;
     background-color: $primary-bg-color;
     color: $primary-text-color;
-    width: 95%;
+    width: 100%;
     height: 500px;
     object-fit: contain;
     border-radius: 30px;
@@ -14,32 +14,34 @@ $default-text-color-login: #eee;
     margin-top: 70px;
 }
 
-.form-control-ep {
+.form-control-ff {
     border-radius: 0;
-    background: transparent !important;
-    border-color: #495057 !important;
+    background: transparent;
+    border-color: #495057;
     border-top: none !important;
     border-left: none !important;
     border-right: none !important;
+    padding: 2px;
     color: $default-text-color-login !important;
-    padding: 0;
 }
 
-.form-control-ep:hover {
+.form-control-ff:hover {
     background: transparent;
 }
 
-.form-label {
-    margin: 0;
-    font-size: 12px;
+#notes ul {
+    padding: 15px;
+    color: $primary-text-color;
+    font-size: 11px;
 }
+
 
 .react-datepicker {
     background-color: #282828;
     border-color: #282828;
 }
 
-.form-control-ep > option {
+.form-control-ff > option {
     background-color: #171717;
     border-color: #171717;
 }
@@ -65,33 +67,11 @@ $default-text-color-login: #eee;
 }
 
 .react-datepicker__input-container > input {
-    @extend .form-control-ep;
+    @extend .form-control-ff;
     width: 100%;
     border-bottom-width: 1px;
 }
 
 .react-datepicker__input-container > input:hover {
     background: transparent;
-}
-
-.profile-photo-container {
-    text-align: center;
-}
-
-.profile-photo {
-    border-radius: 100%;
-    width: 100px;
-    height: 100px;
-    margin: 0 auto;
-    position: relative;
-}
-
-.profile-photo-button {
-    background-color: #DB2828;
-    color: white;
-    padding: 3px;
-    border-radius: 100%;
-    position: absolute;
-    bottom: 0;
-    right: 0;
 }

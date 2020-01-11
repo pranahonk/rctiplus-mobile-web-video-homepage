@@ -10,6 +10,15 @@ const showNotification = (content, success = true) => {
     };
 };
 
+const progressNotification = content => {
+    return dispatch => dispatch({
+        type: 'PROGRESS_NOTIFICATION',
+        content: content,
+        show: true,
+        size: content.length <= 60 ? 'small' : 'medium'
+    });
+};
+
 const hideNotification = () => {
     return dispatch => {
         dispatch({
@@ -21,5 +30,6 @@ const hideNotification = () => {
 
 export default {
     showNotification,
-    hideNotification
+    hideNotification,
+    progressNotification
 };

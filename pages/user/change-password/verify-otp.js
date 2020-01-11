@@ -4,17 +4,20 @@ import { connect } from 'react-redux';
 import ReactCodeInput from 'react-verification-code-input';
 import Countdown, { zeroPad } from 'react-countdown-now';
 
-import registrationActions from '../../redux/actions/registerActions';
+import registrationActions from '../../../redux/actions/registerActions';
+import userActions from '../../../redux/actions/userActions';
+import othersActions from '../../../redux/actions/othersActions';
+import notificationActions from '../../../redux/actions/notificationActions';
 
-import { showConfirmAlert } from '../../utils/helpers';
+import { showConfirmAlert } from '../../../utils/helpers';
 
-import Layout from '../../components/Layouts/Default';
-import NavBack from '../../components/Includes/Navbar/NavBack';
+import Layout from '../../../components/Layouts/Default';
+import NavBack from '../../../components/Includes/Navbar/NavBack';
 
 //load reactstrap components
-import { Button, Form, FormGroup } from 'reactstrap';
+import { Form, FormGroup } from 'reactstrap';
 
-import '../../assets/scss/components/verify-otp-password.scss';
+import '../../../assets/scss/components/verify-otp-password.scss';
 
 
 class VerifyOtp extends React.Component {
@@ -25,7 +28,7 @@ class VerifyOtp extends React.Component {
             username: '',
             alert_message: 'Carefully check your Email for verification code. You only have 3 attempts',
             otp: '',
-            interval: 2,
+            interval: 60,
 			countdown_key: 0,
             current_time: Date.now(),
             submit_message: '',
@@ -36,12 +39,12 @@ class VerifyOtp extends React.Component {
 
     componentDidMount() {
         this.setState({ username: this.props.registration.username }, () => {
-            this.props.getOtp(this.state.username)
+            this.props.getOtp(this.state.username, 'change-password')
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
                             alert_message: response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client),
-							req_otp_status: response.data.status.code 
+							req_otp_status: response.data.status.code  
                         });
                     }
                 })
@@ -50,7 +53,22 @@ class VerifyOtp extends React.Component {
     }
 
     submitOtp() {
-        Router.push('/forget-password/verification-success');
+        const data = this.props.user.change_password;
+        this.props.changePassword(data.new_password, data.re_password, this.state.otp)
+            .then(response => {
+                console.log(response);
+                this.props.showNotification('*Your data is saved');
+                setTimeout(() => this.props.hideNotification(), 3000);
+                Router.push('/user/edit/verification-success');
+            })
+            .catch(error => {
+                if (error.status == 200) {
+                    this.props.showNotification(error.data.status.message_server, false);
+                }
+                setTimeout(() => this.props.hideNotification(), 3000);
+                console.log(error);
+            });
+        
     }
 
     onChangeOtp(otp) {
@@ -86,7 +104,7 @@ class VerifyOtp extends React.Component {
     showAlert() {
         let username = this.state.username;
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
-            this.props.getOtp(username)
+            this.props.getOtp(username, 'edit-profile')
                 .then(response => {
                     let newState = {};
                     if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
@@ -102,13 +120,6 @@ class VerifyOtp extends React.Component {
                 .catch(error => console.log(error));
 
         }, true, this.state.req_otp_status == 0 ? 'Not Now' : 'OK', this.state.req_otp_status == 0 ? 'Request New OTP' : '');
-
-        if (this.state.alert_message.indexOf('reached maximum') == -1) {
-			this.setState({ req_otp_status: 0 });
-		}
-		else if ((this.state.alert_message.indexOf('Carefully check') != -1 && this.state.alert_message.indexOf('You have 0') != -1) || this.state.alert_message.indexOf('reached maximum') != -1) {
-			this.setState({ req_otp_status: 1 });
-		}
     }
 
     generateAlertMessage(message) {
@@ -209,4 +220,9 @@ class VerifyOtp extends React.Component {
 
 }
 
-export default connect(state => state, registrationActions)(VerifyOtp);
+export default connect(state => state, {
+    ...registrationActions,
+    ...userActions,
+    ...othersActions,
+    ...notificationActions
+})(VerifyOtp);

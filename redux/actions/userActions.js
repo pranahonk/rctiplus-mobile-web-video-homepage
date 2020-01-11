@@ -13,6 +13,136 @@ const axios = ax.create({
     }
 });
 
+const setChangePasswordData = (currentPassword, newPassword, rePassword) => {
+    return dispatch => dispatch({
+        type: 'SET_CHANGE_PASSWORD_DATA',
+        change_password: {
+            current_password: currentPassword,
+            new_password: newPassword,
+            re_password: rePassword
+        }
+    });
+};
+
+const setValue = (index, value) => {
+    return dispatch => dispatch({
+        type: 'SET_VALUE',
+        index: index,
+        value: value
+    });
+};
+
+const setUserProfile = (nickname, fullname, dob, gender, phone_number, email, otp, location) => {
+    return dispatch => dispatch({
+        type: 'SET_PROFILE',
+        nickname: nickname,
+        fullname: fullname,
+        dob: dob,
+        gender: gender,
+        phone_number: phone_number,
+        email: email,
+        otp: otp,
+        location: location
+    });
+};
+
+const setUserProfilePhoto = src => {
+    return dispatch => dispatch({
+        type: 'SET_PROFILE_PHOTO_SRC',
+        src: src
+    });
+};
+
+// verify nickname or password
+const verify = ({ nickname, password }) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const data = {};
+            if (nickname) {
+                data['nickname'] = nickname;
+            }
+            if (password) {
+                data['password'] = password;
+            }
+            const response = await axios.post(`/v2/verify`, data);
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const changePassword = (password, rePassword, otp) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v2/change-password`, {
+                password: password,
+                repassword: rePassword,
+                otp: otp
+            });
+
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const uploadProfilePhoto = file => {
+    let data = new FormData();
+    data.append('photo', file);
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v1/user/photo`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const updateUserData = (key, value, otp = null) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const data = {};
+            data[key] = value;
+            if (otp) {
+                data['otp'] = otp;
+            }
+            const response = await axios.post(`/v2/user`, data);
+            
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const updateUserProfile = (username, dob, gender, location) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -123,5 +253,13 @@ export default {
     getUserData,
     getInterests,
     checkUser,
-    setInterest
+    setInterest,
+    setUserProfile,
+    setValue,
+    updateUserData,
+    setUserProfilePhoto,
+    uploadProfilePhoto,
+    verify,
+    setChangePasswordData,
+    changePassword
 };

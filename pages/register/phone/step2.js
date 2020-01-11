@@ -50,7 +50,7 @@ class Step2 extends Component {
 				.then(response => {
 					if (response.status === 200) {
 						this.setState({ 
-							alert_message: response.data.status.message_server,
+							alert_message: response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client),
 							req_otp_status: response.data.status.code 
 						});
 					}
@@ -77,14 +77,9 @@ class Step2 extends Component {
 			this.props.verifyOtp(username, this.state.otp)
 				.then(response => {
 					if (response.data.status.code != 0) {
-						// this.props.showNotification(response.data.status.message_client, false);
-						// setTimeout(() => {
-						// 	this.props.hideNotification();
-						// }, 5000);
 						this.setState({ submit_message: 'Invalid verification code', is_submitting: false });
 					}
 					else {
-						console.log(this.props.registration);
 						this.props.register({
 							username: username,
 							password: this.props.registration.password,
@@ -100,10 +95,6 @@ class Step2 extends Component {
 						.catch(error => {
 							if (error.status == 200) {
 								this.setState({ submit_message: error.data.status.message_client, is_submitting: false }, () => {
-									// this.props.showNotification(error.data.status.message_client, false);
-									// setTimeout(() => {
-									// 	this.props.hideNotification();
-									// }, 5000);
 									if (error.data.status.code === 0) {
 										Router.push('/register/phone/step3');
 									}
@@ -123,6 +114,35 @@ class Step2 extends Component {
 		
 	}
 
+	generateAlertMessage(message) {
+		let attempts = '';
+		let index = -1;
+		if ((index = message.indexOf('You have')) != -1) {
+			if (message.indexOf('You have 1') != -1) {
+				attempts = 'This is your last attempts';
+			}
+			else {
+				attempts = message.substring(index);
+			}
+			
+			if (this.props.registration.username_type === 'PHONE_NUMBER') {
+				attempts = 'Carefully check your sms for verification code. ' + attempts;
+			}
+			else {
+				attempts = 'Carefully check your email for verification code. ' + attempts;
+			}
+
+			if (message.indexOf('You have 0') != -1) {
+				attempts = 'You have reached maximum attempts. please, try again later after 1 hours';
+				this.setState({ req_otp_status: 1 });
+			}
+		}
+		else {
+			attempts = message;
+		}
+		return attempts;
+	}
+
 	showAlert() {
 		let username = this.state.username;
 		if (this.props.registration.username_type === 'PHONE_NUMBER') {
@@ -130,7 +150,7 @@ class Step2 extends Component {
 		}
 
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
-			// code = 1 (please wait a minute)
+			// code = 1 (please try again later (after 1 minute))
 			this.props.getOtp(username)
 				.then(response => {
 					let newState = {};
@@ -141,13 +161,20 @@ class Step2 extends Component {
 						};
 					}
 
-					newState['alert_message'] = response.data.status.message_client;
+					newState['alert_message'] = response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client);
 					this.setState(newState);
 				})
 				.catch(error => {
 					console.log(error);
 				});
-		}, true, 'Not Now', 'Request New OTP');
+		}, true, this.state.req_otp_status == 0 ? 'Not Now' : 'OK', this.state.req_otp_status == 0 ? 'Request New OTP' : '');
+
+		if (this.state.alert_message.indexOf('reached maximum') == -1) {
+			this.setState({ req_otp_status: 0 });
+		}
+		else if ((this.state.alert_message.indexOf('Carefully check') != -1 && this.state.alert_message.indexOf('You have 0') != -1) || this.state.alert_message.indexOf('reached maximum') != -1) {
+			this.setState({ req_otp_status: 1 });
+		}
 	}
 
 	render() {
@@ -165,13 +192,11 @@ class Step2 extends Component {
 	
 					<FormGroup>
 						<label className="lbl_rsndcode">
-							{/* Resend code  */}
 							<Countdown
 								key={this.state.countdown_key}
 								date={this.state.current_time + (this.state.interval * 1000)}
 								renderer={({ hours, minutes, seconds, completed }) => {
 									if (completed) {
-										// return (<p className="text-default-rcti" style={{ fontSize: 12, textAlign: 'center' }}><span onClick={() => Router.push('/register/change-username')} className="el-red">Change {this.props.registration.username_type === 'PHONE_NUMBER' ? 'Phone Number' : 'Email'}</span> or <span onClick={this.showAlert.bind(this)} className="el-red">Resend Code</span></p>);
 										return (<p className="text-default-rcti" style={{ textAlign: 'center' }}>did not receive any code<br/><span onClick={this.showAlert.bind(this)} className="el-red">send me code</span></p>);
 									}
 	
@@ -179,9 +204,6 @@ class Step2 extends Component {
 								}}></Countdown>
 						</label>
 					</FormGroup>
-					{/* <FormGroup className="btn-next-position">
-						<Button className="btn-next block-btn">Verify</Button>
-					</FormGroup> */}
 				</div>
 			);
 		}
