@@ -1,15 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import Head from 'next/head';
-import Lazyload from 'react-lazyload';
-import contentActions from '../../redux/actions/contentActions';
 import initialize from '../../utils/initialize';
+import bookmarkActions from '../../redux/actions/bookmarkActions';
 
 //load default layout
 import Layout from '../../components/Layouts/Default';
 
 //load navbar default
-import Nav from '../../components/Includes/Navbar/NavDefault';
+import NavBack from '../../components/Includes/Navbar/NavBack';
+
+import '../../assets/scss/components/my-list.scss';
+
+import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import ListItem from '../../components/Includes/Gallery/ListItem';
 
 class MyList extends React.Component {
 
@@ -20,27 +23,39 @@ class MyList extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			contents: [],
-			meta: null,
+			dropdown_open: false
 		};
 	}
 
+	toggleDropdown() {
+		this.setState({ dropdown_open: !this.state.dropdown_open });
+	}
+
 	componentDidMount() {
-		this.props.getContents(1)
-			.then(response => {
-				this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta });
-			});
 	}
 
 	render() {
-		const contents = this.state.contents;
-		const meta = this.state.meta;
-
 		return (
-			<Layout title="RCTI+ - My - List">
-				<div>
-					<Nav />
-					<div className="wrapper-content">My - List</div>
+			<Layout title="My List">
+				<NavBack title="My List" />
+				<div className="wrapper-content container-box-ml" style={{ marginTop: 50 }}>
+					<div className="header-list">
+						<p className="header-subtitle">My List</p>
+						<ButtonDropdown isOpen={this.state.dropdown_open} toggle={this.toggleDropdown.bind(this)}>
+							<DropdownToggle caret>
+								Latest Post
+							</DropdownToggle>
+							<DropdownMenu>
+								<DropdownItem>Latest Post</DropdownItem>
+								<DropdownItem>A-Z</DropdownItem>
+							</DropdownMenu>
+						</ButtonDropdown>
+					</div>
+					<ListItem 
+						striped
+						imageSrc="https://static.rctiplus.id/media/620/files/fta_rcti/Landscape/rsi___2000_x_1152.jpg"
+						title="Rising Star Indonesia"
+						subtitle="2 video"/>
 				</div>
 			</Layout>
 		);
@@ -48,4 +63,6 @@ class MyList extends React.Component {
 
 }
 
-export default connect(state => state, contentActions)(MyList);
+export default connect(state => state, {
+	...bookmarkActions
+})(MyList);

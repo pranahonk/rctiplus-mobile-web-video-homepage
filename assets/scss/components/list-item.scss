@@ -1,0 +1,23 @@
+.list-item {
+    padding: 5px 5px;
+    font-size: 11px;
+}
+
+.list-item-striped-bg {
+    background-color: #3a3a3a;
+}
+
+.list-item .item-image {
+    border-radius: 3px;
+    width: 100%;
+}
+
+.list-item > div[class*=col-] {
+    display: flex;
+    align-items: center;
+    -webkit-box-align: center;
+}
+
+.list-item p {
+    margin: 0;
+}
