@@ -4,8 +4,11 @@ import Router from 'next/router';
 import initialize from '../../utils/initialize';
 import Actionsheet from '../../assets/js/react-actionsheet/lib';
 
+import actions from '../../redux/actions';
 import userActions from '../../redux/actions/userActions';
 import othersActions from '../../redux/actions/othersActions';
+
+import { removeCookie } from '../../utils/cookie';
 
 //load default layout
 import Layout from '../../components/Layouts/Default';
@@ -65,6 +68,7 @@ class EditProfile extends React.Component {
             .then(response => {
                 if (response.status === 200) {
                     const data = response.data.data;
+                    console.log(data);
                     this.setState({
                         email: data.email,
                         phone_number: data.phone_number,
@@ -153,7 +157,24 @@ class EditProfile extends React.Component {
     render() {
         return (
             <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
-                <NavBack title="Edit Profile" />
+                <NavBack 
+                    visible 
+                    title="Edit Profile"
+                    dropdownMenu={[
+                        {
+                            label: 'Change Password',
+                            callback: () => { Router.push('/user/change-password') }
+                        },
+                        {
+                            label: 'Log Out',
+                            callback: () => {
+                                const deviceId = 1;
+                                this.props.logout(deviceId)
+                                    .then(() => Router.push('/signin'))
+                                    .catch(() => removeCookie('ACCESS_TOKEN'));
+                            }
+                        }
+                    ]}/>
                 <Actionsheet show={this.state.show_action_sheet} menus={[{ content: 'Camera', onClick: () => {
                     this.setState({ input_photo_accept: 'image/*;capture=camera' }, () => this.inputPhotoElement.click());
                 } }, { content: 'Gallery', onClick: () => {
@@ -285,5 +306,6 @@ class EditProfile extends React.Component {
 
 export default connect(state => state, {
     ...userActions,
-    ...othersActions
+    ...othersActions,
+    ...actions
 })(EditProfile);

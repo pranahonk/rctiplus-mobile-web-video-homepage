@@ -19,12 +19,15 @@ class ChangePassword extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            current_password: '',
             password: '',
             confirm_password: '',
+            current_password_invalid: false,
             password_match_invalid: false,
             at_least_eight_invalid: false,
             view_raw: false,
-            view_raw_re: false
+            view_raw_re: false,
+            view_raw_cu: false
         };
     }
 
@@ -34,31 +37,36 @@ class ChangePassword extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        this.props.createForgotPassword(this.props.registration.username, this.state.password, this.props.registration.otp)
+        this.props.verify({ password: this.state.current_password })
             .then(response => {
-                const hideNotification = this.props.hideNotification;
-                if (response.data.status.code === 0) {
-                    this.props.showNotification('Your new password successfully created. Please login.');
-                    setTimeout(function() {
-						hideNotification();
-					}, 3000);
-                    Router.push('/signin');
+                if (response.status === 200 && response.data.status.code === 0) {
+                    this.props.setChangePasswordData(this.state.current_password, this.state.password, this.state.confirm_password);
+                    if (this.props.user.email) {
+                        this.props.setUsernameType('EMAIL');
+                        this.props.setUsername(this.props.user.email);
+                    }
+                    else {
+                        this.props.setUsernameType('PHONE_NUMBER');
+                        this.props.setUsername(this.props.user.phone_number);
+                    }
+                    Router.push('/user/change-password/verify-otp');
                 }
                 else {
-                    this.props.showNotification(response.data.status.message_client + '. Please try again! (Response code = ' + response.data.status.code + ')', false);
-                    setTimeout(function() {
-						hideNotification();
-					}, 3000);
+                    this.setState({ current_password_invalid: true });
                 }
-                
             })
-            .catch(error => console.log(error));
-        
+            .catch(error => {
+                console.log(error);
+                this.setState({ current_password_invalid: true });
+            });
     }
 
     togglePassword(type = '') {
         if (type == 're') {
             this.setState({ view_raw_re: !this.state.view_raw_re });
+        }
+        else if (type == 'cu') {
+            this.setState({ view_raw_cu: !this.state.view_raw_cu });
         }
         else {
             this.setState({ view_raw: !this.state.view_raw });
@@ -74,7 +82,14 @@ class ChangePassword extends React.Component {
 		}, () => {
 			this.props.setPassword(this.state.password);
 		});
-	}
+    }
+    
+    onCurrentPasswordChange(e) {
+        let currentPassword = e.target.value;
+        this.setState({
+            current_password: currentPassword
+        });
+    }
 
 	onConfirmPasswordChange(e) {
 		let confirmPassword = e.target.value;
@@ -87,10 +102,25 @@ class ChangePassword extends React.Component {
     render() {
         return (
             <Layout title="Change Password">
-                <NavBack title="Forget Password"/>
+                <NavBack title="Change Password"/>
                 <div className="container-box-c">
                     <p>Enter password</p>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
+                    <FormGroup>
+                            <Label className="label-c" for="password">Current Password</Label>
+                            <InputGroup>
+                                <Input
+                                    className="form-control-cp"
+                                    type={this.state.view_raw_cu ? 'text' : 'password'}
+                                    name="password"
+                                    id="current-password"
+                                    placeholder="insert password"
+                                    invalid={this.state.current_password_invalid}
+                                    onChange={this.onCurrentPasswordChange.bind(this)} />
+                                <div onClick={this.togglePassword.bind(this, 'cu')} className={'view-raw-c ' + (this.state.view_raw_cu ? 'fas_fa-eye-slash' : 'fas_fa-eye')}></div>
+                                <FormFeedback>please try again again, password is incorrect</FormFeedback>
+                            </InputGroup>
+                        </FormGroup>
                         <FormGroup>
                             <Label className="label-c" for="password">New Password</Label>
                             <InputGroup>

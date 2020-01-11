@@ -13,6 +13,17 @@ const axios = ax.create({
     }
 });
 
+const setChangePasswordData = (currentPassword, newPassword, rePassword) => {
+    return dispatch => dispatch({
+        type: 'SET_CHANGE_PASSWORD_DATA',
+        change_password: {
+            current_password: currentPassword,
+            new_password: newPassword,
+            re_password: rePassword
+        }
+    });
+};
+
 const setValue = (index, value) => {
     return dispatch => dispatch({
         type: 'SET_VALUE',
@@ -39,6 +50,53 @@ const setUserProfilePhoto = src => {
     return dispatch => dispatch({
         type: 'SET_PROFILE_PHOTO_SRC',
         src: src
+    });
+};
+
+// verify nickname or password
+const verify = ({ nickname, password }) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const data = {};
+            if (nickname) {
+                data['nickname'] = nickname;
+            }
+            if (password) {
+                data['password'] = password;
+            }
+            const response = await axios.post(`/v2/verify`, data);
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const changePassword = (password, rePassword, otp) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v2/change-password`, {
+                password: password,
+                repassword: rePassword,
+                otp: otp
+            });
+
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
     });
 };
 
@@ -200,5 +258,8 @@ export default {
     setValue,
     updateUserData,
     setUserProfilePhoto,
-    uploadProfilePhoto
+    uploadProfilePhoto,
+    verify,
+    setChangePasswordData,
+    changePassword
 };

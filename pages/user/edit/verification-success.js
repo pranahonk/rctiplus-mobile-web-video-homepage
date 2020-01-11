@@ -5,7 +5,7 @@ import Router from 'next/router';
 import Layout from '../../../components/Layouts/Default';
 
 //load navbar default
-import AppNavbar from '../../../components/Includes/Navbar';
+import NavBack from '../../../components/Includes/Navbar/NavBack';
 
 import Checkmark from '../../../components/Includes/Common/Checkmark';
 
@@ -25,7 +25,7 @@ export default class VerificationSuccess extends Component {
 	render() {
 		return (
 			<Layout title="Registration Completed">
-				<AppNavbar title="Verification" />
+				<NavBack title="Verification" />
 				<div className="wrapper-content">
 					<div style={{ textAlign: 'center', marginTop: 65 }}>
 						<h4 style={{ marginBottom: 45 }}>

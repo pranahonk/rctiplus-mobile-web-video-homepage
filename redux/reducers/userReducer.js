@@ -11,7 +11,8 @@ const initialState = {
     email: '',
     otp: '',
     location: '',
-    profile_photo_src: ''
+    profile_photo_src: '',
+    change_password: {}
 };
 
 export default (state = initialState, action) => {
@@ -41,6 +42,8 @@ export default (state = initialState, action) => {
 
         case 'SET_PROFILE_PHOTO_SRC':
             return Object.assign({}, state, { profile_photo_src: action.src });
+        case 'SET_CHANGE_PASSWORD_DATA':
+            return Object.assign({}, state, { change_password: action.change_password });
         default:
             return state;
     }
