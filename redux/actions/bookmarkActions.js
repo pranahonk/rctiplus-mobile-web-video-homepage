@@ -192,7 +192,7 @@ const getListBookmarkById = (programId, page = 1, length = 10, order = 'date', d
     });
 };
 
-const getBookmark = programId => {
+const getProgramBookmark = programId => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/bookmark/${programId}`, {
@@ -220,12 +220,38 @@ const getBookmark = programId => {
     });
 };
 
+const getBookmark = (page = 1, length = 10, orderBy = 'date', dir = 'DESC') => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/bookmark?page=${page}&length=${length}&order=${orderBy}&dir=${dir}`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const setBookmarkShowMoreAllowed = allowed => {
+    return dispatch => dispatch({
+        type: 'SET_SHOW_MORE_ALLOWED',
+        allowed: allowed
+    });
+};
+
 export default {
     bookmark,
     deleteBookmark,
     getBookmarks,
-    getBookmark,
+    getProgramBookmark,
     getMyList,
     getListBookmark,
-    getListBookmarkById
+    getListBookmarkById,
+    getBookmark,
+    setBookmarkShowMoreAllowed
 };

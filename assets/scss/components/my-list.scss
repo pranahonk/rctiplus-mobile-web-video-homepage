@@ -35,3 +35,53 @@
 .header-subtitle {
     margin: 0;
 }
+
+
+.related-box {
+    background-color: #282828;
+    color: white;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+.related-title-ml {
+    display: inline-block;
+    font-size: 12px;
+}
+
+.related-subtitle {
+    font-size: 9px;
+    text-align: right;
+    margin-top: -30px;
+}
+
+.related-slider {
+    margin-right: -20px;
+    margin-left: -15px;
+}
+
+.related-program-thumbnail {
+    max-height: 140px;
+}
+
+.related-slider .slide {
+    min-width: 100px;
+    max-width: 100px;
+    height: 130px;
+    margin: 3px;
+    position: relative;
+    text-align: center;
+    background: #171717;
+}
+
+.header-list .btn-secondary, .header-list .button-secondary:hover, .header-list .btn-secondary:not(:disabled):not(.disabled):active {
+    background: transparent;
+}
+
+.header-list .dropdown-menu {
+    background-color: #393939;
+}
+
+.header-list .dropdown-item {
+    color: white;
+}

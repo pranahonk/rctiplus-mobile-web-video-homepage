@@ -536,7 +536,7 @@ class Detail extends React.Component {
                             <PlayCircleFilledIcon /> Watch Trailer
                         </Button>
                     </div>
-                    <h1 className="content-title">{this.state.title}</h1>
+                    <h1 className="content-title-detail">{this.state.title}</h1>
                     <p className="content-genre">| {this.state.release_date} |
                         &nbsp;{this.state.genre.map((g, i) => {
                         let str = g.name;
@@ -676,7 +676,6 @@ class Detail extends React.Component {
                 <div className="related-box">
                     <div className="related-menu">
                         <p className="related-title"><strong>Related</strong></p>
-                        {/* <p className="related-subtitle">Show more &gt;</p> */}
                         <div className="related-slider">
                             <Carousel
                                 id="detail-carousel"

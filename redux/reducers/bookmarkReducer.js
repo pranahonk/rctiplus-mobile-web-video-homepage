@@ -1,7 +1,8 @@
 const initialState = {
     data: null,
     meta: null,
-    status: null
+    status: null,
+    show_more_allowed: false
 };
 
 export default (state = initialState, action) => {
@@ -18,6 +19,8 @@ export default (state = initialState, action) => {
                 meta: action.meta, 
                 status: action.status
             });
+        case 'SET_SHOW_MORE_ALLOWED':
+            return Object.assign({}, state, { show_more_allowed: action.allowed });
         default:
             return state;
     }

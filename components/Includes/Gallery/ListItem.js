@@ -18,7 +18,7 @@ class ListItem extends React.Component {
         return (
             <Row onClick={() => Router.back()} className={'list-item ' + (this.props.striped ? 'list-item-striped-bg' : '')}>
                 <Col xs={6}>
-                    <Img className="item-image" src={[this.props.imageSrc, 'http://placehold.it/140x84']}/>
+                    <Img className="item-image" src={[this.props.imageSrc, '/static/placeholders/placeholder_landscape.png']}/>
                 </Col>
                 <Col xs={4}>
                     <p>
