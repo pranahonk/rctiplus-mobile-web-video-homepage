@@ -241,7 +241,7 @@ class Exclusive extends React.Component {
 											{this.state.feeds[c.name] && this.state.feeds[c.name].map((feed, idx) => (
 												<Row key={feed.id} className={'program-item row-edit ' + (idx % 2 == 0 ? 'row-striped' : '')}>
 													<Col className="col-edit">
-														<Row>
+														<Row className="feed-row">
 															<Col xs="2">
 																<Img className="program-rounded-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
 															</Col>

@@ -4,12 +4,13 @@
 }
 
 .modal-body-edit {
-    padding: 5px;
+    padding: 0px;
     text-align: center;
 }
 
 .sheet-title {
     font-size: 18px;
+    margin-bottom: 0;
 }
 
 .sheet-action-button {
@@ -22,6 +23,7 @@
     margin: 10px;
 }
 
-.close-icon-button {
+.modal-content .close-icon-button {
     margin: 10px;
+    font-size: 1rem !important;
 }
