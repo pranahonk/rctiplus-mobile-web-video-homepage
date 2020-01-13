@@ -24,6 +24,7 @@ $text-placeholder-color-login: #a8a8a8;
 
 .program-item {
     width: 100%;
+    border-bottom: 1px solid black;
 }
 
 .program-label {
@@ -41,6 +42,7 @@ $text-placeholder-color-login: #a8a8a8;
 
 .program-title-bottom {
     font-size: 12px;
+    padding: 12px;
 }
 
 .program-subtitle {
@@ -68,6 +70,8 @@ $text-placeholder-color-login: #a8a8a8;
 
 .row-edit {
     margin-left: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .col-edit {
@@ -89,10 +93,6 @@ $text-placeholder-color-login: #a8a8a8;
 
 .col-edit .slide {
     text-align: left;
-}
-
-.row-edit {
-    margin-left: 0;
 }
 
 .row-striped {

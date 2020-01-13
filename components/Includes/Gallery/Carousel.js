@@ -30,7 +30,7 @@ class Crs extends Component {
                     <Carousel autoPlay showThumbs={false} showIndicators={false} stopOnHover={true} showArrows={false} showStatus={false} swipeScrollTolerance={1} swipeable={true} >
                         {this.state.banner.map(b => (
                             <div key={b.id}>
-                                <Img src={[this.state.meta.image_path + '593' + b.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
+                                <Img alt={b.title} src={[this.state.meta.image_path + '593' + b.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
                                 <p className="legend">{b.title}</p>
                             </div>
                             ))}
