@@ -1,15 +1,14 @@
 import ax from 'axios';
-import { DEV_API, API, VISITOR_TOKEN } from '../../config';
-import { getCookie } from '../../utils/cookie';
+import { DEV_API } from '../../config';
+import { getCookie, getVisitorToken } from '../../utils/cookie';
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
 
 const axios = ax.create({
-    // baseURL: API + '/api',
     baseURL: DEV_API + '/api',
     headers: {
-        'Authorization': accessToken == undefined ? VISITOR_TOKEN : accessToken
+        'Authorization': accessToken == undefined ? getVisitorToken() : accessToken
     }
 });
 
@@ -20,10 +19,6 @@ const postChat = (channelId, message, avatar, user) => {
                 msg: message,
                 avatar: avatar,
                 user: user
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
             });
 
             if (response.data.status.code === 0) {

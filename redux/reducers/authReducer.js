@@ -5,7 +5,8 @@ const initialState = {
     user: null,
     data: null,
     message: null,
-    code: null
+    code: null,
+    device_id: null
 };
 
 export default (state = initialState, action) => {
@@ -18,6 +19,8 @@ export default (state = initialState, action) => {
             return { token: null };
         case WRONG_AUTHENTICATION:
             return Object.assign({}, state, { message: action.message, code: action.code });
+        case 'SET_DEVICE_ID':
+            return Object.assign({}, state, { device_id: action.device_id });
         default:
             return state;
     }

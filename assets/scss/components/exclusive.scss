@@ -171,3 +171,10 @@ ul#trending .exclusive-item{
 .col-edit .slide {
     text-align: left;
 }
+
+.program-item .program-carousel-image {
+    object-fit: cover;
+    display: block;
+    overflow: hidden;
+    width: 100%;
+}

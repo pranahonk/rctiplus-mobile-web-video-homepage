@@ -8,7 +8,7 @@ import DatePicker from 'react-mobile-datepicker';
 import Layout from '../../../components/Layouts/Default';
 
 //load navbar default
-import NavBackVerification from '../../../components/Includes/Navbar/NavBackVerification';
+import NavBack from '../../../components/Includes/Navbar/NavBack';
 
 //load reactstrap components
 import { Button, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon, InputGroupText, FormFeedback } from 'reactstrap';
@@ -184,7 +184,7 @@ class Step1 extends Component {
 	render() {
 		return (
 			<Layout title="Register Step 1">
-				<NavBackVerification />
+				<NavBack title="Verification" />
 				<DatePicker
 					dateConfig={this.dateConfig}
 					headerFormat="YYYY-MM-DD"
@@ -207,7 +207,7 @@ class Step1 extends Component {
 					onCancel={this.handleCancelGender.bind(this)}
 					isOpen={this.state.genderpicker_open} />
 
-				<div className="wrapper-content">
+				<div className="wrapper-content" style={{ marginTop: 50 }}>
 					<div className="login-box">
 						<Form onSubmit={this.next.bind(this)}>
 							<FormGroup>

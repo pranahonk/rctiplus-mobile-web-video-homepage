@@ -91,8 +91,6 @@ class Exclusive extends React.Component {
 								}
 							}
 
-							console.log(categoricalFeeds);
-
 							const dictFeeds = this.state.feeds;
 							dictFeeds['All'] = feeds;
 
@@ -243,7 +241,7 @@ class Exclusive extends React.Component {
 													<Col className="col-edit">
 														<Row className="feed-row">
 															<Col xs="2">
-																<Img className="program-rounded-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
+																<Img alt={feed.program_title} className="program-rounded-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
 															</Col>
 															<Col xs="7">
 																<div onClick={this.goToDetail.bind(this, feed.program_id)} className="program-label">
@@ -270,13 +268,13 @@ class Exclusive extends React.Component {
 																swipeScrollTolerance={1}
 																swipeable={true}>
 																{feed.images.map((img, i) => (
-																	<Img key={i} className="program-carousel-image" src={[this.state.meta.image_path + this.state.resolution + img, '/static/placeholders/placeholder_potrait.png']} />
+																	<Img key={i} alt={feed.title} className="program-carousel-image" src={[this.state.meta.image_path + this.state.resolution + img, '/static/placeholders/placeholder_potrait.png']} />
 																))}
 															</Carousel>)
 															:
 															(
 																<div onClick={this.toggle.bind(this, feed.link_video)}>
-																	<Img className="program-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.portrait_image, '/static/placeholders/placeholder_landscape.png']} />
+																	<Img alt={feed.title} className="program-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
 																	<PlayCircleOutlineIcon className="play-btn-icon" />
 																</div>
 															)

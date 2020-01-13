@@ -23,7 +23,6 @@ $text-placeholder-color-login: #a8a8a8;
 }
 
 .program-item {
-    margin-top: 20px;
     width: 100%;
 }
 
@@ -90,4 +89,12 @@ $text-placeholder-color-login: #a8a8a8;
 
 .col-edit .slide {
     text-align: left;
+}
+
+.row-edit {
+    margin-left: 0;
+}
+
+.row-striped {
+    background-color: #3a3a3a;
 }

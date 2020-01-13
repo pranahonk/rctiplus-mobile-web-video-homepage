@@ -9,7 +9,7 @@ import notificationActions from '../../redux/actions/notificationActions';
 import Layout from '../../components/Layouts/Default';
 
 //load navbar default
-import NavBackInterest from '../../components/Includes/Navbar/NavBackInterest';
+import NavBack from '../../components/Includes/Navbar/NavBack';
 
 //load reactstrap components
 import { Button, FormGroup, Row, Col, Container } from 'reactstrap';
@@ -121,7 +121,7 @@ class Interest extends Component {
 	render() {
 		return (
 			<Layout title="Your Interest">
-				<NavBackInterest />
+				<NavBack title="Choose Interest" />
 				<div className="wrapper-content" style={{ marginTop: 40 }}>
 					<div className="login-box" style={{ width: '100%' }}>
 						<div className="choose_interest">

@@ -1,7 +1,7 @@
 import ax from 'axios';
-import { API, DEV_API, VISITOR_TOKEN } from '../../config';
-import { getCookie } from '../../utils/cookie';
-import { showConfirmAlert, showSignInAlert } from '../../utils/helpers';
+import { DEV_API } from '../../config';
+import { getCookie, getVisitorToken } from '../../utils/cookie';
+import { showSignInAlert } from '../../utils/helpers';
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
@@ -10,7 +10,7 @@ const axios = ax.create({
     // baseURL: API + '/api',
     baseURL: DEV_API + '/api',
     headers: {
-        'Authorization': accessToken ? accessToken : VISITOR_TOKEN
+        'Authorization': accessToken ? accessToken : getVisitorToken()
     }
 });
 

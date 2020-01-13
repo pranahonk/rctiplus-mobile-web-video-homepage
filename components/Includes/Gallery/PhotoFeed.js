@@ -31,7 +31,7 @@ class PhotoFeed extends React.Component {
 
     render() {
         return (
-            <Row className="program-item row-edit">
+            <Row className={'program-item row-edit ' + (this.props.keyIndex % 2 == 0 ? 'row-striped' : '')}>
                 <ActionSheet
 					caption={this.props.title}
 					url={this.state.url}
@@ -40,7 +40,7 @@ class PhotoFeed extends React.Component {
 					toggle={this.toggleActionSheet.bind(this, '', '', ['rcti'])} />
 
                 <Col className="col-edit">
-                    <Row>
+                    <Row className="row-edit">
                         <Col xs="2">
                             <Img className="program-rounded-thumbnail" src={[this.props.meta.image_path + this.props.resolution + this.props.iconImage, '/static/placeholders/placeholder_landscape.png']} />
                         </Col>
