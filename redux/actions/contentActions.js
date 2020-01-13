@@ -29,9 +29,9 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                 const data = response.data.data;
                 for (let i = 0; i < data.length; i++) {
                     let content = {}
-                    if (data[i].api != null) {
+                    if (data[i].total_content > 0) {
                         try {
-                            const res = await axios.get(data[i].api);
+                            const res = await axios.get(`/v1/homepage/${data[i].id}/contents?platform=${platform}&page=${page}&length=${length}`);
                             if (res.data.status.code === 0) {
                                 content = {
                                     content: res.data.data,
@@ -48,7 +48,8 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                             }
                         }
                         catch (e) {
-                            // console.log(e);
+                            content = { content: [], ...data[i] };
+                            contents.push(content);
                         }
                     }
                 }

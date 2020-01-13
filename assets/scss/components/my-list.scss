@@ -1,0 +1,87 @@
+.header-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px;
+    font-size: 12px;
+    -webkit-box-pack: justify;
+    -webkit-box-align: center;
+}
+
+.header-list .dropdown-toggle::before {
+    display: inline-block;
+    margin-right: 0.255em;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent; 
+}
+
+.header-list .dropdown-toggle::after {
+    display: inline-block;
+    color: transparent;
+    margin: 0;
+    border: none; 
+}
+
+.header-list .dropdown-toggle {
+    background: transparent;
+    font-size: 12px;
+}
+
+.header-subtitle {
+    margin: 0;
+}
+
+
+.related-box {
+    background-color: #282828;
+    color: white;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+.related-title-ml {
+    display: inline-block;
+    font-size: 12px;
+}
+
+.related-subtitle {
+    font-size: 9px;
+    text-align: right;
+    margin-top: -30px;
+}
+
+.related-slider {
+    margin-right: -20px;
+    margin-left: -15px;
+}
+
+.related-program-thumbnail {
+    max-height: 140px;
+}
+
+.related-slider .slide {
+    min-width: 100px;
+    max-width: 100px;
+    height: 130px;
+    margin: 3px;
+    position: relative;
+    text-align: center;
+    background: #171717;
+}
+
+.header-list .btn-secondary, .header-list .button-secondary:hover, .header-list .btn-secondary:not(:disabled):not(.disabled):active {
+    background: transparent;
+}
+
+.header-list .dropdown-menu {
+    background-color: #393939;
+}
+
+.header-list .dropdown-item {
+    color: white;
+}
