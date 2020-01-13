@@ -75,6 +75,7 @@ class Index extends React.Component {
                         page: page,
                         fetchAllowed: page != this.state.meta.pagination.total_page
                     });
+                    console.log(homepageContents);
                 }
                 else {
                     this.setState({ fetchAllowed: false });

@@ -85,11 +85,8 @@
     "react-detect-offline": "^2.4.0",
     "react-dom": "16.8.1",
     "react-ga": "^2.6.0",
-<<<<<<< HEAD
     "react-google-publisher-tag": "^2.0.6",
     "react-gtm": "^0.0.2",
-=======
->>>>>>> 7da1138b846474723e20f245edc9e7c29b6f7db2
     "react-image": "^2.2.1",
     "react-image-crop": "^8.5.0",
     "react-jw-player": "^1.19.0",

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Head from 'next/head';
 import Lazyload from 'react-lazyload';
-import contentActions from '../redux/actions/contentActions';
+import subCategoryActions from '../redux/actions/subCategory';
 import initialize from '../utils/initialize';
 
 //load default layout
