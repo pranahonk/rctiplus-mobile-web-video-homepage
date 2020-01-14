@@ -6,7 +6,7 @@ import fetch from 'isomorphic-unfetch';
 import contentActions from '../../../../redux/actions/contentActions';
 
 import Layout from '../../../../components/Layouts/Default';
-import Navbar from '../../../../components/Includes/Navbar';
+import NavBack from '../../../../components/Includes/Navbar/NavBack';
 import PhotoFeed from '../../../../components/Includes/Gallery/PhotoFeed';
 
 import '../../../../assets/scss/components/photo-detail.scss';
@@ -60,10 +60,11 @@ class PhotoList extends React.Component {
     render() {
         return (
             <Layout title={MAIN_TITLE}>
-                <Navbar title={this.state.program.title}/>
+                <NavBack title={this.state.program.title}/>
                 <div className="container-box-cpd wrapper-box">
-                    {this.state.photos.map(p => (
+                    {this.state.photos.map((p, i) => (
                         <PhotoFeed 
+                            keyIndex={i}
                             key={p.id}
                             program={this.state.program}
                             resolution={593}

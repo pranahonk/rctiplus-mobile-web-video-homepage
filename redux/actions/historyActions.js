@@ -1,25 +1,23 @@
 import ax from 'axios';
-import { API, VISITOR_TOKEN } from '../../config';
-import { getCookie } from '../../utils/cookie';
-
-const axios = ax.create({
-    baseURL: API + '/api',
-    headers: {
-        'Authorization': VISITOR_TOKEN
-    }
-});
+import { DEV_API } from '../../config';
+import { getCookie, getVisitorToken } from '../../utils/cookie';
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
 
+const axios = ax.create({
+    baseURL: DEV_API + '/api',
+    headers: {
+        'Authorization': accessToken ? accessToken : getVisitorToken()
+    }
+});
+
+
+
 const getUserHistory = () => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/history`, {
-                headers: {
-                    'Authorization': accessToken
-                }
-            });
+            const response = await axios.get(`/v1/history`);
 
             if (response.data.status.code === 0) {
                 dispatch({
@@ -47,11 +45,6 @@ const postHistory = (id, type, lastDuration) => {
                 id: id,
                 type: type,
                 last_duration: lastDuration
-            }, {
-                headers: {
-                    'Authorization': accessToken,
-                    'Content-Type': 'application/json'
-                }
             });
 
             if (response.data.status.code === 0) {
@@ -76,11 +69,7 @@ const postHistory = (id, type, lastDuration) => {
 const deleteHistory = () => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.delete(`/v1/history`, {
-                headers: {
-                    'Authorization': accessToken
-                }
-            });
+            const response = await axios.delete(`/v1/history`);
 
             if (response.data.status.code === 0) {
                 dispatch({
@@ -104,11 +93,7 @@ const deleteHistory = () => {
 const getContinueWatching = (page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/continue-watching?page=${page}&length=${length}`, {
-                headers: {
-                    'Authorization': accessToken
-                }
-            });
+            const response = await axios.get(`/v1/continue-watching?page=${page}&length=${length}`);
 
             if (response.data.status.code === 0) {
                 dispatch({
@@ -132,11 +117,7 @@ const getContinueWatching = (page = 1, length = 10) => {
 const getContinueWatchingByContentId = (id, type) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/continue-watching/${id}/${type}`, {
-                headers: {
-                    'Authorization': accessToken
-                }
-            });
+            const response = await axios.get(`/v1/continue-watching/${id}/${type}`);
 
             if (response.data.status.code === 0) {
                 dispatch({
@@ -160,11 +141,7 @@ const getContinueWatchingByContentId = (id, type) => {
 const deleteContinueWatchingByContentId = (id, type) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.delete(`/v1/continue-watching/${id}/${type}`, {
-                headers: {
-                    'Authorization': accessToken
-                }
-            });
+            const response = await axios.delete(`/v1/continue-watching/${id}/${type}`);
 
             if (response.data.status.code === 0) {
                 dispatch({

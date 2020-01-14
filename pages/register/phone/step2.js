@@ -11,7 +11,7 @@ import { showConfirmAlert } from '../../../utils/helpers';
 import Layout from '../../../components/Layouts/Default';
 
 //load navbar default
-import NavBackVerification from '../../../components/Includes/Navbar';
+import NavBack from '../../../components/Includes/Navbar/NavBack';
 
 //load reactstrap components
 import { Button, Form, FormGroup } from 'reactstrap';
@@ -225,7 +225,7 @@ class Step2 extends Component {
 
 		return (
 			<Layout title="Register Step 2">
-				<NavBackVerification title="Verification"/>
+				<NavBack title="Verification"/>
 				<div className="wrapper-content" style={{ width: '100%', marginTop: 50 }}>
 					<div className="login-box" style={{ width: '100%' }}>
 						<p style={{ fontSize: 14 }} className="text-default-rcti" dangerouslySetInnerHTML={{__html: text}}></p>

@@ -111,7 +111,7 @@ class Index extends React.Component {
                         <h3>process.env.is_show_sticky_ads</h3>
                         <StickyAds /> 
                         <Stories />
-                        {/* <ReactJWPlaye playerId="example-id" playerScript="https://cdn.jwplayer.com/libraries/Vp85L1U1.js" playlist="https://cdn.jwplayer.com/v2/playlists/ZTs6tMfb"/> */}
+                        {/* <ReactJWPlayer playerId="example-id" playerScript="https://cdn.jwplayer.com/libraries/Vp85L1U1.js" playlist="https://cdn.jwplayer.com/v2/playlists/ZTs6tMfb"/> */}
                         {contents.map(content => {
                             switch (content.display_type) {
                                 case 'horizontal_landscape_large':

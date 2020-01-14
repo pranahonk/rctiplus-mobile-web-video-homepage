@@ -85,12 +85,12 @@ class Stories extends React.Component {
                                 callback();
                             });
                         }.bind(this),
-                        onOpen: function(storyId, callback) {
+                        onOpen: function (storyId, callback) {
                             console.log('OPEN');
                             document.body.style.overflow = 'hidden'; // disable scroll when opening a story
                             callback();
                         },
-                        onClose: function(storyId, callback) {
+                        onClose: function (storyId, callback) {
                             console.log('CLOSED');
                             document.body.style.overflow = 'unset'; // enable scroll after closing the story
                             callback();
@@ -101,18 +101,18 @@ class Stories extends React.Component {
                         keyboardTip: 'Press space to see next',
                         visitLink: 'Visit link',
                         time: {
-                          ago:'ago', 
-                          hour:'hour', 
-                          hours:'hours', 
-                          minute:'minute', 
-                          minutes:'minutes', 
-                          fromnow: 'from now', 
-                          seconds:'seconds', 
-                          yesterday: 'yesterday', 
-                          tomorrow: 'tomorrow', 
-                          days:'days'
+                            ago: 'ago',
+                            hour: 'hour',
+                            hours: 'hours',
+                            minute: 'minute',
+                            minutes: 'minutes',
+                            fromnow: 'from now',
+                            seconds: 'seconds',
+                            yesterday: 'yesterday',
+                            tomorrow: 'tomorrow',
+                            days: 'days'
                         }
-                      }
+                    }
                 });
             });
         });
@@ -134,7 +134,7 @@ class Stories extends React.Component {
             Snapgram: {
                 avatars: true,
                 list: false,
-                autoFullScreen:false,
+                autoFullScreen: false,
                 cubeEffect: true,
                 paginationArrows: false
             },

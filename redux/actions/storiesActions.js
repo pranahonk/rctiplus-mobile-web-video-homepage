@@ -1,11 +1,11 @@
 import ax from 'axios';
-import { API, VISITOR_TOKEN } from '../../config';
+import { DEV_API } from '../../config';
+import { getVisitorToken } from '../../utils/cookie';
 
 const axios = ax.create({
-    // baseURL: API + '/api',
     baseURL: 'https://api.rctiplus.com/api',
     headers: {
-        'Authorization': VISITOR_TOKEN
+        'Authorization': getVisitorToken()
     }
 });
 

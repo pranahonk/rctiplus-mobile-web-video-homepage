@@ -1,14 +1,13 @@
 import ax from 'axios';
-import { API, DEV_API, VISITOR_TOKEN } from '../../config';
-import { setCookie, removeCookie, getCookie } from '../../utils/cookie';
+import { DEV_API } from '../../config';
+import { setCookie, getVisitorToken } from '../../utils/cookie';
 
 const tokenKey = 'ACCESS_TOKEN';
 
 const axios = ax.create({
-    // baseURL: API + '/api',
     baseURL: DEV_API + '/api',
     headers: {
-        'Authorization': VISITOR_TOKEN
+        'Authorization': getVisitorToken()
     }
 });
 
@@ -88,10 +87,6 @@ const getOtp = (username, type = 'registration') => {
             const response = await axios.post(`/v2/otp`, { 
                 username: username,
                 type: type
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
             });
 
             if (response.data.status.code === 0) {
@@ -117,10 +112,6 @@ const register = ({ username, password, fullname, gender, dob, otp, device_id })
                 dob: dob,
                 otp: otp,
                 device_id: device_id
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
             });
 
             if (response.data.status.code === 0) {
@@ -147,10 +138,6 @@ const resendVerifyEmail = emailphone => {
         try {
             const response = await axios.post(`/v1/resend-verify-email`, {
                 emailphone: emailphone
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
             });
 
             if (response.data.status.code === 0) {
@@ -195,10 +182,6 @@ const verifyOtp = (username, otp) => {
             const response = await axios.post(`/v2/verify-otp`, {
                 username: username,
                 otp: otp
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
             });
 
             // code = 26 (wrong otp)
@@ -222,10 +205,6 @@ const forgotPassword = (emailphone, device_id, platform = 'mweb') => {
                 emailphone: emailphone,
                 device_id: device_id,
                 platform: platform
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
             });
 
             if (response.data.status.code === 0) {
@@ -251,10 +230,6 @@ const createNewPassword = (token, otp, device_id, newPassword, platform = 'mweb'
                 device_id: device_id,
                 platform: platform,
                 newpass: newPassword
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
             });
 
             if (response.data.status.code === 0) {

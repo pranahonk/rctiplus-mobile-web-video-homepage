@@ -1,6 +1,6 @@
 import ax from 'axios';
-import { DEV_API, API, VISITOR_TOKEN } from '../../config';
-import { getCookie } from '../../utils/cookie';
+import { DEV_API } from '../../config';
+import { getCookie, getVisitorToken } from '../../utils/cookie';
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
@@ -9,7 +9,7 @@ const axios = ax.create({
     // baseURL: API + '/api',
     baseURL: DEV_API + '/api',
     headers: {
-        'Authorization': accessToken ? accessToken : VISITOR_TOKEN
+        'Authorization': accessToken ? accessToken : getVisitorToken()
     }
 });
 
@@ -28,7 +28,7 @@ const bookmark = (id, type) => {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
                 }
             });
 
@@ -57,7 +57,7 @@ const deleteBookmark = (id, type) => {
             const response = await axios.delete(`/v1/bookmark?id=${id}&type=${type}`, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
                 }
             });
 
@@ -85,7 +85,7 @@ const getBookmarks = () => {
         try {
             const response = await axios.get(`/v1/bookmarks`, {
                 headers: {
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
                 }
             });
 
@@ -113,7 +113,7 @@ const getMyList = programId => {
         try {
             const response = await axios.get(`/v1/mylist/${programId}`, {
                 headers: {
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
                 }
             });
 
@@ -141,7 +141,7 @@ const getListBookmark = (page = 1, length = 10, order = 'date', dir = 'DESC') =>
         try {
             const response = await axios.get(`/v1/listbookmark?page=${page}&length=${length}&order=${order}&dir=${dir}`, {
                 headers: {
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
                 }
             });
             
@@ -169,7 +169,7 @@ const getListBookmarkById = (programId, page = 1, length = 10, order = 'date', d
         try {
             const response = await axios.get(`/v1/listbookmark/${programId}?page=${page}&length=${length}&order=${order}&dir=${dir}`, {
                 headers: {
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
                 }
             });
 
@@ -197,7 +197,7 @@ const getProgramBookmark = programId => {
         try {
             const response = await axios.get(`/v1/bookmark/${programId}`, {
                 headers: {
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : VISITOR_TOKEN
+                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
                 }
             });
 

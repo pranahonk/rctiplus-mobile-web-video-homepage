@@ -75,6 +75,7 @@ ul#trending .exclusive-item{
 .program-item {
     padding-top: 20px;
     padding-bottom: 20px;
+    margin-top: 0;
     width: 100%;
     border-bottom: 1px solid black;
 }
@@ -88,6 +89,7 @@ ul#trending .exclusive-item{
 
 .program-title {
     color: white;
+    margin: 5px;
     margin-bottom: -5px;
     font-size: 12px;
 }
@@ -99,10 +101,12 @@ ul#trending .exclusive-item{
 .program-subtitle {
     color: white;
     font-size: 10px;
+    margin: 5px;
 }
 
 .program-share-button {
     color: white;
+    font-size: 1.5rem;
 }
 
 .program-rounded-thumbnail {
@@ -139,6 +143,10 @@ ul#trending .exclusive-item{
     margin-left: 0;
 }
 
+.feed-row {
+    margin-left: 0;
+}
+
 .row-striped {
     background-color: #3a3a3a;
 }
@@ -148,7 +156,7 @@ ul#trending .exclusive-item{
 }
 
 .col-edit .carousel {
-    margin-top: 10px;
+    margin-top: 10px !important;
 }
 
 .col-edit .control-dots {
@@ -162,4 +170,11 @@ ul#trending .exclusive-item{
 
 .col-edit .slide {
     text-align: left;
+}
+
+.program-item .program-carousel-image {
+    object-fit: cover;
+    display: block;
+    overflow: hidden;
+    width: 100%;
 }

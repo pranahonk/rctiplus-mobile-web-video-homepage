@@ -5,22 +5,28 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx) {
-    const initialProps = await Document.getInitialProps(ctx)
-    return { ...initialProps }
-  }
+	static async getInitialProps(ctx) {
+		const initialProps = await Document.getInitialProps(ctx)
+		return { ...initialProps }
+	}
 
-  render() {
-    return (
-      <Html lang="id">
-        <Head />
-        <body>
-          <Main />
-          <NextScript />
-        </body>
-      </Html>
-    )
-  }
+	componentDidMount() {
+		console.log(new DeviceUUID().get());
+	}
+
+	render() {
+		return (
+			<Html lang="id">
+				<Head>
+					<script src="/static/js/device-uuid.min.js" type="text/javascript"></script>
+				</Head>
+				<body>
+					<Main />
+					<NextScript />
+				</body>
+			</Html>
+		)
+	}
 }
 
 export default MyDocument

@@ -1,20 +1,26 @@
-import Router from 'next/router';
 import ax from 'axios';
 import { AUTHENTICATE, DEAUTHENTICATE, WRONG_AUTHENTICATION } from '../types';
-import { API, DEV_API, VISITOR_TOKEN } from '../../config';
-import { setCookie, removeCookie, getCookie } from '../../utils/cookie';
+import { DEV_API } from '../../config';
+import { setCookie, removeCookie, getCookie, getVisitorToken } from '../../utils/cookie';
 
 const axios = ax.create({
     // baseURL: API + '/api',
     baseURL: DEV_API + '/api',
     headers: {
-        'Authorization': VISITOR_TOKEN
+        'Authorization': getVisitorToken()
     }
 });
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
 console.log('AUTH ACTIONS [ACCESS TOKEN]:', accessToken);
+
+const setDeviceId = deviceId => {
+    return dispatch => dispatch({
+        type: 'SET_DEVICE_ID',
+        device_id: deviceId
+    });
+};
 
 const login = ({ emailphone, password, deviceId = '1' }) => {
     return dispatch => new Promise((resolve, reject) => {
@@ -77,5 +83,6 @@ const logout = (device_id, platform = 'mweb') => {
 
 export default {
     login,
-    logout
+    logout,
+    setDeviceId
 };
