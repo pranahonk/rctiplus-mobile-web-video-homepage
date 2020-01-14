@@ -131,12 +131,11 @@ class EditProfile extends React.Component {
     }
 
     onChangeLocation(e) {
-        console.log(e.target.value);
         this.setState({ location: e.target.value });
     }
 
-    goToFormField(index, label, fieldType, notes, placeholder, needOtp = false, selectData = []) {
-        this.props.setField(index, label, fieldType, notes, placeholder, needOtp, selectData);
+    goToFormField(index, label, fieldType, notes, placeholder, needOtp = false, selectData = [], disabledCondition = null) {
+        this.props.setField(index, label, fieldType, notes, placeholder, needOtp, selectData, disabledCondition);
         Router.push('/user/edit/form-field');
     }
 
@@ -192,7 +191,7 @@ class EditProfile extends React.Component {
                             
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label" for="nickname">Nickname (Live Chat)</Label>
+                            <Label className="form-label-ep" for="nickname">Nickname (Live Chat)</Label>
                             <InputGroup>
                                 <Input
                                     onClick={this.goToFormField.bind(this, 0, 'Nickname (Live Chat)', 'text', `
@@ -200,7 +199,7 @@ class EditProfile extends React.Component {
                                             <li>You may change your username back after 14 days</li>
                                             <li>Username has never been used with another user</li>
                                         </ul>
-                                    `, 'insert nickname', false)}
+                                    `, 'insert nickname', false, [], { length: 4, type: 'min' })}
                                     value={this.state.nickname}
                                     onChange={this.onChangeNickname.bind(this)}
                                     invalid={this.state.nickname_invalid}
@@ -209,10 +208,10 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label" for="fullname">Full Name</Label>
+                            <Label className="form-label-ep" for="fullname">Full Name</Label>
                             <InputGroup>
                                 <Input
-                                    onClick={this.goToFormField.bind(this, 1, 'Full Name', 'text', ``, 'insert full name', false)}
+                                    onClick={this.goToFormField.bind(this, 1, 'Full Name', 'text', ``, 'insert full name', false, [], { length: 25, type: 'max' })}
                                     value={this.state.fullname}
                                     onChange={this.onChangeFullname.bind(this)}
                                     invalid={this.state.fullname_invalid}
@@ -221,7 +220,7 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label" for="birthdate">Birthdate</Label>
+                            <Label className="form-label-ep" for="birthdate">Birthdate</Label>
                             <InputGroup>
                                 <Input
                                     onClick={this.goToFormField.bind(this, 2, 'Birthdate', 'date', ``, 'dd/mm/yy', false)}
@@ -233,11 +232,11 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label" for="gender">Gender</Label>
+                            <Label className="form-label-ep" for="gender">Gender</Label>
                             <InputGroup>
                                 <Input
                                     type="select"
-                                    onClick={this.goToFormField.bind(this, 3, 'Gender', 'select', ``, 'select gender', false, ['select gender', 'Male', 'Female'])}
+                                    onClick={this.goToFormField.bind(this, 3, 'Gender', 'select', ``, 'select gender', false, ['Male', 'Female'])}
                                     value={this.state.gender ? this.state.gender.charAt(0).toUpperCase() + this.state.gender.substring(1) : ''}
                                     onChange={this.onChangeGender.bind(this)}
                                     invalid={this.state.gender_invalid}
@@ -250,7 +249,7 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         {/* <FormGroup>
-                            <Label className="form-label" for="location">Location</Label>
+                            <Label className="form-label-ep" for="location">Location</Label>
                             <InputGroup>
                                 <Input
                                     type="select"
@@ -266,7 +265,7 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup> */}
                         <FormGroup>
-                            <Label className="form-label" for="email">Email</Label>
+                            <Label className="form-label-ep" for="email">Email</Label>
                             <InputGroup>
                                 <Input
                                     onClick={this.goToFormField.bind(this, 5, 'Email', 'email', ``, 'insert email', true)}
@@ -278,7 +277,7 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label" for="phone_number">Phone Number</Label>
+                            <Label className="form-label-ep" for="phone_number">Phone Number</Label>
                             <InputGroup>
                                 <Input
                                     onClick={this.goToFormField.bind(this, 4, 'Phone Number', 'phone', `

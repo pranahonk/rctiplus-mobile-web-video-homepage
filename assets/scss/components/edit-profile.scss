@@ -21,7 +21,7 @@ $default-text-color-login: #eee;
     border-top: none !important;
     border-left: none !important;
     border-right: none !important;
-    color: $default-text-color-login !important;
+    color: #a8a8a8 !important;
     padding: 0;
 }
 
@@ -29,9 +29,10 @@ $default-text-color-login: #eee;
     background: transparent;
 }
 
-.form-label {
+.form-label-ep {
     margin: 0;
     font-size: 12px;
+    color: white;
 }
 
 .react-datepicker {
