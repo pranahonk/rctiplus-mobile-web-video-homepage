@@ -58,11 +58,9 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
             else {
                 dispatch({ type: 'HOMEPAGE_CONTENT', data: contents, meta: null });
             }
-
             resolve(response);
         }
         catch (e) {
-            console.log(e);
             reject(e);
         }
     });

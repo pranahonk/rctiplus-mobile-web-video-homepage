@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Head from 'next/head';
 import Lazyload from 'react-lazyload';
-import subCategoryActions from '../redux/actions/subCategory';
+import subCategoryActions from '../redux/actions/trending/subCategory';
 import initialize from '../utils/initialize';
 
 //load default layout
@@ -47,7 +47,7 @@ class Trending extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getContents(1).then(response => {
+    this.props.getSubCategory(1).then(response => {
       this.setState({
         contents: this.props.contents.homepage_content,
         meta: this.props.contents.meta,
@@ -115,4 +115,4 @@ class Trending extends React.Component {
   }
 }
 
-export default connect(state => state, contentActions)(Trending);
+export default connect(state => state, subCategoryActions)(Trending);

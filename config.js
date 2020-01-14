@@ -1,5 +1,5 @@
 // https://medium.com/@bhavikbamania/a-beginner-guide-for-redux-with-next-js-4d018e1342b2
-
+import ax from 'axios';
 export const BASE_URL = 'http://localhost:3000';
 
 export const FE = 'https://rc-rctiplus.com';

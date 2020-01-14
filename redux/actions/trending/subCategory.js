@@ -1,7 +1,9 @@
 import ax from 'axios';
-import { API, DEV_API, VISITOR_TOKEN } from '../../config';
-import { getCookie } from '../../utils/cookie';
-import { showConfirmAlert, showSignInAlert } from '../../utils/helpers';
+import { API, DEV_API, VISITOR_TOKEN } from '../../../config';
+import { getCookie } from '../../../utils/cookie';
+import { showConfirmAlert, showSignInAlert } from '../../../utils/helpers';
+//
+//import access_core from '../redux/actions/token/access_core';
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
@@ -19,49 +21,27 @@ axios.interceptors.response.use(response => {
 }, error => {
     // console.log(error.response);
 });
-const getSubCategory = (info = 'id, name') => {
+
+const getSubCategory = () => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/subcategory?info=${info}`);
-            let contents = [];
+            const response = await axios.get(`https://api-news.rctiplus.id/api/v1/subcategory?infos=id,name`);
+            console.log(response);
             if (response.data.status.code === 0) {
-                const data = response.data.data;
-                for (let i = 0; i < data.length; i++) {
-                    let content = {}
-                    if (data[i].api != null) {
-                        try {
-                            const res = await axios.get(data[i].api);
-                            if (res.data.status.code === 0) {
-                                content = {
-                                    content: res.data.data,
-                                    ...data[i]
-                                };
-                                contents.push(content);
-                            }
-                            else if (res.data.status.code === 13) {
-                                showSignInAlert(`Please <b>Sign In</b><br/>
-                                Woops! Gonna sign in first!<br/>
-                                Only a click away and you<br/>
-                                can continue to enjoy<br/>
-                                <b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
-                            }
-                        }
-                        catch (e) {
-                            // console.log(e);
-                        }
-                    }
-                }
-                dispatch({ type: 'HOMEPAGE_CONTENT', data: contents, meta: response.data.meta });
+                dispatch({
+                    type: 'GET_HOMEPAGE_CONTENTS',
+                    data: response.data.data,
+                    meta: response.data.meta,
+                    status: response.data.status
+                });
+                resolve(response);
             }
             else {
-                dispatch({ type: 'HOMEPAGE_CONTENT', data: contents, meta: null });
+                reject(response);
             }
-
-            resolve(response);
         }
-        catch (e) {
-            console.log(e);
-            reject(e);
+        catch (error) {
+            reject(error);
         }
     });
 };
