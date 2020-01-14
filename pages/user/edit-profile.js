@@ -54,6 +54,10 @@ class EditProfile extends React.Component {
             location_invalid: false,
             location_invalid_message: '',
             location_data: [],
+            interest_data: [],
+            interests: '',
+            interests_invalid: false,
+            interests_invalid_message: '',
             otp: '',
             show_action_sheet: false,
             input_photo_accept: 'image/*',
@@ -68,7 +72,11 @@ class EditProfile extends React.Component {
             .then(response => {
                 if (response.status === 200) {
                     const data = response.data.data;
-                    console.log(data);
+                    const interests = [];
+                    for (let i = 0; i < data.interest.length; i++) {
+                        interests.push(data.interest[i].name);
+                    }
+
                     this.setState({
                         email: data.email,
                         phone_number: data.phone_number,
@@ -77,7 +85,9 @@ class EditProfile extends React.Component {
                         birthdate: new Date(data.dob ? data.dob * 1000 : Date.now()),
                         gender: data.gender,
                         location: data.location,
-                        profile_photo_src: data.photo_url ? data.photo_url : this.state.profile_photo_src
+                        profile_photo_src: data.photo_url ? data.photo_url : this.state.profile_photo_src,
+                        interest_data: data.interest,
+                        interests: interests.join(',')
                     }, () => {
                         this.props.setUserProfile(this.state.nickname, this.state.fullname, this.state.birthdate, this.state.gender, this.state.phone_number, this.state.email, this.state.otp, this.state.location);
                     });
@@ -110,6 +120,10 @@ class EditProfile extends React.Component {
         this.setState({ nickname: e.target.value });
     }
 
+    onChangeInterests(e) {
+        this.setState({ interests: e.target.value });
+    }
+
     onChangeEmail(e) {
         this.setState({ email: e.target.value });
     }
@@ -140,8 +154,6 @@ class EditProfile extends React.Component {
     }
 
     handleCameraTakePhoto(e, index) {
-        console.log('take photo', index);
-        console.log(e.target.value.replace('C:\\fakepath\\', ''));
         const reader = new FileReader();
         const self = this;
         reader.onload = function(x) {
@@ -265,18 +277,6 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup> */}
                         <FormGroup>
-                            <Label className="form-label-ep" for="email">Email</Label>
-                            <InputGroup>
-                                <Input
-                                    onClick={this.goToFormField.bind(this, 5, 'Email', 'email', ``, 'insert email', true)}
-                                    value={this.state.email}
-                                    onChange={this.onChangeEmail.bind(this)}
-                                    invalid={this.state.email_invalid}
-                                    className="form-control-ep" />
-                                <FormFeedback valid={!this.state.email_invalid && !!this.state.email}>{this.state.email_invalid_message}</FormFeedback>
-                            </InputGroup>
-                        </FormGroup>
-                        <FormGroup>
                             <Label className="form-label-ep" for="phone_number">Phone Number</Label>
                             <InputGroup>
                                 <Input
@@ -293,7 +293,31 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Button className="btn-next block-btn">Save</Button>
+                            <Label className="form-label-ep" for="email">Email</Label>
+                            <InputGroup>
+                                <Input
+                                    onClick={this.goToFormField.bind(this, 5, 'Email', 'email', ``, 'insert email', true)}
+                                    value={this.state.email}
+                                    onChange={this.onChangeEmail.bind(this)}
+                                    invalid={this.state.email_invalid}
+                                    className="form-control-ep" />
+                                <FormFeedback valid={!this.state.email_invalid && !!this.state.email}>{this.state.email_invalid_message}</FormFeedback>
+                            </InputGroup>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label-ep" for="nickname">Interests</Label>
+                            <InputGroup>
+                                <Input
+                                    onClick={() => Router.push('/user/edit/interest')}
+                                    value={this.state.interests}
+                                    onChange={this.onChangeInterests.bind(this)}
+                                    invalid={this.state.interests_invalid}
+                                    className="form-control-ep" />
+                                <FormFeedback valid={!this.state.interests_invalid && !!this.state.interests}>{this.state.interests_invalid_message}</FormFeedback>
+                            </InputGroup>
+                        </FormGroup>
+                        <FormGroup>
+                            {/* <Button className="btn-next block-btn">Save</Button> */}
                         </FormGroup>
                     </Form>
                 </div>

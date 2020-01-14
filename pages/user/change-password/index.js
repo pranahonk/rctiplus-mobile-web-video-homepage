@@ -104,7 +104,6 @@ class ChangePassword extends React.Component {
             <Layout title="Change Password">
                 <NavBack title="Change Password"/>
                 <div className="container-box-c">
-                    <p>Enter password</p>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
                     <FormGroup>
                             <Label className="label-c" for="password">Current Password</Label>

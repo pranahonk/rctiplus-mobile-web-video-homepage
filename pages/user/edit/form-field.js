@@ -43,8 +43,17 @@ class FormField extends React.Component {
     onChange(e) {
         this.setState({ value: this.props.user.data_key[this.props.others.index] == 'dob' ? e : e.target.value }, () => {
             this.props.setValue(this.props.others.index, this.state.value);
-            if (this.props.others.label === 'Nickname (Live Chat)') {
-                this.subject.next();
+            switch (this.props.others.label) {
+                case 'Nickname (Live Chat)':
+                    this.subject.next();
+                    break;
+
+                case 'Full Name':
+                    if (this.state.value.length > 25) {
+                        this.props.showNotification('full name: max length is 25', false);
+                        setTimeout(() => this.props.hideNotification(), 3000);
+                    }
+                    break;
             }
         });
     }
