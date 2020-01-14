@@ -6,7 +6,6 @@ const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
 
 const axios = ax.create({
-    // baseURL: API + '/api',
     baseURL: DEV_API + '/api',
     headers: {
         'Authorization': accessToken == undefined ? getVisitorToken() : accessToken
@@ -235,6 +234,23 @@ const setInterest = interests => {
     });
 };
 
+const getUserInterest = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/user/interest`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const checkUser = username => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -261,5 +277,6 @@ export default {
     uploadProfilePhoto,
     verify,
     setChangePasswordData,
-    changePassword
+    changePassword,
+    getUserInterest
 };

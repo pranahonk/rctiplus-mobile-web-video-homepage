@@ -51,8 +51,6 @@ const Default = ({ children, title }) => {
                         }
                     });
                 }
-
-                console.log('get device id');
             },
         [],
     );

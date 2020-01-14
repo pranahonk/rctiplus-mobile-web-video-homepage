@@ -1,6 +1,8 @@
 import React from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 import registerActions from '../../../redux/actions/registerActions';
 import userActions from '../../../redux/actions/userActions';
@@ -27,6 +29,8 @@ class FormField extends React.Component {
             value_invalid: false,
             value_invalid_message: ''
         };
+
+        this.subject = new Subject();
     }
 
     formatDate(date) {
@@ -37,10 +41,41 @@ class FormField extends React.Component {
     }
 
     onChange(e) {
-        this.setState({ value: this.props.user.data_key[this.props.others.index] == 'dob' ? e : e.target.value }, () => {
-            this.props.setValue(this.props.others.index, this.state.value);
-            console.log(this.props.user);
-        });
+        if (this.props.others.label === 'Full Name' && e.target.value.length > 25) {
+            this.props.showNotification('full name: max length is 25', false);
+            setTimeout(() => this.props.hideNotification(), 3000);
+        }
+        else if (this.props.others.label === 'Phone Number' && e.target.value.length > 15) {
+            this.props.showNotification('phone number: max length is 15', false);
+            setTimeout(() => this.props.hideNotification(), 3000);
+        }
+        else {
+            this.setState({ value: this.props.user.data_key[this.props.others.index] == 'dob' ? e : e.target.value, value_invalid: false }, () => {
+                this.props.setValue(this.props.others.index, this.state.value);
+                switch (this.props.others.label) {
+                    case 'Nickname (Live Chat)':
+                        this.subject.next();
+                        break;
+
+                    case 'Full Name':
+                        if (this.state.value.length < 4) {
+                            this.props.showNotification('full name: min length is 4', false);
+                            setTimeout(() => this.props.hideNotification(), 3000);
+                            this.setState({ value_invalid: true });
+                        }
+                        break;
+
+                    case 'Phone Number':
+                        if (this.state.value.length < 9) {
+                            this.props.showNotification('phone number: min length is 9', false);
+                            setTimeout(() => this.props.hideNotification(), 3000);
+                            this.setState({ value_invalid: true });
+                        }
+                        break;
+                }
+            });
+        }
+        
     }
 
     onSubmit(e) {
@@ -93,6 +128,7 @@ class FormField extends React.Component {
             .then(response => {
                 this.props.showNotification('*Your data is saved');
                 setTimeout(() => this.props.hideNotification(), 3000);
+                Router.back();
             })
             .catch(error => {
                 if (error.status == 200) {
@@ -104,7 +140,6 @@ class FormField extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.others);
         let value = this.state.value;
         if (this.props.user.data_key[this.props.others.index] == 'gender') {
             value = value.charAt(0).toUpperCase() + value.substring(1);
@@ -113,7 +148,27 @@ class FormField extends React.Component {
             value = value.substring(2);
         }
 
-        this.setState({ value: value });
+        this.setState({ value: value }, () => {
+            if (this.props.others.label === 'Nickname (Live Chat)') {
+                this.subject
+                    .pipe(debounceTime(500))
+                    .subscribe(() => {
+                        
+                            this.props.verify({ nickname: this.state.value })
+                                .then(response => {
+                                    console.log(response);
+                                    this.setState({ value_invalid: false });
+                                })
+                                .catch(error => {
+                                    if (error.status === 200) {
+                                        this.setState({ value_invalid: true });
+                                    }
+                                });
+                    });
+                
+                this.subject.next();
+            }
+        });
     }
 
     render() {
@@ -129,7 +184,7 @@ class FormField extends React.Component {
                                 value={this.state.value}
                                 onChange={this.onChange.bind(this)}
                                 valid={false && !this.state.value_invalid && !!this.state.value}
-                                invalid={this.state.value_invalid}
+                                // invalid={this.state.value_invalid}
                                 placeholder={this.props.others.placeholder}
                                 className="form-control-ff" />
                             <FormFeedback valid={false && !this.state.value_invalid && !!this.state.value}>{this.state.text_data_invalid_message}</FormFeedback>
@@ -173,7 +228,8 @@ class FormField extends React.Component {
                                 value={this.state.value}
                                 placeholder={this.props.others.placeholder}
                                 onChange={this.onChange.bind(this)}
-                                invalid={this.state.value_invalid} />
+                                invalid={this.state.value_invalid} 
+                                />
                             <FormFeedback>{this.state.value_invalid_message}</FormFeedback>
                         </InputGroup>
                         <div id="notes" dangerouslySetInnerHTML={{ __html: this.props.others.notes }}></div>
@@ -199,6 +255,20 @@ class FormField extends React.Component {
                 break;
         }
 
+        let saveButton = (<Button disabled={this.state.value == '' || this.state.value_invalid} className="btn-next block-btn">{this.props.others.need_otp ? 'Verify' : 'Save'}</Button>);
+        if (this.props.others.disabled_condition != null) {
+            switch (this.props.others.disabled_condition.type) {
+                case 'min':
+                    saveButton = (<Button disabled={this.state.value == '' || this.state.value_invalid || this.state.value.length <= this.props.others.disabled_condition.length} className="btn-next block-btn">{this.props.others.need_otp ? 'Verify' : 'Save'}</Button>);
+                    break;
+
+                case 'max':
+                    saveButton = (<Button disabled={this.state.value == '' || this.state.value_invalid || this.state.value.length > this.props.others.disabled_condition.length} className="btn-next block-btn">{this.props.others.need_otp ? 'Verify' : 'Save'}</Button>);
+                    break;
+            }
+            
+        }
+
         return (
             <Layout title={this.props.others.label}>
                 <NavBack title={this.props.others.label} />
@@ -206,7 +276,7 @@ class FormField extends React.Component {
                     <Form onSubmit={this.onSubmit.bind(this)}>
                         {formField}                        
                         <FormGroup>
-                            <Button disabled={this.state.text_data == '' || this.state.text_data_invalid} className="btn-next block-btn">{this.props.others.need_otp ? 'Verify' : 'Save'}</Button>
+                            {saveButton}
                         </FormGroup>
                     </Form>
                 </div>

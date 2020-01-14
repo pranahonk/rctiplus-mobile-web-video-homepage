@@ -29,7 +29,7 @@ const getLocations = () => {
     });
 };
 
-const setField = (index, label, fieldType, notes, placeholder, needOtp = false, optionData = []) => {
+const setField = (index, label, fieldType, notes, placeholder, needOtp = false, optionData = [], disabledCondition = null) => {
     return dispatch => dispatch({
         type: 'SET_FIELD',
         label: label,
@@ -38,7 +38,8 @@ const setField = (index, label, fieldType, notes, placeholder, needOtp = false, 
         need_otp: needOtp,
         placeholder: placeholder,
         option_data: optionData,
-        index: index
+        index: index,
+        disabled_condition: disabledCondition
     });
 };
 

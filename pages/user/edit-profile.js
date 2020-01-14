@@ -54,6 +54,10 @@ class EditProfile extends React.Component {
             location_invalid: false,
             location_invalid_message: '',
             location_data: [],
+            interest_data: [],
+            interests: '',
+            interests_invalid: false,
+            interests_invalid_message: '',
             otp: '',
             show_action_sheet: false,
             input_photo_accept: 'image/*',
@@ -68,7 +72,11 @@ class EditProfile extends React.Component {
             .then(response => {
                 if (response.status === 200) {
                     const data = response.data.data;
-                    console.log(data);
+                    const interests = [];
+                    for (let i = 0; i < data.interest.length; i++) {
+                        interests.push(data.interest[i].name);
+                    }
+
                     this.setState({
                         email: data.email,
                         phone_number: data.phone_number,
@@ -77,7 +85,9 @@ class EditProfile extends React.Component {
                         birthdate: new Date(data.dob ? data.dob * 1000 : Date.now()),
                         gender: data.gender,
                         location: data.location,
-                        profile_photo_src: data.photo_url ? data.photo_url : this.state.profile_photo_src
+                        profile_photo_src: data.photo_url ? data.photo_url : this.state.profile_photo_src,
+                        interest_data: data.interest,
+                        interests: interests.join(',')
                     }, () => {
                         this.props.setUserProfile(this.state.nickname, this.state.fullname, this.state.birthdate, this.state.gender, this.state.phone_number, this.state.email, this.state.otp, this.state.location);
                     });
@@ -110,6 +120,10 @@ class EditProfile extends React.Component {
         this.setState({ nickname: e.target.value });
     }
 
+    onChangeInterests(e) {
+        this.setState({ interests: e.target.value });
+    }
+
     onChangeEmail(e) {
         this.setState({ email: e.target.value });
     }
@@ -131,18 +145,15 @@ class EditProfile extends React.Component {
     }
 
     onChangeLocation(e) {
-        console.log(e.target.value);
         this.setState({ location: e.target.value });
     }
 
-    goToFormField(index, label, fieldType, notes, placeholder, needOtp = false, selectData = []) {
-        this.props.setField(index, label, fieldType, notes, placeholder, needOtp, selectData);
+    goToFormField(index, label, fieldType, notes, placeholder, needOtp = false, selectData = [], disabledCondition = null) {
+        this.props.setField(index, label, fieldType, notes, placeholder, needOtp, selectData, disabledCondition);
         Router.push('/user/edit/form-field');
     }
 
     handleCameraTakePhoto(e, index) {
-        console.log('take photo', index);
-        console.log(e.target.value.replace('C:\\fakepath\\', ''));
         const reader = new FileReader();
         const self = this;
         reader.onload = function(x) {
@@ -192,7 +203,7 @@ class EditProfile extends React.Component {
                             
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label" for="nickname">Nickname (Live Chat)</Label>
+                            <Label className="form-label-ep" for="nickname">Nickname (Live Chat)</Label>
                             <InputGroup>
                                 <Input
                                     onClick={this.goToFormField.bind(this, 0, 'Nickname (Live Chat)', 'text', `
@@ -200,7 +211,7 @@ class EditProfile extends React.Component {
                                             <li>You may change your username back after 14 days</li>
                                             <li>Username has never been used with another user</li>
                                         </ul>
-                                    `, 'insert nickname', false)}
+                                    `, 'insert nickname', false, [], { length: 4, type: 'min' })}
                                     value={this.state.nickname}
                                     onChange={this.onChangeNickname.bind(this)}
                                     invalid={this.state.nickname_invalid}
@@ -209,10 +220,10 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label" for="fullname">Full Name</Label>
+                            <Label className="form-label-ep" for="fullname">Full Name</Label>
                             <InputGroup>
                                 <Input
-                                    onClick={this.goToFormField.bind(this, 1, 'Full Name', 'text', ``, 'insert full name', false)}
+                                    onClick={this.goToFormField.bind(this, 1, 'Full Name', 'text', ``, 'insert full name', false, [], { length: 25, type: 'max' })}
                                     value={this.state.fullname}
                                     onChange={this.onChangeFullname.bind(this)}
                                     invalid={this.state.fullname_invalid}
@@ -221,7 +232,7 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label" for="birthdate">Birthdate</Label>
+                            <Label className="form-label-ep" for="birthdate">Birthdate</Label>
                             <InputGroup>
                                 <Input
                                     onClick={this.goToFormField.bind(this, 2, 'Birthdate', 'date', ``, 'dd/mm/yy', false)}
@@ -233,11 +244,11 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label" for="gender">Gender</Label>
+                            <Label className="form-label-ep" for="gender">Gender</Label>
                             <InputGroup>
                                 <Input
                                     type="select"
-                                    onClick={this.goToFormField.bind(this, 3, 'Gender', 'select', ``, 'select gender', false, ['select gender', 'Male', 'Female'])}
+                                    onClick={this.goToFormField.bind(this, 3, 'Gender', 'select', ``, 'select gender', false, ['Male', 'Female'])}
                                     value={this.state.gender ? this.state.gender.charAt(0).toUpperCase() + this.state.gender.substring(1) : ''}
                                     onChange={this.onChangeGender.bind(this)}
                                     invalid={this.state.gender_invalid}
@@ -250,7 +261,7 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         {/* <FormGroup>
-                            <Label className="form-label" for="location">Location</Label>
+                            <Label className="form-label-ep" for="location">Location</Label>
                             <InputGroup>
                                 <Input
                                     type="select"
@@ -266,19 +277,7 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup> */}
                         <FormGroup>
-                            <Label className="form-label" for="email">Email</Label>
-                            <InputGroup>
-                                <Input
-                                    onClick={this.goToFormField.bind(this, 5, 'Email', 'email', ``, 'insert email', true)}
-                                    value={this.state.email}
-                                    onChange={this.onChangeEmail.bind(this)}
-                                    invalid={this.state.email_invalid}
-                                    className="form-control-ep" />
-                                <FormFeedback valid={!this.state.email_invalid && !!this.state.email}>{this.state.email_invalid_message}</FormFeedback>
-                            </InputGroup>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label className="form-label" for="phone_number">Phone Number</Label>
+                            <Label className="form-label-ep" for="phone_number">Phone Number</Label>
                             <InputGroup>
                                 <Input
                                     onClick={this.goToFormField.bind(this, 4, 'Phone Number', 'phone', `
@@ -294,7 +293,31 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Button className="btn-next block-btn">Save</Button>
+                            <Label className="form-label-ep" for="email">Email</Label>
+                            <InputGroup>
+                                <Input
+                                    onClick={this.goToFormField.bind(this, 5, 'Email', 'email', ``, 'insert email', true)}
+                                    value={this.state.email}
+                                    onChange={this.onChangeEmail.bind(this)}
+                                    invalid={this.state.email_invalid}
+                                    className="form-control-ep" />
+                                <FormFeedback valid={!this.state.email_invalid && !!this.state.email}>{this.state.email_invalid_message}</FormFeedback>
+                            </InputGroup>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label-ep" for="nickname">Interests</Label>
+                            <InputGroup>
+                                <Input
+                                    onClick={() => Router.push('/user/edit/interest')}
+                                    value={this.state.interests}
+                                    onChange={this.onChangeInterests.bind(this)}
+                                    invalid={this.state.interests_invalid}
+                                    className="form-control-ep" />
+                                <FormFeedback valid={!this.state.interests_invalid && !!this.state.interests}>{this.state.interests_invalid_message}</FormFeedback>
+                            </InputGroup>
+                        </FormGroup>
+                        <FormGroup>
+                            {/* <Button className="btn-next block-btn">Save</Button> */}
                         </FormGroup>
                     </Form>
                 </div>

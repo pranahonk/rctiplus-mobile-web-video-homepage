@@ -8,7 +8,8 @@ const initialState = {
     need_otp: false,
     placeholder: '',
     option_data: [],
-    index: -1
+    index: -1,
+    disabled_condition: null
 };
 
 export default (state = initialState, action) => {
@@ -21,7 +22,8 @@ export default (state = initialState, action) => {
                 need_otp: action.need_otp,
                 placeholder: action.placeholder,
                 option_data: action.option_data,
-                index: action.index
+                index: action.index,
+                disabled_condition: action.disabled_condition
             });
         default:
             return state;

@@ -44,7 +44,7 @@ const getLiveEvent = (type, infos = 'id,type,portrait_image,image_landscape,name
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/live-event?type=${type}&infos=${infos}&page=${page}&length=${length}`);
-            if (response.data.status.code === 0) {
+            if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_LIVE_EVENT',
                     data: response.data.data,
@@ -90,7 +90,7 @@ const getLiveEventUrl = liveEventId => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/live-event/${liveEventId}/url`);
-            if (response.data.status.code === 0) {
+            if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_LIVE_EVENT_URL',
                     data: response.data.data,
