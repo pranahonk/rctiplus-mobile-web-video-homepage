@@ -31,10 +31,24 @@ const handle = app.getRequestHandler();
       res.sendFile(join('.next', '/service-worker.js'), { root: '.' }),
     );
 
+    server.get('/live-tv/:channel', (req, res) => {
+      return app.render(req, res, '/live-tv', { channel: req.params.channel });
+    });
+
+    server.get('/live-tv/:channel/:epg_id/:epg_title', (req, res) => {
+      return app.render(req, res, '/live-tv', {
+        channel: req.params.channel,
+        epg_id: req.params.epg_id,
+        epg_title: req.params.epg_title
+      })
+    });
+
     // default request handler by next handler:
     server.get('*', (req, res) => {
       return handle(req, res);
     });
+
+    
 
     server.listen(port, err => {
       if (err) {
@@ -52,6 +66,7 @@ const handle = app.getRequestHandler();
       /* eslint-enable no-console */
     });
   } catch (error) {
+    console.log('ERRORRRR');
     console.error(error);
   }
 })();

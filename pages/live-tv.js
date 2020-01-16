@@ -24,6 +24,7 @@ class Live extends React.Component {
 
 	static getInitialProps(ctx) {
 		initialize(ctx);
+		return { initial: ctx.query };
 	}
 
 	constructor(props) {
@@ -53,7 +54,7 @@ class Live extends React.Component {
 		this.player = null;
 		this.currentDate = now;
 		this.props.setCatchupDate(formatDateWord(now));
-		console.log(this.props.router.asPath);
+		console.log(this.props.initial);
 	}
 
 	componentDidMount() {

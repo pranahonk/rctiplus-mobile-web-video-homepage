@@ -30,7 +30,6 @@ const DOCS_PATH = '../out/';
     );
 
     app.get('/*', (req, res) => {
-      console.log('URL:', req.url);
       return res.sendFile(path.join(__dirname, DOCS_PATH, 'index.html'));
     });
 
