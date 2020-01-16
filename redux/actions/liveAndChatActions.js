@@ -19,6 +19,20 @@ const setCatchupDate = date => {
     });
 };
 
+const setCatchupData = catchupData => {
+    return dispatch => dispatch({
+        type: 'SET_CATCHUP_DATA',
+        catchup: catchupData
+    });
+};
+
+const setChannelCode = channelCode => {
+    return dispatch => dispatch({
+        type: 'SET_CHANNEL_CODE',
+        channel_code: channelCode
+    });
+};
+
 const postChat = (channelId, message, avatar, user) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -217,5 +231,7 @@ export default {
     getLiveQuizUrl,
     getEPG,
     getCatchupUrl,
-    setCatchupDate
+    setCatchupDate,
+    setChannelCode,
+    setCatchupData
 };

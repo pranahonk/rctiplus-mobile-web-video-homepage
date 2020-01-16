@@ -1,10 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux';
+import { withRouter } from 'next/router';
 import initialize from '../utils/initialize';
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 
 import Layout from '../components/Layouts/Default';
 import SelectDateModal from '../components/Modals/SelectDateModal';
+import ActionSheet from '../components/Modals/ActionSheet';
 
 import { formatDate, formatDateWord, getFormattedDateBefore } from '../utils/dateHelpers';
 
@@ -12,6 +14,9 @@ import { Row, Col, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 're
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+
+import { BASE_URL } from '../config';
 
 import '../assets/scss/components/live-tv.scss';
 
@@ -23,6 +28,7 @@ class Live extends React.Component {
 
 	constructor(props) {
 		super(props);
+		const now = new Date();
 		this.state = {
 			live_events: [],
 			selected_live_event: {},
@@ -30,15 +36,24 @@ class Live extends React.Component {
 			selected_index: 0,
 			selected_tab: 'live',
 			epg: [],
+			catchup: [],
 			meta: {},
-			dates_before: getFormattedDateBefore(7),
-			selected_date: formatDateWord(new Date('06 January 2020')),
-			select_modal: false
+			dates_before: getFormattedDateBefore(17),
+			selected_date: formatDateWord(now),
+			select_modal: false,
+			player_url: '',
+			player_vmap: '',
+			action_sheet: false,
+			caption: '',
+			url: '',
+			hashtags: [],
+			chat_open: false
 		};
 
 		this.player = null;
-		this.currentDate = new Date('06 January 2020 11:39');
-		this.props.setCatchupDate(formatDateWord(new Date('06 January 2020')));
+		this.currentDate = now;
+		this.props.setCatchupDate(formatDateWord(now));
+		console.log(this.props.router.asPath);
 	}
 
 	componentDidMount() {
@@ -66,7 +81,7 @@ class Live extends React.Component {
 		this.player = window.jwplayer('live-tv-player');
 		this.player.setup({
 			autostart: true,
-			file: this.state.selected_live_event_url.url,
+			file: this.state.player_url,
 			primary: 'html5',
 			width: '100%',
 			aspectratio: '16:9',
@@ -75,7 +90,7 @@ class Live extends React.Component {
 			stretching:'fill',
 			advertising: {
 				client: 'vast',
-				tag: this.state.selected_live_event_url.vmap
+				tag: this.state.player_vmap
 			},
 			logo: {
 				hide: true
@@ -89,12 +104,31 @@ class Live extends React.Component {
 				.then(res => {
 					this.setState({ 
 						selected_live_event: this.state.live_events[this.state.selected_index],
-						selected_live_event_url: res.data.data
+						selected_live_event_url: res.data.data,
+						player_url: res.data.data.url,
+						player_vmap: res.data.data.vmap
 					}, () => {
 						this.initVOD();
+						this.props.setChannelCode(this.state.selected_live_event.channel_code);
+						this.props.setCatchupDate(formatDateWord(this.currentDate));
 						this.props.getEPG(formatDate(this.currentDate), this.state.selected_live_event.channel_code)
 							.then(response => {
-								this.setState({ epg: response.data.data });
+								let epg = response.data.data.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + ' ' + e.e).getTime());
+								this.setState({ epg: epg });
+							})
+							.catch(error => console.log(error));
+
+						this.props.getEPG(formatDate(new Date(this.state.selected_date)), this.state.selected_live_event.channel_code)
+							.then(response => {
+								let catchup = response.data.data.filter(e => {
+									if (e.s > e.e) {
+										return this.currentDate.getTime() > new Date(new Date(this.state.selected_date + ' ' + e.e).getTime() + (1 * 24 * 60 * 60 * 1000)).getTime();
+									}
+									return this.currentDate.getTime() > new Date(this.state.selected_date + ' ' + e.e).getTime();
+								});
+								this.setState({ catchup: catchup }, () => {
+									this.props.setCatchupData(catchup);
+								});
 							})
 							.catch(error => console.log(error));
 					});
@@ -105,14 +139,33 @@ class Live extends React.Component {
 
 	selectCatchup(id) {
 		this.props.getCatchupUrl(id)
-			.then(r => {
-				console.log(r);
+			.then(response => {
+				if (response.status === 200 && response.data.status.code === 0) {
+					console.log(response.data.data);
+					this.setState({
+						player_url: response.data.data.url,
+						player_vmap: response.data.data.vmap
+					}, () => this.initVOD());
+				}
 			})
 			.catch(error => console.log(error));
 	}
 
 	toggleSelectModal() {
 		this.setState({ select_modal: !this.state.select_modal });
+	}
+
+	toggleActionSheet(caption = '', url = '', hashtags = []) {
+        this.setState({ 
+            action_sheet: !this.state.action_sheet,
+            caption: caption,
+            url: url,
+            hashtags: hashtags
+        });
+	}
+	
+	toggleChat() {
+		this.setState({ chat_open: !this.state.chat_open });
 	}
 
 	render() {
@@ -123,7 +176,14 @@ class Live extends React.Component {
                     data={this.state.dates_before}
                     toggle={this.toggleSelectModal.bind(this)}/>
 
-				<div className="wrapper-content" style={{ height: 'calc(100vh)', padding: 0, margin: 0 }}>
+				<ActionSheet
+					caption={this.state.caption}
+					url={this.state.url}
+					open={this.state.action_sheet}
+					hashtags={this.state.hashtags}
+					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'])}/>
+
+				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					<div id="live-tv-player"></div>
 					<div className="tv-wrap">
 						<Row>
@@ -160,7 +220,7 @@ class Live extends React.Component {
 														<div className="subtitle">{e.s} - {e.e}</div>
 													</Col>
 													<Col className="right-side">
-														<ShareIcon className="share-btn"/>
+														<ShareIcon  onClick={this.toggleActionSheet.bind(this, 'Live TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + e.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code])} className="share-btn"/>
 													</Col>
 												</Row>);
 									}
@@ -178,12 +238,27 @@ class Live extends React.Component {
 								<div className="catch-up-wrapper">
 									<div className="catchup-dropdown-menu">
 										<Button onClick={this.toggleSelectModal.bind(this)} size="sm" color="link">{this.props.chats.catchup_date} <ExpandMoreIcon/></Button>
+										
 									</div>
+									{this.props.chats.catchup.map(c => (
+										<Row onClick={this.selectCatchup.bind(this, c.id)} key={c.id} className={'program-item'}>
+											<Col xs={9}>
+												<div className="title">{c.title}</div>
+												<div className="subtitle">{c.s} - {c.e}</div>
+											</Col>
+											<Col className="right-side">
+												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code])} className="share-btn"/>
+											</Col>
+										</Row>
+									))}
 								</div>
 							</TabPane>
 						</TabContent>
 					</div>
-					
+					<div className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')}>
+						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon"/> Live Chat <FiberManualRecordIcon className="indicator-dot"/></Button>
+						<div className="box-chat"></div>
+					</div>
 				</div>
 			</Layout>
 		);
@@ -191,4 +266,4 @@ class Live extends React.Component {
 
 }
 
-export default connect(state => state, liveAndChatActions)(Live);
+export default connect(state => state, liveAndChatActions)(withRouter(Live));
