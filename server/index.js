@@ -31,6 +31,14 @@ const handle = app.getRequestHandler();
       res.sendFile(join('.next', '/service-worker.js'), { root: '.' }),
     );
 
+    server.get('/lighthouse-report', (req, res) => {
+      res.sendfile('/lighthouse-report.html', { root: '.' });
+    });
+
+    server.get('/lighthouse/:page', (req, res) => {
+      res.sendFile(`/lighthouse-reports/${req.params.page}.html`, { root: '.' });
+    });
+
     server.get('/live-tv/:channel', (req, res) => {
       return app.render(req, res, '/live-tv', { channel: req.params.channel });
     });
