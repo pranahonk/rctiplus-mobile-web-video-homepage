@@ -38,7 +38,7 @@ class Live extends React.Component {
 			epg: [],
 			catchup: [],
 			meta: {},
-			dates_before: getFormattedDateBefore(17),
+			dates_before: getFormattedDateBefore(7),
 			selected_date: formatDateWord(now),
 			select_modal: false,
 			player_url: '',

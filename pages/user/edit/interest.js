@@ -30,19 +30,21 @@ class Interest extends Component {
 	componentDidMount() {
 		this.props.getInterests()
 			.then(response => {
-				this.setState({ interests: this.props.user.data }, () => {
+				let data = this.props.user.data;
+				data.sort((a, b) => (a.id > b.id) ? 1 : -1);
+				this.setState({ interests: data }, () => {
                     this.props.getUserInterest()
                         .then(res => {
                             this.setState({ selected_interests: res.data.data }, () => {
-                                const interests = this.state.interests;
-                                const selectedId = this.state.selected_interests.map(s => s.id);
+								const interests = this.state.interests;
+								const selectedId = this.state.selected_interests.map(s => s.id);
+								selectedId.sort((a, b) => (a.id > b.id) ? 1 : -1);
                                 const order = [];
                                 for (let i = 0; i < interests.length; i++) {
                                     if (selectedId.indexOf(interests[i].id) != -1) {
                                         order.push(i);
                                     }
-                                }
-
+								}
                                 this.setState({ selected_interest_components: order });
                             });
                         })
@@ -56,6 +58,7 @@ class Interest extends Component {
 
 	selectInterest(interest, order) {
 		let selectedInterests = this.state.selected_interests;
+		selectedInterests.sort((a, b) => (a.id > b.id) ? 1 : -1);
 		let selectedInterestComponents = this.state.selected_interest_components;
 
 		let alreadySelected = false;
