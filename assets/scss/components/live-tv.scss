@@ -1,0 +1,153 @@
+.jwplayer {
+    .jwplayer-display-container {
+        display: flex;
+        height: 100%;
+        align-items: center;
+        text-align: center;
+        vertical-align: middle;
+        justify-content: center;
+    }
+}
+
+.tv-wrap {
+    background-color: #171717;
+    padding: 5px;
+
+    .row {
+        margin-right: -5px;
+
+        div[class*=col-] {
+            padding-right: 0;
+            padding-left: 0;
+
+            .btn {
+                color: white;
+            }
+
+            .btn-link:hover {
+                text-decoration: none;
+            }
+
+            .selected {
+                font-size: 15px;
+                font-weight: bold;
+                border-bottom: 2px solid #0e519f;
+            }
+        }
+    }
+}
+
+.tab-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    font-weight: 500;
+    -webkit-box-flex: 1;
+    flex: 1 1 auto;
+    border-bottom: 1px solid #606060;
+
+    .nav-item {   
+        text-transform: capitalize;
+        width: 50%;
+        padding: 6px 10px;
+        text-align: center;
+        font-size: 12px;
+        padding: 6px 10px;
+
+        .nav-link:hover {
+            border: none;
+        }
+    }
+
+    .nav-link {
+        padding: 0;
+    }
+
+    .selected {
+        border-bottom: 2px solid #d42a31;
+    }
+}
+
+.tab-content {
+    .program-item {
+        padding: 8px 16px;
+        -webkit-box-align: start;
+        align-items: flex-start;
+        display: flex;
+        min-height: 40px;
+        border-bottom: 1px solid #171717;
+
+        .title {
+            font-size: 12px;
+            .MuiSvgIcon-root {
+                font-size: 0.6rem;
+                color: #7ed321;
+                margin-left: 10px;
+            }
+        }
+
+        .subtitle {
+            font-size: 10px;
+            color: #757575;
+        }
+
+        .right-side {
+            text-align: center;
+            .share-btn {
+                font-size: 1.2rem;
+            }
+        }
+    }
+
+    .selected {
+        background: #3a3a3a;
+    }
+}
+
+.tab-content-wrap {
+    height: calc(100vh - 250px);
+    max-height: calc(100vh - 250px);
+    overflow: hidden;
+    overflow-y: visible;
+}
+
+#live-tv-player {
+    .jw-wrapper{
+        bottom: 0 !important;
+        position: absolute;
+        top: 0;
+        max-width: 100% !important;
+        z-index: 5;
+    }
+
+    .jw-reset {
+        max-width: 100%;
+    }
+}
+
+.catch-up-wrapper {
+    padding-top: 10px;
+
+    .catchup-dropdown-menu {
+        width: 100%;
+        text-align: center;
+
+        .btn {
+            color: white;
+        }
+    
+        .btn-link:hover, .btn-link:focus {
+            text-decoration: none;
+        }
+
+    }
+    
+}
+
+.modal-body {
+    padding-top: 0;
+    text-align: center;
+
+    .season-list {
+        height: 80%;
+    }
+}

@@ -12,6 +12,13 @@ const axios = ax.create({
     }
 });
 
+const setCatchupDate = date => {
+    return dispatch => dispatch({
+        type: 'SET_CATCHUP_DATE',
+        date: date
+    });
+};
+
 const postChat = (channelId, message, avatar, user) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -209,5 +216,6 @@ export default {
     getLiveQuiz,
     getLiveQuizUrl,
     getEPG,
-    getCatchupUrl
+    getCatchupUrl,
+    setCatchupDate
 };

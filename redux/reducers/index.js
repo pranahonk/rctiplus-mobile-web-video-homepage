@@ -13,6 +13,7 @@ import notificationReducer from './notificationReducer';
 import feedReducer from './feedReducer';
 import likeReducer from './likeReducer';
 import othersReducer from './othersReducer';
+import playerReducer from './playerReducer';
 
 const rootReducer = combineReducers({
     authentication: authReducer,
@@ -28,7 +29,8 @@ const rootReducer = combineReducers({
     notification: notificationReducer,
     feeds: feedReducer,
     likes: likeReducer,
-    others: othersReducer
+    others: othersReducer,
+    players: playerReducer
 });
 
 export default rootReducer;
