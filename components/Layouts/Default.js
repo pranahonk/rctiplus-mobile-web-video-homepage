@@ -68,6 +68,8 @@ const Default = ({ children, title }) => {
                 <link rel="manifest" href="/static/manifest.json" />
                 <link rel="canonical" href="http://www.rctiplus.com/page-1"></link>
                 <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
+                <script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
+                <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script>
             </Head>
             {/* <Offline onChange={(online) => {
                                 noConnectionRef.current.classList.remove('no-connection-open');

@@ -1,7 +1,8 @@
 const initialState = {
     data: null,
     meta: null,
-    status: null
+    status: null,
+    catchup_date: null
 };
 
 export default (state = initialState, action) => {
@@ -19,6 +20,8 @@ export default (state = initialState, action) => {
                 data: action.data, 
                 meta: action.meta 
             });
+        case 'SET_CATCHUP_DATE':
+            return Object.assign({}, state, { catchup_date: action.date });
         default:
             return state;
     }
