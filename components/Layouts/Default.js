@@ -70,19 +70,19 @@ const Default = ({ children, title }) => {
                 <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
             </Head>
             {/* <Offline onChange={(online) => {
-                                noConnectionRef.current.classList.remove('no-connection-open');
-                                noConnectionRef.current.classList.remove('no-connection-closed');
+                    noConnectionRef.current.classList.remove('no-connection-open');
+                    noConnectionRef.current.classList.remove('no-connection-closed');
 
-                                if (!online) {
-                                        noConnectionRef.current.classList.add('no-connection-open');
-                                }
-                                else {
-                                        noConnectionRef.current.classList.add('no-connection-closed');
-                                }
-                        }}></Offline>
-                        <div ref={noConnectionRef} className="row no-connection">
-                                <div className="col-md-12 col-xs-12">No connection! Check your network or find a better signal!</div>
-                        </div> */}
+                    if (!online) {
+                            noConnectionRef.current.classList.add('no-connection-open');
+                    }
+                    else {
+                            noConnectionRef.current.classList.add('no-connection-closed');
+                    }
+            }}></Offline>
+            <div ref={noConnectionRef} className="row no-connection">
+                    <div className="col-md-12 col-xs-12">No connection! Check your network or find a better signal!</div>
+            </div> */}
 
             <div style={{ overflowX: 'hidden', marginTop: -5 }} id="wr" className="wrapper has-text-centered">{children}</div>
             <Footer />

@@ -4,9 +4,6 @@ import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import contentActions from '../redux/actions/contentActions';
 import initialize from '../utils/initialize';
-import accessTokenCore from '../redux/actions/token/accessCore';
-
-//
 
 //load default layout
 import Layout from '../components/Layouts/Default';
@@ -45,7 +42,6 @@ import ScheduleTV from '../components/Includes/Schedules/LiveTv';
 
 class Index extends React.Component {
     static async getInitialProps(ctx) {
-        console.log(accessTokenCore);
         initialize(ctx);
     }
 

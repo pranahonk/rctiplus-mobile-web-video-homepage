@@ -5,3 +5,10 @@
  */
 
 
+import ax from 'axios';
+
+const ADD_DATA = (newData) => {  
+    return { type: 'ADD_DATA', data: newData }
+} 
+
+export default ADD_DATA
