@@ -44,11 +44,11 @@ const handle = app.getRequestHandler();
     });
 
     server.get('/tv/:channel', (req, res) => {
-      return app.render(req, res, '/live-tv', { channel: req.params.channel });
+      return app.render(req, res, '/tv', { channel: req.params.channel });
     });
 
     server.get('/tv/:channel/:epg_id/:epg_title', (req, res) => {
-      return app.render(req, res, '/live-tv', {
+      return app.render(req, res, '/tv', {
         channel: req.params.channel,
         epg_id: req.params.epg_id,
         epg_title: req.params.epg_title

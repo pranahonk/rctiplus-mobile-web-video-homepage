@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { withRouter } from 'next/router';
+import Router, { withRouter } from 'next/router';
 import initialize from '../utils/initialize';
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 
@@ -55,7 +55,6 @@ class Tv extends React.Component {
 		this.player = null;
 		this.currentDate = now;
 		this.props.setCatchupDate(formatDateWord(now));
-		console.log(this.props.context_data);
 	}
 
 	componentDidMount() {
@@ -63,7 +62,13 @@ class Tv extends React.Component {
 			.then(response => {
 				this.setState({ live_events: response.data.data, meta: response.data.meta }, () => {
 					if (this.state.live_events.length > 0) {
-						this.selectChannel(0);
+						for (let i = 0; i < this.state.live_events.length; i++) {
+							if (this.state.live_events[i].channel_code === this.state.channel_code) {
+								this.selectChannel(i);
+								break;
+							}
+						}
+						
 					}
 				});
 			})
@@ -143,7 +148,6 @@ class Tv extends React.Component {
 		this.props.getCatchupUrl(id)
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {
-					console.log(response.data.data);
 					this.setState({
 						player_url: response.data.data.url,
 						player_vmap: response.data.data.vmap
@@ -183,7 +187,7 @@ class Tv extends React.Component {
 					url={this.state.url}
 					open={this.state.action_sheet}
 					hashtags={this.state.hashtags}
-					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'])}/>
+					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])}/>
 
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					<div id="live-tv-player"></div>
