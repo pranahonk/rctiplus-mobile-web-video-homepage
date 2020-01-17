@@ -60,6 +60,7 @@ class Interest extends Component {
 		let selectedInterests = this.state.selected_interests;
 		selectedInterests.sort((a, b) => (a.id > b.id) ? 1 : -1);
 		let selectedInterestComponents = this.state.selected_interest_components;
+		selectedInterestComponents.sort((a, b) => (a > b) ? 1 : -1);
 
 		let alreadySelected = false;
 		let selectedIndex = -1;
@@ -140,7 +141,7 @@ class Interest extends Component {
 		return (
 			<Layout title="Your Interest">
 				<NavBack title="Choose Interest" />
-				<div className="wrapper-content" style={{ marginTop: 40 }}>
+				<div className="wrapper-content interest-page" style={{ marginTop: 40 }}>
 					<div className="login-box" style={{ width: '100%' }}>
                         <div className="choose_interest">
 							<p className="txt-content-interest">

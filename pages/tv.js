@@ -20,11 +20,11 @@ import { BASE_URL } from '../config';
 
 import '../assets/scss/components/live-tv.scss';
 
-class Live extends React.Component {
+class Tv extends React.Component {
 
 	static getInitialProps(ctx) {
 		initialize(ctx);
-		return { initial: ctx.query };
+		return { context_data: ctx.query };
 	}
 
 	constructor(props) {
@@ -48,13 +48,14 @@ class Live extends React.Component {
 			caption: '',
 			url: '',
 			hashtags: [],
-			chat_open: false
+			chat_open: false,
+			channel_code: this.props.context_data ? this.props.context_data.channel : 'rcti'
 		};
 
 		this.player = null;
 		this.currentDate = now;
 		this.props.setCatchupDate(formatDateWord(now));
-		console.log(this.props.initial);
+		console.log(this.props.context_data);
 	}
 
 	componentDidMount() {
@@ -267,4 +268,4 @@ class Live extends React.Component {
 
 }
 
-export default connect(state => state, liveAndChatActions)(withRouter(Live));
+export default connect(state => state, liveAndChatActions)(withRouter(Tv));
