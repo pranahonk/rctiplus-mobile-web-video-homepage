@@ -8,22 +8,22 @@ import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import classnames from 'classnames';
 
-import { showAlert } from '../../../utils/helpers';
+import { showAlert } from '../utils/helpers';
 
-import Error from '../../error';
+import Error from './error';
 
-import contentActions from '../../../redux/actions/contentActions';
-import searchActions from '../../../redux/actions/searchActions';
-import likeActions from '../../../redux/actions/likeActions';
-import bookmarkActions from '../../../redux/actions/bookmarkActions';
+import contentActions from '../redux/actions/contentActions';
+import searchActions from '../redux/actions/searchActions';
+import likeActions from '../redux/actions/likeActions';
+import bookmarkActions from '../redux/actions/bookmarkActions';
 
 //load default layout
-import Layout from '../../../components/Layouts/Default';
-import Navbar from '../../../components/Includes/Navbar/NavDetail';
-import PlayerModal from '../../../components/Modals';
-import ActionModal from '../../../components/Modals/ActionModal';
-import SelectModal from '../../../components/Modals/SelectModal';
-import ActionSheet from '../../../components/Modals/ActionSheet';
+import Layout from '../components/Layouts/Default';
+import Navbar from '../components/Includes/Navbar/NavDetail';
+import PlayerModal from '../components/Modals';
+import ActionModal from '../components/Modals/ActionModal';
+import SelectModal from '../components/Modals/SelectModal';
+import ActionSheet from '../components/Modals/ActionSheet';
 
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
@@ -38,11 +38,11 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 
 import { Button, Row, Col, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
-import '../../../assets/scss/plugins/carousel/carousel.scss';
-import '../../../assets/scss/components/detail.scss';
+import '../assets/scss/plugins/carousel/carousel.scss';
+import '../assets/scss/components/detail.scss';
 
-import { BASE_URL, DEV_API, VISITOR_TOKEN } from '../../../config';
-import { getCookie } from '../../../utils/cookie';
+import { BASE_URL, DEV_API, VISITOR_TOKEN } from '../config';
+import { getCookie } from '../utils/cookie';
 
 class Detail extends React.Component {
 
@@ -686,7 +686,7 @@ class Detail extends React.Component {
                                 showStatus={false}
                                 swipeScrollTolerance={1}
                                 onClickItem={(index) => {
-                                    Router.push('/detail/program/' + this.state.related_programs[index].id);
+                                    Router.push('/programs/' + this.state.related_programs[index].id + '/' + this.state.related_programs[index].title.toLowerCase().replace(' ', '-'));
                                 }}
                                 swipeable={true}>
                                 {this.state.related_programs.map(rp => (

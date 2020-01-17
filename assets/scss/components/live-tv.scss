@@ -124,12 +124,13 @@
 
 .tab-content {
     .program-item {
-        padding: 8px 16px;
+        padding: 12px 0px;
         -webkit-box-align: start;
         align-items: flex-start;
         display: flex;
         min-height: 40px;
         border-bottom: 1px solid #171717;
+        margin-left: 0;
 
         .title {
             font-size: 12px;

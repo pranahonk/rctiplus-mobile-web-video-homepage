@@ -39,6 +39,10 @@ const handle = app.getRequestHandler();
       res.sendFile(`/lighthouse-reports/${req.params.page}.html`, { root: '.' });
     });
 
+    server.get('/programs/:id/:title', (req, res) => {
+      return app.render(req, res, '/programs', { id: req.params.id, title: req.params.title });
+    });
+
     server.get('/live-tv/:channel', (req, res) => {
       return app.render(req, res, '/live-tv', { channel: req.params.channel });
     });
@@ -74,7 +78,6 @@ const handle = app.getRequestHandler();
       /* eslint-enable no-console */
     });
   } catch (error) {
-    console.log('ERRORRRR');
     console.error(error);
   }
 })();
