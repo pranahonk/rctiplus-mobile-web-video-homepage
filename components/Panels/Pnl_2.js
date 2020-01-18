@@ -13,7 +13,7 @@ import '../../assets/scss/components/panel.scss';
 class Pnl_1 extends React.Component {
 	render() {
 		return (
-			<div className="homepage-content" id="pnl_horizontal_landscape" style={{ marginBottom: 100 }}>
+			<div className="homepage-content" id="pnl_horizontal_landscape" style={{ marginBottom: 20 }}>
 				<h4 className="content-title">{this.props.title}</h4>
 				<Carousel
 					showThumbs={false}
@@ -27,7 +27,11 @@ class Pnl_1 extends React.Component {
 					{this.props.content.map(c => (
 						<Lazyload key={c.content_id} height={100} className="pnl_2">
 							<div>
-								<Img alt={c.program_title} src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+								<Img 
+									alt={c.program_title} 
+									unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+									loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+									src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
 								<PlayCircleOutlineIcon className="play-btn-2" />
 							</div>
 

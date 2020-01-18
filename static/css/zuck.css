@@ -443,8 +443,10 @@ and open the template in the editor.
 }
 .stories.carousel .story {
   display: inline-block;
-  width: 18vw;
-  max-width: 90px;
+  /* width: 18vw;
+  max-width: 90px; */
+  width: 30%;
+  max-width: 30%;
   margin: 0 6px;
   vertical-align: top;
 }
@@ -487,6 +489,7 @@ and open the template in the editor.
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 12px;
 }
 .stories.carousel .story > .item-link > .info .name {
   font-weight: 300;

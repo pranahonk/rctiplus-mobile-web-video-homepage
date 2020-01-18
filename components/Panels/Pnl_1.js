@@ -32,7 +32,11 @@ class Pnl_1 extends React.Component {
 					{this.props.content.map(c => (
 						<Lazyload key={c.content_id} height={200}>
 							<div>
-								<Img alt={c.program_title} src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+								<Img 
+									alt={c.program_title} 
+									unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+									loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+									src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
 								<PlayCircleOutlineIcon className="play-btn-1" />
 							</div>
 							<div className="txt-slider-panel no-bg">

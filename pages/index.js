@@ -2,7 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
+
 import contentActions from '../redux/actions/contentActions';
+import pageActions from '../redux/actions/pageActions';
+
 import initialize from '../utils/initialize';
 
 //load default layout
@@ -54,15 +57,18 @@ class Index extends React.Component {
             meta: null,
             resolution: 593
         };
+
+        this.props.setPageLoader();
     }
 
     componentDidMount() {
         this.props.getContents(this.state.page)
             .then(response => {
-                this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta });
+                this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta }, () => this.props.unsetPageLoader());
             })
             .catch(error => {
                 console.log(error);
+                this.props.unsetPageLoader();
             });
     }
 
@@ -104,7 +110,7 @@ class Index extends React.Component {
                         <Nav />
                         <Carousel />
                         <ScheduleTV />
-                        <h3>process.env.is_show_sticky_ads</h3>
+                        {/* <h3>process.env.is_show_sticky_ads</h3> */}
                         <StickyAds /> 
                         <Stories />
                         {/* <ReactJWPlayer playerId="example-id" playerScript="https://cdn.jwplayer.com/libraries/Vp85L1U1.js" playlist="https://cdn.jwplayer.com/v2/playlists/ZTs6tMfb"/> */}
@@ -130,4 +136,7 @@ class Index extends React.Component {
 
 }
 
-export default connect(state => state, contentActions)(Index);
+export default connect(state => state, {
+    ...contentActions,
+    ...pageActions
+})(Index);
