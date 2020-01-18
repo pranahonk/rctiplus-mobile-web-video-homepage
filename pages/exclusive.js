@@ -282,13 +282,24 @@ class Exclusive extends React.Component {
 																swipeScrollTolerance={1}
 																swipeable={true}>
 																{feed.images.map((img, i) => (
-																	<Img key={i} alt={feed.title} className="program-carousel-image" src={[this.state.meta.image_path + this.state.resolution + img, '/static/placeholders/placeholder_potrait.png']} />
+																	<Img 
+																		key={i} 
+																		alt={feed.title} 
+																		className="program-carousel-image" 
+																		unloader={<img className="program-carousel-image" src="/static/placeholders/placeholder_landscape.png"/>}
+																		loader={<img className="program-carousel-image" src="/static/placeholders/placeholder_landscape.png"/>} 
+																		src={[this.state.meta.image_path + this.state.resolution + img, '/static/placeholders/placeholder_potrait.png']} />
 																))}
 															</Carousel>)
 															:
 															(
 																<div onClick={this.toggle.bind(this, feed.link_video)}>
-																	<Img alt={feed.title} className="program-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+																	<Img 
+																		alt={feed.title} 
+																		className="program-thumbnail" 
+																		unloader={<img className="program-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
+																		loader={<img className="program-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>} 
+																		src={[this.state.meta.image_path + this.state.resolution + feed.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
 																	<PlayCircleOutlineIcon className="play-btn-icon" />
 																</div>
 															)
