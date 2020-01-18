@@ -27,7 +27,7 @@ class Crs extends Component {
     render() {
         return (
                 <div>
-                    <Carousel autoPlay showThumbs={false} showIndicators={false} stopOnHover={true} showArrows={false} showStatus={false} swipeScrollTolerance={1} swipeable={true} >
+                    <Carousel statusFormatter={(current, total) => `${current}/${total}`} autoPlay showThumbs={false} showIndicators={false} stopOnHover={true} showArrows={false} showStatus={false} swipeScrollTolerance={1} swipeable={true} >
                         {this.state.banner.map(b => (
                             <div key={b.id}>
                                 <Img alt={b.title} src={[this.state.meta.image_path + '593' + b.portrait_image, '/static/placeholders/placeholder_potrait.png']} />

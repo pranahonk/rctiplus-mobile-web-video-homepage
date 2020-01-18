@@ -14,6 +14,7 @@ import feedReducer from './feedReducer';
 import likeReducer from './likeReducer';
 import othersReducer from './othersReducer';
 import playerReducer from './playerReducer';
+import pageReducer from './pageReducer';
 
 const rootReducer = combineReducers({
     authentication: authReducer,
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
     feeds: feedReducer,
     likes: likeReducer,
     others: othersReducer,
-    players: playerReducer
+    players: playerReducer,
+    pages: pageReducer
 });
 
 export default rootReducer;

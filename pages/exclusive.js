@@ -1,8 +1,11 @@
 import React from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
+
 import contentActions from '../redux/actions/contentActions';
 import feedActions from '../redux/actions/feedActions';
+import pageActions from '../redux/actions/pageActions';
+
 import initialize from '../utils/initialize';
 import TimeAgo from 'react-timeago';
 import Img from 'react-image';
@@ -58,15 +61,16 @@ class Exclusive extends React.Component {
 
 		this.player = null;
 		this.LoadingBar = null;
+		this.props.setPageLoader();
 	}
 
 	componentDidMount() {
-		this.props.getContents(1).then(() => {
-			this.setState({
-				contents: this.props.contents.homepage_content,
-				meta: this.props.contents.meta
-			});
-		});
+		// this.props.getContents(1).then(() => {
+		// 	this.setState({
+		// 		contents: this.props.contents.homepage_content,
+		// 		meta: this.props.contents.meta
+		// 	});
+		// });
 
 		this.props.getExclusiveCategory()
 			.then(response => {
@@ -101,14 +105,18 @@ class Exclusive extends React.Component {
 								feeds: dictFeeds,
 								feed_states: dictFeedStates,
 								meta: this.props.feeds.meta
-							});
+							}, () => this.props.unsetPageLoader());
 						})
-						.catch(error => console.log(error));
+						.catch(error => {
+							console.log(error);
+							this.props.unsetPageLoader();
+						});
 				});
 			})
-			.catch(error => console.log(error));
-
-
+			.catch(error => {
+				console.log(error)
+				this.props.unsetPageLoader();
+			});
 	}
 
 	bottomScrollFetch(tab) {
@@ -241,7 +249,12 @@ class Exclusive extends React.Component {
 													<Col className="col-edit">
 														<Row className="feed-row">
 															<Col xs="2">
-																<Img alt={feed.program_title} className="program-rounded-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
+																<Img 
+																	alt={feed.program_title}
+																	unloader={<img className="program-rounded-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
+																	loader={<img className="program-rounded-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>} 
+																	className="program-rounded-thumbnail" 
+																	src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
 															</Col>
 															<Col xs="7">
 																<div onClick={this.goToDetail.bind(this, feed.program_id)} className="program-label">
@@ -260,6 +273,7 @@ class Exclusive extends React.Component {
 														{feed.type == 'photo' ?
 															(<Carousel
 																autoPlay
+																statusFormatter={(current, total) => `${current}/${total}`}
 																showThumbs={false}
 																showIndicators={true}
 																stopOnHover={true}
@@ -300,5 +314,6 @@ class Exclusive extends React.Component {
 
 export default connect(state => state, {
 	...contentActions,
-	...feedActions
+	...feedActions,
+	...pageActions
 })(Exclusive);
