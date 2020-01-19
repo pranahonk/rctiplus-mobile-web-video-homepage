@@ -9,15 +9,75 @@ and open the template in the editor.
 */
 .schedule-livetv {
 
-    width: 100%;
     height: 122px;
-    background-color: 
-
-    #282828;
-    position: static;
-    margin-top: -120px;
+    background-color: rgba(0, 0, 0, .459);
+    position: absolute;
+    top: calc(100% - 130px);
+    bottom: 5px;
+    left: 15px;
+    right: 15px;
+    padding: 12px;
     z-index: 2;
-    opacity: 0.6;
+    color: white;
+    font-size: 14px;
+    border-radius: 3px;
+
+    .carousel {
+        height: 100px;
+        .axis-vertical {
+            height: 100px;
+        }
+
+        .control-arrow {
+            opacity: 1;
+            left: 95%;
+            transform: rotate(90deg);
+        }
+
+        .control-next {
+            top: 90%;
+        }
+
+        .control-prev {
+            bottom: 90%;
+        }
+
+        .slide {
+            background-color: transparent;
+            text-align: left;
+            height: 100px;
+    
+            .channel {
+                margin-bottom: 0.5rem;
+                font-weight: 500;
+            }
+    
+            .box {
+                border-left: 2px solid transparent;
+                padding-left: 8px;
+                opacity: .46;
+
+                .title {
+                    font-size: 12px;
+                    margin-bottom: 0.01rem;
+                }
+    
+                .subtitle {
+                    font-size: 10px;
+                    margin-bottom: 0.3rem;
+                }
+            }
+
+            .current-live {
+                border-left: 2px solid #fa262f;
+                padding-left: 8px;
+                opacity: 1;
+                font-weight: 500;
+            }
+        }
+    }
+
+    
 
 }
 .legend{

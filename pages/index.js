@@ -108,8 +108,10 @@ class Index extends React.Component {
                         <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)}/>
                         {/* <NavDownloadApp /> */}
                         <Nav />
-                        <Carousel />
-                        <ScheduleTV />
+                        <Carousel>
+                            <ScheduleTV />
+                        </Carousel>
+                        
                         {/* <h3>process.env.is_show_sticky_ads</h3> */}
                         <StickyAds /> 
                         <Stories />

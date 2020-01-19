@@ -25,9 +25,9 @@ class Pnl_3 extends React.Component {
 						<Lazyload key={c.content_id} height={100} className="pnl_3">
 							<Img 
 								alt={c.program_title} 
-								unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-								loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-								src={[this.props.imagePath + this.props.resolution + c.portrait_image, '/static/placeholders/placeholder_landscape.png']} />
+								unloader={<img src="/static/placeholders/placeholder_potrait.png"/>}
+								loader={<img src="/static/placeholders/placeholder_potrait.png"/>}
+								src={[this.props.imagePath + this.props.resolution + c.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
 						</Lazyload>
 					))}
 				</Carousel>

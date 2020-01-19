@@ -26,7 +26,7 @@ class Crs extends Component {
 
     render() {
         return (
-                <div>
+                <div style={{ position: 'relative' }}>
                     <Carousel statusFormatter={(current, total) => `${current}/${total}`} autoPlay showThumbs={false} showIndicators={false} stopOnHover={true} showArrows={false} showStatus={false} swipeScrollTolerance={1} swipeable={true} >
                         {this.state.banner.map(b => (
                             <div key={b.id}>
@@ -35,6 +35,7 @@ class Crs extends Component {
                             </div>
                             ))}
                     </Carousel>
+                    {this.props.children}
                 </div>
                 );
     }
