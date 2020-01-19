@@ -4,12 +4,27 @@
     left: 0px;
     align-items: center;
     justify-content: space-between;
-    padding: 0.5rem 1rem;
+    padding: 2px 1rem;
     width: 100%;
     background-color: #171717;
     z-index: 10;
 }
 
-.nav-footer-icon {
-    color: #fff;
+.footer-wrapper-list {
+    font-size: 10px;
+    text-transform: capitalize;
+    
+    a {
+        text-decoration: none;
+        color: #d0d6e3;
+        font-weight: 300;
+        font-family: Helvetica;
+    }
+
+    .nav-footer-icon {
+        color: #fff;
+        width: 18px;
+        margin-bottom: 3px;
+    }
 }
+
