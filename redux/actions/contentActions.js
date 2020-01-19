@@ -27,31 +27,30 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
             let contents = [];
             if (response.data.status.code === 0) {
                 const data = response.data.data;
+                let promises = [];
                 for (let i = 0; i < data.length; i++) {
-                    let content = {}
                     if (data[i].total_content > 0) {
-                        try {
-                            const res = await axios.get(`/v1/homepage/${data[i].id}/contents?platform=${platform}&page=${page}&length=${length}`);
-                            if (res.data.status.code === 0) {
-                                content = {
-                                    content: res.data.data,
-                                    ...data[i]
-                                };
-                                contents.push(content);
-                            }
-                            else if (res.data.status.code === 13) {
-                                showSignInAlert(`Please <b>Sign In</b><br/>
+                        promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?platform=${platform}&page=${page}&length=${length}`));
+                    }
+                }
+                
+                const results = await Promise.all(promises);
+                for (let i = 0; i < results.length; i++) {
+                    let content = {}
+                    if (results[i].status === 200 && results[i].data.status.code === 0) {
+                        content = {
+                            content: results[i].data.data,
+                            ...data[i]
+                        };
+                    }
+                    else if (results[i].data.status.code === 13) {
+                        showSignInAlert(`Please <b>Sign In</b><br/>
                                 Woops! Gonna sign in first!<br/>
                                 Only a click away and you<br/>
                                 can continue to enjoy<br/>
                                 <b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
-                            }
-                        }
-                        catch (e) {
-                            content = { content: [], ...data[i] };
-                            contents.push(content);
-                        }
                     }
+                    contents.push(content);
                 }
                 dispatch({ type: 'HOMEPAGE_CONTENT', data: contents, meta: response.data.meta });
             }
