@@ -62,7 +62,7 @@ class Index extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getContents(this.state.page)
+        this.props.getContents(this.state.page, 5)
             .then(response => {
                 this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta }, () => this.props.unsetPageLoader());
             })
@@ -76,7 +76,7 @@ class Index extends React.Component {
         const page = this.state.page + 1;
         if (this.state.fetchAllowed) {
             this.LoadingBar.continuousStart();
-            this.props.getContents(page).then(response => {
+            this.props.getContents(page, 5).then(response => {
                 const homepageContents = this.state.contents;
                 if (this.props.contents.homepage_content.length > 0) {
                     homepageContents.push.apply(homepageContents, this.props.contents.homepage_content);
@@ -111,11 +111,9 @@ class Index extends React.Component {
                         <Carousel>
                             <ScheduleTV />
                         </Carousel>
-                        
                         {/* <h3>process.env.is_show_sticky_ads</h3> */}
                         <StickyAds /> 
                         <Stories />
-                        {/* <ReactJWPlayer playerId="example-id" playerScript="https://cdn.jwplayer.com/libraries/Vp85L1U1.js" playlist="https://cdn.jwplayer.com/v2/playlists/ZTs6tMfb"/> */}
                         {contents.map(content => {
                             switch (content.display_type) {
                                 case 'horizontal_landscape_large':

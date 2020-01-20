@@ -40,7 +40,6 @@ class LiveTv extends React.Component {
                             schedules.push(epg);
                         }
 
-                        console.log(schedules);
                         this.setState({ schedules: schedules });
                     });
                 }
@@ -51,18 +50,32 @@ class LiveTv extends React.Component {
     render() {
         return (
             <div className="schedule-livetv">
-                <Carousel style={{ height: '100%' }} axis="vertical" statusFormatter={(current, total) => `${current}/${total}`} showThumbs={false} showIndicators={false} stopOnHover={true} showStatus={false} autoPlay swipeable={true} >
+                <Carousel style={{ height: '100%' }} autoPlay axis="vertical" statusFormatter={(current, total) => `${current}/${total}`} showThumbs={false} showIndicators={false} stopOnHover={false} infiniteLoop showStatus={false} swipeable>
                     {this.state.schedules.map((s, i) => (
                         <div className="item" key={i}>
                             <p className="channel">{`${s.name} - Live Streaming`}</p>
-                            <div className="box current-live">
-                                <p className="title">NOW</p>
-                                <p className="subtitle">01:00 - 01:30 - Loveless</p>
-                            </div>
-                            <div className="box">
-                                <p className="title">NOW</p>
-                                <p className="subtitle">01:00 - 01:30 - Loveless</p>
-                            </div>
+                            {s.epg.map((e, j) => {
+                                if (j === 0) {
+                                    return (
+                                        <div className="box current-live">
+                                            <p className="title">NOW</p>
+                                            <p className="subtitle">{`${s.s} - ${s.e} - ${s.title}`}</p>
+                                        </div>
+                                    );
+                                }
+                                else if (j >= 2) {
+                                    return (<span></span>);
+                                }
+
+                                return (
+                                    <div className="box">
+                                        <p className="title">NEXT</p>
+                                        <p className="subtitle">{`${s.s} - ${s.e} - ${s.title}`}</p>
+                                    </div>
+                                );
+                            })}
+                            
+                            
                         </div>
                     ))}
                 </Carousel>

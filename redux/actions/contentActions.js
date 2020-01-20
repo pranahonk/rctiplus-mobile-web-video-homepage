@@ -27,10 +27,16 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
             let contents = [];
             if (response.data.status.code === 0) {
                 const data = response.data.data;
+                let selectedData = [];
                 let promises = [];
                 for (let i = 0; i < data.length; i++) {
                     if (data[i].total_content > 0) {
                         promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?platform=${platform}&page=${page}&length=${length}`));
+                        selectedData.push(data[i]);
+                    }
+                    else if (data[i].type === 'custom' && data[i].api) {
+                        promises.push(axios.get(data[i].api));
+                        selectedData.push(data[i]);
                     }
                 }
                 
@@ -40,7 +46,7 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                     if (results[i].status === 200 && results[i].data.status.code === 0) {
                         content = {
                             content: results[i].data.data,
-                            ...data[i]
+                            ...selectedData[i]
                         };
                     }
                     else if (results[i].data.status.code === 13) {
