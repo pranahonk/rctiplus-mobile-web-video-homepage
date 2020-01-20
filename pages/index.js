@@ -37,8 +37,6 @@ import StickyAds from '../components/Includes/Banner/StickyAds';
 
 //load live tv schedule
 import ScheduleTV from '../components/Includes/Schedules/LiveTv';
-//load home page scss
-// import '../assets/scss/components/homepage.scss';
 
 class Index extends React.Component {
     static async getInitialProps(ctx) {
@@ -98,7 +96,7 @@ class Index extends React.Component {
             return (
                 <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
                     <div>
-                        <BottomScrollListener offset={20} onBottom={this.bottomScrollFetch.bind(this)} />
+                        <BottomScrollListener offset={8} onBottom={this.bottomScrollFetch.bind(this)} />
                         <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)}/>
                         {/* <NavDownloadApp /> */}
                         <Nav />

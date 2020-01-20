@@ -58,6 +58,7 @@ export const setDeviceId = () => {
 
 export const getVisitorToken = () => {
     const visitorToken = cookie.get('VISITOR_TOKEN');
+//    console.log(visitorToken);
     if (visitorToken) {
         const data = JSON.parse(visitorToken);
         return data['VALUE'];
@@ -79,15 +80,16 @@ export const getNewsToken = () => {
 export const setVisitorToken = async () => {
     try {
         let visitorToken = cookie.get('VISITOR_TOKEN');
+        let cookieDataToken = '';
         if (!visitorToken) {
             const response = await axios.get(`/v1/visitor?platform=mweb&device_id=${new DeviceUUID().get()}`);
             if (response.status === 200 && response.data.status.code === 0) {
-                cookie.set('VISITOR_TOKEN', JSON.stringify({
+                 cookieDataToken = cookie.set('VISITOR_TOKEN', JSON.stringify({
                     NAME: 'VISITOR_TOKEN',
                     VALUE: response.data.data.access_token,
                     CREATED_AT: new Date()
                 }));
-                return JSON.parse(cookie.get('VISITOR_TOKEN'));
+                return JSON.parse(cookieDataToken);
             }
         } else {
             visitorToken = JSON.parse(cookie.get('VISITOR_TOKEN'));
@@ -95,19 +97,19 @@ export const setVisitorToken = async () => {
             if (dayDiff > 7) {
                 const response = await axios.get(`/v1/visitor?platform=mweb&device_id=${new DeviceUUID().get()}`);
                 if (response.status === 200 && response.data.status.code === 0) {
-                    cookie.set('VISITOR_TOKEN', JSON.stringify({
+                    cookieDataToken = cookie.set('VISITOR_TOKEN', JSON.stringify({
                         NAME: 'VISITOR_TOKEN',
                         VALUE: response.data.data.access_token,
                         CREATED_AT: new Date()
                     }));
-                    return JSON.parse(cookie.get('VISITOR_TOKEN'));
+                    return JSON.parse(visitorToken);
                 }
             } else {
-                return JSON.parse(cookie.get('VISITOR_TOKEN'));
+                return JSON.parse(visitorToken);
             }
         }
     } catch (error) {
-        console.log(error);
+//        console.log(error);
     }
 
     return null;
@@ -125,7 +127,6 @@ export const setNewsToken = async () => {
                 baseURL: NEWS_API + '/api'
             });
 
-            console.log(response);
             if (response.status === 200 && response.data.status.code === 0) {
                 cookie.set('NEWS_TOKEN', JSON.stringify({
                     NAME: 'NEWS_TOKEN',

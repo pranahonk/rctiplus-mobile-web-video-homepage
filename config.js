@@ -14,7 +14,7 @@ export const DEV_API = 'https://rc-api.rctiplus.com';
 // export const DEV_API = 'https://dev-api.rctiplus.com';
 
 
-export const NEWS_API = 'https://rc-api-news.rctiplus.id';
+export const NEWS_API = 'https://api-news.rctiplus.id';
 export const REWARDS_API = 'https://rc-api-rewards.rctiplus.id';
 export const STATIC = 'https://rc-static.rctiplus.id';
 
@@ -31,7 +31,7 @@ export const CONVIVA_TRACKING_KEY = '25f1bbffdca1e0a4d059c0d8f802234bbb97dcf1';
 export const CONVIVA_TRACKING_HOST = 'mnc-test.testonly.conviva.com';
 
 export const VISITOR_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjAsInRva2VuIjoiZmUyZWMwM2E5ZTliYTUxYiIsInBsIjoid2ViIn0.5bAp_UT0o8DfAxx5UAQDG5U-mc0ZjxxdKivuA7Y3v_g';
-
+export const NEWS_TOKEN = '';
 export const IS_SHOWN = true;
 
 
