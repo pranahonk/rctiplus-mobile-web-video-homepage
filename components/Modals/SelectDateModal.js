@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import contentActions from '../../redux/actions/contentActions';
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 
+import { formatDate } from '../../utils/dateHelpers';
+
 import { Modal, ModalBody } from 'reactstrap';
 
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -18,8 +20,26 @@ class SelectDateModal extends React.Component {
     }
 
     selectDate(date) {
+        const currentDate = new Date();
         this.props.setCatchupDate(date);
-        this.props.toggle();
+        this.props.getEPG(formatDate(new Date(date)), this.props.chats.channel_code)
+            .then(response => {
+                let catchup = response.data.data.filter(e => {
+                    if (e.s > e.e) {
+                        return currentDate.getTime() > new Date(new Date(date + ' ' + e.e).getTime() + (1 * 24 * 60 * 60 * 1000)).getTime();
+                    }
+                    return currentDate.getTime() > new Date(date + ' ' + e.e).getTime();
+                });
+                this.setState({ catchup: catchup }, () => {
+                    this.props.setCatchupData(catchup);
+                    this.props.toggle();
+                });
+            })
+            .catch(error => {
+                console.log(error);
+                this.props.toggle();
+            });
+        
     }
 
     render() {
