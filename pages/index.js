@@ -52,7 +52,7 @@ class Index extends React.Component {
         super(props);
         this.state = {
             contents: [],
-            page: 1,
+            page: 2,
             fetchAllowed: true,
             meta: null,
             resolution: 593
@@ -117,7 +117,7 @@ class Index extends React.Component {
                         {contents.map(content => {
                             switch (content.display_type) {
                                 case 'horizontal_landscape_large':
-                                    return <Panel1 loadingBar={this.LoadingBar} key={content.id} contentId={content.id}  title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution}/>;
+                                    return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id}  title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution}/>;
 
                                 case 'horizontal_landscape':
                                     return <Panel2 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution}/>;

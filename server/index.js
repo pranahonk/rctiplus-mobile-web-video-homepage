@@ -43,6 +43,17 @@ const handle = app.getRequestHandler();
       return app.render(req, res, '/programs', { id: req.params.id, title: req.params.title });
     });
 
+    // TODO
+    server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
+      return app.render(req, res, '/detail/content', { 
+        id: req.params.id, 
+        title: req.params.title,
+        type: req.params.content_type,
+        content_id: req.params.content_id,
+        content_title: req.params.content_title 
+      });
+    });
+
     server.get('/tv/:channel', (req, res) => {
       return app.render(req, res, '/tv', { channel: req.params.channel });
     });

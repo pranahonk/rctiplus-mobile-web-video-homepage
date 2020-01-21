@@ -1,6 +1,7 @@
 import React from 'react';
 import Img from 'react-image';
 import { connect } from 'react-redux';
+import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 
 import contentActions from '../../redux/actions/contentActions';
@@ -20,6 +21,22 @@ class Pnl_2 extends React.Component {
 			length: 7,
 			endpage: false
 		};
+	}
+
+	link(data) {
+		switch (data.content_type) {
+			case 'special':
+				window.open(data.link, '_blank');
+				break;
+
+			case 'program':
+				Router.push(`/programs/${data.program_id}/${data.program_title.replace(' ', '-').toLowerCase()}`);
+				break;
+
+			default:
+				Router.push(`/programs/${data.program_id}/${data.program_title.replace(' ', '-').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(' ', '-').toLowerCase()}`);
+				break;
+		}
 	}
 
 	loadMore() {
@@ -56,7 +73,7 @@ class Pnl_2 extends React.Component {
 					{scrollRef => (
 						<div ref={scrollRef} className="swiper-container">
 							{this.state.contents.map(c => (
-									<div key={c.content_id} className="swiper-slide">
+									<div onClick={() => this.link(c)} key={c.content_id} className="swiper-slide">
 										<div>
 											<Img 
 												alt={c.program_title} 

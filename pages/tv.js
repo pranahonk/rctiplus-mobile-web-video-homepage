@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import Router, { withRouter } from 'next/router';
+import { withRouter } from 'next/router';
 import initialize from '../utils/initialize';
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 
