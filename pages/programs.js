@@ -1,8 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import Img from 'react-image';
-import Lazyload from 'react-lazyload';
-import { Carousel } from 'react-responsive-carousel';
+import BottomScrollListener from 'react-bottom-scroll-listener';
+import LoadingBar from 'react-top-loading-bar';
+
 import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
@@ -111,7 +112,10 @@ class Detail extends React.Component {
             program_in_list: false,
             bookmarked_episode: [],
             bookmarked_extra: [],
-            bookmarked_clip: []
+            bookmarked_clip: [],
+            loading: false,
+            endpage: false,
+            page: 1
         };
 
         this.player = this.player2 = null;
@@ -138,11 +142,36 @@ class Detail extends React.Component {
         showAlert('To be able to watch this episode offline, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); });
     }
 
+    loadMore() {
+		if (!this.state.loading && !this.state.endpage) {
+			const page = this.state.page + 1;
+			this.setState({ loading: true }, () => {
+				this.LoadingBar && this.LoadingBar.continuousStart();
+				this.props.getRelatedProgram(this.props.router.query.id, page, 10)
+					.then(response => {
+						if (response.status === 200 && response.data.status.code === 0) {
+							const contents = this.state.related_programs;
+							contents.push.apply(contents, response.data.data);
+							this.setState({ loading: false, related_programs: contents, page: page, endpage: response.data.data.length < 10 });
+						}
+						else {
+							this.setState({ loading: false });
+						}
+						this.LoadingBar && this.LoadingBar.complete();
+					})
+					.catch(error => {
+						console.log(error);
+						this.setState({ loading: false, endpage: true })
+						this.LoadingBar && this.LoadingBar.complete();
+					});
+			});
+		}
+	}
+
     componentDidMount() {
         this.props.getMyList(this.props.router.query.id)
             .then(response => {
                 this.setState({ mylist_data: response.data.data }, () => {
-                    console.log(this.state.mylist_data);
                     const bookmarkIndex = this.state.mylist_data.program.findIndex(b => b.id == this.props.router.query.id);
                     if (bookmarkIndex !== -1) {
                         this.setState({ program_in_list: this.state.mylist_data.program[bookmarkIndex].is_bookmark == 1 });
@@ -446,27 +475,6 @@ class Detail extends React.Component {
             }
         }
 
-        // if (episode > 0) {
-        //     tabs.push(<NavItem key={'nav-1'} className="menu-title">
-        //                 <NavLink onClick={this.toggleTab.bind(this, '1', 'Episode')} className={classnames({ active: this.state.active_tab === '1' })}>Episode</NavLink>
-        //             </NavItem>);
-        // }
-        // if (extra > 0) {
-        //     tabs.push(<NavItem key={'nav-2'} className="menu-title">
-        //                 <NavLink onClick={this.toggleTab.bind(this, '2', 'Extra')} className={classnames({ active: this.state.active_tab === '2' })}>Extras</NavLink>
-        //             </NavItem>);
-        // }
-        // if (clip > 0) {
-        //     tabs.push(<NavItem key={'nav-3'} className="menu-title">
-        //                 <NavLink onClick={this.toggleTab.bind(this, '3', 'Clip')} className={classnames({ active: this.state.active_tab === '3' })}>Clips</NavLink>
-        //             </NavItem>);
-        // }
-        // if (photo > 0) {
-        //     tabs.push(<NavItem key={'nav-4'} className="menu-title">
-        //                 <NavLink onClick={this.toggleTab.bind(this, '4', 'Photo')} className={classnames({ active: this.state.active_tab === '4' })}>Photos</NavLink>
-        //             </NavItem>);
-        // }
-
         if (this.props.initial == false) {
             return (
                 <div>
@@ -493,6 +501,7 @@ class Detail extends React.Component {
                     <meta name="description" content={this.props.initial.data.summary}/>
                 </Head>
                 <Navbar />
+                <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)}/>
                 <PlayerModal 
                     open={this.state.modal}
                     toggle={this.toggle.bind(this)}
@@ -676,26 +685,18 @@ class Detail extends React.Component {
                 <div className="related-box">
                     <div className="related-menu">
                         <p className="related-title"><strong>Related</strong></p>
-                        <div className="related-slider">
-                            <Carousel
-                                id="detail-carousel"
-                                showThumbs={false}
-                                showIndicators={false}
-                                stopOnHover={true}
-                                showArrows={false}
-                                showStatus={false}
-                                swipeScrollTolerance={1}
-                                onClickItem={(index) => {
-                                    Router.push('/programs/' + this.state.related_programs[index].id + '/' + this.state.related_programs[index].title.toLowerCase().replace(' ', '-'));
-                                }}
-                                swipeable={true}>
-                                {this.state.related_programs.map(rp => (
-                                    <Lazyload key={rp.id} height={100}>
-                                        <Img alt={rp.title} src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
-                                    </Lazyload>
-                                ))}
-                            </Carousel>
-                        </div>
+                        <BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
+                            {scrollRef => (
+                                <div ref={scrollRef} className="related-slider">
+                                    {this.state.related_programs.map(rp => (
+                                        <div key={rp.id} className="related-slide">
+                                            <Img alt={rp.title} src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </BottomScrollListener>
+                        
                     </div>
                 </div>
             </Layout>
