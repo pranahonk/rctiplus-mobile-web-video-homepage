@@ -161,6 +161,9 @@ class MyList extends React.Component {
 							striped={!(i % 2)}
 							imageSrc={this.state.meta.image_path + (this.props.resolution ? this.props.resolution : this.state.resolution) + l.image}
 							title={l.title}
+							link={() => {
+								Router.push(`/programs/${l.program_id}/${l.title.replace(' ', '-').toLowerCase()}`);
+							}}
 							subtitle={l.total_content + ' video'} />)}
 
 					{showMoreButton}
