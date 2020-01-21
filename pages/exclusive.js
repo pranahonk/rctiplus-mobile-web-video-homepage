@@ -275,10 +275,10 @@ class Exclusive extends React.Component {
 																autoPlay
 																statusFormatter={(current, total) => `${current}/${total}`}
 																showThumbs={false}
-																showIndicators={true}
+																showIndicators={feed.images.length > 1}
 																stopOnHover={true}
 																showArrows={false}
-																showStatus={true}
+																showStatus={feed.images.length > 1}
 																swipeScrollTolerance={1}
 																swipeable={true}>
 																{feed.images.map((img, i) => (
