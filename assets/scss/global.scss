@@ -301,6 +301,53 @@ body {
     background: #171717;
 }
 
+.pnl_horizontal_landscape .swiper-container {
+    overflow: auto;
+    white-space: nowrap;
+    display: block;
+    scrollbar-width: none;
+
+    .swiper-slide {
+        max-width: 100px;
+        min-width: 100px;
+        height: 100%;
+        margin: 3px;
+        position: relative;
+        text-align: center;
+        background: #171717;
+        display: inline-block;
+
+        img {
+            width: 100%;
+        }
+    }
+}
+
+.horizontal_landscape_large .swiper-container {
+    overflow: auto;
+    white-space: nowrap;
+    display: block;
+    scrollbar-width: none;
+
+    .swiper-slide {
+        height: 100%;
+        margin: 3px;
+        position: relative;
+        text-align: center;
+        background: #171717;
+        display: inline-block;
+        
+        img {
+            width: 100%;
+        }
+    }
+}
+
+.pnl_horizontal_landscape .swiper-container::-webkit-scrollbar, 
+.horizontal_landscape_large .swiper-container::-webkit-scrollbar {
+    display: none;
+}
+
 #pnl_horizontal .carousel .slide {
     min-width: 35%;
     height: 100%;
@@ -475,7 +522,8 @@ h5 {
 }
 
 .stories.carousel .story>.item-link>.item-preview {
-    height: 100%;
+    height: 90px;
+    width: 90px;
 }
 
 .form-control:focus {

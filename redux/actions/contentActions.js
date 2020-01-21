@@ -23,7 +23,8 @@ axios.interceptors.response.use(response => {
 const getContents = (page = 1, length = 20, platform = 'mweb') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/homepage?platform=${platform}&page=${page}&length=${length}`);
+            // const response = await axios.get(`/v1/homepage?platform=${platform}&page=${page}&length=${length}`);
+            const response = await axios.get(`/v1/homepage?page=${page}&length=${length}`);
             let contents = [];
             if (response.data.status.code === 0) {
                 const data = response.data.data;
@@ -31,7 +32,8 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                 let promises = [];
                 for (let i = 0; i < data.length; i++) {
                     if (data[i].total_content > 0) {
-                        promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?platform=${platform}&page=${page}&length=${length}`));
+                        // promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?platform=${platform}&page=${1}&length=${7}`));
+                        promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?page=${1}&length=${7}`));
                         selectedData.push(data[i]);
                     }
                     else if (data[i].type === 'custom' && data[i].api) {
