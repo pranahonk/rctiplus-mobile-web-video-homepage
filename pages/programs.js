@@ -689,7 +689,7 @@ class Detail extends React.Component {
                             {scrollRef => (
                                 <div ref={scrollRef} className="related-slider">
                                     {this.state.related_programs.map(rp => (
-                                        <div key={rp.id} className="related-slide">
+                                        <div onClick={() => Router.push(`/programs/${rp.id}/${rp.title.replace(' ', '-').toLowerCase()}`)} key={rp.id} className="related-slide">
                                             <Img alt={rp.title} src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
                                         </div>
                                     ))}

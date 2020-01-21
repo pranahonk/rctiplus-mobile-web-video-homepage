@@ -4,6 +4,9 @@ import Router from 'next/router';
 import Lazyload from 'react-lazyload';
 import { Carousel } from 'react-responsive-carousel';
 import Img from 'react-image';
+import BottomScrollListener from 'react-bottom-scroll-listener';
+import LoadingBar from 'react-top-loading-bar';
+
 import initialize from '../../utils/initialize';
 import bookmarkActions from '../../redux/actions/bookmarkActions';
 import searchActions from '../../redux/actions/searchActions';
@@ -38,7 +41,10 @@ class MyList extends React.Component {
 			recommendations: [],
 			current_page: 1,
 			length: 10,
-			order_by: 'date'
+			order_by: 'date',
+			recommendation_page: 1,
+			loading: false,
+			endpage: false
 		};
 	}
 
@@ -47,31 +53,57 @@ class MyList extends React.Component {
 	}
 
 	showMore() {
-        this.props.getBookmark(this.state.current_page, this.state.length)
+		this.props.getBookmark(this.state.current_page, this.state.length)
 			.then(response => {
 				const data = response.data.data;
 				let mylist = this.state.mylist;
 				mylist.push.apply(mylist, mylist);
 
 				this.setState({ mylist: mylist, current_page: this.state.current_page + 1 }, () => {
-					this.props.setBookmarkShowMoreAllowed(data.length >= this.state.length );
+					this.props.setBookmarkShowMoreAllowed(data.length >= this.state.length);
 					this.orderBy(this.state.order_by);
 				});
 			})
 			.catch(error => console.log(error));
 	}
-	
+
+	showMoreRecommendation() {
+		if (!this.state.loading && !this.state.endpage) {
+			const page = this.state.recommendation_page + 1;
+			this.setState({ loading: true }, () => {
+				this.LoadingBar && this.LoadingBar.continuousStart();
+				this.props.getRecommendation(page, this.state.length)
+					.then(response => {
+						if (response.status === 200 && response.data.status.code === 0) {
+							const contents = this.state.recommendations;
+							contents.push.apply(contents, response.data.data);
+							this.setState({ loading: false, recommendations: contents, recommendation_page: page, endpage: response.data.data.length < 10 });
+						}
+						else {
+							this.setState({ loading: false });
+						}
+						this.LoadingBar && this.LoadingBar.complete();
+					})
+					.catch(error => {
+						console.log(error);
+						this.setState({ loading: false, endpage: true })
+						this.LoadingBar && this.LoadingBar.complete();
+					});
+			});
+		}
+	}
+
 	orderBy(order) {
 		this.setState({ order_by: order }, () => {
 			switch (this.state.order_by) {
 				case 'title':
-					let mylist = this.state.mylist;
+					let mylist = this.state.mylist.slice();
 					mylist.sort((a, b) => (a.title > b.title) ? 1 : -1);
 					this.setState({ ordered_list: mylist });
 					break;
 
 				default:
-					this.setState({ ordered_list: this.state.mylist });
+					this.setState({ ordered_list: this.state.mylist.slice() });
 					break;
 			}
 		});
@@ -83,31 +115,33 @@ class MyList extends React.Component {
 				const data = response.data.data;
 				const meta = response.data.meta;
 				this.setState({ mylist: data, ordered_list: data, meta: meta, current_page: 2 }, () => {
-					this.props.setBookmarkShowMoreAllowed(data.length >= this.state.length );
+					this.props.setBookmarkShowMoreAllowed(data.length >= this.state.length);
 				});
 			})
 			.catch(error => console.log(error));
 
-		this.props.getRecommendation()
+		this.props.getRecommendation(this.state.recommendation_page, this.state.length)
 			.then(response => {
-				this.setState({ recommendations: response.data.data });
+				this.setState({ recommendations: response.data.data, recommendation_page: this.state.recommendation_page + 1 });
 			})
 			.catch(error => console.log(error));
 	}
 
 	render() {
 		let showMoreButton = '';
-        if (this.props.bookmarks.show_more_allowed) {
-            showMoreButton = (<div className="list-footer" style={{ margin: 10 }}>
-                                <Button onClick={this.showMore.bind(this)} size="xs" className="show-more-button">
-                                    <ExpandMoreIcon /> Show More
+		if (this.props.bookmarks.show_more_allowed) {
+			showMoreButton = (<div className="list-footer" style={{ margin: 10 }}>
+				<Button onClick={this.showMore.bind(this)} size="xs" className="show-more-button">
+					<ExpandMoreIcon /> Show More
                                 </Button>
-                            </div>);
-        }
+			</div>);
+		}
+
 
 		return (
 			<Layout title="My List">
 				<NavBack title="My List" />
+				<LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)}/>
 				<div className="wrapper-content container-box-ml" style={{ marginTop: 50 }}>
 					<div className="header-list">
 						<p className="header-subtitle">My List</p>
@@ -128,32 +162,24 @@ class MyList extends React.Component {
 							imageSrc={this.state.meta.image_path + (this.props.resolution ? this.props.resolution : this.state.resolution) + l.image}
 							title={l.title}
 							subtitle={l.total_content + ' video'} />)}
-					
+
 					{showMoreButton}
 
 					<div className="related-box">
 						<div className="related-menu">
-							<p className="related-title-ml">Related</p>
-							<div className="related-slider">
-								<Carousel
-									id="detail-carousel"
-									showThumbs={false}
-									showIndicators={false}
-									stopOnHover={true}
-									showArrows={false}
-									showStatus={false}
-									swipeScrollTolerance={1}
-									onClickItem={(index) => {
-										Router.push('/detail/program/' + this.state.recommendations[index].id);
-									}}
-									swipeable={true}>
-									{this.state.recommendations.map(rp => (
-										<Lazyload key={rp.id} height={100}>
-											<Img alt={rp.title} src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
-										</Lazyload>
-									))}
-								</Carousel>
-							</div>
+							<p className="related-title"><strong>Related</strong></p>
+							<BottomScrollListener offset={40} onBottom={this.showMoreRecommendation.bind(this)}>
+								{scrollRef => (
+									<div ref={scrollRef} className="related-slider">
+										{this.state.recommendations.map(rp => (
+											<div onClick={() => Router.push(`/programs/${rp.id}/${rp.title.replace(' ', '-').toLowerCase()}`)} key={rp.id} className="related-slide">
+												<Img alt={rp.title} src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
+											</div>
+										))}
+									</div>
+								)}
+							</BottomScrollListener>
+
 						</div>
 					</div>
 
