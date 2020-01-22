@@ -1,4 +1,5 @@
 import React from 'react';
+import Router from 'next/router';
 import { connect } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 
@@ -52,25 +53,25 @@ class LiveTv extends React.Component {
             <div className="schedule-livetv">
                 <Carousel style={{ height: '100%' }} autoPlay axis="vertical" statusFormatter={(current, total) => `${current}/${total}`} showThumbs={false} showIndicators={false} stopOnHover={false} infiniteLoop showStatus={false} swipeable>
                     {this.state.schedules.map((s, i) => (
-                        <div className="item" key={i}>
+                        <div className="item" key={i} onClick={() => Router.push(`/tv/${s.channel_code}`)}>
                             <p className="channel">{`${s.name} - Live Streaming`}</p>
                             {s.epg.map((e, j) => {
                                 if (j === 0) {
                                     return (
-                                        <div className="box current-live">
+                                        <div key={j} className="box current-live">
                                             <p className="title">NOW</p>
-                                            <p className="subtitle">{`${s.s} - ${s.e} - ${s.title}`}</p>
+                                            <p className="subtitle">{`${e.s} - ${e.e} - ${e.title}`}</p>
                                         </div>
                                     );
                                 }
                                 else if (j >= 2) {
-                                    return (<span></span>);
+                                    return (<span key={j}></span>);
                                 }
 
                                 return (
-                                    <div className="box">
+                                    <div key={j} className="box">
                                         <p className="title">NEXT</p>
-                                        <p className="subtitle">{`${s.s} - ${s.e} - ${s.title}`}</p>
+                                        <p className="subtitle">{`${e.s} - ${e.e} - ${e.title}`}</p>
                                     </div>
                                 );
                             })}

@@ -28,11 +28,15 @@ class Pnl_1 extends React.Component {
 	link(data) {
 		switch (data.content_type) {
 			case 'special':
-				window.open(data.link, '_blank');
+				window.open(data.url, '_blank');
 				break;
 
 			case 'program':
 				Router.push(`/programs/${data.program_id}/${data.program_title.replace(' ', '-').toLowerCase()}`);
+				break;
+
+			case 'live':
+				// TODO
 				break;
 
 			default:

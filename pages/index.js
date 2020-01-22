@@ -52,7 +52,7 @@ class Index extends React.Component {
         super(props);
         this.state = {
             contents: [],
-            page: 2,
+            page: 1,
             fetchAllowed: true,
             meta: null,
             resolution: 593
