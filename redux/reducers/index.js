@@ -16,6 +16,9 @@ import othersReducer from './othersReducer';
 import playerReducer from './playerReducer';
 import pageReducer from './pageReducer';
 
+import trendingSubCategory from './trending/subCategory';
+//import trendingContent from './trending/content';
+
 const rootReducer = combineReducers({
     authentication: authReducer,
     contents: contentReducer,
@@ -32,7 +35,9 @@ const rootReducer = combineReducers({
     likes: likeReducer,
     others: othersReducer,
     players: playerReducer,
-    pages: pageReducer
+    pages: pageReducer,
+    trending_sub_category: trendingSubCategory,
+//    trendingContent: trendingContent
 });
 
 export default rootReducer;

@@ -20,13 +20,13 @@ import PlayerModal from '../components/Modals';
 import ActionSheet from '../components/Modals/ActionSheet';
 
 import {
-	TabContent,
-	TabPane,
-	Nav,
-	NavItem,
-	NavLink,
-	Row,
-	Col
+TabContent,
+        TabPane,
+        Nav,
+        NavItem,
+        NavLink,
+        Row,
+        Col
 } from 'reactstrap';
 
 import ShareIcon from '@material-ui/icons/Share';

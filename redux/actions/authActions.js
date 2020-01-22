@@ -13,7 +13,7 @@ const axios = ax.create({
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
-console.log('AUTH ACTIONS [ACCESS TOKEN]:', accessToken);
+//console.log('AUTH ACTIONS [ACCESS TOKEN]:', accessToken);
 
 const setDeviceId = deviceId => {
     return dispatch => dispatch({

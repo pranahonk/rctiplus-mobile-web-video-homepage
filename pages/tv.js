@@ -269,7 +269,6 @@ class Tv extends React.Component {
 			</Layout>
 		);
 	}
-
 }
 
 export default connect(state => state, liveAndChatActions)(withRouter(Tv));

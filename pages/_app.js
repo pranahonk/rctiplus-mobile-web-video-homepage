@@ -5,21 +5,21 @@ import { register, unregister } from 'next-offline/runtime';
 import { initStore } from '../redux';
 import { setNewsToken, setVisitorToken, getVisitorToken, getNewsToken } from '../utils/cookie';
 
-export default withRedux(initStore, { debug: false })(
-	class MyApp extends App {
-		static async getInitialProps({ Component, ctx }) {
-			return {
-				pageProps: {
-					...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {})
-				}
-			};
-		}
+export default withRedux(initStore, {debug: false})(
+        class MyApp extends App {
+    static async getInitialProps( { Component, ctx }) {
+        return {
+            pageProps: {
+                ...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {})
+            }
+        };
+    }
 
-		componentDidMount() {
-			setVisitorToken();
-			setNewsToken();
-			console.log('VISITOR TOKEN:', getVisitorToken());
-			console.log('NEWS TOKEN:', getNewsToken());
+    componentDidMount() {
+        setVisitorToken();
+        setNewsToken();
+        //console.log('VISITOR TOKEN:', getVisitorToken());
+        //console.log('NEWS TOKEN:', getNewsToken());
 
 			// 4kuG@nteng
 			conviva.integrate({
@@ -30,27 +30,27 @@ export default withRedux(initStore, { debug: false })(
 			console.log('conviva integrated');
 			
 			register();
-		}
+    }
+    
+    componentWillUnmount() {
+        unregister();
+    }
 
-		componentWillUnmount() {
-			unregister();
-		}
+    render() {
+        const {Component, pageProps, store} = this.props;
+        // return (
+        // 	<Container>
+        // 		<Provider store={store}>
+        // 			<Component {...pageProps} />
+        // 		</Provider>
+        // 	</Container>
+        // );
 
-		render() {
-			const { Component, pageProps, store } = this.props;
-			// return (
-			// 	<Container>
-			// 		<Provider store={store}>
-			// 			<Component {...pageProps} />
-			// 		</Provider>
-			// 	</Container>
-			// );
-
-			return (
-				<Provider store={store}>
-					<Component {...pageProps} />
-				</Provider>
-			);
-		}
-	}
+        return (
+                <Provider store={store}>
+                    <Component {...pageProps} />
+                </Provider>
+                );
+    }
+}
 );
