@@ -61,12 +61,12 @@ class Exclusive extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getContents(1).then(() => {
-            this.setState({
-                contents: this.props.contents.homepage_content,
-                meta: this.props.contents.meta
-            });
-        });
+//        this.props.getContents(1).then(() => {
+//            this.setState({
+//                contents: this.props.contents.homepage_content,
+//                meta: this.props.contents.meta
+//            });
+//        });
 
         this.props.getExclusiveCategory()
                 .then(response => {
@@ -219,15 +219,13 @@ class Exclusive extends React.Component {
                 
                     <div className="nav-exclusive-wrapper">
                         <Nav tabs id="exclusive">
-                
                             {this.state.categories.map((c, i) => (
-                                        <NavItem key={i} className="exclusive-item">
-                                            <NavLink
-                                                onClick={this.toggleTab.bind(this, i + 1, c.name)}
-                                                className={classnames({active: this.state.active_tab == i + 1})}>{c.name}</NavLink>
-                                        </NavItem>
-                                            ))}
-                
+                                <NavItem key={i} className="exclusive-item">
+                                    <NavLink
+                                        onClick={this.toggleTab.bind(this, i + 1, c.name)}
+                                        className={classnames({active: this.state.active_tab == i + 1})}>{c.name}</NavLink>
+                                </NavItem>
+                            ))}
                         </Nav>
                         <TabContent className="container-box" activeTab={this.state.active_tab}>
                             {this.state.categories.map((c, i) => (
@@ -257,32 +255,32 @@ class Exclusive extends React.Component {
                                                                                 </Col>
                                                                             </Row>
                                                                             {feed.type == 'photo' ?
-                                                                                                                    (<Carousel
-                                                                                                                        autoPlay
-                                                                                                                        showThumbs={false}
-                                                                                                                        showIndicators={true}
-                                                                                                                        stopOnHover={true}
-                                                                                                                        showArrows={false}
-                                                                                                                        showStatus={true}
-                                                                                                                        swipeScrollTolerance={1}
-                                                                                                                        swipeable={true}>
-                                                                                                                        {feed.images.map((img, i) => (
-                                                                                                                                                                        <Img key={i} alt={feed.title} className="program-carousel-image" src={[this.state.meta.image_path + this.state.resolution + img, '/static/placeholders/placeholder_potrait.png']} />
-                                                                                                                                                                                                            ))}
-                                                                                                                    </Carousel>)
-                                                                                                                    :
-                                                                                                                    (
-                                                                                                                    <div onClick={this.toggle.bind(this, feed.link_video)}>
-                                                                                                                        <Img alt={feed.title} className="program-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
-                                                                                                                        <PlayCircleOutlineIcon className="play-btn-icon" />
-                                                                                                                    </div>
-                                                                                                                            )
+                                                                            (<Carousel
+                                                                                autoPlay
+                                                                                showThumbs={false}
+                                                                                showIndicators={true}
+                                                                                stopOnHover={true}
+                                                                                showArrows={false}
+                                                                                showStatus={true}
+                                                                                swipeScrollTolerance={1}
+                                                                                swipeable={true}>
+                                                                                {feed.images.map((img, i) => (
+                                                                                                                                <Img key={i} alt={feed.title} className="program-carousel-image" src={[this.state.meta.image_path + this.state.resolution + img, '/static/placeholders/placeholder_potrait.png']} />
+                                                                                                                                                                    ))}
+                                                                            </Carousel>)
+                                                                            :
+                                                                            (
+                                                                            <div onClick={this.toggle.bind(this, feed.link_video)}>
+                                                                                <Img alt={feed.title} className="program-thumbnail" src={[this.state.meta.image_path + this.state.resolution + feed.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+                                                                                <PlayCircleOutlineIcon className="play-btn-icon" />
+                                                                            </div>
+                                                                                    )
                                                                             }
                                             
                                                                             <span className="program-title program-title-bottom">{feed.summary}</span>
                                                                             </Col>
                                                                         </Row>
-                                                                                    ))}
+                                                        ))}
                             
                                                     </div>
                                                 </div>
