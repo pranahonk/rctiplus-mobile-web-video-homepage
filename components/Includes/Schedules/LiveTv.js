@@ -18,6 +18,13 @@ class LiveTv extends React.Component {
         };
         this.currentDate = new Date();
     }
+
+    isLiveProgram(epg) {
+		const currentTime = this.currentDate.getTime();
+		const startTime = new Date(formatDate(this.currentDate) + ' ' + epg.s).getTime();
+		const endTime = new Date(formatDate(this.currentDate) + ' ' + epg.e).getTime();
+		return currentTime > startTime && currentTime < endTime;
+	}
     
     componentDidMount() {
         this.props.getLiveEvent('on air')
@@ -56,24 +63,26 @@ class LiveTv extends React.Component {
                         <div className="item" key={i} onClick={() => Router.push(`/tv/${s.channel_code}`)}>
                             <p className="channel">{`${s.name} - Live Streaming`}</p>
                             {s.epg.map((e, j) => {
-                                if (j === 0) {
-                                    return (
-                                        <div key={j} className="box current-live">
-                                            <p className="title">NOW</p>
-                                            <p className="subtitle">{`${e.s} - ${e.e} - ${e.title}`}</p>
-                                        </div>
-                                    );
-                                }
-                                else if (j >= 2) {
-                                    return (<span key={j}></span>);
+                                if (this.isLiveProgram(e)) {
+                                    let renderedPrograms = [(
+                                    <div key={j} className="box current-live">
+                                        <p className="title">NOW</p>
+                                        <p className="subtitle">{`${e.s} - ${e.e} - ${e.title}`}</p>
+                                    </div>)];
+
+                                    if (s.epg[j + 1] != undefined) {
+                                        renderedPrograms.push(
+                                            <div key={j + 1} className="box">
+                                                <p className="title">NEXT</p>
+                                                <p className="subtitle">{`${s.epg[j + 1].s} - ${s.epg[j + 1].e} - ${s.epg[j + 1].title}`}</p>
+                                            </div>
+                                        );
+                                    }
+
+                                    return renderedPrograms;
                                 }
 
-                                return (
-                                    <div key={j} className="box">
-                                        <p className="title">NEXT</p>
-                                        <p className="subtitle">{`${e.s} - ${e.e} - ${e.title}`}</p>
-                                    </div>
-                                );
+                                return (<span key={j}></span>);
                             })}
                             
                             
