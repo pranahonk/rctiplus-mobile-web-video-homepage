@@ -59,7 +59,7 @@ class FooterNav extends Component {
                 </div>
 
                 <div className="footer-wrapper-list">
-                    <a href="/more">
+                    <a href="/profile">
                         <MenuIcon className="nav-footer-icon"/>
                         <br/>
                         More
