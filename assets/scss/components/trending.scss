@@ -58,14 +58,14 @@ ul#trending .trending-item{
 }
 
 .container-box {
-    margin: 0px auto !important;
+    margin: 5px auto !important;
     background-color: $primary-bg-color;
     color: $primary-text-color;
     width: 100% !important;
     height: 100%;
     object-fit: contain;
     border-radius: 30px;
-    padding: 0 !important;
+    padding: 5px !important;
 }
 
 .content-tab-trending {
@@ -183,12 +183,22 @@ ul#trending .trending-item{
 }
 .box-img-trending{
     width:100%;
+    height:257px;
+    object-fit: cover;
     border-radius:12px 12px 0px 0px;
+    position: relative;
 }
 .font-trending-title{
+    background-image: linear-gradient(to bottom right, grey, black);
+    padding:15px;
     color:#fff;
     font-size:17px;
-    position: relative;
-    bottom:60px;
+    position: static;
+    bottom:70px;
     left:0px;
+    opacity: 0.6;
+}
+.wrapper-content-trending{
+    margin-left:3px;
+    margin-right:3px;
 }

@@ -3,16 +3,18 @@ import Router from 'next/router';
 import { connect } from 'react-redux';
 import actions from '../../../redux/actions';
 import { getCookie, removeCookie } from '../../../utils/cookie';
-import '../../../assets/scss/components/navbar.scss';
+import '../../../assets/scss/components/navbar_trending_search.scss';
 
 //load reactstrap
-import { Navbar, NavbarBrand } from 'reactstrap';
+import { Navbar, NavbarBrand, Col, Row } from 'reactstrap';
 
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
 
 
-class NavbarDef extends Component {
+class NavTrendingSearch extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -50,31 +52,25 @@ class NavbarDef extends Component {
         return (
                 <div className="nav-home-container nav-fixed-top">
                     <Navbar expand="md" className={'nav-container nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
-                        <div className="left-top-link">
-                            <div className="logo-top-wrapper">
-                                <NavbarBrand href="/">
-                                    <img className="logo-top" src="/static/logo/rcti.png" />
-                                </NavbarBrand>
-                            </div>
-                        </div>
-                        <div className="right-top-link">
-                            <div className="btn-link-top-nav">
-                                {this.state.token ? (
-                                    <NavbarBrand style={{color: 'white', fontSize: 13}} onClick={this.signOut.bind(this)} href="#">
-                                        Sign Out
-                                    </NavbarBrand>
-                                ) : (
-                                    <NavbarBrand style={{color: 'white', fontSize: 13}} href="/signin">Sign In</NavbarBrand>
-                                )}
-                                <NavbarBrand style={{color: 'white'}} href="/explore">
+                        <Row className="wr-col-trn-search">
+                            <Col xs="2">
+                                <NavbarBrand onClick={() => Router.back()} style={{color: 'white'}}>
+                                <ArrowBackIcon/>
+                            </NavbarBrand>
+                            </Col>
+                            <Col xs="8" className="input_trending_search">
+                                <input type="text" name="trending_search" className="trending_search"/>
+                            </Col>
+                            <Col xs="2" className="btn-link-top-nav">
+                                 <NavbarBrand style={{color: 'white'}} href="/trending/search">
                                     <SearchIcon style={{fontSize: 20}}/>
                                 </NavbarBrand>
-                            </div>
-                        </div>
+                            </Col>
+                        </Row>
                     </Navbar>
                     <StatusNotification />
                 </div>
                 );
     }
 }
-export default connect(state => state, actions)(NavbarDef);
+export default connect(state => state, actions)(NavTrendingSearch);

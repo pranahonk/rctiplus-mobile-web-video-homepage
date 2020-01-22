@@ -12,7 +12,7 @@ import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
 
 
-class NavbarDef extends Component {
+class NavTrending extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -66,7 +66,7 @@ class NavbarDef extends Component {
                                 ) : (
                                     <NavbarBrand style={{color: 'white', fontSize: 13}} href="/signin">Sign In</NavbarBrand>
                                 )}
-                                <NavbarBrand style={{color: 'white'}} href="/explore">
+                                <NavbarBrand style={{color: 'white'}} href="/trending/search">
                                     <SearchIcon style={{fontSize: 20}}/>
                                 </NavbarBrand>
                             </div>
@@ -77,4 +77,4 @@ class NavbarDef extends Component {
                 );
     }
 }
-export default connect(state => state, actions)(NavbarDef);
+export default connect(state => state, actions)(NavTrending);

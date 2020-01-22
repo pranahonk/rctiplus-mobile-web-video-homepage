@@ -12,7 +12,7 @@ import classnames from 'classnames';
 import { Carousel } from 'react-responsive-carousel';
 
 import Layout from '../components/Layouts/Default';
-import NavDefault from '../components/Includes/Navbar/NavDefault';
+import NavTrending from '../components/Includes/Navbar/NavTrending';
 import PlayerModal from '../components/Modals';
 import ActionSheet from '../components/Modals/ActionSheet';
 
@@ -179,12 +179,13 @@ class Trending extends React.Component {
     goToDetail(programId, programTitle) {
         Router.push('/trending/detail/' + programId + '/' + programTitle);
     }
-
+    
     render() {
-//        console.log(this.state.contents);
+        const a = 0; 
+        const b = 5;
         return (
                 <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
-                    <NavDefault disableScrollListener />
+                    <NavTrending disableScrollListener />
                 
                     <LoadingBar
                         progress={0}
@@ -226,12 +227,17 @@ class Trending extends React.Component {
                                     <div className="content-tab-trending">
                                         <div className="content-tab-trending">
                                             <div className="program-container">
-                                                {this.state.contents.map((d, j) => (
-                                                    <div className="box-trending">
-                                                        <img className="box-img-trending" src={d.cover} />
-                                                        <h3 className="font-trending-title" dangerouslySetInnerHTML={{ __html: d.title }}></h3>
-                                                    </div>
-                                                ))}
+                                                <Row xs="2" className="wrapper-content-trending">
+                                                    {this.state.contents.map((d, j) => {
+                                                        if (j === a) {
+                                                            return (<div className="box-trending" key={j}><img className="box-img-trending" src={d.cover} /><div className="font-trending-title" dangerouslySetInnerHTML={{ __html: d.title }}></div></div>);
+                                                        }else if(j === b){
+                                                            return(<div className="box-trending" key={j}><img className="box-img-trending" src={d.cover} /><div className="font-trending-title" dangerouslySetInnerHTML={{ __html: d.title }}></div></div>);
+                                                        }else{
+                                                            return(<Col xs="6" className="box-trending" key={j}><div><img className="box-img-trending" src={d.cover} /><div className="font-trending-title" dangerouslySetInnerHTML={{ __html: d.title }}></div></div></Col>);
+                                                        }
+                                                    })}
+                                                </Row>
                                             </div>
                                         </div>
                                     </div>
