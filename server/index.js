@@ -43,6 +43,10 @@ const handle = app.getRequestHandler();
       return app.render(req, res, '/programs', { id: req.params.id, title: req.params.title });
     });
 
+    server.get('/mylist', (req, res) => {
+      return app.render(req, res, '/user/my-list');
+    });
+
     // TODO
     server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
       return app.render(req, res, '/detail/content', { 
