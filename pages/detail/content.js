@@ -22,7 +22,8 @@ class Content extends React.PureComponent {
         super(props);
         this.state = {
             player_url: '',
-            player_vmap: ''
+            player_vmap: '',
+            start_duration: 0
         };
         this.player = null;
     }
@@ -45,7 +46,7 @@ class Content extends React.PureComponent {
 			logo: {
 				hide: true
 			}
-        });
+        }).seek(this.state.start_duration);
         
         this.player.on('firstFrame', () => {
             console.log('FIRST FRAME');
@@ -87,6 +88,7 @@ class Content extends React.PureComponent {
     async componentDidMount() {
         try {
             let response = null;
+            
             switch (this.props.context_data.type) {
                 case 'episode':
                     response = await this.props.getEpisodeUrl(this.props.context_data.content_id);
@@ -102,10 +104,17 @@ class Content extends React.PureComponent {
             }
             
             if (response && response.status === 200 && response.data.status.code === 0) {
+                let response_2 =  await this.props.getContinueWatchingByContentId(this.props.context_data.content_id, this.props.context_data.type);
+                let startDuration = 0;
+                if (response_2 && response_2.status === 200 && response_2.data.status.code === 0) {
+                    startDuration = response_2.data.data.last_duration;
+                }
+
                 const data = response.data.data;
                 this.setState({
                     player_url: data.url,
-                    player_vmap: data.vmap
+                    player_vmap: data.vmap,
+                    start_duration: startDuration
                 }, () => this.initVOD());
             }
             
