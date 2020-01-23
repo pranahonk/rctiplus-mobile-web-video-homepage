@@ -2,19 +2,23 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import initialize from '../utils/initialize';
+
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
+import pageActions from '../redux/actions/pageActions';
 
 import Layout from '../components/Layouts/Default';
 import SelectDateModal from '../components/Modals/SelectDateModal';
 import ActionSheet from '../components/Modals/ActionSheet';
 
 import { formatDate, formatDateWord, getFormattedDateBefore } from '../utils/dateHelpers';
+import { showAlert } from '../utils/helpers';
 
 import { Row, Col, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 
 import { BASE_URL } from '../config';
 
@@ -55,6 +59,7 @@ class Tv extends React.Component {
 		this.player = null;
 		this.currentDate = now;
 		this.props.setCatchupDate(formatDateWord(now));
+		this.props.setPageLoader();
 	}
 
 	componentDidMount() {
@@ -70,9 +75,13 @@ class Tv extends React.Component {
 						}
 						
 					}
+					this.props.unsetPageLoader();
 				});
 			})
-			.catch(error => console.log(error));
+			.catch(error => {
+				console.log(error);
+				this.props.unsetPageLoader();
+			});
 
 		
 	}
@@ -106,6 +115,7 @@ class Tv extends React.Component {
 	}
 
 	selectChannel(index) {
+		this.props.setPageLoader();
 		this.setState({ selected_index: index  }, () => {
 			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id)
 				.then(res => {
@@ -121,9 +131,12 @@ class Tv extends React.Component {
 						this.props.getEPG(formatDate(this.currentDate), this.state.selected_live_event.channel_code)
 							.then(response => {
 								let epg = response.data.data.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + ' ' + e.e).getTime());
-								this.setState({ epg: epg });
+								this.setState({ epg: epg }, () => this.props.unsetPageLoader());
 							})
-							.catch(error => console.log(error));
+							.catch(error => {
+								console.log(error);
+								this.props.unsetPageLoader();
+							});
 
 						this.props.getEPG(formatDate(new Date(this.state.selected_date)), this.state.selected_live_event.channel_code)
 							.then(response => {
@@ -135,16 +148,24 @@ class Tv extends React.Component {
 								});
 								this.setState({ catchup: catchup }, () => {
 									this.props.setCatchupData(catchup);
+									this.props.unsetPageLoader();
 								});
 							})
-							.catch(error => console.log(error));
+							.catch(error => {
+								console.log(error);
+								this.props.unsetPageLoader();
+							});
 					});
 				})
-				.catch(error => console.log(error));
+				.catch(error => {
+					console.log(error);
+					this.props.unsetPageLoader();
+				});
 		});
 	}
 
 	selectCatchup(id) {
+		this.props.setPageLoader();
 		this.props.getCatchupUrl(id)
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {
@@ -153,8 +174,20 @@ class Tv extends React.Component {
 						player_vmap: response.data.data.vmap
 					}, () => this.initVOD());
 				}
+				else {
+					showAlert(response.data.status.message_server, `
+					<svg style="font-size: 4.5rem" class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation"><circle cx="15.5" cy="9.5" r="1.5"></circle><circle cx="8.5" cy="9.5" r="1.5"></circle><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-6c-2.33 0-4.32 1.45-5.12 3.5h1.67c.69-1.19 1.97-2 3.45-2s2.75.81 3.45 2h1.67c-.8-2.05-2.79-3.5-5.12-3.5z"></path></svg>
+					`, 'Close');
+				}
+				this.props.unsetPageLoader();
 			})
-			.catch(error => console.log(error));
+			.catch(error => {
+				console.log(error);
+				showAlert(error.data.status.message_server, `
+				<svg style="font-size: 4.5rem" class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation"><circle cx="15.5" cy="9.5" r="1.5"></circle><circle cx="8.5" cy="9.5" r="1.5"></circle><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-6c-2.33 0-4.32 1.45-5.12 3.5h1.67c.69-1.19 1.97-2 3.45-2s2.75.81 3.45 2h1.67c-.8-2.05-2.79-3.5-5.12-3.5z"></path></svg>
+				`, 'Close');
+				this.props.unsetPageLoader();
+			});
 	}
 
 	toggleSelectModal() {
@@ -271,4 +304,7 @@ class Tv extends React.Component {
 	}
 }
 
-export default connect(state => state, liveAndChatActions)(withRouter(Tv));
+export default connect(state => state, {
+	...liveAndChatActions,
+	...pageActions
+})(withRouter(Tv));
