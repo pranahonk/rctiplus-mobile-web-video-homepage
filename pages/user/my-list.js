@@ -1,8 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import Router from 'next/router';
-import Lazyload from 'react-lazyload';
-import { Carousel } from 'react-responsive-carousel';
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';

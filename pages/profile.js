@@ -3,7 +3,7 @@ import Router from 'next/router';
 import { connect } from 'react-redux';
 import Img from 'react-image';
 
-import contentActions from '../redux/actions/contentActions';
+import userActions from '../redux/actions/userActions';
 import initialize from '../utils/initialize';
 import { showAlert } from '../utils/helpers';
 
@@ -33,7 +33,22 @@ class Profile extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			profile_picture_url: '/static/placeholders/placeholder_landscape.png',
+			logged_in: false
+		};
+	}
+
+	componentDidMount() {
+		this.props.getUserData()
+			.then(response => {
+				if (response.status === 200 && response.data.status.code === 0) {
+					this.setState({ profile_picture_url: response.data.data.photo_url, logged_in: true });
+				}
+			})
+			.catch(error => {
+				console.log(error);
+			});
 	}
 
 	showOpenPlaystoreAlert() {
@@ -51,7 +66,7 @@ class Profile extends React.Component {
 							unloader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>}
 							loader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>} 
 							className="rounded-profile-picture MuiSvgIcon-root" 
-							src={['/static/placeholders/placeholder_landscape.png']} /> Azhary Arliansyah
+							src={[this.state.profile_picture_url, '/static/placeholders/placeholder_landscape.png']} /> Azhary Arliansyah
 					</ListGroupItem>
 					<ListGroupItem onClick={() => Router.push('/qrcode')}>
 						<img className="MuiSvgIcon-root" src="static/btn/qrcode.png"/> Scan QR Code
@@ -87,4 +102,4 @@ class Profile extends React.Component {
 
 }
 
-export default connect(state => state, contentActions)(Profile);
+export default connect(state => state, userActions)(Profile);

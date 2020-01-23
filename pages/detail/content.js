@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import initialize from '../../utils/initialize';
 import contentActions from '../../redux/actions/contentActions';
+import historyActions from '../../redux/actions/historyActions';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
@@ -10,14 +11,6 @@ import Layout from '../../components/Layouts/Default';
 
 import '../../assets/scss/components/content.scss';
 
-// http://localhost:3000/programs/439/take-me-out-indonesia/episode/69420/h3h3
-// {
-//     "id": "439",
-//     "title": "take-me-out-indonesia",
-//     "type": "episode",
-//     "content_id": "69420",
-//     "content_title": "h3h3"
-// }
 class Content extends React.PureComponent {
 
     static getInitialProps(ctx) {
@@ -75,6 +68,20 @@ class Content extends React.PureComponent {
                 content_id: this.props.context_data.content_id
             });
         });
+
+        this.player.on('play', () => {
+            setInterval(() => {
+                this.props.postHistory(this.props.context_data.content_id, this.props.context_data.type, this.player.getPosition())
+                    .then(response => {
+                        console.log(response);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }, 10000);
+        });
+
+        
 	}
 
     async componentDidMount() {
@@ -121,4 +128,7 @@ class Content extends React.PureComponent {
 
 }
 
-export default connect(state => state, contentActions)(withRouter(Content));
+export default connect(state => state, {
+    ...contentActions,
+    ...historyActions
+})(withRouter(Content));
