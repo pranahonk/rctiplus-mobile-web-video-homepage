@@ -57,6 +57,11 @@ class Default extends React.Component {
                 <Head>
                     <title>{this.props.title}</title>
                     <meta charSet="utf-8" />
+                    <meta name="theme-color" content="#171717"/>
+                    <meta name="msapplication-TileColor" content="#171717"/>
+                    <meta name="msapplication-navbutton-color" content="#171717"/>
+                    <meta name="apple-mobile-web-app-status-bar-style" content="#171717"/>
+
                     <meta name="author" content={AUTHOR} />
                     <meta name="viewport" content={VIEWPORT} />
                     <meta name="description" content={MAIN_DESCRIPTION} />
