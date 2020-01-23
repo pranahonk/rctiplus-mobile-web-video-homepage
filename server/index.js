@@ -51,6 +51,10 @@ const handle = app.getRequestHandler();
       return app.render(req, res, '/user/continue-watching');
     });
 
+    server.get('/edit-profile', (req, res) => {
+      return app.render(req, res, '/user/edit-profile');
+    });
+
     // TODO
     server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
       return app.render(req, res, '/detail/content', { 

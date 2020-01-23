@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import { withRouter } from 'next/router';
 
 //load scss style 
 import '../../assets/scss/custom.scss';
@@ -68,7 +69,7 @@ class Default extends React.Component {
                     {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]} />))}
                     <link rel="icon" href="/static/logo/rcti.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
-                    <link rel="canonical" href="http://www.rctiplus.com/page-1"></link>
+                    <link rel="canonical" href={`http://www.rctiplus.com${this.props.router.asPath}`}></link>
                     <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
                     <script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
                     <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script>
@@ -90,4 +91,4 @@ class Default extends React.Component {
 export default connect(state => state, {
     ...actions,
     ...pageActions
-})(Default);
+})(withRouter(Default));
