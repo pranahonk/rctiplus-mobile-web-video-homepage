@@ -545,7 +545,7 @@ class Detail extends React.Component {
                     toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'])}/>
 
                 <div style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
-                <div className="content">
+                <div className="content content-programs">
                     <div className="content-thumbnail">
                         <Img alt={this.state.title} className="content-thumbnail-image" src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
                     </div>

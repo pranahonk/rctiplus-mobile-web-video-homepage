@@ -238,7 +238,7 @@ class Exclusive extends React.Component {
 						))}
 
 					</Nav>
-					<TabContent className="container-box" activeTab={this.state.active_tab}>
+					<TabContent className="container-box container-box-exclusive" activeTab={this.state.active_tab}>
 						{this.state.categories.map((c, i) => (
 							<TabPane key={i} tabId={i + 1}>
 								<div className="content-tab-exclusive">

@@ -80,7 +80,7 @@ class Pnl_2 extends React.Component {
 												unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
-											<PlayCircleOutlineIcon className="play-btn-2" />
+											{/* <PlayCircleOutlineIcon className="play-btn-2" /> */}
 										</div>
 		
 										<div className="txt-slider-panel">

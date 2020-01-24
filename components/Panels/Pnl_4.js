@@ -82,7 +82,7 @@ class Pnl_4 extends React.Component {
 											unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 											loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 											src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
-										<PlayCircleOutlineIcon className="play-btn-4" />
+										{/* <PlayCircleOutlineIcon className="play-btn-4" /> */}
 									</div>
 									<div className="txt-slider-panel">
 										<h5>{c.program_title ? c.program_title : this.props.title}</h5>
