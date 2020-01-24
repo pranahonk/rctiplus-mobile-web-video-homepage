@@ -55,6 +55,14 @@ const handle = app.getRequestHandler();
       return app.render(req, res, '/user/edit-profile');
     });
 
+    server.get('/privacy-policy', (req, res) => {
+      return app.render(req, res, '/user/privacy-policy');
+    });
+
+    server.get('/terms-&-conditions', (req, res) => {
+      return app.render(req, res, '/user/term-cond');
+    });
+
     // TODO
     server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
       return app.render(req, res, '/detail/content', { 
