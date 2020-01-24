@@ -17,7 +17,7 @@ import Layout from '../../components/Layouts/Default';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 
 //load reactstrap components
-import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback } from 'reactstrap';
+import { Form, FormGroup, Label, Input, InputGroup, FormFeedback } from 'reactstrap';
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 
 import '../../assets/scss/components/edit-profile.scss';

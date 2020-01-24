@@ -175,7 +175,7 @@ const getUserData = () => {
                 }
             });
 
-            if (response.data.status.code === 0) {
+            if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
                     type: 'USER_DATA',
                     data: response.data.data,
@@ -264,6 +264,29 @@ const checkUser = username => {
     });
 };
 
+const contactUs = ({ name, phone, email, comment }) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v1/contactus`, {
+                name: name,
+                phone: phone,
+                email: email,
+                comment: comment
+            });
+
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 export default {
     updateUserProfile,
     getUserData,
@@ -278,5 +301,6 @@ export default {
     verify,
     setChangePasswordData,
     changePassword,
-    getUserInterest
+    getUserInterest,
+    contactUs
 };
