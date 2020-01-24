@@ -73,7 +73,7 @@ class Tv extends React.Component {
 								break;
 							}
 						}
-						
+
 					}
 					this.props.unsetPageLoader();
 				});
@@ -83,7 +83,7 @@ class Tv extends React.Component {
 				this.props.unsetPageLoader();
 			});
 
-		
+
 	}
 
 	isLiveProgram(epg) {
@@ -97,13 +97,14 @@ class Tv extends React.Component {
 		this.player = window.jwplayer('live-tv-player');
 		this.player.setup({
 			autostart: true,
+			floating: false,
 			file: this.state.player_url,
 			primary: 'html5',
 			width: '100%',
 			aspectratio: '16:9',
 			displaytitle: true,
 			setFullscreen: true,
-			stretching:'exactfit',
+			stretching: 'exactfit',
 			advertising: {
 				client: 'vast',
 				tag: this.state.player_vmap
@@ -112,14 +113,30 @@ class Tv extends React.Component {
 				hide: true
 			}
 		});
+		this.player.on('fullscreen', () => {
+			if (screen.orientation.type === 'portrait-primary') {
+				if (document.documentElement.requestFullscreen)
+					document.querySelector("#live-tv-player").requestFullscreen();
+				else if (document.documentElement.webkitRequestFullScreen)
+					document.querySelector("#player").webkitRequestFullScreen();
+				screen.orientation.lock("landscape-primary")
+			}
+			if (screen.orientation.type === 'landscape-primary') {
+				if (document.documentElement.requestFullscreen)
+					document.querySelector("#live-tv-player").requestFullscreen();
+				else if (document.documentElement.webkitRequestFullScreen)
+					document.querySelector("#player").webkitRequestFullScreen();
+				screen.orientation.lock("portrait-primary")
+			}
+		});
 	}
 
 	selectChannel(index) {
 		this.props.setPageLoader();
-		this.setState({ selected_index: index  }, () => {
+		this.setState({ selected_index: index }, () => {
 			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id)
 				.then(res => {
-					this.setState({ 
+					this.setState({
 						selected_live_event: this.state.live_events[this.state.selected_index],
 						selected_live_event_url: res.data.data,
 						player_url: res.data.data.url,
@@ -195,14 +212,14 @@ class Tv extends React.Component {
 	}
 
 	toggleActionSheet(caption = '', url = '', hashtags = []) {
-        this.setState({ 
-            action_sheet: !this.state.action_sheet,
-            caption: caption,
-            url: url,
-            hashtags: hashtags
-        });
+		this.setState({
+			action_sheet: !this.state.action_sheet,
+			caption: caption,
+			url: url,
+			hashtags: hashtags
+		});
 	}
-	
+
 	toggleChat() {
 		this.setState({ chat_open: !this.state.chat_open });
 	}
@@ -210,17 +227,17 @@ class Tv extends React.Component {
 	render() {
 		return (
 			<Layout className="live-tv-layout" title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
-				<SelectDateModal 
-                    open={this.state.select_modal}
-                    data={this.state.dates_before}
-                    toggle={this.toggleSelectModal.bind(this)}/>
+				<SelectDateModal
+					open={this.state.select_modal}
+					data={this.state.dates_before}
+					toggle={this.toggleSelectModal.bind(this)} />
 
 				<ActionSheet
 					caption={this.state.caption}
 					url={this.state.url}
 					open={this.state.action_sheet}
 					hashtags={this.state.hashtags}
-					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])}/>
+					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])} />
 
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					<div id="live-tv-player"></div>
@@ -254,30 +271,30 @@ class Tv extends React.Component {
 								{this.state.epg.map(e => {
 									if (this.isLiveProgram(e)) {
 										return (<Row key={e.id} className={'program-item selected'}>
-													<Col xs={9}>
-														<div className="title">{e.title} <FiberManualRecordIcon/></div>
-														<div className="subtitle">{e.s} - {e.e}</div>
-													</Col>
-													<Col className="right-side">
-														<ShareIcon  onClick={this.toggleActionSheet.bind(this, 'Live TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + e.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code])} className="share-btn"/>
-													</Col>
-												</Row>);
+											<Col xs={9}>
+												<div className="title">{e.title} <FiberManualRecordIcon /></div>
+												<div className="subtitle">{e.s} - {e.e}</div>
+											</Col>
+											<Col className="right-side">
+												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Live TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + e.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code])} className="share-btn" />
+											</Col>
+										</Row>);
 									}
-									
+
 									return (<Row key={e.id} className={'program-item'}>
-												<Col xs={9}>
-													<div className="title">{e.title}</div>
-													<div className="subtitle">{e.s} - {e.e}</div>
-												</Col>
-											</Row>);
+										<Col xs={9}>
+											<div className="title">{e.title}</div>
+											<div className="subtitle">{e.s} - {e.e}</div>
+										</Col>
+									</Row>);
 								})}
-								
+
 							</TabPane>
 							<TabPane tabId={'catch_up_tv'}>
 								<div className="catch-up-wrapper">
 									<div className="catchup-dropdown-menu">
-										<Button onClick={this.toggleSelectModal.bind(this)} size="sm" color="link">{this.props.chats.catchup_date} <ExpandMoreIcon/></Button>
-										
+										<Button onClick={this.toggleSelectModal.bind(this)} size="sm" color="link">{this.props.chats.catchup_date} <ExpandMoreIcon /></Button>
+
 									</div>
 									{this.props.chats.catchup.map(c => (
 										<Row onClick={this.selectCatchup.bind(this, c.id)} key={c.id} className={'program-item'}>
@@ -286,7 +303,7 @@ class Tv extends React.Component {
 												<div className="subtitle">{c.s} - {c.e}</div>
 											</Col>
 											<Col className="right-side">
-												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code])} className="share-btn"/>
+												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code])} className="share-btn" />
 											</Col>
 										</Row>
 									))}
@@ -295,7 +312,7 @@ class Tv extends React.Component {
 						</TabContent>
 					</div>
 					<div className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')}>
-						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon"/> Live Chat <FiberManualRecordIcon className="indicator-dot"/></Button>
+						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
 						<div className="box-chat"></div>
 					</div>
 				</div>

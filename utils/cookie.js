@@ -38,8 +38,8 @@ const getCookieFromServer = (key, req) => {
     }
 
     const rawCookie = req.headers.cookie
-            .split(';')
-            .find(c => c.trim().startsWith(`${key}=`));
+        .split(';')
+        .find(c => c.trim().startsWith(`${key}=`));
 
     if (!rawCookie) {
         return undefined;
@@ -58,7 +58,7 @@ export const setDeviceId = () => {
 
 export const getVisitorToken = () => {
     const visitorToken = cookie.get('VISITOR_TOKEN');
-//    console.log(visitorToken);
+    //    console.log(visitorToken);
     if (visitorToken) {
         const data = JSON.parse(visitorToken);
         return data['VALUE'];
@@ -84,7 +84,7 @@ export const setVisitorToken = async () => {
         if (!visitorToken) {
             const response = await axios.get(`/v1/visitor?platform=mweb&device_id=${new DeviceUUID().get()}`);
             if (response.status === 200 && response.data.status.code === 0) {
-                 cookieDataToken = cookie.set('VISITOR_TOKEN', JSON.stringify({
+                cookieDataToken = cookie.set('VISITOR_TOKEN', JSON.stringify({
                     NAME: 'VISITOR_TOKEN',
                     VALUE: response.data.data.access_token,
                     CREATED_AT: new Date()
@@ -109,7 +109,7 @@ export const setVisitorToken = async () => {
             }
         }
     } catch (error) {
-//        console.log(error);
+        //        console.log(error);
     }
 
     return null;

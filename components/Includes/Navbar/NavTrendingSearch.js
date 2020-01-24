@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
+
 import actions from '../../../redux/actions';
+import pageActions from '../../../redux/actions/pageActions';
+
 import { getCookie, removeCookie } from '../../../utils/cookie';
 import '../../../assets/scss/components/navbar_trending_search.scss';
 
@@ -24,15 +27,24 @@ class NavTrendingSearch extends Component {
     }
 
     signOut() {
-        const deviceId = 1;
-        this.props
+        if (this.state.token) {
+            this.props.setPageLoader();
+            const deviceId = new DeviceUUID().get();
+            this.props
                 .logout(deviceId)
-                .then(() => {
+                .then(response => {
+                    this.props.unsetPageLoader();
                     Router.push('/signin');
                 })
                 .catch(error => {
+                    console.log(error);
+                    this.props.unsetPageLoader();
                     removeCookie('ACCESS_TOKEN');
                 });
+        }
+        else {
+            Router.push('/signin');
+        }
     }
 
     componentDidMount() {
@@ -73,4 +85,7 @@ class NavTrendingSearch extends Component {
                 );
     }
 }
-export default connect(state => state, actions)(NavTrendingSearch);
+export default connect(state => state, {
+    ...actions,
+    ...pageActions
+})(NavTrendingSearch);

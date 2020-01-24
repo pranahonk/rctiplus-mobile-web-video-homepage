@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
+
 import actions from '../../../redux/actions';
+import pageActions from '../../../redux/actions/pageActions';
+
 import { getCookie, removeCookie } from '../../../utils/cookie';
 import '../../../assets/scss/components/navbar.scss';
 
@@ -22,15 +25,24 @@ class NavbarDef extends Component {
     }
 
     signOut() {
-        const deviceId = 1;
-        this.props
+        if (this.state.token) {
+            this.props.setPageLoader();
+            const deviceId = new DeviceUUID().get();
+            this.props
                 .logout(deviceId)
-                .then(() => {
+                .then(response => {
+                    this.props.unsetPageLoader();
                     Router.push('/signin');
                 })
                 .catch(error => {
+                    console.log(error);
+                    this.props.unsetPageLoader();
                     removeCookie('ACCESS_TOKEN');
                 });
+        }
+        else {
+            Router.push('/signin');
+        }
     }
 
     componentDidMount() {
@@ -59,13 +71,9 @@ class NavbarDef extends Component {
                         </div>
                         <div className="right-top-link">
                             <div className="btn-link-top-nav">
-                                {this.state.token ? (
-                                    <NavbarBrand style={{color: 'white', fontSize: 13}} onClick={this.signOut.bind(this)} href="#">
-                                        Logout
-                                    </NavbarBrand>
-                                ) : (
-                                    <NavbarBrand style={{color: 'white', fontSize: 13}} href="/signin">Login</NavbarBrand>
-                                )}
+                                <NavbarBrand style={{color: 'white', fontSize: 13}} onClick={this.signOut.bind(this)} href="#">
+                                    {this.state.token ? 'Logout' : 'Login'}
+                                </NavbarBrand>
                                 <NavbarBrand style={{color: 'white'}} href="/explore">
                                     <SearchIcon style={{fontSize: 20}}/>
                                 </NavbarBrand>
@@ -77,4 +85,7 @@ class NavbarDef extends Component {
                 );
     }
 }
-export default connect(state => state, actions)(NavbarDef);
+export default connect(state => state, {
+    ...actions,
+    ...pageActions
+})(NavbarDef);

@@ -39,13 +39,16 @@ class Signin extends React.Component {
 			progress_bar: 30
 		};
 
-		const token = getCookie('ACCESS_TOKEN');
-		if (token) {
-			Router.push('/');
-		}
+		
 	}
 
 	componentDidMount() {
+		setTimeout(() => {
+			const token = getCookie('ACCESS_TOKEN');
+			if (token) {
+				Router.push('/');
+			}
+		}, 500);
 		this.LoadingBar.complete();
 	}
 
