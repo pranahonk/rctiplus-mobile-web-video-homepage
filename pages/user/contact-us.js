@@ -101,6 +101,9 @@ class ContactUs extends React.PureComponent {
             <Layout title="RCTI+ - Contact Us">
                 <NavBack title="Contact Us"/>
                 <div className="wrapper-content container-box-cu">
+                    <div className="description-cu">
+                        We're happy to listen to your stories and help your problem.
+                    </div>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
                         <FormGroup>
                             <Label className="form-label-cu" for="fullname">Fullname</Label>
