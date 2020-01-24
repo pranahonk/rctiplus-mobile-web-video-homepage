@@ -1,7 +1,9 @@
 import React from 'react';
+import Router from 'next/router';
 import { connect } from 'react-redux';
 
 import { showAlert } from '../../utils/helpers';
+import { getCookie } from '../../utils/cookie';
 
 import othersActions from '../../redux/actions/othersActions';
 
@@ -22,6 +24,10 @@ class Qrcode extends React.Component {
     }
 
     componentDidMount() {
+        const token = getCookie('ACCESS_TOKEN');
+		if (token == undefined) {
+			Router.push('/signin');
+		}
         const QrReader = require('react-qr-reader');
         this.setState({ qr_reader: (
             <QrReader

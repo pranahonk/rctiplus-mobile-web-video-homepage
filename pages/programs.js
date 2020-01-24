@@ -331,7 +331,12 @@ class Detail extends React.Component {
                 }
                 
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+                console.log(error);
+                if (error.status === 200) {
+                    showAlert(error.data.status.message_client, '', 'Login', '', () => Router.push('/signin'));
+                }
+            });
     }
 
     deleteFromMyList(id, type) {

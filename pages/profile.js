@@ -36,7 +36,8 @@ class Profile extends React.Component {
 		super(props);
 		this.state = {
 			profile_picture_url: '/static/placeholders/placeholder_landscape.png',
-			logged_in: false
+			logged_in: false,
+			display_name: ''
 		};
 	}
 
@@ -44,7 +45,11 @@ class Profile extends React.Component {
 		this.props.getUserData()
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {
-					this.setState({ profile_picture_url: response.data.data.photo_url, logged_in: true });
+					this.setState({ 
+						profile_picture_url: response.data.data.photo_url, 
+						display_name: response.data.data.display_name,
+						logged_in: true 
+					});
 				}
 			})
 			.catch(error => {
@@ -68,11 +73,11 @@ class Profile extends React.Component {
 			actionProfile = (
 				<div onClick={() => Router.push('/edit-profile')}>
 					<Img 
-						alt={'Azhary Arliansyah'}
+						alt={this.state.display_name}
 						unloader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>}
 						loader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>} 
 						className="rounded-profile-picture MuiSvgIcon-root" 
-						src={[this.state.profile_picture_url, '/static/placeholders/placeholder_landscape.png']} /> Azhary Arliansyah
+						src={[this.state.profile_picture_url, '/static/placeholders/placeholder_landscape.png']} /> {this.state.display_name}
 				</div>
 			);
 		}
