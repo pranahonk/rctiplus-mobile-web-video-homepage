@@ -61,10 +61,10 @@ class NavbarDef extends Component {
                             <div className="btn-link-top-nav">
                                 {this.state.token ? (
                                     <NavbarBrand style={{color: 'white', fontSize: 13}} onClick={this.signOut.bind(this)} href="#">
-                                        Sign Out
+                                        Logout
                                     </NavbarBrand>
                                 ) : (
-                                    <NavbarBrand style={{color: 'white', fontSize: 13}} href="/signin">Sign In</NavbarBrand>
+                                    <NavbarBrand style={{color: 'white', fontSize: 13}} href="/signin">Login</NavbarBrand>
                                 )}
                                 <NavbarBrand style={{color: 'white'}} href="/explore">
                                     <SearchIcon style={{fontSize: 20}}/>

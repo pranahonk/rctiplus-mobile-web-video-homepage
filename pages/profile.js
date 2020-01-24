@@ -13,7 +13,7 @@ import Layout from '../components/Layouts/Default';
 //load navbar default
 import NavDefault from '../components/Includes/Navbar/NavDefault';
 
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import { ListGroup, ListGroupItem, Button } from 'reactstrap';
 import HistoryIcon from '@material-ui/icons/History';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
@@ -22,6 +22,7 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import '../assets/scss/components/profile.scss';
 
@@ -56,17 +57,32 @@ class Profile extends React.Component {
     }
 
 	render() {
+		let actionProfile = (
+			<div className="profile-action">
+				<p><AccountCircleIcon/> Hi</p>
+				<p className="subtitle">To enjoy all the features, please login now</p>
+				<p className="sub-btn"><Button onClick={() => Router.push('/signin')} className="btn-next btn-login">Login</Button></p>
+			</div>
+		);
+		if (this.state.logged_in) {
+			actionProfile = (
+				<div onClick={() => Router.push('/edit-profile')}>
+					<Img 
+						alt={'Azhary Arliansyah'}
+						unloader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>}
+						loader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>} 
+						className="rounded-profile-picture MuiSvgIcon-root" 
+						src={[this.state.profile_picture_url, '/static/placeholders/placeholder_landscape.png']} /> Azhary Arliansyah
+				</div>
+			);
+		}
+
 		return (
 			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
 				<NavDefault disableScrollListener/>
 				<ListGroup className="list-menu-container">
-					<ListGroupItem onClick={() => Router.push('/edit-profile')}>
-						<Img 
-							alt={'Azhary Arliansyah'}
-							unloader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>}
-							loader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>} 
-							className="rounded-profile-picture MuiSvgIcon-root" 
-							src={[this.state.profile_picture_url, '/static/placeholders/placeholder_landscape.png']} /> Azhary Arliansyah
+					<ListGroupItem>
+						{actionProfile}
 					</ListGroupItem>
 					<ListGroupItem onClick={() => Router.push('/qrcode')}>
 						<img className="MuiSvgIcon-root" src="static/btn/qrcode.png"/> Scan QR Code

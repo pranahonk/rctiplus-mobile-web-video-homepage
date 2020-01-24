@@ -3,6 +3,31 @@
     border: none;
     margin-bottom: 27px;
 
+    .profile-action {
+        p {
+            margin-bottom: 1px;
+        }
+
+        .subtitle {
+            font-size: 90%;
+            color: #757575;
+        }
+
+        .sub-btn {
+            margin-top: 5px;
+        }
+
+        .subtitle, .sub-btn {
+            margin-left: 30px;
+        }
+        
+        .btn-next {
+            width: 65px;
+            font-size: 10px;
+            border-radius: 5px;
+        }
+    }
+
     .list-group-item {
         border: 1px solid black;
         border-left: none;
