@@ -1,15 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import Head from 'next/head';
-import Lazyload from 'react-lazyload';
-import contentActions from '../../redux/actions/contentActions';
 import initialize from '../../utils/initialize';
 
-//load default layout
 import Layout from '../../components/Layouts/Default';
+import NavBack from '../../components/Includes/Navbar/NavBack';
 
-//load navbar default
-import Nav from '../../components/Includes/Navbar/NavDefault';
+import '../../assets/scss/components/privacy-policy.scss';
 
 class Faq extends React.Component {
 
@@ -17,30 +13,12 @@ class Faq extends React.Component {
 		initialize(ctx);
 	}
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			contents: [],
-			meta: null,
-		};
-	}
-
-	componentDidMount() {
-		this.props.getContents(1)
-			.then(response => {
-				this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta });
-			});
-	}
-
 	render() {
-		const contents = this.state.contents;
-		const meta = this.state.meta;
-
 		return (
-			<Layout title="RCTI+ - FAQ (Frequently Ask Questions)">
-				<div>
-					<Nav />
-					<div className="wrapper-content">Faq</div>
+			<Layout title="RCTI+ - Faq">
+				<NavBack title="Faq"/>
+				<div className="wrapper-content container-box-pp">
+					<iframe src="https://ssr.rctiplus.com/faq" width="100%" height="100%" frameBorder="0"></iframe>
 				</div>
 			</Layout>
 		);
@@ -48,4 +26,4 @@ class Faq extends React.Component {
 
 }
 
-export default connect(state => state, contentActions)(Faq);
+export default connect(state => state, {})(Faq);

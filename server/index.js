@@ -63,6 +63,10 @@ const handle = app.getRequestHandler();
       return app.render(req, res, '/user/term-cond');
     });
 
+    server.get('/faq', (req, res) => {
+      return app.render(req, res, '/user/faq');
+    });
+
     // TODO
     server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
       return app.render(req, res, '/detail/content', { 
