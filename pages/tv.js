@@ -103,7 +103,7 @@ class Tv extends React.Component {
 			aspectratio: '16:9',
 			displaytitle: true,
 			setFullscreen: true,
-			stretching:'fill',
+			stretching:'exactfit',
 			advertising: {
 				client: 'vast',
 				tag: this.state.player_vmap
