@@ -71,6 +71,10 @@ const handle = app.getRequestHandler();
       return app.render(req, res, '/user/contact-us');
     });
 
+    server.get('/qrcode', (req, res) => {
+      return app.render(req, res, '/user/qrcode');
+    });
+
     // TODO
     server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
       return app.render(req, res, '/detail/content', { 

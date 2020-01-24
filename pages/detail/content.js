@@ -86,9 +86,8 @@ class Content extends React.PureComponent {
 	}
 
     async componentDidMount() {
+        let response = null;
         try {
-            let response = null;
-            
             switch (this.props.context_data.type) {
                 case 'episode':
                     response = await this.props.getEpisodeUrl(this.props.context_data.content_id);
@@ -101,26 +100,35 @@ class Content extends React.PureComponent {
                 case 'clip':
                     response = await this.props.getClipUrl(this.props.context_data.content_id);
                     break;
-            }
-            
-            if (response && response.status === 200 && response.data.status.code === 0) {
-                let response_2 =  await this.props.getContinueWatchingByContentId(this.props.context_data.content_id, this.props.context_data.type);
-                let startDuration = 0;
-                if (response_2 && response_2.status === 200 && response_2.data.status.code === 0) {
-                    startDuration = response_2.data.data.last_duration;
-                }
-
-                const data = response.data.data;
-                this.setState({
-                    player_url: data.url,
-                    player_vmap: data.vmap,
-                    start_duration: startDuration
-                }, () => this.initVOD());
-            }
-            
+            }    
         }
         catch (error) {
             console.log(error);
+        }
+        
+        if (response && response.status === 200 && response.data.status.code === 0) {
+            const data = response.data.data;
+            this.props.getContinueWatchingByContentId(this.props.context_data.content_id, this.props.context_data.type)
+                .then(response_2 => {
+                    let startDuration = 0;
+                    if (response_2 && response_2.status === 200 && response_2.data.status.code === 0) {
+                        startDuration = response_2.data.data.last_duration;
+                    }
+
+                    this.setState({
+                        player_url: data.url,
+                        player_vmap: data.vmap,
+                        start_duration: startDuration
+                    }, () => this.initVOD());
+                })
+                .catch(error => {
+                    this.setState({
+                        player_url: data.url,
+                        player_vmap: data.vmap,
+                        start_duration: 0
+                    }, () => this.initVOD());
+                });
+            
         }
     }
 

@@ -29,6 +29,23 @@ const getLocations = () => {
     });
 };
 
+const scanQRCode = qrcode => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v1/qrcode`, { qrcode: qrcode });
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const setField = (index, label, fieldType, notes, placeholder, needOtp = false, optionData = [], disabledCondition = null) => {
     return dispatch => dispatch({
         type: 'SET_FIELD',
@@ -45,5 +62,6 @@ const setField = (index, label, fieldType, notes, placeholder, needOtp = false, 
 
 export default {
     getLocations,
-    setField
+    setField,
+    scanQRCode
 };
