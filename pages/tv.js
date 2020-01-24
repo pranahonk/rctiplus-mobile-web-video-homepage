@@ -115,17 +115,11 @@ class Tv extends React.Component {
 		});
 		this.player.on('fullscreen', () => {
 			if (screen.orientation.type === 'portrait-primary') {
-				if (document.documentElement.requestFullscreen)
-					document.querySelector("#live-tv-player").requestFullscreen();
-				else if (document.documentElement.webkitRequestFullScreen)
-					document.querySelector("#player").webkitRequestFullScreen();
+				document.querySelector("#live-tv-player").requestFullscreen();
 				screen.orientation.lock("landscape-primary")
 			}
 			if (screen.orientation.type === 'landscape-primary') {
-				if (document.documentElement.requestFullscreen)
-					document.querySelector("#live-tv-player").requestFullscreen();
-				else if (document.documentElement.webkitRequestFullScreen)
-					document.querySelector("#player").webkitRequestFullScreen();
+				document.querySelector("#live-tv-player").requestFullscreen();
 				screen.orientation.lock("portrait-primary")
 			}
 		});
