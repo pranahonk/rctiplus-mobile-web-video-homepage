@@ -241,7 +241,6 @@ class Exclusive extends React.Component {
 					<TabContent className="container-box container-box-exclusive" activeTab={this.state.active_tab}>
 						{this.state.categories.map((c, i) => (
 							<TabPane key={i} tabId={i + 1}>
-								<div className="content-tab-exclusive">
 									<div className="content-tab-exclusive">
 										<div className="program-container">
 											{this.state.feeds[c.name] && this.state.feeds[c.name].map((feed, idx) => (
@@ -267,7 +266,7 @@ class Exclusive extends React.Component {
 																</div>
 															</Col>
 															<Col className="program-share-button">
-																<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label" />
+																<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label-share-btn" />
 															</Col>
 														</Row>
 														{feed.type == 'photo' ?
@@ -312,7 +311,6 @@ class Exclusive extends React.Component {
 
 										</div>
 									</div>
-								</div>
 							</TabPane>
 						))}
 

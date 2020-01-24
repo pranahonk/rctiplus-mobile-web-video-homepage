@@ -85,6 +85,14 @@ ul#trending .exclusive-item{
             -ms-transform: translateY(-50%);
             transform: translateY(-50%);
         }
+        
+        .program-label-share-btn {
+            top: 50%;
+            position: absolute;
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+            margin-left: 15px;
+        }
     
         .program-title {
             color: white;
