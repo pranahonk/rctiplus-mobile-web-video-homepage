@@ -193,8 +193,8 @@ class Exclusive extends React.Component {
 		});
 	}
 
-	goToDetail(programId) {
-		Router.push('/detail/program/' + programId);
+	goToDetail(program) {
+		Router.push(`/programs/${program.program_id}/${program.title.replace(' ', '-').toLowerCase()}`);
 	}
 
 	render() {
@@ -256,7 +256,7 @@ class Exclusive extends React.Component {
 																	src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
 															</Col>
 															<Col xs="7">
-																<div onClick={this.goToDetail.bind(this, feed.program_id)} className="program-label">
+																<div onClick={this.goToDetail.bind(this, feed)} className="program-label">
 																	<div className="program-title">
 																		<strong>
 																			{feed.title.substring(0, 30) + (feed.title.length > 30 ? '...' : '')}
