@@ -62,7 +62,7 @@ class NavTrendingSearch extends Component {
                                 <input type="text" name="trending_search" className="trending_search"/>
                             </Col>
                             <Col xs="2" className="btn-link-top-nav">
-                                 <NavbarBrand style={{color: 'white'}} href="/trending/search">
+                                <NavbarBrand style={{color: 'white'}} href="/trending/search">
                                     <SearchIcon style={{fontSize: 20}}/>
                                 </NavbarBrand>
                             </Col>
