@@ -32,7 +32,7 @@ class NavTrending extends Component {
                 .logout(deviceId)
                 .then(response => {
                     this.props.unsetPageLoader();
-                    Router.push('/signin');
+                    Router.push('/login');
                 })
                 .catch(error => {
                     console.log(error);
@@ -41,7 +41,7 @@ class NavTrending extends Component {
                 });
         }
         else {
-            Router.push('/signin');
+            Router.push('/login');
         }
     }
 
@@ -76,7 +76,7 @@ class NavTrending extends Component {
                                         Logout
                                     </NavbarBrand>
                                 ) : (
-                                    <NavbarBrand style={{color: 'white', fontSize: 13}} href="/signin">Login</NavbarBrand>
+                                    <NavbarBrand style={{color: 'white', fontSize: 13}} href="/login">Login</NavbarBrand>
                                 )}
                                 <NavbarBrand style={{color: 'white'}} href="/trending/search">
                                     <SearchIcon style={{fontSize: 20}}/>

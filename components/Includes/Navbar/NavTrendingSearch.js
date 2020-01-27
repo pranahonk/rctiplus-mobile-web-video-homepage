@@ -34,7 +34,7 @@ class NavTrendingSearch extends Component {
                 .logout(deviceId)
                 .then(response => {
                     this.props.unsetPageLoader();
-                    Router.push('/signin');
+                    Router.push('/login');
                 })
                 .catch(error => {
                     console.log(error);
@@ -43,7 +43,7 @@ class NavTrendingSearch extends Component {
                 });
         }
         else {
-            Router.push('/signin');
+            Router.push('/login');
         }
     }
 

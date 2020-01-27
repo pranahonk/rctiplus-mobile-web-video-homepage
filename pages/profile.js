@@ -66,7 +66,7 @@ class Profile extends React.Component {
 			<div className="profile-action">
 				<p><AccountCircleIcon/> Hi</p>
 				<p className="subtitle">To enjoy all the features, please login now</p>
-				<p className="sub-btn"><Button onClick={() => Router.push('/signin')} className="btn-next btn-login">Login</Button></p>
+				<p className="sub-btn"><Button onClick={() => Router.push('/login')} className="btn-next btn-login">Login</Button></p>
 			</div>
 		);
 		if (this.state.logged_in) {

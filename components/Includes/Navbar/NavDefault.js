@@ -32,7 +32,7 @@ class NavbarDef extends Component {
                 .logout(deviceId)
                 .then(response => {
                     this.props.unsetPageLoader();
-                    Router.push('/signin');
+                    Router.push('/login');
                 })
                 .catch(error => {
                     console.log(error);
@@ -41,7 +41,7 @@ class NavbarDef extends Component {
                 });
         }
         else {
-            Router.push('/signin');
+            Router.push('/login');
         }
     }
 
