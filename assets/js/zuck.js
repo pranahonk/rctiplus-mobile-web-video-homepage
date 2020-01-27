@@ -149,6 +149,8 @@ module.exports = (window => {
 					scaling
 				);
 
+				// DEBUGGING
+
 				if (to3d < -90 || to3d > 90) {
 					return false;
 				}
