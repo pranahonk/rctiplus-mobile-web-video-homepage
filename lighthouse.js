@@ -29,10 +29,19 @@ const opts = {
 
 (async () => {
     // Usage:
+    const baseUrl = 'https://rc-m-new.rctiplus.com';
     const urls = {
-        home: 'https://rc-m-new.rctiplus.com',
-        login: 'https://rc-m-new.rctiplus.com/signin',
-        register: 'https://rc-m-new.rctiplus.com/signup'
+        home: baseUrl,
+        login: baseUrl + '/signin',
+        register: baseUrl + '/signup',
+        exclusive: baseUrl + '/exclusive',
+        trending: baseUrl + '/trending',
+        content: baseUrl + '/programs/439/take-me-out',
+        tv_rcti: baseUrl + '/tv/rcti',
+        tv_mnctv: baseUrl + '/tv/mnctv',
+        tv_globaltv: baseUrl + '/tv/globaltv',
+        tv_inews: baseUrl + '/tv/inews',
+        profile: baseUrl + '/profile'
     };
 
     console.log('--- MEASURE PERFORMANCE ---');

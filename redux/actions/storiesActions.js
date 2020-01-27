@@ -1,6 +1,6 @@
 import ax from 'axios';
 import { DEV_API } from '../../config';
-import { getVisitorToken } from '../../utils/cookie';
+import { getVisitorToken, checkToken } from '../../utils/cookie';
 
 const axios = ax.create({
     baseURL: 'https://api.rctiplus.com/api',
@@ -12,6 +12,7 @@ const axios = ax.create({
 const getStories = (page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
+            await checkToken();
             const response = await axios.get(`/v1/stories?page=${page}&length=${length}`);
             if (response.data.status.code === 0) {
                 const data = response.data.data;

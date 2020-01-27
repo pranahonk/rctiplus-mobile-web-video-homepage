@@ -18,7 +18,7 @@ export default withRedux(initStore, {debug: false})(
     componentDidMount() {
         setVisitorToken();
         setNewsToken();
-        //console.log('VISITOR TOKEN:', getVisitorToken());
+        console.log('VISITOR TOKEN:', getVisitorToken());
         //console.log('NEWS TOKEN:', getNewsToken());
 
 			// 4kuG@nteng

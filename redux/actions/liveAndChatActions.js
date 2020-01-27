@@ -1,6 +1,6 @@
 import ax from 'axios';
 import { DEV_API } from '../../config';
-import { getCookie, getVisitorToken } from '../../utils/cookie';
+import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
 
 const tokenKey = 'ACCESS_TOKEN';
 const accessToken = getCookie(tokenKey);
@@ -64,6 +64,7 @@ const postChat = (channelId, message, avatar, user) => {
 const getLiveEvent = (type, infos = 'id,type,portrait_image,image_landscape,name,url,channel_code,epg_code,is_tvod,is_drm,chat,start_date,sorting', page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
+            await checkToken();
             const response = await axios.get(`/v1/live-event?type=${type}&infos=${infos}&page=${page}&length=${length}`);
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({

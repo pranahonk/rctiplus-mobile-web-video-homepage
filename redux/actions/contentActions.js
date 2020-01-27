@@ -1,6 +1,6 @@
 import ax from 'axios';
 import { DEV_API } from '../../config';
-import { getCookie, getVisitorToken } from '../../utils/cookie';
+import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
 
 const tokenKey = 'ACCESS_TOKEN';
@@ -24,6 +24,7 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             // const response = await axios.get(`/v1/homepage?platform=${platform}&page=${page}&length=${length}`);
+            await checkToken();
             const response = await axios.get(`/v1/homepage?page=${page}&length=${length}`);
             let contents = [];
             if (response.data.status.code === 0) {
@@ -99,6 +100,7 @@ const getHomepageContents = (id, platform = 'mweb', page = 1, length = 21) => {
 const getBanner = (page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
+            await checkToken();
             const response = await axios.get(`/v1/banner?page=${page}&length=${length}`);
             if (response.data.status.code === 0) {
                 dispatch({ type: 'BANNER', data: response.data.data, meta: response.data.meta });

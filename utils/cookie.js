@@ -52,6 +52,20 @@ const getCookieFromBrowser = key => {
     return cookie.get(key);
 };
 
+export const checkToken = async () => {
+    const visitorToken = getVisitorToken();
+    if (!visitorToken) {
+        await setVisitorToken();
+    }
+
+    const newsToken = getNewsToken();
+    if (!newsToken) {
+        await setNewsToken();
+    }
+
+    // TODO: don't use async
+};
+
 export const setDeviceId = () => {
     window.localStorage['DEVICE_ID'] = new DeviceUUID().get();
 };
