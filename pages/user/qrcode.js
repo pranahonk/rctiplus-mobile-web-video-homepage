@@ -31,7 +31,7 @@ class Qrcode extends React.Component {
         const QrReader = require('react-qr-reader');
         this.setState({ qr_reader: (
             <QrReader
-                delay={300}
+                delay={1000}
                 onError={this.handleError}
                 onScan={this.handleScan}
                 style={{ width: '100%' }}/>
@@ -43,16 +43,20 @@ class Qrcode extends React.Component {
             this.setState({ result: data, scan: true }, () => {
                 this.props.scanQRCode(this.state.result)
                     .then(response => {
+                        console.log(response);
                         if (response.status === 200 && response.data.status.code === 0) {
-                            this.setState({ scan: true }, () => {
+                            if (this.state.scan) {
                                 window.open(response.data.data, '_blank');
-                            });
+                                this.setState({ scan: false });
+                            }
+                            
                         }
                         else {
                             this.setState({ scan: false });
                         }
                     })
                     .catch(error => {
+                        console.log(error);
                         if (error.status === 200) {
                             showAlert(error.data.status.message_client, 'Failed', 'OK', '', () => this.setState({ scan: false }));
                         }

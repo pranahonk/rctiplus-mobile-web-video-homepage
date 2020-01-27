@@ -46,7 +46,7 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                                 Woops! Gonna sign in first!<br/>
                                 Only a click away and you<br/>
                                 can continue to enjoy<br/>
-                                <b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+                                <b>RCTI+</b>`, '', () => {}, true, 'Register', 'Login', true, true);
                     }
                     contents.push(content);
                 }
