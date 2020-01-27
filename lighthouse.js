@@ -11,6 +11,9 @@ function launchChromeAndRunLighthouse(url, label, opts, config = null) {
             // use results.report for the HTML/JSON/CSV output as a string
             // use results.artifacts for the trace/screenshots/other specific case you need (rarer)
 
+            if (!fs.existsSync('lighthouse-reports')) {
+                fs.mkdirSync('lighthouse-reports');
+            }
             fs.writeFile(`lighthouse-reports/${label}.html`, results.report, function(err) {
                 if (err) {
                     return console.log(err);
@@ -32,8 +35,8 @@ const opts = {
     const baseUrl = 'https://rc-m-new.rctiplus.com';
     const urls = {
         home: baseUrl,
-        login: baseUrl + '/signin',
-        register: baseUrl + '/signup',
+        login: baseUrl + '/login',
+        register: baseUrl + '/register',
         exclusive: baseUrl + '/exclusive',
         trending: baseUrl + '/trending',
         content: baseUrl + '/programs/439/take-me-out',
