@@ -3,7 +3,7 @@ import Router from 'next/router';
 import { connect } from 'react-redux';
 import actions from '../../../redux/actions';
 import { getCookie, removeCookie } from '../../../utils/cookie';
-import '../../../assets/scss/components/navbar.scss';
+//import '../../../assets/scss/components/navbar.scss';
 
 //load reactstrap
 import { Navbar, NavbarBrand } from 'reactstrap';

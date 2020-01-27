@@ -68,11 +68,13 @@ class Default extends React.Component {
                     <script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
                     <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script>
                 </Head>
-                {this.props.pages.loading ? (<div className={'default-loader ' + (this.props.pages.fade ? 'loader-fade' : '')}>
-                    <div className={'loader'}>
-                        <Spinner color="danger"/>
+                {this.props.pages.loading ? (
+                    <div className={'default-loader ' + (this.props.pages.fade ? 'loader-fade' : '')}>
+                        <div className={'loader'}>
+                            <Spinner color="danger"/>
+                        </div>
                     </div>
-                </div>) : <div></div>}
+                ) : <div></div>}
                 
                 <div style={{ overflowX: 'hidden', marginTop: -5 }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
                 <Footer />

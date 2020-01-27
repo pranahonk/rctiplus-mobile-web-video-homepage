@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 
 //import contentActions from '../redux/actions/contentActions';
 //import feedActions from '../redux/actions/feedActions';
-
 import contentActions from '../redux/actions/trending/content';
 import feedActions from '../redux/actions/trending/subCategory';
 import pageActions from '../redux/actions/pageActions';
-
 
 import initialize from '../utils/initialize';
 import TimeAgo from 'react-timeago';
