@@ -20,7 +20,7 @@ axios.interceptors.response.use(response => {
 });
 
 //https://api-news.rctiplus.id/api/v1/news?page=1&pageSize=5&subcategory_id=12&infos=id,cover,title,content,pubDate,source
-const getTrendingContent = (subcategory_id = 12, info = 'id,cover,title,content,pubDate,source', page = 1, length = 10) => {
+const getTrendingContent = (subcategory_id = 12, page = 1, length = 5, info = 'id,cover,title,content,pubDate,source') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/news?info=${info}&subcategory_id=${subcategory_id}&page=${page}&pageSize=${length}`);
