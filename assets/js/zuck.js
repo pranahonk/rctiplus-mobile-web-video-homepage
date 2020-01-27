@@ -713,8 +713,6 @@ module.exports = (window => {
 						valid: true
 					};
 
-					console.log(touchOffset);
-
 					if (pageY < 80 || pageY > (modalContainer.slideHeight - 80)) {
 						touchOffset.valid = false;
 						return;
@@ -759,7 +757,7 @@ module.exports = (window => {
 							x: pageX - touchOffset.x,
 							y: pageY - touchOffset.y
 						};
-						console.log(delta);
+
 						if (typeof isScrolling === 'undefined') {
 							isScrolling = !!(
 								isScrolling || Math.abs(delta.x) < Math.abs(delta.y)
@@ -781,6 +779,7 @@ module.exports = (window => {
 					if (touchOffset && !touchOffset.valid) {
 						return;
 					} else {
+
 						if (delta) {
 							const duration = touchOffset ? Date.now() - touchOffset.time : undefined;
 							const isValid = (Number(duration) < 300 && Math.abs(delta.x) > 25) || Math.abs(delta.x) > modalContainer.slideWidth / 3;
@@ -829,8 +828,10 @@ module.exports = (window => {
 									lastTouchOffset.x > window.screen.width / 3 ||
 									!option('previousTap')
 								) {
+									console.log('next');
 									zuck.navigateItem('next', event);
 								} else {
+									console.log('prev');
 									zuck.navigateItem('previous', event);
 								}
 							};
@@ -934,6 +935,36 @@ module.exports = (window => {
 					};
 
 					option('callbacks', 'onOpen')(storyId, callback);
+				},
+				previous(unmute) {
+					const callback = function () {
+						const lastStory = zuck.internalData['currentStory'];
+						const lastStoryTimelineElement = query(
+							`#${id} [data-id="${lastStory}"]`
+						);
+
+						if (lastStoryTimelineElement) {
+							lastStoryTimelineElement.classList.add('seen');
+
+							zuck.data[lastStory]['seen'] = true;
+							zuck.internalData['seenItems'][lastStory] = true;
+
+							saveLocalData('seenItems', zuck.internalData['seenItems']);
+							updateStorySeenPosition();
+						}
+
+						const stories = query('#zuck-modal .story-viewer.previous');
+						if (!stories) {
+							modal.close();
+						} else {
+							moveStoryItem(false);
+						}
+					};
+
+					option('callbacks', 'onEnd')(
+						zuck.internalData['currentStory'],
+						callback
+					);
 				},
 				next(unmute) {
 					const callback = function () {
@@ -1325,7 +1356,7 @@ module.exports = (window => {
 			const currentItemElements = storyViewer.querySelectorAll(`[data-index="${currentItem}"]`);
 			const currentPointer = currentItemElements[0];
 			const currentItemElement = currentItemElements[1];
-
+			
 			const navigateItem = currentItem + directionNumber;
 			const nextItems = storyViewer.querySelectorAll(`[data-index="${navigateItem}"]`);
 			const nextPointer = nextItems[0];
@@ -1350,12 +1381,13 @@ module.exports = (window => {
 					nextItem.classList.remove('seen');
 					nextItem.classList.add('active');
 
+					zuck.data[currentStory]['currentItem'] = zuck.data[currentStory]['currentItem'] + directionNumber;
+
 					each(storyViewer.querySelectorAll('.time'), (i, el) => {
 						el.innerText = timeAgo(nextItem.getAttribute('data-time'));
 					});
 
-					zuck.data[currentStory]['currentItem'] = zuck.data[currentStory]['currentItem'] + directionNumber;
-
+					
 					const titleElms = document.getElementsByClassName('story-item-title');
 					for (let i = 0; i < titleElms.length; i++) {
 						titleElms[i].innerText = zuck.data[currentStory].items[zuck.data[currentStory]['currentItem']].title;
@@ -1377,6 +1409,9 @@ module.exports = (window => {
 			} else if (storyViewer) {
 				if (direction !== 'previous') {
 					modal.next(event);
+				}
+				else {
+					modal.previous(event);
 				}
 			}
 		};
