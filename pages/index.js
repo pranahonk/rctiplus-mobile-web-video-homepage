@@ -1,9 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux';
+
 import BottomScrollListener from 'react-bottom-scroll-listener';
+
 import LoadingBar from 'react-top-loading-bar';
 
 import contentActions from '../redux/actions/contentActions';
+
 import pageActions from '../redux/actions/pageActions';
 
 import initialize from '../utils/initialize';

@@ -2,10 +2,10 @@ import React from 'react';
 import Head from 'next/head';
 
 //load scss style 
-import '../../assets/scss/custom.scss';
-import '../../assets/scss/global.scss';
-import 'sweetalert2/src/sweetalert2.scss';
-//import '../../assets/scss/homepage.scss';
+//import '../../assets/scss/custom.scss';
+//import '../../assets/scss/global.scss';
+//import 'sweetalert2/src/sweetalert2.scss';
+import '../../assets/scss/apps/homepage/default.scss';
 
 import '../../assets/scss/components/alert.scss';
 
