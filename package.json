@@ -34,7 +34,8 @@
     "build-all": "yarn build-next && yarn build-firebase",
     "build-next": "yarn && yarn build",
     "build-firebase": "cd \"functions\" && yarn",
-    "lighthouse:ci": "node node_modules/lighthouse/lighthouse-cli/index.js --output-path=./lighthouse-report.html --quiet --chrome-flags='--headless' https://rc-m-new.rctiplus.com"
+    "lighthouse:ci": "node node_modules/lighthouse/lighthouse-cli/index.js --output-path=./lighthouse-report.html --quiet --chrome-flags='--headless' https://rc-m-new.rctiplus.com",
+    "push:rc": "git checkout az-sprint2 && git add . && git commit -m \"bug fix qrcode scanner\" && git push origin az-sprint2 && git checkout release-candidates && git merge az-sprint2 && git push origin release-candidates && git checkout az-sprint2"
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
@@ -95,6 +96,7 @@
     "react-jw-player": "^1.19.0",
     "react-lazyload": "^2.6.5",
     "react-mobile-datepicker": "^4.0.2",
+    "react-qr-reader": "^2.2.1",
     "react-redux": "^5.0.6",
     "react-responsive-carousel": "^3.1.51",
     "react-share": "^3.0.1",

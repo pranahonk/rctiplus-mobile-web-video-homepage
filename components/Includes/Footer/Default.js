@@ -40,7 +40,7 @@ class FooterNav extends Component {
                 </div>
 
                 <div className="footer-wrapper-list">
-                    <a href="/live-tv">
+                    <a href="/tv/rcti">
                         <ImportantDevicesIcon className="nav-footer-icon"/>
                         <br/>
                         Live TV
@@ -59,7 +59,7 @@ class FooterNav extends Component {
                 </div>
 
                 <div className="footer-wrapper-list">
-                    <a href="/more">
+                    <a href="/profile">
                         <MenuIcon className="nav-footer-icon"/>
                         <br/>
                         More

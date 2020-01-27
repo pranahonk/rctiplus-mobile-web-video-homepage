@@ -1,29 +1,20 @@
 import ax from 'axios';
 import { DEV_API } from '../../config';
-import { getCookie, getVisitorToken } from '../../utils/cookie';
+import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
 
-const tokenKey = 'ACCESS_TOKEN';
-const accessToken = getCookie(tokenKey);
+const axios = ax.create({ baseURL: DEV_API + '/api' });
 
-const axios = ax.create({
-    // baseURL: API + '/api',
-    baseURL: DEV_API + '/api',
-    headers: {
-        'Authorization': accessToken ? accessToken : getVisitorToken()
-    }
-});
-
-axios.interceptors.response.use(response => {
-    return response;
-}, error => {
-    // console.log(error.response);
+axios.interceptors.request.use(async (request) => {
+    await checkToken();
+    const accessToken = getCookie('ACCESS_TOKEN');
+    request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : accessToken;
+    return request;
 });
 
 const getContents = (page = 1, length = 20, platform = 'mweb') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            // const response = await axios.get(`/v1/homepage?platform=${platform}&page=${page}&length=${length}`);
             const response = await axios.get(`/v1/homepage?page=${page}&length=${length}`);
             let contents = [];
             if (response.data.status.code === 0) {
@@ -32,7 +23,6 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                 let promises = [];
                 for (let i = 0; i < data.length; i++) {
                     if (data[i].total_content > 0) {
-                        // promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?platform=${platform}&page=${1}&length=${7}`));
                         promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?page=${1}&length=${7}`));
                         selectedData.push(data[i]);
                     }
@@ -56,7 +46,7 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                                 Woops! Gonna sign in first!<br/>
                                 Only a click away and you<br/>
                                 can continue to enjoy<br/>
-                                <b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+                                <b>RCTI+</b>`, '', () => {}, true, 'Register', 'Login', true, true);
                     }
                     contents.push(content);
                 }
@@ -222,12 +212,6 @@ const getClipUrl = clipId => {
         try {
             const response = await axios.get(`/v1/clip/${clipId}/url`);
             if (response.data.status.code === 0) {
-                // dispatch({
-                //     type: 'GET_CLIP_URL',
-                //     data: response.data.data, 
-                //     meta: response.data.meta, 
-                //     status: response.data.status
-                // });
                 resolve(response);
             }
             else {
@@ -320,7 +304,6 @@ const getProgramSeason = programId => {
     });
 };
 
-// TODO: get program extras, clips, & photos, and their details (SEE API DOC)
 const getProgramExtra = (programId, page = 1, length = 5) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {

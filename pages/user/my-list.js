@@ -1,13 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import Router from 'next/router';
-import Lazyload from 'react-lazyload';
-import { Carousel } from 'react-responsive-carousel';
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 
 import initialize from '../../utils/initialize';
+import { getCookie } from '../../utils/cookie';
 import bookmarkActions from '../../redux/actions/bookmarkActions';
 import searchActions from '../../redux/actions/searchActions';
 
@@ -46,6 +45,8 @@ class MyList extends React.Component {
 			loading: false,
 			endpage: false
 		};
+
+		
 	}
 
 	toggleDropdown() {
@@ -110,6 +111,11 @@ class MyList extends React.Component {
 	}
 
 	componentDidMount() {
+		const token = getCookie('ACCESS_TOKEN');
+		if (token == undefined) {
+			Router.push('/signin');
+		}
+		
 		this.props.getBookmark(this.state.current_page, this.state.length)
 			.then(response => {
 				const data = response.data.data;

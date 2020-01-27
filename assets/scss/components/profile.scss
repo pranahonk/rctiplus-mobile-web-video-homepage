@@ -1,0 +1,51 @@
+.list-menu-container {
+    margin-top: 60px;
+    border: none;
+    margin-bottom: 27px;
+
+    .profile-action {
+        p {
+            margin-bottom: 1px;
+        }
+
+        .subtitle {
+            font-size: 90%;
+            color: #757575;
+        }
+
+        .sub-btn {
+            margin-top: 5px;
+        }
+
+        .subtitle, .sub-btn {
+            margin-left: 30px;
+        }
+        
+        .btn-next {
+            width: 65px;
+            font-size: 10px;
+            border-radius: 5px;
+        }
+    }
+
+    .list-group-item {
+        border: 1px solid black;
+        border-left: none;
+        border-right: none;
+        line-height: 1.2;
+        font-size: 12px;
+        padding: 14px 10px;
+
+        .rounded-profile-picture {
+            width: 20px;
+            height: 20px;
+            border-radius: 100%;
+            border: 1px solid white;
+        }
+
+        .MuiSvgIcon-root {
+            font-size: 1.3rem;
+            margin-right: 5px;
+        }
+    }
+}

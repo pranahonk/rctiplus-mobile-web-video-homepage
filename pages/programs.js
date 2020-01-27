@@ -331,7 +331,12 @@ class Detail extends React.Component {
                 }
                 
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+                console.log(error);
+                if (error.status === 200) {
+                    showAlert(error.data.status.message_client, '', 'Login', '', () => Router.push('/login'));
+                }
+            });
     }
 
     deleteFromMyList(id, type) {
@@ -455,6 +460,10 @@ class Detail extends React.Component {
         return thumbs;
     }
 
+    link(cw, type) {
+		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(' ', '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(' ', '-').toLowerCase()}`);
+	}
+
     render() {
         const { episode, extra, clip, photo } = this.state.response_data;
         const tabs = [];
@@ -536,7 +545,7 @@ class Detail extends React.Component {
                     toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'])}/>
 
                 <div style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
-                <div className="content">
+                <div className="content content-programs">
                     <div className="content-thumbnail">
                         <Img alt={this.state.title} className="content-thumbnail-image" src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
                     </div>
@@ -590,11 +599,11 @@ class Detail extends React.Component {
                             {this.props.contents.episodes.map(e => (
                                 <div key={e.id}>
                                     <Row>
-                                        <Col xs={6} onClick={this.togglePlayerModal.bind(this, e, 'episode')}>
+                                        <Col xs={6} onClick={() => this.link(e, 'episode')}>
                                             <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
-                                            <p onClick={this.togglePlayerModal.bind(this, e, 'episode')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
+                                            <p onClick={() => this.link(e, 'episode')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
                                                     {this.state.bookmarked_episode.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'episode')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'episode')} />)}
@@ -620,11 +629,11 @@ class Detail extends React.Component {
                             {this.state.contents['extra'].map(e => (
                                 <div key={e.id}>
                                     <Row>
-                                        <Col xs={6} onClick={this.togglePlayerModal.bind(this, e, 'extra')}>
+                                        <Col xs={6} onClick={() => this.link(e, 'extra')}>
                                             <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
-                                            <p onClick={this.togglePlayerModal.bind(this, e, 'extra')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
+                                            <p onClick={() => this.link(e, 'extra')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
                                                     {this.state.bookmarked_extra.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'extra')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'extra')} />)}
@@ -645,11 +654,11 @@ class Detail extends React.Component {
                             {this.state.contents['clip'].map(e => (
                                 <div key={e.id}>
                                     <Row>
-                                        <Col xs={6} onClick={this.togglePlayerModal.bind(this, e, 'clip')}>
+                                        <Col xs={6} onClick={() => this.link(e, 'clip')}>
                                             <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
-                                            <p onClick={this.togglePlayerModal.bind(this, e, 'clip')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
+                                            <p onClick={() => this.link(e, 'clip')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
                                                     {this.state.bookmarked_clip.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'clip')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'clip')} />)}

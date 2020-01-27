@@ -43,6 +43,38 @@ const handle = app.getRequestHandler();
       return app.render(req, res, '/programs', { id: req.params.id, title: req.params.title });
     });
 
+    server.get('/mylist', (req, res) => {
+      return app.render(req, res, '/user/my-list');
+    });
+
+    server.get('/continue-watching', (req, res) => {
+      return app.render(req, res, '/user/continue-watching');
+    });
+
+    server.get('/edit-profile', (req, res) => {
+      return app.render(req, res, '/user/edit-profile');
+    });
+
+    server.get('/privacy-policy', (req, res) => {
+      return app.render(req, res, '/user/privacy-policy');
+    });
+
+    server.get('/terms-&-conditions', (req, res) => {
+      return app.render(req, res, '/user/term-cond');
+    });
+
+    server.get('/faq', (req, res) => {
+      return app.render(req, res, '/user/faq');
+    });
+
+    server.get('/contact-us', (req, res) => {
+      return app.render(req, res, '/user/contact-us');
+    });
+
+    server.get('/qrcode', (req, res) => {
+      return app.render(req, res, '/user/qrcode');
+    });
+
     // TODO
     server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
       return app.render(req, res, '/detail/content', { 

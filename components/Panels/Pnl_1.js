@@ -86,7 +86,7 @@ class Pnl_1 extends React.Component {
 											unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 											loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 											src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
-										{this.props.type === 'custom' ? (<div className="ribbon">Live</div>) : (<PlayCircleOutlineIcon className="play-btn-1" />)}
+										{this.props.type === 'custom' ? (<div className="ribbon">Live</div>) : (<div></div>)}
 									</div>
 									<div className="txt-slider-panel no-bg">
 										<h5>{c.program_title ? c.program_title : this.props.title}</h5>

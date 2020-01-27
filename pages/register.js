@@ -86,7 +86,7 @@ class Signup extends React.Component {
 
 	render() {
 		return (
-			<Layout title="Sign Up">
+			<Layout title="Register">
 				<NavBack title="Register"/>
 				<div className="wrapper-content" style={{ marginTop: 40 }}>
 					<div className="login-box">

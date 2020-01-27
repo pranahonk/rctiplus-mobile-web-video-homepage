@@ -108,10 +108,10 @@ export const showSignInAlert = (text, title, callback, buttonInverse = false, co
     Swal.fire(options)
         .then(result => {
             if (result.value) {
-                Router.push('/signup');
+                Router.push('/register');
             }
             else if (result.dismiss == 'cancel') {
-                Router.push('/signin');
+                Router.push('/login');
             }
         });
 

@@ -193,8 +193,8 @@ class Exclusive extends React.Component {
 		});
 	}
 
-	goToDetail(programId) {
-		Router.push('/detail/program/' + programId);
+	goToDetail(program) {
+		Router.push(`/programs/${program.program_id}/${program.title.replace(' ', '-').toLowerCase()}`);
 	}
 
 	render() {
@@ -238,10 +238,9 @@ class Exclusive extends React.Component {
 						))}
 
 					</Nav>
-					<TabContent className="container-box" activeTab={this.state.active_tab}>
+					<TabContent className="container-box container-box-exclusive" activeTab={this.state.active_tab}>
 						{this.state.categories.map((c, i) => (
 							<TabPane key={i} tabId={i + 1}>
-								<div className="content-tab-exclusive">
 									<div className="content-tab-exclusive">
 										<div className="program-container">
 											{this.state.feeds[c.name] && this.state.feeds[c.name].map((feed, idx) => (
@@ -257,7 +256,7 @@ class Exclusive extends React.Component {
 																	src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
 															</Col>
 															<Col xs="7">
-																<div onClick={this.goToDetail.bind(this, feed.program_id)} className="program-label">
+																<div onClick={this.goToDetail.bind(this, feed)} className="program-label">
 																	<div className="program-title">
 																		<strong>
 																			{feed.title.substring(0, 30) + (feed.title.length > 30 ? '...' : '')}
@@ -267,7 +266,7 @@ class Exclusive extends React.Component {
 																</div>
 															</Col>
 															<Col className="program-share-button">
-																<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label" />
+																<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label-share-btn" />
 															</Col>
 														</Row>
 														{feed.type == 'photo' ?
@@ -312,7 +311,6 @@ class Exclusive extends React.Component {
 
 										</div>
 									</div>
-								</div>
 							</TabPane>
 						))}
 

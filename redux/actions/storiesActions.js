@@ -1,17 +1,19 @@
 import ax from 'axios';
 import { DEV_API } from '../../config';
-import { getVisitorToken } from '../../utils/cookie';
+import { getVisitorToken, checkToken } from '../../utils/cookie';
 
-const axios = ax.create({
-    baseURL: 'https://api.rctiplus.com/api',
-    headers: {
-        'Authorization': getVisitorToken()
-    }
+const axios = ax.create({ baseURL: 'https://api.rctiplus.com/api' });
+
+axios.interceptors.request.use(async (request) => {
+    await checkToken();
+    request.headers['Authorization'] = getVisitorToken();
+    return request;
 });
 
 const getStories = (page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
+            await checkToken();
             const response = await axios.get(`/v1/stories?page=${page}&length=${length}`);
             if (response.data.status.code === 0) {
                 const data = response.data.data;

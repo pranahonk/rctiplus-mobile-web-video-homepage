@@ -1,14 +1,16 @@
 import ax from 'axios';
 import { DEV_API } from '../../config';
-import { setCookie, getVisitorToken } from '../../utils/cookie';
-
-const tokenKey = 'ACCESS_TOKEN';
+import { setCookie, getVisitorToken, checkToken } from '../../utils/cookie';
 
 const axios = ax.create({
-    baseURL: DEV_API + '/api',
-    headers: {
-        'Authorization': getVisitorToken()
-    }
+    // baseURL: API + '/api',
+    baseURL: DEV_API + '/api'
+});
+
+axios.interceptors.request.use(async (request) => {
+    await checkToken();
+    request.headers['Authorization'] = getVisitorToken();
+    return request;
 });
 
 const setActiveTab = tab => {
@@ -115,7 +117,7 @@ const register = ({ username, password, fullname, gender, dob, otp, device_id })
             });
 
             if (response.data.status.code === 0) {
-                setCookie(tokenKey, response.data.data.access_token);
+                setCookie('ACCESS_TOKEN', response.data.data.access_token);
                 dispatch({ 
                     type: 'REGISTER', 
                     data: response.data.data, 

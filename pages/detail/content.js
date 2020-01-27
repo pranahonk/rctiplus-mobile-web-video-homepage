@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import initialize from '../../utils/initialize';
 import contentActions from '../../redux/actions/contentActions';
+import historyActions from '../../redux/actions/historyActions';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
@@ -10,14 +11,6 @@ import Layout from '../../components/Layouts/Default';
 
 import '../../assets/scss/components/content.scss';
 
-// http://localhost:3000/programs/439/take-me-out-indonesia/episode/69420/h3h3
-// {
-//     "id": "439",
-//     "title": "take-me-out-indonesia",
-//     "type": "episode",
-//     "content_id": "69420",
-//     "content_title": "h3h3"
-// }
 class Content extends React.PureComponent {
 
     static getInitialProps(ctx) {
@@ -29,7 +22,8 @@ class Content extends React.PureComponent {
         super(props);
         this.state = {
             player_url: '',
-            player_vmap: ''
+            player_vmap: '',
+            start_duration: 0
         };
         this.player = null;
     }
@@ -52,7 +46,7 @@ class Content extends React.PureComponent {
 			logo: {
 				hide: true
 			}
-        });
+        }).seek(this.state.start_duration);
         
         this.player.on('firstFrame', () => {
             console.log('FIRST FRAME');
@@ -75,11 +69,25 @@ class Content extends React.PureComponent {
                 content_id: this.props.context_data.content_id
             });
         });
+
+        this.player.on('play', () => {
+            setInterval(() => {
+                this.props.postHistory(this.props.context_data.content_id, this.props.context_data.type, this.player.getPosition())
+                    .then(response => {
+                        console.log(response);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }, 10000);
+        });
+
+        
 	}
 
     async componentDidMount() {
+        let response = null;
         try {
-            let response = null;
             switch (this.props.context_data.type) {
                 case 'episode':
                     response = await this.props.getEpisodeUrl(this.props.context_data.content_id);
@@ -92,19 +100,35 @@ class Content extends React.PureComponent {
                 case 'clip':
                     response = await this.props.getClipUrl(this.props.context_data.content_id);
                     break;
-            }
-            
-            if (response && response.status === 200 && response.data.status.code === 0) {
-                const data = response.data.data;
-                this.setState({
-                    player_url: data.url,
-                    player_vmap: data.vmap
-                }, () => this.initVOD());
-            }
-            
+            }    
         }
         catch (error) {
             console.log(error);
+        }
+        
+        if (response && response.status === 200 && response.data.status.code === 0) {
+            const data = response.data.data;
+            this.props.getContinueWatchingByContentId(this.props.context_data.content_id, this.props.context_data.type)
+                .then(response_2 => {
+                    let startDuration = 0;
+                    if (response_2 && response_2.status === 200 && response_2.data.status.code === 0) {
+                        startDuration = response_2.data.data.last_duration;
+                    }
+
+                    this.setState({
+                        player_url: data.url,
+                        player_vmap: data.vmap,
+                        start_duration: startDuration
+                    }, () => this.initVOD());
+                })
+                .catch(error => {
+                    this.setState({
+                        player_url: data.url,
+                        player_vmap: data.vmap,
+                        start_duration: 0
+                    }, () => this.initVOD());
+                });
+            
         }
     }
 
@@ -121,4 +145,7 @@ class Content extends React.PureComponent {
 
 }
 
-export default connect(state => state, contentActions)(withRouter(Content));
+export default connect(state => state, {
+    ...contentActions,
+    ...historyActions
+})(withRouter(Content));

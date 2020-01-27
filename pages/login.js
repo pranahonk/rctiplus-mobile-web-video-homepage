@@ -39,13 +39,16 @@ class Signin extends React.Component {
 			progress_bar: 30
 		};
 
-		const token = getCookie('ACCESS_TOKEN');
-		if (token) {
-			Router.push('/');
-		}
+		
 	}
 
 	componentDidMount() {
+		setTimeout(() => {
+			const token = getCookie('ACCESS_TOKEN');
+			if (token) {
+				Router.push('/');
+			}
+		}, 500);
 		this.LoadingBar.complete();
 	}
 
@@ -104,7 +107,7 @@ class Signin extends React.Component {
 
 	render() {
 		return (
-			<Layout title="Sign In">
+			<Layout title="Login">
 				<LoadingBar
 					progress={this.state.progress_bar}
 					height={3}
@@ -154,13 +157,13 @@ class Signin extends React.Component {
 							<Button disabled={this.state.emailphone.length < 6} className="btn-next block-btn" style={{ marginTop: 20 }}>Log In</Button>
 							<p className="text-center fnt-10 el-margin-20 el-white" style={{ fontSize: 12 }}>
 								Don't have an account?<br/>
-								<a href="/signup" className="text-red">
+								<a href="/register" className="text-red">
 									Register
 								</a> here.&nbsp;
 							</p>
 							<p className="text-center fnt-10 el-margin-20 el-white" style={{ fontSize: 11, marginTop: 50 }}>
 								By clicking the Log In button, you agree to our&nbsp;
-								<a href="/terms-&amp;-conditions" className="text-red fnt-11">
+								<a href="/terms-&-conditions" className="text-red fnt-11">
 									Terms &amp; Conditions
 								</a>&nbsp;
 								and&nbsp;

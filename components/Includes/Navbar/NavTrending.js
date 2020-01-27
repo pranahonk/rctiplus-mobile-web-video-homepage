@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
+
 import actions from '../../../redux/actions';
+import pageActions from '../../../redux/actions/pageActions';
+
 import { getCookie, removeCookie } from '../../../utils/cookie';
 import '../../../assets/scss/components/navbar.scss';
 
@@ -22,15 +25,24 @@ class NavTrending extends Component {
     }
 
     signOut() {
-        const deviceId = 1;
-        this.props
+        if (this.state.token) {
+            this.props.setPageLoader();
+            const deviceId = new DeviceUUID().get();
+            this.props
                 .logout(deviceId)
-                .then(() => {
-                    Router.push('/signin');
+                .then(response => {
+                    this.props.unsetPageLoader();
+                    Router.push('/login');
                 })
                 .catch(error => {
+                    console.log(error);
+                    this.props.unsetPageLoader();
                     removeCookie('ACCESS_TOKEN');
                 });
+        }
+        else {
+            Router.push('/login');
+        }
     }
 
     componentDidMount() {
@@ -61,10 +73,10 @@ class NavTrending extends Component {
                             <div className="btn-link-top-nav">
                                 {this.state.token ? (
                                     <NavbarBrand style={{color: 'white', fontSize: 13}} onClick={this.signOut.bind(this)} href="#">
-                                        Sign Out
+                                        Logout
                                     </NavbarBrand>
                                 ) : (
-                                    <NavbarBrand style={{color: 'white', fontSize: 13}} href="/signin">Sign In</NavbarBrand>
+                                    <NavbarBrand style={{color: 'white', fontSize: 13}} href="/login">Login</NavbarBrand>
                                 )}
                                 <NavbarBrand style={{color: 'white'}} href="/trending/search">
                                     <SearchIcon style={{fontSize: 20}}/>
@@ -77,4 +89,7 @@ class NavTrending extends Component {
                 );
     }
 }
-export default connect(state => state, actions)(NavTrending);
+export default connect(state => state, {
+    ...actions,
+    ...pageActions
+})(NavTrending);

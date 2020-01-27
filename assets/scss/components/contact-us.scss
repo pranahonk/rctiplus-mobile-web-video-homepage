@@ -1,0 +1,29 @@
+.container-box-cu {
+    margin-top: 50px;
+    padding: 30px;
+
+    .description-cu {
+        margin-bottom: 35px;
+    }
+
+    .form-control-cu {
+        border-radius: 0;
+        background: transparent !important;
+        border-color: #495057 !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        color: #a8a8a8 !important;
+        padding: 0;
+    }
+    
+    .form-control-cu:hover {
+        background: transparent;
+    }
+    
+    .form-label-cu {
+        margin: 0;
+        font-size: 12px;
+        color: white;
+    }
+}
