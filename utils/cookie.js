@@ -62,9 +62,6 @@ export const checkToken = async () => {
     if (!newsToken) {
         await setNewsToken();
     }
-
-    console.log('VISITOR TOKEN BEFORE:', visitorToken);
-    // TODO: don't use async
 };
 
 export const setDeviceId = () => {
@@ -73,7 +70,6 @@ export const setDeviceId = () => {
 
 export const getVisitorToken = () => {
     const visitorToken = cookie.get('VISITOR_TOKEN');
-    //    console.log(visitorToken);
     if (visitorToken) {
         const data = JSON.parse(visitorToken);
         return data['VALUE'];
@@ -124,7 +120,7 @@ export const setVisitorToken = async () => {
             }
         }
     } catch (error) {
-        //        console.log(error);
+        // console.log(error);
     }
 
     return null;

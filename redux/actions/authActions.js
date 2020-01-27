@@ -57,15 +57,10 @@ const logout = (device_id, platform = 'mweb') => {
             const response = await axios.post(`/v1/logout`, {
                 device_id: device_id,
                 platform: platform
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': getCookie(tokenKey)
-                }
             });
 
             if (response.data.status.code === 0) {
-                removeCookie(tokenKey);
+                removeCookie('ACCESS_TOKEN');
                 dispatch({ type: DEAUTHENTICATE });
                 resolve(response);
             }
