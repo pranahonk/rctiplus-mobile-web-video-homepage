@@ -63,6 +63,7 @@ export const checkToken = async () => {
         await setNewsToken();
     }
 
+    console.log('VISITOR TOKEN BEFORE:', visitorToken);
     // TODO: don't use async
 };
 

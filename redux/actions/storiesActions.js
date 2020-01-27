@@ -2,11 +2,12 @@ import ax from 'axios';
 import { DEV_API } from '../../config';
 import { getVisitorToken, checkToken } from '../../utils/cookie';
 
-const axios = ax.create({
-    baseURL: 'https://api.rctiplus.com/api',
-    headers: {
-        'Authorization': getVisitorToken()
-    }
+const axios = ax.create({ baseURL: 'https://api.rctiplus.com/api' });
+
+axios.interceptors.request.use(async (request) => {
+    await checkToken();
+    request.headers['Authorization'] = getVisitorToken();
+    return request;
 });
 
 const getStories = (page = 1, length = 10) => {

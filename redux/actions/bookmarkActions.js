@@ -1,23 +1,16 @@
 import ax from 'axios';
 import { DEV_API } from '../../config';
-import { getCookie, getVisitorToken } from '../../utils/cookie';
+import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
 
-const tokenKey = 'ACCESS_TOKEN';
-const accessToken = getCookie(tokenKey);
+const axios = ax.create({ baseURL: DEV_API + '/api' });
 
-const axios = ax.create({
-    // baseURL: API + '/api',
-    baseURL: DEV_API + '/api',
-    headers: {
-        'Authorization': accessToken ? accessToken : getVisitorToken()
-    }
+axios.interceptors.request.use(async (request) => {
+    await checkToken();
+    const accessToken = getCookie('ACCESS_TOKEN');
+    request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : accessToken;
+    return request;
 });
 
-axios.interceptors.response.use(response => {
-    return response;
-}, error => {
-    // console.log(error.response);
-});
 
 const bookmark = (id, type) => {
     return dispatch => new Promise(async (resolve, reject) => {
@@ -25,11 +18,6 @@ const bookmark = (id, type) => {
             const response = await axios.post(`/v1/bookmark`, {
                 id: id,
                 type: type
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
-                }
             });
 
             if (response.data.status.code === 0) {
@@ -54,12 +42,7 @@ const bookmark = (id, type) => {
 const deleteBookmark = (id, type) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.delete(`/v1/bookmark?id=${id}&type=${type}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
-                }
-            });
+            const response = await axios.delete(`/v1/bookmark?id=${id}&type=${type}`);
 
             if (response.data.status.code === 0) {
                 dispatch({ 
@@ -83,11 +66,7 @@ const deleteBookmark = (id, type) => {
 const getBookmarks = () => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/bookmarks`, {
-                headers: {
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
-                }
-            });
+            const response = await axios.get(`/v1/bookmarks`);
 
             if (response.data.status.code === 0) {
                 dispatch({ 
@@ -111,11 +90,7 @@ const getBookmarks = () => {
 const getMyList = programId => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/mylist/${programId}`, {
-                headers: {
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
-                }
-            });
+            const response = await axios.get(`/v1/mylist/${programId}`);
 
             if (response.data.status.code === 0) {
                 dispatch({ 
@@ -139,11 +114,7 @@ const getMyList = programId => {
 const getListBookmark = (page = 1, length = 10, order = 'date', dir = 'DESC') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/listbookmark?page=${page}&length=${length}&order=${order}&dir=${dir}`, {
-                headers: {
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
-                }
-            });
+            const response = await axios.get(`/v1/listbookmark?page=${page}&length=${length}&order=${order}&dir=${dir}`);
             
             if (response.data.status.code === 0) {
                 dispatch({
@@ -167,11 +138,7 @@ const getListBookmark = (page = 1, length = 10, order = 'date', dir = 'DESC') =>
 const getListBookmarkById = (programId, page = 1, length = 10, order = 'date', dir = 'DESC') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/listbookmark/${programId}?page=${page}&length=${length}&order=${order}&dir=${dir}`, {
-                headers: {
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
-                }
-            });
+            const response = await axios.get(`/v1/listbookmark/${programId}?page=${page}&length=${length}&order=${order}&dir=${dir}`);
 
             if (response.data.status.code === 0) {
                 dispatch({
@@ -195,11 +162,7 @@ const getListBookmarkById = (programId, page = 1, length = 10, order = 'date', d
 const getProgramBookmark = programId => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/bookmark/${programId}`, {
-                headers: {
-                    'Authorization': getCookie(tokenKey) ? getCookie(tokenKey) : getVisitorToken()
-                }
-            });
+            const response = await axios.get(`/v1/bookmark/${programId}`);
 
             if (response.data.status.code === 0) {
                 dispatch({

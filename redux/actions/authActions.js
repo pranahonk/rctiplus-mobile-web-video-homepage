@@ -1,19 +1,18 @@
 import ax from 'axios';
 import { AUTHENTICATE, DEAUTHENTICATE, WRONG_AUTHENTICATION } from '../types';
 import { DEV_API } from '../../config';
-import { setCookie, removeCookie, getCookie, getVisitorToken } from '../../utils/cookie';
+import { setCookie, removeCookie, getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
 
 const axios = ax.create({
     // baseURL: API + '/api',
-    baseURL: DEV_API + '/api',
-    headers: {
-        'Authorization': getVisitorToken()
-    }
+    baseURL: DEV_API + '/api'
 });
 
-const tokenKey = 'ACCESS_TOKEN';
-const accessToken = getCookie(tokenKey);
-//console.log('AUTH ACTIONS [ACCESS TOKEN]:', accessToken);
+axios.interceptors.request.use(async (request) => {
+    await checkToken();
+    request.headers['Authorization'] = getVisitorToken();
+    return request;
+});
 
 const setDeviceId = deviceId => {
     return dispatch => dispatch({
@@ -37,7 +36,7 @@ const login = ({ emailphone, password, deviceId = '1' }) => {
             .then(response => {
                 const data = response.data;
                 if (data.status.code == 0) {
-                    setCookie(tokenKey, data.data.access_token);
+                    setCookie('ACCESS_TOKEN', data.data.access_token);
                     dispatch({ type: AUTHENTICATE, data: data, token: data.data.access_token });
                 }
                 else {
@@ -46,7 +45,6 @@ const login = ({ emailphone, password, deviceId = '1' }) => {
                 resolve(response);
             })
             .catch(error => {
-                console.log('ERROR');
                 console.log(error);
                 reject(error);
             });
