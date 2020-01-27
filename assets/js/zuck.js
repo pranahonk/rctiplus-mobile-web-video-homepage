@@ -703,8 +703,11 @@ module.exports = (window => {
 						y: pos[1]
 					};
 
-					const pageX = touches.pageX;
-					const pageY = touches.pageY;
+					// touch coordinates
+					// const pageX = touches.pageX;
+					// const pageY = touches.pageY;
+					const pageX = touches.clientX;
+					const pageY = touches.clientY;
 
 					touchOffset = {
 						x: pageX,
@@ -714,6 +717,7 @@ module.exports = (window => {
 					};
 
 					if (pageY < 80 || pageY > (modalContainer.slideHeight - 80)) {
+						console.log('touch invalid:', modalContainer.slideHeight, pageY);
 						touchOffset.valid = false;
 						return;
 					} else {
@@ -825,7 +829,7 @@ module.exports = (window => {
 
 							const navigateItem = function () {
 								if (
-									lastTouchOffset.x > window.screen.width / 3 ||
+									lastTouchOffset.x > window.screen.width / 4 ||
 									!option('previousTap')
 								) {
 									console.log('next');
