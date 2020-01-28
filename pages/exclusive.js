@@ -194,7 +194,7 @@ class Exclusive extends React.Component {
 	}
 
 	goToDetail(program) {
-		Router.push(`/programs/${program.program_id}/${program.title.replace(' ', '-').toLowerCase()}`);
+		Router.push(`/programs/${program.program_id}/${program.title.replace(/ +/g, '-').toLowerCase()}`);
 	}
 
 	render() {

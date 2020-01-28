@@ -461,7 +461,7 @@ class Detail extends React.Component {
     }
 
     link(cw, type) {
-		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(' ', '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(' ', '-').toLowerCase()}`);
+		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}`);
 	}
 
     render() {
@@ -700,7 +700,7 @@ class Detail extends React.Component {
                             {scrollRef => (
                                 <div ref={scrollRef} className="related-slider">
                                     {this.state.related_programs.map(rp => (
-                                        <div onClick={() => Router.push(`/programs/${rp.id}/${rp.title.replace(' ', '-').toLowerCase()}`)} key={rp.id} className="related-slide">
+                                        <div onClick={() => Router.push(`/programs/${rp.id}/${rp.title.replace(/ +/g, '-').toLowerCase()}`)} key={rp.id} className="related-slide">
                                             <Img alt={rp.title} src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
                                         </div>
                                     ))}
