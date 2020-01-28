@@ -78,12 +78,23 @@ $jumbotron-height: 560px;
         color: #0e519f;
     }
 
-    .action-button {
-        display: inline-block;
-        margin-right: 26px;
-        margin-left: 16px;
-        text-align: center;
-        font-size: 9px;
+    .action-buttons {
+        height: $jumbotron-height - ($jumbotron-height - 100);
+        position: relative;
+        
+        .action-button-container {
+            position: absolute;
+            bottom: 0;
+            
+            .action-button {
+                display: inline-block;
+                margin-right: 36px;
+                margin-left: 16px;
+                text-align: center;
+                font-size: 9px;
+            }
+        }
+        
     }
 }
 

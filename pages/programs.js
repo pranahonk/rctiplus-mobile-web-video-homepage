@@ -573,17 +573,19 @@ class Detail extends React.Component {
                         return str;
                     })}</p>
                     <div className="action-buttons">
-                        <div className="action-button">
-                            {thumbs}
-                            <p>Rate</p>
-                        </div>
-                        <div className="action-button">
-                            {this.state.program_in_list ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, this.props.router.query.id, 'program')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, this.props.router.query.id, 'program')} />)}
-                            <p>My List</p>
-                        </div>
-                        <div className="action-button">
-                            <ShareIcon onClick={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
-                            <p>Share</p>
+                        <div className="action-button-container">
+                            <div className="action-button">
+                                {thumbs}
+                                <p>Rate</p>
+                            </div>
+                            <div className="action-button">
+                                {this.state.program_in_list ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, this.props.router.query.id, 'program')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, this.props.router.query.id, 'program')} />)}
+                                <p>My List</p>
+                            </div>
+                            <div className="action-button">
+                                <ShareIcon onClick={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
+                                <p>Share</p>
+                            </div>
                         </div>
                     </div>
                 </div>
