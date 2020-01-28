@@ -26,7 +26,7 @@ class Qrcode extends React.Component {
     componentDidMount() {
         const token = getCookie('ACCESS_TOKEN');
 		if (token == undefined) {
-			Router.push('/signin');
+			Router.push('/login');
 		}
         const QrReader = require('react-qr-reader');
         this.setState({ qr_reader: (
