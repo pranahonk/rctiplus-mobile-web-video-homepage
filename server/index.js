@@ -98,6 +98,12 @@ const handle = app.getRequestHandler();
       })
     });
 
+    server.get('/exclusive/:category', (req, res) => {
+      return app.render(req, res, '/exclusive', {
+        category: req.params.category
+      })
+    });
+
     // default request handler by next handler:
     server.get('*', (req, res) => {
       return handle(req, res);

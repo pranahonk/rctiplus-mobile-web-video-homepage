@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 
@@ -10,6 +11,7 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 import { showAlert } from '../../utils/helpers';
 
 import '../../assets/scss/components/contact-us.scss';
+import { SITEMAP } from '../../config';
 
 import { Form, FormGroup, Label, Input, InputGroup, FormFeedback, Button } from 'reactstrap';
 
@@ -98,7 +100,11 @@ class ContactUs extends React.PureComponent {
 
     render() {
         return (
-            <Layout title="RCTI+ - Contact Us">
+            <Layout title={SITEMAP.contact_us.title}>
+				<Head>
+					<meta name="description" content={SITEMAP.contact_us.description}/>
+					<meta name="keywords" content={SITEMAP.contact_us.keywords}/>
+				</Head>
                 <NavBack title="Contact Us"/>
                 <div className="wrapper-content container-box-cu">
                     <div className="description-cu">
