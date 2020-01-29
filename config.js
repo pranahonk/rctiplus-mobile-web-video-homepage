@@ -110,6 +110,11 @@ export const SITEMAP = {
         description: `Nonton berita iNews, RCTI, MNC, dan GTV online terkini terkait bisnis, ekonomi, politik, sport, teknologi, bola dan yang lainnya`,
         keywords: `berita terkini, berita inews, berita rcti, berita mnc, berita gtv`
     },
+    exclusive_gossip: {
+        title: `Saksikan Berita Terkini dari Dalam Negeri dan Internasional - ${SITE_NAME}`,
+        description: `Nonton berita iNews, RCTI, MNC, dan GTV online terkini terkait bisnis, ekonomi, politik, sport, teknologi, bola dan yang lainnya`,
+        keywords: `berita terkini, berita inews, berita rcti, berita mnc, berita gtv`
+    },
     exclusive_bloopers: {
         title: `Kumpulan Video Lucu dari Sinetron Favorit Indonesia - ${SITE_NAME}`,
         description: `Nonton video lucu pendek artis sinetron Indonesia program RCTI, MNC, GTV, dan iNews hanya di RCTI+ - Streaming video online terlengkap`,

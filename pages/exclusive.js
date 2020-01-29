@@ -215,10 +215,10 @@ class Exclusive extends React.Component {
 
 	render() {
 		return (
-			<Layout title={SITEMAP[`exclusive_${this.state.category ? this.state.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].title}>
+			<Layout title={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].title}>
 				<Head>
-					<meta name="description" content={SITEMAP[`exclusive_${this.state.category ? this.state.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].description}/>
-					<meta name="keywords" content={SITEMAP[`exclusive_${this.state.category ? this.state.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].keywords}/>
+					<meta name="description" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].description}/>
+					<meta name="keywords" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].keywords}/>
 				</Head>
 				<NavDefault disableScrollListener />
 
