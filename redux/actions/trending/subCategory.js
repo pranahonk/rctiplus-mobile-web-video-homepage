@@ -1,22 +1,15 @@
 import ax from 'axios';
 import { API, DEV_API, NEWS_TOKEN, NEWS_API } from '../../../config';
-import { getCookie, getNewsToken, getVisitorToken } from '../../../utils/cookie';
+import { getCookie, getNewsToken, getVisitorToken, checkToken } from '../../../utils/cookie';
 import { showConfirmAlert, showSignInAlert } from '../../../utils/helpers';
 //
 
-const tokenKey = 'ACCESS_TOKEN';
-const accessToken = getCookie(tokenKey);
-const axios = ax.create({
-    baseURL: NEWS_API + '/api',
-    headers: {
-        'Authorization': getNewsToken()
-    }
-});
+const axios = ax.create({ baseURL: NEWS_API + '/api' });
 
-axios.interceptors.response.use(response => {
-    return response;
-}, error => {
-    // console.log(error.response);
+axios.interceptors.request.use(async (request) => {
+    await checkToken();
+    request.headers['Authorization'] = getNewsToken();
+    return request;
 });
 
 const getTrendingSubCategory = () => {

@@ -6,7 +6,7 @@ import actions from '../../../redux/actions';
 import pageActions from '../../../redux/actions/pageActions';
 
 import { getCookie, removeCookie } from '../../../utils/cookie';
-//import '../../../assets/scss/components/navbar.scss';
+import '../../../assets/scss/components/navbar.scss';
 
 //load reactstrap
 import { Navbar, NavbarBrand } from 'reactstrap';

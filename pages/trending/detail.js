@@ -1,10 +1,7 @@
 import React from 'react';
-import Head from 'next/head';
-import Router from 'next/router';
 import fetch from 'isomorphic-unfetch';
 
-import { API, DEV_API, NEWS_TOKEN, NEWS_API } from '../../config';
-import { getCookie, getNewsToken, getVisitorToken, checkToken } from '../../utils/cookie';
+import { DEV_API, NEWS_API } from '../../config';
 
 //load default layout
 import Layout from '../../components/Layouts/Default';
@@ -19,13 +16,33 @@ class Detail extends React.Component {
     
     static async getInitialProps(ctx) {
         const programId = ctx.query.id;
-        const accessToken = getCookie('NEWS_TOKEN');
-        console.log(accessToken);
-        await checkToken();
+
+        const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
+        if (response_visitor.statusCode === 200) {
+            return {};
+        }
+
+        const data_visitor = await response_visitor.json();
+
+        const response_news = await fetch(`${NEWS_API}/api/v1/token`, {
+            method: 'POST',
+            body: JSON.stringify({
+                merchantName: 'rcti+',
+                hostToken: data_visitor.data.access_token,
+                platform: 'mweb'
+            })
+        });
+
+        if (response_news.statusCode === 200) {
+            return {};
+        }
+
+        const data_news = await response_news.json();
+
         const res = await fetch(`${NEWS_API}/api/v1/news?newsId=${programId}&infos=pubDate,id,title,cover,content,link,guid,source,author`, {
             method: 'GET',
             headers: {
-                'Authorization': getNewsToken()
+                'Authorization': data_news.data.news_token
             }
         });
         const error_code = res.statusCode > 200 ? res.statusCode : false;
@@ -33,8 +50,9 @@ class Detail extends React.Component {
         if (error_code || data.status.code === 1) {
             return { initial: false };
         }
-        return { initial: data, props_id: programId, toke_: getNewsToken() };
+        return { initial: data, props_id: programId, toke_: data_news.data.news_token };
     }
+
     constructor(props) {
         super(props);
         this.state = {

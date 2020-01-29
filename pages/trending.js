@@ -45,7 +45,7 @@ class Trending extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-                        page:1,
+            page:1,
 			active_tab: 1,
 			contents: [],
 			meta: null,
