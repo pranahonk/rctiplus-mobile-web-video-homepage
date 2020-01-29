@@ -24,6 +24,16 @@ and open the template in the editor.
     font-family: inherit;
 }
 
-#zuck-modal-content .story-viewer .slides .item > .media {
-    width: 100%;
+#zuck-modal-content .story-viewer .slides .item  {
+    position: relative;
+    .media {
+        width: 100%;
+        height: auto;
+        position: absolute;
+        margin: 0;
+        top: 50%;
+        left: 0;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
 }

@@ -26,7 +26,7 @@ function launchChromeAndRunLighthouse(url, label, opts, config = null) {
 }
 
 const opts = {
-    chromeFlags: ['--headless'],
+    chromeFlags: ['--headless', '--no-sandbox', '--ignore-certificate-errors'],
     output: 'html'
 };
 

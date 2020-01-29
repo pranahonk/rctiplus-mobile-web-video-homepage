@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import Router from 'next/router';
 import { connect } from 'react-redux';
 import actions from '../redux/actions';
@@ -8,18 +9,14 @@ import LoadingBar from 'react-top-loading-bar';
 
 import { showAlert } from '../utils/helpers';
 
-//load default layout
 import Layout from '../components/Layouts/Default';
-
-//load navbar default
 import NavBack from '../components/Includes/Navbar/NavBack';
 
-//load signin scss
 import '../assets/scss/components/signin.scss';
 
-//load reactstrap components
 import { Button, Form, FormGroup, Label, Input, FormFeedback, InputGroup } from 'reactstrap';
 
+import { SITEMAP } from '../config';
 
 class Signin extends React.Component {
 	static getInitialProps(ctx) {
@@ -107,7 +104,11 @@ class Signin extends React.Component {
 
 	render() {
 		return (
-			<Layout title="Login">
+			<Layout title={SITEMAP.login.title}>
+				<Head>
+					<meta name="description" content={SITEMAP.login.description}/>
+					<meta name="keywords" content={SITEMAP.login.keywords}/>
+				</Head>
 				<LoadingBar
 					progress={this.state.progress_bar}
 					height={3}

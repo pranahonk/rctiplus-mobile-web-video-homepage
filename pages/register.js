@@ -1,21 +1,20 @@
 import React from 'react';
+import Head from 'next/head';
 import Router from 'next/router';
 import { connect } from 'react-redux';
+
 import registerActions from '../redux/actions/registerActions';
 import userActions from '../redux/actions/userActions';
+
 import initialize from '../utils/initialize';
 
-//load default layout
 import Layout from '../components/Layouts/Default';
-
-//load navbar default
 import NavBack from '../components/Includes/Navbar/NavBack';
-
-//load tab signup
 import TabSignup from '../components/Includes/Tab/TabSignup';
 
-//load reactstrap components
 import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback } from 'reactstrap';
+
+import { SITEMAP } from '../config';
 
 class Signup extends React.Component {
 	static getInitialProps(ctx) {
@@ -86,7 +85,11 @@ class Signup extends React.Component {
 
 	render() {
 		return (
-			<Layout title="Register">
+			<Layout title={SITEMAP.register.title}>
+				<Head>
+					<meta name="description" content={SITEMAP.register.description}/>
+					<meta name="keywords" content={SITEMAP.register.keywords}/>
+				</Head>
 				<NavBack title="Register"/>
 				<div className="wrapper-content" style={{ marginTop: 40 }}>
 					<div className="login-box">

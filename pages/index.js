@@ -1,48 +1,27 @@
-import React from 'react'
+import React from 'react';
+import Head from 'next/head';
 import { connect } from 'react-redux';
-
 import BottomScrollListener from 'react-bottom-scroll-listener';
-
 import LoadingBar from 'react-top-loading-bar';
 
 import contentActions from '../redux/actions/contentActions';
-
 import pageActions from '../redux/actions/pageActions';
 
 import initialize from '../utils/initialize';
 
-//load default layout
 import Layout from '../components/Layouts/Default';
-
-//load download app el
 import NavDownloadApp from '../components/Includes/Navbar/NavDownloadApp';
-
-//load navbar default
 import Nav from '../components/Includes/Navbar/NavDefault';
-
-//load carousel gallery (only in home page)
 import Carousel from '../components/Includes/Gallery/Carousel';
-
-//load stories zuck js (only in home page)
 import Stories from '../components/Includes/Gallery/Stories';
-
-//load stories panel 1 (only in home page)
 import Panel1 from '../components/Panels/Pnl_1';
-
-//load stories panel 2 (only in home page)
 import Panel2 from '../components/Panels/Pnl_2';
-
-//load stories panel 3 (only in home page)
 import Panel3 from '../components/Panels/Pnl_3';
-
-//load stories panel 4 (only in home page)
 import Panel4 from '../components/Panels/Pnl_4';
-
-//load ads (only in home page)
 import StickyAds from '../components/Includes/Banner/StickyAds';
-
-//load live tv schedule
 import ScheduleTV from '../components/Includes/Schedules/LiveTv';
+
+import { SITEMAP } from '../config';
 
 class Index extends React.Component {
     static async getInitialProps(ctx) {
@@ -103,7 +82,11 @@ class Index extends React.Component {
             const contents = this.state.contents;
             const meta = this.state.meta || {};
             return (
-                <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
+                <Layout title={SITEMAP.home.title}>
+                    <Head>
+                        <meta name="description" content={SITEMAP.home.description}/>
+                        <meta name="keywords" content={SITEMAP.home.keywords}/>
+                    </Head>
                     <div>
                         <BottomScrollListener offset={8} onBottom={this.bottomScrollFetch.bind(this)} />
                         <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)}/>

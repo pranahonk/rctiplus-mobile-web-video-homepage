@@ -27,11 +27,11 @@ class Pnl_3 extends React.Component {
 				break;
 
 			case 'program':
-				Router.push(`/programs/${data.program_id}/${data.program_title.replace(' ', '-').toLowerCase()}`);
+				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}`);
 				break;
 
 			default:
-				Router.push(`/programs/${data.program_id}/${data.program_title.replace(' ', '-').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(' ', '-').toLowerCase()}`);
+				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}`);
 				break;
 		}
 	}

@@ -62,15 +62,22 @@ class PhotoFeed extends React.Component {
                     </Row>
                         <Carousel
                             autoPlay
+                            statusFormatter={(current, total) => `${current}/${total}`}
                             showThumbs={false}
-                            showIndicators={true}
+                            showIndicators={this.props.images.length > 1}
                             stopOnHover={true}
                             showArrows={false}
-                            showStatus={true}
+                            showStatus={this.props.images.length > 1}
                             swipeScrollTolerance={1}
                             swipeable={true}>
                                 {this.props.images.map(im => (
-                                    <Img alt={this.props.title} key={im.id} className="program-carousel-image" src={[this.props.meta.image_path + this.props.resolution + im.image, '/static/placeholders/placeholder_potrait.png']} />
+                                    <Img
+                                        key={im.id} 
+                                        alt={this.props.title} 
+                                        className="program-carousel-image" 
+                                        unloader={<img className="program-carousel-image" src="/static/placeholders/placeholder_potrait.png"/>}
+										loader={<img className="program-carousel-image" src="/static/placeholders/placeholder_potrait.png"/>}
+                                        src={[this.props.meta.image_path + this.props.resolution + im.image, '/static/placeholders/placeholder_potrait.png']} />
                                 ))}
                                 
                         </Carousel>

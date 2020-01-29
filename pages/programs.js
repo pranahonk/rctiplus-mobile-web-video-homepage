@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { connect } from 'react-redux';
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
@@ -6,6 +6,7 @@ import LoadingBar from 'react-top-loading-bar';
 
 import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
+import Link from 'next/link';
 import fetch from 'isomorphic-unfetch';
 import classnames from 'classnames';
 
@@ -62,7 +63,7 @@ class Detail extends React.Component {
             return { initial: false };
         }
 
-        return { initial: data };
+        return { initial: data, query: ctx.query };
     }
 
     constructor(props) {
@@ -461,7 +462,7 @@ class Detail extends React.Component {
     }
 
     link(cw, type) {
-		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(' ', '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(' ', '-').toLowerCase()}`);
+		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}`);
 	}
 
     render() {
@@ -478,8 +479,10 @@ class Detail extends React.Component {
         for (let key in tabsObj) {
             if (tabsObj[key] > 0) {
                 tabs.push(<NavItem key={key} className="menu-title">
-                        <NavLink onClick={this.toggleTab.bind(this, idx.toString(), key)} className={classnames({ active: this.state.active_tab === idx.toString() })}>{key}</NavLink>
-                    </NavItem>);
+                            <Link href={`/programs?id=${this.props.query.id}&title=${this.props.query.title}&content_type=${key.toLowerCase()}s`} as={`/programs/${this.props.query.id}/${this.props.query.title}/${key.toLowerCase()}s`}>
+                                <NavLink onClick={this.toggleTab.bind(this, idx.toString(), key)} className={classnames({ active: this.state.active_tab === idx.toString() })}>{key}</NavLink>
+                            </Link>
+                        </NavItem>);
                 idx++;
             }
         }
@@ -505,9 +508,9 @@ class Detail extends React.Component {
 
         // https://www.it-consultis.com/blog/best-seo-practices-for-react-websites
         return (
-            <Layout title={this.props.initial.data.title + ' | Program Pilihan'}>
+            <Layout title={`Nonton Streaming Program ${this.props.initial.data.title} Online - RCTI+`}>
                 <Head>
-                    <meta name="description" content={this.props.initial.data.summary}/>
+                    <meta name="description" content={`Nonton streaming online ${this.props.initial.data.title} ${this.props.initial.data.tv_name} full episode lengkap dengan cuplikan video menarik lainnya hanya di RCTI+. Lihat selengkapnya disini`}/>
                 </Head>
                 <Navbar />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)}/>
@@ -573,17 +576,19 @@ class Detail extends React.Component {
                         return str;
                     })}</p>
                     <div className="action-buttons">
-                        <div className="action-button">
-                            {thumbs}
-                            <p>Rate</p>
-                        </div>
-                        <div className="action-button">
-                            {this.state.program_in_list ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, this.props.router.query.id, 'program')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, this.props.router.query.id, 'program')} />)}
-                            <p>My List</p>
-                        </div>
-                        <div className="action-button">
-                            <ShareIcon onClick={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
-                            <p>Share</p>
+                        <div className="action-button-container">
+                            <div className="action-button">
+                                {thumbs}
+                                <p>Rate</p>
+                            </div>
+                            <div className="action-button">
+                                {this.state.program_in_list ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, this.props.router.query.id, 'program')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, this.props.router.query.id, 'program')} />)}
+                                <p>My List</p>
+                            </div>
+                            <div className="action-button">
+                                <ShareIcon onClick={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
+                                <p>Share</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -698,7 +703,7 @@ class Detail extends React.Component {
                             {scrollRef => (
                                 <div ref={scrollRef} className="related-slider">
                                     {this.state.related_programs.map(rp => (
-                                        <div onClick={() => Router.push(`/programs/${rp.id}/${rp.title.replace(' ', '-').toLowerCase()}`)} key={rp.id} className="related-slide">
+                                        <div onClick={() => Router.push(`/programs/${rp.id}/${rp.title.replace(/ +/g, '-').toLowerCase()}`)} key={rp.id} className="related-slide">
                                             <Img alt={rp.title} src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
                                         </div>
                                     ))}

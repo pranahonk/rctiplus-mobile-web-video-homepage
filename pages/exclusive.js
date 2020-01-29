@@ -1,5 +1,7 @@
 import React from 'react';
 import Router from 'next/router';
+import Link from 'next/link';
+import Head from 'next/head';
 import { connect } from 'react-redux';
 
 import contentActions from '../redux/actions/contentActions';
@@ -19,25 +21,21 @@ import NavDefault from '../components/Includes/Navbar/NavDefault';
 import PlayerModal from '../components/Modals';
 import ActionSheet from '../components/Modals/ActionSheet';
 
-import {
-TabContent,
-        TabPane,
-        Nav,
-        NavItem,
-        NavLink,
-        Row,
-        Col
-} from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 
 import ShareIcon from '@material-ui/icons/Share';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 
 import '../assets/scss/components/exclusive.scss';
 
+import { SITEMAP } from '../config';
+
 class Exclusive extends React.Component {
 
 	static getInitialProps(ctx) {
 		initialize(ctx);
+		
+		return { category: ctx.query.category };
 	}
 
 	constructor(props) {
@@ -56,7 +54,8 @@ class Exclusive extends React.Component {
 			action_sheet: false,
 			caption: '',
 			url: '',
-			hashtags: []
+			hashtags: [],
+			category: this.props.category
 		};
 
 		this.player = null;
@@ -65,20 +64,26 @@ class Exclusive extends React.Component {
 	}
 
 	componentDidMount() {
-		// this.props.getContents(1).then(() => {
-		// 	this.setState({
-		// 		contents: this.props.contents.homepage_content,
-		// 		meta: this.props.contents.meta
-		// 	});
-		// });
-
 		this.props.getExclusiveCategory()
 			.then(response => {
 				const dictFeeds = {};
+				
+				let selectedCategory = this.props.category ? this.props.category : 'All';
+				// replace hyphens with spaces and capitalize the first letter of each word 
+				selectedCategory = selectedCategory.replace(/\w\S*/g, function(txt){
+					txt = txt.replace(/-+/g, ' ');
+					return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+				});
+
+				let selectedIndex = -1;
+
 				const categories = [{ name: 'All' }];
 				categories.push.apply(categories, response.data.data);
 				for (let i = 0; i < categories.length; i++) {
 					dictFeeds[categories[i].name] = [];
+					if (selectedCategory.toLowerCase() == categories[i].name.toLowerCase()) {
+						selectedIndex = i;
+					}
 				}
 
 				this.setState({ categories: categories }, () => {
@@ -105,7 +110,14 @@ class Exclusive extends React.Component {
 								feeds: dictFeeds,
 								feed_states: dictFeedStates,
 								meta: this.props.feeds.meta
-							}, () => this.props.unsetPageLoader());
+							}, () => {
+								if (selectedCategory != 'All') {
+									this.toggleTab(selectedIndex + 1, selectedCategory);
+								}
+								else {
+									this.props.unsetPageLoader();
+								}
+							});
 						})
 						.catch(error => {
 							console.log(error);
@@ -149,6 +161,7 @@ class Exclusive extends React.Component {
 		if (this.state.active_tab !== tab) {
 			this.setState({ active_tab: tab }, () => {
 				if (!this.state.feed_states[tabName]) {
+					this.props.setPageLoader();
 					this.props.getExclusives(tabName)
 						.then(response => {
 							const feeds = response.data.data;
@@ -162,9 +175,12 @@ class Exclusive extends React.Component {
 								feeds: dictFeeds,
 								feed_states: dictFeedStates,
 								meta: this.props.feeds.meta
-							});
+							}, () => this.props.unsetPageLoader());
 						})
-						.catch(error => console.log(error));
+						.catch(error => {
+							console.log(error);
+							this.props.unsetPageLoader();
+						});
 				}
 			});
 		}
@@ -194,12 +210,16 @@ class Exclusive extends React.Component {
 	}
 
 	goToDetail(program) {
-		Router.push(`/programs/${program.program_id}/${program.title.replace(' ', '-').toLowerCase()}`);
+		Router.push(`/programs/${program.program_id}/${program.title.replace(/ +/g, '-').toLowerCase()}`);
 	}
 
 	render() {
 		return (
-			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
+			<Layout title={SITEMAP[`exclusive_${this.state.category ? this.state.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].title}>
+				<Head>
+					<meta name="description" content={SITEMAP[`exclusive_${this.state.category ? this.state.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].description}/>
+					<meta name="keywords" content={SITEMAP[`exclusive_${this.state.category ? this.state.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].keywords}/>
+				</Head>
 				<NavDefault disableScrollListener />
 
 				<LoadingBar
@@ -231,9 +251,11 @@ class Exclusive extends React.Component {
 
 						{this.state.categories.map((c, i) => (
 							<NavItem key={i} className="exclusive-item">
-								<NavLink
-									onClick={this.toggleTab.bind(this, i + 1, c.name)}
-									className={classnames({ active: this.state.active_tab == i + 1 })}>{c.name}</NavLink>
+								<Link href={`/exclusive?category=${c.name.toLowerCase()}`} as={`/exclusive/${c.name.toLowerCase()}`}> 
+									<NavLink
+										onClick={this.toggleTab.bind(this, i + 1, c.name)}
+										className={classnames({ active: this.state.active_tab == i + 1 })}>{c.name}</NavLink>
+								</Link>
 							</NavItem>
 						))}
 

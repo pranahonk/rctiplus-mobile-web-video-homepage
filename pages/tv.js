@@ -1,4 +1,6 @@
-import React from 'react'
+import React from 'react';
+import Head from 'next/head';
+import Link from 'next/link';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import initialize from '../utils/initialize';
@@ -20,7 +22,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 
-import { BASE_URL } from '../config';
+import { BASE_URL, SITEMAP } from '../config';
 
 import '../assets/scss/components/live-tv.scss';
 
@@ -220,7 +222,11 @@ class Tv extends React.Component {
 
 	render() {
 		return (
-			<Layout className="live-tv-layout" title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
+			<Layout className="live-tv-layout" title={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title}>
+				<Head>
+					<meta name="description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description}/>
+					<meta name="keywords" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].keywords}/>
+				</Head>
 				<SelectDateModal
 					open={this.state.select_modal}
 					data={this.state.dates_before}
@@ -238,16 +244,24 @@ class Tv extends React.Component {
 					<div className="tv-wrap">
 						<Row>
 							<Col xs={3} className="text-center">
-								<Button size="sm" color="link" className={this.state.selected_index === 0 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 0)}>RCTI</Button>
+								<Link href="/tv?channel=rcti" as="/tv/rcti">
+									<Button size="sm" color="link" className={this.state.selected_index === 0 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 0)}>RCTI</Button>
+								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
-								<Button size="sm" color="link" className={this.state.selected_index === 1 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 1)}>MNCTV</Button>
+								<Link href="/tv?channel=mnctv" as="/tv/mnctv">
+									<Button size="sm" color="link" className={this.state.selected_index === 1 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 1)}>MNCTV</Button>
+								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
-								<Button size="sm" color="link" className={this.state.selected_index === 2 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 2)}>GTV</Button>
+								<Link href="/tv?channel=globaltv" as="/tv/globaltv">
+									<Button size="sm" color="link" className={this.state.selected_index === 2 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 2)}>GTV</Button>
+								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
-								<Button size="sm" color="link" className={this.state.selected_index === 3 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 3)}>INEWS</Button>
+								<Link href="/tv?channel=inews" as="/tv/inews">
+									<Button size="sm" color="link" className={this.state.selected_index === 3 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 3)}>INEWS</Button>
+								</Link>
 							</Col>
 						</Row>
 					</div>

@@ -40,7 +40,28 @@ const handle = app.getRequestHandler();
     });
 
     server.get('/programs/:id/:title', (req, res) => {
-      return app.render(req, res, '/programs', { id: req.params.id, title: req.params.title });
+      return app.render(req, res, '/programs', { 
+        id: req.params.id, 
+        title: req.params.title 
+      });
+    });
+
+    server.get('/programs/:id/:title/:content_type', (req, res) => {
+      return app.render(req, res, '/programs', { 
+        id: req.params.id, 
+        title: req.params.title,
+        content_type: req.params.content_type 
+      });
+    });
+
+    server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
+      return app.render(req, res, '/detail/content', { 
+        id: req.params.id, 
+        title: req.params.title,
+        type: req.params.content_type,
+        content_id: req.params.content_id,
+        content_title: req.params.content_title 
+      });
     });
 
     server.get('/mylist', (req, res) => {
@@ -75,17 +96,6 @@ const handle = app.getRequestHandler();
       return app.render(req, res, '/user/qrcode');
     });
 
-    // TODO
-    server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
-      return app.render(req, res, '/detail/content', { 
-        id: req.params.id, 
-        title: req.params.title,
-        type: req.params.content_type,
-        content_id: req.params.content_id,
-        content_title: req.params.content_title 
-      });
-    });
-
     server.get('/tv/:channel', (req, res) => {
       return app.render(req, res, '/tv', { channel: req.params.channel });
     });
@@ -102,6 +112,12 @@ const handle = app.getRequestHandler();
       return app.render(req, res, '/trending/detail', {
         id: req.params.id,
         title: req.params.title
+      })
+    });
+
+    server.get('/exclusive/:category', (req, res) => {
+      return app.render(req, res, '/exclusive', {
+        category: req.params.category
       })
     });
 

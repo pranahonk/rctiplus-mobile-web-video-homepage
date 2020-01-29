@@ -5,7 +5,7 @@ import { withRouter } from 'next/router';
 //load scss style 
 //import '../../assets/scss/custom.scss';
 //import '../../assets/scss/global.scss';
-//import 'sweetalert2/src/sweetalert2.scss';
+import 'sweetalert2/src/sweetalert2.scss';
 import '../../assets/scss/apps/homepage/default.scss';
 
 import '../../assets/scss/components/alert.scss';
