@@ -97,6 +97,13 @@ const handle = app.getRequestHandler();
         epg_title: req.params.epg_title
       })
     });
+    
+     server.get('/trending/detail/:id/:title', (req, res) => {
+      return app.render(req, res, '/trending/detail', {
+        id: req.params.id,
+        title: req.params.title
+      })
+    });
 
     // default request handler by next handler:
     server.get('*', (req, res) => {

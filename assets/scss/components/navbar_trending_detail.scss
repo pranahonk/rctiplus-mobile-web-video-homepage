@@ -1,0 +1,39 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Jan 21, 2020, 1:51:21 PM
+    Author     : root
+*/
+
+.nav-logo-trending{
+    width:35%;
+}
+.btn-link-top-nav{
+    text-align: right;
+}
+.input_trending_detail{
+    text-align: right;
+    
+}
+
+.navbar {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px;
+}
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: 0px;
+    margin-left: 0px;
+    width: 100%;
+}
+.trendingHeader{
+    font-size: 12px;
+}

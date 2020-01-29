@@ -17,7 +17,7 @@ import classnames from 'classnames';
 import { Carousel } from 'react-responsive-carousel';
 
 import Layout from '../components/Layouts/Default';
-import NavDefault from '../components/Includes/Navbar/NavDefault';
+import NavDefault from '../components/Includes/Navbar/NavTrending';
 import PlayerModal from '../components/Modals';
 import ActionSheet from '../components/Modals/ActionSheet';
 
@@ -188,8 +188,8 @@ class Trending extends React.Component {
             });
 	}
 
-	goToDetail(programId) {
-            Router.push('/detail/program/' + programId);
+	goToDetail(programId,title) {
+            Router.push('/trending/detail/' + programId + '/' + title);
 	}
 
 	render() {
@@ -223,10 +223,10 @@ class Trending extends React.Component {
                             hashtags={this.state.hashtags}
                             toggle={this.toggleActionSheet.bind(this, '', '', ['rcti'])} />
 
-                    <div className="nav-exclusive-wrapper">
-                        <Nav tabs id="exclusive">
+                    <div className="nav-trending-wrapper">
+                        <Nav tabs id="trending">
                                 {this.state.categories.map((c, i) => (
-                                    <NavItem key={i} className="exclusive-item">
+                                    <NavItem key={i} className="trending-item">
                                         <NavLink onClick={this.toggleTab.bind(this, i + 1, c.name)} className={classnames({ active: this.state.active_tab == i + 1 })}>{c.name}</NavLink>
                                     </NavItem>
                                 ))}
@@ -234,17 +234,20 @@ class Trending extends React.Component {
                         <TabContent className="container-box" activeTab={this.state.active_tab}>
                             {this.state.categories.map((c, i) => (
                                 <TabPane key={i} tabId={i + 1}>
-                                    <div className="content-tab-exclusive">
-                                        <div className="content-tab-exclusive">
+                                    <div className="content-tab-trending">
+                                        <div className="content-tab-trending">
                                             <div className="program-container">
                                                 <Row xs="2" className="wrapper-content-trending">
                                                     {this.state.feeds[c.name] && this.state.feeds[c.name].map((feed, idx) => {
-                                                        if (idx === a) {
-                                                            return (<div className="box-trending" key={idx}><img className="box-img-trending" src={feed.cover} /><div className="font-trending-title" dangerouslySetInnerHTML={{__html: feed.title}}></div></div>);
-                                                        } else if (idx === b) {
-                                                            return(<div className="box-trending" key={idx}><img className="box-img-trending" src={feed.cover} /><div className="font-trending-title" dangerouslySetInnerHTML={{__html: feed.title}}></div></div>);
-                                                        } else {
-                                                            return(<Col xs="6" className="box-trending" key={idx}><div><img className="box-img-trending" src={feed.cover} /><div className="font-trending-title" dangerouslySetInnerHTML={{__html: feed.title}}></div></div></Col>);
+                                                        const title = feed.title;
+                                                        if(idx % 5 === 0){
+                                                            if(idx===0){
+                                                                return (<Col xs="12" className="box-trending" key={idx}><a href="#" onClick={() => this.goToDetail(feed.id, title.replace(/ +/g, "-").toLowerCase())}><img className="box-img-trending" src={feed.cover} /><div className="font-trending-title-trending-parent" dangerouslySetInnerHTML={{__html: title.substring(0,60)}}></div></a></Col>);
+                                                            }else{
+                                                                return (<Col xs="12" className="box-trending" key={idx}><a href="#" onClick={() => this.goToDetail(feed.id, title.replace(/ +/g, "-").toLowerCase())}><img className="box-img-trending" src={feed.cover} /><div className="font-trending-title-trending-child" dangerouslySetInnerHTML={{__html: title.substring(0,60)}}></div></a></Col>);
+                                                            }
+                                                        }else{
+                                                            return(<Col xs="6" className="box-trending" key={idx}><a href="#" onClick={() => this.goToDetail(feed.id, title.replace(/ +/g, "-").toLowerCase())}><img className="box-img-trending" src={feed.cover} /><div className="font-trending-title-trending-default" dangerouslySetInnerHTML={{__html: title.substring(0,60)}}></div></a></Col>);
                                                         }
                                                     })}
                                                 </Row>

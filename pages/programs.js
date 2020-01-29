@@ -58,7 +58,7 @@ class Detail extends React.Component {
         });
         const error_code = res.statusCode > 200 ? res.statusCode : false;
         const data = await res.json();
-        if (error_code || data.status.code == 1) {
+        if (error_code || data.status.code === 1) {
             return { initial: false };
         }
 

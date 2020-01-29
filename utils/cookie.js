@@ -139,12 +139,12 @@ export const setNewsToken = async () => {
             });
 
             if (response.status === 200 && response.data.status.code === 0) {
-                cookie.set('NEWS_TOKEN', JSON.stringify({
+                let cookieDataToken = cookie.set('NEWS_TOKEN', JSON.stringify({
                     NAME: 'NEWS_TOKEN',
                     VALUE: response.data.data.news_token,
                     CREATED_AT: new Date()
                 }));
-                return JSON.parse(cookie.get('NEWS_TOKEN'));
+                return JSON.parse(cookieDataToken);
             }
         } else {
             newsToken = JSON.parse(cookie.get('NEWS_TOKEN'));
@@ -158,15 +158,15 @@ export const setNewsToken = async () => {
                     baseURL: NEWS_API + '/api'
                 });
                 if (response.status === 200 && response.data.status.code === 0) {
-                    cookie.set('NEWS_TOKEN', JSON.stringify({
+                    let cookieDataToken = cookie.set('NEWS_TOKEN', JSON.stringify({
                         NAME: 'NEWS_TOKEN',
                         VALUE: response.data.data.news_token,
                         CREATED_AT: new Date()
                     }));
-                    return JSON.parse(cookie.get('NEWS_TOKEN'));
+                    return JSON.parse(cookieDataToken);
                 }
             } else {
-                return JSON.parse(cookie.get('NEWS_TOKEN'));
+                return newsToken;
             }
         }
     } catch (error) {

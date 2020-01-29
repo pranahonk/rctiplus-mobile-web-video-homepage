@@ -179,24 +179,49 @@ ul#trending .trending-item{
     width: 100%;
 }
 .box-trending{
-    padding:10px
+    padding:5px;
+    height:265px;
 }
 .box-img-trending{
     width:100%;
     height:257px;
     object-fit: cover;
-    border-radius:12px 12px 0px 0px;
+    border-radius:12px;
     position: relative;
 }
-.font-trending-title{
+.font-trending-title-trending-parent{
     background-image: linear-gradient(to bottom right, grey, black);
-    padding:15px;
+    padding:10px;
     color:#fff;
-    font-size:17px;
-    position: static;
-    bottom:70px;
+    font-size:12px;
+    position: relative;
+    bottom:45px;
+    left:0px;
+    border-radius:0px 0px 12px 12px;
+    opacity: 0.6;
+}
+.font-trending-title-trending-child{
+    background-image: linear-gradient(to bottom right, grey, black);
+    padding:10px;
+    color:#fff;
+    font-size:12px;
+    position: relative;
+    bottom:60px;
+    height:60px;
     left:0px;
     opacity: 0.6;
+}
+.font-trending-title-trending-default{
+   background-image: linear-gradient(to bottom right, grey, black);
+    padding:10px;
+    color:#fff;
+    font-size:12px;
+    position: relative;
+    bottom:70px;
+    height:70px;
+    left:0px;
+    border-radius:0px 0px 12px 12px;
+    opacity: 0.6;  
 }
 .wrapper-content-trending{
     margin-left:3px;
