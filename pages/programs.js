@@ -58,8 +58,13 @@ class Detail extends React.Component {
             }
         });
         const error_code = res.statusCode > 200 ? res.statusCode : false;
+        
+        if (error_code) {
+            return { initial: false };
+        }
+
         const data = await res.json();
-        if (error_code || data.status.code === 1) {
+        if (data.status.code === 1) {
             return { initial: false };
         }
 
@@ -316,8 +321,8 @@ class Detail extends React.Component {
         });
     }
 
-    goToPhotoList(id) {
-        Router.push('/detail/' + this.props.router.query.id + '/photo/' + id);
+    goToPhotoList(photo) {
+        Router.push(`/programs/${this.props.router.query.id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/photo/${photo.id}/${photo.title.replace(/ +/g, '-').toLowerCase()}`);
     }
 
     addToMyList(id, type) {
@@ -731,7 +736,7 @@ class Detail extends React.Component {
                         <TabPane tabId={'4'}>
                             <Row>
                                 {this.state.contents['photo'].map(e => (
-                                    <Col xs={6} key={e.id} onClick={this.goToPhotoList.bind(this, e.id)}>
+                                    <Col xs={6} key={e.id} onClick={this.goToPhotoList.bind(this, e)}>
                                         <div>
                                             <Img className="list-item-thumbnail list-item-photo" src={[this.state.meta.image_path + '140' + e.program_icon_image, '/static/placeholders/placeholder_landscape.png']} />
                                             <PhotoLibraryIcon className="img-icon"/>

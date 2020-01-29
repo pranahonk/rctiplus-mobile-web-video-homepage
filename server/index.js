@@ -54,6 +54,15 @@ const handle = app.getRequestHandler();
       });
     });
 
+    server.get('/programs/:id/:title/photo/:content_id/:content_title', (req, res) => {
+      return app.render(req, res, '/detail/photo', {
+        id: req.params.id,
+        title: req.params.title,
+        content_id: req.params.content_id,
+        content_title: req.params.content_title
+      });
+    });
+
     server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
       return app.render(req, res, '/detail/content', { 
         id: req.params.id, 
