@@ -18,8 +18,8 @@ import contentActions from '../redux/actions/contentActions';
 import searchActions from '../redux/actions/searchActions';
 import likeActions from '../redux/actions/likeActions';
 import bookmarkActions from '../redux/actions/bookmarkActions';
+import pageActions from '../redux/actions/pageActions';
 
-//load default layout
 import Layout from '../components/Layouts/Default';
 import Navbar from '../components/Includes/Navbar/NavDetail';
 import PlayerModal from '../components/Modals';
@@ -43,7 +43,7 @@ import { Button, Row, Col, Nav, NavItem, NavLink, TabContent, TabPane } from 're
 import '../assets/scss/plugins/carousel/carousel.scss';
 import '../assets/scss/components/detail.scss';
 
-import { BASE_URL, DEV_API, VISITOR_TOKEN } from '../config';
+import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
 
 class Detail extends React.Component {
@@ -121,6 +121,7 @@ class Detail extends React.Component {
 
         this.player = this.player2 = null;
         this.tabs = ['episode', 'extra', 'clip', 'photo'];
+        this.props.setPageLoader();
     }
 
     showMore() {
@@ -204,7 +205,9 @@ class Detail extends React.Component {
                         response_data: response.data.data
                     });
 
-                    this.props.getLikeHistory(this.props.router.query.id);
+                    this.props.getLikeHistory(this.props.router.query.id)
+                        .then(response => console.log(response))
+                        .catch(error => console.log(error));
 
                     this.props.getProgramEpisodes(this.props.router.query.id, this.props.contents.selected_season, this.props.contents.current_page, this.state.length)
                         .then(response => {
@@ -274,9 +277,22 @@ class Detail extends React.Component {
                             }
                         })
                         .catch(error => console.log(error))
+
+                    this.props.unsetPageLoader();
+                    if (this.props.query.content_type) {
+                        const selectedTabName = this.props.query.content_type.substring(0, this.props.query.content_type.length - 1);
+                        const tabIndex = this.tabs.indexOf(selectedTabName);
+                        if (tabIndex !== -1) {
+                            this.toggleTab((tabIndex + 1).toString(), selectedTabName[0].toUpperCase() + selectedTabName.substring(1));
+                        }
+                    }
+                    
                 }
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+                console.log(error);
+                this.props.unsetPageLoader();
+            });
     
         this.props.getProgramSeason(this.props.router.query.id)
             .then(response => {
@@ -479,7 +495,7 @@ class Detail extends React.Component {
         for (let key in tabsObj) {
             if (tabsObj[key] > 0) {
                 tabs.push(<NavItem key={key} className="menu-title">
-                            <Link href={`/programs?id=${this.props.query.id}&title=${this.props.query.title}&content_type=${key.toLowerCase()}s`} as={`/programs/${this.props.query.id}/${this.props.query.title}/${key.toLowerCase()}s`}>
+                            <Link scroll={false} href={`/programs?id=${this.props.query.id}&title=${this.props.query.title}&content_type=${key.toLowerCase()}s`} as={`/programs/${this.props.query.id}/${this.props.query.title}/${key.toLowerCase()}s`}>
                                 <NavLink onClick={this.toggleTab.bind(this, idx.toString(), key)} className={classnames({ active: this.state.active_tab === idx.toString() })}>{key}</NavLink>
                             </Link>
                         </NavItem>);
@@ -506,11 +522,43 @@ class Detail extends React.Component {
 
         const thumbs = this.checkLikeStatus();
 
+        let title = `Nonton Streaming Program ${this.props.initial.data.title} Online - ${SITE_NAME}`;
+        let metaDescription = `Nonton streaming online ${this.props.initial.data.title} ${this.props.initial.data.tv_name} full episode lengkap dengan cuplikan video menarik lainnya hanya di ${SITE_NAME}. Lihat selengkapnya disini`;
+        
+        if (this.props.query.content_type) {
+            switch (this.props.query.content_type) {
+                case 'episodes':
+                    title = `Nonton ${this.props.initial.data.title} Online Full Episode - ${SITE_NAME}`;
+                    metaDescription = `Kumpulan cuplikan video ${this.props.initial.data.title} ${this.props.initial.data.tv_name} online per episode lengkap hanya di ${SITE_NAME}`;
+                    break;
+
+                case 'extras':
+                    if (this.props.initial.data.program_type_name === 'Entertainment' || this.props.initial.data.program_type_name === 'News') {
+                        title = `Lihat Berita Terbaru Program ${this.props.initial.data.title} - ${SITE_NAME}`;
+                    }
+                    else {
+                        title = `Nonton Video Extra Program ${this.props.initial.data.title} Lainnya - ${SITE_NAME}`;
+                    }
+                    metaDescription = `Nonton online kumpulan video extra lengkap program ${this.props.initial.data.title} - ${SITE_NAME}`;
+                    break;
+
+                case 'clips':
+                    title = `Tonton Potongan Video Menarik dan Lucu ${this.props.initial.data.title} - ${SITE_NAME}`;
+                    metaDescription = `Nonton kumpulan potongan video lucu dan menarik dari program ${this.props.initial.data.title}, ${this.props.initial.data.tv_name} - ${SITE_NAME}`;
+                    break;
+
+                case 'photos':
+                    title = `Kumpulan Foto Lengkap Program ${this.props.initial.data.title} - ${SITE_NAME}`;
+                    metaDescription = `Lihat kumpulan foto menarik para pemain dan artis ${this.props.initial.data.title}, ${this.props.initial.data.tv_name} - ${SITE_NAME}`;
+                    break;
+            }
+        }
+
         // https://www.it-consultis.com/blog/best-seo-practices-for-react-websites
         return (
-            <Layout title={`Nonton Streaming Program ${this.props.initial.data.title} Online - RCTI+`}>
+            <Layout title={title}>
                 <Head>
-                    <meta name="description" content={`Nonton streaming online ${this.props.initial.data.title} ${this.props.initial.data.tv_name} full episode lengkap dengan cuplikan video menarik lainnya hanya di RCTI+. Lihat selengkapnya disini`}/>
+                    <meta name="description" content={metaDescription}/>
                 </Head>
                 <Navbar />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)}/>
@@ -723,5 +771,6 @@ export default connect(state => state, {
     ...contentActions,
     ...searchActions,
     ...likeActions,
-    ...bookmarkActions
+    ...bookmarkActions,
+    ...pageActions
 })(withRouter(Detail));
