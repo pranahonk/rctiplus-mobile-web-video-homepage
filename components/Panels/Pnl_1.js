@@ -79,7 +79,7 @@ class Pnl_1 extends React.Component {
 					{scrollRef => (
 						<div ref={scrollRef} className="swiper-container">
 							{this.state.contents.map(c => (
-								<div onClick={() => this.link(c)} key={c.content_id} className="swiper-slide">
+								<div onClick={() => this.link(c)} key={`${this.props.contentId}-${c.content_id}`} className="swiper-slide">
 									<div>
 										<Img 
 											alt={c.program_title} 
