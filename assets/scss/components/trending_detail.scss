@@ -1,0 +1,60 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Jan 29, 2020, 10:36:46 AM
+    Author     : root
+*/
+.content-trending-detail{
+    position: static;
+    margin-top: 80px;
+    width: 100%;
+    background-color: #171717;
+    height: 100%;
+    font-family: Helvetica!important;
+    color: #fff;
+}
+.content-trending-detail-title{
+    font-weight: 1.5em!important;
+    font-size: 18px;
+    text-align: justify;
+    padding-top:20px;
+    padding-left:15px;
+    padding-right:15px;
+}
+.content-trending-detail-title-src-auth{
+    padding-left:15px;
+    padding-right:15px;
+    font-size: 12px;
+    margin-bottom:0px!important;
+}
+.content-trending-detail-create{
+    padding-left:15px;
+    padding-right:15px;
+    font-size: 12px;
+}
+.content-trending-detail-wrapper{
+    background-color: #fff;
+}
+.content-trending-detail-text{
+    margin-top:20px;
+    margin-bottom:50px;
+    padding-left:15px;
+    padding-right:15px;
+    color:#000;
+    text-align: justify;
+}
+.box-social{
+    padding:15px;
+    font-size: 12px;
+}
+.sheet-action-button-container{
+    height:50px;
+    margin:10px;
+}
+.sheet-action-button{
+    width:20px;
+    float:left;
+}
