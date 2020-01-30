@@ -9,6 +9,9 @@ import contentActions from '../../redux/actions/contentActions';
 import historyActions from '../../redux/actions/historyActions';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
+
+import { Button } from 'reactstrap';
 
 import Layout from '../../components/Layouts/Default';
 
@@ -61,7 +64,9 @@ class Content extends React.PureComponent {
         this.state = {
             player_url: '',
             player_vmap: '',
-            start_duration: 0
+            start_duration: 0,
+            error: false,
+            error_data: {}
         };
         this.player = null;
     }
@@ -86,6 +91,21 @@ class Content extends React.PureComponent {
 			}
         }).seek(this.state.start_duration);
         
+        this.player.on('setupError', error => {
+            this.setState({
+                error: true,
+                error_data: error
+            });
+        });
+
+        this.player.on('error', error => {
+            this.player.remove();
+            this.setState({
+                error: true,
+                error_data: error
+            });
+        });
+
         this.player.on('firstFrame', () => {
             console.log('FIRST FRAME');
             conviva.startMonitoring(this);
@@ -121,6 +141,12 @@ class Content extends React.PureComponent {
         });
     }
     
+    tryAgain() {
+        this.setState({ error: false }, () => {
+            this.initVOD();
+        });
+    }
+
     getMetadata() {
         let metadata = {
             title: `${this.props.content_url.data.content_name} - ${SITE_NAME}`,
@@ -168,15 +194,43 @@ class Content extends React.PureComponent {
     render() {
         const metadata = this.getMetadata();
 
+        let playerRef = (<div></div>);
+        let errorRef = (<div></div>);
+
+        if (this.state.error) {
+            errorRef = (
+                <div className="wrapper-content" style={{ margin: 0 }}>
+                    <div style={{ 
+                        textAlign: 'center',
+                        position: 'fixed', 
+                        top: '50%', 
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)' 
+                        }}>
+                        <SentimentVeryDissatisfiedIcon style={{ fontSize: '4rem' }}/>
+						<h5>
+							<strong>{this.state.error_data.message}</strong><br/><br/>
+							<Button onClick={this.tryAgain.bind(this)} className="btn-next block-btn">Coba Lagi</Button>
+						</h5>
+					</div>
+                </div>
+            );
+        }
+        else {
+            playerRef = (
+                <div className="player-container">
+                    <div id="app-jwplayer"></div>
+                </div>
+            );
+        }
+
         return (
             <Layout title={metadata.title}>
                 <Head>
                     <meta name="description" content={metadata.description}/>
                 </Head>
                 <ArrowBackIcon className="back-btn" onClick={() => Router.back()}/>
-                <div className="player-container">
-                    <div id="app-jwplayer"></div>
-                </div>
+                {this.state.error ? errorRef : playerRef}
             </Layout>
         );
     }    

@@ -55,7 +55,9 @@ class Tv extends React.Component {
 			url: '',
 			hashtags: [],
 			chat_open: false,
-			channel_code: this.props.context_data ? this.props.context_data.channel : 'rcti'
+			channel_code: this.props.context_data ? this.props.context_data.channel : 'rcti',
+			error: false,
+			error_data: {}
 		};
 
 		this.player = null;
@@ -115,6 +117,20 @@ class Tv extends React.Component {
 				hide: true
 			}
 		});
+		this.player.on('setupError', error => {
+            this.setState({
+                error: true,
+                error_data: error
+            });
+        });
+
+        this.player.on('error', error => {
+            this.player.remove();
+            this.setState({
+                error: true,
+                error_data: error
+            });
+        });
 		this.player.on('fullscreen', () => {
 			if (screen.orientation.type === 'portrait-primary') {
 				document.querySelector("#live-tv-player").requestFullscreen();
@@ -223,7 +239,29 @@ class Tv extends React.Component {
 		this.setState({ chat_open: !this.state.chat_open });
 	}
 
+	tryAgain() {
+		this.setState({ error: false }, () => {
+            this.initVOD();
+        });
+	}
+
 	render() {
+		let playerRef = (<div style={{ minHeight: 180 }} id="live-tv-player"></div>);
+		if (this.state.error) {
+			playerRef = (
+				<div style={{ 
+					textAlign: 'center',
+					margin: 30
+					}}>
+					<SentimentVeryDissatisfiedIcon style={{ fontSize: '3rem' }}/>
+					<h5>
+						<strong>{this.state.error_data.message}</strong><br/><br/>
+						<Button onClick={this.tryAgain.bind(this)} className="btn-next" style={{ width: '50%' }}>Coba Lagi</Button>
+					</h5>
+				</div>
+			);
+		}
+
 		return (
 			<Layout className="live-tv-layout" title={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title}>
 				<Head>
@@ -243,7 +281,7 @@ class Tv extends React.Component {
 					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])} />
 
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
-					<div id="live-tv-player"></div>
+					{playerRef}
 					<div className="tv-wrap">
 						<Row>
 							<Col xs={3} className="text-center">
