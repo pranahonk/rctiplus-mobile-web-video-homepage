@@ -35,7 +35,7 @@
     "build-next": "yarn && yarn build",
     "build-firebase": "cd \"functions\" && yarn",
     "lighthouse:ci": "node node_modules/lighthouse/lighthouse-cli/index.js --output-path=./lighthouse-report.html --quiet --chrome-flags='--headless' https://rc-m-new.rctiplus.com",
-    "push:rc": "git checkout az-sprint2 && git add . && git commit -m \"bug fix exclusive gossip\" && git push origin az-sprint2 && git checkout release-candidates && git merge az-sprint2 && git push origin release-candidates && git checkout az-sprint2"
+    "push:rc": "git checkout az-sprint2 && git add . && git commit -m \"test wording player setup error\" && git push origin az-sprint2 && git checkout release-candidates && git merge az-sprint2 && git push origin release-candidates && git checkout az-sprint2"
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
