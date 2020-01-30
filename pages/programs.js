@@ -86,6 +86,9 @@ class Detail extends React.Component {
             resolution: 130,
             episodes: [],
             seasons: [],
+            extras: [],
+            clips: [],
+            photos: [],
             related_programs: [],
             modal: false,
             player_modal: false,
@@ -129,20 +132,102 @@ class Detail extends React.Component {
         this.props.setPageLoader();
     }
 
-    showMore() {
-        this.props.getProgramEpisodes(this.props.router.query.id, this.props.contents.selected_season, this.props.contents.current_page, this.state.length)
-            .then(response => {
-                if (response.status === 200 && response.data.status.code === 0) {
-                    let episodes = this.props.contents.episodes;
-                    this.setState({ 
-                        episodes: episodes,
-                        episode_page: this.props.contents.current_page,
-                        selected_season: this.props.contents.selected_season
+    showMore(tabName = 'EPISODES') {
+        switch (tabName) {
+            case 'EPISODES':
+                this.props.getProgramEpisodes(this.props.router.query.id, this.props.contents.selected_season, this.props.contents.current_page, this.state.length)
+                    .then(response => {
+                        if (response.status === 200 && response.data.status.code === 0) {
+                            let episodes = this.props.contents.episodes;
+                            let contents = this.state.contents;
+                            contents['episodes'] = episodes;
+                            this.setState({ 
+                                contents: contents,
+                                episodes: episodes,
+                                episode_page: this.props.contents.current_page,
+                                selected_season: this.props.contents.selected_season
+                            }, () => {
+                                this.props.setShowMoreAllowed(response.data.data.length >= this.state.length, tabName);
+                            });
+                            
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.props.setShowMoreAllowed(false, tabName);
                     });
-                    this.props.setShowMoreAllowed(response.data.data.length >= this.state.length )
-                }
-            })
-            .catch(error => console.log(error));
+                break;
+
+            case 'EXTRAS':
+                this.props.getProgramExtra(this.props.router.query.id, this.props.contents.current_extra_page, this.state.extra_length)
+                    .then(response => {
+                        if (response.status === 200 && response.data.status.code === 0) {
+                            let extras = this.props.contents.extras;
+                            let contents = this.state.contents;
+                            contents['extras'] = extras;
+                            this.setState({ 
+                                contents: contents,
+                                extras: extras,
+                                extra_page: this.props.contents.current_extra_page
+                            }, () => {
+                                this.props.setShowMoreAllowed(response.data.data.length >= this.state.extra_length, tabName);
+                            });
+                            
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.props.setShowMoreAllowed(false, tabName);
+                    });
+                break;
+
+            case 'CLIPS':
+                this.props.getProgramClip(this.props.router.query.id, this.props.contents.current_clip_page, this.state.clip_length)
+                    .then(response => {
+                        if (response.status === 200 && response.data.status.code === 0) {
+                            let clips = this.props.contents.clips;
+                            let contents = this.state.contents;
+                            contents['clips'] = clips;
+                            this.setState({ 
+                                contents: contents,
+                                clips: clips,
+                                extra_page: this.props.contents.current_clip_page
+                            }, () => {
+                                this.props.setShowMoreAllowed(response.data.data.length >= this.state.clip_length, tabName);
+                            });
+                            
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.props.setShowMoreAllowed(false, tabName);
+                    });
+                break;
+
+            case 'PHOTOS':
+                this.props.getProgramPhoto(this.props.router.query.id, this.props.contents.current_photo_page, this.state.photo_length)
+                    .then(response => {
+                        if (response.status === 200 && response.data.status.code === 0) {
+                            let photos = this.props.contents.photos;
+                            let contents = this.state.contents;
+                            contents['photos'] = photos;
+                            this.setState({ 
+                                contents: contents,
+                                photos: photos,
+                                extra_page: this.props.contents.current_photo_page
+                            }, () => {
+                                this.props.setShowMoreAllowed(response.data.data.length >= this.state.photo_length, tabName);
+                            });
+                            
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.props.setShowMoreAllowed(false, tabName);
+                    });
+                break;
+        }
+        
     }
 
     showOpenPlaystoreAlert() {
@@ -519,7 +604,34 @@ class Detail extends React.Component {
         let showMoreButton = '';
         if (this.props.contents.show_more_allowed) {
             showMoreButton = (<div className="list-footer">
-                                <Button onClick={this.showMore.bind(this)} size="sm" className="show-more-button">
+                                <Button onClick={() => this.showMore('EPISODES')} size="sm" className="show-more-button">
+                                    <ExpandMoreIcon /> Show More
+                                </Button>
+                            </div>);
+        }
+
+        let showMoreExtraButton = '';
+        if (this.props.contents.show_more_extra_allowed) {
+            showMoreExtraButton = (<div className="list-footer">
+                                <Button onClick={() => this.showMore('EXTRAS')} size="sm" className="show-more-button">
+                                    <ExpandMoreIcon /> Show More
+                                </Button>
+                            </div>);
+        }
+
+        let showMoreClipButton = '';
+        if (this.props.contents.show_more_clip_allowed) {
+            showMoreClipButton = (<div className="list-footer">
+                                <Button onClick={() => this.showMore('CLIPS')} size="sm" className="show-more-button">
+                                    <ExpandMoreIcon /> Show More
+                                </Button>
+                            </div>);
+        }
+
+        let showMorePhotoButton = '';
+        if (this.props.contents.show_more_photo_allowed) {
+            showMorePhotoButton = (<div className="list-footer">
+                                <Button onClick={() => this.showMore('PHOTOS')} size="sm" className="show-more-button">
                                     <ExpandMoreIcon /> Show More
                                 </Button>
                             </div>);
@@ -682,6 +794,7 @@ class Detail extends React.Component {
                                     </Row>
                                 </div>
                             ))}
+                            {showMoreButton}
                         </TabPane>
                         <TabPane tabId={'2'}>
                             {this.state.contents['extra'].map(e => (
@@ -707,6 +820,7 @@ class Detail extends React.Component {
                                     </Row>
                                 </div>
                             ))}
+                            {showMoreExtraButton}
                         </TabPane>
                         <TabPane tabId={'3'}>
                             {this.state.contents['clip'].map(e => (
@@ -732,6 +846,7 @@ class Detail extends React.Component {
                                     </Row>
                                 </div>
                             ))}
+                            {showMoreClipButton}
                         </TabPane>
                         <TabPane tabId={'4'}>
                             <Row>
@@ -744,9 +859,10 @@ class Detail extends React.Component {
                                     </Col>
                                 ))}
                             </Row>
+                            {showMorePhotoButton}
                         </TabPane>
                     </TabContent>
-                    {showMoreButton}
+                    
                 </div>
                 
                 <div className="related-box">

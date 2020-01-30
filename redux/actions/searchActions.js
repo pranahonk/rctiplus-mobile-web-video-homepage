@@ -119,5 +119,5 @@ export default {
     searchByGenre,
     getRecommendation,
     getRelatedProgram,
-    setShowMoreAllowed
+    // setShowMoreAllowed
 };
