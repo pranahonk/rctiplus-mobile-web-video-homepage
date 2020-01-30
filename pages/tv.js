@@ -44,6 +44,7 @@ class Tv extends React.Component {
 			selected_tab: 'live',
 			epg: [],
 			catchup: [],
+			selected_catchup: {},
 			meta: {},
 			dates_before: getFormattedDateBefore(7),
 			selected_date: formatDateWord(now),
@@ -91,10 +92,21 @@ class Tv extends React.Component {
 	}
 
 	isLiveProgram(epg) {
-		const currentTime = this.currentDate.getTime();
+		const currentTime = new Date().getTime();
 		const startTime = new Date(formatDate(this.currentDate) + ' ' + epg.s).getTime();
 		const endTime = new Date(formatDate(this.currentDate) + ' ' + epg.e).getTime();
 		return currentTime > startTime && currentTime < endTime;
+	}
+
+	getCurrentLiveEpg() {
+		const epg = this.state.epg;
+		for (let i = 0; i < epg.length; i++) {
+			if (this.isLiveProgram(epg[i])) {
+				return epg[i];
+			}
+		}
+
+		return null;
 	}
 
 	initVOD() {
@@ -139,6 +151,55 @@ class Tv extends React.Component {
 			if (screen.orientation.type === 'landscape-primary') {
 				document.querySelector("#live-tv-player").requestFullscreen();
 				screen.orientation.lock("portrait-primary")
+			}
+		});
+
+		const self = this;
+		this.player.on('play', () => {
+			if (this.state.selected_tab === 'live') {
+				const currentEpg = self.getCurrentLiveEpg();
+				if (currentEpg != null) {
+					conviva.updatePlayerAssetMetadata(this, {
+						playerType: 'JWPlayer',
+						content_type: 'N/A',
+						program_id: currentEpg.id, 
+						program_name: currentEpg.title,
+						date_video: 'N/A',
+						time_video: 'N/A',
+						page_title:'N/A',
+						genre: 'N/A',
+						page_view: 'N/A',
+						app_version: 'N/A',
+						group_content_page_title: 'N/A',
+						group_content_name: 'N/A',
+						exclusive_tab_name: 'N/A'
+					});
+				}
+			}
+			else if (this.state.selected_tab === 'catch_up_tv') {
+				// id: 51029
+				// url: "https://catchup.rctiplus.id/rctiplus/rctiplus/rcti/20200124/51029/1579804200423/manifest.m3u8"
+				// geoblock: "no"
+				// title: "Seputar iNews Malam (L)"
+				// channel: "rcti"
+				// vmap: "https://rc-static.rctiplus.id/vmap/vmap_catchup_0_web_defaultcatchup.xml"
+				if (this.state.selected_catchup) {
+					conviva.updatePlayerAssetMetadata(this, {
+						playerType: 'JWPlayer',
+						content_type: 'N/A',
+						program_id: this.state.selected_catchup.id, 
+						program_name: this.state.selected_catchup.title,
+						date_video: 'N/A',
+						time_video: 'N/A',
+						page_title:'N/A',
+						genre: 'N/A',
+						page_view: 'N/A',
+						app_version: 'N/A',
+						group_content_page_title: 'N/A',
+						group_content_name: 'N/A',
+						exclusive_tab_name: 'N/A'
+					});
+				}
 			}
 		});
 	}
@@ -200,7 +261,8 @@ class Tv extends React.Component {
 				if (response.status === 200 && response.data.status.code === 0) {
 					this.setState({
 						player_url: response.data.data.url,
-						player_vmap: response.data.data.vmap
+						player_vmap: response.data.data.vmap,
+						selected_catchup: response.data.data
 					}, () => this.initVOD());
 				}
 				else {

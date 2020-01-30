@@ -69,9 +69,11 @@ class Content extends React.PureComponent {
             error_data: {}
         };
         this.player = null;
+        console.log(this.props.content_url);
     }
 
     initVOD() {
+        const content = this.props.content_url;
 		this.player = window.jwplayer('app-jwplayer');
 		this.player.setup({
 			autostart: true,
@@ -110,25 +112,34 @@ class Content extends React.PureComponent {
             console.log('FIRST FRAME');
             conviva.startMonitoring(this);
             conviva.updatePlayerAssetMetadata(this, {
-                // viewer_id:vm.$store.getters['auth/isAuthenticated'] ? vm.$store.getters['auth/getVid'] : vm.uniqueId(),
-                viewer_id: 1,
+                viewer_id: Math.random().toString().substr(2, 9),
                 application_name: 'MWEB',
                 asset_cdn: 'Conversant',
-                // version: process.env.VERSION,
-                version: '0.9.2',
-                // start_session: this.getPosition(),
-                start_session: 1,
-                playerVersion: '8.7.6',
-                // tv_id: vm.getChanelId(vm.$route.params.channel),
-                tv_id: 3,
-                // tv_name: vm.$route.params.channel,
-                tv_name: 'GTV',
-                // content_id: vm.$route.params.newid === undefined ? 'N/A' : vm.$route.params.newid  
-                content_id: this.props.context_data.content_id
+                version: process.env.VERSION,
+                start_session: this.state.start_duration,
+                playerVersion: process.env.PLAYER_VERSION,
+                tv_id: content ? content.tv_id : 'N/A',
+                tv_name: content ? content.tv_name : 'N/A',
+                content_id: this.props.context_data.content_id ? this.props.context_data.content_id  : 'N/A'
             });
         });
 
         this.player.on('play', () => {
+            conviva.updatePlayerAssetMetadata(this, {
+                playerType: 'JWPlayer',
+                content_type: content ? content.content_type : 'N/A',
+                program_id: content ? content.program_id : 'N/A', 
+                program_name: content ? content.program_title : 'N/A',
+                date_video: 'N/A',
+                time_video: 'N/A',
+                page_title:'N/A',
+                genre: content && content.genre && content.genre.length > 0 ? content.genre[0].name : 'N/A',
+                page_view: 'N/A',
+                app_version: 'N/A',
+                group_content_page_title: 'N/A',
+                group_content_name: 'N/A',
+                exclusive_tab_name: 'N/A'
+            });
             setInterval(() => {
                 this.props.postHistory(this.props.context_data.content_id, this.props.context_data.type, this.player.getPosition())
                     .then(response => {
@@ -140,7 +151,7 @@ class Content extends React.PureComponent {
             }, 10000);
         });
     }
-    
+
     tryAgain() {
         this.setState({ error: false }, () => {
             this.initVOD();
@@ -148,25 +159,27 @@ class Content extends React.PureComponent {
     }
 
     getMetadata() {
+        const content = this.props.content_url;
         let metadata = {
-            title: `${this.props.content_url.data.content_name} - ${SITE_NAME}`,
+            title: `${content.data.content_name} - ${SITE_NAME}`,
             description: ''
         };
         switch (this.props.context_data.type) {
             case 'episode':
-                metadata.description = `Nonton ${this.props.content_url.data.content_name} Online - Season ${this.props.content.data.season} - Episode ${this.props.content.data.episode} - RCTI+`;
+                metadata.description = `Nonton ${content.data.content_name} Online - Season ${this.props.content.data.season} - Episode ${this.props.content.data.episode} - RCTI+`;
                 break;
 
             case 'extra':
             case 'clip':
-                metadata.description = `${this.props.content_url.data.content_name} - ${this.props.content_url.data.program_title} - ${SITE_NAME}`;
+                metadata.description = `${content.data.content_name} - ${content.data.program_title} - ${SITE_NAME}`;
                 break;
         }
         return metadata;
     }
 
     async componentDidMount() {
-        if (this.props.content_url && this.props.content_url.status.code === 0) {
+        const content = this.props.content_url;
+        if (content && content.status.code === 0) {
             this.props.getContinueWatchingByContentId(this.props.context_data.content_id, this.props.context_data.type)
                 .then(response_2 => {
                     let startDuration = 0;
@@ -175,15 +188,15 @@ class Content extends React.PureComponent {
                     }
 
                     this.setState({
-                        player_url: this.props.content_url.data.url,
-                        player_vmap: this.props.content_url.data.vmap,
+                        player_url: content.data.url,
+                        player_vmap: content.data.vmap,
                         start_duration: startDuration
                     }, () => this.initVOD());
                 })
                 .catch(error => {
                     this.setState({
-                        player_url: this.props.content_url.data.url,
-                        player_vmap: this.props.content_url.data.vmap,
+                        player_url: content.data.url,
+                        player_vmap: content.data.vmap,
                         start_duration: 0
                     }, () => this.initVOD());
                 });
