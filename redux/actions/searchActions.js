@@ -41,10 +41,10 @@ const search = index => {
     });
 };
 
-const searchByGenre = (genreId, category) => {
+const searchByGenre = (genreId, category, page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/search/${genreId}/${category}`);
+            const response = await axios.get(`/v1/search/${genreId}/${category}?page=${page}&length=${length}`);
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'SEARCH_BY_GENRE',
