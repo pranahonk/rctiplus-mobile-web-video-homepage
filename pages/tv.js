@@ -11,6 +11,7 @@ import pageActions from '../redux/actions/pageActions';
 import Layout from '../components/Layouts/Default';
 import SelectDateModal from '../components/Modals/SelectDateModal';
 import ActionSheet from '../components/Modals/ActionSheet';
+import Wrench from '../components/Includes/Common/Wrench';
 
 import { formatDate, formatDateWord, getFormattedDateBefore } from '../utils/dateHelpers';
 import { showAlert } from '../utils/helpers';
@@ -315,7 +316,7 @@ class Tv extends React.Component {
 					textAlign: 'center',
 					margin: 30
 					}}>
-					<img src={`/static/icons/wrench.svg`}/>
+					<Wrench/>
 					<h5 style={{ color: '#8f8f8f' }}>
 						<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
 						<span style={{ fontSize: 12 }}>Please try again later,</span><br/>
