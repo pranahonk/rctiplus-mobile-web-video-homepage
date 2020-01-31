@@ -52,11 +52,18 @@ class PlayerModal extends React.Component {
                         left: '50%',
                         transform: 'translate(-50%, -50%)' 
                         }}>
-                        <SentimentVeryDissatisfiedIcon style={{ fontSize: '4rem' }}/>
+                        <img src={`/static/icons/wrench.svg`}/>
+                        <h5 style={{ color: '#8f8f8f' }}>
+                            <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
+                            <span style={{ fontSize: 12 }}>Please try again later,</span><br/>
+                            <span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+                            {/* <Button onClick={this.tryAgain.bind(this)} className="btn-next" style={{ width: '50%' }}>Coba Lagi</Button> */}
+                        </h5>
+                        {/* <SentimentVeryDissatisfiedIcon style={{ fontSize: '4rem' }}/>
 						<h5>
 							<strong>{this.state.error_data.message}</strong><br/><br/>
 							<Button onClick={this.tryAgain.bind(this)} className="btn-next block-btn">Coba Lagi</Button>
-						</h5>
+						</h5> */}
 					</div>
                 </div>
             );

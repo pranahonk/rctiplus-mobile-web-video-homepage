@@ -315,10 +315,12 @@ class Tv extends React.Component {
 					textAlign: 'center',
 					margin: 30
 					}}>
-					<SentimentVeryDissatisfiedIcon style={{ fontSize: '3rem' }}/>
-					<h5>
-						<strong>{this.state.error_data.message}</strong><br/><br/>
-						<Button onClick={this.tryAgain.bind(this)} className="btn-next" style={{ width: '50%' }}>Coba Lagi</Button>
+					<img src={`/static/icons/wrench.svg`}/>
+					<h5 style={{ color: '#8f8f8f' }}>
+						<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
+						<span style={{ fontSize: 12 }}>Please try again later,</span><br/>
+						<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+						{/* <Button onClick={this.tryAgain.bind(this)} className="btn-next" style={{ width: '50%' }}>Coba Lagi</Button> */}
 					</h5>
 				</div>
 			);

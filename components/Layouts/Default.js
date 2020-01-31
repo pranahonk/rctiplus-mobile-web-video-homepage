@@ -58,10 +58,10 @@ class Default extends React.Component {
                 <Head>
                     <title>{this.props.title}</title>
                     <meta charSet="utf-8" />
-                    <meta name="theme-color" content="#171717"/>
-                    <meta name="msapplication-TileColor" content="#171717"/>
-                    <meta name="msapplication-navbutton-color" content="#171717"/>
-                    <meta name="apple-mobile-web-app-status-bar-style" content="#171717"/>
+                    <meta name="theme-color" content="#171717" />
+                    <meta name="msapplication-TileColor" content="#171717" />
+                    <meta name="msapplication-navbutton-color" content="#171717" />
+                    <meta name="apple-mobile-web-app-status-bar-style" content="#171717" />
 
                     <meta name="author" content={AUTHOR} />
                     <meta name="viewport" content={VIEWPORT} />
@@ -73,15 +73,23 @@ class Default extends React.Component {
                     <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
                     <script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
                     <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script>
+                    <script src="https://cdn.qgraph.io/dist/aiqua-wp.js"></script>
+                    <script dangerouslySetInnerHTML={{ __html: `
+                        AIQUA.init({
+                            appId: 'c63c2960bf562e9ec2de',
+                            timeout: 5000
+                        });
+                    `}}>
+                    </script>
                 </Head>
                 {this.props.pages.loading ? (
                     <div className={'default-loader ' + (this.props.pages.fade ? 'loader-fade' : '')}>
                         <div className={'loader'}>
-                            <Spinner color="danger"/>
+                            <Spinner color="danger" />
                         </div>
                     </div>
                 ) : <div></div>}
-                
+
                 <div style={{ overflowX: 'hidden', marginTop: -5 }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
                 <Footer />
             </div>
