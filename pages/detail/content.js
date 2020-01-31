@@ -11,6 +11,7 @@ import historyActions from '../../redux/actions/historyActions';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 
+import Wrench from '../../components/Includes/Common/Wrench';
 import { Button } from 'reactstrap';
 
 import Layout from '../../components/Layouts/Default';
@@ -220,7 +221,7 @@ class Content extends React.PureComponent {
                         left: '50%',
                         transform: 'translate(-50%, -50%)' 
                         }}>
-                        <img src={`/static/icons/wrench.svg`}/>
+                        <Wrench/>
                         <h5 style={{ color: '#8f8f8f' }}>
                             <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
                             <span style={{ fontSize: 12 }}>Please try again later,</span><br/>

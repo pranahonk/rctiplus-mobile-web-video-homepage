@@ -7,6 +7,7 @@ import pageActions from '../../redux/actions/pageActions';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 
+import Wrench from '../Includes/Common/Wrench';
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 
 import '../../assets/scss/components/modal.scss';
@@ -52,7 +53,7 @@ class PlayerModal extends React.Component {
                         left: '50%',
                         transform: 'translate(-50%, -50%)' 
                         }}>
-                        <img src={`/static/icons/wrench.svg`}/>
+                        <Wrench/>
                         <h5 style={{ color: '#8f8f8f' }}>
                             <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
                             <span style={{ fontSize: 12 }}>Please try again later,</span><br/>
