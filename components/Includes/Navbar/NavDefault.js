@@ -74,7 +74,7 @@ class NavbarDef extends Component {
                                 <NavbarBrand style={{color: 'white', fontSize: 13}} onClick={this.signOut.bind(this)} href="#">
                                     {this.state.token ? 'Logout' : 'Login'}
                                 </NavbarBrand>
-                                <NavbarBrand style={{color: 'white'}} href="/explore">
+                                <NavbarBrand style={{color: 'white'}} href="/explores">
                                     <SearchIcon style={{fontSize: 20}}/>
                                 </NavbarBrand>
                             </div>

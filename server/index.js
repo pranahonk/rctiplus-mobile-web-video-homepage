@@ -117,7 +117,7 @@ const handle = app.getRequestHandler();
       })
     });
     
-     server.get('/trending/detail/:id/:title', (req, res) => {
+    server.get('/trending/detail/:id/:title', (req, res) => {
       return app.render(req, res, '/trending/detail', {
         id: req.params.id,
         title: req.params.title
@@ -129,6 +129,12 @@ const handle = app.getRequestHandler();
         category: req.params.category
       })
     });
+
+    server.get('/explores/search', (req, res) => {
+      return app.render(req, res, '/explores', {
+        id: req.query.id
+      })
+    })
 
     // default request handler by next handler:
     server.get('*', (req, res) => {

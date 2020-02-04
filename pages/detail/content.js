@@ -52,7 +52,7 @@ class Content extends React.PureComponent {
         if (error_code_2 || data_2.status.code != 0) {
             return { initial: false, content_url: {}, content: {} };
         }
-
+        
 		return { 
             context_data: ctx.query, 
             content_url: data,
@@ -180,7 +180,7 @@ class Content extends React.PureComponent {
 
     async componentDidMount() {
         const content = this.props.content_url;
-        if (content && content.status.code === 0) {
+        if (Object.keys(content).length > 0 && content.status.code === 0) {
             this.props.getContinueWatchingByContentId(this.props.context_data.content_id, this.props.context_data.type)
                 .then(response_2 => {
                     let startDuration = 0;
@@ -206,12 +206,12 @@ class Content extends React.PureComponent {
     }
 
     render() {
-        const metadata = this.getMetadata();
-
         let playerRef = (<div></div>);
         let errorRef = (<div></div>);
+        let title = '';
 
-        if (this.state.error) {
+        if (this.state.error || Object.keys(this.props.content_url).length <= 0) {
+            title = 'Data Not Found';
             errorRef = (
                 <div className="wrapper-content" style={{ margin: 0 }}>
                     <div style={{ 
@@ -238,20 +238,26 @@ class Content extends React.PureComponent {
             );
         }
         else {
+            const metadata = this.getMetadata();
+            title = metadata.title;
             playerRef = (
-                <div className="player-container">
-                    <div id="app-jwplayer"></div>
+                <div>
+                    <Head>
+                        <meta name="description" content={metadata.description}/>
+                    </Head>
+                    <div className="player-container">
+                        <div id="app-jwplayer"></div>
+                    </div>
                 </div>
             );
         }
 
+        
+
         return (
-            <Layout title={metadata.title}>
-                <Head>
-                    <meta name="description" content={metadata.description}/>
-                </Head>
+            <Layout title={title}>
                 <ArrowBackIcon className="back-btn" onClick={() => Router.back()}/>
-                {this.state.error ? errorRef : playerRef}
+                {(this.state.error || Object.keys(this.props.content_url).length <= 0) ? errorRef : playerRef}
             </Layout>
         );
     }    
