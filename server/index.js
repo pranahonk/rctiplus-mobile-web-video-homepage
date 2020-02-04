@@ -93,6 +93,10 @@ const handle = app.getRequestHandler();
       return app.render(req, res, '/user/term-cond');
     });
 
+    server.get('/history', (req, res) => {
+      return app.render(req, res, '/user/history');
+    });
+
     server.get('/faq', (req, res) => {
       return app.render(req, res, '/user/faq');
     });
