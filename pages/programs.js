@@ -73,6 +73,7 @@ class Detail extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log(this.props.initial);
         this.state = {
             active_tab: '1',
             title: '',

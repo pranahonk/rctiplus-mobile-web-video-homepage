@@ -42,7 +42,7 @@ class ChangePassword extends React.Component {
                     setTimeout(function() {
 						hideNotification();
 					}, 3000);
-                    Router.push('/signin');
+                    Router.push('/login');
                 }
                 else {
                     this.props.showNotification(response.data.status.message_client + '. Please try again! (Response code = ' + response.data.status.code + ')', false);

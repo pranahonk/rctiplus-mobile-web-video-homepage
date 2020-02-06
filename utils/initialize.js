@@ -8,7 +8,7 @@ export default function (ctx) {
 			const token = getCookie('ACCESS_TOKEN');
 			console.log('token:', token);
 			console.log('context:', ctx);
-			if (token && (ctx.pathname === '/signin' || ctx.pathname === '/signup')) {
+			if (token && (ctx.pathname === '/login' || ctx.pathname === '/register')) {
 				setTimeout(function () {
 					Router.push('/');
 				}, 0);
@@ -19,7 +19,7 @@ export default function (ctx) {
 		const token = getCookie('ACCESS_TOKEN');
 		console.log('token:', token);
 		console.log('context:', ctx);
-		if (token && (ctx.pathname === '/signin' || ctx.pathname === '/signup')) {
+		if (token && (ctx.pathname === '/login' || ctx.pathname === '/register')) {
 			setTimeout(function () {
 				Router.push('/');
 			}, 0);

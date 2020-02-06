@@ -113,7 +113,7 @@ class MyList extends React.Component {
 	componentDidMount() {
 		const token = getCookie('ACCESS_TOKEN');
 		if (token == undefined) {
-			Router.push('/signin');
+			Router.push('/login');
 		}
 		
 		this.props.getBookmark(this.state.current_page, this.state.length)

@@ -65,6 +65,27 @@ const setChat = (id, message, username, avatar) => {
     });
 };
 
+const getChatMessages = id => {
+    return dispatch => new Promise((resolve, reject) => {
+        let db = firebaseApp.firestore();
+        db.collection(`chat${id}`)
+            .limit(10)
+            .get()
+            .then(querySnapshot => {
+                let messages = [];
+                querySnapshot.forEach(doc => {  
+                    messages.push(doc.data());
+                });
+                resolve(messages);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+    
+    
+};
+
 const listenChatStatus = id => {
     let db = firebaseApp.firestore();
     db.collection(`chat${id}`)
@@ -85,5 +106,6 @@ const listenChatStatus = id => {
 export default {
     listenChatStatus,
     listenChat,
-    setChat
+    setChat,
+    getChatMessages
 };

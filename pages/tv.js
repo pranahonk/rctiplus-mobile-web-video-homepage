@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import { Picker } from 'emoji-mart';
+import Img from 'react-image';
 
 import initialize from '../utils/initialize';
 
@@ -27,6 +28,8 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 import SentimenVerySatifiedIcon from '@material-ui/icons/SentimentVerySatisfied';
 import SendIcon from '@material-ui/icons/Send';
+import KeyboardIcon from '@material-ui/icons/Keyboard';
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 
 import { BASE_URL, SITEMAP } from '../config';
 
@@ -62,10 +65,12 @@ class Tv extends React.Component {
 			caption: '',
 			url: '',
 			hashtags: [],
-			chat_open: true,
+			chat_open: false,
 			channel_code: this.props.context_data ? this.props.context_data.channel : 'rcti',
 			error: false,
-			error_data: {}
+			error_data: {},
+			emoji_picker_open: false,
+			chats: []
 		};
 
 		this.player = null;
@@ -211,12 +216,28 @@ class Tv extends React.Component {
 		});
 	}
 
+	loadChatMessages(id) {
+		this.props.setPageLoader();
+		this.props.getChatMessages(id)
+			.then(chats => {
+				this.setState({ chats: chats }, () => {
+					const chatBox = document.getElementById('chat-messages');
+					chatBox.scrollTop = chatBox.scrollHeight;
+					this.props.unsetPageLoader();
+				});
+			})
+			.catch(error => {
+				console.log(error);
+				this.props.unsetPageLoader();
+			});
+	}
+
 	selectChannel(index) {
 		this.props.setPageLoader();
 		this.setState({ selected_index: index }, () => {
 			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id)
 				.then(res => {
-					this.props.listenChatStatus(res.data.data.id);
+					this.loadChatMessages(res.data.data.id);
 					this.props.setChat(res.data.data.id, 'testing kuy', 'azhary@mailinator.com', 'https://rc-static.rctiplus.id/avatar/5322_cropped-photo_20200110145927.jpeg', 5322);
 
 					this.setState({
@@ -308,13 +329,24 @@ class Tv extends React.Component {
 	}
 
 	toggleChat() {
-		this.setState({ chat_open: !this.state.chat_open });
+		this.setState({ chat_open: !this.state.chat_open }, () => {
+			const chatBox = document.getElementById('chat-messages');
+			chatBox.scrollTop = chatBox.scrollHeight;
+		});
+	}
+
+	toggleEmoji() {
+		this.setState({ emoji_picker_open: !this.state.emoji_picker_open });
 	}
 
 	tryAgain() {
 		this.setState({ error: false }, () => {
             this.initVOD();
         });
+	}
+
+	sendChat() {
+		console.log('Sending chat...');
 	}
 
 	render() {
@@ -437,14 +469,28 @@ class Tv extends React.Component {
 					<div className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
 						<div className="box-chat">
-							{/* <Picker/> */}
+							<div className="chat-messages" id="chat-messages">
+								{this.state.chats.map((chat, i) => (
+									<Row key={i} className="chat-line">
+										<Col xs={2}>
+											<Img
+												loader={<PersonOutlineIcon className="chat-avatar"/>}
+												unloader={<PersonOutlineIcon className="chat-avatar"/>} 
+												className="chat-avatar" src={[chat.i]}/>
+											
+										</Col>
+										<Col className="chat-message" xs={10}>
+											<span className="timeago">14m ago</span> <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
+										</Col>
+									</Row>
+								))}
+							</div>
 							<div className="chat-input-box">
 								<div className="chat-box">
-									
 									<Row>
 										<Col xs={1}>
 											<Button className="emoji-button">
-												<SentimenVerySatifiedIcon/>
+												{this.state.emoji_picker_open ? (<KeyboardIcon onClick={this.toggleEmoji.bind(this)}/>) : (<SentimenVerySatifiedIcon onClick={this.toggleEmoji.bind(this)}/>)}
 											</Button>
 										</Col>
 										<Col xs={9}>
@@ -461,13 +507,14 @@ class Tv extends React.Component {
 												maxLength={250}
 												rows={1}/>
 										</Col>
-										<Col xs={2}>
-											<Button className="send-button">
+										<Col xs={1}>
+											<Button className="send-button" onClick={this.sendChat.bind(this)}>
 												<SendIcon />
 											</Button>
 										</Col>
 									</Row>
 								</div>
+								<Picker darkMode style={{ height: this.state.emoji_picker_open ? 200 : 0 }}/>
 							</div>
 						</div>
 					</div>

@@ -181,7 +181,7 @@ class EditProfile extends React.Component {
                             callback: () => {
                                 const deviceId = 1;
                                 this.props.logout(deviceId)
-                                    .then(() => Router.push('/signin'))
+                                    .then(() => Router.push('/login'))
                                     .catch(() => removeCookie('ACCESS_TOKEN'));
                             }
                         }
