@@ -105,8 +105,8 @@
 }
 
 .live-chat-wrap-open {
-    max-height: calc(100vh - 220px);
-    height: calc(100vh - 220px);
+    max-height: calc(100vh - 200px);
+    height: calc(100vh - 200px);
     bottom: 0;
     z-index: 7;
     overflow: hidden;
@@ -118,8 +118,83 @@
     .box-chat {
         height: calc(100vh - 253px);
         position: relative;
-        padding: 0 16px;
+        padding: 0;
         background-color: #282828;
+
+        .chat-input-box {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 6;
+            margin-bottom: 37px;
+            padding-top: 5px;
+            padding-bottom: 10px;
+            background: #171717;
+
+            .chat-box {
+                padding: 5px 10px;
+                width: 100%;
+                display: flex;
+                align-items: center;
+
+                .emoji-button {
+                    padding: 0;
+                    background: transparent;
+                    border: transparent;
+                }
+
+                .emoji-button:focus {
+                    box-shadow: transparent;
+                }
+
+                .col-9 {
+                    padding-right: 0;
+                    .chat-input {
+                        background: transparent;
+                        border: transparent;
+                        color: white;
+                        overflow-y: hidden;
+                        height: 24px;
+                        padding-top: 0;
+                    }
+                }
+
+                .col-1 {
+                    padding-right: 5px;
+                }
+
+                .col-2 {
+                    padding-right: 5px;
+                }
+
+                .send-button {
+                    padding: 0;
+                    background: transparent;
+                    border: transparent;
+                }
+
+                .send-button:focus {
+                    box-shadow: transparent;
+                }
+            }
+        }
+
+        .emoji-mart {
+            width: 100% !important;
+            border-radius:0;
+            transition-property: all;
+            transition-duration: .6s;
+            transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+        }
+
+        .emoji-mart-open {
+            max-height: calc(100vh - 220px - 43px);
+            height: calc(100vh - 220px - 43px);
+            transition-property: all;
+            transition-duration: .6s;
+            transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+        }
     }
 }
 

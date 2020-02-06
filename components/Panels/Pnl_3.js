@@ -21,13 +21,19 @@ class Pnl_3 extends React.Component {
 	}
 
 	link(data) {
+		console.log('PANEL 3', data);
 		switch (data.content_type) {
 			case 'special':
 				window.open(data.link, '_blank');
 				break;
 
 			case 'program':
-				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}`);
+				if (data.program_id) {
+					Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}`);
+				}
+				else if (data.content_id) {
+					Router.push(`/programs/${data.content_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}`);
+				}
 				break;
 
 			default:

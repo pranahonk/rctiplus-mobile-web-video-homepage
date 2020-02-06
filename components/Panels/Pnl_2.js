@@ -24,6 +24,7 @@ class Pnl_2 extends React.Component {
 	}
 
 	link(data) {
+		console.log('PANEL 2', data);
 		switch (data.content_type) {
 			case 'special':
 				window.open(data.link, '_blank');

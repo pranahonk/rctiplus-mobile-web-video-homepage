@@ -3,10 +3,13 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
+import { Picker } from 'emoji-mart';
+
 import initialize from '../utils/initialize';
 
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 import pageActions from '../redux/actions/pageActions';
+import chatsActions from '../redux/actions/chats';
 
 import Layout from '../components/Layouts/Default';
 import SelectDateModal from '../components/Modals/SelectDateModal';
@@ -16,16 +19,19 @@ import Wrench from '../components/Includes/Common/Wrench';
 import { formatDate, formatDateWord, getFormattedDateBefore } from '../utils/dateHelpers';
 import { showAlert } from '../utils/helpers';
 
-import { Row, Col, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import { Row, Col, Button, Nav, NavItem, NavLink, TabContent, TabPane, Input } from 'reactstrap';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
+import SentimenVerySatifiedIcon from '@material-ui/icons/SentimentVerySatisfied';
+import SendIcon from '@material-ui/icons/Send';
 
 import { BASE_URL, SITEMAP } from '../config';
 
 import '../assets/scss/components/live-tv.scss';
+import 'emoji-mart/css/emoji-mart.css';
 
 class Tv extends React.Component {
 
@@ -56,7 +62,7 @@ class Tv extends React.Component {
 			caption: '',
 			url: '',
 			hashtags: [],
-			chat_open: false,
+			chat_open: true,
 			channel_code: this.props.context_data ? this.props.context_data.channel : 'rcti',
 			error: false,
 			error_data: {}
@@ -210,6 +216,9 @@ class Tv extends React.Component {
 		this.setState({ selected_index: index }, () => {
 			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id)
 				.then(res => {
+					this.props.listenChatStatus(res.data.data.id);
+					this.props.setChat(res.data.data.id, 'testing kuy', 'azhary@mailinator.com', 'https://rc-static.rctiplus.id/avatar/5322_cropped-photo_20200110145927.jpeg', 5322);
+
 					this.setState({
 						selected_live_event: this.state.live_events[this.state.selected_index],
 						selected_live_event_url: res.data.data,
@@ -427,7 +436,40 @@ class Tv extends React.Component {
 					</div>
 					<div className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
-						<div className="box-chat"></div>
+						<div className="box-chat">
+							{/* <Picker/> */}
+							<div className="chat-input-box">
+								<div className="chat-box">
+									
+									<Row>
+										<Col xs={1}>
+											<Button className="emoji-button">
+												<SentimenVerySatifiedIcon/>
+											</Button>
+										</Col>
+										<Col xs={9}>
+											<Input 
+												onKeyDown={e => {
+													const chatInput = document.getElementById('chat-input');
+													const scrollHeight = chatInput.scrollHeight - 30;
+													chatInput.style.height = `${24 + (24 * (scrollHeight / 24))}px`;
+												}}
+												type="textarea"
+												id="chat-input"
+												placeholder="Start Chatting"
+												className="chat-input"
+												maxLength={250}
+												rows={1}/>
+										</Col>
+										<Col xs={2}>
+											<Button className="send-button">
+												<SendIcon />
+											</Button>
+										</Col>
+									</Row>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</Layout>
@@ -437,5 +479,6 @@ class Tv extends React.Component {
 
 export default connect(state => state, {
 	...liveAndChatActions,
-	...pageActions
+	...pageActions,
+	...chatsActions
 })(withRouter(Tv));
