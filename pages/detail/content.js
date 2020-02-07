@@ -85,7 +85,7 @@ class Content extends React.PureComponent {
 			setFullscreen: true,
 			stretching:'fill',
 			advertising: {
-				client: 'vast',
+				client: 'googima',
 				tag: this.state.player_vmap
 			},
 			logo: {

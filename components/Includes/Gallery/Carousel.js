@@ -43,22 +43,30 @@ class Crs extends Component {
     render() {
         return (
                 <div style={{ position: 'relative' }}>
-                    <Carousel statusFormatter={(current, total) => `${current}/${total}`} autoPlay showThumbs={false} showIndicators={false} stopOnHover={true} showArrows={false} showStatus={false} swipeScrollTolerance={1} swipeable={true} >
+                    <Carousel statusFormatter={(current, total) => `${current}/${total}`} autoPlay showThumbs={false} showIndicators={false} stopOnHover={true} showArrows={false} showStatus={false} swipeScrollTolerance={1} swipeable={true}>
                         {this.state.banner.map(b => (
-                            <div onClick={this.goToProgram.bind(this, b)} key={b.id}>
-                                <Img 
+                            <div onClick={this.goToProgram.bind(this, b)} key={b.id} style={{ 
+                                backgroundImage: `url(${this.state.meta.image_path + '593' + b.portrait_image})`, 
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center', 
+                                width: '100%', 
+                                height: 493 
+                            }}>
+                                {/* <Img 
                                     alt={b.title}
+                                    style={{ background: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 70%,#282828)' }}
                                     loader={<img 
                                         src="static/placeholders/placeholder_potrait.png" 
                                         alt={b.title}/>}
                                     unloader={<img 
                                         src="static/placeholders/placeholder_potrait.png" 
                                         alt={b.title}/>} 
-                                    src={[this.state.meta.image_path + '593' + b.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
+                                    src={[this.state.meta.image_path + '593' + b.portrait_image, '/static/placeholders/placeholder_potrait.png']} /> */}
                             </div>
                             ))}
                     </Carousel>
                     {this.props.children}
+                    {/* <div style={{ backgroundImage: 'linear-gradient(rgba(88, 88, 88, 0.27) 0px, rgba(88, 88, 88, 0.76) 51%, rgb(0, 0, 0))', width: '100%', height: 100 }}></div> */}
                 </div>
                 );
     }
