@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import { Picker } from 'emoji-mart';
 import Img from 'react-image';
+import TimeAgo from 'react-timeago';
 
 import initialize from '../utils/initialize';
 
@@ -235,9 +236,9 @@ class Tv extends React.Component {
 	selectChannel(index) {
 		this.props.setPageLoader();
 		this.setState({ selected_index: index }, () => {
+			this.loadChatMessages(this.state.live_events[this.state.selected_index].id);
 			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id)
 				.then(res => {
-					this.loadChatMessages(res.data.data.id);
 					this.props.setChat(res.data.data.id, 'testing kuy', 'azhary@mailinator.com', 'https://rc-static.rctiplus.id/avatar/5322_cropped-photo_20200110145927.jpeg', 5322);
 
 					this.setState({
@@ -249,33 +250,35 @@ class Tv extends React.Component {
 						this.initVOD();
 						this.props.setChannelCode(this.state.selected_live_event.channel_code);
 						this.props.setCatchupDate(formatDateWord(this.currentDate));
-						this.props.getEPG(formatDate(this.currentDate), this.state.selected_live_event.channel_code)
-							.then(response => {
-								let epg = response.data.data.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + ' ' + e.e).getTime());
-								this.setState({ epg: epg }, () => this.props.unsetPageLoader());
-							})
-							.catch(error => {
-								console.log(error);
-								this.props.unsetPageLoader();
-							});
+						this.props.unsetPageLoader();
+					});
+				})
+				.catch(error => {
+					console.log(error);
+					this.props.unsetPageLoader();
+				});
 
-						this.props.getEPG(formatDate(new Date(this.state.selected_date)), this.state.selected_live_event.channel_code)
-							.then(response => {
-								let catchup = response.data.data.filter(e => {
-									if (e.s > e.e) {
-										return this.currentDate.getTime() > new Date(new Date(this.state.selected_date + ' ' + e.e).getTime() + (1 * 24 * 60 * 60 * 1000)).getTime();
-									}
-									return this.currentDate.getTime() > new Date(this.state.selected_date + ' ' + e.e).getTime();
-								});
-								this.setState({ catchup: catchup }, () => {
-									this.props.setCatchupData(catchup);
-									this.props.unsetPageLoader();
-								});
-							})
-							.catch(error => {
-								console.log(error);
-								this.props.unsetPageLoader();
-							});
+			this.props.getEPG(formatDate(this.currentDate), this.state.live_events[this.state.selected_index].channel_code)
+				.then(response => {
+					let epg = response.data.data.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + ' ' + e.e).getTime());
+					this.setState({ epg: epg }, () => this.props.unsetPageLoader());
+				})
+				.catch(error => {
+					console.log(error);
+					this.props.unsetPageLoader();
+				});
+
+			this.props.getEPG(formatDate(new Date(this.state.selected_date)), this.state.live_events[this.state.selected_index].channel_code)
+				.then(response => {
+					let catchup = response.data.data.filter(e => {
+						if (e.s > e.e) {
+							return this.currentDate.getTime() > new Date(new Date(this.state.selected_date + ' ' + e.e).getTime() + (1 * 24 * 60 * 60 * 1000)).getTime();
+						}
+						return this.currentDate.getTime() > new Date(this.state.selected_date + ' ' + e.e).getTime();
+					});
+					this.setState({ catchup: catchup }, () => {
+						this.props.setCatchupData(catchup);
+						this.props.unsetPageLoader();
 					});
 				})
 				.catch(error => {
@@ -283,6 +286,8 @@ class Tv extends React.Component {
 					this.props.unsetPageLoader();
 				});
 		});
+
+		
 	}
 
 	selectCatchup(id) {
@@ -346,7 +351,17 @@ class Tv extends React.Component {
 	}
 
 	sendChat() {
-		console.log('Sending chat...');
+		// TODO
+		let chats = this.state.chats;
+		chats.push({
+			i: 'test',
+			u: 'TEST',
+			m: 'tesssttt'
+		});
+		this.setState({ chats: chats }, () => {
+			const chatBox = document.getElementById('chat-messages');
+			chatBox.scrollTop = chatBox.scrollHeight;
+		});
 	}
 
 	render() {
@@ -480,7 +495,7 @@ class Tv extends React.Component {
 											
 										</Col>
 										<Col className="chat-message" xs={10}>
-											<span className="timeago">14m ago</span> <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
+											<TimeAgo className="timeago" date={Date.now() - (Date.now() - chat.ts)} /> <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
 										</Col>
 									</Row>
 								))}
@@ -514,7 +529,13 @@ class Tv extends React.Component {
 										</Col>
 									</Row>
 								</div>
-								<Picker darkMode style={{ height: this.state.emoji_picker_open ? 200 : 0 }}/>
+								<Picker 
+									onSelect={emoji => {
+										console.log(emoji)
+									}}
+									showPreview={false} 
+									darkMode 
+									style={{ height: this.state.emoji_picker_open ? 200 : 0 }}/>
 							</div>
 						</div>
 					</div>

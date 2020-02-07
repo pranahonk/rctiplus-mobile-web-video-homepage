@@ -4,14 +4,24 @@ import 'firebase/firestore';
 
 if (!firebaseApp.apps.length) {
     const configFirebase = JSON.stringify({
-        apiKey: "AIzaSyBlv2LSoUdLUr0fEwOpLIHmuRh8h8xwO4g",
-        authDomain: "rcti-rc.firebaseapp.com",
-        databaseURL: "https://rcti-rc.firebaseio.com",
-        projectId: "rcti-rc",
-        storageBucket: "rcti-rc.appspot.com",
-        messagingSenderId: "808988495158",
-        appId: "1:808988495158:web:11d489c1c5da7b61"
+        apiKey: process.env.FIREBASE_apiKey,
+        authDomain: process.env.FIREBASE_authDomain,
+        databaseURL: process.env.FIREBASE_databaseURL,
+        projectId: process.env.FIREBASE_projectId,
+        storageBucket: process.env.FIREBASE_storageBucket,
+        messagingSenderId: process.env.FIREBASE_messagingSenderId,
+        appId: process.env.FIREBASE_appId,
     });
+    // const configFirebase = JSON.stringify({
+    //     apiKey: "AIzaSyCFY5ljEzA9bz1jHZ4RTnay1KKE7ysa5Zk",
+    //     authDomain: "rcti-766db.firebaseapp.com",
+    //     databaseURL: "https://rcti-766db.firebaseio.com",
+    //     projectId: "rcti-766db",
+    //     storageBucket: "rcti-766db.appspot.com",
+    //     messagingSenderId: "102225357690",
+    //     appId: "1:102225357690:web:e90f10ab54a010c2",
+    //     measurementId: "G-JR2L0ZYPG7"
+    // });
     firebaseApp.initializeApp(JSON.parse(configFirebase));
 }
 
@@ -65,22 +75,40 @@ const setChat = (id, message, username, avatar) => {
     });
 };
 
-const getChatMessages = id => {
+const getChatMessages = (id, limit = 10) => {
     return dispatch => new Promise((resolve, reject) => {
         let db = firebaseApp.firestore();
-        db.collection(`chat${id}`)
-            .limit(10)
-            .get()
-            .then(querySnapshot => {
-                let messages = [];
-                querySnapshot.forEach(doc => {  
-                    messages.push(doc.data());
-                });
-                resolve(messages);
-            })
-            .catch(error => {
-                reject(error);
+        db.collection('statusChat').onSnapshot(querySnapshot => {
+            let messages = [];
+            querySnapshot.forEach(doc => {
+                if (doc.id == id && doc.data().isActive) {
+                    db.collection(`chat${id}`)
+                        .orderBy('ts', 'asc')
+                        .limit(limit)
+                        .onSnapshot(qs => {
+                            qs.forEach(d => {
+                                messages.push(d.data());
+                            });
+                        });
+                }
             });
+            resolve(messages);
+        });
+
+        // db.collection(`chat${id}`)
+        //     .limit(limit)
+        //     .orderBy('ts', 'asc')
+        //     .get()
+        //     .then(querySnapshot => {
+        //         let messages = [];
+        //         querySnapshot.forEach(doc => {  
+        //             messages.push(doc.data());
+        //         });
+        //         resolve(messages);
+        //     })
+        //     .catch(error => {
+        //         reject(error);
+        //     });
     });
     
     

@@ -47,7 +47,11 @@ class NavbarSearch extends Component {
     }
 
     onChangeQuery(e) {
-        this.setState({ q: e.target.value }, () => {
+        this.changeQuery(e.target.value);
+    }
+
+    changeQuery(q) {
+        this.setState({ q: q }, () => {
             this.props.setPageLoader();
             this.subject.next();
         });
@@ -88,8 +92,10 @@ class NavbarSearch extends Component {
                             className="search-input" />
                     </div>
                     <div className="right-top-link">
-                        <div className="btn-link-top-nav">
-                            <NavbarBrand style={{ color: 'white' }} href="/explore">
+                        <div className="btn-link-top-nav" onClick={() => {
+                            this.changeQuery(this.state.q);
+                        }}>
+                            <NavbarBrand style={{ color: 'white' }}>
                                 <SearchIcon style={{ fontSize: 20 }} />
                             </NavbarBrand>
                         </div>

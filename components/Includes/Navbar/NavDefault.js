@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
+import Link from 'next/link';
 
 import actions from '../../../redux/actions';
 import pageActions from '../../../redux/actions/pageActions';
@@ -70,14 +71,22 @@ class NavbarDef extends Component {
                             </div>
                         </div>
                         <div className="right-top-link">
-                            <div className="btn-link-top-nav">
-                                <NavbarBrand style={{color: 'white', fontSize: 13}} onClick={this.signOut.bind(this)} href="#">
-                                    {this.state.token ? 'Logout' : 'Login'}
-                                </NavbarBrand>
-                                <NavbarBrand style={{color: 'white'}} href="/explores">
-                                    <SearchIcon style={{fontSize: 20}}/>
-                                </NavbarBrand>
-                            </div>
+                            {this.state.token ? (
+                                <div className="btn-link-top-nav">
+                                    <Link href="/explores">
+                                        <SearchIcon style={{fontSize: 20, marginRight: 10}}/>
+                                    </Link>
+                                </div>
+                            ) : (
+                                <div className="btn-link-top-nav">
+                                    <NavbarBrand style={{color: 'white', fontSize: 13}} onClick={this.signOut.bind(this)} href={this.state.token ? '/explores' : '#'}>
+                                        {this.state.token ? 'Logout' : 'Login'}
+                                    </NavbarBrand>
+                                    <NavbarBrand style={{color: 'white'}} href="/explores">
+                                        <SearchIcon style={{fontSize: 20}}/>
+                                    </NavbarBrand>
+                                </div>
+                            )}
                         </div>
                     </Navbar>
                     <StatusNotification />
