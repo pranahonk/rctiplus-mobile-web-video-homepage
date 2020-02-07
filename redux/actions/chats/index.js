@@ -84,7 +84,6 @@ const getChatMessages = (id, limit = 10) => {
                 if (doc.id == id && doc.data().isActive) {
                     db.collection(`chat${id}`)
                         .orderBy('ts', 'asc')
-                        .limit(limit)
                         .onSnapshot(qs => {
                             qs.forEach(d => {
                                 messages.push(d.data());

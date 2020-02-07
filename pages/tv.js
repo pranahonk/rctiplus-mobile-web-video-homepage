@@ -255,6 +255,10 @@ class Tv extends React.Component {
 				})
 				.catch(error => {
 					console.log(error);
+					this.setState({
+						error: true,
+						error_data: error.status === 200 ? error.data.status.message_client : ''
+					});
 					this.props.unsetPageLoader();
 				});
 

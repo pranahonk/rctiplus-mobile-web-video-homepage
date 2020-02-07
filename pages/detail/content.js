@@ -70,7 +70,6 @@ class Content extends React.PureComponent {
             error_data: {}
         };
         this.player = null;
-        console.log(this.props.content_url);
     }
 
     initVOD() {

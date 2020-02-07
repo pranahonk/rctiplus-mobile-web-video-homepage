@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
+import fetch from 'isomorphic-unfetch';
 
 import pageActions from '../redux/actions/pageActions';
 import userActions from '../redux/actions/userActions';
@@ -19,67 +20,99 @@ import { Row, Col } from 'reactstrap';
 
 import '../assets/scss/components/explore.scss';
 
+import { VISITOR_TOKEN, DEV_API, SITEMAP } from '../config';
+import { getCookie } from '../utils/cookie';
+
 class Explores extends React.Component {
 	
 	static async getInitialProps(ctx) {
-		return { query: ctx.query };
+		const accessToken = getCookie('ACCESS_TOKEN');
+		const status = 'active';
+        const res = await fetch(`${DEV_API}/api/v1/genre?status=${status}&infos=id,name,image`, {
+            method: 'GET',
+            headers: {
+                'Authorization': accessToken ? accessToken : VISITOR_TOKEN
+            }
+        });
+        const error_code = res.statusCode > 200 ? res.statusCode : false;
+        
+        if (error_code) {
+            return { initial: false };
+        }
+
+        const data = await res.json();
+        if (data.status.code === 1) {
+            return { initial: false };
+        }
+		return { query: ctx.query, interests: data };
 	}
 
 	constructor(props) {
 		super(props);
+		let selectedGenreName = 'For You';
+		let selectedGenre;
+		const interests = this.props.interests.data;
+		for (let i = 0; i < interests.length; i++) {
+			if (interests[i].id == this.props.query.id) {
+				selectedGenre = interests[i];
+				selectedGenreName = interests[i].name;
+				break;
+			}
+		}
+
 		this.state = {
-			interests: [],
+			interests: interests,
 			recommendations: {},
-			meta: {},
+			meta: this.props.interests.meta,
 			resolution: 140,
 			page: {},
 			show_more_allowed: {},
 			length: 9,
-			selected_genre_name: 'For You',
-			selected_genre_id: -1
+			selected_genre: selectedGenre,
+			selected_genre_name: selectedGenreName,
+			selected_genre_id: this.props.query.id ? this.props.query.id : -1
 		};
 		this.props.setPageLoader();
+
+		// TODO: META TITLE, DESCRIPTION, AND KEYWORDS
+		console.log(this.state.selected_genre);
 	}
 
 	componentDidMount() { 
-		this.LoadingBar.continuousStart();
-		Promise.all([
-			this.props.getInterests(),
-			this.props.getRecommendation(1, this.state.length)])
-			.then(responses => {
-				const response_interests = responses[0];
-				const response_recommendation = responses[1];
+		if (this.state.selected_genre_id != -1) {
+			this.selectGenre(this.state.selected_genre);
+		}
+		else {
+			this.LoadingBar.continuousStart();
+			this.props.getRecommendation(1, this.state.length)
+				.then(response => {
+					if (response.status === 200 && response.data.status.code === 0) {
+						let recommendations = this.state.recommendations;
+						recommendations[`genre-${this.state.selected_genre_id}`] = response.data.data;
+						
+						let pages = {};
+						pages[`genre-${this.state.selected_genre_id}`] = 1;
 
-				if (
-					response_interests.status === 200 && 
-					response_interests.data.status.code === 0 && 
-					response_recommendation.status === 200 && 
-					response_recommendation.data.status.code === 0) {
-					
-					let recommendations = this.state.recommendations;
-					recommendations[`genre-${this.state.selected_genre_id}`] = response_recommendation.data.data;
-					
-					let pages = {};
-					pages[`genre-${this.state.selected_genre_id}`] = 1;
-					
-					let showMoreAllowed = this.state.show_more_allowed;
-					showMoreAllowed[`genre-${this.state.selected_genre_id}`] = response_recommendation.data.data.length >= this.state.length;
+						let showMoreAllowed = this.state.show_more_allowed;
+						showMoreAllowed[`genre-${this.state.selected_genre_id}`] = response.data.data.length >= this.state.length;
 
-					this.setState({
-						interests: response_interests.data.data,
-						recommendations: recommendations,
-						meta: response_interests.data.meta,
-						page: pages,
-						show_more_allowed: showMoreAllowed
-					});
-				}
-				this.props.unsetPageLoader();
-				this.LoadingBar.complete();
-			})
-			.catch(error => {
-				console.log(error);
-				this.LoadingBar.complete();
-			});
+						this.setState({
+							recommendations: recommendations,
+							page: pages,
+							show_more_allowed: showMoreAllowed
+						});
+					}
+
+					this.props.unsetPageLoader();
+					this.LoadingBar.complete();
+				})
+				.catch(error => {
+					console.log(error);
+					this.LoadingBar.complete();
+				});
+		}
+
+		
 	}
 
 	selectGenre(genre, category = 'program') {
@@ -228,9 +261,23 @@ class Explores extends React.Component {
 		
 	}
 
+	getMetadata() {
+		const name = this.state.selected_genre_name.toLowerCase().replace(/ /g, '_');
+		if (SITEMAP[`explore_${name}`]) {
+			return SITEMAP[`explore_${name}`];
+		}
+		
+		return SITEMAP['explore_for_you'];
+	}
+
 	render() {
+		const metadata = this.getMetadata();
 		return (
-			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
+			<Layout title={metadata.title}>
+				<Head>
+					<meta name="description" content={metadata.description}/>
+					<meta name="keywords" content={metadata.keywords}/>
+				</Head>
 				<BottomScrollListener offset={8} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
 				<NavSearch />
