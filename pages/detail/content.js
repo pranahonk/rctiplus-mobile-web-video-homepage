@@ -141,6 +141,7 @@ class Content extends React.PureComponent {
                 exclusive_tab_name: 'N/A'
             });
             setInterval(() => {
+                console.log('POST HISTORY');
                 this.props.postHistory(this.props.context_data.content_id, this.props.context_data.type, this.player.getPosition())
                     .then(response => {
                         console.log(response);

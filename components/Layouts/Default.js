@@ -62,6 +62,8 @@ class Default extends React.Component {
                     <meta name="msapplication-TileColor" content="#171717" />
                     <meta name="msapplication-navbutton-color" content="#171717" />
                     <meta name="apple-mobile-web-app-status-bar-style" content="#171717" />
+                    <meta name="mobile-web-app-capable" content="yes" />
+                    <meta name="apple-mobile-web-app-capable" content="yes" />
 
                     <meta name="author" content={AUTHOR} />
                     <meta name="viewport" content={VIEWPORT} />
@@ -70,8 +72,31 @@ class Default extends React.Component {
                     <link rel="icon" href="/static/logo/rcti.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
                     <link rel="canonical" href={`http://www.rctiplus.com${this.props.router.asPath}`}></link>
+
+                    {/* Google Tag Manager */}
+                    <script dangerouslySetInnerHTML={{ __html: `
+                        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+                        var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
+                        j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);}
+                        )(window,document,'script','dataLayer','GTM-WJNRTJP');
+                    ` }}></script>
+                    {/* End Google Tag Manager */}
+
+                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <script dangerouslySetInnerHTML={{ __html: `
+                        (adsbygoogle = window.adsbygoogle || []).push({
+                            google_ad_client: "ca-pub-8248966892082355",
+                            enable_page_level_ads: true
+                        });
+                    ` }}></script>
+                    {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
+
+
                     <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
+
                     <script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
+                    <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>
+                    {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
                     <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script>
                     <script src="https://cdn.qgraph.io/dist/aiqua-wp.js"></script>
                     <script dangerouslySetInnerHTML={{ __html: `
@@ -81,7 +106,43 @@ class Default extends React.Component {
                         });
                     `}}>
                     </script>
+                    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+                    <script dangerouslySetInnerHTML={{ __html: `
+                        window.googletag = window.googletag || {cmd: []};
+                        googletag.cmd.push(function() {
+                        // googletag.defineSlot('/21865661642/PRO_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1572507979836-0').addService(googletag.pubads());
+                        // googletag.pubads().enableSingleRequest();
+                        // googletag.pubads().collapseEmptyDivs();
+                        // googletag.enableServices();
+                        });
+                    ` }}></script>
+                    
+                    {/* Comscore */}
+                    <script dangerouslySetInnerHTML={{ __html: `
+                        var _comscore=_comscore||[];_comscore.push({c1:"2",c2:"9013027"}),function(){var c=document.createElement("script"),e=document.getElementsByTagName("script")[0];c.async=!0,c.src=("https:"==document.location.protocol?"https://sb":"http://b")+".scorecardresearch.com/beacon.js",e.parentNode.insertBefore(c,e)}();
+                    ` }}></script>
+                    <noscript><img alt="Share" src="https://b.scorecardresearch.com/p?c1=2&amp;c2=9013027&amp;cv=2.0&amp;cj=1" /></noscript>
+                    {/* End Comscore */}
                 </Head>
+                
+                {/* <!-- Google Tag Manager (noscript) --> */}
+                <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5F9P7H3"
+                height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript>
+                {/* <!-- End Google Tag Manager (noscript) --> */}
+                
+                {/* <!-- DO NOT touch the following DIV --> */}
+                <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
+                    !function(q,g,r,a,p,h,js) {
+                        if(q.qg)return;
+                        js = q.qg = function() {
+                        js.callmethod ? js.callmethod.call(js, arguments) : js.queue.push(arguments);
+                        };
+                        js.queue = [];
+                        p=g.createElement(r);p.async=!0;p.src=a;h=g.getElementsByTagName(r)[0];
+                        h.parentNode.insertBefore(p,h);
+                    } (window,document,'script','//cdn.qgr.ph/qgraph.c63c2960bf562e9ec2de.js');
+                ` }}></script>  
+
                 {this.props.pages.loading ? (
                     <div className={'default-loader ' + (this.props.pages.fade ? 'loader-fade' : '')}>
                         <div className={'loader'}>

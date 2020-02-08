@@ -3,25 +3,25 @@ import 'firebase/firebase-auth';
 import 'firebase/firestore';
 
 if (!firebaseApp.apps.length) {
-    const configFirebase = JSON.stringify({
-        apiKey: process.env.FIREBASE_apiKey,
-        authDomain: process.env.FIREBASE_authDomain,
-        databaseURL: process.env.FIREBASE_databaseURL,
-        projectId: process.env.FIREBASE_projectId,
-        storageBucket: process.env.FIREBASE_storageBucket,
-        messagingSenderId: process.env.FIREBASE_messagingSenderId,
-        appId: process.env.FIREBASE_appId,
-    });
     // const configFirebase = JSON.stringify({
-    //     apiKey: "AIzaSyCFY5ljEzA9bz1jHZ4RTnay1KKE7ysa5Zk",
-    //     authDomain: "rcti-766db.firebaseapp.com",
-    //     databaseURL: "https://rcti-766db.firebaseio.com",
-    //     projectId: "rcti-766db",
-    //     storageBucket: "rcti-766db.appspot.com",
-    //     messagingSenderId: "102225357690",
-    //     appId: "1:102225357690:web:e90f10ab54a010c2",
-    //     measurementId: "G-JR2L0ZYPG7"
+    //     apiKey: process.env.FIREBASE_apiKey,
+    //     authDomain: process.env.FIREBASE_authDomain,
+    //     databaseURL: process.env.FIREBASE_databaseURL,
+    //     projectId: process.env.FIREBASE_projectId,
+    //     storageBucket: process.env.FIREBASE_storageBucket,
+    //     messagingSenderId: process.env.FIREBASE_messagingSenderId,
+    //     appId: process.env.FIREBASE_appId,
     // });
+    const configFirebase = JSON.stringify({
+        apiKey: "AIzaSyCFY5ljEzA9bz1jHZ4RTnay1KKE7ysa5Zk",
+        authDomain: "rcti-766db.firebaseapp.com",
+        databaseURL: "https://rcti-766db.firebaseio.com",
+        projectId: "rcti-766db",
+        storageBucket: "rcti-766db.appspot.com",
+        messagingSenderId: "102225357690",
+        appId: "1:102225357690:web:e90f10ab54a010c2",
+        measurementId: "G-JR2L0ZYPG7"
+    });
     firebaseApp.initializeApp(JSON.parse(configFirebase));
 }
 
@@ -78,7 +78,9 @@ const setChat = (id, message, username, avatar) => {
 const getChatMessages = (id, limit = 10) => {
     return dispatch => new Promise((resolve, reject) => {
         let db = firebaseApp.firestore();
-        db.collection('statusChat').onSnapshot(querySnapshot => {
+        db.collection('statusChat')
+            .limit(limit)
+            .onSnapshot(querySnapshot => {
             let messages = [];
             querySnapshot.forEach(doc => {
                 if (doc.id == id && doc.data().isActive) {
@@ -114,19 +116,22 @@ const getChatMessages = (id, limit = 10) => {
 };
 
 const listenChatStatus = id => {
-    let db = firebaseApp.firestore();
-    db.collection(`chat${id}`)
-        .orderBy('ts', 'desc')
-        .limit(10)
-        .get()
-        .then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                console.log(doc.data());
-            });
-        });
+    
 
-    return dispatch => dispatch({
-        type: 'LISTEN_CHAT_STATUS'
+    return dispatch => new Promise((resolve, reject) => {
+        let db = firebaseApp.firestore();
+        db.collection(`chat${id}`)
+            .limit(10)
+            .orderBy('ts', 'desc')
+            .get()
+            .then(querySnapshot => {
+                let messages = [];
+                querySnapshot.forEach(doc => {
+                    console.log(doc.data());
+                    messages.push(doc.data());
+                });
+                resolve(messages);
+            });
     });
 };
 

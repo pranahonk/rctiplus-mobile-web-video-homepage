@@ -6,8 +6,6 @@ export default function (ctx) {
 		if (ctx.req.headers.cookie) {
 			// logged session logic here
 			const token = getCookie('ACCESS_TOKEN');
-			console.log('token:', token);
-			console.log('context:', ctx);
 			if (token && (ctx.pathname === '/login' || ctx.pathname === '/register')) {
 				setTimeout(function () {
 					Router.push('/');
@@ -17,8 +15,6 @@ export default function (ctx) {
 	}
 	else {
 		const token = getCookie('ACCESS_TOKEN');
-		console.log('token:', token);
-		console.log('context:', ctx);
 		if (token && (ctx.pathname === '/login' || ctx.pathname === '/register')) {
 			setTimeout(function () {
 				Router.push('/');

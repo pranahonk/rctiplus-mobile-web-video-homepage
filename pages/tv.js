@@ -219,7 +219,7 @@ class Tv extends React.Component {
 
 	loadChatMessages(id) {
 		this.props.setPageLoader();
-		this.props.getChatMessages(id)
+		this.props.listenChatStatus(id)
 			.then(chats => {
 				this.setState({ chats: chats }, () => {
 					const chatBox = document.getElementById('chat-messages');
