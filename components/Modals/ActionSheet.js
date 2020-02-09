@@ -39,7 +39,7 @@ class ActionSheet extends React.Component {
                     <p className="sheet-title">
                         <strong>Share this program</strong>
                     </p>
-                    <div className="sheet-action-button-container">
+                    <div className="sheet-action-button-container-share">
                         <div className="sheet-action-button-share">
                             <FacebookShareButton hashtag={this.props.hashtags.map(h => '#' + h).join(' ')} quote={this.props.caption + ' ' + this.props.url} url={this.props.url}>
                                 <i className="fab fa-facebook-f"></i>
