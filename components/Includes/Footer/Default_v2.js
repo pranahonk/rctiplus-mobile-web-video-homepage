@@ -52,6 +52,8 @@ class FooterNav_v2 extends Component {
                         </a>
                     </Link>
                 </div>
+
+                <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
             </div>
         );
     }

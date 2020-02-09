@@ -24,16 +24,6 @@ let nextConfig = {
 				 acc[`process.env.${curr}`] = JSON.stringify(process.env[curr]);
 				 return acc;
 	   }, {});
-
-		config.module.rules.push({
-			test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
-            use: {
-                loader: 'url-loader',
-                options: {
-                    limit: 100000
-                }
-            }
-		});
 	
 		/** Allows you to create global constants which can be configured
 		* at compile time, which in our case is our environment variables
