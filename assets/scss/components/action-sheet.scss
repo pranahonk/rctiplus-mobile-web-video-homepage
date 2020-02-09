@@ -6,24 +6,24 @@
 .modal-body-edit {
     padding: 0px;
     text-align: center;
-}
 
-.sheet-title {
-    font-size: 18px;
-    margin-bottom: 0;
-}
-
-.sheet-action-button {
-    font-size: 35px;
-    border: 1px solid #fff;
-    border-radius: 100%;
-    display: inline-block;
-    width: 55px;
-    height: 55px;
-    margin: 10px;
-}
-
-.modal-content .close-icon-button {
-    margin: 10px;
-    font-size: 1rem !important;
+    .sheet-title {
+        font-size: 18px;
+        margin-bottom: 0;
+    }
+    
+    .sheet-action-button-share {
+        font-size: 35px;
+        border: 1px solid #fff;
+        border-radius: 100%;
+        display: inline-block;
+        width: 55px;
+        height: 55px;
+        margin: 10px;
+    }
+    
+    .modal-content .close-icon-button {
+        margin: 10px;
+        font-size: 1rem !important;
+    }
 }

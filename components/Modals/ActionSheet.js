@@ -40,33 +40,33 @@ class ActionSheet extends React.Component {
                         <strong>Share this program</strong>
                     </p>
                     <div className="sheet-action-button-container">
-                        <div className="sheet-action-button">
+                        <div className="sheet-action-button-share">
                             <FacebookShareButton hashtag={this.props.hashtags.map(h => '#' + h).join(' ')} quote={this.props.caption + ' ' + this.props.url} url={this.props.url}>
                                 <i className="fab fa-facebook-f"></i>
                             </FacebookShareButton>
                         </div>
-                        <div className="sheet-action-button">
+                        <div className="sheet-action-button-share">
                             <TwitterShareButton title={this.props.caption} url={this.props.url} hashtags={this.props.hashtags}>
                                 <i className="fab fa-twitter"></i>
                             </TwitterShareButton>
                         </div>
-                        <div className="sheet-action-button">
+                        <div className="sheet-action-button-share">
                             <LineShareButton url={this.props.url} title={this.props.caption}>
                                 <i className="fab fa-line"></i>
                             </LineShareButton>
                         </div>
                         <br/>
-                        <div className="sheet-action-button">
+                        <div className="sheet-action-button-share">
                             <EmailShareButton url={this.props.url} subject={this.props.caption} body={this.props.caption + ' ' + this.props.url} separator=" - " openWindow>
                                 <i className="far fa-envelope"></i>
                             </EmailShareButton>
                         </div>
-                        <div className="sheet-action-button">
+                        <div className="sheet-action-button-share">
                             <WhatsappShareButton title={this.props.caption} url={this.props.url} separator=" - ">
                                 <i className="fab fa-whatsapp"></i>
                             </WhatsappShareButton>
                         </div>
-                        <div className="sheet-action-button">
+                        <div className="sheet-action-button-share">
                             <i onClick={this.copyToClipboard.bind(this)} className="far fa-copy"></i>
                             <input type="hidden" id="url-copy" value={this.props.url}/>
                         </div>
