@@ -1,0 +1,41 @@
+.menu-container {
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    top: calc(100% - 90px);
+    display: flex;
+    justify-content: center;
+
+    .grid-menu-container {
+        height: 81px;
+        width: 100%;
+        padding: 14px;
+        z-index: 2;
+        border-radius: 7px;
+        box-shadow: 0 1px 8px 1px rgba(0, 0, 0, 0.2);
+        background-image: linear-gradient(to bottom, rgba(40, 40, 40, 0.65), #282828);
+
+        .menu-item {
+            text-align: center;
+            padding-left: 0;
+            padding-right: 0;
+
+            .menu-icon {
+                width: 26px;
+                height: 26px;
+            }
+            .menu-label {
+                font-size: 9px;
+                font-weight: 600;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: normal;
+                letter-spacing: 0.29px;
+                text-align: center;
+                color: #8f8f8f;
+                margin-top: 10px;
+            }
+        }
+
+    }
+}

@@ -17,7 +17,10 @@ import classnames from 'classnames';
 import { Carousel } from 'react-responsive-carousel';
 
 import Layout from '../components/Layouts/Default';
+
 import NavDefault from '../components/Includes/Navbar/NavDefault';
+import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
+
 import PlayerModal from '../components/Modals';
 import ActionSheet from '../components/Modals/ActionSheet';
 
@@ -220,7 +223,7 @@ class Exclusive extends React.Component {
 					<meta name="description" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].description}/>
 					<meta name="keywords" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].keywords}/>
 				</Head>
-				<NavDefault disableScrollListener />
+				{process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)}
 
 				<LoadingBar
 					progress={0}

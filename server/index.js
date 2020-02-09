@@ -16,6 +16,8 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 // #endregion
 
+const UIVersion = '2.0';
+
 (async () => {
   try {
     await app.prepare();
@@ -145,6 +147,10 @@ const handle = app.getRequestHandler();
         subcategory_id: req.params.subcategory_id,
         subcategory_title: req.params.subcategory_title
       });
+    });
+
+    server.get('/radio', (req, res) => {
+      return app.render(req, res, '/roov');
     });
 
     // default request handler by next handler:

@@ -8,10 +8,10 @@ import initialize from '../utils/initialize';
 import { showAlert } from '../utils/helpers';
 
 //load default layout
-import Layout from '../components/Layouts/Default';
+import Layout from '../components/Layouts/Default_v2';
 
 //load navbar default
-import NavDefault from '../components/Includes/Navbar/NavDefault';
+import NavDefault from '../components/Includes/Navbar/NavDefault_v2';
 
 import { ListGroup, ListGroupItem, Button } from 'reactstrap';
 import HistoryIcon from '@material-ui/icons/History';

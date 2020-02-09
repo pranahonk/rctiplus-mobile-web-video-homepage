@@ -1,0 +1,86 @@
+import React, { Component } from 'react';
+import Router from 'next/router';
+import { connect } from 'react-redux';
+
+import actions from '../../../redux/actions';
+import pageActions from '../../../redux/actions/pageActions';
+
+import { getCookie, removeCookie } from '../../../utils/cookie';
+import '../../../assets/scss/components/navbar-v2.scss';
+
+//load reactstrap
+import { Navbar, NavbarBrand, Input } from 'reactstrap';
+
+import StatusNotification from './StatusNotification';
+import SearchIcon from '@material-ui/icons/Search';
+
+
+class NavbarDef_v2 extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            token: getCookie('ACCESS_TOKEN'),
+            is_top: true
+        };
+    }
+
+    signOut() {
+        if (this.state.token) {
+            this.props.setPageLoader();
+            const deviceId = new DeviceUUID().get();
+            this.props
+                .logout(deviceId)
+                .then(response => {
+                    this.props.unsetPageLoader();
+                    Router.push('/login');
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.props.unsetPageLoader();
+                    removeCookie('ACCESS_TOKEN');
+                });
+        }
+        else {
+            Router.push('/login');
+        }
+    }
+
+    componentDidMount() {
+        if (!this.props.disableScrollListener) {
+            document.addEventListener('scroll', () => {
+                const isTop = window.scrollY < 150;
+                if (isTop !== this.state.is_top) {
+                    this.setState({is_top: isTop});
+                }
+            });
+        } else {
+            this.setState({is_top: false});
+        }
+    }
+
+    render() {
+        return (
+            <div className="nav-home-container-v2 nav-fixed-top">
+                <Navbar expand="md" className={'nav-container nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
+                    <div className="left-top-link">
+                        <div className="logo-top-wrapper">
+                            <NavbarBrand href="/">
+                                <img className="logo-top" src="/static/logo/rcti.png" />
+                            </NavbarBrand>
+                        </div>
+                    </div>
+                    <div className="middle-top">
+                        <div className="search-input" onClick={() => Router.push('/explores')}>
+                            <div className="search-input-placeholder">rctiplus.com</div> <SearchIcon style={{ fontSize: '1.5rem' }} />
+                        </div>
+                    </div>
+                </Navbar>
+                <StatusNotification />
+            </div>
+        );
+    }
+}
+export default connect(state => state, {
+    ...actions,
+    ...pageActions
+})(NavbarDef_v2);

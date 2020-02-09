@@ -9,21 +9,21 @@ import pageActions from '../redux/actions/pageActions';
 
 import initialize from '../utils/initialize';
 
-import Layout from '../components/Layouts/Default_v2';
+import Layout from '../components/Layouts/Default';
 import NavDownloadApp from '../components/Includes/Navbar/NavDownloadApp';
-import Nav from '../components/Includes/Navbar/NavDefault_v2';
-import Carousel from '../components/Includes/Gallery/Carousel_v2';
+import Nav from '../components/Includes/Navbar/NavDefault';
+import Carousel from '../components/Includes/Gallery/Carousel';
 import Stories from '../components/Includes/Gallery/Stories';
 import Panel1 from '../components/Panels/Pnl_1';
 import Panel2 from '../components/Panels/Pnl_2';
 import Panel3 from '../components/Panels/Pnl_3';
 import Panel4 from '../components/Panels/Pnl_4';
 import StickyAds from '../components/Includes/Banner/StickyAds';
-import GridMenu from '../components/Includes/Common/GridMenu';
+import ScheduleTV from '../components/Includes/Schedules/LiveTv';
 
 import { SITEMAP } from '../config';
 
-class Index_v2 extends React.Component {
+class Index extends React.Component {
     static async getInitialProps(ctx) {
         initialize(ctx);
     }
@@ -99,7 +99,7 @@ class Index_v2 extends React.Component {
                 {/* <NavDownloadApp /> */}
                 <Nav />
                 <Carousel>
-                    <GridMenu />
+                    <ScheduleTV />
                 </Carousel>
                 {/* <h3>process.env.is_show_sticky_ads</h3> */}
                 <StickyAds />
@@ -128,4 +128,4 @@ class Index_v2 extends React.Component {
 export default connect(state => state, {
     ...contentActions,
     ...pageActions
-})(Index_v2);
+})(Index);

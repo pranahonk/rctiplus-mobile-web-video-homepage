@@ -20,7 +20,10 @@ import { Carousel } from 'react-responsive-carousel';
 import fetch from 'isomorphic-unfetch';
 
 import Layout from '../components/Layouts/Default';
+
 import NavDefault from '../components/Includes/Navbar/NavTrending';
+import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
+
 import PlayerModal from '../components/Modals';
 import ActionSheet from '../components/Modals/ActionSheet';
 
@@ -225,7 +228,7 @@ class Trending extends React.Component {
                         <meta name="keywords" content={metadata.keywords}/>
                     </Head>
 
-                    <NavDefault disableScrollListener />
+                    {process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)}
 
                     <LoadingBar
                             progress={0}

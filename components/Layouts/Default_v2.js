@@ -16,14 +16,13 @@ import actions from '../../redux/actions';
 import pageActions from '../../redux/actions/pageActions';
 
 //load footer
-import Footer from '../../components/Includes/Footer/Default';
-import Footer_v2 from '../../components/Includes/Footer/Default_v2';
+import Footer from '../../components/Includes/Footer/Default_v2';
 //import Analytics from '../../components/Includes/Google/Analytics';
 
 import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH } from '../../config';
 import { Spinner } from 'reactstrap';
 
-class Default extends React.Component {
+class Default_v2 extends React.Component {
 
     componentDidMount() {
         console.log('User added to home screen');
@@ -153,8 +152,7 @@ class Default extends React.Component {
                 ) : <div></div>}
 
                 <div style={{ overflowX: 'hidden', marginTop: -5 }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
-                {process.env.UI_VERSION == '2.0' ? (<Footer_v2/>) : (<Footer />)}
-                
+                <Footer />
             </div>
         )
     }
@@ -164,4 +162,4 @@ class Default extends React.Component {
 export default connect(state => state, {
     ...actions,
     ...pageActions
-})(withRouter(Default));
+})(withRouter(Default_v2));
