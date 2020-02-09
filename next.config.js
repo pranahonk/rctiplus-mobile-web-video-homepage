@@ -24,6 +24,11 @@ let nextConfig = {
 				 acc[`process.env.${curr}`] = JSON.stringify(process.env[curr]);
 				 return acc;
 	   }, {});
+
+		config.module.rules.push({
+			test: /\.svg$/,
+			use: ['@svgr/webpack'],
+		});
 	
 		/** Allows you to create global constants which can be configured
 		* at compile time, which in our case is our environment variables
