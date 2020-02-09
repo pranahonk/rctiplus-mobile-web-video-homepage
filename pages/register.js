@@ -138,7 +138,7 @@ class Signup extends React.Component {
 							</p>
 							<p className="text-center fnt-12">
 								Have an account?&nbsp;
-								<a href="/signin" className="text-red">
+								<a href="/login" className="text-red">
 									Sign In
 								</a>&nbsp;
 								here

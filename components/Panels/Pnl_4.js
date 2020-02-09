@@ -26,6 +26,7 @@ class Pnl_4 extends React.Component {
 	}
 
 	link(data) {
+		console.log('PANEL 4', data);
 		switch (data.content_type) {
 			case 'special':
 				window.open(data.link, '_blank');
@@ -74,8 +75,8 @@ class Pnl_4 extends React.Component {
 				<BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
 					{scrollRef => (
 						<div ref={scrollRef} className="swiper-container">
-							{this.props.content.map(c => (
-								<div onClick={() => this.link(c)} key={c.content_id} className="swiper-slide">
+							{this.props.content.map((c, i) => (
+								<div onClick={() => this.link(c)}  key={`${this.props.contentId}-${i}`} className="swiper-slide">
 									<div>
 										<Img 
 											alt={c.program_title} 

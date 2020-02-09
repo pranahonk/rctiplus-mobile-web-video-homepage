@@ -80,6 +80,58 @@
     transition-duration: 0.4s;
     transition-timing-function: ease-out;
 
+    .box-chat {
+        .chat-messages {
+            padding-top: 10px;
+            height: 100%;
+            padding-bottom: 100px;
+            overflow-y: scroll;
+
+            .chat-line {
+                padding: 0;
+                background-color: #282828;
+                margin: 15px 2px;
+    
+                .col-10 {
+                    padding-left: 0;
+                }
+
+                .chat-avatar {
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 100%;
+                    object-fit: cover;
+                    background-color: #737373;
+                }
+                .chat-message {
+                    line-height: 1;
+
+                    .timeago {
+                        font-size: 10px;
+                        color: #757575
+                    }
+                    .username {
+                        color: #fff;
+                        font-size: 12px;
+                        opacity: .8;
+                        font-weight: 300;
+                    }
+                    .message {
+                        margin-left: 10px;
+                        color: #fff;
+                        font-size: 11px;
+                        opacity: .8;
+                        font-weight: 300;
+                    }
+                }
+            }
+            
+            .chat-line:last-child {
+                margin-bottom: 10px;
+            }
+        }
+    }
+
     .btn {
         color: white;
         padding: 8px 15px;
@@ -102,11 +154,88 @@
         transition-timing-function: linear;
     }
 
+    .chat-input-box {
+        position: absolute;
+
+        .chat-box {
+            padding: 5px 10px;
+            width: 100%;
+
+            
+
+            .emoji-button {
+                padding: 0;
+                margin-left: 15px;
+                background: transparent;
+                border: transparent;
+            }
+
+            .emoji-button:focus {
+                box-shadow: none;
+            }
+
+            .col-9 {
+                padding-right: 0;
+                padding-left: 0;
+                margin-left: 10px;
+                .chat-input {
+                    background: transparent;
+                    border: transparent;
+                    color: white;
+                    overflow-y: hidden;
+                    height: 24px;
+                    padding-top: 0;
+                }
+
+                .chat-input::-webkit-resizer {
+                    display: none;
+                }
+            }
+
+            .col-1 {
+                padding-right: 5px;
+                padding-left: 0;
+            }
+
+            .send-button {
+                padding: 0;
+                background: transparent;
+                border: transparent;
+            }
+
+            .send-button:focus {
+                box-shadow: none;
+            }
+        }
+    }
+
+    .emoji-mart {
+        width: 100% !important;
+        border: 0;
+        position: relative;
+        overflow:hidden;
+        color:#fff;
+        border-radius: 0;
+        background: #303030;
+        transition-property: all;
+        transition-duration: .6s;
+        transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+    }
+
+    .emoji-mart-open {
+        max-height: 300px;
+        height:300px;
+        overflow:hidden;
+        transition-property: all;
+        transition-duration: .6s;
+        transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+    }
+
 }
 
 .live-chat-wrap-open {
-    max-height: calc(100vh - 220px);
-    height: calc(100vh - 220px);
+    max-height: calc(100vh - 200px);
+    height: calc(100vh - 200px);
     bottom: 0;
     z-index: 7;
     overflow: hidden;
@@ -118,8 +247,91 @@
     .box-chat {
         height: calc(100vh - 253px);
         position: relative;
-        padding: 0 16px;
+        padding: 0;
         background-color: #282828;
+
+        .chat-input-box {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 6;
+            margin-bottom: 7px;
+            padding-top: 5px;
+            padding-bottom: 10px;
+            background: #171717;
+
+            .chat-box {
+                padding: 5px 10px;
+                width: 100%;
+
+                .emoji-button {
+                    padding: 0;
+                    margin-left: 15px;
+                    background: transparent;
+                    border: transparent;
+                }
+
+                .emoji-button:focus {
+                    box-shadow: none;
+                }
+
+                .col-9 {
+                    padding-right: 0;
+                    padding-left: 0;
+                    margin-left: 10px;
+                    .chat-input {
+                        background: transparent;
+                        border: transparent;
+                        color: white;
+                        overflow-y: hidden;
+                        height: 24px;
+                        padding-top: 0;
+                    }
+
+                    .chat-input::-webkit-resizer {
+                        display: none;
+                    }
+                }
+
+                .col-1 {
+                    padding-right: 5px;
+                    padding-left: 0;
+                }
+
+                .send-button {
+                    padding: 0;
+                    background: transparent;
+                    border: transparent;
+                }
+
+                .send-button:focus {
+                    box-shadow: none;
+                }
+            }
+        }
+
+        .emoji-mart {
+            width: 100% !important;
+            border: 0;
+            position: relative;
+            overflow:hidden;
+            color:#fff;
+            border-radius: 0;
+            background: #303030;
+            transition-property: all;
+            transition-duration: .6s;
+            transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+        }
+
+        .emoji-mart-open {
+            max-height: 300px;
+            height:300px;
+            overflow:hidden;
+            transition-property: all;
+            transition-duration: .6s;
+            transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+        }
     }
 }
 

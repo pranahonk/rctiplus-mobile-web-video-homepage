@@ -249,8 +249,8 @@ and open the template in the editor.
 #zuck-modal-content .story-viewer .head .item-preview img {
   display: block;
   box-sizing: border-box;
-  height: 100%;
-  width: 100%;
+  height: 95%;
+  width: 95%;
   background-size: cover;
   background-position: center;
   object-fit: cover;
@@ -447,7 +447,7 @@ and open the template in the editor.
   max-width: 90px; */
   width: 30%;
   max-width: 30%;
-  margin: 0 6px;
+  margin: 0 4px;
   vertical-align: top;
 }
 .stories.carousel .story:first-child {
@@ -476,8 +476,8 @@ and open the template in the editor.
 .stories.carousel .story > .item-link > .item-preview img {
   display: block;
   box-sizing: border-box;
-  height: 100%;
-  width: 100%;
+  height: 95%;
+  width: 95%;
   background-size: cover;
   background-position: center;
   object-fit: cover;

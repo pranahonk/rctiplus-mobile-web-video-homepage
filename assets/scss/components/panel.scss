@@ -37,6 +37,7 @@
     max-height: 46px;
     min-height: 46px;
     overflow: hidden;
+    white-space: normal;
 
     p {
         margin-bottom: 0;
@@ -87,8 +88,10 @@
 
 .pnl_horizontal_landscape {
     .swiper-slide {
-        max-width: 100px;
-        min-width: 100px;
+        max-width: 45%;
+        min-width: 45%;
+        height: 135px;
+        border-radius: 3px;
     }
 }
 

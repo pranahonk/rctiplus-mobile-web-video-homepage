@@ -35,7 +35,8 @@ class Index extends React.Component {
             page: 1,
             fetchAllowed: true,
             meta: null,
-            resolution: 593
+            resolution: 593,
+            is_loading: false
         };
 
         this.props.setPageLoader();
@@ -54,68 +55,72 @@ class Index extends React.Component {
 
     bottomScrollFetch() {
         const page = this.state.page + 1;
-        if (this.state.fetchAllowed) {
-            this.LoadingBar.continuousStart();
-            this.props.getContents(page, 5).then(response => {
-                const homepageContents = this.state.contents;
-                if (this.props.contents.homepage_content.length > 0) {
-                    homepageContents.push.apply(homepageContents, this.props.contents.homepage_content);
-                    this.setState({
-                        contents: homepageContents,
-                        page: page,
-                        fetchAllowed: page != this.state.meta.pagination.total_page
+        if (this.state.fetchAllowed && !this.state.is_loading) {
+            this.setState({ is_loading: true }, () => {
+                this.LoadingBar.continuousStart();
+                this.props.getContents(page, 5)
+                    .then(response => {
+                        const homepageContents = this.state.contents;
+                        if (this.props.contents.homepage_content.length > 0) {
+                            homepageContents.push.apply(homepageContents, this.props.contents.homepage_content);
+                            this.setState({
+                                contents: homepageContents,
+                                page: page,
+                                fetchAllowed: page != this.state.meta.pagination.total_page,
+                                is_loading: false
+                            });
+                        }
+                        else {
+                            this.setState({ fetchAllowed: false, is_loading: false });
+                        }
+                        this.LoadingBar.complete();
+                    })
+                    .catch(error => {
+                        this.LoadingBar.complete();
+                        console.log(error);
+                        this.setState({ is_loading: false });
                     });
-                }
-                else {
-                    this.setState({ fetchAllowed: false });
-                }
-                this.LoadingBar.complete();
-            })
-            .catch(error => {
-                    this.LoadingBar.complete();
-                    console.log(error);
             });
+            
         }
     }
 
     render() {
-            const contents = this.state.contents;
-            const meta = this.state.meta || {};
-            return (
-                <Layout title={SITEMAP.home.title}>
-                    <Head>
-                        <meta name="description" content={SITEMAP.home.description}/>
-                        <meta name="keywords" content={SITEMAP.home.keywords}/>
-                    </Head>
-                    <div>
-                        <BottomScrollListener offset={8} onBottom={this.bottomScrollFetch.bind(this)} />
-                        <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)}/>
-                        {/* <NavDownloadApp /> */}
-                        <Nav />
-                        <Carousel>
-                            <ScheduleTV />
-                        </Carousel>
-                        {/* <h3>process.env.is_show_sticky_ads</h3> */}
-                        <StickyAds /> 
-                        <Stories />
-                        {contents.map(content => {
-                            switch (content.display_type) {
-                                case 'horizontal_landscape_large':
-                                    return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id}  title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution}/>;
+        const contents = this.state.contents;
+        const meta = this.state.meta || {};
+        return (
+            <Layout title={SITEMAP.home.title}>
+                <Head>
+                    <meta name="description" content={SITEMAP.home.description} />
+                    <meta name="keywords" content={SITEMAP.home.keywords} />
+                </Head>
+                <BottomScrollListener offset={8} onBottom={this.bottomScrollFetch.bind(this)} />
+                <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
+                {/* <NavDownloadApp /> */}
+                <Nav />
+                <Carousel>
+                    <ScheduleTV />
+                </Carousel>
+                {/* <h3>process.env.is_show_sticky_ads</h3> */}
+                <StickyAds />
+                <Stories />
+                {contents.map(content => {
+                    switch (content.display_type) {
+                        case 'horizontal_landscape_large':
+                            return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution} />;
 
-                                case 'horizontal_landscape':
-                                    return <Panel2 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution}/>;
+                        case 'horizontal_landscape':
+                            return <Panel2 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution} />;
 
-                                case 'horizontal':
-                                    return <Panel3 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution}/>;
+                        case 'horizontal':
+                            return <Panel3 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution} />;
 
-                                case 'vertical':
-                                    return <Panel4 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution}/>;
-                            }
-                        })}
-                    </div>
-                </Layout>
-            );
+                        case 'vertical':
+                            return <Panel4 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution} />;
+                    }
+                })}
+            </Layout>
+        );
     }
 
 }

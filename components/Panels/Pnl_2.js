@@ -24,6 +24,7 @@ class Pnl_2 extends React.Component {
 	}
 
 	link(data) {
+		console.log('PANEL 2', data);
 		switch (data.content_type) {
 			case 'special':
 				window.open(data.link, '_blank');
@@ -73,7 +74,7 @@ class Pnl_2 extends React.Component {
 					{scrollRef => (
 						<div ref={scrollRef} className="swiper-container">
 							{this.state.contents.map(c => (
-									<div onClick={() => this.link(c)} key={c.content_id} className="swiper-slide">
+									<div onClick={() => this.link(c)}  key={`${this.props.contentId}-${c.content_id}`} className="swiper-slide">
 										<div>
 											<Img 
 												alt={c.program_title} 

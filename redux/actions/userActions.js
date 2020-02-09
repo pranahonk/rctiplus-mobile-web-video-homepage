@@ -191,7 +191,7 @@ const getUserData = () => {
 const getInterests = (status = 'active') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/genre?status=${status}`);
+            const response = await axios.get(`/v1/genre?status=${status}&infos=id,name,image`);
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'INTERESTS',

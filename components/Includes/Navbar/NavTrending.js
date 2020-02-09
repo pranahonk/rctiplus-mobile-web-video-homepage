@@ -72,9 +72,10 @@ class NavTrending extends Component {
                         <div className="right-top-link">
                             <div className="btn-link-top-nav">
                                 {this.state.token ? (
-                                    <NavbarBrand style={{color: 'white', fontSize: 13}} onClick={this.signOut.bind(this)} href="#">
-                                        Logout
-                                    </NavbarBrand>
+                                    // <NavbarBrand style={{color: 'white', fontSize: 13}} onClick={this.signOut.bind(this)} href="#">
+                                    //     Logout
+                                    // </NavbarBrand>
+                                    <div></div>
                                 ) : (
                                     <NavbarBrand style={{color: 'white', fontSize: 13}} href="/login">Login</NavbarBrand>
                                 )}

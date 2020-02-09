@@ -1,0 +1,57 @@
+.nav-container {
+    padding: 8px 16px !important;
+}
+
+.nav-signup-item .nav-item {
+    margin-bottom: -1px;
+    width: 50%;
+    text-align: center;
+    color: #fff important;
+}
+.frmInput1 {
+    padding-top: 40px;
+}
+.inpt-form {
+    background: transparent;
+}
+.nav-tabs .nav-item {
+    margin-bottom: -1px;
+    width: 50%;
+    text-align: center;
+    color: #fff !important;
+}
+
+.nav-home-container {
+    color: #fff !important;
+}
+
+.nav-transparent {
+    background: linear-gradient(rgba(0, 0, 0, 0.54) 0px, rgba(0, 0, 0, 0.03) 65%, rgba(27, 27, 28, 0) 69%, rgba(235, 233, 249, 0)) !important;
+    box-shadow: none;
+}
+
+.back-arrow-transparent {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 100%;
+    width: 35px;
+    height: 35px;
+    padding-left: 5px;
+}
+
+.nav-search {
+    .left-top-link {
+        width: 10%;
+    }
+    .middle-top {
+        width: 80%;
+        .search-input {
+            border: none;
+            background: transparent;
+            font-size: 10px;
+            color: white;
+        }
+    }
+    .right-top-link {
+        width: 10%;
+    }
+}

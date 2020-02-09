@@ -7,14 +7,14 @@ export const VERSION = '0.9.2';
 
 export const API = 'https://api.rctiplus.com';
 
-export const DEV_API = 'https://api.rctiplus.com';
+export const DEV_API = 'https://rc-api.rctiplus.com';
 
 // export const API = 'https://api.rctiplus.com';
 
 // export const DEV_API = 'https://dev-api.rctiplus.com';
 
 
-export const NEWS_API = 'https://api-news.rctiplus.id';
+export const NEWS_API = 'https://rc-api-news.rctiplus.id';
 export const REWARDS_API = 'https://rc-api-rewards.rctiplus.id';
 export const STATIC = 'https://rc-static.rctiplus.id';
 
@@ -106,6 +106,11 @@ export const SITEMAP = {
         keywords: `gosip, kabar artis`
     },
     exclusive_news: {
+        title: `Saksikan Berita Terkini dari Dalam Negeri dan Internasional - ${SITE_NAME}`,
+        description: `Nonton berita iNews, RCTI, MNC, dan GTV online terkini terkait bisnis, ekonomi, politik, sport, teknologi, bola dan yang lainnya`,
+        keywords: `berita terkini, berita inews, berita rcti, berita mnc, berita gtv`
+    },
+    exclusive_gossip: {
         title: `Saksikan Berita Terkini dari Dalam Negeri dan Internasional - ${SITE_NAME}`,
         description: `Nonton berita iNews, RCTI, MNC, dan GTV online terkini terkait bisnis, ekonomi, politik, sport, teknologi, bola dan yang lainnya`,
         keywords: `berita terkini, berita inews, berita rcti, berita mnc, berita gtv`

@@ -54,6 +54,15 @@ const handle = app.getRequestHandler();
       });
     });
 
+    server.get('/programs/:id/:title/photo/:content_id/:content_title', (req, res) => {
+      return app.render(req, res, '/detail/photo', {
+        id: req.params.id,
+        title: req.params.title,
+        content_id: req.params.content_id,
+        content_title: req.params.content_title
+      });
+    });
+
     server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
       return app.render(req, res, '/detail/content', { 
         id: req.params.id, 
@@ -84,6 +93,10 @@ const handle = app.getRequestHandler();
       return app.render(req, res, '/user/term-cond');
     });
 
+    server.get('/history', (req, res) => {
+      return app.render(req, res, '/user/history');
+    });
+
     server.get('/faq', (req, res) => {
       return app.render(req, res, '/user/faq');
     });
@@ -108,7 +121,7 @@ const handle = app.getRequestHandler();
       })
     });
     
-     server.get('/trending/detail/:id/:title', (req, res) => {
+    server.get('/trending/detail/:id/:title', (req, res) => {
       return app.render(req, res, '/trending/detail', {
         id: req.params.id,
         title: req.params.title
@@ -120,6 +133,12 @@ const handle = app.getRequestHandler();
         category: req.params.category
       })
     });
+
+    server.get('/explores/search', (req, res) => {
+      return app.render(req, res, '/explores', {
+        id: req.query.id
+      })
+    })
 
     // default request handler by next handler:
     server.get('*', (req, res) => {

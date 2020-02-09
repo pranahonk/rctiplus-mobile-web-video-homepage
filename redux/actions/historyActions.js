@@ -12,10 +12,10 @@ axios.interceptors.request.use(async (request) => {
 });
 
 
-const getUserHistory = () => {
+const getUserHistory = (page = 1, length = 10, order = 'date', dir = 'DESC') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/history`);
+            const response = await axios.get(`/v1/history?page=${page}&length=${length}&order=${order}&dir=${dir}`);
 
             if (response.data.status.code === 0) {
                 dispatch({
