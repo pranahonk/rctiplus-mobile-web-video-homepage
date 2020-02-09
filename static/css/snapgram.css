@@ -4,15 +4,15 @@
 }
 .stories.snapgram .story > .item-link > .item-preview {
     border-radius: 50%;
-    /* padding: 2px; */
-    /* background: radial-gradient(ellipse at 70% 70%, #ee583f 8%, #d92d77 42%, #bd3381 58%); */
-    background: radial-gradient(ellipse at 70% 70%,#ff5bd8 42%,#7ab1ec 59%,#00fffd 0);
+    background: radial-gradient(ellipse at 70% 70%,#ff5bd8 42%,#7ab1ec 59%,#00fffd 0) !important;
     position: relative;
     padding-bottom: calc(100% - 2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .stories.snapgram .story > .item-link > .item-preview img {
-    border-radius: 50%;
-    /* border: 3px solid #fff; */
+    border-radius: 100%;
     border: 3px solid #282828!important;
     position: absolute;
     left: 2px;
@@ -28,5 +28,5 @@
     /* background: #999; */
 }
 .stories.snapgram .story.seen > a {
-    color: #999 !important;
+    /* color: #999 !important; */
 }
