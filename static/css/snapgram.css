@@ -5,20 +5,20 @@
 .stories.snapgram .story > .item-link > .item-preview {
     border-radius: 50%;
     background: radial-gradient(ellipse at 70% 70%,#ff5bd8 42%,#7ab1ec 59%,#00fffd 0) !important;
-    position: relative;
-    padding-bottom: calc(100% - 2px);
+    position: relative !important;
+    padding-bottom: calc(100% - 2px) !important;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .stories.snapgram .story > .item-link > .item-preview img {
-    border-radius: 100%;
+    border-radius: 100% !important;
     border: 3px solid #282828!important;
-    position: absolute;
-    left: 2px;
-    top: 2px;
-    right: 2px;
-    bottom: 2px;
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    right: 2px !important;
+    bottom: 2px !important;
 }
 
 .stories.snapgram .story.seen {
