@@ -14,7 +14,7 @@ export const DEV_API = 'https://rc-api.rctiplus.com';
 // export const DEV_API = 'https://dev-api.rctiplus.com';
 
 
-export const NEWS_API = 'https://rc-api-news.rctiplus.id';
+export const NEWS_API = 'https://api-news.rctiplus.id';
 export const REWARDS_API = 'https://rc-api-rewards.rctiplus.id';
 export const STATIC = 'https://rc-static.rctiplus.id';
 

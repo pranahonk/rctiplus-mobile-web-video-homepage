@@ -136,9 +136,16 @@ const handle = app.getRequestHandler();
 
     server.get('/explores/search', (req, res) => {
       return app.render(req, res, '/explores', {
-        id: req.query.id
+        id: req.params.id
       })
     })
+
+    server.get('/trending/:subcategory_id/:subcategory_title', (req, res) => {
+      return app.render(req, res, '/trending', {
+        subcategory_id: req.params.subcategory_id,
+        subcategory_title: req.params.subcategory_title
+      });
+    });
 
     // default request handler by next handler:
     server.get('*', (req, res) => {

@@ -1,6 +1,8 @@
 import React from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
+import Link from 'next/link';
+import Head from 'next/head';
 
 //import contentActions from '../redux/actions/contentActions';
 //import feedActions from '../redux/actions/feedActions';
@@ -15,6 +17,7 @@ import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import classnames from 'classnames';
 import { Carousel } from 'react-responsive-carousel';
+import fetch from 'isomorphic-unfetch';
 
 import Layout from '../components/Layouts/Default';
 import NavDefault from '../components/Includes/Navbar/NavTrending';
@@ -36,10 +39,12 @@ import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 
 import '../assets/scss/components/trending.scss';
 
+import { SITEMAP } from '../config';
+
 class Trending extends React.Component {
 
-	static getInitialProps(ctx) {
-		initialize(ctx);
+	static async getInitialProps(ctx) {
+		return { query: ctx.query };
 	}
 
 	constructor(props) {
@@ -64,19 +69,25 @@ class Trending extends React.Component {
 
 		this.player = null;
 		this.LoadingBar = null;
-		this.props.setPageLoader();
+        this.props.setPageLoader();
 	}
 
 	componentDidMount() {
             this.props.getTrendingSubCategory().then(response => {
                 const dictFeeds = {};
-                const categories = [{ name: 'All' }];
+                const categories = [];
+                let selectedCategory = 'TOP';
+                let selectedTab = 1;
                 categories.push.apply(categories, response.data.data);
                 for (let i = 0; i < categories.length; i++) {
-                        dictFeeds[categories[i].name] = [];
+                    dictFeeds[categories[i].name] = [];
+                    if (Object.keys(this.props.query).length > 0 && this.props.query.subcategory_id == categories[i].id) {
+                        selectedCategory = categories[i].name;
+                        selectedTab = (i + 1);
+                    }
                 }
 
-                this.setState({ categories: categories }, () => {
+                this.setState({ categories: categories, active_tab: selectedTab }, () => {
                     this.props.getTrendingContent().then(response => {
                             const categoricalFeeds = {};
                             const feeds = response.data.data;
@@ -90,10 +101,10 @@ class Trending extends React.Component {
                             }
 
                             const dictFeeds = this.state.feeds;
-                            dictFeeds['All'] = feeds;
+                            dictFeeds[selectedCategory] = feeds;
 
                             const dictFeedStates = this.state.feed_states;
-                            dictFeedStates['All'] = response.data.meta;
+                            dictFeedStates[selectedCategory] = response.data.meta;
 
                             this.setState({
                                 feeds: dictFeeds,
@@ -109,6 +120,17 @@ class Trending extends React.Component {
                 console.log(error); 
                 this.props.unsetPageLoader();
             });
+    }
+    
+    getMetadata() {
+        if (Object.keys(this.props.query).length > 0) {
+            const name = this.props.query.subcategory_title.toLowerCase().replace(/-/g, '_');
+            if (SITEMAP[`trending_${name}`]) {
+                return SITEMAP[`trending_${name}`];
+            }
+        }
+		
+		return SITEMAP['trending'];
 	}
 
 	bottomScrollFetch(tab) {
@@ -193,10 +215,16 @@ class Trending extends React.Component {
 	}
 
 	render() {
+            const metadata = this.getMetadata();
             const a = 0;
             const b = 5;
             return (
-                <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
+                <Layout title={metadata.title}>
+                    <Head>
+                        <meta name="description" content={metadata.description}/>
+                        <meta name="keywords" content={metadata.keywords}/>
+                    </Head>
+
                     <NavDefault disableScrollListener />
 
                     <LoadingBar
@@ -227,7 +255,9 @@ class Trending extends React.Component {
                         <Nav tabs id="trending">
                                 {this.state.categories.map((c, i) => (
                                     <NavItem key={i} className="trending-item">
-                                        <NavLink onClick={this.toggleTab.bind(this, i + 1, c.name)} className={classnames({ active: this.state.active_tab == i + 1 })}>{c.name}</NavLink>
+                                        <Link href={`/trending?subcategory_id=${c.id}&subcategory_title=${c.name.toLowerCase().replace(/ +/g, '-')}`} as={`/trending/${c.id}/${c.name.toLowerCase().replace(/ +/g, '-')}`}>
+                                            <NavLink onClick={this.toggleTab.bind(this, i + 1, c.name)} className={classnames({ active: this.state.active_tab == i + 1 })}>{c.name}</NavLink>
+                                        </Link>
                                     </NavItem>
                                 ))}
                         </Nav>
