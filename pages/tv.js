@@ -12,6 +12,7 @@ import initialize from '../utils/initialize';
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 import pageActions from '../redux/actions/pageActions';
 import chatsActions from '../redux/actions/chats';
+import userActions from '../redux/actions/userActions';
 
 import Layout from '../components/Layouts/Default';
 import SelectDateModal from '../components/Modals/SelectDateModal';
@@ -19,7 +20,7 @@ import ActionSheet from '../components/Modals/ActionSheet';
 import Wrench from '../components/Includes/Common/Wrench';
 
 import { formatDate, formatDateWord, getFormattedDateBefore } from '../utils/dateHelpers';
-import { showAlert } from '../utils/helpers';
+import { showAlert, showSignInAlert } from '../utils/helpers';
 
 import { Row, Col, Button, Nav, NavItem, NavLink, TabContent, TabPane, Input } from 'reactstrap';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
@@ -31,6 +32,7 @@ import SentimenVerySatifiedIcon from '@material-ui/icons/SentimentVerySatisfied'
 import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { BASE_URL, SITEMAP } from '../config';
 
@@ -71,7 +73,11 @@ class Tv extends React.Component {
 			error: false,
 			error_data: {},
 			emoji_picker_open: false,
-			chats: []
+			chats: [],
+			chat: '',
+			user_data: null,
+			snapshots: [],
+			sending_chat: false
 		};
 
 		this.player = null;
@@ -101,7 +107,16 @@ class Tv extends React.Component {
 				this.props.unsetPageLoader();
 			});
 
-
+		this.props.getUserData()
+			.then(response => {
+				console.log(response);
+				if (response.status === 200 && response.data.status.code === 0) {
+					this.setState({ user_data: response.data.data });
+				}
+			})
+			.catch(error => {
+				console.log(error);
+			});
 	}
 
 	isLiveProgram(epg) {
@@ -219,9 +234,10 @@ class Tv extends React.Component {
 
 	loadChatMessages(id) {
 		this.props.setPageLoader();
-		this.props.listenChatStatus(id)
+		this.props.getChatMessages(id)
 			.then(chats => {
-				this.setState({ chats: chats }, () => {
+				let sortedChats = chats.sort((a, b) => a.ts - b.ts);
+				this.setState({ chats: sortedChats }, () => {
 					const chatBox = document.getElementById('chat-messages');
 					chatBox.scrollTop = chatBox.scrollHeight;
 					this.props.unsetPageLoader();
@@ -237,10 +253,34 @@ class Tv extends React.Component {
 		this.props.setPageLoader();
 		this.setState({ selected_index: index }, () => {
 			this.loadChatMessages(this.state.live_events[this.state.selected_index].id);
+			this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
+				.then(collection => {
+					let firstLoad = true;
+					let snapshots = this.state.snapshots;
+					for (let i = 0; i < this.state.live_events.length; i++) {
+						if (snapshots[this.state.live_events[i].id]) {
+							snapshots[this.state.live_events[i].id]();
+						}
+					}
+
+					let snapshot = collection.onSnapshot(querySnapshot => {
+						querySnapshot.docChanges().forEach(change => {
+							if (change.type === 'added' && !firstLoad) {
+								if (!this.state.sending_chat) {
+									let chats = this.state.chats;
+									chats.push(change.doc.data());
+									this.setState({ chats: chats });
+								}
+							}
+						});
+						firstLoad = false;
+					});
+					snapshots[this.state.live_events[this.state.selected_index].id] = snapshot;
+					this.setState({ snapshots: snapshots });
+				});
+				
 			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id)
 				.then(res => {
-					this.props.setChat(res.data.data.id, 'testing kuy', 'azhary@mailinator.com', 'https://rc-static.rctiplus.id/avatar/5322_cropped-photo_20200110145927.jpeg', 5322);
-
 					this.setState({
 						selected_live_event: this.state.live_events[this.state.selected_index],
 						selected_live_event_url: res.data.data,
@@ -354,17 +394,95 @@ class Tv extends React.Component {
         });
 	}
 
+	onChangeChatInput(e) {
+		if (e.target.value != '\n') {
+			this.setState({ chat: e.target.value });
+		}
+	}
+
+	handleChatEnter(e) {
+		const chatInput = document.getElementById('chat-input');
+		const scrollHeight = chatInput.scrollHeight - 30;
+		chatInput.style.height = `${24 + (24 * (scrollHeight / 24))}px`;
+
+		if (e.key === 'Enter' && !e.shiftKey && this.state.chat && this.state.chat != '\n') {
+			this.sendChat();
+		}
+	}
+
+	onSelectEmoji(emoji) {
+		this.setState({ chat: this.state.chat + emoji.native });
+	}
+
 	sendChat() {
-		// TODO
+		if (this.state.user_data) {
+			if (this.state.chat != '') {
+				let newChat = {
+					ts: Date.now(),
+					m: this.state.chat,
+					u: this.state.user_data.nickname,
+					i: this.state.user_data.photo_url,
+					sent: false,
+					failed: false
+				};
+				let chats = this.state.chats;
+				chats.push(newChat);
+				this.setState({ chats: chats, chat: '', sending_chat: true }, () => {
+					const chatBox = document.getElementById('chat-messages');
+					chatBox.scrollTop = chatBox.scrollHeight;
+					
+					const chatInput = document.getElementById('chat-input');
+					chatInput.style.height = `24px`;
+					
+					this.props.setChat(this.state.live_events[this.state.selected_index].id, newChat.m, this.state.user_data.nickname, this.state.user_data.photo_url)
+						.then(response => {
+							newChat.sent = true;
+							if (response.status !== 200 || response.data.status.code !== 0) {
+								newChat.failed = true;
+							}
+							chats[chats.length - 1] = newChat;
+							this.setState({ chats: chats, sending_chat: false });
+						})
+						.catch(error => {
+							newChat.sent = true;
+							newChat.failed = true;
+							chats[chats.length - 1] = newChat;
+							this.setState({ chats: chats, sending_chat: false });
+						});
+				});
+			}
+		}
+		else {
+			showSignInAlert(`Please <b>Sign In</b><br/>
+			Woops! Gonna sign in first!<br/>
+			Only a click away and you<br/>
+			can continue to enjoy<br/>
+			<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+		}
+	}
+
+	resendChat(index) {
 		let chats = this.state.chats;
-		chats.push({
-			i: 'test',
-			u: 'TEST',
-			m: 'tesssttt'
-		});
-		this.setState({ chats: chats }, () => {
-			const chatBox = document.getElementById('chat-messages');
-			chatBox.scrollTop = chatBox.scrollHeight;
+		let lastChat = chats[index];
+		lastChat.sent = false;
+		lastChat.failed = false;
+		chats[index] = lastChat;
+		this.setState({ chats: chats, sending_chat: true }, () => {
+			this.props.setChat(this.state.live_events[this.state.selected_index].id, lastChat.m, this.state.user_data.nickname, this.state.user_data.photo_url)
+				.then(response => {
+					lastChat.sent = true;
+					if (response.status !== 200 || response.data.status.code !== 0) {
+						lastChat.failed = true;
+					}
+					chats[index] = lastChat;
+					this.setState({ chats: chats, sending_chat: false });
+				})
+				.catch(error => {
+					lastChat.sent = true;
+					lastChat.failed = true;
+					chats[index] = lastChat;
+					this.setState({ chats: chats, sending_chat: false });
+				});
 		});
 	}
 
@@ -496,10 +614,9 @@ class Tv extends React.Component {
 												loader={<PersonOutlineIcon className="chat-avatar"/>}
 												unloader={<PersonOutlineIcon className="chat-avatar"/>} 
 												className="chat-avatar" src={[chat.i]}/>
-											
 										</Col>
 										<Col className="chat-message" xs={10}>
-											<TimeAgo className="timeago" date={Date.now() - (Date.now() - chat.ts)} /> <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
+											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message"/> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} /> )) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
 										</Col>
 									</Row>
 								))}
@@ -514,11 +631,9 @@ class Tv extends React.Component {
 										</Col>
 										<Col xs={9}>
 											<Input 
-												onKeyDown={e => {
-													const chatInput = document.getElementById('chat-input');
-													const scrollHeight = chatInput.scrollHeight - 30;
-													chatInput.style.height = `${24 + (24 * (scrollHeight / 24))}px`;
-												}}
+												onKeyDown={this.handleChatEnter.bind(this)}
+												onChange={this.onChangeChatInput.bind(this)}
+												value={this.state.chat}
 												type="textarea"
 												id="chat-input"
 												placeholder="Start Chatting"
@@ -535,7 +650,7 @@ class Tv extends React.Component {
 								</div>
 								<Picker 
 									onSelect={emoji => {
-										console.log(emoji)
+										this.onSelectEmoji(emoji);
 									}}
 									showPreview={false} 
 									darkMode 
@@ -552,5 +667,6 @@ class Tv extends React.Component {
 export default connect(state => state, {
 	...liveAndChatActions,
 	...pageActions,
-	...chatsActions
+	...chatsActions,
+	...userActions
 })(withRouter(Tv));
