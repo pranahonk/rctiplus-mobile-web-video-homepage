@@ -25,7 +25,7 @@ class GridMenu extends React.Component {
                     <Col className="menu-item">
                         <Link href="/exclusive">
                             <a>
-                                <Img className="menu-icon" src={['/static/icons/exclusive.svg']}/>
+                                <Img className="menu-icon" src={['/exclusive.svg']}/>
                                 <p className="menu-label">Exclusive</p>
                             </a>
                         </Link>
@@ -33,7 +33,7 @@ class GridMenu extends React.Component {
                     <Col className="menu-item">
                         <Link href="/trending">
                             <a>
-                                <Img className="menu-icon" src={['/static/icons/news.svg']}/>
+                                <Img className="menu-icon" src={['/news.svg']}/>
                                 <p className="menu-label">News</p>
                             </a>
                         </Link>
@@ -42,17 +42,17 @@ class GridMenu extends React.Component {
                     <Col className="menu-item">
                         <Link href="/radio">
                             <a>
-                                <Img className="menu-icon" src={['/static/icons/radio.png']}/>
+                                <Img className="menu-icon" src={['/radio.png']}/>
                                 <p className="menu-label">Radio</p>
                             </a>
                         </Link>
                     </Col>
                     {/* <Col className="menu-item">
-                        <Img className="menu-icon" src={['/static/icons/trivia_quiz.svg']}/>
+                        <Img className="menu-icon" src={['/trivia_quiz.svg']}/>
                         <p className="menu-label">TriviaQuiz</p>
                     </Col>
                     <Col className="menu-item">
-                        <Img className="menu-icon" src={['/static/icons/more.svg']}/>
+                        <Img className="menu-icon" src={['/more.svg']}/>
                         <p className="menu-label">More</p>
                     </Col> */}
                 </Row>
