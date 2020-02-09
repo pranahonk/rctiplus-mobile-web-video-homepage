@@ -517,8 +517,8 @@ and open the template in the editor.
   display: block;
 }
 .stories.list .story > .item-link > .item-preview {
-  height: 42px;
-  width: 42px;
+  height: 42px !important;
+  width: 42px !important;
   max-width: 42px;
   margin-right: 12px;
   vertical-align: top;
@@ -526,6 +526,10 @@ and open the template in the editor.
   box-sizing: border-box;
   font-size: 0;
   overflow: hidden;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .stories.list .story > .item-link > .item-preview img {
   display: block;
