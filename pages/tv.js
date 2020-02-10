@@ -158,6 +158,8 @@ class Tv extends React.Component {
 			}
 		});
 		this.player.on('setupError', error => {
+			console.log(error);
+			this.player.remove();
             this.setState({
                 error: true,
                 error_data: error
@@ -165,6 +167,7 @@ class Tv extends React.Component {
         });
 
         this.player.on('error', error => {
+			console.log(error);
             this.player.remove();
             this.setState({
                 error: true,
@@ -205,12 +208,6 @@ class Tv extends React.Component {
 				}
 			}
 			else if (this.state.selected_tab === 'catch_up_tv') {
-				// id: 51029
-				// url: "https://catchup.rctiplus.id/rctiplus/rctiplus/rcti/20200124/51029/1579804200423/manifest.m3u8"
-				// geoblock: "no"
-				// title: "Seputar iNews Malam (L)"
-				// channel: "rcti"
-				// vmap: "https://rc-static.rctiplus.id/vmap/vmap_catchup_0_web_defaultcatchup.xml"
 				if (this.state.selected_catchup) {
 					conviva.updatePlayerAssetMetadata(this, {
 						playerType: 'JWPlayer',
@@ -251,7 +248,7 @@ class Tv extends React.Component {
 
 	selectChannel(index) {
 		this.props.setPageLoader();
-		this.setState({ selected_index: index }, () => {
+		this.setState({ selected_index: index, error: false }, () => {
 			this.loadChatMessages(this.state.live_events[this.state.selected_index].id);
 			this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
 				.then(collection => {
@@ -417,10 +414,20 @@ class Tv extends React.Component {
 	sendChat() {
 		if (this.state.user_data) {
 			if (this.state.chat != '') {
+				let u = '';
+				if (this.state.user_data.nickname) {
+					u = this.state.user_data.nickname;
+				}
+				else if (this.state.user_data.display_name) {
+					u = this.state.user_data.display_name;
+				}
+				else {
+					u = this.state.user_data.email;
+				}
 				let newChat = {
 					ts: Date.now(),
 					m: this.state.chat,
-					u: this.state.user_data.nickname,
+					u: u,
 					i: this.state.user_data.photo_url,
 					sent: false,
 					failed: false
@@ -487,7 +494,7 @@ class Tv extends React.Component {
 	}
 
 	render() {
-		let playerRef = (<div style={{ minHeight: 180 }} id="live-tv-player"></div>);
+		let playerRef = (<div></div>);
 		if (this.state.error) {
 			playerRef = (
 				<div style={{ 
@@ -503,6 +510,9 @@ class Tv extends React.Component {
 					</h5>
 				</div>
 			);
+		}
+		else {
+			playerRef = (<div style={{ minHeight: 180 }} id="live-tv-player"></div>);
 		}
 
 		return (

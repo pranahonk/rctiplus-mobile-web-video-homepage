@@ -5,7 +5,7 @@ import Img from 'react-image';
 
 import userActions from '../redux/actions/userActions';
 import initialize from '../utils/initialize';
-import { showAlert } from '../utils/helpers';
+import { showAlert, showSignInAlert } from '../utils/helpers';
 
 //load default layout
 import Layout from '../components/Layouts/Default_v2';
@@ -92,7 +92,18 @@ class Profile extends React.Component {
 					<ListGroupItem onClick={() => Router.push('/qrcode')}>
 						<img className="MuiSvgIcon-root" src="static/btn/qrcode.png"/> Scan QR Code
 					</ListGroupItem>
-					<ListGroupItem onClick={() => Router.push('/history')}>
+					<ListGroupItem onClick={() => {
+						if (!this.state.logged_in) {
+							showSignInAlert(`Please <b>Sign In</b><br/>
+							Woops! Gonna sign in first!<br/>
+							Only a click away and you<br/>
+							can continue to enjoy<br/>
+							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+						}
+						else {
+							Router.push('/history');
+						}
+					}}>
 						<HistoryIcon/> History
 					</ListGroupItem>
 					<ListGroupItem onClick={this.showOpenPlaystoreAlert.bind(this)}>

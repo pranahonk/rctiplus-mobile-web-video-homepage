@@ -26,7 +26,7 @@ if (!firebaseApp.apps.length) {
 }
 
 import ax from 'axios';
-import { DEV_API } from '../../../config';
+import { DEV_API, API } from '../../../config';
 import { getCookie, getVisitorToken, checkToken } from '../../../utils/cookie';
 
 const axios = ax.create({ baseURL: DEV_API + '/api' });
