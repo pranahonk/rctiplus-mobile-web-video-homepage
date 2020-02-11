@@ -6,10 +6,11 @@ import actions from '../../../redux/actions';
 import pageActions from '../../../redux/actions/pageActions';
 
 import { getCookie, removeCookie } from '../../../utils/cookie';
+import { homeGeneralClicked } from '../../../utils/appier';
 import '../../../assets/scss/components/navbar-v2.scss';
 
 //load reactstrap
-import { Navbar, NavbarBrand, Input } from 'reactstrap';
+import { Navbar, NavbarBrand } from 'reactstrap';
 
 import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
@@ -22,6 +23,11 @@ class NavbarDef_v2 extends Component {
             token: getCookie('ACCESS_TOKEN'),
             is_top: true
         };
+    }
+
+    goToHome() {
+        homeGeneralClicked('mweb_homepage_logo_clicked');
+        Router.push('/');
     }
 
     signOut() {
@@ -64,7 +70,7 @@ class NavbarDef_v2 extends Component {
                 <Navbar expand="md" className={'nav-container nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
-                            <NavbarBrand href="/">
+                            <NavbarBrand onClick={this.goToHome.bind(this)}>
                                 <img className="logo-top" src="/static/logo/rcti.png" />
                             </NavbarBrand>
                         </div>

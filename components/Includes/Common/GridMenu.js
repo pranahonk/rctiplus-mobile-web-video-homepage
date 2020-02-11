@@ -1,9 +1,10 @@
 import React from 'react';
-import Link from 'next/link';
+import Router from 'next/router';
 import { connect } from 'react-redux';
 import Img from 'react-image';
 
-//load home page scss
+import { homeGeneralClicked } from '../../../utils/appier';
+
 import '../../../assets/scss/components/grid-menu.scss';
 
 import { Row, Col } from 'reactstrap';
@@ -14,38 +15,44 @@ class GridMenu extends React.Component {
         super(props);
         this.state = {};
     }
-    
-    componentDidMount() {
-    }
 
     render() {
         return (
             <div className="menu-container">
                 <Row className="grid-menu-container">
                     <Col className="menu-item">
-                        <Link href="/exclusive">
+                        <div onClick={() => {
+                            homeGeneralClicked('mweb_exclusive_clicked');
+                            Router.push('/exclusive');
+                        }}>
                             <a>
                                 <Img className="menu-icon" src={['/exclusive.svg']}/>
                                 <p className="menu-label">Exclusive</p>
                             </a>
-                        </Link>
+                        </div>
                     </Col>
                     <Col className="menu-item">
-                        <Link href="/trending">
+                        <div onClick={() => {
+                            homeGeneralClicked('mweb_news_clicked');
+                            Router.push('/trending');
+                        }}>
                             <a>
                                 <Img className="menu-icon" src={['/news.svg']}/>
                                 <p className="menu-label">News</p>
                             </a>
-                        </Link>
+                        </div>
                         
                     </Col>
                     <Col className="menu-item">
-                        <Link href="/radio">
+                        <div onClick={() => {
+                            homeGeneralClicked('mweb_radio_clicked');
+                            setTimeout(() => Router.push('/radio'), 500);
+                        }}>
                             <a>
                                 <Img className="menu-icon" src={['/radio.png']}/>
-                                <p className="menu-label">Radio</p>
+                                <p className="menu-label">Radio+</p>
                             </a>
-                        </Link>
+                        </div>
                     </Col>
                     {/* <Col className="menu-item">
                         <Img className="menu-icon" src={['/trivia_quiz.svg']}/>

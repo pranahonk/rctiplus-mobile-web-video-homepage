@@ -15,7 +15,6 @@ import { Navbar, NavbarBrand } from 'reactstrap';
 import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
 
-
 class NavbarDef extends Component {
     constructor(props) {
         super(props);
@@ -46,6 +45,15 @@ class NavbarDef extends Component {
         }
     }
 
+    goToHome() {
+        qg("event","mweb_homepage_logo_clicked",
+        {
+            users_id: 0, // generate random jika blm login
+            date_time: '11/02/2020 10:52:00'
+        });
+        Router.push('/');
+    }
+
     componentDidMount() {
         if (!this.props.disableScrollListener) {
             document.addEventListener('scroll', () => {
@@ -65,7 +73,7 @@ class NavbarDef extends Component {
                     <Navbar expand="md" className={'nav-container nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
                         <div className="left-top-link">
                             <div className="logo-top-wrapper">
-                                <NavbarBrand href="/">
+                                <NavbarBrand onClick={this.goToHome.bind(this)}>
                                     <img className="logo-top" src="/static/logo/rcti.png" />
                                 </NavbarBrand>
                             </div>

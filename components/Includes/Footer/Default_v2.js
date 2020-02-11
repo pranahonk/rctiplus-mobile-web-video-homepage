@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
+import Router from 'next/router';
 import Link from 'next/link';
+
+import { homeGeneralClicked } from '../../../utils/appier';
+
 import '../../../assets/scss/components/footer-v2.scss';
 
 import ImportantDevicesIcon from '@material-ui/icons/ImportantDevices';
@@ -14,23 +18,29 @@ class FooterNav_v2 extends Component {
         return (
             <div className="nav-footer-v2">
                 <div className="footer-wrapper-list">
-                    <Link href="/">
+                    <div onClick={() => {
+                        homeGeneralClicked('mweb_home_clicked');
+                        Router.push('/');
+                    }}>
                         <a>
                             <HomeIcon className="nav-footer-icon" />
                             <br />
                             Home
                         </a>
-                    </Link>
+                    </div>
                 </div>
 
                 <div className="footer-wrapper-list">
-                    <Link href="/tv/rcti">
+                    <div onClick={() => {
+                        homeGeneralClicked('mweb_livetv_clicked');
+                        Router.push('/tv/rcti');
+                    }}>
                         <a>
                             <ImportantDevicesIcon className="nav-footer-icon" />
                             <br />
                             Live TV
                         </a>
-                    </Link>
+                    </div>
                 </div>
 
                 <div className="footer-wrapper-list">
@@ -44,13 +54,16 @@ class FooterNav_v2 extends Component {
                 </div>
 
                 <div className="footer-wrapper-list">
-                    <Link href="/profile">
+                    <div onClick={() => {
+                        homeGeneralClicked('mweb_account_clicked');
+                        Router.push('/profile');
+                    }}>
                         <a>
                             <AccountCircleOutlinedIcon className="nav-footer-icon" />
                             <br />
                             Account
                         </a>
-                    </Link>
+                    </div>
                 </div>
 
                 <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
