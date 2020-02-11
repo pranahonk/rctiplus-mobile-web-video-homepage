@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
-import Link from 'next/link';
 
 import { homeGeneralClicked } from '../../../utils/appier';
 
@@ -44,13 +43,16 @@ class FooterNav_v2 extends Component {
                 </div>
 
                 <div className="footer-wrapper-list">
-                    <Link href="/explores">
+                    <div onClick={() => {
+                        homeGeneralClicked('mweb_library_clicked');
+                        Router.push('/explores');
+                    }}>
                         <a>
                             <ImportContactsTwoToneIcon className="nav-footer-icon"/>
                             <br />
                             Library
                         </a>
-                    </Link>
+                    </div>
                 </div>
 
                 <div className="footer-wrapper-list">

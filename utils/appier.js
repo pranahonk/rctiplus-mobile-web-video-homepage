@@ -23,3 +23,49 @@ export const homeGeneralClicked = (event = 'mweb_homepage_logo_clicked') => {
         date_time: formatDateTime(new Date())
     });
 };
+
+export const homeBannerEvent = (bannerId, bannerType, bannerTitle, portraitImage, landscapeImage, event = 'mweb_homepage_banner_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+    qg('event', event,
+    {
+        banner_id: bannerId,
+        banner_type: bannerType,
+        banner_title: bannerTitle,
+        portrait_image: portraitImage,
+        landscape_image: landscapeImage,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const homeStoryEvent = (storyProgramId, storyProgramName, storyType, event = 'mweb_homepage_story_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+    qg('event', event,
+    {
+        story_program_id: storyProgramId,
+        story_program_name: storyProgramName,
+        story_type: storyType,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};

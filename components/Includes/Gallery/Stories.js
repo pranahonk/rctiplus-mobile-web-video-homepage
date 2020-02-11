@@ -3,14 +3,13 @@ import { connect } from 'react-redux';
 import Head from 'next/head';
 import storiesActions from '../../../redux/actions/storiesActions';
 
-//load stories style
+import { homeStoryEvent } from '../../../utils/appier';
+
 import '../../../assets/scss/components/stories.scss';
 
 class Stories extends React.Component {
     constructor(props) {
         super(props);
-        // React ^16.3
-        // this.storiesElement = React.createRef();
         this.storiesElement = null;
         this.storiesApi = null;
 

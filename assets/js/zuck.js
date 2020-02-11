@@ -1,3 +1,5 @@
+import { homeStoryEvent } from '../../utils/appier';
+
 /*
     zuck.js
     https://github.com/ramon82/zuck.js
@@ -522,11 +524,18 @@ module.exports = (window => {
 						if (items) {
 							items = items.querySelectorAll('[data-index].active');
 							const duration = items[0].firstElementChild;
-
 							zuck.data[storyId]['currentItem'] = parseInt(
 								items[0].getAttribute('data-index'),
 								10
 							);
+
+							const item = zuck.data[storyId].items[zuck.data[storyId].currentItem];
+							if (direction) {
+								homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_next');
+							}
+							else {
+								homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_previous');
+							}
 
 							const titleElms = document.getElementsByClassName('story-item-title');
 							for (let i = 0; i < titleElms.length; i++) {
@@ -886,6 +895,10 @@ module.exports = (window => {
 							createStoryViewer(previousItemData, 'previous');
 						}
 
+						if (storyData.currentItem != undefined && storyData.items[storyData.currentItem]) {
+							const item = storyData.items[storyData.currentItem];
+							homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_clicked');
+						}
 						createStoryViewer(storyData, 'viewing', true);
 
 						const nextItemData = getStoryMorningGlory('next');
@@ -1408,7 +1421,6 @@ module.exports = (window => {
 
 				let callback = option('callbacks', 'onNavigateItem');
 				callback = !callback ? option('callbacks', 'onNextItem') : option('callbacks', 'onNavigateItem');
-
 				callback(currentStory, nextItem.getAttribute('data-story-id'), navigateItemCallback);
 			} else if (storyViewer) {
 				if (direction !== 'previous') {

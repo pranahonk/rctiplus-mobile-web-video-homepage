@@ -3,6 +3,9 @@ import Router from 'next/router';
 import { connect } from 'react-redux';
 import contentActions from '../../../redux/actions/contentActions';
 import { Carousel } from 'react-responsive-carousel';
+
+import { homeBannerEvent } from '../../../utils/appier';
+
 import '../../../assets/scss/plugins/carousel/carousel.scss';
 
 class Crs_v2 extends Component {
@@ -25,6 +28,7 @@ class Crs_v2 extends Component {
     }
 
     goToProgram(program) {
+        homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + '593' + program.portrait_image, this.state.meta.image_path + '593' + program.landscape_image, 'mweb_homepage_banner_clicked');
         switch (program.type) {
             case 'url':
                 window.open(program.type_value, '_blank');
@@ -40,9 +44,15 @@ class Crs_v2 extends Component {
     render() {
         return (
                 <div style={{ position: 'relative' }}>
-                    <Carousel statusFormatter={(current, total) => `${current}/${total}`} autoPlay showThumbs={false} showIndicators={false} stopOnHover={true} showArrows={false} showStatus={false} swipeScrollTolerance={1} swipeable={true}>
-                        {this.state.banner.map(b => (
-                            <div onClick={this.goToProgram.bind(this, b)} key={b.id} style={{ 
+                    <Carousel statusFormatter={(current, total) => `${current}/${total}`} autoPlay showThumbs={false} showIndicators={false} stopOnHover showArrows={false} showStatus={false} swipeScrollTolerance={1} swipeable onSwipeEnd={(e) => {
+                        const swipedIndex = e.target.getAttribute('data-index');
+                        if (this.state.banner[swipedIndex]) {
+                            const program = this.state.banner[swipedIndex];
+                            homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + '593' + program.portrait_image, this.state.meta.image_path + '593' + program.landscape_image, 'mweb_homepage_banner_swipe');
+                        }
+                    }}>
+                        {this.state.banner.map((b, i) => (
+                            <div data-index={i} onClick={this.goToProgram.bind(this, b)} key={b.id} style={{ 
                                 backgroundImage: `url(${this.state.meta.image_path + '593' + b.portrait_image})`, 
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center', 
