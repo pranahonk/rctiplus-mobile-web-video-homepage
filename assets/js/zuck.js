@@ -376,7 +376,7 @@ module.exports = (window => {
   
                       ${
 						get(item, 'link')
-							? `<a class="tip link" href="${get(item, 'link')}" rel="noopener" target="_blank">
+							? `<a id="${`link-${item.id}`}" class="tip link" href="${get(item, 'link')}" rel="noopener" target="_blank">
                               ${!get(item, 'linkText') || get(item, 'linkText') === '' ? option('language', 'visitLink') : get(item, 'linkText')}
                             </a>`
 							: ``
@@ -590,6 +590,7 @@ module.exports = (window => {
 
 					pointerItems += option('template', 'viewerItemPointer')(i, currentItem, item);
 					htmlItems += option('template', 'viewerItemBody')(i, currentItem, item);
+					
 				});
 
 				slides.innerHTML = htmlItems;
@@ -642,6 +643,9 @@ module.exports = (window => {
 				each(storyViewer.querySelectorAll('.close, .back'), (i, el) => {
 					el.onclick = e => {
 						e.preventDefault();
+						const currentItem = storyData.currentItem || 0;
+						const item = storyData.items[currentItem];
+						homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_close_button_clicked');
 						modal.close();
 					};
 				});
@@ -672,7 +676,17 @@ module.exports = (window => {
 						titleElms[i].innerText = storyItems[currentItem].title;
 					}
 				}
+				
 
+				let linkElement = storyViewer.querySelector('.slides a[target="_blank"]');
+				if (linkElement) {
+					linkElement.onclick = function() {
+						const currentItem = storyData.currentItem || 0;
+						const item = storyData.items[currentItem];
+						
+						homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_here', 'N/A'); // TODO: story ads type
+					};
+				}
 			};
 
 			const createStoryTouchEvents = function (modalSliderElement) {
@@ -797,6 +811,21 @@ module.exports = (window => {
 
 							if (!isScrolling) {
 								if (isValid && !isOutOfBounds) {
+									const storyId = index.getAttribute('data-story-id');
+									const storyData = zuck.data[storyId];
+									const currentItem = storyData.currentItem || 0;
+									const item = storyData.items[currentItem];
+
+									if (
+										lastTouchOffset.x > window.screen.width / 4 ||
+										!option('previousTap')
+									) {
+										homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_swipe_next');
+									}
+									else {
+										homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_swipe_previous');
+									}
+
 									moveStoryItem(direction);
 								} else {
 									translate(modalSlider, position.x, 300);
@@ -822,8 +851,6 @@ module.exports = (window => {
 
 						if (storyViewer) {
 							playVideoItem(storyViewer, storyViewer.querySelectorAll('.active'), false);
-							// const item = zuck.data[storyId].items[currentItem];
-							// homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_view');
 
 							storyViewer.classList.remove('longPress');
 							storyViewer.classList.remove('paused');
@@ -869,7 +896,12 @@ module.exports = (window => {
 
 			return {
 				show(storyId, page) {
-					
+					// console.log('SHOWWWWW');
+					// const storyData = zuck.data[storyId];
+					// const currentItem = storyData['currentItem'] || 0;
+					// const item = storyData.items[currentItem];
+					// homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_clicked');
+
 					const modalContainer = query('#zuck-modal');
 					const callback = function () {
 						modalContent.innerHTML = `<div id="zuck-modal-slider-${id}" class="slider"></div>`;
@@ -1444,8 +1476,6 @@ module.exports = (window => {
 				callback(currentStory, nextItem.getAttribute('data-story-id'), navigateItemCallback);
 			} else if (storyViewer) {
 				// go to next/prev story
-				// console.log('tessssxs');
-				
 				let currentStoryIndex = Number(currentStory);
 				if (endDuration && endDuration != true) {
 					

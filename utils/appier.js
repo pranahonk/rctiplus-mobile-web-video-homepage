@@ -48,7 +48,7 @@ export const homeBannerEvent = (bannerId, bannerType, bannerTitle, portraitImage
     });
 };
 
-export const homeStoryEvent = (storyProgramId, storyProgramName, storyType, event = 'mweb_homepage_story_clicked') => {
+export const homeStoryEvent = (storyProgramId, storyProgramName, storyType, event = 'mweb_homepage_story_clicked', storyAdsType = null) => {
     console.log(event);
     const accessToken = getCookie(TOKEN_KEY);
     let userId = new DeviceUUID().get();
@@ -60,12 +60,18 @@ export const homeStoryEvent = (storyProgramId, storyProgramName, storyType, even
             console.log(e);
         }
     }
-    qg('event', event,
-    {
+
+    let qgData = {
         story_program_id: storyProgramId,
         story_program_name: storyProgramName,
         story_type: storyType,
         users_id: userId,
         date_time: formatDateTime(new Date())
-    });
+    };
+
+    if (storyAdsType != null) {
+        qgData['story_ads_type'] = storyAdsType;
+    }
+
+    qg('event', event, qgData);
 };

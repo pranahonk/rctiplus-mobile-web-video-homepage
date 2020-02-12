@@ -34,7 +34,7 @@ class Stories extends React.Component {
                         10,
                         story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.image_path + this.state.resolution + story.story[j].story_img),
                         story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.image_path + this.state.resolution + story.story[j].story_img),
-                        story.story[j].link_url ? (story.story[j].link_url) : false, 'Click Here',
+                        story.story[j].swipe_type == 'link' ? (story.story[j].swipe_value) : false, 'Click Here',
                         false,
                         story.story[j].release_date,
                         story.story[j].title

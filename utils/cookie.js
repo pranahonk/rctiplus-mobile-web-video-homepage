@@ -131,7 +131,7 @@ export const setNewsToken = async () => {
         let newsToken = cookie.get('NEWS_TOKEN');
         if (!newsToken) {
             const response = await axios.post(`/v1/token`, {
-                merchantName: 'rcti+',
+                merchantName: 'RCTI+',
                 hostToken: getVisitorToken(),
                 platform: 'mweb'
             }, {
