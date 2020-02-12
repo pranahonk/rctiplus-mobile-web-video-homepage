@@ -529,14 +529,6 @@ module.exports = (window => {
 								10
 							);
 
-							const item = zuck.data[storyId].items[zuck.data[storyId].currentItem];
-							if (direction) {
-								homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_next');
-							}
-							else {
-								homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_previous');
-							}
-
 							const titleElms = document.getElementsByClassName('story-item-title');
 							for (let i = 0; i < titleElms.length; i++) {
 								titleElms[i].innerText = zuck.data[storyId].items[zuck.data[storyId]['currentItem']].title;
@@ -545,7 +537,7 @@ module.exports = (window => {
 							items[0].innerHTML =
 								`<b style="${duration.style.cssText}"></b>`;
 							onAnimationEnd(items[0].firstElementChild, () => {
-								zuck.nextItem(false);
+								zuck.nextItem(false, true);
 							});
 						}
 
@@ -657,12 +649,14 @@ module.exports = (window => {
 				storyViewer.appendChild(slides);
 
 				if (className === 'viewing') {
+					const item = zuck.data[storyId].items[currentItem];
+					homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_view');
 					playVideoItem(storyViewer, storyViewer.querySelectorAll(`[data-index="${currentItem}"].active`), false);
 				}
 
 				each(storyViewer.querySelectorAll('.slides-pointers [data-index] > b'), (i, el) => {
 					onAnimationEnd(el, () => {
-						zuck.nextItem(false);
+						zuck.nextItem(false, true);
 					});
 				});
 
@@ -828,6 +822,9 @@ module.exports = (window => {
 
 						if (storyViewer) {
 							playVideoItem(storyViewer, storyViewer.querySelectorAll('.active'), false);
+							// const item = zuck.data[storyId].items[currentItem];
+							// homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_view');
+
 							storyViewer.classList.remove('longPress');
 							storyViewer.classList.remove('paused');
 						}
@@ -841,10 +838,8 @@ module.exports = (window => {
 									lastTouchOffset.x > window.screen.width / 4 ||
 									!option('previousTap')
 								) {
-									console.log('next');
 									zuck.navigateItem('next', event);
 								} else {
-									console.log('prev');
 									zuck.navigateItem('previous', event);
 								}
 							};
@@ -874,6 +869,7 @@ module.exports = (window => {
 
 			return {
 				show(storyId, page) {
+					
 					const modalContainer = query('#zuck-modal');
 					const callback = function () {
 						modalContent.innerHTML = `<div id="zuck-modal-slider-${id}" class="slider"></div>`;
@@ -1071,6 +1067,7 @@ module.exports = (window => {
 
 		const parseStory = function (story, returnCallback) {
 			const storyId = story.getAttribute('data-id');
+			
 			let seen = false;
 			if (zuck.internalData['seenItems'][storyId]) {
 				seen = true;
@@ -1109,7 +1106,6 @@ module.exports = (window => {
 
 			story.onclick = e => {
 				e.preventDefault();
-
 				modal.show(storyId);
 			};
 
@@ -1148,7 +1144,6 @@ module.exports = (window => {
 				if (!option('reactive')) {
 					timeline.removeChild(el);
 				}
-
 				zuck.update(newData, true);
 			});
 		};
@@ -1221,7 +1216,6 @@ module.exports = (window => {
 			if (!isPlaying) {
 				video.play();
 			}
-
 
 			if (video.paused) {
 				video.muted = true;
@@ -1361,7 +1355,11 @@ module.exports = (window => {
 			}
 		};
 
-		zuck.navigateItem = zuck.nextItem = (direction, event) => {
+		zuck.navigateItem = zuck.nextItem = (direction, endDuration, event) => {
+			if (endDuration && endDuration != true) {
+				event = endDuration;
+			}
+
 			const currentStory = zuck.internalData['currentStory'];
 			const currentItem = zuck.data[currentStory]['currentItem'];
 			const storyViewer = query(`#zuck-modal .story-viewer[data-story-id="${currentStory}"]`);
@@ -1380,6 +1378,25 @@ module.exports = (window => {
 			const nextItem = nextItems[1];
 
 			if (storyViewer && nextPointer && nextItem) {
+				// go to next/prev story item
+				if (endDuration && endDuration != true) {
+					let currentStoryIndex = Number(currentStory);
+					let nextItemIndex = Number(nextItem.getAttribute('data-index'));
+					if (direction !== 'previous') {
+						if (currentStoryIndex < zuck.data.length && zuck.data[currentStoryIndex]) {
+							const item = zuck.data[currentStoryIndex].items[nextItemIndex];
+							homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_next');
+						}
+					}
+					else {
+						if (currentStoryIndex >= 0 && zuck.data[currentStoryIndex]) {
+							const item = zuck.data[currentStoryIndex].items[nextItemIndex];
+							homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_previous');
+						}
+					}
+				}
+				
+
 				const navigateItemCallback = function () {
 					if (direction === 'previous') {
 						currentPointer.classList.remove('seen');
@@ -1399,6 +1416,9 @@ module.exports = (window => {
 					nextItem.classList.add('active');
 
 					zuck.data[currentStory]['currentItem'] = zuck.data[currentStory]['currentItem'] + directionNumber;
+
+					const item = zuck.data[currentStory].items[zuck.data[currentStory].currentItem];
+					homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_view');
 
 					each(storyViewer.querySelectorAll('.time'), (i, el) => {
 						el.innerText = timeAgo(nextItem.getAttribute('data-time'));
@@ -1423,11 +1443,44 @@ module.exports = (window => {
 				callback = !callback ? option('callbacks', 'onNextItem') : option('callbacks', 'onNavigateItem');
 				callback(currentStory, nextItem.getAttribute('data-story-id'), navigateItemCallback);
 			} else if (storyViewer) {
-				if (direction !== 'previous') {
-					modal.next(event);
+				// go to next/prev story
+				// console.log('tessssxs');
+				
+				let currentStoryIndex = Number(currentStory);
+				if (endDuration && endDuration != true) {
+					
+					if (direction !== 'previous') {
+						if (currentStoryIndex + 1 < zuck.data.length && zuck.data[currentStoryIndex + 1]) {
+							let item = zuck.data[currentStoryIndex + 1].items[0];
+							homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_next');
+							homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_view');
+						}
+						modal.next(event);
+					}
+					else {
+						if (currentStoryIndex - 1 >= 0 && zuck.data[currentStoryIndex - 1]) {
+							const item = zuck.data[currentStoryIndex - 1].items[zuck.data[currentStoryIndex - 1].items.length - 1];
+							homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_previous');
+							homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_view');
+						}
+						modal.previous(event);
+					}
 				}
 				else {
-					modal.previous(event);
+					if (direction !== 'previous') {
+						if (currentStoryIndex + 1 < zuck.data.length && zuck.data[currentStoryIndex + 1]) {
+							let item = zuck.data[currentStoryIndex + 1].items[0];
+							homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_view');
+						}
+						modal.next(event);
+					}
+					else {
+						if (currentStoryIndex - 1 >= 0 && zuck.data[currentStoryIndex - 1]) {
+							let item = zuck.data[currentStoryIndex - 1].items[zuck.data[currentStoryIndex - 1].items.length - 1];
+							homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_view');
+						}
+						modal.previous(event);
+					}
 				}
 			}
 		};

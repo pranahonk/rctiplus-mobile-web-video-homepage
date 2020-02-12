@@ -2,7 +2,7 @@ import ax from 'axios';
 import { DEV_API } from '../../config';
 import { getVisitorToken, checkToken } from '../../utils/cookie';
 
-const axios = ax.create({ baseURL: 'https://api.rctiplus.com/api' });
+const axios = ax.create({ baseURL: DEV_API + '/api' });
 
 axios.interceptors.request.use(async (request) => {
     await checkToken();
