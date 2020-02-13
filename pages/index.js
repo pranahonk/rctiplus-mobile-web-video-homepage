@@ -58,6 +58,10 @@ class Index_v2 extends React.Component {
 	}
 
     componentDidMount() {
+        window.onbeforeunload = e => {
+            homeGeneralClicked('mweb_homepage_refresh');
+        };
+
         this.props.getContents(this.state.page, 5)
             .then(response => {
                 this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta }, () => this.props.unsetPageLoader());
