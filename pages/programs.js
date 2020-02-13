@@ -46,7 +46,7 @@ import '../assets/scss/components/detail.scss';
 
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
-import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent } from '../utils/appier';
+import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent } from '../utils/appier';
 
 class Detail extends React.Component {
 
@@ -644,6 +644,9 @@ class Detail extends React.Component {
     }
 
     link(cw, type) {
+        if (this.reference && this.reference == 'homepage') {
+            programContentEvent(cw.programId, this.props.initial.data.title, type, cw.id, cw.title, 'mweb_homepage_program_content_clicked');
+        }
 		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}${this.reference ? `?ref=${this.reference}` : ''}`);
 	}
 

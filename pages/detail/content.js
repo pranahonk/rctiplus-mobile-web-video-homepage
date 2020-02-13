@@ -150,13 +150,15 @@ class Content extends React.PureComponent {
                 exclusive_tab_name: 'N/A'
             });
 
-            if (this.reference && this.reference == 'homepage') {
-                const data = this.props.context_data;
-                if (data) {
-                    programContentPlayEvent(data.id, data.title, data.content_id, data.content_title, data.type, this.player.getPosition(), content.data.duration, 'mweb_homepage_program_content_play');
+            setInterval(() => {
+                if (this.reference && this.reference == 'homepage') {
+                    const data = this.props.context_data;
+                    if (data) {
+                        programContentPlayEvent(data.id, data.title, data.content_id, data.content_title, data.type, this.player.getPosition(), content.data.duration, 'mweb_homepage_program_content_play');
+                    }
+                    
                 }
-                
-            }
+            }, 2500);
 
             setInterval(() => {
                 console.log('POST HISTORY');

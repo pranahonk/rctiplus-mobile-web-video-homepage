@@ -104,6 +104,31 @@ export const contentGeneralEvent = (homepageTitle, contentType, contentId, conte
     });
 };
 
+export const programContentEvent = (programId, programTitle, contentType, contentId, contentTitle, event = 'mweb_homepage_program_content_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        content_type: contentType,
+        content_id: contentId,
+        content_title: contentTitle,
+        program_title: programTitle,
+        program_id: programId,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
 export const programRateEvent = (status, programTitle, programId, programType, event = 'mweb_homepage_program_rate_clicked') => {
     console.log(event);
     const accessToken = getCookie(TOKEN_KEY);
