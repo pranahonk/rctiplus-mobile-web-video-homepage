@@ -3,16 +3,15 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import fetch from 'isomorphic-unfetch';
+import queryString from 'query-string';
 
 import initialize from '../../utils/initialize';
 import contentActions from '../../redux/actions/contentActions';
 import historyActions from '../../redux/actions/historyActions';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 
 import Wrench from '../../components/Includes/Common/Wrench';
-import { Button } from 'reactstrap';
 
 import Layout from '../../components/Layouts/Default';
 
@@ -20,6 +19,7 @@ import '../../assets/scss/components/content.scss';
 
 import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
 import { getCookie } from '../../utils/cookie';
+import { programContentPlayEvent } from '../../utils/appier';
 
 class Content extends React.PureComponent {
 
@@ -70,6 +70,15 @@ class Content extends React.PureComponent {
             error_data: {}
         };
         this.player = null;
+
+        const segments = this.props.router.asPath.split(/\?/);
+        this.reference = null;
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.ref) {
+                this.reference = q.ref;
+            }
+        }
     }
 
     initVOD() {
@@ -140,11 +149,21 @@ class Content extends React.PureComponent {
                 group_content_name: 'N/A',
                 exclusive_tab_name: 'N/A'
             });
+
+            if (this.reference && this.reference == 'homepage') {
+                const data = this.props.context_data;
+                if (data) {
+                    programContentPlayEvent(data.id, data.title, data.content_id, data.content_title, data.type, this.player.getPosition(), content.data.duration, 'mweb_homepage_program_content_play');
+                }
+                
+            }
+
             setInterval(() => {
                 console.log('POST HISTORY');
+
                 this.props.postHistory(this.props.context_data.content_id, this.props.context_data.type, this.player.getPosition())
                     .then(response => {
-                        console.log(response);
+                        // console.log(response);
                     })
                     .catch(error => {
                         console.log(error);
@@ -194,7 +213,7 @@ class Content extends React.PureComponent {
                         start_duration: startDuration
                     }, () => this.initVOD());
                 })
-                .catch(error => {
+                .catch(() => {
                     this.setState({
                         player_url: content.data.url,
                         player_vmap: content.data.vmap,

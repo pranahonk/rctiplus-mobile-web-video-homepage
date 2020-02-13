@@ -46,7 +46,7 @@ import '../assets/scss/components/detail.scss';
 
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
-import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent } from '../utils/appier';
+import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent } from '../utils/appier';
 
 class Detail extends React.Component {
 
@@ -141,9 +141,30 @@ class Detail extends React.Component {
                 this.reference = q.ref;
             }
         }
+
+        this.swipe = {};
     }
 
+    onTouchStart(e) {
+		const touch = e.touches[0];
+		this.swipe = { x: touch.clientX };
+	}
+
+	onTouchEnd(e) {
+		const touch = e.changedTouches[0];
+		const absX = Math.abs(touch.clientX - this.swipe.x);
+		if (absX > 50) {
+            if (this.reference && this.reference == 'homepage') {
+                programRelatedEvent(this.props.router.query.id, this.state.title);
+            }
+        }
+	}
+
     showMore(tabName = 'EPISODES') {
+        if (this.reference && this.reference == 'homepage') {
+            programShowMoreEvent(this.props.router.query.id, this.state.title);
+        }
+
         switch (tabName) {
             case 'EPISODES':
                 this.props.getProgramEpisodes(this.props.router.query.id, this.props.contents.selected_season, this.props.contents.current_page, this.state.length)
@@ -241,7 +262,10 @@ class Detail extends React.Component {
         
     }
 
-    showOpenPlaystoreAlert() {
+    showOpenPlaystoreAlert(data = null, type = null) {
+        if (data && type && this.reference && this.reference == 'homepage') {
+            programContentDownloadEvent(this.props.router.query.id, this.state.title, data.title, type, data.id, 'mweb_homepage_program_content_download_clicked');
+        }
         showAlert('To be able to watch this episode offline, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); });
     }
 
@@ -424,14 +448,21 @@ class Detail extends React.Component {
         Router.push(`/programs/${this.props.router.query.id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/photo/${photo.id}/${photo.title.replace(/ +/g, '-').toLowerCase()}`);
     }
 
-    addToMyList(id, type) {
+    addToMyList(id, type, data = null) {
         this.props.bookmark(id, type)
             .then(response => {
+                if (type == 'program') {
+                    if (this.reference && this.reference == 'homepage') {
+                        programAddMyListEvent(1, this.state.title, this.props.router.query.id, type, 'mweb_homepage_program_add_mylist_clicked');
+                    }
+                }
+                else {
+                    if (this.reference && this.reference == 'homepage' && data) {
+                        programContentAddMyListEvent(this.props.router.query.id, this.state.title, data.id, data.title, type, 'mweb_homepage_program_content_add_mylist_clicked');
+                    }
+                }
                 switch (type) {
                     case 'program':
-                        if (this.reference && this.reference == 'homepage') {
-                            programAddMyListEvent(1, this.state.title, this.props.router.query.id, type, 'mweb_homepage_program_add_mylist_clicked');
-                        }
                         this.setState({ program_in_list: true });
                         break;
                     
@@ -573,13 +604,23 @@ class Detail extends React.Component {
     }
 
     toggleSelectModal() {
+        if (this.reference && this.reference == 'homepage') {
+            if (this.state.select_modal) {
+                programSeasonCloseEvent(this.props.router.query.id, this.state.title, this.state.selected_season, 'mweb_homepage_program_season_close_clicked');
+            }
+            else {
+                programSeasonListEvent(this.props.router.query.id, this.state.title, this.state.selected_season, 'mweb_homepage_program_season_list_clicked');
+            }
+        }
         this.setState({ select_modal: !this.state.select_modal });
     }
 
     toggleTab(tab, tabName = 'Episode') {
         if (this.state.active_tab !== tab) {
             this.setState({ active_tab: tab }, () => {
-                // TODO
+                if (this.reference && this.reference == 'homepage') {
+                    programTabEvent(this.props.router.query.id, this.state.title, tabName, 'mweb_homepage_program_tab_clicked');
+                }
             });
         }
     }
@@ -603,7 +644,7 @@ class Detail extends React.Component {
     }
 
     link(cw, type) {
-		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}`);
+		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}${this.reference ? `?ref=${this.reference}` : ''}`);
 	}
 
     render() {
@@ -706,7 +747,6 @@ class Detail extends React.Component {
             }
         }
 
-        // https://www.it-consultis.com/blog/best-seo-practices-for-react-websites
         return (
             <Layout title={title}>
                 <Head>
@@ -737,6 +777,7 @@ class Detail extends React.Component {
 
                 <SelectModal 
                     episodeListLength={this.state.length}
+                    program={this.props.initial}
                     open={this.state.select_modal}
                     data={this.state.seasons}
                     toggle={this.toggleSelectModal.bind(this)}/>
@@ -812,13 +853,13 @@ class Detail extends React.Component {
                                             <p onClick={() => this.link(e, 'episode')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
-                                                    {this.state.bookmarked_episode.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'episode')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'episode')} />)}
+                                                    {this.state.bookmarked_episode.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'episode')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'episode', e)} />)}
                                                 </div>
                                                 <div className="action-button">
                                                     <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'episode', e)} className="action-icon" />
                                                 </div>
                                                 <div className="action-button">
-                                                    <GetAppIcon onClick={this.showOpenPlaystoreAlert.bind(this)} className="action-icon" />
+                                                    <GetAppIcon onClick={this.showOpenPlaystoreAlert.bind(this, e, 'episode')} className="action-icon" />
                                                 </div>
                                             </div>
                                         </Col>
@@ -843,13 +884,13 @@ class Detail extends React.Component {
                                             <p onClick={() => this.link(e, 'extra')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
-                                                    {this.state.bookmarked_extra.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'extra')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'extra')} />)}
+                                                    {this.state.bookmarked_extra.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'extra')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'extra', e)} />)}
                                                 </div>
                                                 <div className="action-button">
                                                     <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'extra', e)} className="action-icon" />
                                                 </div>
                                                 <div className="action-button">
-                                                    <GetAppIcon onClick={this.showOpenPlaystoreAlert.bind(this)} className="action-icon" />
+                                                    <GetAppIcon onClick={this.showOpenPlaystoreAlert.bind(this, e, 'extra')} className="action-icon" />
                                                 </div>
                                             </div>
                                         </Col>
@@ -869,13 +910,13 @@ class Detail extends React.Component {
                                             <p onClick={() => this.link(e, 'clip')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
-                                                    {this.state.bookmarked_clip.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'clip')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'clip')} />)}
+                                                    {this.state.bookmarked_clip.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'clip')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'clip', e)} />)}
                                                 </div>
                                                 <div className="action-button">
                                                     <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'clip', e)} className="action-icon" />
                                                 </div>
                                                 <div className="action-button">
-                                                    <GetAppIcon onClick={this.showOpenPlaystoreAlert.bind(this)} className="action-icon" />
+                                                    <GetAppIcon onClick={this.showOpenPlaystoreAlert.bind(this, e, 'clip')} className="action-icon" />
                                                 </div>
                                             </div>
                                         </Col>
@@ -902,7 +943,7 @@ class Detail extends React.Component {
                 </div>
                 
                 <div className="related-box">
-                    <div className="related-menu">
+                    <div className="related-menu" onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
                         <p className="related-title"><strong>Related</strong></p>
                         <BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
                             {scrollRef => (

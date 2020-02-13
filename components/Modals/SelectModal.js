@@ -1,9 +1,12 @@
 import React from 'react';
+import { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 
 import contentActions from '../../redux/actions/contentActions';
 
 import { Modal, ModalBody } from 'reactstrap';
+import queryString from 'query-string';
+import { programSeasonEvent } from '../../utils/appier';
 
 import CancelIcon from '@material-ui/icons/Cancel';
 
@@ -14,6 +17,14 @@ class SelectModal extends React.Component {
 
     constructor(props) {
         super(props);
+        const segments = this.props.router.asPath.split(/\?/);
+        this.reference = null;
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.ref) {
+                this.reference = q.ref;
+            }
+		}
     }
 
     selectSeason(season, programId) {
@@ -22,6 +33,10 @@ class SelectModal extends React.Component {
                 this.props.getProgramEpisodes(programId, season)
                     .then(response => {
                         if (response.status === 200 && response.data.status.code === 0) {
+                            if (this.props.program && this.reference && this.reference == 'homepage') {
+                                const data = this.props.program.data;
+                                programSeasonEvent(programId, data.title, season, 'mweb_homepage_program_season_clicked');
+                            }
                             this.props.setShowMoreAllowed(this.props.contents.episodes.length >= this.props.episodeListLength); 
                         }
                         this.props.toggle();
@@ -50,4 +65,4 @@ class SelectModal extends React.Component {
 
 }
 
-export default connect(state => state, contentActions)(SelectModal);
+export default connect(state => state, contentActions)(withRouter(SelectModal));

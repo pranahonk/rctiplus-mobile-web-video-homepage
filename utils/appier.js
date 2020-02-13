@@ -233,3 +233,135 @@ export const programContentShareEvent = (programId, programTitle, contentTitle, 
         date_time: formatDateTime(new Date())
     });
 };
+
+export const programContentAddMyListEvent = (programId, programTitle, contentId, contentTitle, contentType, event = 'mweb_homepage_program_content_add_mylist_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        program_title: programTitle,
+        program_id: programId,
+        content_id: contentId,
+        content_title: contentTitle,
+        content_type: contentType,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const programShowMoreEvent = (programId, programTitle, event = 'mweb_homepage_program_showmore_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        program_title: programTitle,
+        program_id: programId,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const programRelatedEvent = (programId, programTitle, event = 'mweb_homepage_program_related_scroll_horizontal') => {
+    programShowMoreEvent(programId, programTitle, event);
+};
+
+export const programSeasonCloseEvent = (programId, programName, season, event = 'mweb_homepage_program_season_close_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        program_name: programName,
+        program_id: programId,
+        season: season,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const programSeasonListEvent = (programId, programName, season, event = 'mweb_homepage_program_season_list_clicked') => {
+    programSeasonCloseEvent(programId, programName, season, event);
+};
+
+export const programSeasonEvent = (programId, programName, season, event = 'mweb_homepage_program_season_clicked') => {
+    programSeasonCloseEvent(programId, programName, season, event);
+};
+
+export const programTabEvent = (programId, programName, tabName, event = 'mweb_homepage_program_tab_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        program_name: programName,
+        program_id: programId,
+        tab_name: tabName,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const programContentPlayEvent = (programId, programTitle, contentId, contentTitle, contentType, duration, videoDuration, event = 'mweb_homepage_program_content_play') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        program_title: programTitle,
+        program_id: programId,
+        content_id: contentId,
+        content_title: contentTitle,
+        content_type: contentType,
+        duration: duration,
+        video_duration: videoDuration,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
