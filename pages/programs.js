@@ -46,7 +46,7 @@ import '../assets/scss/components/detail.scss';
 
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
-import { programRateEvent } from '../utils/appier';
+import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent } from '../utils/appier';
 
 class Detail extends React.Component {
 
@@ -410,6 +410,9 @@ class Detail extends React.Component {
             if (this.state.modal) {
                 setTimeout(() => {
                     if (this.player != null) {
+                        if (this.reference && this.reference == 'homepage') {
+                            programTrailerPlayEvent(this.props.router.query.id, this.state.title, 'program', 'N/A', 'N/A');
+                        }
                         this.player.play();
                     }
                 }, 1000);
@@ -426,6 +429,9 @@ class Detail extends React.Component {
             .then(response => {
                 switch (type) {
                     case 'program':
+                        if (this.reference && this.reference == 'homepage') {
+                            programAddMyListEvent(1, this.state.title, this.props.router.query.id, type, 'mweb_homepage_program_add_mylist_clicked');
+                        }
                         this.setState({ program_in_list: true });
                         break;
                     
@@ -499,7 +505,10 @@ class Detail extends React.Component {
 
     toggleRateModal() {
         if (this.props.likes.data && this.props.likes.data.length > 0 && !this.state.rate_modal) {
-            programRateEvent('INDIFFERENT', this.state.title, this.props.router.query.id, 'program', 'mweb_homepage_program_rate_clicked');
+            if (this.reference && this.reference == 'homepage') {
+                programRateEvent('INDIFFERENT', this.state.title, this.props.router.query.id, 'program', 'mweb_homepage_program_rate_clicked');
+            }
+            
             this.props.postLike(this.props.router.query.id, 'program', 'INDIFFERENT');
         }
         else {
@@ -540,7 +549,21 @@ class Detail extends React.Component {
         });
     }
 
-    toggleActionSheet(caption = '', url = '', hashtags = []) {
+    toggleActionSheet(caption = '', url = '', hashtags = [], contentType = '', data = null) {
+        if (contentType && !this.state.action_sheet) {
+            switch (contentType) {
+                case 'program':
+                    programShareEvent(this.state.title, this.props.router.query.id, 'program', 'mweb_homepage_program_share_clicked');
+                    break;
+
+                default:
+                    if (data != null) {
+                        programContentShareEvent(data.program_id, this.state.title, data.title, contentType, data.id, 'mweb_homepage_program_content_share_clicked');
+                    }
+                    break;
+            }
+        }
+        
         this.setState({ 
             action_sheet: !this.state.action_sheet,
             caption: caption,
@@ -597,7 +620,7 @@ class Detail extends React.Component {
         for (let key in tabsObj) {
             if (tabsObj[key] > 0) {
                 tabs.push(<NavItem key={key} className="menu-title">
-                            <Link scroll={false} href={`/programs?id=${this.props.query.id}&title=${this.props.query.title}&content_type=${key.toLowerCase()}s`} as={`/programs/${this.props.query.id}/${this.props.query.title}/${key.toLowerCase()}s`}>
+                            <Link scroll={false} href={`/programs?id=${this.props.query.id}&title=${this.props.query.title}&content_type=${key.toLowerCase()}s`} as={`/programs/${this.props.query.id}/${this.props.query.title}/${key.toLowerCase()}s${this.reference && this.reference == 'homepage' ? `?ref=${this.reference}` : ''}`}>
                                 <NavLink onClick={this.toggleTab.bind(this, idx.toString(), key)} className={classnames({ active: this.state.active_tab === idx.toString() })}>{key}</NavLink>
                             </Link>
                         </NavItem>);
@@ -764,7 +787,7 @@ class Detail extends React.Component {
                                 <p>My List</p>
                             </div>
                             <div className="action-button">
-                                <ShareIcon onClick={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
+                                <ShareIcon onClick={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'], 'program')} className="action-icon" />
                                 <p>Share</p>
                             </div>
                         </div>
@@ -792,7 +815,7 @@ class Detail extends React.Component {
                                                     {this.state.bookmarked_episode.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'episode')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'episode')} />)}
                                                 </div>
                                                 <div className="action-button">
-                                                    <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
+                                                    <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'episode', e)} className="action-icon" />
                                                 </div>
                                                 <div className="action-button">
                                                     <GetAppIcon onClick={this.showOpenPlaystoreAlert.bind(this)} className="action-icon" />
@@ -823,7 +846,7 @@ class Detail extends React.Component {
                                                     {this.state.bookmarked_extra.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'extra')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'extra')} />)}
                                                 </div>
                                                 <div className="action-button">
-                                                    <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
+                                                    <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'extra', e)} className="action-icon" />
                                                 </div>
                                                 <div className="action-button">
                                                     <GetAppIcon onClick={this.showOpenPlaystoreAlert.bind(this)} className="action-icon" />
@@ -849,7 +872,7 @@ class Detail extends React.Component {
                                                     {this.state.bookmarked_clip.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'clip')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'clip')} />)}
                                                 </div>
                                                 <div className="action-button">
-                                                    <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'])} className="action-icon" />
+                                                    <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'clip', e)} className="action-icon" />
                                                 </div>
                                                 <div className="action-button">
                                                     <GetAppIcon onClick={this.showOpenPlaystoreAlert.bind(this)} className="action-icon" />

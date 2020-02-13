@@ -1,6 +1,8 @@
 import React from 'react';
+import { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import { showSignInAlert } from '../../utils/helpers';
+import queryString from 'query-string';
 
 import likeActions from '../../redux/actions/likeActions';
 
@@ -18,6 +20,14 @@ class ActionModal extends React.Component {
 
     constructor(props) {
         super(props);
+        const segments = this.props.router.asPath.split(/\?/);
+        this.reference = null;
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.ref) {
+                this.reference = q.ref;
+            }
+		}
     }
 
     postLike(status) {
@@ -25,7 +35,7 @@ class ActionModal extends React.Component {
             .then(response => {
                 this.props.getLikeHistory(this.props.programId)
                     .then(_ => {
-                        if (this.props.data) {
+                        if (this.reference && this.reference == 'homepage' && this.props.data) {
                             const data = this.props.data.data;
                             programRateEvent(status, data.title, data.id, this.props.type, 'mweb_homepage_program_rate_clicked');
                         }
@@ -63,4 +73,4 @@ class ActionModal extends React.Component {
 
 export default connect(state => state, {
     ...likeActions
-})(ActionModal);
+})(withRouter(ActionModal));

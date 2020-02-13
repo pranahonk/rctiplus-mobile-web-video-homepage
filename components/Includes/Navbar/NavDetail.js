@@ -26,8 +26,6 @@ class NavbarDetail extends Component {
                 this.reference = q.ref;
             }
 		}
-		
-		console.log(this.reference);
 	}
 
     componentDidMount() {
