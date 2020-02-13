@@ -103,3 +103,108 @@ export const contentGeneralEvent = (homepageTitle, contentType, contentId, conte
         date_time: formatDateTime(new Date())
     });
 };
+
+export const programRateEvent = (status, programTitle, programId, programType, event = 'mweb_homepage_program_rate_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        status: status,
+        program_title: programTitle,
+        program_id: programId,
+        program_type: programType,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const programShareEvent = (programTitle, programId, programType, event = 'mweb_homepage_program_share_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        program_title: programTitle,
+        program_id: programId,
+        program_type: programType,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const programTrailerEvent = (programTitle, programId, programType, event = 'mweb_homepage_program_trailer_clicked') => {
+    programShareEvent(programTitle, programId, programType, event);
+};
+
+export const contentAddMyListEvent = (status, programTitle, programId, programType, event = 'mweb_homepage_program_add_mylist_clicked') => {
+    programRateEvent(status, programTitle, programId, programType, event);
+};
+
+export const programTrailerPlayEvent = (programId, programTitle, programType, duration, videoDuration, event = 'mweb_homepage_program_trailer_play') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        program_title: programTitle,
+        program_id: programId,
+        program_type: programType,
+        duration: duration,
+        video_duration: videoDuration,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const programContentDownloadEvent = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_homepage_program_content_download_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        program_title: programTitle,
+        program_id: programId,
+        content_title: contentTitle,
+        content_type: contentType,
+        content_id: contentId,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};

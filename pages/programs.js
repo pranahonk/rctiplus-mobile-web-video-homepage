@@ -46,6 +46,7 @@ import '../assets/scss/components/detail.scss';
 
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
+import { programRateEvent } from '../utils/appier';
 
 class Detail extends React.Component {
 
@@ -140,8 +141,6 @@ class Detail extends React.Component {
                 this.reference = q.ref;
             }
         }
-
-        console.log(this.reference);
     }
 
     showMore(tabName = 'EPISODES') {
@@ -500,6 +499,7 @@ class Detail extends React.Component {
 
     toggleRateModal() {
         if (this.props.likes.data && this.props.likes.data.length > 0 && !this.state.rate_modal) {
+            programRateEvent('INDIFFERENT', this.state.title, this.props.router.query.id, 'program', 'mweb_homepage_program_rate_clicked');
             this.props.postLike(this.props.router.query.id, 'program', 'INDIFFERENT');
         }
         else {
@@ -689,7 +689,7 @@ class Detail extends React.Component {
                 <Head>
                     <meta name="description" content={metaDescription}/>
                 </Head>
-                <Navbar />
+                <Navbar data={this.props.initial}/>
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)}/>
                 <PlayerModal 
                     open={this.state.modal}
@@ -709,6 +709,7 @@ class Detail extends React.Component {
                     open={this.state.rate_modal}
                     programId={this.props.router.query.id}
                     type={'program'}
+                    data={this.props.initial}
                     toggle={this.toggleRateModal.bind(this)}/>
 
                 <SelectModal 

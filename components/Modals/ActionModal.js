@@ -5,6 +5,7 @@ import { showSignInAlert } from '../../utils/helpers';
 import likeActions from '../../redux/actions/likeActions';
 
 import { Modal, ModalBody } from 'reactstrap';
+import { programRateEvent } from '../../utils/appier';
 
 import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
 import ThumbDownOutlinedIcon from '@material-ui/icons/ThumbDownOutlined';
@@ -23,7 +24,13 @@ class ActionModal extends React.Component {
         this.props.postLike(this.props.programId, this.props.type, status)
             .then(response => {
                 this.props.getLikeHistory(this.props.programId)
-                    .then(_ => this.props.toggle())
+                    .then(_ => {
+                        if (this.props.data) {
+                            const data = this.props.data.data;
+                            programRateEvent(status, data.title, data.id, this.props.type, 'mweb_homepage_program_rate_clicked');
+                        }
+                        this.props.toggle();
+                    })
                     .catch(error => this.props.toggle());
             })
             .catch(error => {
@@ -54,4 +61,6 @@ class ActionModal extends React.Component {
 
 }
 
-export default connect(state => state, likeActions)(ActionModal);
+export default connect(state => state, {
+    ...likeActions
+})(ActionModal);

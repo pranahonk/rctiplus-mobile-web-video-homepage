@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 
-//load reactstrap
 import { Navbar, NavbarBrand } from 'reactstrap';
+import queryString from 'query-string';
+import { contentGeneralEvent } from '../../../utils/appier';
 
 import '../../../assets/scss/components/navbar.scss';
 
@@ -16,6 +17,17 @@ class NavbarDetail extends Component {
 		this.state = {
 			is_top: true
 		};
+
+		const segments = this.props.router.asPath.split(/\?/);
+        this.reference = null;
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.ref) {
+                this.reference = q.ref;
+            }
+		}
+		
+		console.log(this.reference);
 	}
 
     componentDidMount() {
@@ -27,13 +39,27 @@ class NavbarDetail extends Component {
 		});
 	}
 
+	goBack() {
+		if (this.props.data && this.reference && this.reference == 'homepage') {
+			console.log(this.props.data);
+			const data = this.props.data.data;
+			const meta = this.props.data.meta;
+			let genre = [];
+			for (let i = 0; i < data.genre.length; i++) {
+				genre.push(data.genre[i].name);
+			}
+			contentGeneralEvent('N/A', 'program', data.id, data.title, data.title, genre.join(','), meta.image_path + '593' + data.portrait_image, meta.image_path + '593' + data.landscape_image, 'mweb_homepage_program_back_clicked');
+		}
+		Router.back();
+	}
+
 	render() {
 		return (
 			<div className="nav-home-container nav-fixed-top">
 				<Navbar expand="md" className={'nav-container nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
 					<div className="top-link">
 						<div className={'logo-top-wrapper ' + (this.state.is_top ? 'back-arrow-transparent' : '')}>
-							<NavbarBrand onClick={() => Router.back()} style={{ color: 'white' }}>
+							<NavbarBrand onClick={this.goBack.bind(this)} style={{ color: 'white' }}>
 								<ArrowBackIcon/>
 							</NavbarBrand>
 						</div>
@@ -48,4 +74,4 @@ class NavbarDetail extends Component {
     }
     
 }
-export default NavbarDetail;
+export default withRouter(NavbarDetail);
