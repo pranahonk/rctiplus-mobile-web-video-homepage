@@ -19,7 +19,7 @@ import '../../assets/scss/components/content.scss';
 
 import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
 import { getCookie } from '../../utils/cookie';
-import { programContentPlayEvent } from '../../utils/appier';
+import { programContentPlayEvent, homepageContentPlayEvent } from '../../utils/appier';
 
 class Content extends React.PureComponent {
 
@@ -73,10 +73,14 @@ class Content extends React.PureComponent {
 
         const segments = this.props.router.asPath.split(/\?/);
         this.reference = null;
+        this.homepageTitle = null;
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.ref) {
                 this.reference = q.ref;
+            }
+            if (q.homepage_title) {
+                this.homepageTitle = q.homepage_title;
             }
         }
     }
@@ -150,11 +154,21 @@ class Content extends React.PureComponent {
                 exclusive_tab_name: 'N/A'
             });
 
+            let genre = [];
+            for (let i = 0; i < content.data.genre.length; i++) {
+                genre.push(content.data.genre[i].name);
+            }
+
             setInterval(() => {
-                if (this.reference && this.reference == 'homepage') {
+                if (this.reference) {
                     const data = this.props.context_data;
                     if (data) {
-                        programContentPlayEvent(data.id, data.title, data.content_id, data.content_title, data.type, this.player.getPosition(), content.data.duration, 'mweb_homepage_program_content_play');
+                        if (this.reference == 'homepage_program') {
+                            programContentPlayEvent(data.id, data.title, data.content_id, data.content_title, data.type, this.player.getPosition(), content.data.duration, 'mweb_homepage_program_content_play');
+                        }
+                        else if (this.reference == 'homepage') {
+                            homepageContentPlayEvent(this.homepageTitle ? this.homepageTitle : 'N/A', data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_homepage_content_play');
+                        }
                     }
                     
                 }

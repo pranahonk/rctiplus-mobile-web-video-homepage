@@ -135,10 +135,14 @@ class Detail extends React.Component {
 
         const segments = this.props.router.asPath.split(/\?/);
         this.reference = null;
+        this.homepageTitle = null;
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.ref) {
                 this.reference = q.ref;
+            }
+            if (q.homepage_title) {
+                this.homepageTitle = q.homepage_title;
             }
         }
 
@@ -647,7 +651,7 @@ class Detail extends React.Component {
         if (this.reference && this.reference == 'homepage') {
             programContentEvent(cw.programId, this.props.initial.data.title, type, cw.id, cw.title, 'mweb_homepage_program_content_clicked');
         }
-		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}${this.reference ? `?ref=${this.reference}` : ''}`);
+		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}${this.reference ? `?ref=${this.reference}_program&homepage_title=${this.homepageTitle}` : ''}`);
 	}
 
     render() {
@@ -664,7 +668,7 @@ class Detail extends React.Component {
         for (let key in tabsObj) {
             if (tabsObj[key] > 0) {
                 tabs.push(<NavItem key={key} className="menu-title">
-                            <Link scroll={false} href={`/programs?id=${this.props.query.id}&title=${this.props.query.title}&content_type=${key.toLowerCase()}s`} as={`/programs/${this.props.query.id}/${this.props.query.title}/${key.toLowerCase()}s${this.reference && this.reference == 'homepage' ? `?ref=${this.reference}` : ''}`}>
+                            <Link scroll={false} href={`/programs?id=${this.props.query.id}&title=${this.props.query.title}&content_type=${key.toLowerCase()}s`} as={`/programs/${this.props.query.id}/${this.props.query.title}/${key.toLowerCase()}s${this.reference && this.reference == 'homepage' ? `?ref=${this.reference}&homepage_title=${this.homepageTitle}` : ''}`}>
                                 <NavLink onClick={this.toggleTab.bind(this, idx.toString(), key)} className={classnames({ active: this.state.active_tab === idx.toString() })}>{key}</NavLink>
                             </Link>
                         </NavItem>);

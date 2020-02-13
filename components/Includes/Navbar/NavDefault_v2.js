@@ -30,6 +30,11 @@ class NavbarDef_v2 extends Component {
         Router.push('/');
     }
 
+    goToExplore() {
+        homeGeneralClicked('mweb_search_clicked');
+        Router.push('/explores')
+    }
+
     signOut() {
         if (this.state.token) {
             this.props.setPageLoader();
@@ -76,7 +81,7 @@ class NavbarDef_v2 extends Component {
                         </div>
                     </div>
                     <div className="middle-top">
-                        <div className="search-input" onClick={() => Router.push('/explores')}>
+                        <div className="search-input" onClick={this.goToExplore.bind(this)}>
                             <div className="search-input-placeholder">rctiplus.com</div> <SearchIcon style={{ fontSize: '1.5rem' }} />
                         </div>
                     </div>

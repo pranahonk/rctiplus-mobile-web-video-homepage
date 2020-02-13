@@ -38,7 +38,12 @@ class Pnl_3 extends React.Component {
 
 	link(data) {
 		console.log('PANEL 3', data);
-		contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_program_clicked');
+		if (data.content_type == 'program') {
+			contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_program_clicked');
+		}
+		else {
+			contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_content_clicked');
+		}
 		switch (data.content_type) {
 			case 'special':
 				window.open(data.link, '_blank');
@@ -46,15 +51,15 @@ class Pnl_3 extends React.Component {
 
 			case 'program':
 				if (data.program_id) {
-					Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage`);
+					Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
 				}
 				else if (data.content_id) {
-					Router.push(`/programs/${data.content_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage`);
+					Router.push(`/programs/${data.content_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
 				}
 				break;
 
 			default:
-				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage`);
+				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 		}
 	}
