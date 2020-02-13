@@ -5,7 +5,7 @@ import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 
 import contentActions from '../../redux/actions/contentActions';
-import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
+import { contentGeneralEvent, homeGeneralClicked } from '../../utils/appier';
 
 import '../../assets/scss/components/panel.scss';
 
@@ -23,17 +23,33 @@ class Pnl_1 extends React.Component {
 			length: 7,
 			endpage: false
 		};
+	
+		this.swipe = {};
+	}
+
+	onTouchStart(e) {
+		const touch = e.touches[0];
+		this.swipe = { x: touch.clientX };
+	}
+
+	onTouchEnd(e) {
+		const touch = e.changedTouches[0];
+		const absX = Math.abs(touch.clientX - this.swipe.x);
+		if (absX > 50) {
+			homeGeneralClicked('mweb_homepage_scroll_horizontal');
+		}
 	}
 
 	link(data) {
 		console.log('PANEL 1', data);
+		contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_program_clicked');
 		switch (data.content_type) {
 			case 'special':
 				window.open(data.url, '_blank');
 				break;
 
 			case 'program':
-				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}`);
+				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage`);
 				break;
 
 			case 'live':
@@ -41,7 +57,7 @@ class Pnl_1 extends React.Component {
 				break;
 
 			default:
-				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}`);
+				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage`);
 				break;
 		}
 	}
@@ -74,7 +90,7 @@ class Pnl_1 extends React.Component {
 
 	render() {
 		return (
-			<div className="homepage-content horizontal_landscape_large">
+			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className="homepage-content horizontal_landscape_large">
 				<h4 className="content-title">{this.props.title}</h4>
 				<BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
 					{scrollRef => (

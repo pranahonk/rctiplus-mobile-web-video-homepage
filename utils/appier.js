@@ -75,3 +75,31 @@ export const homeStoryEvent = (storyProgramId, storyProgramName, storyType, even
 
     qg('event', event, qgData);
 };
+
+export const contentGeneralEvent = (homepageTitle, contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, event = 'mweb_homepage_content_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        homepage_title: homepageTitle,
+        content_type: contentType,
+        content_id: contentId,
+        content_title: contentTitle,
+        program_title: programTitle,
+        genre: genre,
+        portrait_image: portraitImage,
+        landscape_image: landscapeImage,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};

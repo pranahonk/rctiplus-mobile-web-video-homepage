@@ -84,6 +84,7 @@
     "node-sass": "^4.13.1",
     "normalize.css": "^7.0.0",
     "popper.js": "^1.14.6",
+    "query-string": "^6.10.1",
     "react": "16.8.1",
     "react-bottom-scroll-listener": "^3.0.0",
     "react-countdown-now": "^2.1.2",

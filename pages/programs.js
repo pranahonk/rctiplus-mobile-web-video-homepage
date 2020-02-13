@@ -9,6 +9,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import fetch from 'isomorphic-unfetch';
 import classnames from 'classnames';
+import queryString from 'query-string';
 
 import { showAlert } from '../utils/helpers';
 
@@ -73,7 +74,6 @@ class Detail extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(this.props.initial);
         this.state = {
             active_tab: '1',
             title: '',
@@ -131,6 +131,17 @@ class Detail extends React.Component {
         this.player = this.player2 = null;
         this.tabs = ['episode', 'extra', 'clip', 'photo'];
         this.props.setPageLoader();
+
+        const segments = this.props.router.asPath.split(/\?/);
+        this.reference = null;
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.ref) {
+                this.reference = q.ref;
+            }
+        }
+
+        console.log(this.reference);
     }
 
     showMore(tabName = 'EPISODES') {

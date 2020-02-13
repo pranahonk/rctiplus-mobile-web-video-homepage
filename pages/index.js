@@ -8,6 +8,7 @@ import contentActions from '../redux/actions/contentActions';
 import pageActions from '../redux/actions/pageActions';
 
 import initialize from '../utils/initialize';
+import { homeGeneralClicked } from '../utils/appier';
 
 import Layout from '../components/Layouts/Default_v2';
 import NavDownloadApp from '../components/Includes/Navbar/NavDownloadApp';
@@ -40,7 +41,21 @@ class Index_v2 extends React.Component {
         };
 
         this.props.setPageLoader();
+        this.swipe = {};
     }
+
+    onTouchStart(e) {
+		const touch = e.touches[0];
+		this.swipe = { y: touch.clientY };
+	}
+
+	onTouchEnd(e) {
+		const touch = e.changedTouches[0];
+		const absY = Math.abs(touch.clientY - this.swipe.y);
+		if (absY > 50) {
+			homeGeneralClicked('mweb_homepage_scroll_vertical');
+		}
+	}
 
     componentDidMount() {
         this.props.getContents(this.state.page, 5)
@@ -104,21 +119,23 @@ class Index_v2 extends React.Component {
                 {/* <h3>process.env.is_show_sticky_ads</h3> */}
                 <StickyAds />
                 <Stories />
-                {contents.map(content => {
-                    switch (content.display_type) {
-                        case 'horizontal_landscape_large':
-                            return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution} />;
+                <div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
+                    {contents.map(content => {
+                        switch (content.display_type) {
+                            case 'horizontal_landscape_large':
+                                return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution} />;
 
-                        case 'horizontal_landscape':
-                            return <Panel2 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution} />;
+                            case 'horizontal_landscape':
+                                return <Panel2 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution} />;
 
-                        case 'horizontal':
-                            return <Panel3 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution} />;
+                            case 'horizontal':
+                                return <Panel3 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution} />;
 
-                        case 'vertical':
-                            return <Panel4 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution} />;
-                    }
-                })}
+                            case 'vertical':
+                                return <Panel4 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution} />;
+                        }
+                    })}
+                </div>
             </Layout>
         );
     }

@@ -5,7 +5,7 @@ import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 
 import contentActions from '../../redux/actions/contentActions';
-import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
+import { contentGeneralEvent, homeGeneralClicked } from '../../utils/appier';
 
 import '../../assets/scss/components/panel.scss';
 
@@ -21,21 +21,37 @@ class Pnl_2 extends React.Component {
 			length: 7,
 			endpage: false
 		};
+
+		this.swipe = {};
+	}
+
+	onTouchStart(e) {
+		const touch = e.touches[0];
+		this.swipe = { x: touch.clientX };
+	}
+
+	onTouchEnd(e) {
+		const touch = e.changedTouches[0];
+		const absX = Math.abs(touch.clientX - this.swipe.x);
+		if (absX > 50) {
+			homeGeneralClicked('mweb_homepage_scroll_horizontal');
+		}
 	}
 
 	link(data) {
 		console.log('PANEL 2', data);
+		contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_program_clicked');
 		switch (data.content_type) {
 			case 'special':
 				window.open(data.link, '_blank');
 				break;
 
 			case 'program':
-				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}`);
+				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage`);
 				break;
 
 			default:
-				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(' ', '-').toLowerCase()}`);
+				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(' ', '-').toLowerCase()}?ref=homepage`);
 				break;
 		}
 	}
@@ -68,7 +84,7 @@ class Pnl_2 extends React.Component {
 
 	render() {
 		return (
-			<div className="homepage-content pnl_horizontal_landscape" id="pnl_horizontal_landscape" style={{ marginBottom: 20 }}>
+			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className="homepage-content pnl_horizontal_landscape" id="pnl_horizontal_landscape" style={{ marginBottom: 20 }}>
 				<h4 className="content-title">{this.props.title}</h4>
 				<BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
 					{scrollRef => (
