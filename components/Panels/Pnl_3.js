@@ -38,22 +38,22 @@ class Pnl_3 extends React.Component {
 
 	link(data) {
 		console.log('PANEL 3', data);
-		if (data.content_type == 'program') {
-			contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_program_clicked');
-		}
-		else {
-			contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_content_clicked');
-		}
 		switch (data.content_type) {
 			case 'special':
+				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_special_event_clicked');
+
 				window.open(data.link, '_blank');
 				break;
 
 			case 'live':
+				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_live_event_clicked');
+
 				Router.push(`/live-event/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}`);
 				break;
 
 			case 'program':
+				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_program_clicked');
+
 				if (data.program_id) {
 					Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
 				}
@@ -63,6 +63,8 @@ class Pnl_3 extends React.Component {
 				break;
 
 			default:
+				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_content_clicked');
+				
 				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 		}
