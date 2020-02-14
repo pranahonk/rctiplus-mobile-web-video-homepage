@@ -55,6 +55,10 @@ class Pnl_2 extends React.Component {
 				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 
+			case 'live':
+				Router.push(`/live-event/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}`);
+				break;
+
 			default:
 				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(' ', '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
 				break;

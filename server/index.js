@@ -149,6 +149,13 @@ const UIVersion = '2.0';
       });
     });
 
+    server.get('/live-event/:id/:title', (req, res) => {
+      return app.render(req, res, '/live-event', {
+        id: req.params.id,
+        title: req.params.title
+      });
+    });
+
     server.get('/radio', (req, res) => {
       return app.render(req, res, '/roov');
     });

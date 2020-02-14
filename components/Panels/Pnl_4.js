@@ -53,6 +53,10 @@ class Pnl_4 extends React.Component {
 				window.open(data.link, '_blank');
 				break;
 
+			case 'live':
+				Router.push(`/live-event/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}`);
+				break;
+
 			case 'program':
 				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
 				break;

@@ -59,7 +59,7 @@ class Pnl_1 extends React.Component {
 				break;
 
 			case 'live':
-				// TODO
+				Router.push(`/live-event/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}`);
 				break;
 
 			default:
