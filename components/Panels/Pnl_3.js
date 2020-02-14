@@ -48,7 +48,7 @@ class Pnl_3 extends React.Component {
 			case 'live':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_live_event_clicked');
 
-				Router.push(`/live-event/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}`);
+				Router.push(`/live-event/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 
 			case 'program':
@@ -64,7 +64,7 @@ class Pnl_3 extends React.Component {
 
 			default:
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', data.portrait_image, data.landscape_image, 'mweb_homepage_content_clicked');
-				
+
 				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 		}

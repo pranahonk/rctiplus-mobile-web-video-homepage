@@ -1,17 +1,19 @@
 import React from 'react';
 import Head from 'next/head';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import { Picker } from 'emoji-mart';
 import TimeAgo from 'react-timeago';
 import fetch from 'isomorphic-unfetch';
+import queryString from 'query-string';
 
 import initialize from '../utils/initialize';
 import { getCookie } from '../utils/cookie';
 import { showSignInAlert } from '../utils/helpers';
 import { formatDateWord } from '../utils/dateHelpers';
+import { contentGeneralEvent } from '../utils/appier';
 
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 import pageActions from '../redux/actions/pageActions';
@@ -88,7 +90,19 @@ class LiveEvent extends React.Component {
             resolution: 300
         };
 
-        this.swipe = {};
+        const segments = this.props.router.asPath.split(/\?/);
+        this.reference = null;
+        this.homepageTitle = null;
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.ref) {
+                this.reference = q.ref;
+            }
+            if (q.homepage_title) {
+                this.homepageTitle = q.homepage_title;
+            }
+		}
+
         this.player = null;
         this.props.setPageLoader();
     }
@@ -137,7 +151,7 @@ class LiveEvent extends React.Component {
 
     initVOD() {
         const { url, vmap } = this.props.selected_event_url.data;
-        const { id, name, type } = this.props.selected_event.data;
+        const { id, name, type, portrait_image } = this.props.selected_event.data;
         this.loadChatMessages(id);
 
 		this.player = window.jwplayer('live-event-player');
@@ -186,6 +200,11 @@ class LiveEvent extends React.Component {
 				screen.orientation.lock("portrait-primary")
 			}
 		});
+		this.player.on('firstFrame', () => {
+			if (this.reference && this.homepageTitle && this.reference == 'homepage') {
+				contentGeneralEvent(this.homepageTitle, type, id, name, 'N/A', 'N/A', this.state.meta.image_path + this.state.resolution + portrait_image, 'N/A', 'mweb_homepage_live_event_play');
+			}
+		});
 
 		this.player.on('play', () => {
             conviva.updatePlayerAssetMetadata(this, {
@@ -207,16 +226,8 @@ class LiveEvent extends React.Component {
         
 	}
 
-    onTouchStart() {
-
-    }
-
-    onTouchEnd() {
-
-    }
-
     loadMore() {
-
+		// TODO
     }
 
     toggleChat() {
@@ -452,4 +463,4 @@ export default connect(state => state, {
 	...pageActions,
 	...chatsActions,
 	...userActions
-})(LiveEvent);
+})(withRouter(LiveEvent));
