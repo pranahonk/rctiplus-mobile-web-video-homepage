@@ -420,3 +420,151 @@ export const homepageContentPlayEvent = (homepageTitle, contentType, contentId, 
         date_time: formatDateTime(new Date())
     });
 };
+
+// START
+export const exclusiveGeneralEvent = (event = 'mweb_exclusive_logo_clicked') => {
+    homeGeneralClicked(event);
+};
+
+export const exclusiveTabEvent = (tabName, event = 'mweb_exclusive_tab_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        tab_name: tabName,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const exclusiveContentEvent = (contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, event = 'mweb_exclusive_content_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        content_type: contentType,
+        content_id: contentId,
+        content_title: contentTitle,
+        program_title: programTitle,
+        genre: genre,
+        portrait_image: portraitImage,
+        landscape_image: landscapeImage,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const exclusiveContentPlayEvent = (contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, duration, videoDuration, event = 'mweb_exclusive_content_play') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        content_type: contentType,
+        content_id: contentId,
+        content_title: contentTitle,
+        program_title: programTitle,
+        genre: genre,
+        portrait_image: portraitImage,
+        landscape_image: landscapeImage,
+        duration: duration,
+        video_duration: videoDuration,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const exclusiveShareEvent = (programId, programTitle, contentTitle, contentType, contentId, tabName, photoId, photoImage, photoUrl, event = 'mweb_exclusive_share_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event,
+    {
+        content_type: contentType,
+        content_id: contentId,
+        content_title: contentTitle,
+        program_title: programTitle,
+        program_id: programId,
+        tab_name: tabName,
+        photo_id: photoId,
+        photo_image: photoImage,
+        photo_url: photoUrl,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const exclusiveProfileProgramEvent = (programId, programName, tabName, event = 'mweb_exclusive_profile_program_clicked') => {
+    console.log(event);
+    const accessToken = getCookie(TOKEN_KEY);
+    let userId = new DeviceUUID().get();
+    if (accessToken) {
+        try {
+            userId = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    qg('event', event, 
+    {
+        program_id: programId,
+        program_name: programName,
+        tab_name: tabName,
+        users_id: userId,
+        date_time: formatDateTime(new Date())
+    });
+}; 
+
+export const exclusiveTitleProgramEvent = (programId, programName, tabName, event = 'mweb_exclusive_title_program_clicked') => {
+    exclusiveProfileProgramEvent(programId, programName, tabName, event);
+};
+
+export const exclusivePhotoSlideNextEvent = (programId, programName, tabName, event = 'mweb_exclusive_photo_slide_next') => {
+    exclusiveProfileProgramEvent(programId, programName, tabName, event);
+};
+
+export const exclusivePhotoSlidePreviousEvent = (programId, programName, tabName, event = 'mweb_exclusive_photo_slide_previous') => {
+    exclusiveProfileProgramEvent(programId, programName, tabName, event);
+};
+
+// END

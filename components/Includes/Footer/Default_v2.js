@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 
-import { homeGeneralClicked } from '../../../utils/appier';
+import { homeGeneralClicked, exclusiveGeneralEvent } from '../../../utils/appier';
 
 import '../../../assets/scss/components/footer-v2.scss';
 
@@ -44,7 +44,16 @@ class FooterNav_v2 extends Component {
 
                 <div className="footer-wrapper-list">
                     <div onClick={() => {
-                        homeGeneralClicked('mweb_library_clicked');
+                        switch (this.props.router.asPath) {
+                            case '/exclusive':
+                                exclusiveGeneralEvent('mweb_exclusive_library_clicked');
+                                break;
+
+                            default:
+                                homeGeneralClicked('mweb_library_clicked');
+                                break;
+                        }
+                        
                         Router.push('/explores');
                     }}>
                         <a>
@@ -73,4 +82,4 @@ class FooterNav_v2 extends Component {
         );
     }
 }
-export default FooterNav_v2;
+export default withRouter(FooterNav_v2);

@@ -1,16 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import ReactJWPlayer from 'react-jw-player';
 
 import pageActions from '../../redux/actions/pageActions';
+import historyActions from '../../redux/actions/historyActions';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 
 import Wrench from '../Includes/Common/Wrench';
-import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import '../../assets/scss/components/modal.scss';
+
+import { exclusiveContentPlayEvent } from '../../utils/appier';
 
 class PlayerModal extends React.Component {
 
@@ -20,6 +21,8 @@ class PlayerModal extends React.Component {
             error: false,
             error_data: {}
         };
+        this.player = null;
+        this.intervalFn = null;
     }
 
     tryAgain() {
@@ -29,22 +32,75 @@ class PlayerModal extends React.Component {
         });
     }
 
-    render() {
-        let playerRef = (<ReactJWPlayer 
-            playerId={this.props.playerId} 
-            isAutoPlay={false}
-            onReady={this.props.onReady}
-            playerScript="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"
-            onSetupError={error => {
-                console.log(error);
-                this.setState({
-                    error: true,
-                    error_data: error
-                });
-            }}
-            file={this.props.videoUrl}/>);
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.open && !prevProps.open) {
+            this.setState({ error: false }, () => this.initVOD());
+        }
+        else if (!this.props.open && prevProps.open) {
+            if (this.player) {
+                clearInterval(this.intervalFn);
+                this.player.remove();
+            }
+        }
+    }
+    
+    initVOD() {
+        this.player = window.jwplayer(this.props.playerId);
+		this.player.setup({
+			autostart: true,
+			file: this.props.videoUrl,
+			primary: 'html5',
+			width: '100%',
+			aspectratio: '16:9',
+			displaytitle: true,
+			setFullscreen: true,
+			stretching:'fill',
+			advertising: {
+				client: 'googima',
+				tag: this.props.vmap
+			},
+			logo: {
+				hide: true
+			}
+        });
+        
+        this.player.on('setupError', error => {
+            console.log('SETUP ERROR');
+            this.setState({
+                error: true,
+                error_data: error
+            });
+        });
+
+        this.player.on('error', error => {
+            console.log('ERROR');
+            this.player.remove();
+            this.setState({
+                error: true,
+                error_data: error
+            });
+        });
+
+        this.player.on('play', () => {
+            this.intervalFn = setInterval(() => {
+                exclusiveContentPlayEvent(this.props.program.type, this.props.program.id, this.props.program.title, this.props.program.program_title, this.props.program.genre, this.props.meta.image_path + '300' + this.props.program.portrait_image, this.props.meta.image_path + '300' + this.props.program.landscape_image, 'mweb_exclusive_content_play');
+                this.props.postHistory(this.props.program.id, this.props.program.type, this.player.getPosition())
+                    .then(response => {
+                        // console.log(response);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }, 2500);
+        });
+    }
+
+    renderPlayer() {
+        let playerRef = (<div></div>);
+        let errorRef = (<div></div>);
+
         if (this.state.error) {
-            playerRef = (
+            errorRef = (
                 <div className="wrapper-content" style={{ margin: 0 }}>
                     <div style={{ 
                         textAlign: 'center',
@@ -58,17 +114,21 @@ class PlayerModal extends React.Component {
                             <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
                             <span style={{ fontSize: 12 }}>Please try again later,</span><br/>
                             <span style={{ fontSize: 12 }}>we're working to fix the problem</span>
-                            {/* <Button onClick={this.tryAgain.bind(this)} className="btn-next" style={{ width: '50%' }}>Coba Lagi</Button> */}
                         </h5>
-                        {/* <SentimentVeryDissatisfiedIcon style={{ fontSize: '4rem' }}/>
-						<h5>
-							<strong>{this.state.error_data.message}</strong><br/><br/>
-							<Button onClick={this.tryAgain.bind(this)} className="btn-next block-btn">Coba Lagi</Button>
-						</h5> */}
 					</div>
                 </div>
             );
+            this.player.remove();
         }
+        else {
+            playerRef = (<div id={this.props.playerId}></div>);
+        }
+
+        return this.state.error ? errorRef : playerRef;
+    }
+
+    render() {
+        
 
         return (
             <Modal isOpen={this.props.open} toggle={this.props.toggle}>
@@ -76,7 +136,7 @@ class PlayerModal extends React.Component {
                     <ArrowBackIcon onClick={this.props.toggle}/>
                 </ModalHeader>
                 <ModalBody>
-                    {playerRef}
+                    {this.renderPlayer()}
                 </ModalBody>
             </Modal>
         );
@@ -84,4 +144,7 @@ class PlayerModal extends React.Component {
 
 }
 
-export default connect(state => state, pageActions)(PlayerModal);
+export default connect(state => state, {
+    ...pageActions,
+    ...historyActions
+})(PlayerModal);

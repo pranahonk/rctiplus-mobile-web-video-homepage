@@ -33,6 +33,8 @@ import '../assets/scss/components/exclusive.scss';
 
 import { SITEMAP } from '../config';
 
+import { exclusiveGeneralEvent, exclusiveTabEvent, exclusiveContentEvent, exclusiveShareEvent, exclusiveProfileProgramEvent, exclusiveTitleProgramEvent, exclusivePhotoSlideNextEvent, exclusivePhotoSlidePreviousEvent } from '../utils/appier';
+
 class Exclusive extends React.Component {
 
 	static getInitialProps(ctx) {
@@ -45,6 +47,7 @@ class Exclusive extends React.Component {
 		super(props);
 		this.state = {
 			active_tab: 1,
+			active_tab_name: 'All',
 			contents: [],
 			meta: null,
 			categories: [],
@@ -58,12 +61,16 @@ class Exclusive extends React.Component {
 			caption: '',
 			url: '',
 			hashtags: [],
-			category: this.props.category
+			category: this.props.category,
+			selected_program: null,
+			vmap: ''
 		};
 
 		this.player = null;
 		this.LoadingBar = null;
 		this.props.setPageLoader();
+		this.swipe = {};
+		this.direction = null;
 	}
 
 	componentDidMount() {
@@ -134,6 +141,35 @@ class Exclusive extends React.Component {
 			});
 	}
 
+	onTouchStart(e) {
+		const touch = e.touches[0];
+		this.swipe = { y: touch.clientY };
+	}
+
+	onTouchEnd(e) {
+		const touch = e.changedTouches[0];
+		const absY = Math.abs(touch.clientY - this.swipe.y);
+		if (absY > 50) {
+			exclusiveGeneralEvent('mweb_exclusive_scroll_vertical');
+		}
+	}
+
+	onTouchStartHorizontal(e) {
+		const touch = e.touches[0];
+		this.swipe = { x: touch.clientX };
+	}
+
+	onTouchEndHorizontal(e, program) {
+		const touch = e.changedTouches[0];
+		const absX = Math.abs(touch.clientX - this.swipe.x);
+		if (absX > 50) {
+			console.log('prev');
+		}
+		else {
+			console.log('next');
+		}
+	}
+
 	bottomScrollFetch(tab) {
 		if (tab && this.state.feed_states[tab.name]) {
 			this.LoadingBar.continuousStart();
@@ -162,7 +198,11 @@ class Exclusive extends React.Component {
 
 	toggleTab(tab, tabName = 'All') {
 		if (this.state.active_tab !== tab) {
-			this.setState({ active_tab: tab }, () => {
+			exclusiveTabEvent(tabName, 'mweb_exclusive_tab_clicked');
+			this.setState({ 
+				active_tab: tab,
+				active_tab_name: tabName
+			}, () => {
 				if (!this.state.feed_states[tabName]) {
 					this.props.setPageLoader();
 					this.props.getExclusives(tabName)
@@ -174,6 +214,7 @@ class Exclusive extends React.Component {
 							const dictFeedStates = this.state.feed_states;
 							dictFeedStates[tabName] = response.data.meta;
 
+							console.log(feeds);
 							this.setState({
 								feeds: dictFeeds,
 								feed_states: dictFeedStates,
@@ -189,21 +230,63 @@ class Exclusive extends React.Component {
 		}
 	}
 
-	toggle(video_url = '') {
-		this.setState({ modal: !this.state.modal }, () => {
-			if (this.state.modal) {
-				this.setState({ trailer_url: video_url }, () => {
-					setTimeout(() => {
-						if (this.player != null) {
-							this.player.play();
-						}
-					}, 1000);
-				});
+	async toggle(program = null, video_url = '') {
+		if (program) {
+			exclusiveContentEvent(program.type, program.id, program.title, program.program_title, program.genre, this.state.meta.image_path + this.state.resolution + program.portrait_image, this.state.meta.image_path + this.state.resolution + program.landscape_image, 'mweb_exclusive_content_clicked');
+
+			let data = null;
+			try {
+				switch (program.type) {
+					case 'episode':
+						data = await this.props.getEpisodeUrl(program.id);
+						break;
+	
+					case 'extra':
+						data = await this.props.getExtraUrl(program.id);
+						break;
+	
+					case 'clip':
+						data = await this.props.getClipUrl(program.id);
+						break;
+	
+					case 'photo':
+						data = await this.props.getPhotoUrl(program.id);
+						break;
+				}
 			}
-		});
+			catch (e) {
+				console.log(e);
+			}
+			
+
+			let vmap = '';
+			if (data && data.status === 200 && data.data.status.code === 0) {
+				video_url = data.data.data.url;
+				vmap = data.data.data.vmap;
+			}
+
+			this.setState({ 
+				modal: !this.state.modal,
+				trailer_url: video_url,
+				vmap: vmap, 
+				selected_program: program 
+			});
+		}
 	}
 
-	toggleActionSheet(caption = '', url = '', hashtags = []) {
+	toggleActionSheet(program = null, caption = '', url = '', hashtags = []) {
+		if (program) {
+			switch (program.type) {
+				case 'photo':
+					exclusiveShareEvent(program.program_id, program.program_title, program.title, program.type, 'N/A', this.state.active_tab_name, program.id, this.state.meta.image_path + this.state.resolution + program.list_image, url, 'mweb_exclusive_share_clicked');
+					break;
+
+				default:
+					exclusiveShareEvent(program.program_id, program.program_title, program.title, program.type, program.id, this.state.active_tab_name, 'N/A', 'N/A', url, 'mweb_exclusive_share_clicked');
+					break;
+			}
+		}
+
 		this.setState({
 			action_sheet: !this.state.action_sheet,
 			caption: caption,
@@ -212,7 +295,16 @@ class Exclusive extends React.Component {
 		});
 	}
 
-	goToDetail(program) {
+	goToDetail(program, type = '') {
+		switch (type) {
+			case 'profile':
+				exclusiveProfileProgramEvent(program.id, program.title, this.state.active_tab_name, 'mweb_exclusive_profile_program_clicked');
+				break;
+
+			case 'title':
+				exclusiveTitleProgramEvent(program.id, program.title, this.state.active_tab_name, 'mweb_exclusive_title_program_clicked');
+				break;
+		}
 		Router.push(`/programs/${program.program_id}/${program.title.replace(/ +/g, '-').toLowerCase()}`);
 	}
 
@@ -237,9 +329,13 @@ class Exclusive extends React.Component {
 
 				<PlayerModal
 					open={this.state.modal}
+					program={this.state.selected_program}
 					toggle={this.toggle.bind(this)}
 					onReady={() => this.player = window.jwplayer('example-id')}
 					playerId="example-id"
+					player={this.player}
+					vmap={this.state.vmap}
+					meta={this.state.meta}
 					videoUrl={this.state.trailer_url} />
 
 				<ActionSheet
@@ -247,9 +343,9 @@ class Exclusive extends React.Component {
 					url={this.state.url}
 					open={this.state.action_sheet}
 					hashtags={this.state.hashtags}
-					toggle={this.toggleActionSheet.bind(this, '', '', ['rcti'])} />
+					toggle={this.toggleActionSheet.bind(this, null, '', '', ['rcti'])} />
 
-				<div className="nav-exclusive-wrapper">
+				<div className="nav-exclusive-wrapper" onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
 					<Nav tabs id="exclusive">
 
 						{this.state.categories.map((c, i) => (
@@ -274,6 +370,7 @@ class Exclusive extends React.Component {
 														<Row className="feed-row">
 															<Col xs="2">
 																<Img 
+																	onClick={this.goToDetail.bind(this, feed, 'profile')}
 																	alt={feed.program_title}
 																	unloader={<img className="program-rounded-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
 																	loader={<img className="program-rounded-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>} 
@@ -281,7 +378,7 @@ class Exclusive extends React.Component {
 																	src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
 															</Col>
 															<Col xs="7">
-																<div onClick={this.goToDetail.bind(this, feed)} className="program-label">
+																<div onClick={this.goToDetail.bind(this, feed, 'title')} className="program-label">
 																	<div className="program-title">
 																		<strong>
 																			{feed.title.substring(0, 30) + (feed.title.length > 30 ? '...' : '')}
@@ -291,7 +388,7 @@ class Exclusive extends React.Component {
 																</div>
 															</Col>
 															<Col className="program-share-button">
-																<ShareIcon onClick={this.toggleActionSheet.bind(this, feed.title, feed.share_link, ['rcti'])} className="program-label-share-btn" />
+																<ShareIcon onClick={this.toggleActionSheet.bind(this, feed, feed.title, feed.share_link, ['rcti'])} className="program-label-share-btn" />
 															</Col>
 														</Row>
 														{feed.type == 'photo' ?
@@ -300,6 +397,36 @@ class Exclusive extends React.Component {
 																statusFormatter={(current, total) => `${current}/${total}`}
 																showThumbs={false}
 																showIndicators={feed.images.length > 1}
+																onSwipeStart={e => {
+																	this.swipe = { x: 0 };
+																	this.direction = null;
+																}}
+																onSwipeMove={e => {
+																	if (e.touches.length) {
+																		const x = e.touches[0].clientX;
+																		if (this.swipe.x < x) {
+																			this.direction = 'prev';
+																		}
+																		else {
+																			this.direction = 'next';
+																		}
+																		this.swipe = { x: x };
+																	}
+																}}
+																onSwipeEnd={e => {
+																	if (this.direction) {
+																		switch (this.direction) {
+																			case 'next':
+																				exclusivePhotoSlideNextEvent(feed.id, feed.title, this.state.active_tab_name, 'mweb_exclusive_photo_slide_next');
+																				break;
+
+																			case 'prev':
+																				exclusivePhotoSlidePreviousEvent(feed.id, feed.title, this.state.active_tab_name, 'mweb_exclusive_photo_slide_previous');
+																				break;
+																		}
+																	}
+																	this.swipe = { x: 0 };
+																}}
 																stopOnHover={true}
 																showArrows={false}
 																showStatus={feed.images.length > 1}
@@ -308,6 +435,7 @@ class Exclusive extends React.Component {
 																{feed.images.map((img, i) => (
 																	<Img 
 																		key={i} 
+																		data-index={i}
 																		alt={feed.title} 
 																		className="program-carousel-image" 
 																		unloader={<img className="program-carousel-image" src="/static/placeholders/placeholder_landscape.png"/>}
@@ -317,7 +445,7 @@ class Exclusive extends React.Component {
 															</Carousel>)
 															:
 															(
-																<div onClick={this.toggle.bind(this, feed.link_video)}>
+																<div onClick={this.toggle.bind(this, feed, feed.link_video)}>
 																	<Img 
 																		alt={feed.title} 
 																		className="program-thumbnail" 

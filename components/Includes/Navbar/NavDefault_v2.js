@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 
 import actions from '../../../redux/actions';
 import pageActions from '../../../redux/actions/pageActions';
 
 import { getCookie, removeCookie } from '../../../utils/cookie';
-import { homeGeneralClicked } from '../../../utils/appier';
+import { homeGeneralClicked, exclusiveGeneralEvent } from '../../../utils/appier';
 import '../../../assets/scss/components/navbar-v2.scss';
 
 //load reactstrap
@@ -23,14 +23,26 @@ class NavbarDef_v2 extends Component {
             token: getCookie('ACCESS_TOKEN'),
             is_top: true
         };
+
+        console.log();
     }
 
     goToHome() {
-        homeGeneralClicked('mweb_homepage_logo_clicked');
+        switch (this.props.router.asPath) {
+            case '/exclusive':
+                exclusiveGeneralEvent('mweb_exclusive_logo_clicked');
+                break;
+
+            default:
+                homeGeneralClicked('mweb_homepage_logo_clicked');
+                break;
+        }
+        
         Router.push('/');
     }
 
     goToExplore() {
+        
         homeGeneralClicked('mweb_search_clicked');
         Router.push('/explores')
     }
@@ -94,4 +106,4 @@ class NavbarDef_v2 extends Component {
 export default connect(state => state, {
     ...actions,
     ...pageActions
-})(NavbarDef_v2);
+})(withRouter(NavbarDef_v2));
