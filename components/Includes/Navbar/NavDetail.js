@@ -3,7 +3,7 @@ import Router, { withRouter } from 'next/router';
 
 import { Navbar, NavbarBrand } from 'reactstrap';
 import queryString from 'query-string';
-import { contentGeneralEvent } from '../../../utils/appier';
+import { contentGeneralEvent, libraryProgramBackClicked } from '../../../utils/appier';
 
 import '../../../assets/scss/components/navbar.scss';
 
@@ -38,15 +38,23 @@ class NavbarDetail extends Component {
 	}
 
 	goBack() {
-		if (this.props.data && this.reference && this.reference == 'homepage') {
-			console.log(this.props.data);
+		if (this.props.data && this.reference) {
 			const data = this.props.data.data;
 			const meta = this.props.data.meta;
 			let genre = [];
 			for (let i = 0; i < data.genre.length; i++) {
 				genre.push(data.genre[i].name);
 			}
-			contentGeneralEvent('N/A', 'program', data.id, data.title, data.title, genre.join(','), meta.image_path + '593' + data.portrait_image, meta.image_path + '593' + data.landscape_image, 'mweb_homepage_program_back_clicked');
+			switch (this.reference) {
+				case 'homepage':
+					contentGeneralEvent('N/A', 'program', data.id, data.title, data.title, genre.join(','), meta.image_path + '593' + data.portrait_image, meta.image_path + '593' + data.landscape_image, 'mweb_homepage_program_back_clicked');
+					break;
+
+				case 'library':
+					libraryProgramBackClicked(data.title, data.id, 'program', 'mweb_library_program_back_clicked');
+					break;
+			}
+			
 		}
 		Router.back();
 	}

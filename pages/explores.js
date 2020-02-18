@@ -278,7 +278,6 @@ class Explores extends React.Component {
 				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}/${data.type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}?ref=library`);
 				break;
 		}
-		
 	}
 
 	getMetadata() {
