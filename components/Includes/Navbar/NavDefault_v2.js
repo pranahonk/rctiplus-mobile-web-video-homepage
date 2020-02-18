@@ -52,7 +52,7 @@ class NavbarDef_v2 extends Component {
                 break;
 
             case '/profile':
-                accountGeneralEvent('mweb_account_logo_clicked');
+                accountGeneralEvent('mweb_account_library_clicked');
                 break;
 
             default:
