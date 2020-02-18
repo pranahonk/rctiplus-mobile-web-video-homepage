@@ -46,6 +46,19 @@ class NavbarDef_v2 extends Component {
     }
 
     goToExplore() {
+        switch (this.props.router.asPath) {
+            case '/exclusive':
+                exclusiveGeneralEvent('mweb_exclusive_library_clicked');
+                break;
+
+            case '/profile':
+                accountGeneralEvent('mweb_account_logo_clicked');
+                break;
+
+            default:
+                homeGeneralClicked('mweb_library_clicked');
+                break;
+        }
         
         homeGeneralClicked('mweb_search_clicked');
         Router.push('/explores')
