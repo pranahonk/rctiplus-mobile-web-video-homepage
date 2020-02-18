@@ -75,7 +75,10 @@ class Profile extends React.Component {
 		);
 		if (this.state.logged_in) {
 			actionProfile = (
-				<div onClick={() => Router.push('/edit-profile')}>
+				<div onClick={() => {
+					accountGeneralEvent('mweb_account_edit_profile_clicked');
+					Router.push('/edit-profile');
+				}}>
 					<Img 
 						alt={this.state.display_name}
 						unloader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>}
@@ -129,13 +132,22 @@ class Profile extends React.Component {
 					}}>
 						<QueryBuilderIcon/> Continue Watching
 					</ListGroupItem>
-					<ListGroupItem onClick={() => Router.push('/terms-&-conditions')}>
+					<ListGroupItem onClick={() => {
+						accountGeneralEvent('mweb_account_tnc_clicked');
+						Router.push('/terms-&-conditions');
+					}}>
 						<InfoOutlinedIcon/> Term &amp; Condition
 					</ListGroupItem>
-					<ListGroupItem onClick={() => Router.push('/privacy-policy')}>
+					<ListGroupItem onClick={() => {
+						accountGeneralEvent('mweb_account_privacy_policy_clicked');
+						Router.push('/privacy-policy');
+					}}>
 						<LockOutlinedIcon/> Privacy Policy
 					</ListGroupItem>
-					<ListGroupItem onClick={() => Router.push('/contact-us')}>
+					<ListGroupItem onClick={() => {
+						accountGeneralEvent('mweb_account_contact_us_clicked');
+						Router.push('/contact-us');
+					}}>
 						<MailOutlineOutlinedIcon/> Contact Us
 					</ListGroupItem>
 					<ListGroupItem onClick={() => Router.push('/faq')}>

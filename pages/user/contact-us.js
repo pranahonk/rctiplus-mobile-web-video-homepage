@@ -8,7 +8,9 @@ import pageActions from '../../redux/actions/pageActions';
 
 import Layout from '../../components/Layouts/Default';
 import NavBack from '../../components/Includes/Navbar/NavBack';
+
 import { showAlert } from '../../utils/helpers';
+import { accountContactUsFormEvent } from '../../utils/appier';
 
 import '../../assets/scss/components/contact-us.scss';
 import { SITEMAP } from '../../config';
@@ -65,6 +67,7 @@ class ContactUs extends React.PureComponent {
             .then(response => {
                 this.props.unsetPageLoader();
                 if (response.status === 200) {
+                    accountContactUsFormEvent(this.state.comment, 'mweb_account_contact_us_form');
                     showAlert(response.data.status.message_client, 'Success', 'OK', '', () => Router.push('/profile'));
                 }
                 else {

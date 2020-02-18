@@ -43,6 +43,22 @@ class NavbarDef extends Component {
                                     case '/continue-watching':
                                         accountGeneralEvent('mweb_account_continue_watching_back_clicked');
                                         break;
+
+                                    case '/terms-&-conditions':
+                                        accountGeneralEvent('mweb_account_tnc_back_clicked');
+                                        break;
+
+                                    case '/privacy-policy':
+                                        accountGeneralEvent('mweb_account_privacy_policy_back_clicked');
+                                        break;
+
+                                    case '/contact-us':
+                                        accountGeneralEvent('mweb_account_contact_us_back_clicked');
+                                        break;
+
+                                    case '/edit-profile':
+                                        accountGeneralEvent('mweb_account_edit_profile_back_clicked');
+                                        break;
                                 }
                                 Router.back();
                             }} style={{color: 'white'}}>

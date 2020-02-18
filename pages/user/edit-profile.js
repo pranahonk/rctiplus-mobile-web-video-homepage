@@ -9,6 +9,7 @@ import userActions from '../../redux/actions/userActions';
 import othersActions from '../../redux/actions/othersActions';
 
 import { removeCookie } from '../../utils/cookie';
+import { accountGeneralEvent } from '../../utils/appier';
 
 //load default layout
 import Layout from '../../components/Layouts/Default';
@@ -179,7 +180,8 @@ class EditProfile extends React.Component {
                         {
                             label: 'Log Out',
                             callback: () => {
-                                const deviceId = 1;
+                                accountGeneralEvent('mweb_account_signout_clicked');
+                                const deviceId = new DeviceUUID().get();
                                 this.props.logout(deviceId)
                                     .then(() => Router.push('/login'))
                                     .catch(() => removeCookie('ACCESS_TOKEN'));

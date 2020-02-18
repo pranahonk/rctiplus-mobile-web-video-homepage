@@ -12,13 +12,14 @@ import othersActions from '../../../redux/actions/othersActions';
 import Layout from '../../../components/Layouts/Default';
 import NavBack from '../../../components/Includes/Navbar/NavBack';
 
-//load reactstrap components
 import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback, InputGroupAddon, InputGroupText } from 'reactstrap';
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import '../../../assets/scss/components/form-field.scss';
+
+import { accountGeneralEvent } from '../../../utils/appier';
 
 class FormField extends React.Component {
 
@@ -102,6 +103,7 @@ class FormField extends React.Component {
                             this.props.showNotification(response.data.status.message_server, false);
                         }
                         else {
+                            accountGeneralEvent('mweb_account_edit_profile_form');
                             this.props.setUsername(value);
                             if (this.props.user.data_key[this.props.others.index] === 'phone_number') {
                                 this.props.setUsernameType('PHONE_NUMBER');
@@ -126,6 +128,7 @@ class FormField extends React.Component {
 
         this.props.updateUserData(this.props.user.data_key[this.props.others.index], value)
             .then(response => {
+                accountGeneralEvent('mweb_account_edit_profile_form');
                 this.props.showNotification('*Your data is saved');
                 setTimeout(() => this.props.hideNotification(), 3000);
                 Router.back();

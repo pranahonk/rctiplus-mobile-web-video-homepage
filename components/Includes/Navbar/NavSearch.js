@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 
@@ -18,6 +18,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
+import { libraryGeneralEvent } from '../../../utils/appier';
 
 class NavbarSearch extends Component {
     constructor(props) {
@@ -79,13 +80,19 @@ class NavbarSearch extends Component {
                     <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
-                            <NavbarBrand onClick={() => Router.back()} style={{ color: 'white' }}>
+                            <NavbarBrand onClick={() => {
+                                // if (this.props.router.asPath.indexOf('/explores') === 0) {
+                                //     libraryGeneralEvent('mweb_library_program_back_clicked');
+                                // }
+                                Router.back();
+                            }} style={{ color: 'white' }}>
                                 <ArrowBackIcon />
                             </NavbarBrand>
                         </div>
                     </div>
                     <div className="middle-top">
                         <Input
+                            onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
                             placeholder="Search for a program, genre, etc."
                             onChange={this.onChangeQuery.bind(this)}
                             value={this.state.q}
@@ -109,4 +116,4 @@ class NavbarSearch extends Component {
 export default connect(state => state, {
     ...searchActions,
     ...pageActions
-})(NavbarSearch);
+})(withRouter(NavbarSearch));

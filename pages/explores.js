@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import fetch from 'isomorphic-unfetch';
+import queryString from 'query-string';
 
 import pageActions from '../redux/actions/pageActions';
 import userActions from '../redux/actions/userActions';
@@ -22,6 +23,7 @@ import '../assets/scss/components/explore.scss';
 
 import { VISITOR_TOKEN, DEV_API, SITEMAP } from '../config';
 import { getCookie } from '../utils/cookie';
+import { libraryGeneralEvent, libraryProgramClicked } from '../utils/appier';
 
 class Explores extends React.Component {
 	
@@ -43,7 +45,17 @@ class Explores extends React.Component {
         const data = await res.json();
         if (data.status.code === 1) {
             return { initial: false };
-        }
+		}
+		
+		const segments = ctx.asPath.split(/\?/);
+        let genreId = null;
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.id) {
+                genreId = q.id;
+            }
+		}
+		ctx.query.id = genreId ? Number(genreId) : genreId;
 		return { query: ctx.query, interests: data };
 	}
 
@@ -73,14 +85,11 @@ class Explores extends React.Component {
 			selected_genre_id: this.props.query.id ? this.props.query.id : -1
 		};
 		this.props.setPageLoader();
-
-		// TODO: META TITLE, DESCRIPTION, AND KEYWORDS
-		console.log(this.state.selected_genre);
 	}
 
 	componentDidMount() { 
 		if (this.state.selected_genre_id != -1) {
-			this.selectGenre(this.state.selected_genre);
+			this.selectGenre(this.state.selected_genre, 'program', true);
 		}
 		else {
 			this.LoadingBar.continuousStart();
@@ -115,7 +124,11 @@ class Explores extends React.Component {
 		
 	}
 
-	selectGenre(genre, category = 'program') {
+	selectGenre(genre, category = 'program', first = false) {
+		if (first == false) {
+			libraryGeneralEvent('mweb_library_category_clicked');
+		}
+		
 		let recommendations = this.state.recommendations;
 		if (!recommendations[`genre-${genre.id}`]) {
 			this.props.setPageLoader();
@@ -250,12 +263,19 @@ class Explores extends React.Component {
 	}
 
 	link(data) {
+		console.log(data);
+		// libraryProgramClicked();
+		if (!data.type) {
+			Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}?ref=library`);
+			return;
+		}
+
 		switch (data.type) {
 			case 'program':
-				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}`);
+				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}?ref=library`);
 				break;
 			default:
-				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}/${data.type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}`);
+				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}/${data.type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}?ref=library`);
 				break;
 		}
 		
@@ -345,4 +365,4 @@ export default connect(state => state, {
 	...userActions,
 	...pageActions,
 	...searchActions
-})(Explores);
+})(withRouter(Explores));
