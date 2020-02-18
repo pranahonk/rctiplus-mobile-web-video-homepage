@@ -712,4 +712,8 @@ export const accountMylistContentPlayEvent = (contentType, contentId, contentTit
     accountHistoryContentPlayEvent(contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, duration, videoDuration, event);
 };
 
+export const accountMylistRemoveMylistClicked = (contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, duration, videoDuration, event = 'mweb_account_mylist_remove_mylist_clicked') => {
+    accountHistoryContentPlayEvent(contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, duration, videoDuration, event);
+};
+
 // END

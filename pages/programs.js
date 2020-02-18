@@ -46,7 +46,7 @@ import '../assets/scss/components/detail.scss';
 
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
-import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent } from '../utils/appier';
+import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked } from '../utils/appier';
 
 class Detail extends React.Component {
 
@@ -453,6 +453,18 @@ class Detail extends React.Component {
     }
 
     goToPhotoList(photo) {
+        if (this.reference) {
+            switch (this.reference) {
+                case 'homepage':
+                    programContentEvent(photo.program_id, this.props.initial.data.title, 'photo', photo.id, photo.title, 'mweb_homepage_program_content_clicked');
+                    break;
+
+                case 'mylist':
+                    accountMylistContentClicked(photo.program_id, this.props.initial.data.title, photo.title, 'photo', photo.id, 'mweb_account_mylist_content_clicked');
+                    break;
+            }
+            
+        }
         Router.push(`/programs/${this.props.router.query.id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/photo/${photo.id}/${photo.title.replace(/ +/g, '-').toLowerCase()}`);
     }
 
@@ -655,16 +667,16 @@ class Detail extends React.Component {
         if (this.reference) {
             switch (this.reference) {
                 case 'homepage':
-                    programContentEvent(cw.programId, this.props.initial.data.title, type, cw.id, cw.title, 'mweb_homepage_program_content_clicked');
+                    programContentEvent(cw.program_id, this.props.initial.data.title, type, cw.id, cw.title, 'mweb_homepage_program_content_clicked');
                     break;
 
                 case 'mylist':
-                    console.log('mylist');
+                    accountMylistContentClicked(cw.program_id, this.props.initial.data.title, cw.title, type, cw.id, 'mweb_account_mylist_content_clicked');
                     break;
             }
             
         }
-		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}${this.reference ? `?ref=${this.reference}_program&homepage_title=${this.homepageTitle}` : ''}`);
+		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}${this.reference ? `?ref=${this.reference}_program${this.reference && this.homepageTitle ? `&homepage_title=${this.homepageTitle}` : ''}` : ''}`);
 	}
 
     render() {
@@ -681,7 +693,7 @@ class Detail extends React.Component {
         for (let key in tabsObj) {
             if (tabsObj[key] > 0) {
                 tabs.push(<NavItem key={key} className="menu-title">
-                            <Link scroll={false} href={`/programs?id=${this.props.query.id}&title=${this.props.query.title}&content_type=${key.toLowerCase()}s`} as={`/programs/${this.props.query.id}/${this.props.query.title}/${key.toLowerCase()}s${this.reference && this.reference == 'homepage' ? `?ref=${this.reference}&homepage_title=${this.homepageTitle}` : ''}`}>
+                            <Link scroll={false} href={`/programs?id=${this.props.query.id}&title=${this.props.query.title}&content_type=${key.toLowerCase()}s`} as={`/programs/${this.props.query.id}/${this.props.query.title}/${key.toLowerCase()}s${this.reference ? `?ref=${this.reference}${this.reference && this.homepageTitle ? `&homepage_title=${this.homepageTitle}` : ''}` : ''}`}>
                                 <NavLink onClick={this.toggleTab.bind(this, idx.toString(), key)} className={classnames({ active: this.state.active_tab === idx.toString() })}>{key}</NavLink>
                             </Link>
                         </NavItem>);
