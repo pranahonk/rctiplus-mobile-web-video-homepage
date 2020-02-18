@@ -19,7 +19,7 @@ import '../../assets/scss/components/content.scss';
 
 import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
 import { getCookie } from '../../utils/cookie';
-import { programContentPlayEvent, homepageContentPlayEvent } from '../../utils/appier';
+import { programContentPlayEvent, homepageContentPlayEvent, accountHistoryContentPlayEvent } from '../../utils/appier';
 
 class Content extends React.PureComponent {
 
@@ -168,6 +168,9 @@ class Content extends React.PureComponent {
                         }
                         else if (this.reference == 'homepage') {
                             homepageContentPlayEvent(this.homepageTitle ? this.homepageTitle : 'N/A', data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_homepage_content_play');
+                        }
+                        else if (this.reference == 'history') {
+                            accountHistoryContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_account_history_content_play');
                         }
                     }
                     

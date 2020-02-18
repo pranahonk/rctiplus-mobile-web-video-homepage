@@ -6,6 +6,7 @@ import Img from 'react-image';
 import userActions from '../redux/actions/userActions';
 import initialize from '../utils/initialize';
 import { showAlert, showSignInAlert } from '../utils/helpers';
+import { accountGeneralEvent } from '../utils/appier';
 
 //load default layout
 import Layout from '../components/Layouts/Default_v2';
@@ -66,7 +67,10 @@ class Profile extends React.Component {
 			<div className="profile-action">
 				<p><AccountCircleIcon/> Hi</p>
 				<p className="subtitle">To enjoy all the features, please login now</p>
-				<p className="sub-btn"><Button onClick={() => Router.push('/login')} className="btn-next btn-login">Login</Button></p>
+				<p className="sub-btn"><Button onClick={() => {
+					accountGeneralEvent('mweb_account_signin_clicked');
+					Router.push('/login');
+				}} className="btn-next btn-login">Login</Button></p>
 			</div>
 		);
 		if (this.state.logged_in) {
@@ -89,10 +93,14 @@ class Profile extends React.Component {
 					<ListGroupItem>
 						{actionProfile}
 					</ListGroupItem>
-					<ListGroupItem onClick={() => Router.push('/qrcode')}>
+					<ListGroupItem onClick={() => {
+						accountGeneralEvent('mweb_account_scan_qrcode_clicked');
+						Router.push('/qrcode');
+					}}>
 						<img className="MuiSvgIcon-root" src="static/btn/qrcode.png"/> Scan QR Code
 					</ListGroupItem>
 					<ListGroupItem onClick={() => {
+						accountGeneralEvent('mweb_account_history_clicked');
 						if (!this.state.logged_in) {
 							showSignInAlert(`Please <b>Sign In</b><br/>
 							Woops! Gonna sign in first!<br/>
@@ -109,7 +117,10 @@ class Profile extends React.Component {
 					<ListGroupItem onClick={this.showOpenPlaystoreAlert.bind(this)}>
 						<GetAppIcon/> Download
 					</ListGroupItem>
-					<ListGroupItem onClick={() => Router.push('/mylist')}>
+					<ListGroupItem onClick={() => {
+						accountGeneralEvent('mweb_account_mylist_clicked');
+						Router.push('/mylist');
+					}}>
 						<PlaylistAddCheckIcon/> My List
 					</ListGroupItem>
 					<ListGroupItem onClick={() => Router.push('/continue-watching')}>

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import { showAlert } from '../../utils/helpers';
 import { getCookie } from '../../utils/cookie';
+import { accountGeneralEvent } from '../../utils/appier';
 
 import othersActions from '../../redux/actions/othersActions';
 
@@ -41,6 +42,7 @@ class Qrcode extends React.Component {
     handleScan = data => {
         if (data && !this.state.scan) {
             this.setState({ result: data, scan: true }, () => {
+                accountGeneralEvent('mweb_account_scan_qrcode');
                 this.props.scanQRCode(this.state.result)
                     .then(response => {
                         console.log(response);

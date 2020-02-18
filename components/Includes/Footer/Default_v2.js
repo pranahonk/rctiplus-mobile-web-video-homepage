@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Router, { withRouter } from 'next/router';
 
-import { homeGeneralClicked, exclusiveGeneralEvent } from '../../../utils/appier';
+import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent } from '../../../utils/appier';
 
 import '../../../assets/scss/components/footer-v2.scss';
 
@@ -47,6 +47,10 @@ class FooterNav_v2 extends Component {
                         switch (this.props.router.asPath) {
                             case '/exclusive':
                                 exclusiveGeneralEvent('mweb_exclusive_library_clicked');
+                                break;
+
+                            case '/profile':
+                                accountGeneralEvent('mweb_account_library_clicked');
                                 break;
 
                             default:

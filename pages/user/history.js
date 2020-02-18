@@ -12,6 +12,7 @@ import pageActions from '../../redux/actions/pageActions';
 
 import initialize from '../../utils/initialize';
 import { showAlert } from '../../utils/helpers';
+import { accountGeneralEvent, accountHistoryClearHistoryClicked, accountHistoryContentClicked, accountHistoryShareClicked, accountHistoryDownloadClicked } from '../../utils/appier';
 
 import Layout from '../../components/Layouts/Default';
 import NavBack from '../../components/Includes/Navbar/NavBack';
@@ -63,6 +64,10 @@ class History extends React.Component {
 		this.props.deleteHistory()
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {
+					const histories = this.state.histories;
+					for (let i = 0; i < histories.length; i++) {
+						accountHistoryClearHistoryClicked(histories[i].program_id, histories[i].program_title, histories[i].content_id, histories[i].content_title, 'mweb_account_history_clear_history_clicked');
+					}
 					this.setState({
 						page: 1,
 						histories: [],
@@ -97,7 +102,7 @@ class History extends React.Component {
 							meta: response.data.meta,
 							load_more_allowed: response.data.data.length >= this.state.length,
 							first_load: false
-						}, () => this.orderBy(this.state.order_by));
+						}, () => this.orderBy(this.state.order_by, true));
 					}
 
 					this.LoadingBar.complete()
@@ -112,27 +117,43 @@ class History extends React.Component {
 		}
 	}
 
-	orderBy(order) {
+	orderBy(order, first = false) {
 		this.setState({ order_by: order }, () => {
 			switch (this.state.order_by) {
 				case 'title':
 					let histories = this.state.histories.slice();
 					histories.sort((a, b) => (a.title > b.title) ? 1 : -1);
-					this.setState({ ordered_histories: histories });
+					this.setState({ ordered_histories: histories }, () => {
+						if (!first) {
+							accountGeneralEvent('mweb_account_history_filter_asc_clicked');
+						}
+					});
 					break;
 
 				default:
-					this.setState({ ordered_histories: this.state.histories.slice() });
+					this.setState({ ordered_histories: this.state.histories.slice() }, () => {
+						if (!first) {
+							accountGeneralEvent('mweb_account_history_filter_latest_post_clicked');
+						}
+					});
 					break;
 			}
 		});
 	}
 
 	toggleDropdown() {
-		this.setState({ dropdown_open: !this.state.dropdown_open });
+		this.setState({ dropdown_open: !this.state.dropdown_open }, () => {
+			if (this.state.dropdown_open) {
+				accountGeneralEvent('mweb_account_history_filter_clicked');
+			}
+		});
 	}
 
-	toggleActionSheet(caption = '', url = '', hashtags = []) {
+	toggleActionSheet(caption = '', url = '', hashtags = [], cw = null) {
+		if (cw && !this.state.action_sheet) {
+			accountHistoryShareClicked(cw.program_id, cw.program_title, cw.content_title, cw.content_type, cw.content_id, 'mweb_account_history_share_clicked');
+		}
+
 		this.setState({
 			action_sheet: !this.state.action_sheet,
 			caption: caption,
@@ -141,15 +162,18 @@ class History extends React.Component {
 		});
 	}
 
-	showOpenPlaystoreAlert() {
+	showOpenPlaystoreAlert(cw) {
+		accountHistoryDownloadClicked(cw.program_id, cw.program_title, cw.content_title, cw.content_type, cw.content_id, 'mweb_account_history_download_clicked');
 		showAlert('To be able to see and watching your downloaded file, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); });
 	}
 
 	link(cw) {
-		Router.push(`/programs/${cw.program_id}/${cw.program_title.replace(' ', '-').toLowerCase()}/${cw.content_type}/${cw.content_id}/${cw.content_title.replace(' ', '-').toLowerCase()}`);
+		accountHistoryContentClicked(cw.program_id, cw.program_title, cw.content_title, cw.content_type, cw.content_id, 'mweb_account_history_content_clicked');
+		Router.push(`/programs/${cw.program_id}/${cw.program_title.replace(' ', '-').toLowerCase()}/${cw.content_type}/${cw.content_id}/${cw.content_title.replace(' ', '-').toLowerCase()}?ref=history`);
 	}
 
 	addToMyList(id, type) {
+		accountGeneralEvent('mweb_account_history_add_mylist_clicked');
 		this.props.setPageLoader();
 		this.props.bookmark(id, type)
 			.then(response => {
@@ -284,10 +308,10 @@ class History extends React.Component {
 
 									</div>
 									<div className="action-button">
-										<ShareIcon onClick={this.toggleActionSheet.bind(this, cw.content_title, cw.share_link, ['rcti'])} className="action-icon" />
+										<ShareIcon onClick={this.toggleActionSheet.bind(this, cw.content_title, cw.share_link, ['rcti'], cw)} className="action-icon" />
 									</div>
 									<div className="action-button">
-										<GetAppIcon className="action-icon" onClick={this.showOpenPlaystoreAlert.bind(this)} />
+										<GetAppIcon className="action-icon" onClick={this.showOpenPlaystoreAlert.bind(this, cw)} />
 									</div>
 								</div>
 							</Col>

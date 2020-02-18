@@ -651,4 +651,57 @@ export const accountGeneralEvent = (event = 'mweb_account_logo_clicked') => {
     homeGeneralClicked(event);
 };
 
+export const accountHistoryClearHistoryClicked = (programId, programName, contentId, contentName, event = 'mweb_account_history_clear_history_clicked') => {
+    console.log(event);
+    qg('event', event,
+    {
+        program_id: programId,
+        program_name: programName,
+        content_id: contentId,
+        content_name: contentName,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const accountHistoryContentClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_history_content_clicked') => {
+    console.log(event);
+    qg('event', event,
+    {
+        program_id: programId,
+        program_title: programTitle,
+        content_id: contentId,
+        content_title: contentTitle,
+        content_type: contentType,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const accountHistoryContentPlayEvent = (contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, duration, videoDuration, event = 'mweb_account_history_content_play') => {
+    console.log(event);
+    qg('event', event,
+    {
+        program_title: programTitle,
+        content_id: contentId,
+        content_title: contentTitle,
+        content_type: contentType,
+        genre: genre,
+        portrait_image: portraitImage,
+        landscape_image: landscapeImage,
+        duration: duration,
+        video_duration: videoDuration,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const accountHistoryShareClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_history_share_clicked') => {
+    accountHistoryContentClicked(programId, programTitle, contentTitle, contentType, contentId, event);
+};
+
+export const accountHistoryDownloadClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_history_download_clicked') => {
+    accountHistoryContentClicked(programId, programTitle, contentTitle, contentType, contentId, event);
+};
+
 // END

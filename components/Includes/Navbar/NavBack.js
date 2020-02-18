@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 
-//load reactstrap
 import { Navbar, NavbarBrand, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import StatusNotification from './StatusNotification';
+
+import { accountGeneralEvent } from '../../../utils/appier';
 
 class NavbarDef extends Component {
     
@@ -29,7 +30,18 @@ class NavbarDef extends Component {
                 <Navbar expand="md" className="nav-container nav-shadow">
                     <div className="top-link">
                         <div className="logo-top-wrapper">
-                            <NavbarBrand onClick={() => Router.back()} style={{color: 'white'}}>
+                            <NavbarBrand onClick={() =>{ 
+                                switch (this.props.router.asPath) {
+                                    case '/history':
+                                        accountGeneralEvent('mweb_account_history_back_clicked');
+                                        break;
+
+                                    case '/mylist':
+                                        accountGeneralEvent('mweb_account_mylist_back_clicked');
+                                        break;
+                                }
+                                Router.back();
+                            }} style={{color: 'white'}}>
                                 <ArrowBackIcon/>
                             </NavbarBrand>
                         </div>
@@ -53,4 +65,4 @@ class NavbarDef extends Component {
         );
     }
 }
-export default NavbarDef;
+export default withRouter(NavbarDef);
