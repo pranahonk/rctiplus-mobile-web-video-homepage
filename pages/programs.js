@@ -664,7 +664,7 @@ class Detail extends React.Component {
             }
             
         }
-		// Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}${this.reference ? `?ref=${this.reference}_program&homepage_title=${this.homepageTitle}` : ''}`);
+		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}${this.reference ? `?ref=${this.reference}_program&homepage_title=${this.homepageTitle}` : ''}`);
 	}
 
     render() {
