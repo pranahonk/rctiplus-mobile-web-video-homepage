@@ -46,7 +46,7 @@ import '../assets/scss/components/detail.scss';
 
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
-import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked } from '../utils/appier';
+import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked } from '../utils/appier';
 
 class Detail extends React.Component {
 
@@ -514,7 +514,7 @@ class Detail extends React.Component {
             });
     }
 
-    deleteFromMyList(id, type) {
+    deleteFromMyList(id, type, content = null) {
         this.props.deleteBookmark(id, type)
             .then(response => {
                 switch (type) {
@@ -526,6 +526,10 @@ class Detail extends React.Component {
                         const bookmarkedEpisode = this.state.bookmarked_episode;
                         const indexEpisode = bookmarkedEpisode.findIndex(b => b.id == id);
                         if (indexEpisode !== -1) {
+                            if (content) {
+                                let genre = this.state.genre.map(g => g.name);
+                                accountMylistRemoveMylistClicked(type, content.id, content.title, this.props.initial.data.title, genre.join(','), this.state.meta.image_path + '140' + content.portrait_image, this.state.meta.image_path + '140' + content.landscape_image, bookmarkedEpisode[indexEpisode].last_duration, content.duration, 'mweb_account_mylist_remove_mylist_clicked');
+                            }
                             bookmarkedEpisode.splice(indexEpisode, 1);
                             this.setState({ bookmarked_episode: bookmarkedEpisode });
                         }
@@ -535,6 +539,10 @@ class Detail extends React.Component {
                         const bookmarkedExtra = this.state.bookmarked_extra;
                         const indexExtra = bookmarkedExtra.findIndex(b => b.id == id);
                         if (indexExtra !== -1) {
+                            if (content) {
+                                let genre = this.state.genre.map(g => g.name);
+                                accountMylistRemoveMylistClicked(type, content.id, content.title, this.props.initial.data.title, genre.join(','), this.state.meta.image_path + '140' + content.portrait_image, this.state.meta.image_path + '140' + content.landscape_image, bookmarkedExtra[indexExtra].last_duration, content.duration, 'mweb_account_mylist_remove_mylist_clicked');
+                            }
                             bookmarkedExtra.splice(indexExtra, 1);
                             this.setState({ bookmarked_extra: bookmarkedExtra });
                         }
@@ -544,12 +552,15 @@ class Detail extends React.Component {
                         const bookmarkedClip = this.state.bookmarked_clip;
                         const indexClip = bookmarkedClip.findIndex(b => b.id == id);
                         if (indexClip !== -1) {
+                            if (content) {
+                                let genre = this.state.genre.map(g => g.name);
+                                accountMylistRemoveMylistClicked(type, content.id, content.title, this.props.initial.data.title, genre.join(','), this.state.meta.image_path + '140' + content.portrait_image, this.state.meta.image_path + '140' + content.landscape_image, bookmarkedClip[indexClip].last_duration, content.duration, 'mweb_account_mylist_remove_mylist_clicked');
+                            }
                             bookmarkedClip.splice(indexClip, 1);
                             this.setState({ bookmarked_clip: bookmarkedClip });
                         }
                         break;
                 }
-                
             })
             .catch(error => console.log(error));
     }
@@ -885,7 +896,8 @@ class Detail extends React.Component {
                                             <p onClick={() => this.link(e, 'episode')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
-                                                    {this.state.bookmarked_episode.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'episode')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'episode', e)} />)}
+                                                    {this.state.bookmarked_episode.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'episode', e
+                                                    )} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'episode', e)} />)}
                                                 </div>
                                                 <div className="action-button">
                                                     <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'episode', e)} className="action-icon" />
@@ -916,7 +928,7 @@ class Detail extends React.Component {
                                             <p onClick={() => this.link(e, 'extra')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
-                                                    {this.state.bookmarked_extra.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'extra')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'extra', e)} />)}
+                                                    {this.state.bookmarked_extra.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'extra', e)} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'extra', e)} />)}
                                                 </div>
                                                 <div className="action-button">
                                                     <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'extra', e)} className="action-icon" />
@@ -942,7 +954,7 @@ class Detail extends React.Component {
                                             <p onClick={() => this.link(e, 'clip')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
-                                                    {this.state.bookmarked_clip.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'clip')} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'clip', e)} />)}
+                                                    {this.state.bookmarked_clip.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'clip', e)} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'clip', e)} />)}
                                                 </div>
                                                 <div className="action-button">
                                                     <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'clip', e)} className="action-icon" />
