@@ -4,8 +4,7 @@ import { formatDateTime } from '../utils/dateHelpers';
 const jwtDecode = require('jwt-decode');
 const TOKEN_KEY = 'ACCESS_TOKEN';
 
-export const homeGeneralClicked = (event = 'mweb_homepage_logo_clicked') => {
-    console.log(event);
+const getUserId = () => {
     const accessToken = getCookie(TOKEN_KEY);
     let userId = new DeviceUUID().get();
     if (accessToken) {
@@ -16,10 +15,15 @@ export const homeGeneralClicked = (event = 'mweb_homepage_logo_clicked') => {
             console.log(e);
         }
     }
+    
+    return userId;
+};
 
+export const homeGeneralClicked = (event = 'mweb_homepage_logo_clicked') => {
+    console.log(event);
     qg('event', event,
     {
-        users_id: userId,
+        users_id: getUserId(),
         date_time: formatDateTime(new Date())
     });
 };
@@ -421,7 +425,6 @@ export const homepageContentPlayEvent = (homepageTitle, contentType, contentId, 
     });
 };
 
-// START
 export const exclusiveGeneralEvent = (event = 'mweb_exclusive_logo_clicked') => {
     homeGeneralClicked(event);
 };
@@ -565,6 +568,87 @@ export const exclusivePhotoSlideNextEvent = (programId, programName, tabName, ev
 
 export const exclusivePhotoSlidePreviousEvent = (programId, programName, tabName, event = 'mweb_exclusive_photo_slide_previous') => {
     exclusiveProfileProgramEvent(programId, programName, tabName, event);
+};
+
+// START
+
+export const liveTvChannelClicked = (channelId, channelName, programTitleLive, event = 'mweb_livetv_channel_clicked') => {
+    console.log(event);
+    qg('event', event,
+    {
+        channel_id: channelId,
+        channel_name: channelName,
+        program_title_live: programTitleLive,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const liveTvShareClicked = (channelId, channelName, event = 'mweb_livetv_channel_clicked') => {
+    console.log(event);
+    qg('event', event,
+    {
+        channel_id: channelId,
+        channel_name: channelName,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const liveTvCatchupScheduleClicked = (channelId, channelName, event = 'mweb_livetv_catchup_schedule_clicked') => {
+    liveTvShareClicked(channelId, channelName, event);
+};
+
+export const liveTvShareCatchupClicked = (channelId, channelName, identity, event = 'mweb_livetv_share_catchup_clicked') => {
+    console.log(event);
+    qg('event', event,
+    {
+        channel_id: channelId,
+        channel_name: channelName,
+        identity: identity,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const liveTvTabClicked = (channelId, channelName, tabName, event = 'mweb_livetv_tab_clicked') => {
+    console.log(event);
+    qg('event', event,
+    {
+        channel_id: channelId,
+        channel_name: channelName,
+        tab_name: tabName,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const liveTvCatchupSchedulePlay = (catchupScheduleDate, channelId, channelName, catchupName, event = 'mweb_livetv_catchup_schedule_play') => {
+    console.log(event);
+    qg('event', event,
+    {
+        catchup_schedule_date: catchupScheduleDate,
+        channel_id: channelId,
+        channel_name: channelName,
+        catchup_name: catchupName,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const liveTvLiveChatClicked = (channelId, channelName, event = 'mweb_livetv_livechat_clicked') => {
+    console.log(event);
+    qg('event', event,
+    {
+        channel_id: channelId,
+        channel_name: channelName,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const accountGeneralEvent = (event = 'mweb_account_logo_clicked') => {
+    homeGeneralClicked(event);
 };
 
 // END

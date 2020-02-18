@@ -27,7 +27,6 @@ import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 import SentimenVerySatifiedIcon from '@material-ui/icons/SentimentVerySatisfied';
 import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
@@ -38,6 +37,8 @@ import { BASE_URL, SITEMAP } from '../config';
 
 import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
+
+import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked } from '../utils/appier';
 
 class Tv extends React.Component {
 
@@ -93,7 +94,7 @@ class Tv extends React.Component {
 					if (this.state.live_events.length > 0) {
 						for (let i = 0; i < this.state.live_events.length; i++) {
 							if (this.state.live_events[i].channel_code === this.state.channel_code) {
-								this.selectChannel(i);
+								this.selectChannel(i, true);
 								break;
 							}
 						}
@@ -224,6 +225,10 @@ class Tv extends React.Component {
 						group_content_name: 'N/A',
 						exclusive_tab_name: 'N/A'
 					});
+					
+					// liveTvCatchupSchedulePlay
+					console.log(this.state.selected_catchup);
+					// TODO
 				}
 			}
 		});
@@ -246,19 +251,23 @@ class Tv extends React.Component {
 			});
 	}
 
-	selectChannel(index) {
+	selectChannel(index, first = false) {
 		this.props.setPageLoader();
 		this.setState({ selected_index: index, error: false }, () => {
+			if (first != true) {
+				liveTvTabClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, this.state.selected_tab);
+			}
+			
 			this.loadChatMessages(this.state.live_events[this.state.selected_index].id);
 			this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
 				.then(collection => {
 					let firstLoad = true;
 					let snapshots = this.state.snapshots;
-					for (let i = 0; i < this.state.live_events.length; i++) {
-						if (snapshots[this.state.live_events[i].id]) {
-							snapshots[this.state.live_events[i].id]();
-						}
-					}
+					// for (let i = 0; i < this.state.live_events.length; i++) {
+					// 	if (snapshots[this.state.live_events[i].id]) {
+					// 		snapshots[this.state.live_events[i].id]();
+					// 	}
+					// }
 
 					let snapshot = collection.onSnapshot(querySnapshot => {
 						querySnapshot.docChanges().forEach(change => {
@@ -333,6 +342,7 @@ class Tv extends React.Component {
 
 	selectCatchup(id) {
 		this.props.setPageLoader();
+		liveTvCatchupScheduleClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_catchup_schedule_clicked');
 		this.props.getCatchupUrl(id)
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {
@@ -371,11 +381,26 @@ class Tv extends React.Component {
 			caption: caption,
 			url: url,
 			hashtags: hashtags
+		}, () => {
+			if (this.state.action_sheet) {
+				switch (this.state.selected_tab) {
+					case 'live':
+						liveTvShareClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_share_clicked');
+						break;
+
+					case 'catch_up_tv':
+						liveTvShareCatchupClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'N/A','mweb_livetv_share_catchup_clicked');
+						break;
+				}
+			}
 		});
 	}
 
 	toggleChat() {
 		this.setState({ chat_open: !this.state.chat_open }, () => {
+			if (this.state.chat_open) {
+				liveTvLiveChatClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_livechat_clicked');
+			}
 			const chatBox = document.getElementById('chat-messages');
 			chatBox.scrollTop = chatBox.scrollHeight;
 		});
@@ -450,7 +475,7 @@ class Tv extends React.Component {
 							chats[chats.length - 1] = newChat;
 							this.setState({ chats: chats, sending_chat: false });
 						})
-						.catch(error => {
+						.catch(() => {
 							newChat.sent = true;
 							newChat.failed = true;
 							chats[chats.length - 1] = newChat;
@@ -484,7 +509,7 @@ class Tv extends React.Component {
 					chats[index] = lastChat;
 					this.setState({ chats: chats, sending_chat: false });
 				})
-				.catch(error => {
+				.catch(() => {
 					lastChat.sent = true;
 					lastChat.failed = true;
 					chats[index] = lastChat;
@@ -560,10 +585,18 @@ class Tv extends React.Component {
 						</Row>
 					</div>
 					<Nav tabs className="tab-wrap">
-						<NavItem onClick={() => this.setState({ selected_tab: 'live' })} className={this.state.selected_tab === 'live' ? 'selected' : ''}>
+						<NavItem onClick={() => {
+							this.setState({ selected_tab: 'live' }, () => {
+								liveTvTabClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'Live', 'mweb_livetv_tab_clicked');
+							});
+						}} className={this.state.selected_tab === 'live' ? 'selected' : ''}>
 							<NavLink>Live</NavLink>
 						</NavItem>
-						<NavItem onClick={() => this.setState({ selected_tab: 'catch_up_tv' })} className={this.state.selected_tab === 'catch_up_tv' ? 'selected' : ''}>
+						<NavItem onClick={() => {
+							this.setState({ selected_tab: 'catch_up_tv' }, () => {
+								liveTvTabClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'Catch Up TV', 'mweb_livetv_tab_clicked');
+							});
+						}} className={this.state.selected_tab === 'catch_up_tv' ? 'selected' : ''}>
 							<NavLink>Catch Up TV</NavLink>
 						</NavItem>
 					</Nav>

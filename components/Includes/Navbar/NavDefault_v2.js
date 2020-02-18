@@ -6,7 +6,7 @@ import actions from '../../../redux/actions';
 import pageActions from '../../../redux/actions/pageActions';
 
 import { getCookie, removeCookie } from '../../../utils/cookie';
-import { homeGeneralClicked, exclusiveGeneralEvent } from '../../../utils/appier';
+import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent } from '../../../utils/appier';
 import '../../../assets/scss/components/navbar-v2.scss';
 
 //load reactstrap
@@ -31,6 +31,10 @@ class NavbarDef_v2 extends Component {
         switch (this.props.router.asPath) {
             case '/exclusive':
                 exclusiveGeneralEvent('mweb_exclusive_logo_clicked');
+                break;
+
+            case '/profile':
+                accountGeneralEvent('mweb_account_logo_clicked');
                 break;
 
             default:
