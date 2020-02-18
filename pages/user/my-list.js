@@ -7,6 +7,8 @@ import LoadingBar from 'react-top-loading-bar';
 
 import initialize from '../../utils/initialize';
 import { getCookie } from '../../utils/cookie';
+import { accountGeneralEvent, accountHistoryClearHistoryClicked, accountHistoryContentClicked, accountHistoryShareClicked, accountHistoryDownloadClicked } from '../../utils/appier';
+
 import bookmarkActions from '../../redux/actions/bookmarkActions';
 import searchActions from '../../redux/actions/searchActions';
 
@@ -50,7 +52,11 @@ class MyList extends React.Component {
 	}
 
 	toggleDropdown() {
-		this.setState({ dropdown_open: !this.state.dropdown_open });
+		this.setState({ dropdown_open: !this.state.dropdown_open }, () => {
+			if (this.state.dropdown_open) {
+				accountGeneralEvent('mweb_account_mylist_filter_clicked');
+			}
+		});
 	}
 
 	showMore() {
@@ -94,17 +100,25 @@ class MyList extends React.Component {
 		}
 	}
 
-	orderBy(order) {
+	orderBy(order, first = false) {
 		this.setState({ order_by: order }, () => {
 			switch (this.state.order_by) {
 				case 'title':
 					let mylist = this.state.mylist.slice();
 					mylist.sort((a, b) => (a.title > b.title) ? 1 : -1);
-					this.setState({ ordered_list: mylist });
+					this.setState({ ordered_list: mylist }, () => {
+						if (first != true) {
+							accountGeneralEvent('mweb_account_mylist_filter_asc_clicked');
+						}
+					});
 					break;
 
 				default:
-					this.setState({ ordered_list: this.state.mylist.slice() });
+					this.setState({ ordered_list: this.state.mylist.slice() }, () => {
+						if (first != true) {
+							accountGeneralEvent('mweb_account_mylist_filter_latest_post_clicked');
+						}
+					});
 					break;
 			}
 		});
@@ -131,6 +145,16 @@ class MyList extends React.Component {
 				this.setState({ recommendations: response.data.data, recommendation_page: this.state.recommendation_page + 1 });
 			})
 			.catch(error => console.log(error));
+	}
+
+	linkRelated(rp) {
+		accountGeneralEvent('mweb_account_mylist_program_clicked');
+		Router.push(`/programs/${rp.id}/${rp.title.replace(/ +/g, '-').toLowerCase()}?ref=mylist`);
+	} 
+
+	linkProgram(l) {
+		accountGeneralEvent('mweb_account_mylist_program_clicked');
+		Router.push(`/programs/${l.program_id}/${l.title.replace(/ +/g, '-').toLowerCase()}?ref=mylist`);
 	}
 
 	render() {
@@ -167,9 +191,7 @@ class MyList extends React.Component {
 							striped={!(i % 2)}
 							imageSrc={this.state.meta.image_path + (this.props.resolution ? this.props.resolution : this.state.resolution) + l.image}
 							title={l.title}
-							link={() => {
-								Router.push(`/programs/${l.program_id}/${l.title.replace(/ +/g, '-').toLowerCase()}`);
-							}}
+							link={() => this.linkProgram(l)}
 							subtitle={l.total_content + ' video'} />)}
 
 					{showMoreButton}
@@ -181,7 +203,7 @@ class MyList extends React.Component {
 								{scrollRef => (
 									<div ref={scrollRef} className="related-slider">
 										{this.state.recommendations.map(rp => (
-											<div onClick={() => Router.push(`/programs/${rp.id}/${rp.title.replace(/ +/g, '-').toLowerCase()}`)} key={rp.id} className="related-slide">
+											<div onClick={() => this.linkRelated(rp)} key={rp.id} className="related-slide">
 												<Img alt={rp.title} src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
 											</div>
 										))}

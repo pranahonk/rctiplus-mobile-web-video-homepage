@@ -158,8 +158,12 @@ class Detail extends React.Component {
 		const touch = e.changedTouches[0];
 		const absX = Math.abs(touch.clientX - this.swipe.x);
 		if (absX > 50) {
-            if (this.reference && this.reference == 'homepage') {
-                programRelatedEvent(this.props.router.query.id, this.state.title);
+            if (this.reference) {
+                switch (this.reference) {
+                    case 'homepage':
+                        programRelatedEvent(this.props.router.query.id, this.state.title);
+                        break;
+                }
             }
         }
 	}
@@ -648,10 +652,19 @@ class Detail extends React.Component {
     }
 
     link(cw, type) {
-        if (this.reference && this.reference == 'homepage') {
-            programContentEvent(cw.programId, this.props.initial.data.title, type, cw.id, cw.title, 'mweb_homepage_program_content_clicked');
+        if (this.reference) {
+            switch (this.reference) {
+                case 'homepage':
+                    programContentEvent(cw.programId, this.props.initial.data.title, type, cw.id, cw.title, 'mweb_homepage_program_content_clicked');
+                    break;
+
+                case 'mylist':
+                    console.log('mylist');
+                    break;
+            }
+            
         }
-		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}${this.reference ? `?ref=${this.reference}_program&homepage_title=${this.homepageTitle}` : ''}`);
+		// Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}${this.reference ? `?ref=${this.reference}_program&homepage_title=${this.homepageTitle}` : ''}`);
 	}
 
     render() {

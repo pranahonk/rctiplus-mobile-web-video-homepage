@@ -704,4 +704,12 @@ export const accountHistoryDownloadClicked = (programId, programTitle, contentTi
     accountHistoryContentClicked(programId, programTitle, contentTitle, contentType, contentId, event);
 };
 
+export const accountMylistContentClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_mylist_content_clicked') => {
+    accountHistoryContentClicked(programId, programTitle, contentTitle, contentType, contentId, event);
+};
+
+export const accountMylistContentPlayEvent = (contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, duration, videoDuration, event = 'mweb_account_mylist_content_play') => {
+    accountHistoryContentPlayEvent(contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, duration, videoDuration, event);
+};
+
 // END

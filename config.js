@@ -221,7 +221,7 @@ export const SITEMAP = {
         description: `Nonton bola online dan highlight olahraga lainnya paling lengkap dan terupdate liga Champion, Inggris, Italia, Indonesia dan lainnya hanya di RCTI+`,
         keywords: `nonton bola`
     },
-    explore_children: {
+    explore_animation: {
         title: `Nonton Film Kartun Lucu dan Program TV Anak Lainnya - ${SITE_NAME}`,
         description: `Nonton tayangan program dan acara kartun animasi, kartun anak lucu dan paling baru hanya di RCTI+`,
         keywords: `film kartun, film kartun lucu, film kartun anak`
@@ -266,7 +266,7 @@ export const SITEMAP = {
         description: `Nonton film religi, azab, dan program siraman rohani terupdate, lengkap dan tidak membosankan tanpa buffering hanya di RCTI+`,
         keywords: `film religi, nonton film religi`
     },
-    explore_reality_show: {
+    explore_game_show: {
         title: `Nonton Tayangan Program Reality Show Terbaru - ${SITE_NAME}`,
         description: `Nonton reality show terbaik di RCTI, MNC TV, GTV dan iNews full episode tanpa buffering hanya di RCTI+`,
         keywords: `reality show, program tv, program tv hari ini`
