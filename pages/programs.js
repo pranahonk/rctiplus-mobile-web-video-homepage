@@ -126,7 +126,8 @@ class Detail extends React.Component {
             bookmarked_clip: [],
             loading: false,
             endpage: false,
-            page: 1
+            page: 1,
+            list_box_height: 75
         };
 
         this.player = this.player2 = null;
@@ -347,8 +348,14 @@ class Detail extends React.Component {
                     });
 
                     this.props.getLikeHistory(this.props.router.query.id)
-                        .then(response => console.log(response))
-                        .catch(error => console.log(error));
+                        .then(response => {
+                            console.log(response);
+                            this.setState({ list_box_height: this.thumbnailContentRef.clientHeight - this.thumbnailRef.clientHeight });
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            this.setState({ list_box_height: this.thumbnailContentRef.clientHeight - this.thumbnailRef.clientHeight });
+                        });
 
                     this.props.getProgramEpisodes(this.props.router.query.id, this.props.contents.selected_season, this.props.contents.current_page, this.state.length)
                         .then(response => {
@@ -860,8 +867,8 @@ class Detail extends React.Component {
                     hashtags={this.state.hashtags}
                     toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rcti'])}/>
 
-                <div style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
-                <div className="content content-programs">
+                <div ref={ref => this.thumbnailRef = ref} style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
+                <div ref={ref => this.thumbnailContentRef = ref} className="content content-programs">
                     <div className="content-thumbnail">
                         <Img alt={this.state.title} className="content-thumbnail-image" src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
                     </div>
@@ -905,7 +912,7 @@ class Detail extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className="list-box">
+                <div className="list-box" style={{ marginTop: `${this.state.list_box_height}px` }}>
                     <Nav tabs className="list-menu">
                         {tabs}
                     </Nav>
