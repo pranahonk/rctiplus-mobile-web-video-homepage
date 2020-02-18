@@ -6,8 +6,10 @@ import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 
 import historyActions from '../../redux/actions/historyActions';
+
 import initialize from '../../utils/initialize';
 import { showAlert } from '../../utils/helpers';
+import { accountContinueWatchingContentClicked, accountContinueWatchingRemoveContinueWatchingClicked, accountContinueWatchingShareClicked } from '../../utils/appier';
 
 import Layout from '../../components/Layouts/Default';
 import NavBack from '../../components/Includes/Navbar/NavBack';
@@ -56,7 +58,11 @@ class ContinueWatching extends React.Component {
 		this.setState({ dropdown_open: !this.state.dropdown_open });
 	}
 
-	toggleActionSheet(caption = '', url = '', hashtags = []) {
+	toggleActionSheet(caption = '', url = '', hashtags = [], cw = null) {
+		if (cw && !this.state.action_sheet) {
+			accountContinueWatchingShareClicked(cw.program_id, cw.program_title, cw.content_title, cw.content_type, cw.content_id, 'mweb_account_continue_watching_share_clicked');
+		}
+		
 		this.setState({
 			action_sheet: !this.state.action_sheet,
 			caption: caption,
@@ -121,6 +127,8 @@ class ContinueWatching extends React.Component {
 		this.props.deleteContinueWatchingByContentId(cw.content_id, cw.content_type)
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {
+					accountContinueWatchingRemoveContinueWatchingClicked(cw.content_type, cw.content_id, cw.content_title, cw.program_title, cw.genre, this.state.meta.image_path + this.state.resolution + cw.portrait_image, this.state.meta.image_path + this.state.resolution + cw.landscape_image, cw.last_duration, cw.duration, 'mweb_account_continue_watching_remove_continue_watching_clicked');
+
 					let orderedWatches = this.state.ordered_watches;
 					orderedWatches.splice(idx, 1);
 					idx = -1;
@@ -163,7 +171,8 @@ class ContinueWatching extends React.Component {
 	}
 
 	link(cw) {
-		Router.push(`/programs/${cw.program_id}/${cw.program_title.replace(' ', '-').toLowerCase()}/${cw.content_type}/${cw.content_id}/${cw.content_title.replace(' ', '-').toLowerCase()}`);
+		accountContinueWatchingContentClicked(cw.program_id, cw.program_title, cw.content_title, cw.content_type, cw.content_id, 'mweb_account_continue_watching_content_clicked');
+		Router.push(`/programs/${cw.program_id}/${cw.program_title.replace(' ', '-').toLowerCase()}/${cw.content_type}/${cw.content_id}/${cw.content_title.replace(' ', '-').toLowerCase()}?ref=continue_watching`);
 	}
 
 	renderContent() {
@@ -222,7 +231,7 @@ class ContinueWatching extends React.Component {
 										<DeleteForeverIcon className="action-icon" onClick={this.deleteContinueWatching.bind(this, cw, i)}/>
 									</div>
 									<div className="action-button">
-										<ShareIcon onClick={this.toggleActionSheet.bind(this, cw.content_title, cw.share_link, ['rcti'])} className="action-icon" />
+										<ShareIcon onClick={this.toggleActionSheet.bind(this, cw.content_title, cw.share_link, ['rcti'], cw)} className="action-icon" />
 									</div>
 									<div className="action-button">
 										<GetAppIcon className="action-icon" onClick={this.showOpenPlaystoreAlert.bind(this)}/>

@@ -39,6 +39,10 @@ class NavbarDef extends Component {
                                     case '/mylist':
                                         accountGeneralEvent('mweb_account_mylist_back_clicked');
                                         break;
+
+                                    case '/continue-watching':
+                                        accountGeneralEvent('mweb_account_continue_watching_back_clicked');
+                                        break;
                                 }
                                 Router.back();
                             }} style={{color: 'white'}}>

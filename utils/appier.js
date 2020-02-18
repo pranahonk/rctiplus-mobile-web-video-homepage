@@ -570,8 +570,6 @@ export const exclusivePhotoSlidePreviousEvent = (programId, programName, tabName
     exclusiveProfileProgramEvent(programId, programName, tabName, event);
 };
 
-// START
-
 export const liveTvChannelClicked = (channelId, channelName, programTitleLive, event = 'mweb_livetv_channel_clicked') => {
     console.log(event);
     qg('event', event,
@@ -725,6 +723,28 @@ export const accountMylistDownloadClicked = (programId, programTitle, contentTit
 };
 
 export const accountMylistRelatedProgramClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_mylist_related_program_clicked') => {
+    accountHistoryContentClicked(programId, programTitle, contentTitle, contentType, contentId, event);
+};
+
+// START
+
+export const accountContinueWatchingContentClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_continue_watching_content_clicked') => {
+    accountHistoryContentClicked(programId, programTitle, contentTitle, contentType, contentId, event);
+};
+
+export const accountContinueWatchingContentPlayEvent = (contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, duration, videoDuration, event = 'mweb_account_continue_watching_content_play') => {
+    accountHistoryContentPlayEvent(contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, duration, videoDuration, event);
+};
+
+export const accountContinueWatchingRemoveContinueWatchingClicked = (contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, duration, videoDuration, event = 'mweb_account_continue_watching_remove_continue_watching_clicked') => {
+    accountHistoryContentPlayEvent(contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, duration, videoDuration, event);
+};
+
+export const accountContinueWatchingShareClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_continue_watching_share_clicked') => {
+    accountHistoryContentClicked(programId, programTitle, contentTitle, contentType, contentId, event);
+};
+
+export const accountContinueWatchingDownloadClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_continue_watching_download_clicked') => {
     accountHistoryContentClicked(programId, programTitle, contentTitle, contentType, contentId, event);
 };
 

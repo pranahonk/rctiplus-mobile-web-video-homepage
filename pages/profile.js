@@ -123,7 +123,10 @@ class Profile extends React.Component {
 					}}>
 						<PlaylistAddCheckIcon/> My List
 					</ListGroupItem>
-					<ListGroupItem onClick={() => Router.push('/continue-watching')}>
+					<ListGroupItem onClick={() => {
+						accountGeneralEvent('mweb_account_continue_watching_clicked');
+						Router.push('/continue-watching');
+					}}>
 						<QueryBuilderIcon/> Continue Watching
 					</ListGroupItem>
 					<ListGroupItem onClick={() => Router.push('/terms-&-conditions')}>

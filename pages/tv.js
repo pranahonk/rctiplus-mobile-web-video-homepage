@@ -226,9 +226,7 @@ class Tv extends React.Component {
 						exclusive_tab_name: 'N/A'
 					});
 					
-					// liveTvCatchupSchedulePlay
-					console.log(this.state.selected_catchup);
-					// TODO
+					liveTvCatchupSchedulePlay(this.state.selected_date, this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, this.state.selected_catchup.title, 'mweb_livetv_catchup_schedule_play');
 				}
 			}
 		});
