@@ -46,7 +46,7 @@ import '../assets/scss/components/detail.scss';
 
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
-import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked } from '../utils/appier';
+import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, accountMylistRelatedProgramClicked } from '../utils/appier';
 
 class Detail extends React.Component {
 
@@ -271,8 +271,16 @@ class Detail extends React.Component {
     }
 
     showOpenPlaystoreAlert(data = null, type = null) {
-        if (data && type && this.reference && this.reference == 'homepage') {
-            programContentDownloadEvent(this.props.router.query.id, this.state.title, data.title, type, data.id, 'mweb_homepage_program_content_download_clicked');
+        if (data && type && this.reference) {
+            switch (this.reference) {
+                case 'homepage':
+                    programContentDownloadEvent(this.props.router.query.id, this.state.title, data.title, type, data.id, 'mweb_homepage_program_content_download_clicked');
+                    break;
+
+                case 'mylist':
+                    accountMylistDownloadClicked(this.props.router.query.id, this.state.title, data.title, type, data.id, 'mweb_account_mylist_download_clicked');
+                    break;
+            }
         }
         showAlert('To be able to watch this episode offline, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); });
     }
@@ -615,12 +623,32 @@ class Detail extends React.Component {
         if (contentType && !this.state.action_sheet) {
             switch (contentType) {
                 case 'program':
-                    programShareEvent(this.state.title, this.props.router.query.id, 'program', 'mweb_homepage_program_share_clicked');
+                    if (this.reference) {
+                        switch (this.reference) {
+                            case 'homepage':
+                                programShareEvent(this.state.title, this.props.router.query.id, 'program', 'mweb_homepage_program_share_clicked');
+                                break;
+
+                            case 'mylist':
+                                break;
+                        }
+                    }
+                    
                     break;
 
                 default:
                     if (data != null) {
-                        programContentShareEvent(data.program_id, this.state.title, data.title, contentType, data.id, 'mweb_homepage_program_content_share_clicked');
+                        if (this.reference) {
+                            switch (this.reference) {
+                                case 'homepage':
+                                    programContentShareEvent(data.program_id, this.state.title, data.title, contentType, data.id, 'mweb_homepage_program_content_share_clicked');
+                                    break;
+                                
+                                case 'mylist':
+                                    accountMylistShareClicked(data.program_id, this.state.title, data.title, contentType, data.id, 'mweb_account_mylist_share_clicked');
+                                    break;
+                            }
+                        }
                     }
                     break;
             }
@@ -993,7 +1021,9 @@ class Detail extends React.Component {
                             {scrollRef => (
                                 <div ref={scrollRef} className="related-slider">
                                     {this.state.related_programs.map(rp => (
-                                        <div onClick={() => Router.push(`/programs/${rp.id}/${rp.title.replace(/ +/g, '-').toLowerCase()}`)} key={rp.id} className="related-slide">
+                                        <div onClick={() => {
+                                            Router.push(`/programs/${rp.id}/${rp.title.replace(/ +/g, '-').toLowerCase()}`);
+                                        }} key={rp.id} className="related-slide">
                                             <Img alt={rp.title} src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
                                         </div>
                                     ))}

@@ -716,4 +716,16 @@ export const accountMylistRemoveMylistClicked = (contentType, contentId, content
     accountHistoryContentPlayEvent(contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, duration, videoDuration, event);
 };
 
+export const accountMylistShareClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_mylist_share_clicked') => {
+    accountHistoryContentClicked(programId, programTitle, contentTitle, contentType, contentId, event);
+};
+
+export const accountMylistDownloadClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_mylist_download_clicked') => {
+    accountHistoryContentClicked(programId, programTitle, contentTitle, contentType, contentId, event);
+};
+
+export const accountMylistRelatedProgramClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_mylist_related_program_clicked') => {
+    accountHistoryContentClicked(programId, programTitle, contentTitle, contentType, contentId, event);
+};
+
 // END

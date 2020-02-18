@@ -32,7 +32,7 @@ class NavbarSearch extends Component {
 
     componentDidMount() {
         this.subject
-            .pipe(debounceTime(500))
+            .pipe(debounceTime(2000))
             .subscribe(() => {
                 this.props.searchAllCategory(this.state.q, 1, this.state.length)
                     .then(responses => {

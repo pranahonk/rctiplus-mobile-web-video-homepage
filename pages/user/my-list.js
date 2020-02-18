@@ -7,7 +7,7 @@ import LoadingBar from 'react-top-loading-bar';
 
 import initialize from '../../utils/initialize';
 import { getCookie } from '../../utils/cookie';
-import { accountGeneralEvent, accountHistoryClearHistoryClicked, accountHistoryContentClicked, accountHistoryShareClicked, accountHistoryDownloadClicked } from '../../utils/appier';
+import { accountGeneralEvent, accountMylistRelatedProgramClicked } from '../../utils/appier';
 
 import bookmarkActions from '../../redux/actions/bookmarkActions';
 import searchActions from '../../redux/actions/searchActions';
@@ -48,7 +48,20 @@ class MyList extends React.Component {
 			endpage: false
 		};
 
-		
+		this.swipe = {};
+	}
+
+	onTouchStart(e) {
+		const touch = e.touches[0];
+		this.swipe = { x: touch.clientX };
+	}
+
+	onTouchEnd(e) {
+		const touch = e.changedTouches[0];
+		const absX = Math.abs(touch.clientX - this.swipe.x);
+		if (absX > 50) {
+            accountGeneralEvent('mweb_account_mylist_related_scroll_horizontal');
+        }
 	}
 
 	toggleDropdown() {
@@ -76,6 +89,7 @@ class MyList extends React.Component {
 
 	showMoreRecommendation() {
 		if (!this.state.loading && !this.state.endpage) {
+			accountGeneralEvent('mweb_account_mylist_related_showmore_clicked');
 			const page = this.state.recommendation_page + 1;
 			this.setState({ loading: true }, () => {
 				this.LoadingBar && this.LoadingBar.continuousStart();
@@ -148,7 +162,7 @@ class MyList extends React.Component {
 	}
 
 	linkRelated(rp) {
-		accountGeneralEvent('mweb_account_mylist_program_clicked');
+		accountMylistRelatedProgramClicked(rp.id, rp.title, rp.content_title, rp.content_type, rp.content_id, 'mweb_account_mylist_related_program_clicked');
 		Router.push(`/programs/${rp.id}/${rp.title.replace(/ +/g, '-').toLowerCase()}?ref=mylist`);
 	} 
 
@@ -197,7 +211,7 @@ class MyList extends React.Component {
 					{showMoreButton}
 
 					<div className="related-box">
-						<div className="related-menu">
+						<div className="related-menu" onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
 							<p className="related-title"><strong>Related</strong></p>
 							<BottomScrollListener offset={40} onBottom={this.showMoreRecommendation.bind(this)}>
 								{scrollRef => (
