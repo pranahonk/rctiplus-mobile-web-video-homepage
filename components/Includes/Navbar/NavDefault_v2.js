@@ -9,7 +9,6 @@ import { getCookie, removeCookie } from '../../../utils/cookie';
 import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent, newsGeneralEvent } from '../../../utils/appier';
 import '../../../assets/scss/components/navbar-v2.scss';
 
-//load reactstrap
 import { Navbar, NavbarBrand } from 'reactstrap';
 
 import StatusNotification from './StatusNotification';
@@ -23,7 +22,6 @@ class NavbarDef_v2 extends Component {
             token: getCookie('ACCESS_TOKEN'),
             is_top: true
         };
-        console.log(this.props.router.asPath);
     }
 
     goToHome() {
@@ -37,7 +35,12 @@ class NavbarDef_v2 extends Component {
                 break;
 
             default:
-                homeGeneralClicked('mweb_homepage_logo_clicked');
+                if (this.props.router.asPath.indexOf('/trending') === 0) {
+                    newsGeneralEvent('mweb_news_logo_clicked');
+                }
+                else {
+                    homeGeneralClicked('mweb_homepage_logo_clicked');
+                }
                 break;
         }
         
@@ -54,12 +57,20 @@ class NavbarDef_v2 extends Component {
                 accountGeneralEvent('mweb_account_library_clicked');
                 break;
 
+            case '/':
+                homeGeneralClicked('mweb_search_clicked');
+                break;
+            
             default:
-                homeGeneralClicked('mweb_library_clicked');
+                if (this.props.router.asPath.indexOf('/trending') === 0) {
+                    newsGeneralEvent('mweb_news_search_clicked');
+                }
+                else {
+                    homeGeneralClicked('mweb_library_clicked');
+                }
                 break;
         }
         
-        homeGeneralClicked('mweb_search_clicked');
         Router.push('/explores')
     }
 

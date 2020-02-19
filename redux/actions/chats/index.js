@@ -23,6 +23,7 @@ if (!firebaseApp.apps.length) {
     //     measurementId: "G-JR2L0ZYPG7"
     // });
     firebaseApp.initializeApp(JSON.parse(configFirebase));
+    // firebaseApp.analytics();
 }
 
 import ax from 'axios';

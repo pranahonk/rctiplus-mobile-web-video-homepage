@@ -17,7 +17,7 @@ const getTrendingContent = (subcategory_id = 12, page = 1, length = 5, info = 'i
         try {
             const response = await axios.get(`/v1/news?info=${info}&subcategory_id=${subcategory_id}&page=${page}&pageSize=${length}`);
 
-            if (response.data.status.code === 0) {
+            if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_TRENDING_CONTENT',
                     data: response.data.data, 
@@ -36,6 +36,24 @@ const getTrendingContent = (subcategory_id = 12, page = 1, length = 5, info = 'i
     });
 };
 
+const getTrendingRelated = (id, pageSize = 4, infos = 'id,title,cover,link,guid') => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/news/related/${id}?pageSize=${pageSize}&infos=${infos}`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 export default {
-    getTrendingContent
+    getTrendingContent,
+    getTrendingRelated
 };

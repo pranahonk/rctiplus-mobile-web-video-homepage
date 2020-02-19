@@ -81,8 +81,8 @@ class NavbarSearch extends Component {
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
                             <NavbarBrand onClick={() => {
-                                // if (this.props.router.asPath.indexOf('/explores') === 0) {
-                                //     libraryGeneralEvent('mweb_library_program_back_clicked');
+                                // if (this.props.router.asPath.indexOf('/trending') === 0) {
+                                //     newsGeneralEvent('mweb_library_program_back_clicked');
                                 // }
                                 Router.back();
                             }} style={{ color: 'white' }}>

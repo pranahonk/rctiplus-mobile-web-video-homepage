@@ -123,12 +123,14 @@ class Default_v2 extends React.Component {
                     ` }}></script>
                     <noscript><img alt="Share" src="https://b.scorecardresearch.com/p?c1=2&amp;c2=9013027&amp;cv=2.0&amp;cj=1" /></noscript>
                     {/* End Comscore */}
+
+                    {/* <!-- Google Tag Manager (noscript) --> */}
+                    <noscript key="gtm-noscript"><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5F9P7H3"
+                    height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript>
+                    {/* <!-- End Google Tag Manager (noscript) --> */}
                 </Head>
                 
-                {/* <!-- Google Tag Manager (noscript) --> */}
-                <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5F9P7H3"
-                height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript>
-                {/* <!-- End Google Tag Manager (noscript) --> */}
+                
                 
                 {/* <!-- DO NOT touch the following DIV --> */}
                 <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `

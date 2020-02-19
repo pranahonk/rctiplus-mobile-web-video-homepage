@@ -1,24 +1,22 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import Router from 'next/router';
+import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
+import Img from 'react-image';
 
 import { DEV_API, NEWS_API } from '../../config';
 
-//load default layout
-import Layout from '../../components/Layouts/Default';
+import newsContentActions from '../../redux/actions/trending/content';
 
-
-//load navbar default
+import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
-
-//load style 
 import '../../assets/scss/components/trending_detail.scss';
 
-
-import { Modal, ModalBody } from 'reactstrap';
 import { FacebookShareButton, TwitterShareButton, EmailShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
+import { Row, Col } from 'reactstrap';
 
-import CloseIcon from '@material-ui/icons/Close';
-
+import { formatDateTime } from '../../utils/dateHelpers';
 
 class Detail extends React.Component {
 
@@ -56,83 +54,125 @@ class Detail extends React.Component {
         const error_code = res.statusCode > 200 ? res.statusCode : false;
         const data = await res.json();
         if (error_code || data.status.code === 1) {
-            return {initial: false};
+            return { initial: false };
         }
-        return {initial: data, props_id: programId};
+        return { initial: data, props_id: programId };
     }
 
     constructor(props) {
         super(props);
         this.state = {
             trending_detail_id: this.props.props_id,
-            trending_detail_data: this.props.initial
+            trending_detail_data: this.props.initial,
+            trending_related: [],
+            iframe_opened: false
         };
-        this.props.data;
-        this.props.props_id;
     }
-    
-    create_date(timedata){
-            var a = new Date(timedata * 1000);
-            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            var year = a.getFullYear();
-            var month = months[a.getMonth()];
-            var date = a.getDate();
-            var hour = a.getHours();
-            var min = a.getMinutes();
-            var sec = a.getSeconds();
-            var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
-            return time;
+
+    componentDidMount() {
+        this.props.getTrendingRelated(this.state.trending_detail_id)
+            .then(response => {
+                if (response.status === 200 && response.data.status.code === 0) {
+                    this.setState({ trending_related: response.data.data });
+                    console.log(response.data.data);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
-    
+
+    openIframe() {
+        this.setState({ iframe_opened: !this.state.iframe_opened });
+    }
+
+    goToDetail(article) {
+        // newsArticleClicked(article.id, article.title, article.category_source, 'mweb_news_article_clicked');
+        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase());
+    }
+
+    renderActionButton() {
+        return (
+            <div className="sheet-action-button-container">
+                <div className="sheet-action-button" style={{ background: '#7ed321' }}>
+                    <WhatsappShareButton url="#">
+                        <i className="fab fa-whatsapp"></i>
+                    </WhatsappShareButton>
+                </div>
+                <div className="sheet-action-button" style={{ background: '#034ea1' }}>
+                    <FacebookShareButton url="#">
+                        <i className="fab fa-facebook-f"></i>
+                    </FacebookShareButton>
+                </div>
+                <div className="sheet-action-button" style={{ background: '#4a90e2' }}>
+                    <TwitterShareButton url="#">
+                        <i className="fab fa-twitter"></i>
+                    </TwitterShareButton>
+                </div>
+                <div className="sheet-action-button" style={{ background: '#b8e986' }}>
+                    <LineShareButton url="#">
+                        <i className="fab fa-line"></i>
+                    </LineShareButton>
+                </div>
+                <div className="sheet-action-button" style={{ background: '#3a3a3a' }}>
+                    <EmailShareButton url="#">
+                        <i className="far fa-envelope"></i>
+                    </EmailShareButton>
+                </div>
+
+                <div className="sheet-action-button" style={{ float: 'right' }}>
+                    <i className="far fa-heart"></i>
+                    <input type="hidden" id="url-copy" value={this.props.url} />
+                </div>
+            </div>
+        );
+    }
+
     render() {
         const cdata = this.state.trending_detail_data.data[0];
-       
         return (
-                <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
-                    <NavBack />
+            <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
+                <Head>
+                    {/* <!-- Google Tag Manager (noscript) --> */}
+                    {/* <noscript key="gtm-noscript"><iframe src="asdsdasdsads"
+                    height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript> */}
+                    {/* <!-- End Google Tag Manager (noscript) --> */}
+                </Head>
+                <NavBack />
+                {this.state.iframe_opened ? (<iframe src={cdata.link} style={{ width: '100%', minHeight: 'calc(100vh - 50px)', paddingTop: 65 }} frameBorder="0" type="text/html"></iframe>) : (
                     <div className="content-trending-detail">
                         <p className="content-trending-detail-title"><b>{cdata.title}</b></p>
                         <p className="content-trending-detail-title-src-auth">{cdata.source} | {cdata.author}</p>
-                        <small className="content-trending-detail-create">Publish Date : {this.create_date(cdata.pubDate)}</small>
-                        <div className="sheet-action-button-container">
-                            <div className="sheet-action-button">
-                                <FacebookShareButton url="#">
-                                    <i className="fab fa-facebook-f"></i>
-                                </FacebookShareButton>
-                            </div>
-                            <div className="sheet-action-button">
-                                <TwitterShareButton url="#">
-                                    <i className="fab fa-twitter"></i>
-                                </TwitterShareButton>
-                            </div>
-                            <div className="sheet-action-button">
-                                <LineShareButton url="#">
-                                    <i className="fab fa-line"></i>
-                                </LineShareButton>
-                            </div>
-                            <div className="sheet-action-button">
-                                <EmailShareButton url="#">
-                                    <i className="far fa-envelope"></i>
-                                </EmailShareButton>
-                            </div>
-                            <div className="sheet-action-button">
-                                <WhatsappShareButton url="#">
-                                    <i className="fab fa-whatsapp"></i>
-                                </WhatsappShareButton>
-                            </div>
-                            <div className="sheet-action-button">
-                                <i className="far fa-copy"></i>
-                                <input type="hidden" id="url-copy" value={this.props.url}/>
-                            </div>
-                        </div>
+                        <small className="content-trending-detail-create">Publish Date : {formatDateTime(new Date(cdata.pubDate * 1000))}</small>
+                        {this.renderActionButton()}
                         <div className="content-trending-detail-wrapper">
-                            <img src={cdata.cover} />
-                            <div className="content-trending-detail-text" contentEditable='true' dangerouslySetInnerHTML={{__html: cdata.content}}></div>
+                            <div className="content-trending-detail-cover-container">
+                                <img className="content-trending-detail-cover" src={cdata.cover} />
+                            </div>
+                            <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>
+                            <div onClick={this.openIframe.bind(this)} style={{ color: '-webkit-link', margin: 10, paddingBottom: 20 }}>Original article &gt;</div>
+                        </div>
+                        {this.renderActionButton()}
+                        <div className="content-trending-detail-related">
+                            <p className="related-title"><strong>Related</strong></p>
+                            <Row className="related-content">
+                                {this.state.trending_related.map((tr, i) => (
+                                    <Col xs={6} key={i}>
+                                        <div onClick={() => this.goToDetail(tr)}><Img className="box-img-trending" 
+                                        unloader={<img className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
+										loader={<img className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
+                                        src={[tr.cover, '/static/placeholders/placeholder_potrait.png']} /><div className="font-trending-title-trending-default" dangerouslySetInnerHTML={{ __html: `${tr.title.substring(0, 35)}...` }}></div></div>
+                                    </Col>
+                                ))}
+                                
+                            </Row>
                         </div>
                     </div>
-                </Layout>
-                );
+                )}
+                
+            </Layout>
+        );
     }
 }
 
-export default Detail;
+export default connect(state => state, newsContentActions)(Detail);
