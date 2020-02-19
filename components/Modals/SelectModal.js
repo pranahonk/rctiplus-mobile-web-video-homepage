@@ -6,7 +6,7 @@ import contentActions from '../../redux/actions/contentActions';
 
 import { Modal, ModalBody } from 'reactstrap';
 import queryString from 'query-string';
-import { programSeasonEvent } from '../../utils/appier';
+import { programSeasonEvent, libraryProgramSeasonClicked } from '../../utils/appier';
 
 import CancelIcon from '@material-ui/icons/Cancel';
 
@@ -33,9 +33,17 @@ class SelectModal extends React.Component {
                 this.props.getProgramEpisodes(programId, season)
                     .then(response => {
                         if (response.status === 200 && response.data.status.code === 0) {
-                            if (this.props.program && this.reference && this.reference == 'homepage') {
+                            if (this.props.program && this.reference) {
                                 const data = this.props.program.data;
-                                programSeasonEvent(programId, data.title, season, 'mweb_homepage_program_season_clicked');
+                                switch (this.reference) {
+                                    case 'homepage':
+                                        programSeasonEvent(programId, data.title, season, 'mweb_homepage_program_season_clicked');
+                                        break;
+
+                                    case 'library':
+                                        libraryProgramSeasonClicked(programId, data.title, season, 'mweb_library_program_season_clicked');
+                                        break;
+                                }
                             }
                             this.props.setShowMoreAllowed(this.props.contents.episodes.length >= this.props.episodeListLength); 
                         }

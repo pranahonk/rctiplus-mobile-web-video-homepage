@@ -47,7 +47,7 @@ import '../assets/scss/components/detail.scss';
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
 
-import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, libraryProgramTrailerPlayEvent, libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryProgramSeasonClicked, libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked } from '../utils/appier';
+import { programRateEvent, programShareEvent, programContentShareEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked } from '../utils/appier';
 
 class Detail extends React.Component {
 
@@ -163,7 +163,11 @@ class Detail extends React.Component {
             if (this.reference) {
                 switch (this.reference) {
                     case 'homepage':
-                        programRelatedEvent(this.props.router.query.id, this.state.title);
+                        programRelatedEvent(this.props.router.query.id, this.state.title, 'mweb_homepage_program_related_scroll_horizontal');
+                        break;
+
+                    case 'library':
+                        libraryGeneralEvent('mweb_library_program_related_scroll_horizontal');
                         break;
                 }
             }
@@ -171,8 +175,17 @@ class Detail extends React.Component {
 	}
 
     showMore(tabName = 'EPISODES') {
-        if (this.reference && this.reference == 'homepage') {
-            programShowMoreEvent(this.props.router.query.id, this.state.title);
+        if (this.reference) {
+            switch (this.reference) {
+                case 'homepage':
+                    programShowMoreEvent(this.props.router.query.id, this.state.title, 'mweb_homepage_program_showmore_clicked');
+                    break;
+
+                case 'library':
+                    libraryGeneralEvent('mweb_library_program_showmore_clicked');
+                    break;
+            }
+            
         }
 
         switch (tabName) {
@@ -282,6 +295,10 @@ class Detail extends React.Component {
                 case 'mylist':
                     accountMylistDownloadClicked(this.props.router.query.id, this.state.title, data.title, type, data.id, 'mweb_account_mylist_download_clicked');
                     break;
+
+                case 'library':
+                    libraryProgramContentDownloadClicked(this.props.router.query.id, this.state.title, data.title, type, data.id, 'mweb_library_program_content_download_clicked');
+                    break;
             }
         }
         showAlert('To be able to watch this episode offline, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); });
@@ -382,7 +399,8 @@ class Detail extends React.Component {
                                 this.setState({
                                     contents: contents,
                                     extras: this.props.contents.extras,
-                                    extra_page: this.props.contents.current_extra_page
+                                    extra_page: this.props.contents.current_extra_page,
+                                    list_box_height: this.thumbnailContentRef.clientHeight - this.thumbnailRef.clientHeight
                                 });
                                 this.props.setShowMoreAllowed(this.props.contents.extras.length >= this.state.extra_length, 'EXTRAS');
                             }
@@ -397,7 +415,8 @@ class Detail extends React.Component {
                                 this.setState({
                                     contents: contents,
                                     photos: this.props.contents.photos,
-                                    photo_page: this.props.contents.current_photo_page
+                                    photo_page: this.props.contents.current_photo_page,
+                                    list_box_height: this.thumbnailContentRef.clientHeight - this.thumbnailRef.clientHeight
                                 });
                                 this.props.setShowMoreAllowed(this.props.contents.photos.length >= this.state.photo_length, 'PHOTOS');
                             }
@@ -412,7 +431,8 @@ class Detail extends React.Component {
                                 this.setState({
                                     contents: contents,
                                     clips: this.props.contents.clips,
-                                    clip_page: this.props.contents.current_clip_page
+                                    clip_page: this.props.contents.current_clip_page,
+                                    list_box_height: this.thumbnailContentRef.clientHeight - this.thumbnailRef.clientHeight
                                 });
                                 this.props.setShowMoreAllowed(this.props.contents.clips.length >= this.state.clip_length, 'CLIPS');
                             }
@@ -490,7 +510,7 @@ class Detail extends React.Component {
 
     addToMyList(id, type, data = null) {
         this.props.bookmark(id, type)
-            .then(response => {
+            .then(() => {
                 if (type == 'program') {
                     if (this.reference) {
                         switch (this.reference) {
@@ -513,6 +533,7 @@ class Detail extends React.Component {
                                 break;
 
                             case 'library':
+                                libraryProgramContentAddMylistClicked(this.props.router.query.id, this.state.title, data.title, type, data.id, 'mweb_library_program_content_add_mylist_clicked');
                                 break;
                         }
                     }
@@ -552,7 +573,7 @@ class Detail extends React.Component {
 
     deleteFromMyList(id, type, content = null) {
         this.props.deleteBookmark(id, type)
-            .then(response => {
+            .then(() => {
                 switch (type) {
                     case 'program':
                         this.setState({ program_in_list: false });
@@ -564,7 +585,16 @@ class Detail extends React.Component {
                         if (indexEpisode !== -1) {
                             if (content) {
                                 let genre = this.state.genre.map(g => g.name);
-                                accountMylistRemoveMylistClicked(type, content.id, content.title, this.props.initial.data.title, genre.join(','), this.state.meta.image_path + '140' + content.portrait_image, this.state.meta.image_path + '140' + content.landscape_image, bookmarkedEpisode[indexEpisode].last_duration, content.duration, 'mweb_account_mylist_remove_mylist_clicked');
+                                if (this.reference) {
+                                    switch (this.reference) {
+                                        case 'mylist':
+                                            accountMylistRemoveMylistClicked(type, content.id, content.title, this.props.initial.data.title, genre.join(','), this.state.meta.image_path + '140' + content.portrait_image, this.state.meta.image_path + '140' + content.landscape_image, bookmarkedEpisode[indexEpisode].last_duration, content.duration, 'mweb_account_mylist_remove_mylist_clicked');
+                                            break;
+
+                                        case 'library':
+                                            break;
+                                    }
+                                }
                             }
                             bookmarkedEpisode.splice(indexEpisode, 1);
                             this.setState({ bookmarked_episode: bookmarkedEpisode });
@@ -577,7 +607,16 @@ class Detail extends React.Component {
                         if (indexExtra !== -1) {
                             if (content) {
                                 let genre = this.state.genre.map(g => g.name);
-                                accountMylistRemoveMylistClicked(type, content.id, content.title, this.props.initial.data.title, genre.join(','), this.state.meta.image_path + '140' + content.portrait_image, this.state.meta.image_path + '140' + content.landscape_image, bookmarkedExtra[indexExtra].last_duration, content.duration, 'mweb_account_mylist_remove_mylist_clicked');
+                                if (this.reference) {
+                                    switch (this.reference) {
+                                        case 'mylist':
+                                            accountMylistRemoveMylistClicked(type, content.id, content.title, this.props.initial.data.title, genre.join(','), this.state.meta.image_path + '140' + content.portrait_image, this.state.meta.image_path + '140' + content.landscape_image, bookmarkedExtra[indexExtra].last_duration, content.duration, 'mweb_account_mylist_remove_mylist_clicked');
+                                            break;
+
+                                        case 'library':
+                                            break;
+                                    }
+                                }
                             }
                             bookmarkedExtra.splice(indexExtra, 1);
                             this.setState({ bookmarked_extra: bookmarkedExtra });
@@ -590,7 +629,16 @@ class Detail extends React.Component {
                         if (indexClip !== -1) {
                             if (content) {
                                 let genre = this.state.genre.map(g => g.name);
-                                accountMylistRemoveMylistClicked(type, content.id, content.title, this.props.initial.data.title, genre.join(','), this.state.meta.image_path + '140' + content.portrait_image, this.state.meta.image_path + '140' + content.landscape_image, bookmarkedClip[indexClip].last_duration, content.duration, 'mweb_account_mylist_remove_mylist_clicked');
+                                if (this.reference) {
+                                    switch (this.reference) {
+                                        case 'mylist':
+                                            accountMylistRemoveMylistClicked(type, content.id, content.title, this.props.initial.data.title, genre.join(','), this.state.meta.image_path + '140' + content.portrait_image, this.state.meta.image_path + '140' + content.landscape_image, bookmarkedClip[indexClip].last_duration, content.duration, 'mweb_account_mylist_remove_mylist_clicked');
+                                            break;
+
+                                        case 'library':
+                                            break;
+                                    }
+                                }
                             }
                             bookmarkedClip.splice(indexClip, 1);
                             this.setState({ bookmarked_clip: bookmarkedClip });
@@ -684,6 +732,10 @@ class Detail extends React.Component {
                                 case 'mylist':
                                     accountMylistShareClicked(data.program_id, this.state.title, data.title, contentType, data.id, 'mweb_account_mylist_share_clicked');
                                     break;
+
+                                case 'library':
+                                    libraryProgramContentShareClicked(data.program_id, this.state.title, data.title, contentType, data.id, 'mweb_library_program_content_share_clicked');
+                                    break;
                             }
                         }
                     }
@@ -700,12 +752,28 @@ class Detail extends React.Component {
     }
 
     toggleSelectModal() {
-        if (this.reference && this.reference == 'homepage') {
+        if (this.reference) {
             if (this.state.select_modal) {
-                programSeasonCloseEvent(this.props.router.query.id, this.state.title, this.state.selected_season, 'mweb_homepage_program_season_close_clicked');
+                switch (this.reference) {
+                    case 'homepage':
+                        programSeasonCloseEvent(this.props.router.query.id, this.state.title, this.state.selected_season, 'mweb_homepage_program_season_close_clicked');
+                        break;
+
+                    case 'library':
+                        libraryProgramSeasonCloseClicked(this.props.router.query.id, this.state.title, this.state.selected_season, 'mweb_library_program_season_close_clicked');
+                        break;
+                }
             }
             else {
-                programSeasonListEvent(this.props.router.query.id, this.state.title, this.state.selected_season, 'mweb_homepage_program_season_list_clicked');
+                switch (this.reference) {
+                    case 'homepage':
+                        programSeasonListEvent(this.props.router.query.id, this.state.title, this.state.selected_season, 'mweb_homepage_program_season_list_clicked');
+                        break;
+
+                    case 'library':
+                        libraryProgramSeasonListClicked(this.props.router.query.id, this.state.title, this.state.selected_season, 'mweb_library_program_season_list_clicked');
+                        break;
+                }
             }
         }
         this.setState({ select_modal: !this.state.select_modal });
@@ -714,8 +782,17 @@ class Detail extends React.Component {
     toggleTab(tab, tabName = 'Episode') {
         if (this.state.active_tab !== tab) {
             this.setState({ active_tab: tab }, () => {
-                if (this.reference && this.reference == 'homepage') {
-                    programTabEvent(this.props.router.query.id, this.state.title, tabName, 'mweb_homepage_program_tab_clicked');
+                if (this.reference) {
+                    switch (this.reference) {
+                        case 'homepage':
+                            programTabEvent(this.props.router.query.id, this.state.title, tabName, 'mweb_homepage_program_tab_clicked');
+                            break;
+
+                        case 'library':
+                            libraryProgramTabClicked(this.props.router.query.id, this.state.title, tabName, 'mweb_library_program_tab_clicked');
+                            break;
+                    }
+                    
                 }
             });
         }
@@ -748,6 +825,10 @@ class Detail extends React.Component {
 
                 case 'mylist':
                     accountMylistContentClicked(cw.program_id, this.props.initial.data.title, cw.title, type, cw.id, 'mweb_account_mylist_content_clicked');
+                    break;
+
+                case 'library':
+                    libraryProgramContentClicked(cw.program_id, this.props.initial.data.title, cw.title, type, cw.id, 'mweb_library_program_content_clicked')
                     break;
             }
             
