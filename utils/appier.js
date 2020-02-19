@@ -756,8 +756,6 @@ export const accountContactUsFormEvent = (message, event = 'mweb_account_contact
     });
 };
 
-// START
-
 export const libraryGeneralEvent = (event = 'mweb_library_clicked') => {
     homeGeneralClicked(event);
 };
@@ -889,6 +887,73 @@ export const libraryProgramSeasonListClicked = (programId, programName, season, 
 
 export const libraryProgramSeasonCloseClicked = (programId, programName, season, event = 'mweb_library_program_season_close_clicked') => {
     libraryProgramSeasonClicked(programId, programName, season, event);
+};
+
+// START
+
+export const newsGeneralEvent = (event = 'mweb_news_logo_clicked') => {
+    homeGeneralClicked(event);
+};
+
+export const newsTabClicked = (tabName, event = 'mweb_news_tab_clicked') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        tab_name: tabName,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const newsArticleClicked = (articleId, articleName, category, event = 'mweb_news_article_clicked') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        article_id: articleId,
+        article_name: articleName,
+        category: category,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const newsSearchClicked = (searchKeyword, event = 'mweb_news_search_clicked') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        search_keyword: searchKeyword,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const newsRelatedArticleClicked = (articleId, articleName, category, event = 'mweb_news_related_article_clicked') => {
+    newsArticleClicked(articleId, articleName, category, event);
+};
+
+export const newsRateArticleClicked = (articleId, articleName, status, tabName, event = 'mweb_news_rate_article_clicked') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        article_id: articleId,
+        article_name: articleName,
+        status: status,
+        tab_name: tabName,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const newsOriginalArticleClicked = (articleId, articleName, category, event = 'mweb_news_original_article_clicked') => {
+    newsArticleClicked(articleId, articleName, category, event);
+};
+
+export const newsArticleShareClicked = (articleId, articleName, category, event = 'mweb_news_share_article_clicked') => {
+    newsArticleClicked(articleId, articleName, category, event);
+};
+
+export const newsArticleBackClicked = (articleId, articleName, category, event = 'mweb_news_article_back_clicked') => {
+    newsArticleClicked(articleId, articleName, category, event);
 };
 
 // END

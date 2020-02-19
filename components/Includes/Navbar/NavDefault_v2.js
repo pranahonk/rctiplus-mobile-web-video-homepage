@@ -6,7 +6,7 @@ import actions from '../../../redux/actions';
 import pageActions from '../../../redux/actions/pageActions';
 
 import { getCookie, removeCookie } from '../../../utils/cookie';
-import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent } from '../../../utils/appier';
+import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent, newsGeneralEvent } from '../../../utils/appier';
 import '../../../assets/scss/components/navbar-v2.scss';
 
 //load reactstrap
@@ -23,8 +23,7 @@ class NavbarDef_v2 extends Component {
             token: getCookie('ACCESS_TOKEN'),
             is_top: true
         };
-
-        console.log();
+        console.log(this.props.router.asPath);
     }
 
     goToHome() {
