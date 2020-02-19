@@ -46,7 +46,8 @@ import '../assets/scss/components/detail.scss';
 
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
-import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, accountMylistRelatedProgramClicked } from '../utils/appier';
+
+import { programRateEvent, programShareEvent, programContentShareEvent, programTrailerPlayEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, libraryProgramTrailerPlayEvent, libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryProgramSeasonClicked, libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked } from '../utils/appier';
 
 class Detail extends React.Component {
 
@@ -456,10 +457,14 @@ class Detail extends React.Component {
         this.setState({ modal: !this.state.modal }, () => {
             if (this.state.modal) {
                 setTimeout(() => {
-                    if (this.player != null) {
-                        if (this.reference && this.reference == 'homepage') {
-                            programTrailerPlayEvent(this.props.router.query.id, this.state.title, 'program', 'N/A', 'N/A');
+                    if (this.reference) {
+                        switch (this.reference) {
+                            case 'library':
+                                libraryProgramTrailerClicked('N/A', this.state.title, this.props.router.query.id, 'program', 'mweb_library_program_trailer_clicked');
+                                break;
                         }
+                    }
+                    if (this.player != null) {
                         this.player.play();
                     }
                 }, 1000);
@@ -487,13 +492,29 @@ class Detail extends React.Component {
         this.props.bookmark(id, type)
             .then(response => {
                 if (type == 'program') {
-                    if (this.reference && this.reference == 'homepage') {
-                        programAddMyListEvent(1, this.state.title, this.props.router.query.id, type, 'mweb_homepage_program_add_mylist_clicked');
+                    if (this.reference) {
+                        switch (this.reference) {
+                            case 'homepage':
+                                programAddMyListEvent(1, this.state.title, this.props.router.query.id, type, 'mweb_homepage_program_add_mylist_clicked');
+                                break;
+
+                            case 'library':
+                                libraryProgramAddMylistClicked(1, this.state.title, this.props.router.query.id, type, 'mweb_library_program_add_mylist_clicked');
+                                break;
+                        }
+                        
                     }
                 }
                 else {
-                    if (this.reference && this.reference == 'homepage' && data) {
-                        programContentAddMyListEvent(this.props.router.query.id, this.state.title, data.id, data.title, type, 'mweb_homepage_program_content_add_mylist_clicked');
+                    if (this.reference && data) {
+                        switch (this.reference) {
+                            case 'homepage':
+                                programContentAddMyListEvent(this.props.router.query.id, this.state.title, data.id, data.title, type, 'mweb_homepage_program_content_add_mylist_clicked');
+                                break;
+
+                            case 'library':
+                                break;
+                        }
                     }
                 }
                 switch (type) {
@@ -582,8 +603,16 @@ class Detail extends React.Component {
 
     toggleRateModal() {
         if (this.props.likes.data && this.props.likes.data.length > 0 && !this.state.rate_modal) {
-            if (this.reference && this.reference == 'homepage') {
-                programRateEvent('INDIFFERENT', this.state.title, this.props.router.query.id, 'program', 'mweb_homepage_program_rate_clicked');
+            if (this.reference) {
+                switch (this.reference) {
+                    case 'homepage':
+                        programRateEvent('INDIFFERENT', this.state.title, this.props.router.query.id, 'program', 'mweb_homepage_program_rate_clicked');
+                        break;
+
+                    case 'library':
+                        libraryProgramRateClicked('INDIFFERENT', this.state.title, this.props.router.query.id, 'program', 'mweb_library_program_rate_clicked');
+                        break;
+                }
             }
             
             this.props.postLike(this.props.router.query.id, 'program', 'INDIFFERENT');
@@ -636,7 +665,8 @@ class Detail extends React.Component {
                                 programShareEvent(this.state.title, this.props.router.query.id, 'program', 'mweb_homepage_program_share_clicked');
                                 break;
 
-                            case 'mylist':
+                            case 'library':
+                                libraryProgramShareClicked(this.state.title, this.props.router.query.id, 'program', 'mweb_library_program_share_clicked');
                                 break;
                         }
                     }
@@ -837,6 +867,8 @@ class Detail extends React.Component {
                     toggle={this.toggle.bind(this)}
                     onReady={() => this.player = window.jwplayer('example-id')}
                     playerId="example-id"
+                    meta={this.props.initial.meta}
+                    program={this.props.initial.data}
                     videoUrl={this.state.trailer_url}/>
 
                 <PlayerModal 

@@ -7,7 +7,7 @@ import queryString from 'query-string';
 import likeActions from '../../redux/actions/likeActions';
 
 import { Modal, ModalBody } from 'reactstrap';
-import { programRateEvent } from '../../utils/appier';
+import { programRateEvent, libraryProgramRateClicked } from '../../utils/appier';
 
 import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
 import ThumbDownOutlinedIcon from '@material-ui/icons/ThumbDownOutlined';
@@ -35,9 +35,18 @@ class ActionModal extends React.Component {
             .then(response => {
                 this.props.getLikeHistory(this.props.programId)
                     .then(_ => {
-                        if (this.reference && this.reference == 'homepage' && this.props.data) {
+                        if (this.reference && this.props.data) {
                             const data = this.props.data.data;
-                            programRateEvent(status, data.title, data.id, this.props.type, 'mweb_homepage_program_rate_clicked');
+                            switch (this.reference) {
+                                case 'homepage':
+                                    programRateEvent(status, data.title, data.id, this.props.type, 'mweb_homepage_program_rate_clicked');
+                                    break;
+
+                                case 'library':
+                                    libraryProgramRateClicked(status, data.title, data.id, this.props.type, 'mweb_library_program_rate_clicked');
+                                    break;
+                            }
+                            
                         }
                         this.props.toggle();
                     })

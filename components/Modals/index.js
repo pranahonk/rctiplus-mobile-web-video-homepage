@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'next/router';
+import queryString from 'query-string';
 
 import pageActions from '../../redux/actions/pageActions';
 import historyActions from '../../redux/actions/historyActions';
@@ -11,7 +13,7 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import '../../assets/scss/components/modal.scss';
 
-import { exclusiveContentPlayEvent } from '../../utils/appier';
+import { exclusiveContentPlayEvent, libraryProgramTrailerPlayEvent } from '../../utils/appier';
 
 class PlayerModal extends React.Component {
 
@@ -23,6 +25,15 @@ class PlayerModal extends React.Component {
         };
         this.player = null;
         this.intervalFn = null;
+
+        const segments = this.props.router.asPath.split(/\?/);
+        this.reference = null;
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.ref) {
+                this.reference = q.ref;
+            }
+        }
     }
 
     tryAgain() {
@@ -36,7 +47,7 @@ class PlayerModal extends React.Component {
         if (this.props.open && !prevProps.open) {
             this.setState({ error: false }, () => this.initVOD());
         }
-        else if (!this.props.open && prevProps.open) {
+        else {
             if (this.player) {
                 clearInterval(this.intervalFn);
                 this.player.remove();
@@ -83,14 +94,28 @@ class PlayerModal extends React.Component {
 
         this.player.on('play', () => {
             this.intervalFn = setInterval(() => {
-                exclusiveContentPlayEvent(this.props.program.type, this.props.program.id, this.props.program.title, this.props.program.program_title, this.props.program.genre, this.props.meta.image_path + '300' + this.props.program.portrait_image, this.props.meta.image_path + '300' + this.props.program.landscape_image, 'mweb_exclusive_content_play');
-                this.props.postHistory(this.props.program.id, this.props.program.type, this.player.getPosition())
-                    .then(response => {
-                        // console.log(response);
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
+                if (this.props.program) {
+                    if (this.reference) {
+                        switch (this.reference) {
+                            case 'library':
+                                libraryProgramTrailerPlayEvent(this.props.program.title, this.props.program.id, this.props.program.type, this.player.getPosition(), this.player.getDuration(), 'mweb_library_program_trailer_play');
+                                break;
+                        }
+                    }
+                    else {
+                        exclusiveContentPlayEvent(this.props.program.type, this.props.program.id, this.props.program.title, this.props.program.program_title, this.props.program.genre, this.props.meta.image_path + '300' + this.props.program.portrait_image, this.props.meta.image_path + '300' + this.props.program.landscape_image, 'mweb_exclusive_content_play');
+                    
+                    }
+                    if (this.props.program.type) {
+                        this.props.postHistory(this.props.program.id, this.props.program.type, this.player.getPosition())
+                            .then(response => {
+                                // console.log(response);
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                    }
+                }
             }, 2500);
         });
     }
@@ -147,4 +172,4 @@ class PlayerModal extends React.Component {
 export default connect(state => state, {
     ...pageActions,
     ...historyActions
-})(PlayerModal);
+})(withRouter(PlayerModal));

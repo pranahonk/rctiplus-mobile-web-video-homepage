@@ -263,8 +263,8 @@ class Explores extends React.Component {
 	}
 
 	link(data) {
-		console.log(data);
-		// libraryProgramClicked();
+		libraryProgramClicked(data.title, data.id, data.type ? data.type : 'program', 'mweb_library_program_clicked');
+
 		if (!data.type) {
 			Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}?ref=library`);
 			return;
@@ -272,6 +272,7 @@ class Explores extends React.Component {
 
 		switch (data.type) {
 			case 'program':
+				
 				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}?ref=library`);
 				break;
 			default:
