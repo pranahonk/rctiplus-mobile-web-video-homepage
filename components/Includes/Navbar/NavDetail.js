@@ -3,7 +3,7 @@ import Router, { withRouter } from 'next/router';
 
 import { Navbar, NavbarBrand } from 'reactstrap';
 import queryString from 'query-string';
-import { contentGeneralEvent, libraryProgramBackClicked } from '../../../utils/appier';
+import { contentGeneralEvent, libraryProgramBackClicked, searchProgramBackClicked } from '../../../utils/appier';
 
 import '../../../assets/scss/components/navbar.scss';
 
@@ -53,6 +53,10 @@ class NavbarDetail extends Component {
 				case 'library':
 					libraryProgramBackClicked(data.title, data.id, 'program', 'mweb_library_program_back_clicked');
 					break;
+
+				case 'search':
+					searchProgramBackClicked(data.id, data.title, 'N/A', 'N/A', 'mweb_search_program_back_clicked');
+					break;
 			}
 			
 		}
@@ -65,7 +69,7 @@ class NavbarDetail extends Component {
 				<Navbar expand="md" className={'nav-container nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
 					<div className="top-link">
 						<div className={'logo-top-wrapper ' + (this.state.is_top ? 'back-arrow-transparent' : '')}>
-							<NavbarBrand onClick={this.goBack.bind(this)} style={{ color: 'white' }}>
+							<NavbarBrand onClick={this.goBack.bind(this)} style={{ color: 'white', fontSize: '1rem' }}>
 								<ArrowBackIcon/>
 							</NavbarBrand>
 						</div>

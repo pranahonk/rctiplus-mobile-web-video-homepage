@@ -535,7 +535,15 @@ class Tv extends React.Component {
 			);
 		}
 		else {
-			playerRef = (<div style={{ minHeight: 180 }} id="live-tv-player"></div>);
+			playerRef = (
+				<div>
+					<div style={{ minHeight: 180 }} id="live-tv-player"></div>
+					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
+					<div id='div-gpt-ad-1581999069906-0'>
+						<script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1581999069906-0'); });` }}></script>
+					</div>
+				</div>
+			);
 		}
 
 		return (
@@ -543,6 +551,17 @@ class Tv extends React.Component {
 				<Head>
 					<meta name="description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description}/>
 					<meta name="keywords" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].keywords}/>
+
+					<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+					<script dangerouslySetInnerHTML={{ __html: `
+							window.googletag = window.googletag || {cmd: []};
+							googletag.cmd.push(function() {
+							googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[320, 50], [468, 60]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
+							googletag.pubads().enableSingleRequest();
+							googletag.pubads().collapseEmptyDivs();
+							googletag.enableServices();
+						});
+					` }}></script>
 				</Head>
 				<SelectDateModal
 					open={this.state.select_modal}

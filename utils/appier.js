@@ -1024,7 +1024,7 @@ export const searchProgramTrailerClicked = (status, programTitle, programId, pro
     searchProgramRateClicked(status, programTitle, programId, programType, event);
 };
 
-export const searchProgramAddMylistClicked = (status, programTitle, programId, programType, event = 'mweb_search_program_add_mylist_clicked') => {
+export const searchProgramAddMyListClicked = (status, programTitle, programId, programType, event = 'mweb_search_program_add_mylist_clicked') => {
     searchProgramRateClicked(status, programTitle, programId, programType, event);
 };
 
@@ -1042,12 +1042,16 @@ export const searchProgramTrailerPlayEvent = (programId, programTitle, programTy
     });
 };
 
-export const searchProgramContentDownloadClicked = (status, programTitle, programId, programType, event = 'mweb_search_program_content_download_clicked') => {
-    searchProgramRateClicked(status, programTitle, programId, programType, event);
+export const searchProgramContentDownloadClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_search_program_content_download_clicked') => {
+    libraryProgramContentDownloadClicked(programId, programTitle, contentTitle, contentType, contentId, event);
 };
 
-export const searchProgramContentShareClicked = (status, programTitle, programId, programType, event = 'mweb_search_program_content_share_clicked') => {
-    searchProgramRateClicked(status, programTitle, programId, programType, event);
+export const searchProgramContentShareClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_search_program_content_share_clicked') => {
+    libraryProgramContentDownloadClicked(programId, programTitle, contentTitle, contentType, contentId, event);
+};
+
+export const searchProgramContentAddMyListClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_search_program_content_add_mylist_clicked') => {
+    libraryProgramContentDownloadClicked(programId, programTitle, contentTitle, contentType, contentId, event);
 };
 
 export const searchProgramContentClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_search_program_content_clicked') => {

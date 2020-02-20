@@ -308,7 +308,7 @@ class Explores extends React.Component {
 								<Link href={`/explores`} scroll={false}>
 									<div className="swiper-slide" onClick={() => this.selectGenre({ id: -1, name: 'For You' })}>
 										<Img 
-											alt={'Alt'} 
+											alt={'For You'} 
 											className="content-image"
 											unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 											loader={<img src="/static/placeholders/placeholder_landscape.png"/>}

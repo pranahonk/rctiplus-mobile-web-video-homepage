@@ -19,7 +19,7 @@ import '../../assets/scss/components/content.scss';
 
 import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
 import { getCookie } from '../../utils/cookie';
-import { programContentPlayEvent, homepageContentPlayEvent, accountHistoryContentPlayEvent, accountMylistContentPlayEvent, accountContinueWatchingContentPlayEvent, libraryProgramContentPlayEvent } from '../../utils/appier';
+import { programContentPlayEvent, homepageContentPlayEvent, accountHistoryContentPlayEvent, accountMylistContentPlayEvent, accountContinueWatchingContentPlayEvent, libraryProgramContentPlayEvent, searchProgramContentPlayEvent } from '../../utils/appier';
 
 class Content extends React.PureComponent {
 
@@ -163,23 +163,34 @@ class Content extends React.PureComponent {
                 if (this.reference) {
                     const data = this.props.context_data;
                     if (data) {
-                        if (this.reference == 'homepage_program') {
-                            programContentPlayEvent(data.id, data.title, data.content_id, data.content_title, data.type, this.player.getPosition(), content.data.duration, 'mweb_homepage_program_content_play');
-                        }
-                        else if (this.reference == 'mylist_program') {
-                            accountMylistContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_account_mylist_content_play');
-                        }
-                        else if (this.reference == 'library_program') {
-                            libraryProgramContentPlayEvent(content.data.program_title, content.data.program_id, data.content_title, data.type, data.content_id, this.player.getPosition(), content.data.duration, 'mweb_library_program_content_play');
-                        }
-                        else if (this.reference == 'homepage') {
-                            homepageContentPlayEvent(this.homepageTitle ? this.homepageTitle : 'N/A', data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_homepage_content_play');
-                        }
-                        else if (this.reference == 'history') {
-                            accountHistoryContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_account_history_content_play');
-                        }
-                        else if (this.reference == 'continue_watching') {
-                            accountContinueWatchingContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_account_continue_watching_content_play');
+                        switch (this.reference) {
+                            case 'homepage_program':
+                                programContentPlayEvent(data.id, data.title, data.content_id, data.content_title, data.type, this.player.getPosition(), content.data.duration, 'mweb_homepage_program_content_play');
+                                break;
+
+                            case 'mylist_program':
+                                accountMylistContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_account_mylist_content_play');
+                                break;
+
+                            case 'library_program':
+                                libraryProgramContentPlayEvent(content.data.program_title, content.data.program_id, data.content_title, data.type, data.content_id, this.player.getPosition(), content.data.duration, 'mweb_library_program_content_play');
+                                break;
+
+                            case 'search_program':
+                                searchProgramContentPlayEvent(data.program_id, content.data.program_title, data.content_title, data.type, data.content_id, this.player.getPosition(), content.data.duration, 'mweb_search_program_content_play');
+                                break;
+
+                            case 'homepage':
+                                homepageContentPlayEvent(this.homepageTitle ? this.homepageTitle : 'N/A', data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_homepage_content_play');
+                                break;
+
+                            case 'history':
+                                accountHistoryContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_account_history_content_play');
+                                break;
+
+                            case 'continue_watching':
+                                accountContinueWatchingContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_account_continue_watching_content_play');
+                                break;
                         }
                     }
                     
@@ -273,13 +284,7 @@ class Content extends React.PureComponent {
                             <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
                             <span style={{ fontSize: 12 }}>Please try again later,</span><br/>
                             <span style={{ fontSize: 12 }}>we're working to fix the problem</span>
-                            {/* <Button onClick={this.tryAgain.bind(this)} className="btn-next" style={{ width: '50%' }}>Coba Lagi</Button> */}
                         </h5>
-                        {/* <SentimentVeryDissatisfiedIcon style={{ fontSize: '4rem' }}/>
-						<h5>
-							<strong>{this.state.error_data.message}</strong><br/><br/>
-							<Button onClick={this.tryAgain.bind(this)} className="btn-next block-btn">Coba Lagi</Button>
-						</h5> */}
 					</div>
                 </div>
             );

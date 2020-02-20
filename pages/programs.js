@@ -47,7 +47,7 @@ import '../assets/scss/components/detail.scss';
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
 
-import { programRateEvent, programShareEvent, programContentShareEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked } from '../utils/appier';
+import { programRateEvent, programShareEvent, programContentShareEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked, searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked } from '../utils/appier';
 
 class Detail extends React.Component {
 
@@ -299,6 +299,10 @@ class Detail extends React.Component {
                 case 'library':
                     libraryProgramContentDownloadClicked(this.props.router.query.id, this.state.title, data.title, type, data.id, 'mweb_library_program_content_download_clicked');
                     break;
+
+                case 'search':
+                    searchProgramContentDownloadClicked(this.props.router.query.id, this.state.title, data.title, type, data.id, 'mweb_search_program_content_download_clicked');
+                    break;
             }
         }
         showAlert('To be able to watch this episode offline, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); });
@@ -482,6 +486,10 @@ class Detail extends React.Component {
                             case 'library':
                                 libraryProgramTrailerClicked('N/A', this.state.title, this.props.router.query.id, 'program', 'mweb_library_program_trailer_clicked');
                                 break;
+
+                            case 'search':
+                                searchProgramTrailerClicked('N/A', this.state.title, this.props.router.query.id, 'program', 'mweb_search_program_trailer_clicked');
+                                break;
                         }
                     }
                     if (this.player != null) {
@@ -521,6 +529,10 @@ class Detail extends React.Component {
                             case 'library':
                                 libraryProgramAddMylistClicked(1, this.state.title, this.props.router.query.id, type, 'mweb_library_program_add_mylist_clicked');
                                 break;
+
+                            case 'search':
+                                searchProgramAddMyListClicked('N/A', this.state.title, this.props.router.query.id, type, 'mweb_search_program_add_mylist_clicked');
+                                break;
                         }
                         
                     }
@@ -534,6 +546,10 @@ class Detail extends React.Component {
 
                             case 'library':
                                 libraryProgramContentAddMylistClicked(this.props.router.query.id, this.state.title, data.title, type, data.id, 'mweb_library_program_content_add_mylist_clicked');
+                                break;
+
+                            case 'search':
+                                searchProgramContentAddMyListClicked(this.props.router.query.id, this.state.title, data.title, type, data.id, 'mweb_search_program_content_add_mylist_clicked');
                                 break;
                         }
                     }
@@ -660,6 +676,10 @@ class Detail extends React.Component {
                     case 'library':
                         libraryProgramRateClicked('INDIFFERENT', this.state.title, this.props.router.query.id, 'program', 'mweb_library_program_rate_clicked');
                         break;
+
+                    case 'search':
+                        searchProgramRateClicked('INDIFFERENT', this.state.title, this.props.router.query.id, 'program', 'mweb_search_program_rate_clicked');
+                        break;
                 }
             }
             
@@ -716,6 +736,10 @@ class Detail extends React.Component {
                             case 'library':
                                 libraryProgramShareClicked(this.state.title, this.props.router.query.id, 'program', 'mweb_library_program_share_clicked');
                                 break;
+
+                            case 'search':
+                                searchProgramShareClicked('N/A', this.state.title, this.props.router.query.id, 'program', 'mweb_search_program_share_clicked');
+                                break;
                         }
                     }
                     
@@ -735,6 +759,10 @@ class Detail extends React.Component {
 
                                 case 'library':
                                     libraryProgramContentShareClicked(data.program_id, this.state.title, data.title, contentType, data.id, 'mweb_library_program_content_share_clicked');
+                                    break;
+
+                                case 'search':
+                                    searchProgramContentShareClicked(data.program_id, this.state.title, data.title, contentType, data.id, 'mweb_search_program_content_share_clicked');
                                     break;
                             }
                         }
@@ -791,6 +819,10 @@ class Detail extends React.Component {
                         case 'library':
                             libraryProgramTabClicked(this.props.router.query.id, this.state.title, tabName, 'mweb_library_program_tab_clicked');
                             break;
+
+                        case 'search':
+                            searchProgramTabClicked(this.props.router.query.id, this.state.title, tabName, 'mweb_search_program_tab_clicked');
+                            break;
                     }
                     
                 }
@@ -829,6 +861,10 @@ class Detail extends React.Component {
 
                 case 'library':
                     libraryProgramContentClicked(cw.program_id, this.props.initial.data.title, cw.title, type, cw.id, 'mweb_library_program_content_clicked')
+                    break;
+
+                case 'search':
+                    searchProgramContentClicked(cw.program_id, this.props.initial.data.title, cw.title, type, cw.id, 'mweb_search_program_content_clicked');
                     break;
             }
             

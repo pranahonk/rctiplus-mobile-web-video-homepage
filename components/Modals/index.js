@@ -13,7 +13,7 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import '../../assets/scss/components/modal.scss';
 
-import { exclusiveContentPlayEvent, libraryProgramTrailerPlayEvent } from '../../utils/appier';
+import { exclusiveContentPlayEvent, libraryProgramTrailerPlayEvent, searchProgramTrailerPlayEvent } from '../../utils/appier';
 
 class PlayerModal extends React.Component {
 
@@ -99,6 +99,10 @@ class PlayerModal extends React.Component {
                         switch (this.reference) {
                             case 'library':
                                 libraryProgramTrailerPlayEvent(this.props.program.title, this.props.program.id, this.props.program.type, this.player.getPosition(), this.player.getDuration(), 'mweb_library_program_trailer_play');
+                                break;
+
+                            case 'search':
+                                searchProgramTrailerPlayEvent(this.props.program.id, this.props.program.title, this.props.program.type, this.player.getPosition(), this.player.getDuration(), 'mweb_search_program_trailer_play');
                                 break;
                         }
                     }

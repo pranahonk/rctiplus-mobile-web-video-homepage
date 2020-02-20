@@ -7,7 +7,7 @@ import queryString from 'query-string';
 import likeActions from '../../redux/actions/likeActions';
 
 import { Modal, ModalBody } from 'reactstrap';
-import { programRateEvent, libraryProgramRateClicked } from '../../utils/appier';
+import { programRateEvent, libraryProgramRateClicked, searchProgramRateClicked } from '../../utils/appier';
 
 import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
 import ThumbDownOutlinedIcon from '@material-ui/icons/ThumbDownOutlined';
@@ -44,6 +44,10 @@ class ActionModal extends React.Component {
 
                                 case 'library':
                                     libraryProgramRateClicked(status, data.title, data.id, this.props.type, 'mweb_library_program_rate_clicked');
+                                    break;
+
+                                case 'search':
+                                    searchProgramRateClicked(status, data.title, data.id, this.props.type, 'mweb_search_program_rate_clicked');
                                     break;
                             }
                             

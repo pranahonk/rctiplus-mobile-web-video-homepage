@@ -14,11 +14,12 @@ import { Navbar, NavbarBrand, Input } from 'reactstrap';
 import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
-import { libraryGeneralEvent } from '../../../utils/appier';
+import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked } from '../../../utils/appier';
 
 class NavbarSearch extends Component {
     constructor(props) {
@@ -33,8 +34,9 @@ class NavbarSearch extends Component {
 
     componentDidMount() {
         this.subject
-            .pipe(debounceTime(2000))
+            .pipe(debounceTime(1000))
             .subscribe(() => {
+                searchKeywordEvent(this.state.q, 'mweb_search_keyword');
                 this.props.searchAllCategory(this.state.q, 1, this.state.length)
                     .then(responses => {
                         console.log(responses);
@@ -72,6 +74,12 @@ class NavbarSearch extends Component {
         }
     }
 
+    clearKeyword() {
+        this.setState({ q: '' }, () => {
+            this.changeQuery(this.state.q);
+        });
+    }
+
     render() {
         return (
             <div className="nav-home-container nav-fixed-top">
@@ -81,9 +89,9 @@ class NavbarSearch extends Component {
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
                             <NavbarBrand onClick={() => {
-                                // if (this.props.router.asPath.indexOf('/trending') === 0) {
-                                //     newsGeneralEvent('mweb_library_program_back_clicked');
-                                // }
+                                if (this.props.router.asPath.indexOf('/explores') === 0) {
+                                    searchBackClicked(this.state.q, 'mweb_search_back_clicked');
+                                }
                                 Router.back();
                             }} style={{ color: 'white' }}>
                                 <ArrowBackIcon />
@@ -99,11 +107,12 @@ class NavbarSearch extends Component {
                             className="search-input" />
                     </div>
                     <div className="right-top-link">
-                        <div className="btn-link-top-nav" onClick={() => {
-                            this.changeQuery(this.state.q);
-                        }}>
+                        <div className="btn-link-top-nav">
                             <NavbarBrand style={{ color: 'white' }}>
-                                <SearchIcon style={{ fontSize: 20 }} />
+                                <CloseIcon style={{ fontSize: 20, marginRight: 10, visibility: (this.state.q.length > 0 ? 'visible' : 'hidden') }} onClick={this.clearKeyword.bind(this)}/>
+                                <SearchIcon style={{ fontSize: 20 }} onClick={() => {
+                                    this.changeQuery(this.state.q);
+                                }} />
                             </NavbarBrand>
                         </div>
                     </div>

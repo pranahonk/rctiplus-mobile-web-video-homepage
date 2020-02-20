@@ -12,6 +12,8 @@ import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissa
 
 import '../../assets/scss/components/search-results.scss';
 
+import { searchTabClicked, searchProgramClicked } from '../../utils/appier';
+
 class Result extends React.Component {
 
     constructor(props) {
@@ -29,6 +31,7 @@ class Result extends React.Component {
 
     toggleTab(tab) {
         if (this.state.active_tab !== tab) {
+            searchTabClicked('N/A', 'N/A', 'N/A', this.state.active_tab);
             this.setState({ active_tab: tab }, () => {
                 this.props.setActiveTab(this.state.active_tab);
             });
@@ -36,16 +39,15 @@ class Result extends React.Component {
     }
 
     link(data, type) {
-        console.log(type);
+        searchProgramClicked(data.title, data.id, type, 'mweb_search_program_clicked');
 		switch (type) {
-			case 'program':
-				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}`);
+			case 'program':                
+				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}?ref=search`);
 				break;
 			default:
-				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${type}/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}`);
+				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${type}/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}?ref=search`);
 				break;
 		}
-		
 	}
 
     render() {
