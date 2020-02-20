@@ -889,8 +889,6 @@ export const libraryProgramSeasonCloseClicked = (programId, programName, season,
     libraryProgramSeasonClicked(programId, programName, season, event);
 };
 
-// START
-
 export const newsGeneralEvent = (event = 'mweb_news_logo_clicked') => {
     homeGeneralClicked(event);
 };
@@ -954,6 +952,191 @@ export const newsArticleShareClicked = (articleId, articleName, category, event 
 
 export const newsArticleBackClicked = (articleId, articleName, category, event = 'mweb_news_article_back_clicked') => {
     newsArticleClicked(articleId, articleName, category, event);
+};
+
+// START
+
+export const searchKeywordEvent = (search, event = 'mweb_search_keyword') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        search: search,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const searchTabClicked = (programId, programName, contentName, tabName, event = 'mweb_search_tab_clicked') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        program_id: programId,
+        program_name: programName,
+        content_name: contentName,
+        tab_name: tabName,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const searchBackClicked = (search, event = 'mweb_search_back_clicked') => {
+    searchKeywordEvent(search, event);
+};
+
+export const searchClearKeywordClicked = (search, event = 'mweb_search_clear_keyword_clicked') => {
+    searchKeywordEvent(search, event);
+};
+
+export const searchProgramBackClicked = (programId, programName, contentName, tabName, event = 'mweb_search_program_back_clicked') => {
+    searchTabClicked(programId, programName, contentName, tabName, event);
+};
+
+export const searchProgramClicked = (programTitle, programId, programType, event = 'mweb_search_program_clicked') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        program_title: programTitle,
+        program_id: programId,
+        program_type: programType,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const searchProgramRateClicked = (status, programTitle, programId, programType, event = 'mweb_search_program_rate_clicked') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        status: status,
+        program_title: programTitle,
+        program_id: programId,
+        program_type: programType,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const searchProgramShareClicked = (status, programTitle, programId, programType, event = 'mweb_search_program_share_clicked') => {
+    searchProgramRateClicked(status, programTitle, programId, programType, event);
+};
+
+export const searchProgramTrailerClicked = (status, programTitle, programId, programType, event = 'mweb_search_program_trailer_clicked') => {
+    searchProgramRateClicked(status, programTitle, programId, programType, event);
+};
+
+export const searchProgramAddMylistClicked = (status, programTitle, programId, programType, event = 'mweb_search_program_add_mylist_clicked') => {
+    searchProgramRateClicked(status, programTitle, programId, programType, event);
+};
+
+export const searchProgramTrailerPlayEvent = (programId, programTitle, programType, duration, videoDuration, event = 'mweb_search_program_trailer_play') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        program_id: programId,
+        program_title: programTitle,
+        program_type: programType,
+        duration: duration,
+        video_duration: videoDuration,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const searchProgramContentDownloadClicked = (status, programTitle, programId, programType, event = 'mweb_search_program_content_download_clicked') => {
+    searchProgramRateClicked(status, programTitle, programId, programType, event);
+};
+
+export const searchProgramContentShareClicked = (status, programTitle, programId, programType, event = 'mweb_search_program_content_share_clicked') => {
+    searchProgramRateClicked(status, programTitle, programId, programType, event);
+};
+
+export const searchProgramContentClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_search_program_content_clicked') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        program_id: programId,
+        program_title: programTitle,
+        content_title: contentTitle,
+        content_type: contentType,
+        content_id: contentId,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const searchProgramContentPlayEvent = (programId, programTitle, contentTitle, contentType, contentId, duration, videoDuration, event = 'mweb_search_program_content_play') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        program_id: programId,
+        program_title: programTitle,
+        content_title: contentTitle,
+        content_type: contentType,
+        content_id: contentId,
+        duration: duration,
+        video_duration: videoDuration,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const searchProgramTabClicked = (programId, programName, tabName, event = 'mweb_search_program_tab_clicked') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        program_id: programId,
+        program_name: programName,
+        tab_name: tabName,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const searchProgramSeasonClicked = (programId, programName, season, event = 'mweb_search_program_season_clicked') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        program_id: programId,
+        program_name: programName,
+        season: season,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const searchProgramSeasonListClicked = (programId, programName, season, event = 'mweb_search_program_season_list_clicked') => {
+    searchProgramSeasonClicked(programId, programName, season, event);
+};
+
+export const searchProgramSeasonCloseClicked = (programId, programName, season, event = 'mweb_search_program_season_close_clicked') => {
+    searchProgramSeasonClicked(programId, programName, season, event);
+};
+
+export const searchProgramRelatedScrollHorizontalEvent = (programId, programTitle, event = 'mweb_search_program_related_scroll_horizontal') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        program_id: programId,
+        program_title: programTitle,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
+export const searchProgramShowmoreClicked = (programId, programTitle, event = 'mweb_search_program_showmore_clicked') => {
+    searchProgramRelatedScrollHorizontalEvent(programId, programTitle, event);
+};
+
+export const searchPhotoSlideNextEvent = (programId, programTitle, event = 'mweb_search_photo_slide_next') => {
+    searchProgramRelatedScrollHorizontalEvent(programId, programTitle, event);
+};
+
+export const searchPhotoSlidePreviousEvent = (programId, programTitle, event = 'mweb_search_photo_slide_previous') => {
+    searchProgramRelatedScrollHorizontalEvent(programId, programTitle, event);
+};
+
+export const searchScrollVerticalEvent = (event = 'mweb_search_scroll_vertical') => {
+    homeGeneralClicked(event);
 };
 
 // END
