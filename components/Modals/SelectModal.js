@@ -6,7 +6,7 @@ import contentActions from '../../redux/actions/contentActions';
 
 import { Modal, ModalBody } from 'reactstrap';
 import queryString from 'query-string';
-import { programSeasonEvent, libraryProgramSeasonClicked } from '../../utils/appier';
+import { programSeasonEvent, libraryProgramSeasonClicked, searchProgramSeasonClicked } from '../../utils/appier';
 
 import CancelIcon from '@material-ui/icons/Cancel';
 
@@ -42,6 +42,10 @@ class SelectModal extends React.Component {
 
                                     case 'library':
                                         libraryProgramSeasonClicked(programId, data.title, season, 'mweb_library_program_season_clicked');
+                                        break;
+
+                                    case 'search':
+                                        searchProgramSeasonClicked(programId, data.title, season, 'mweb_search_program_season_clicked');
                                         break;
                                 }
                             }

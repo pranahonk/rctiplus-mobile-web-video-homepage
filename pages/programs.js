@@ -47,7 +47,7 @@ import '../assets/scss/components/detail.scss';
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
 
-import { programRateEvent, programShareEvent, programContentShareEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked, searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked } from '../utils/appier';
+import { programRateEvent, programShareEvent, programContentShareEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked, searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked } from '../utils/appier';
 
 class Detail extends React.Component {
 
@@ -169,6 +169,10 @@ class Detail extends React.Component {
                     case 'library':
                         libraryGeneralEvent('mweb_library_program_related_scroll_horizontal');
                         break;
+
+                    case 'search':
+                        searchProgramRelatedScrollHorizontalEvent(this.props.router.query.id, this.state.title, 'mweb_search_program_related_scroll_horizontal');
+                        break;
                 }
             }
         }
@@ -183,6 +187,10 @@ class Detail extends React.Component {
 
                 case 'library':
                     libraryGeneralEvent('mweb_library_program_showmore_clicked');
+                    break;
+
+                case 'search':
+                    searchProgramShowmoreClicked(this.props.router.query.id, this.state.title, 'mweb_search_program_showmore_clicked');
                     break;
             }
             
@@ -790,6 +798,10 @@ class Detail extends React.Component {
                     case 'library':
                         libraryProgramSeasonCloseClicked(this.props.router.query.id, this.state.title, this.state.selected_season, 'mweb_library_program_season_close_clicked');
                         break;
+
+                    case 'search':
+                        searchProgramSeasonCloseClicked(this.props.router.query.id, this.state.title, this.state.selected_season, 'mweb_search_program_season_close_clicked');
+                        break;
                 }
             }
             else {
@@ -800,6 +812,10 @@ class Detail extends React.Component {
 
                     case 'library':
                         libraryProgramSeasonListClicked(this.props.router.query.id, this.state.title, this.state.selected_season, 'mweb_library_program_season_list_clicked');
+                        break;
+
+                    case 'search':
+                        searchProgramSeasonListClicked(this.props.router.query.id, this.state.title, this.state.selected_season, 'mweb_search_program_season_list_clicked');
                         break;
                 }
             }

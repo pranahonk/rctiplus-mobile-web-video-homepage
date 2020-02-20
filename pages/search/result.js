@@ -12,7 +12,7 @@ import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissa
 
 import '../../assets/scss/components/search-results.scss';
 
-import { searchTabClicked, searchProgramClicked } from '../../utils/appier';
+import { searchTabClicked, searchProgramClicked, searchScrollVerticalEvent } from '../../utils/appier';
 
 class Result extends React.Component {
 
@@ -27,7 +27,21 @@ class Result extends React.Component {
         };
 
         this.tabs = ['program', 'episode', 'extra', 'clip', 'photo'];
+        this.swipe = {};
     }
+
+    onTouchStart(e) {
+		const touch = e.touches[0];
+		this.swipe = { y: touch.clientY };
+	}
+
+	onTouchEnd(e) {
+		const touch = e.changedTouches[0];
+		const absY = Math.abs(touch.clientY - this.swipe.y);
+		if (absY > 50) {
+			searchScrollVerticalEvent('mweb_search_scroll_vertical');
+		}
+	}
 
     toggleTab(tab) {
         if (this.state.active_tab !== tab) {
@@ -52,7 +66,7 @@ class Result extends React.Component {
 
     render() {
         return (
-            <div className="search-results-container">
+            <div className="search-results-container" onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
                 <Nav tabs id="search-results">
                     {this.tabs.map((t, i) => (
                         <NavItem key={i} className="nav-tab-item">

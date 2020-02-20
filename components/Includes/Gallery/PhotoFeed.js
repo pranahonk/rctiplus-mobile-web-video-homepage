@@ -1,15 +1,19 @@
 import React from 'react';
+import { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import Img from 'react-image';
 import TimeAgo from 'react-timeago';
 import { Row, Col } from 'reactstrap';
 import { Carousel } from 'react-responsive-carousel';
+import queryString from 'query-string';
 
 import ShareIcon from '@material-ui/icons/Share';
 
 import ActionSheet from '../../Modals/ActionSheet';
 
 import '../../../assets/scss/components/photo-detail.scss';
+
+import { searchPhotoSlideNextEvent, searchPhotoSlidePreviousEvent } from '../../../utils/appier';
 
 class PhotoFeed extends React.Component {
 
@@ -20,6 +24,22 @@ class PhotoFeed extends React.Component {
             action_sheet: false,
             hashtags: []
         };
+
+        this.swipe = {};
+        this.direction = null;
+
+        const segments = this.props.router.asPath.split(/\?/);
+        this.reference = null;
+        this.homepageTitle = null;
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.ref) {
+                this.reference = q.ref;
+            }
+            if (q.homepage_title) {
+                this.homepageTitle = q.homepage_title;
+            }
+        }
     }
 
     toggleActionSheet(caption = '', url = '', hashtags = []) {
@@ -69,6 +89,36 @@ class PhotoFeed extends React.Component {
                             showArrows={false}
                             showStatus={this.props.images.length > 1}
                             swipeScrollTolerance={1}
+                            onSwipeStart={e => {
+                                this.swipe = { x: 0 };
+                                this.direction = null;
+                            }}
+                            onSwipeMove={e => {
+                                if (e.touches.length) {
+                                    const x = e.touches[0].clientX;
+                                    if (this.swipe.x < x) {
+                                        this.direction = 'prev';
+                                    }
+                                    else {
+                                        this.direction = 'next';
+                                    }
+                                    this.swipe = { x: x };
+                                }
+                            }}
+                            onSwipeEnd={e => {
+                                if (this.direction && this.reference && this.reference === 'search') {
+                                    switch (this.direction) {
+                                        case 'next':
+                                            searchPhotoSlideNextEvent(this.props.program.id, this.props.program.title, 'mweb_search_photo_slide_next');
+                                            break;
+
+                                        case 'prev':
+                                            searchPhotoSlidePreviousEvent(this.props.program.id, this.props.program.title, 'mweb_search_photo_slide_previous');
+                                            break;
+                                    }
+                                }
+                                this.swipe = { x: 0 };
+                            }}
                             swipeable={true}>
                                 {this.props.images.map(im => (
                                     <Img
@@ -90,4 +140,4 @@ class PhotoFeed extends React.Component {
 
 }
 
-export default connect(state => state, {})(PhotoFeed);
+export default connect(state => state, {})(withRouter(PhotoFeed));
