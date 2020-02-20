@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import Img from 'react-image';
 
-import { DEV_API, NEWS_API } from '../../config';
+import { DEV_API, NEWS_API, BASE_URL } from '../../config';
 
 import newsContentActions from '../../redux/actions/trending/content';
 
@@ -17,6 +17,7 @@ import { FacebookShareButton, TwitterShareButton, EmailShareButton, LineShareBut
 import { Row, Col } from 'reactstrap';
 
 import { formatDateTime } from '../../utils/dateHelpers';
+import { newsRelatedArticleClicked, newsRateArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
 
 class Detail extends React.Component {
 
@@ -80,49 +81,74 @@ class Detail extends React.Component {
             .catch(error => {
                 console.log(error);
             });
+
+        this.props.getNewsFavoriteStatus(this.state.trending_detail_id)
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     openIframe() {
-        this.setState({ iframe_opened: !this.state.iframe_opened });
+        this.setState({ iframe_opened: !this.state.iframe_opened }, () => {
+            if (this.state.iframe_opened) {
+                const cdata = this.state.trending_detail_data.data[0];
+                newsOriginalArticleClicked(cdata.id, cdata.title, cdata.category_source, 'mweb_news_original_article_clicked');
+            }
+        });
     }
 
     goToDetail(article) {
-        // newsArticleClicked(article.id, article.title, article.category_source, 'mweb_news_article_clicked');
+        newsRelatedArticleClicked(article.id, article.title, article.category_search, 'mweb_news_related_article_clicked');
         Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase());
     }
 
+    setNewsFavorite() {
+        const cdata = this.state.trending_detail_data.data[0];
+        // newsRateArticleClicked(cdata.id, cdata.title, 'status_like', 'N/A', 'mweb_news_rate_article_clicked');
+        // this.props.setNewsFavorite(this.state.trending_detail_id);
+    }
+
+    newsArticleShareClicked() {
+        const cdata = this.state.trending_detail_data.data[0];
+        newsArticleShareClicked(cdata.id, cdata.title, cdata.category_source, 'mweb_news_share_article_clicked');
+    }
+
     renderActionButton() {
+        const cdata = this.state.trending_detail_data.data[0];
+        let hashtags = ['rcti', 'rctinews'];
         return (
             <div className="sheet-action-button-container">
-                <div className="sheet-action-button" style={{ background: '#7ed321' }}>
-                    <WhatsappShareButton url="#">
+                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#7ed321' }}>
+                    <WhatsappShareButton title={cdata.title} url={BASE_URL + this.props.router.asPath} separator=" - ">
                         <i className="fab fa-whatsapp"></i>
                     </WhatsappShareButton>
                 </div>
-                <div className="sheet-action-button" style={{ background: '#034ea1' }}>
-                    <FacebookShareButton url="#">
+                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#034ea1' }}>
+                    <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${BASE_URL + this.props.router.asPath}`} url={BASE_URL + this.props.router.asPath}>
                         <i className="fab fa-facebook-f"></i>
                     </FacebookShareButton>
                 </div>
-                <div className="sheet-action-button" style={{ background: '#4a90e2' }}>
-                    <TwitterShareButton url="#">
+                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#4a90e2' }}>
+                    <TwitterShareButton title={cdata.title} url={BASE_URL + this.props.router.asPath} hashtags={hashtags}>
                         <i className="fab fa-twitter"></i>
                     </TwitterShareButton>
                 </div>
-                <div className="sheet-action-button" style={{ background: '#b8e986' }}>
-                    <LineShareButton url="#">
+                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#b8e986' }}>
+                    <LineShareButton url={BASE_URL + this.props.router.asPath} title={cdata.title}>
                         <i className="fab fa-line"></i>
                     </LineShareButton>
                 </div>
-                <div className="sheet-action-button" style={{ background: '#3a3a3a' }}>
-                    <EmailShareButton url="#">
+                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#3a3a3a' }}>
+                    <EmailShareButton url={BASE_URL + this.props.router.asPath} subject={cdata.title} body={cdata.title + ' ' + BASE_URL + this.props.router.asPath} separator=" - " openWindow>
                         <i className="far fa-envelope"></i>
                     </EmailShareButton>
                 </div>
 
-                <div className="sheet-action-button" style={{ float: 'right' }}>
-                    <i className="far fa-heart"></i>
-                    <input type="hidden" id="url-copy" value={this.props.url} />
+                <div onClick={this.setNewsFavorite.bind(this)} className="sheet-action-button" style={{ float: 'right' }}>
+                    <i className="fas fa-heart"></i>
                 </div>
             </div>
         );
@@ -138,7 +164,7 @@ class Detail extends React.Component {
                     height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript> */}
                     {/* <!-- End Google Tag Manager (noscript) --> */}
                 </Head>
-                <NavBack />
+                <NavBack data={cdata} />
                 {this.state.iframe_opened ? (<iframe src={cdata.link} style={{ width: '100%', minHeight: 'calc(100vh - 50px)', paddingTop: 65 }} frameBorder="0" type="text/html"></iframe>) : (
                     <div className="content-trending-detail">
                         <p className="content-trending-detail-title"><b>{cdata.title}</b></p>
@@ -175,4 +201,4 @@ class Detail extends React.Component {
     }
 }
 
-export default connect(state => state, newsContentActions)(Detail);
+export default connect(state => state, newsContentActions)(withRouter(Detail));

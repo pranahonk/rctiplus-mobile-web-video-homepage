@@ -1,8 +1,6 @@
 import ax from 'axios';
-import { API, DEV_API, NEWS_TOKEN, NEWS_API } from '../../../config';
-import { getCookie, getNewsToken, getVisitorToken, checkToken } from '../../../utils/cookie';
-import { showConfirmAlert, showSignInAlert } from '../../../utils/helpers';
-//
+import { NEWS_API } from '../../../config';
+import { getNewsToken, checkToken } from '../../../utils/cookie';
 
 const axios = ax.create({ baseURL: NEWS_API + '/api' });
 
@@ -37,7 +35,7 @@ const getTrendingContent = (subcategory_id = 12, page = 1, length = 5, info = 'i
 };
 
 const getTrendingRelated = (id, pageSize = 4, infos = 'id,title,cover,link,guid') => {
-    return dispatch => new Promise(async (resolve, reject) => {
+    return () => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/news/related/${id}?pageSize=${pageSize}&infos=${infos}`);
             if (response.status === 200 && response.data.status.code === 0) {
@@ -53,7 +51,47 @@ const getTrendingRelated = (id, pageSize = 4, infos = 'id,title,cover,link,guid'
     });
 };
 
+const getNewsFavoriteStatus = newsId => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/like/${newsId}`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const setNewsFavorite = (newsId, love) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v1/like`, {
+                newsId: newsId,
+                love: love
+            });
+
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 export default {
     getTrendingContent,
-    getTrendingRelated
+    getTrendingRelated,
+    getNewsFavoriteStatus,
+    setNewsFavorite
 };
