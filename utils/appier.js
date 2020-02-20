@@ -954,8 +954,6 @@ export const newsArticleBackClicked = (articleId, articleName, category, event =
     newsArticleClicked(articleId, articleName, category, event);
 };
 
-// START
-
 export const searchKeywordEvent = (search, event = 'mweb_search_keyword') => {
     console.log(event);
     qg('event', event, 
@@ -1143,4 +1141,21 @@ export const searchScrollVerticalEvent = (event = 'mweb_search_scroll_vertical')
     homeGeneralClicked(event);
 };
 
-// END
+export const accountVideoProgress = (contentType, contentId, contentTitle, programTitle, genre, portraitImage, landscapeImage, startDuration, endDuration, videoDuration, event = 'mweb_account_video_finished') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        content_type: contentType,
+        content_id: contentId,
+        content_title: contentTitle,
+        genre: genre,
+        program_title: programTitle,
+        portrait_image: portraitImage,
+        landscape_image: landscapeImage,
+        start_duration: startDuration,
+        end_duration: endDuration,
+        video_duration: videoDuration,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};

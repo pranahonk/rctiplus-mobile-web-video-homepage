@@ -124,7 +124,7 @@ class History extends React.Component {
 					let histories = this.state.histories.slice();
 					histories.sort((a, b) => (a.title > b.title) ? 1 : -1);
 					this.setState({ ordered_histories: histories }, () => {
-						if (!first) {
+						if (first != true) {
 							accountGeneralEvent('mweb_account_history_filter_asc_clicked');
 						}
 					});
@@ -132,7 +132,7 @@ class History extends React.Component {
 
 				default:
 					this.setState({ ordered_histories: this.state.histories.slice() }, () => {
-						if (!first) {
+						if (first != true) {
 							accountGeneralEvent('mweb_account_history_filter_latest_post_clicked');
 						}
 					});

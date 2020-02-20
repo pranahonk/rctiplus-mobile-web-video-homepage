@@ -253,7 +253,7 @@ class Tv extends React.Component {
 		this.props.setPageLoader();
 		this.setState({ selected_index: index, error: false }, () => {
 			if (first != true) {
-				liveTvTabClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, this.state.selected_tab);
+				liveTvTabClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, this.state.selected_tab, 'mweb_livetv_channel_clicked');
 			}
 			
 			this.loadChatMessages(this.state.live_events[this.state.selected_index].id);

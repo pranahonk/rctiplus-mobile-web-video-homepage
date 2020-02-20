@@ -748,6 +748,9 @@ class Detail extends React.Component {
                             case 'search':
                                 searchProgramShareClicked('N/A', this.state.title, this.props.router.query.id, 'program', 'mweb_search_program_share_clicked');
                                 break;
+
+                            case 'mylist':
+                                break;
                         }
                     }
                     

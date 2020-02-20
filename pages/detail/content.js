@@ -19,7 +19,7 @@ import '../../assets/scss/components/content.scss';
 
 import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
 import { getCookie } from '../../utils/cookie';
-import { programContentPlayEvent, homepageContentPlayEvent, accountHistoryContentPlayEvent, accountMylistContentPlayEvent, accountContinueWatchingContentPlayEvent, libraryProgramContentPlayEvent, searchProgramContentPlayEvent } from '../../utils/appier';
+import { programContentPlayEvent, homepageContentPlayEvent, accountHistoryContentPlayEvent, accountMylistContentPlayEvent, accountContinueWatchingContentPlayEvent, libraryProgramContentPlayEvent, searchProgramContentPlayEvent, accountVideoProgress } from '../../utils/appier';
 
 class Content extends React.PureComponent {
 
@@ -67,7 +67,8 @@ class Content extends React.PureComponent {
             player_vmap: '',
             start_duration: 0,
             error: false,
-            error_data: {}
+            error_data: {},
+            end_duration: 0
         };
         this.player = null;
 
@@ -83,6 +84,14 @@ class Content extends React.PureComponent {
                 this.homepageTitle = q.homepage_title;
             }
         }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.state.end_duration != nextState.end_duration) {
+            return false;
+        }
+
+        return true;
     }
 
     initVOD() {
@@ -122,7 +131,7 @@ class Content extends React.PureComponent {
         });
 
         this.player.on('firstFrame', () => {
-            console.log('FIRST FRAME');
+            console.log('FIRST FRAME', this.state.start_duration);
             conviva.startMonitoring(this);
             conviva.updatePlayerAssetMetadata(this, {
                 viewer_id: Math.random().toString().substr(2, 9),
@@ -135,6 +144,44 @@ class Content extends React.PureComponent {
                 tv_name: content ? content.tv_name : 'N/A',
                 content_id: this.props.context_data.content_id ? this.props.context_data.content_id  : 'N/A'
             });
+
+            const data = this.props.context_data;
+            if (data && this.reference && this.reference === 'continue_watching') {
+                window.onbeforeunload = () => {
+                    console.log('close', this.state.end_duration);
+                    const progress = (this.state.end_duration / this.player.getDuration()) * 100;
+                    console.log(progress);
+                    let progressStatus = false;
+                    if (progress >= 100) {
+                        progressStatus = 'finished';
+                    }
+                    else if (progress >= 90) {
+                        progressStatus = 90;
+                    }
+                    else if (progress >= 75) {
+                        progressStatus = 75;
+                    }
+                    else if (progress >= 50) {
+                        progressStatus = 50;
+                    }
+                    else if (progress >= 25) {
+                        progressStatus = 25;
+                    }
+                    
+                    let genre = [];
+                    for (let i = 0; i < content.data.genre.length; i++) {
+                        genre.push(content.data.genre[i].name);
+                    }
+                    if (progressStatus) {
+                        if (progressStatus === 'finished') {
+                            accountVideoProgress(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.state.start_duration, this.state.end_duration, content.data.duration, 'mweb_account_video_finished');
+                        }
+                        else {
+                            accountVideoProgress(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.state.start_duration, this.state.end_duration, content.data.duration, 'mweb_account_video_completed_' + progressStatus);
+                        }
+                    }
+                };
+            }
         });
 
         this.player.on('play', () => {
@@ -160,6 +207,7 @@ class Content extends React.PureComponent {
             }
 
             setInterval(() => {
+                this.setState({ end_duration: this.player.getPosition() });
                 if (this.reference) {
                     const data = this.props.context_data;
                     if (data) {
