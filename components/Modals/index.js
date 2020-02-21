@@ -108,7 +108,6 @@ class PlayerModal extends React.Component {
                     }
                     else {
                         exclusiveContentPlayEvent(this.props.program.type, this.props.program.id, this.props.program.title, this.props.program.program_title, this.props.program.genre, this.props.meta.image_path + '300' + this.props.program.portrait_image, this.props.meta.image_path + '300' + this.props.program.landscape_image, 'mweb_exclusive_content_play');
-                    
                     }
                     if (this.props.program.type) {
                         this.props.postHistory(this.props.program.id, this.props.program.type, this.player.getPosition())

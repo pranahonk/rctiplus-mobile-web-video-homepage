@@ -47,7 +47,7 @@ import '../assets/scss/components/detail.scss';
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
 import { getCookie } from '../utils/cookie';
 
-import { programRateEvent, programShareEvent, programContentShareEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked, searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked } from '../utils/appier';
+import { programRateEvent, programShareEvent, programContentShareEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked, searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent } from '../utils/appier';
 
 class Detail extends React.Component {
 
@@ -491,6 +491,10 @@ class Detail extends React.Component {
                 setTimeout(() => {
                     if (this.reference) {
                         switch (this.reference) {
+                            case 'homepage':
+                                programTrailerEvent(this.state.title, this.props.router.query.id, 'program', 'mweb_homepage_program_trailer_clicked');
+                                break;
+
                             case 'library':
                                 libraryProgramTrailerClicked('N/A', this.state.title, this.props.router.query.id, 'program', 'mweb_library_program_trailer_clicked');
                                 break;
