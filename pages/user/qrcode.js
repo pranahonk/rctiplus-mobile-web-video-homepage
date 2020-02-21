@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { showAlert } from '../../utils/helpers';
 import { getCookie } from '../../utils/cookie';
-import { accountGeneralEvent } from '../../utils/appier';
+import { accountScanQrCode } from '../../utils/appier';
 
 import othersActions from '../../redux/actions/othersActions';
 
@@ -42,19 +42,19 @@ class Qrcode extends React.Component {
     handleScan = data => {
         if (data && !this.state.scan) {
             this.setState({ result: data, scan: true }, () => {
-                accountGeneralEvent('mweb_account_scan_qrcode');
+                
                 this.props.scanQRCode(this.state.result)
                     .then(response => {
                         console.log(response);
                         if (response.status === 200 && response.data.status.code === 0) {
                             if (this.state.scan) {
                                 window.open(response.data.data, '_blank');
-                                this.setState({ scan: false });
+                                this.setState({ scan: false }, () => accountScanQrCode('success','mweb_account_scan_qrcode'));
                             }
-                            
+
                         }
                         else {
-                            this.setState({ scan: false });
+                            this.setState({ scan: false }, () => accountScanQrCode('failed', 'mweb_account_scan_qrcode'));
                         }
                     })
                     .catch(error => {
@@ -65,6 +65,7 @@ class Qrcode extends React.Component {
                         else {
                             this.setState({ scan: false });
                         }
+                        accountScanQrCode('failed', 'mweb_account_scan_qrcode');
                     });
             });
         }

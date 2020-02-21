@@ -216,6 +216,9 @@ class Content extends React.PureComponent {
                                 programContentPlayEvent(data.id, data.title, data.content_id, data.content_title, data.type, this.player.getPosition(), content.data.duration, 'mweb_homepage_program_content_play');
                                 break;
 
+                            case 'exclusive_program':
+                                break;
+
                             case 'mylist_program':
                                 accountMylistContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_account_mylist_content_play');
                                 break;

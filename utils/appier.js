@@ -664,6 +664,16 @@ export const accountGeneralEvent = (event = 'mweb_account_logo_clicked') => {
     homeGeneralClicked(event);
 };
 
+export const accountScanQrCode = (status, event = 'mweb_account_scan_qrcode') => {
+    console.log(event);
+    qg('event', event,
+    {
+        status: status,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
 export const accountHistoryClearHistoryClicked = (programId, programName, contentId, contentName, event = 'mweb_account_history_clear_history_clicked') => {
     console.log(event);
     qg('event', event,
@@ -715,6 +725,20 @@ export const accountHistoryShareClicked = (programId, programTitle, contentTitle
 
 export const accountHistoryDownloadClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_history_download_clicked') => {
     accountHistoryContentClicked(programId, programTitle, contentTitle, contentType, contentId, event);
+};
+
+export const accountHistoryAddMyListClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_history_add_mylist_clicked') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        program_id: programId,
+        program_title: programTitle,
+        content_title: contentTitle,
+        content_type: contentType,
+        content_id: contentId,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
 };
 
 export const accountMylistContentClicked = (programId, programTitle, contentTitle, contentType, contentId, event = 'mweb_account_mylist_content_clicked') => {
@@ -973,7 +997,7 @@ export const searchKeywordEvent = (search, event = 'mweb_search_keyword') => {
     console.log(event);
     qg('event', event, 
     {
-        search: search,
+        search_keyword: search,
         users_id: getUserId(),
         date_time: formatDateTime(new Date())
     });

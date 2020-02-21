@@ -252,10 +252,6 @@ class Tv extends React.Component {
 	selectChannel(index, first = false) {
 		this.props.setPageLoader();
 		this.setState({ selected_index: index, error: false }, () => {
-			if (first != true) {
-				liveTvTabClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, this.state.selected_tab, 'mweb_livetv_channel_clicked');
-			}
-			
 			this.loadChatMessages(this.state.live_events[this.state.selected_index].id);
 			this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
 				.then(collection => {
@@ -309,10 +305,19 @@ class Tv extends React.Component {
 			this.props.getEPG(formatDate(this.currentDate), this.state.live_events[this.state.selected_index].channel_code)
 				.then(response => {
 					let epg = response.data.data.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + ' ' + e.e).getTime());
-					this.setState({ epg: epg }, () => this.props.unsetPageLoader());
+					this.setState({ epg: epg }, () => {
+						if (first != true) {
+							let programLive = this.getCurrentLiveEpg();
+							liveTvChannelClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, programLive ? programLive.title : 'N/A', 'mweb_livetv_channel_clicked');
+						}
+						this.props.unsetPageLoader();
+					});
 				})
 				.catch(error => {
 					console.log(error);
+					if (first != true) {
+						liveTvChannelClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'N/A', 'mweb_livetv_channel_clicked');
+					}
 					this.props.unsetPageLoader();
 				});
 

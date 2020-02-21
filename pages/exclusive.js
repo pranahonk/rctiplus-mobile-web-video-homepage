@@ -256,8 +256,7 @@ class Exclusive extends React.Component {
 			}
 			catch (e) {
 				console.log(e);
-			}
-			
+			}			
 
 			let vmap = '';
 			if (data && data.status === 200 && data.data.status.code === 0) {
@@ -305,7 +304,7 @@ class Exclusive extends React.Component {
 				exclusiveTitleProgramEvent(program.id, program.title, this.state.active_tab_name, 'mweb_exclusive_title_program_clicked');
 				break;
 		}
-		Router.push(`/programs/${program.program_id}/${program.title.replace(/ +/g, '-').toLowerCase()}`);
+		Router.push(`/programs/${program.program_id}/${program.title.replace(/ +/g, '-').toLowerCase()}?ref=exclusive`);
 	}
 
 	render() {
@@ -350,7 +349,7 @@ class Exclusive extends React.Component {
 
 						{this.state.categories.map((c, i) => (
 							<NavItem key={i} className="exclusive-item">
-								<Link href={`/exclusive?category=${c.name.toLowerCase()}`} as={`/exclusive/${c.name.toLowerCase()}`}> 
+								<Link href={`/exclusive?category=${c.name.toLowerCase()}`} as={`/exclusive/${c.name.toLowerCase()}?ref=exclusive`}> 
 									<NavLink
 										onClick={this.toggleTab.bind(this, i + 1, c.name)}
 										className={classnames({ active: this.state.active_tab == i + 1 })}>{c.name}</NavLink>

@@ -47,7 +47,7 @@ class PlayerModal extends React.Component {
         if (this.props.open && !prevProps.open) {
             this.setState({ error: false }, () => this.initVOD());
         }
-        else {
+        else if (!this.props.open && prevProps.open) {
             if (this.player) {
                 clearInterval(this.intervalFn);
                 this.player.remove();
@@ -107,7 +107,7 @@ class PlayerModal extends React.Component {
                         }
                     }
                     else {
-                        exclusiveContentPlayEvent(this.props.program.type, this.props.program.id, this.props.program.title, this.props.program.program_title, this.props.program.genre, this.props.meta.image_path + '300' + this.props.program.portrait_image, this.props.meta.image_path + '300' + this.props.program.landscape_image, 'mweb_exclusive_content_play');
+                        exclusiveContentPlayEvent(this.props.program.type, this.props.program.id, this.props.program.title, this.props.program.program_title, this.props.program.genre, this.props.meta.image_path + '300' + this.props.program.portrait_image, this.props.meta.image_path + '300' + this.props.program.landscape_image, this.player.getPosition(), this.player.getDuration(), 'mweb_exclusive_content_play');
                     }
                     if (this.props.program.type) {
                         this.props.postHistory(this.props.program.id, this.props.program.type, this.player.getPosition())

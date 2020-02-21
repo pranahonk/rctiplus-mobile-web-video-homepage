@@ -12,7 +12,7 @@ import pageActions from '../../redux/actions/pageActions';
 
 import initialize from '../../utils/initialize';
 import { showAlert } from '../../utils/helpers';
-import { accountGeneralEvent, accountHistoryClearHistoryClicked, accountHistoryContentClicked, accountHistoryShareClicked, accountHistoryDownloadClicked } from '../../utils/appier';
+import { accountGeneralEvent, accountHistoryClearHistoryClicked, accountHistoryContentClicked, accountHistoryShareClicked, accountHistoryDownloadClicked, accountHistoryAddMyListClicked } from '../../utils/appier';
 
 import Layout from '../../components/Layouts/Default';
 import NavBack from '../../components/Includes/Navbar/NavBack';
@@ -172,8 +172,11 @@ class History extends React.Component {
 		Router.push(`/programs/${cw.program_id}/${cw.program_title.replace(' ', '-').toLowerCase()}/${cw.content_type}/${cw.content_id}/${cw.content_title.replace(' ', '-').toLowerCase()}?ref=history`);
 	}
 
-	addToMyList(id, type) {
-		accountGeneralEvent('mweb_account_history_add_mylist_clicked');
+	addToMyList(id, type, cw = null) {
+		if (cw) {
+			accountHistoryAddMyListClicked(cw.program_id, cw.program_title, cw.content_title, cw.content_type, cw.content_id, 'mweb_account_history_add_mylist_clicked')
+		}
+		
 		this.props.setPageLoader();
 		this.props.bookmark(id, type)
 			.then(response => {
@@ -304,7 +307,7 @@ class History extends React.Component {
 								<p className="item-subtitle"><small>{cw.content_type}</small></p>
 								<div className="item-action-buttons">
 									<div className="action-button">
-										{cw.is_bookmark == 1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, cw.content_id, cw.content_type)} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, cw.content_id, cw.content_type)} />)}
+										{cw.is_bookmark == 1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, cw.content_id, cw.content_type)} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, cw.content_id, cw.content_type, cw)} />)}
 
 									</div>
 									<div className="action-button">

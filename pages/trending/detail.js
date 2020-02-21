@@ -101,7 +101,7 @@ class Detail extends React.Component {
     }
 
     goToDetail(article) {
-        newsRelatedArticleClicked(article.id, article.title, article.category_search, 'mweb_news_related_article_clicked');
+        newsRelatedArticleClicked(article.id, article.title, article.category_source, 'mweb_news_related_article_clicked');
         Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase());
     }
 
