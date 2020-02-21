@@ -28,6 +28,21 @@ export const homeGeneralClicked = (event = 'mweb_homepage_logo_clicked') => {
     });
 };
 
+export const homeProgramClicked = (homepageTitle, programId, programTitle, genre, portraitImage, landscapeImage, event = 'mweb_homepage_program_clicked') => {
+    console.log(event);
+    qg('event', event,
+    {
+        homepage_title: homepageTitle,
+        program_id: programId,
+        program_title: programTitle,
+        genre: genre,
+        portrait_image: portraitImage,
+        landscape_image: landscapeImage,
+        users_id: getUserId(),
+        date_time: formatDateTime(new Date())
+    });
+};
+
 export const homeBannerEvent = (bannerId, bannerType, bannerTitle, portraitImage, landscapeImage, event = 'mweb_homepage_banner_clicked') => {
     console.log(event);
     const accessToken = getCookie(TOKEN_KEY);

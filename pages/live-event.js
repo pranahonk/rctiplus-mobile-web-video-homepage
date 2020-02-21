@@ -79,7 +79,6 @@ class LiveEvent extends React.Component {
 
 	constructor(props) {
 		super(props);
-
 		this.state = {
 			error: false,
 			emoji_picker_open: false,
@@ -110,7 +109,7 @@ class LiveEvent extends React.Component {
 		this.player = null;
 		this.props.setPageLoader();
 
-
+		console.log(this.props.selected_event);
 	}
 
 	componentDidMount() {
@@ -162,7 +161,7 @@ class LiveEvent extends React.Component {
 		let name = '';
 		let type = '';
 		let portrait_image = '';
-		if (this.props.selected_event && this.props.selected_event_url) {
+		if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
 			url = this.props.selected_event_url.data.url;
 			vmap = this.props.selected_event_url.data.vmap;
 			id = this.props.selected_event.data.id;
@@ -393,7 +392,7 @@ class LiveEvent extends React.Component {
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{playerRef}
 					<div className="title-wrap">
-						Live Chat Plus {this.props.selected_event ? formatDateWord(new Date(this.props.selected_event.data.start_date)) : ''}
+						Live Chat Plus {this.props.selected_event && this.props.selected_event.data ? formatDateWord(new Date(this.props.selected_event.data.start_date)) : ''}
 					</div>
 					<div className="content-wrap">
 						<div className="live-event-menu">

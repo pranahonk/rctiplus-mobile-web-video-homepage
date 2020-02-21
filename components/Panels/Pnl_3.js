@@ -5,7 +5,7 @@ import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 
 import contentActions from '../../redux/actions/contentActions';
-import { contentGeneralEvent, homeGeneralClicked } from '../../utils/appier';
+import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../utils/appier';
 
 class Pnl_3 extends React.Component {
 
@@ -52,7 +52,7 @@ class Pnl_3 extends React.Component {
 				break;
 
 			case 'program':
-				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_program_clicked');
+				homeProgramClicked(this.props.title, data.program_id, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A',  this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_program_clicked');
 
 				if (data.program_id) {
 					Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
