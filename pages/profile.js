@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import Img from 'react-image';
 
 import userActions from '../redux/actions/userActions';
+import historyActions from '../redux/actions/historyActions';
+
 import initialize from '../utils/initialize';
 import { showAlert, showSignInAlert } from '../utils/helpers';
 import { accountGeneralEvent } from '../utils/appier';
@@ -160,4 +162,7 @@ class Profile extends React.Component {
 
 }
 
-export default connect(state => state, userActions)(Profile);
+export default connect(state => state, {
+	...userActions,
+	...historyActions
+})(Profile);

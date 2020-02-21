@@ -21,11 +21,11 @@ import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
 import { getCookie } from '../../utils/cookie';
 import { programContentPlayEvent, homepageContentPlayEvent, accountHistoryContentPlayEvent, accountMylistContentPlayEvent, accountContinueWatchingContentPlayEvent, libraryProgramContentPlayEvent, searchProgramContentPlayEvent, accountVideoProgress } from '../../utils/appier';
 
-class Content extends React.PureComponent {
+class Content extends React.Component {
 
     static async getInitialProps(ctx) {
         initialize(ctx);
-        
+
         const accessToken = getCookie('ACCESS_TOKEN');
         const res = await fetch(`${DEV_API}/api/v1/${ctx.query.type}/${ctx.query.content_id}/url`, {
             method: 'GET',
@@ -52,13 +52,13 @@ class Content extends React.PureComponent {
         if (error_code_2 || data_2.status.code != 0) {
             return { initial: false, content_url: {}, content: {} };
         }
-        
-		return { 
-            context_data: ctx.query, 
+
+        return {
+            context_data: ctx.query,
             content_url: data,
             content: data_2
         };
-	}
+    }
 
     constructor(props) {
         super(props);
@@ -94,27 +94,28 @@ class Content extends React.PureComponent {
         return true;
     }
 
+
     initVOD() {
         const content = this.props.content_url;
-		this.player = window.jwplayer('app-jwplayer');
-		this.player.setup({
-			autostart: true,
-			file: this.state.player_url,
-			primary: 'html5',
-			width: '100%',
-			aspectratio: '16:9',
-			displaytitle: true,
-			setFullscreen: true,
-			stretching:'fill',
-			advertising: {
-				client: 'googima',
-				tag: this.state.player_vmap
-			},
-			logo: {
-				hide: true
-			}
+        this.player = window.jwplayer('app-jwplayer');
+        this.player.setup({
+            autostart: true,
+            file: this.state.player_url,
+            primary: 'html5',
+            width: '100%',
+            aspectratio: '16:9',
+            displaytitle: true,
+            setFullscreen: true,
+            stretching: 'fill',
+            advertising: {
+                client: 'googima',
+                tag: this.state.player_vmap
+            },
+            logo: {
+                hide: true
+            }
         }).seek(this.state.start_duration);
-        
+
         this.player.on('setupError', error => {
             this.setState({
                 error: true,
@@ -142,57 +143,21 @@ class Content extends React.PureComponent {
                 playerVersion: process.env.PLAYER_VERSION,
                 tv_id: content ? content.tv_id : 'N/A',
                 tv_name: content ? content.tv_name : 'N/A',
-                content_id: this.props.context_data.content_id ? this.props.context_data.content_id  : 'N/A'
+                content_id: this.props.context_data.content_id ? this.props.context_data.content_id : 'N/A'
             });
 
-            const data = this.props.context_data;
-            if (data && this.reference && this.reference === 'continue_watching') {
-                window.onbeforeunload = () => {
-                    console.log('close', this.state.end_duration);
-                    const progress = (this.state.end_duration / this.player.getDuration()) * 100;
-                    console.log(progress);
-                    let progressStatus = false;
-                    if (progress >= 100) {
-                        progressStatus = 'finished';
-                    }
-                    else if (progress >= 90) {
-                        progressStatus = 90;
-                    }
-                    else if (progress >= 75) {
-                        progressStatus = 75;
-                    }
-                    else if (progress >= 50) {
-                        progressStatus = 50;
-                    }
-                    else if (progress >= 25) {
-                        progressStatus = 25;
-                    }
-                    
-                    let genre = [];
-                    for (let i = 0; i < content.data.genre.length; i++) {
-                        genre.push(content.data.genre[i].name);
-                    }
-                    if (progressStatus) {
-                        if (progressStatus === 'finished') {
-                            accountVideoProgress(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.state.start_duration, this.state.end_duration, content.data.duration, 'mweb_account_video_finished');
-                        }
-                        else {
-                            accountVideoProgress(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.state.start_duration, this.state.end_duration, content.data.duration, 'mweb_account_video_completed_' + progressStatus);
-                        }
-                    }
-                };
-            }
+
         });
 
         this.player.on('play', () => {
             conviva.updatePlayerAssetMetadata(this, {
                 playerType: 'JWPlayer',
                 content_type: content ? content.content_type : 'N/A',
-                program_id: content ? content.program_id : 'N/A', 
+                program_id: content ? content.program_id : 'N/A',
                 program_name: content ? content.program_title : 'N/A',
                 date_video: 'N/A',
                 time_video: 'N/A',
-                page_title:'N/A',
+                page_title: 'N/A',
                 genre: content && content.genre && content.genre.length > 0 ? content.genre[0].name : 'N/A',
                 page_view: 'N/A',
                 app_version: 'N/A',
@@ -244,7 +209,7 @@ class Content extends React.PureComponent {
                                 break;
                         }
                     }
-                    
+
                 }
             }, 2500);
 
@@ -310,7 +275,46 @@ class Content extends React.PureComponent {
                         start_duration: 0
                     }, () => this.initVOD());
                 });
-            
+
+        }
+
+        const data = this.props.context_data;
+        if (data && this.reference && this.reference === 'continue_watching') {
+            window.onbeforeunload = () => {
+
+                console.log('close', this.state.end_duration);
+                const progress = (this.state.end_duration / this.player.getDuration()) * 100;
+                console.log(progress);
+                let progressStatus = false;
+                if (progress >= 100) {
+                    progressStatus = 'finished';
+                }
+                else if (progress >= 90) {
+                    progressStatus = 90;
+                }
+                else if (progress >= 75) {
+                    progressStatus = 75;
+                }
+                else if (progress >= 50) {
+                    progressStatus = 50;
+                }
+                else if (progress >= 25) {
+                    progressStatus = 25;
+                }
+
+                let genre = [];
+                for (let i = 0; i < content.data.genre.length; i++) {
+                    genre.push(content.data.genre[i].name);
+                }
+                if (progressStatus) {
+                    if (progressStatus === 'finished') {
+                        accountVideoProgress(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.state.start_duration, this.state.end_duration, content.data.duration, 'mweb_account_video_finished');
+                    }
+                    else {
+                        accountVideoProgress(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.state.start_duration, this.state.end_duration, content.data.duration, 'mweb_account_video_completed_' + progressStatus);
+                    }
+                }
+            };
         }
     }
 
@@ -323,20 +327,20 @@ class Content extends React.PureComponent {
             title = 'Data Not Found';
             errorRef = (
                 <div className="wrapper-content" style={{ margin: 0 }}>
-                    <div style={{ 
+                    <div style={{
                         textAlign: 'center',
-                        position: 'fixed', 
-                        top: '50%', 
+                        position: 'fixed',
+                        top: '50%',
                         left: '50%',
-                        transform: 'translate(-50%, -50%)' 
-                        }}>
-                        <Wrench/>
+                        transform: 'translate(-50%, -50%)'
+                    }}>
+                        <Wrench />
                         <h5 style={{ color: '#8f8f8f' }}>
-                            <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
-                            <span style={{ fontSize: 12 }}>Please try again later,</span><br/>
+                            <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+                            <span style={{ fontSize: 12 }}>Please try again later,</span><br />
                             <span style={{ fontSize: 12 }}>we're working to fix the problem</span>
                         </h5>
-					</div>
+                    </div>
                 </div>
             );
         }
@@ -346,7 +350,7 @@ class Content extends React.PureComponent {
             playerRef = (
                 <div>
                     <Head>
-                        <meta name="description" content={metadata.description}/>
+                        <meta name="description" content={metadata.description} />
                     </Head>
                     <div className="player-container">
                         <div id="app-jwplayer"></div>
@@ -355,15 +359,15 @@ class Content extends React.PureComponent {
             );
         }
 
-        
+
 
         return (
             <Layout title={title}>
-                <ArrowBackIcon className="back-btn" onClick={() => Router.back()}/>
+                <ArrowBackIcon className="back-btn" onClick={() => Router.back()} />
                 {(this.state.error || Object.keys(this.props.content_url).length <= 0) ? errorRef : playerRef}
             </Layout>
         );
-    }    
+    }
 
 }
 
