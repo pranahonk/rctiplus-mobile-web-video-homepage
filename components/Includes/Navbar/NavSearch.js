@@ -36,7 +36,10 @@ class NavbarSearch extends Component {
         this.subject
             .pipe(debounceTime(1000))
             .subscribe(() => {
-                searchKeywordEvent(this.state.q, 'mweb_search_keyword');
+                if (this.state.q) {
+                    searchKeywordEvent(this.state.q, 'mweb_search_keyword');
+                }
+                
                 this.props.searchAllCategory(this.state.q, 1, this.state.length)
                     .then(responses => {
                         console.log(responses);
@@ -75,6 +78,7 @@ class NavbarSearch extends Component {
     }
 
     clearKeyword() {
+        searchKeywordEvent(this.state.q, 'mweb_search_clear_keyword_clicked');
         this.setState({ q: '' }, () => {
             this.changeQuery(this.state.q);
         });

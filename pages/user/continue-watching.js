@@ -9,7 +9,7 @@ import historyActions from '../../redux/actions/historyActions';
 
 import initialize from '../../utils/initialize';
 import { showAlert } from '../../utils/helpers';
-import { accountContinueWatchingContentClicked, accountContinueWatchingRemoveContinueWatchingClicked, accountContinueWatchingShareClicked } from '../../utils/appier';
+import { accountContinueWatchingContentClicked, accountContinueWatchingRemoveContinueWatchingClicked, accountContinueWatchingShareClicked, accountContinueWatchingDownloadClicked } from '../../utils/appier';
 
 import Layout from '../../components/Layouts/Default';
 import NavBack from '../../components/Includes/Navbar/NavBack';
@@ -118,7 +118,11 @@ class ContinueWatching extends React.Component {
 		
 	}
 
-	showOpenPlaystoreAlert() {
+	showOpenPlaystoreAlert(cw) {
+		if (cw) {
+			accountContinueWatchingDownloadClicked(cw.program_id, cw.program_title, cw.content_title, cw.content_type, cw.content_id, 'mweb_account_continue_watching_download_clicked');
+		}
+		
         showAlert('To be able to see and watching your downloaded file, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); });
 	}
 	
@@ -234,7 +238,7 @@ class ContinueWatching extends React.Component {
 										<ShareIcon onClick={this.toggleActionSheet.bind(this, cw.content_title, cw.share_link, ['rcti'], cw)} className="action-icon" />
 									</div>
 									<div className="action-button">
-										<GetAppIcon className="action-icon" onClick={this.showOpenPlaystoreAlert.bind(this)}/>
+										<GetAppIcon className="action-icon" onClick={this.showOpenPlaystoreAlert.bind(this, cw)}/>
 									</div>
 								</div>
 							</Col>

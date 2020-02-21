@@ -98,11 +98,11 @@ class PlayerModal extends React.Component {
                     if (this.reference) {
                         switch (this.reference) {
                             case 'library':
-                                libraryProgramTrailerPlayEvent(this.props.program.title, this.props.program.id, this.props.program.type, this.player.getPosition(), this.player.getDuration(), 'mweb_library_program_trailer_play');
+                                libraryProgramTrailerPlayEvent(this.props.program.title, this.props.program.id, 'program', this.player.getPosition(), this.player.getDuration(), 'mweb_library_program_trailer_play');
                                 break;
 
                             case 'search':
-                                searchProgramTrailerPlayEvent(this.props.program.id, this.props.program.title, this.props.program.type, this.player.getPosition(), this.player.getDuration(), 'mweb_search_program_trailer_play');
+                                searchProgramTrailerPlayEvent(this.props.program.id, this.props.program.title, 'program', this.player.getPosition(), this.player.getDuration(), 'mweb_search_program_trailer_play');
                                 break;
                         }
                     }
