@@ -64,7 +64,31 @@ class LiveEvent extends React.Component {
 			};
 		}
 
+		let userAgent;
+		if (ctx.req) {
+			userAgent = ctx.req.headers['user-agent'];
+		}
+		else {
+			userAgent = navigator.userAgent;
+		}
+		let isMobile = Boolean(userAgent.match(
+			/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
+		));
 
+		if (isMobile) {
+			// if (/windows phone/i.test(userAgent)) {
+			// 	return "Windows Phone";
+			// }
+		
+			// if (/android/i.test(userAgent)) {
+			// 	return "Android";
+			// }
+		
+			// // iOS detection from: http://stackoverflow.com/a/9039885/177710
+			// if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+			// 	return "iOS";
+			// }
+		}
 
 		const data = await Promise.all([
 			res[0].json(),
@@ -73,7 +97,9 @@ class LiveEvent extends React.Component {
 
 		return {
 			selected_event: data[0],
-			selected_event_url: data[1]
+			selected_event_url: data[1],
+			user_agent: userAgent,
+			is_mobile: isMobile
 		};
 	}
 
@@ -109,7 +135,7 @@ class LiveEvent extends React.Component {
 		this.player = null;
 		this.props.setPageLoader();
 
-		console.log(this.props.selected_event);
+		console.log(this.props.is_mobile);
 	}
 
 	componentDidMount() {
