@@ -108,7 +108,7 @@ class Content extends React.Component {
             setFullscreen: true,
             stretching: 'fill',
             advertising: {
-                client: 'googima',
+                client: process.env.ADVERTISING_CLIENT,
                 tag: this.state.player_vmap
             },
             logo: {
@@ -145,9 +145,18 @@ class Content extends React.Component {
                 tv_name: content ? content.tv_name : 'N/A',
                 content_id: this.props.context_data.content_id ? this.props.context_data.content_id : 'N/A'
             });
-
-
         });
+
+        this.player.on('fullscreen', () => {
+			if (screen.orientation.type === 'portrait-primary') {
+				document.querySelector("#app-jwplayer").requestFullscreen();
+				screen.orientation.lock("landscape-primary")
+			}
+			if (screen.orientation.type === 'landscape-primary') {
+				document.querySelector("#app-jwplayer").requestFullscreen();
+				screen.orientation.lock("portrait-primary")
+			}
+		});
 
         this.player.on('play', () => {
             conviva.updatePlayerAssetMetadata(this, {

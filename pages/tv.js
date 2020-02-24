@@ -151,7 +151,7 @@ class Tv extends React.Component {
 			setFullscreen: true,
 			stretching: 'exactfit',
 			advertising: {
-				client: 'googima',
+				client: process.env.ADVERTISING_CLIENT,
 				tag: this.state.player_vmap
 			},
 			logo: {
@@ -352,7 +352,8 @@ class Tv extends React.Component {
 					this.setState({
 						player_url: response.data.data.url,
 						player_vmap: response.data.data.vmap,
-						selected_catchup: response.data.data
+						selected_catchup: response.data.data,
+						error: false
 					}, () => this.initVOD());
 				}
 				else {
@@ -544,9 +545,9 @@ class Tv extends React.Component {
 				<div>
 					<div style={{ minHeight: 180 }} id="live-tv-player"></div>
 					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
-					<div id='div-gpt-ad-1581999069906-0'>
+					{/* <div id='div-gpt-ad-1581999069906-0' style={{ width: '100% !important' }}>
 						<script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1581999069906-0'); });` }}></script>
-					</div>
+					</div> */}
 				</div>
 			);
 		}

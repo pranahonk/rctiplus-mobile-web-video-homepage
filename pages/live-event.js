@@ -183,7 +183,7 @@ class LiveEvent extends React.Component {
 			setFullscreen: true,
 			stretching: 'exactfit',
 			advertising: {
-				client: 'googima',
+				client: process.env.ADVERTISING_CLIENT,
 				tag: vmap
 			},
 			logo: {

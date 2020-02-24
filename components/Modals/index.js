@@ -67,7 +67,7 @@ class PlayerModal extends React.Component {
 			setFullscreen: true,
 			stretching:'fill',
 			advertising: {
-				client: 'googima',
+				client: process.env.ADVERTISING_CLIENT,
 				tag: this.props.vmap
 			},
 			logo: {
@@ -121,6 +121,17 @@ class PlayerModal extends React.Component {
                 }
             }, 2500);
         });
+
+        this.player.on('fullscreen', () => {
+			if (screen.orientation.type === 'portrait-primary') {
+				document.querySelector(this.props.playerId).requestFullscreen();
+				screen.orientation.lock("landscape-primary")
+			}
+			if (screen.orientation.type === 'landscape-primary') {
+				document.querySelector(this.props.playerId).requestFullscreen();
+				screen.orientation.lock("portrait-primary")
+			}
+		});
     }
 
     renderPlayer() {

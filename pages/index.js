@@ -37,7 +37,8 @@ class Index_v2 extends React.Component {
             fetchAllowed: true,
             meta: null,
             resolution: 593,
-            is_loading: false
+            is_loading: false,
+            length: 5
         };
 
         this.props.setPageLoader();
@@ -62,7 +63,7 @@ class Index_v2 extends React.Component {
             homeGeneralClicked('mweb_homepage_refresh');
         };
 
-        this.props.getContents(this.state.page, 5)
+        this.props.getContents(this.state.page, this.state.length)
             .then(response => {
                 console.log(response);
                 this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta }, () => this.props.unsetPageLoader());
@@ -78,7 +79,7 @@ class Index_v2 extends React.Component {
         if (this.state.fetchAllowed && !this.state.is_loading) {
             this.setState({ is_loading: true }, () => {
                 this.LoadingBar.continuousStart();
-                this.props.getContents(page, 5)
+                this.props.getContents(page, this.state.length)
                     .then(response => {
                         const homepageContents = this.state.contents;
                         if (this.props.contents.homepage_content.length > 0) {
@@ -114,7 +115,7 @@ class Index_v2 extends React.Component {
                     <meta name="description" content={SITEMAP.home.description} />
                     <meta name="keywords" content={SITEMAP.home.keywords} />
                 </Head>
-                <BottomScrollListener offset={8} onBottom={this.bottomScrollFetch.bind(this)} />
+                <BottomScrollListener offset={50} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
                 {/* <NavDownloadApp /> */}
                 <Nav />

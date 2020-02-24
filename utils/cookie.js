@@ -151,7 +151,7 @@ export const setNewsToken = async () => {
             const dayDiff = (Date.now() - new Date(newsToken['CREATED_AT']).getTime()) / (1000 * 60 * 60 * 24);
             if (dayDiff > 7) {
                 const response = await axios.post(`/v1/token`, {
-                    merchantName: 'rcti+',
+                    merchantName: 'RCTI+',
                     hostToken: getVisitorToken(),
                     platform: 'mweb'
                 }, {
