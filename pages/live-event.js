@@ -307,7 +307,13 @@ class LiveEvent extends React.Component {
 		chats[index] = lastChat;
 		this.setState({ chats: chats, sending_chat: true }, () => {
 			const { id } = this.props.selected_event.data;
-			this.props.setChat(id, lastChat.m, this.state.user_data.nickname, this.state.user_data.photo_url)
+			const userData = this.state.user_data;
+			let user = userData.nickname ? userData.nickname : 
+						userData.display_name ? userData.display_name : 
+						userData.email ? userData.email.replace(/\d{4}$/, '****') : 
+						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
+
+			this.props.setChat(id, lastChat.m, user, this.state.user_data.photo_url)
 				.then(response => {
 					lastChat.sent = true;
 					if (response.status !== 200 || response.data.status.code !== 0) {
@@ -330,20 +336,15 @@ class LiveEvent extends React.Component {
 			if (this.state.chat != '') {
 				const { id } = this.props.selected_event.data;
 
-				let u = '';
-				if (this.state.user_data.nickname) {
-					u = this.state.user_data.nickname;
-				}
-				else if (this.state.user_data.display_name) {
-					u = this.state.user_data.display_name;
-				}
-				else {
-					u = this.state.user_data.email;
-				}
+				const userData = this.state.user_data;
+				let user = userData.nickname ? userData.nickname : 
+						userData.display_name ? userData.display_name : 
+						userData.email ? userData.email.replace(/\d{4}$/, '****') : 
+						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
 				let newChat = {
 					ts: Date.now(),
 					m: this.state.chat,
-					u: u,
+					u: user,
 					i: this.state.user_data.photo_url,
 					sent: false,
 					failed: false
@@ -357,7 +358,7 @@ class LiveEvent extends React.Component {
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
 
-					this.props.setChat(id, newChat.m, this.state.user_data.nickname, this.state.user_data.photo_url)
+					this.props.setChat(id, newChat.m, user, this.state.user_data.photo_url)
 						.then(response => {
 							newChat.sent = true;
 							if (response.status !== 200 || response.data.status.code !== 0) {

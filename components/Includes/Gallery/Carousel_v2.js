@@ -14,6 +14,7 @@ class Crs_v2 extends Component {
         this.state = {
             banner: [],
             meta: null,
+            resolution: 320
         };
     }
 
@@ -28,7 +29,7 @@ class Crs_v2 extends Component {
     }
 
     goToProgram(program) {
-        homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + '593' + program.portrait_image, this.state.meta.image_path + '593' + program.landscape_image, 'mweb_homepage_banner_clicked');
+        homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + this.state.resolution + program.portrait_image, this.state.meta.image_path + this.state.resolution + program.landscape_image, 'mweb_homepage_banner_clicked');
         switch (program.type) {
             case 'url':
                 window.open(program.type_value, '_blank');
@@ -48,12 +49,12 @@ class Crs_v2 extends Component {
                         const swipedIndex = e.target.getAttribute('data-index');
                         if (this.state.banner[swipedIndex]) {
                             const program = this.state.banner[swipedIndex];
-                            homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + '593' + program.portrait_image, this.state.meta.image_path + '593' + program.landscape_image, 'mweb_homepage_banner_swipe');
+                            homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + this.state.resolution + program.portrait_image, this.state.meta.image_path + this.state.resolution + program.landscape_image, 'mweb_homepage_banner_swipe');
                         }
                     }}>
                         {this.state.banner.map((b, i) => (
                             <div data-index={i} onClick={this.goToProgram.bind(this, b)} key={b.id} style={{ 
-                                backgroundImage: `url(${this.state.meta.image_path + '593' + b.portrait_image})`, 
+                                backgroundImage: `url(${this.state.meta.image_path + this.state.resolution + b.portrait_image})`, 
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center', 
                                 width: '100%', 

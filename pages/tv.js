@@ -470,7 +470,13 @@ class Tv extends React.Component {
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
 					
-					this.props.setChat(this.state.live_events[this.state.selected_index].id, newChat.m, this.state.user_data.nickname, this.state.user_data.photo_url)
+					const userData = this.state.user_data;
+					let user = userData.nickname ? userData.nickname : 
+								userData.display_name ? userData.display_name : 
+								userData.email ? userData.email.replace(/\d{4}$/, '****') : 
+								userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
+					
+					this.props.setChat(this.state.live_events[this.state.selected_index].id, newChat.m, user, this.state.user_data.photo_url)
 						.then(response => {
 							newChat.sent = true;
 							if (response.status !== 200 || response.data.status.code !== 0) {
@@ -504,7 +510,12 @@ class Tv extends React.Component {
 		lastChat.failed = false;
 		chats[index] = lastChat;
 		this.setState({ chats: chats, sending_chat: true }, () => {
-			this.props.setChat(this.state.live_events[this.state.selected_index].id, lastChat.m, this.state.user_data.nickname, this.state.user_data.photo_url)
+			const userData = this.state.user_data;
+			let user = userData.nickname ? userData.nickname : 
+						userData.display_name ? userData.display_name : 
+						userData.email ? userData.email.replace(/\d{4}$/, '****') : 
+						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
+			this.props.setChat(this.state.live_events[this.state.selected_index].id, lastChat.m, user, this.state.user_data.photo_url)
 				.then(response => {
 					lastChat.sent = true;
 					if (response.status !== 200 || response.data.status.code !== 0) {
