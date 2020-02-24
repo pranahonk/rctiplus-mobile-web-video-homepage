@@ -154,52 +154,44 @@ class TabSignup extends React.Component {
 						</NavLink>
 					</NavItem>
 				</Nav>
-				<TabContent activeTab={this.state.activeTab}>
+				<TabContent activeTab={this.state.activeTab} className="tab-signup">
 					<TabPane tabId="1">
-						<Row>
-							<Col sm="12">
-								<FormGroup className="frmInput1">
-									<Label for="email">Phone Number</Label>
-									<InputGroup>
-										<InputGroupAddon addonType="prepend">
-											<InputGroupText className={'inpt-form addon-left ' + (!this.state.phone_number_invalid && !!this.props.registration.username ? 'valid-border-color..' : (this.state.phone_number_invalid ? 'invalid-border-color' : ''))}>+62</InputGroupText>
-										</InputGroupAddon>
-										<Input
-											className="inpt-form addon-left-input"
-											type="number"
-											name="text"
-											id="phone_number"
-											placeholder="insert phone number"
-											// valid={!this.state.phone_number_invalid && !!this.props.registration.username}
-											invalid={this.state.phone_number_invalid}
-											onChange={this.onChangeUsername.bind(this)} />
-										<FormFeedback 
-										// valid={!this.state.phone_number_invalid && !!this.props.registration.username}
-										>{this.state.phone_invalid_message}</FormFeedback>
-									</InputGroup>
-								</FormGroup>
-							</Col>
-						</Row>
+						<FormGroup className="frmInput1">
+							<Label for="email">Phone Number</Label>
+							<InputGroup>
+								<InputGroupAddon addonType="prepend">
+									<InputGroupText className={'inpt-form addon-left ' + (!this.state.phone_number_invalid && !!this.props.registration.username ? 'valid-border-color..' : (this.state.phone_number_invalid ? 'invalid-border-color' : ''))}>+62</InputGroupText>
+								</InputGroupAddon>
+								<Input
+									className="inpt-form addon-left-input"
+									type="number"
+									name="text"
+									id="phone_number"
+									placeholder="insert phone number"
+									// valid={!this.state.phone_number_invalid && !!this.props.registration.username}
+									invalid={this.state.phone_number_invalid}
+									onChange={this.onChangeUsername.bind(this)} />
+								<FormFeedback
+								// valid={!this.state.phone_number_invalid && !!this.props.registration.username}
+								>{this.state.phone_invalid_message}</FormFeedback>
+							</InputGroup>
+						</FormGroup>
 					</TabPane>
 					<TabPane tabId="2">
-						<Row>
-							<Col sm="12">
-								<FormGroup className="frmInput1">
-									<Label for="email">Email</Label>
-									<InputGroup>
-										<Input
-											className="inpt-form"
-											type="email"
-											name="email"
-											id="email"
-											placeholder="insert email"
-											invalid={this.state.email_invalid}
-											onChange={this.onChangeUsername.bind(this)} />
-										<FormFeedback>{this.state.email_invalid_message}</FormFeedback>
-									</InputGroup>
-								</FormGroup>
-							</Col>
-						</Row>
+						<FormGroup className="frmInput1">
+							<Label for="email">Email</Label>
+							<InputGroup>
+								<Input
+									className="inpt-form"
+									type="email"
+									name="email"
+									id="email"
+									placeholder="insert email"
+									invalid={this.state.email_invalid}
+									onChange={this.onChangeUsername.bind(this)} />
+								<FormFeedback>{this.state.email_invalid_message}</FormFeedback>
+							</InputGroup>
+						</FormGroup>
 					</TabPane>
 				</TabContent>
 			</div>

@@ -440,23 +440,29 @@ class Tv extends React.Component {
 		this.setState({ chat: this.state.chat + emoji.native });
 	}
 
+	checkLogin() {
+		if (!this.state.user_data) {
+			showSignInAlert(`Please <b>Sign In</b><br/>
+				Woops! Gonna sign in first!<br/>
+				Only a click away and you<br/>
+				can continue to enjoy<br/>
+				<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+		}
+	}
+
 	sendChat() {
 		if (this.state.user_data) {
 			if (this.state.chat != '') {
-				let u = '';
-				if (this.state.user_data.nickname) {
-					u = this.state.user_data.nickname;
-				}
-				else if (this.state.user_data.display_name) {
-					u = this.state.user_data.display_name;
-				}
-				else {
-					u = this.state.user_data.email;
-				}
+				const userData = this.state.user_data;
+				let user = userData.nickname ? userData.nickname : 
+						userData.display_name ? userData.display_name : 
+						userData.email ? userData.email.replace(/\d{4}$/, '****') : 
+						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
+
 				let newChat = {
 					ts: Date.now(),
 					m: this.state.chat,
-					u: u,
+					u: user,
 					i: this.state.user_data.photo_url,
 					sent: false,
 					failed: false
@@ -469,12 +475,6 @@ class Tv extends React.Component {
 					
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
-					
-					const userData = this.state.user_data;
-					let user = userData.nickname ? userData.nickname : 
-								userData.display_name ? userData.display_name : 
-								userData.email ? userData.email.replace(/\d{4}$/, '****') : 
-								userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
 					
 					this.props.setChat(this.state.live_events[this.state.selected_index].id, newChat.m, user, this.state.user_data.photo_url)
 						.then(response => {
@@ -710,6 +710,7 @@ class Tv extends React.Component {
 											<Input 
 												onKeyDown={this.handleChatEnter.bind(this)}
 												onChange={this.onChangeChatInput.bind(this)}
+												onClick={this.checkLogin.bind(this)}
 												value={this.state.chat}
 												type="textarea"
 												id="chat-input"
