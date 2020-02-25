@@ -153,7 +153,7 @@ class Default extends React.Component {
                 ) : <div></div>}
 
                 <div style={{ overflowX: 'hidden', marginTop: -5 }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
-                {process.env.UI_VERSION == '2.0' ? (<Footer_v2/>) : (<Footer />)}
+                {process.env.UI_VERSION == '2.0' ? (this.props.hideFooter ? null : <Footer_v2 />) : (<Footer />)}
                 
             </div>
         )

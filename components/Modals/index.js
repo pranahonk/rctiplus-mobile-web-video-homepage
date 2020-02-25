@@ -174,7 +174,7 @@ class PlayerModal extends React.Component {
                 <ModalHeader toggle={this.props.toggle}>
                     <ArrowBackIcon onClick={this.props.toggle}/>
                 </ModalHeader>
-                <ModalBody>
+                <ModalBody className="modal-body-edited">
                     {this.renderPlayer()}
                 </ModalBody>
             </Modal>

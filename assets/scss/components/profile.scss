@@ -3,6 +3,28 @@
     border: none;
     margin-bottom: 27px;
 
+    .cw-container {
+        white-space: nowrap;
+        display: block;
+        scrollbar-width: none;
+        overflow: auto;
+
+        .cw-item {
+            width: 180px;
+            display: inline-block;
+            margin: 10px;
+    
+            .list-item-thumbnail {
+                width: 100%;
+                border-radius: 7px;
+            }
+        }
+    }
+    
+    .cw-container::-webkit-scrollbar {
+        display: none;
+    }
+
     .profile-action {
         p {
             margin-bottom: 1px;

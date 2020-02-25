@@ -10,13 +10,13 @@ import initialize from '../utils/initialize';
 import { showAlert, showSignInAlert } from '../utils/helpers';
 import { accountGeneralEvent } from '../utils/appier';
 
-//load default layout
 import Layout from '../components/Layouts/Default_v2';
-
-//load navbar default
 import NavDefault from '../components/Includes/Navbar/NavDefault_v2';
+import Bar from '../components/Includes/Common/Bar';
 
 import { ListGroup, ListGroupItem, Button } from 'reactstrap';
+import LoadingBar from 'react-top-loading-bar';
+
 import HistoryIcon from '@material-ui/icons/History';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
@@ -40,7 +40,12 @@ class Profile extends React.Component {
 		this.state = {
 			profile_picture_url: '/static/placeholders/placeholder_landscape.png',
 			logged_in: false,
-			display_name: ''
+			display_name: '',
+			page: 1,
+			length: 10,
+			continue_watches: [],
+			ordered_watches: [],
+			meta: null,
 		};
 	}
 
@@ -52,7 +57,7 @@ class Profile extends React.Component {
 						profile_picture_url: response.data.data.photo_url, 
 						display_name: response.data.data.display_name,
 						logged_in: true 
-					});
+					}, () => this.loadMore());
 				}
 			})
 			.catch(error => {
@@ -60,9 +65,39 @@ class Profile extends React.Component {
 			});
 	}
 
+	loadMore() {
+		this.LoadingBar.continuousStart();
+		this.props.getContinueWatching(this.state.page, this.state.length)
+			.then(response => {
+				if (response.status === 200 && response.data.status.code === 0) {
+					let continueWatches = this.state.continue_watches;
+					continueWatches.push.apply(continueWatches, response.data.data);
+					let orderedWatches = this.state.ordered_watches;
+					orderedWatches.push.apply(orderedWatches, response.data.data);
+					console.log(orderedWatches);
+					this.setState({
+						continue_watches: continueWatches,
+						ordered_watches: orderedWatches,
+						meta: response.data.meta
+					});
+				}
+
+				this.LoadingBar.complete()
+			})
+			.catch(error => {
+				console.log(error);
+				this.LoadingBar.complete();
+				this.setState({ first_load: false });
+			});
+	}
+
 	showOpenPlaystoreAlert() {
         showAlert('To be able to see and watching your downloaded file, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); });
-    }
+	}
+	
+	link(cw) {
+		Router.push(`/programs/${cw.program_id}/${cw.program_title.replace(' ', '-').toLowerCase()}/${cw.content_type}/${cw.content_id}/${cw.content_title.replace(' ', '-').toLowerCase()}?ref=continue_watching`);
+	}
 
 	render() {
 		let actionProfile = (
@@ -94,6 +129,7 @@ class Profile extends React.Component {
 		return (
 			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
 				<NavDefault disableScrollListener/>
+				<LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
 				<ListGroup className="list-menu-container">
 					<ListGroupItem>
 						{actionProfile}
@@ -132,7 +168,20 @@ class Profile extends React.Component {
 						accountGeneralEvent('mweb_account_continue_watching_clicked');
 						Router.push('/continue-watching');
 					}}>
-						<QueryBuilderIcon/> Continue Watching
+						<QueryBuilderIcon/> Continue Watching <br/>
+						<div className="cw-container">
+							{this.state.ordered_watches.map((cw, i) => (
+								<div key={i} className="cw-item" onClick={() => this.link(cw)}>
+									<Img 
+										alt={cw.title} 
+										className="list-item-thumbnail" 
+										src={[this.state.meta.image_path + 400 + cw.landscape_image, '/static/placeholders/placeholder_landscape.png']} 
+										loader={<img className="list-item-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
+										unloader={<img className="list-item-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}/>
+									<Bar percentage={(cw.last_duration / cw.duration) * 100} />
+								</div>
+							))}
+						</div>
 					</ListGroupItem>
 					<ListGroupItem onClick={() => {
 						accountGeneralEvent('mweb_account_tnc_clicked');

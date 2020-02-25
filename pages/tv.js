@@ -255,7 +255,6 @@ class Tv extends React.Component {
 			this.loadChatMessages(this.state.live_events[this.state.selected_index].id);
 			this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
 				.then(collection => {
-					let firstLoad = true;
 					let snapshots = this.state.snapshots;
 					// for (let i = 0; i < this.state.live_events.length; i++) {
 					// 	if (snapshots[this.state.live_events[i].id]) {
@@ -264,16 +263,25 @@ class Tv extends React.Component {
 					// }
 
 					let snapshot = collection.onSnapshot(querySnapshot => {
-						querySnapshot.docChanges().forEach(change => {
-							if (change.type === 'added' && !firstLoad) {
-								if (!this.state.sending_chat) {
-									let chats = this.state.chats;
-									chats.push(change.doc.data());
+						querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
+							.forEach(change => {
+								let chats = this.state.chats;
+								if (change.type === 'added') {
+									if (!this.state.sending_chat) {
+										chats.push(change.doc.data());
+										this.setState({ chats: chats });
+									}
+								}
+								else if (change.type === 'removed') {
+									let removed = change.doc.data();
+									for (let i = 0; i < chats.length; i++){ 
+										if (chats[i].ts === removed.ts) {
+											chats.splice(i, 1); 
+										}
+									}
 									this.setState({ chats: chats });
 								}
-							}
-						});
-						firstLoad = false;
+							});
 					});
 					snapshots[this.state.live_events[this.state.selected_index].id] = snapshot;
 					this.setState({ snapshots: snapshots });
@@ -546,7 +554,6 @@ class Tv extends React.Component {
 						<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
 						<span style={{ fontSize: 12 }}>Please try again later,</span><br/>
 						<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
-						{/* <Button onClick={this.tryAgain.bind(this)} className="btn-next" style={{ width: '50%' }}>Coba Lagi</Button> */}
 					</h5>
 				</div>
 			);

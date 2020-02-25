@@ -68,7 +68,8 @@ class Content extends React.Component {
             start_duration: 0,
             error: false,
             error_data: {},
-            end_duration: 0
+            end_duration: 0,
+            hide_footer: false
         };
         this.player = null;
 
@@ -150,11 +151,13 @@ class Content extends React.Component {
         this.player.on('fullscreen', () => {
 			if (screen.orientation.type === 'portrait-primary') {
 				document.querySelector("#app-jwplayer").requestFullscreen();
-				screen.orientation.lock("landscape-primary")
+                screen.orientation.lock("landscape-primary");
+                this.setState({ hide_footer: false });
 			}
 			if (screen.orientation.type === 'landscape-primary') {
 				document.querySelector("#app-jwplayer").requestFullscreen();
-				screen.orientation.lock("portrait-primary")
+                screen.orientation.lock("portrait-primary");
+                this.setState({ hide_footer: true });
 			}
 		});
 
@@ -371,7 +374,7 @@ class Content extends React.Component {
 
 
         return (
-            <Layout title={title}>
+            <Layout title={title} hideFooter={this.state.hide_footer}>
                 <ArrowBackIcon className="back-btn" onClick={() => Router.back()} />
                 {(this.state.error || Object.keys(this.props.content_url).length <= 0) ? errorRef : playerRef}
             </Layout>

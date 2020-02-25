@@ -32,7 +32,8 @@ const opts = {
 
 (async () => {
     // Usage:
-    const baseUrl = 'https://rc-m-new.rctiplus.com';
+    // const baseUrl = 'https://rc-m-new.rctiplus.com';
+    const baseUrl = 'https://m2.rctiplus.com';
     const urls = {
         home: baseUrl,
         login: baseUrl + '/login',
@@ -45,15 +46,15 @@ const opts = {
         exclusive_bloopers: baseUrl + '/exclusive/bloopers',
         exclusive_behind_the_scenes: baseUrl + '/exclusive/behind-the-scenes',
         trending: baseUrl + '/trending',
-        content: baseUrl + '/programs/439/take-me-out-indonesia',
-        content_episodes: baseUrl + '/programs/439/take-me-out-indonesia/episodes',
-        content_extras: baseUrl + '/programs/439/take-me-out-indonesia/extras',
-        content_clips: baseUrl + '/programs/439/take-me-out-indonesia/clips',
-        content_photos: baseUrl + '/programs/439/take-me-out-indonesia/photos',
-        content_episode_detail: baseUrl + '/programs/439/take-me-out-indonesia/episode/4316/take-me-out-indonesia-ep.1',
-        content_extra_detail: baseUrl + '/programs/439/take-me-out-indonesia/extra/272/bts-episode-8',
-        content_clip_detail: baseUrl + '/programs/439/take-me-out-indonesia/clip/547/take-me-out-indonesiatake-me-out-indonesiatake-me-out-indonesiatake-me-out-indonesiatake-me-out-indonesiatake-me-out-indonesiatake-me-out-indonesiatake-me-out-i',
-        content_photo_detail: baseUrl + '/programs/439/take-me-out-indonesia/photo/38/take-me-take',
+        // content: baseUrl + '/programs/439/take-me-out-indonesia',
+        // content_episodes: baseUrl + '/programs/439/take-me-out-indonesia/episodes',
+        // content_extras: baseUrl + '/programs/439/take-me-out-indonesia/extras',
+        // content_clips: baseUrl + '/programs/439/take-me-out-indonesia/clips',
+        // content_photos: baseUrl + '/programs/439/take-me-out-indonesia/photos',
+        // content_episode_detail: baseUrl + '/programs/439/take-me-out-indonesia/episode/4316/take-me-out-indonesia-ep.1',
+        // content_extra_detail: baseUrl + '/programs/439/take-me-out-indonesia/extra/272/bts-episode-8',
+        // content_clip_detail: baseUrl + '/programs/439/take-me-out-indonesia/clip/547/take-me-out-indonesiatake-me-out-indonesiatake-me-out-indonesiatake-me-out-indonesiatake-me-out-indonesiatake-me-out-indonesiatake-me-out-indonesiatake-me-out-i',
+        // content_photo_detail: baseUrl + '/programs/439/take-me-out-indonesia/photo/38/take-me-take',
         tv_rcti: baseUrl + '/tv/rcti',
         tv_mnctv: baseUrl + '/tv/mnctv',
         tv_globaltv: baseUrl + '/tv/globaltv',

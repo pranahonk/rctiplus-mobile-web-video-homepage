@@ -1,5 +1,10 @@
 .modal-dialog {
     margin: 0rem;
+
+    .modal-body-edited {
+        padding: 0rem !important;
+        padding-top: 40% !important;
+    }
 }
 
 .modal-header {

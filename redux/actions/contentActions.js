@@ -1,6 +1,6 @@
 import ax from 'axios';
 import { DEV_API } from '../../config';
-import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
+import { getCookie, getVisitorToken, checkToken, setCookie } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
 
 const axios = ax.create({ baseURL: DEV_API + '/api' });
@@ -11,6 +11,10 @@ axios.interceptors.request.use(async (request) => {
     request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : accessToken;
     return request;
 });
+
+const setSigninPopupFlag = flag => {
+    setCookie('SIGNIN_POPUP_SHOWN', flag);
+};
 
 const getContents = (page = 1, length = 20, platform = 'mweb') => {
     return dispatch => new Promise(async (resolve, reject) => {
@@ -52,11 +56,14 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                         };
                     }
                     else if (results[i].data.status.code === 13) {
-                        showSignInAlert(`Please <b>Sign In</b><br/>
+                        if (!getCookie('SIGNIN_POPUP_SHOWN')) {
+                            showSignInAlert(`Please <b>Sign In</b><br/>
                                 Woops! Gonna sign in first!<br/>
                                 Only a click away and you<br/>
                                 can continue to enjoy<br/>
                                 <b>RCTI+</b>`, '', () => {}, true, 'Register', 'Login', true, true);
+                            setSigninPopupFlag(true);
+                        }
                     }
                     contents.push(content);
                 }

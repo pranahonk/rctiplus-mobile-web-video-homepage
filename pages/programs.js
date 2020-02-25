@@ -377,9 +377,8 @@ class Detail extends React.Component {
                         response_data: response.data.data
                     });
 
-                    this.props.getLikeHistory(this.props.router.query.id)
+                    this.props.getLikeHistory(this.props.router.query.id, 'program')
                         .then(response => {
-                            console.log(response);
                             this.setState({ list_box_height: this.thumbnailContentRef.clientHeight - this.thumbnailRef.clientHeight });
                         })
                         .catch(error => {
