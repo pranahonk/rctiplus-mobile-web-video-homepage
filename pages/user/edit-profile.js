@@ -7,6 +7,7 @@ import Actionsheet from '../../assets/js/react-actionsheet/lib';
 import actions from '../../redux/actions';
 import userActions from '../../redux/actions/userActions';
 import othersActions from '../../redux/actions/othersActions';
+import pageActions from '../../redux/actions/pageActions';
 
 import { removeCookie } from '../../utils/cookie';
 import { accountGeneralEvent } from '../../utils/appier';
@@ -66,6 +67,7 @@ class EditProfile extends React.Component {
         };
 
         this.inputPhotoElement = null;
+        this.props.setPageLoader();
     }
 
     componentDidMount() {
@@ -93,16 +95,20 @@ class EditProfile extends React.Component {
                         this.props.setUserProfile(this.state.nickname, this.state.fullname, this.state.birthdate, this.state.gender, this.state.phone_number, this.state.email, this.state.otp, this.state.location);
                     });
                 }
+                this.props.unsetPageLoader();
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+                this.props.unsetPageLoader();
+                console.log(error);
+            });
 
-        this.props.getLocations()
-            .then(response => {
-                if (response.status === 200) {
-                    this.setState({ location_data: response.data.data });
-                }
-            })
-            .catch(error => console.log(error));
+        // this.props.getLocations()
+        //     .then(response => {
+        //         if (response.status === 200) {
+        //             this.setState({ location_data: response.data.data });
+        //         }
+        //     })
+        //     .catch(error => console.log(error));
     }
 
     handleSubmit(e) {
@@ -332,5 +338,6 @@ class EditProfile extends React.Component {
 export default connect(state => state, {
     ...userActions,
     ...othersActions,
-    ...actions
+    ...actions,
+    ...pageActions
 })(EditProfile);

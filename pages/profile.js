@@ -5,6 +5,7 @@ import Img from 'react-image';
 
 import userActions from '../redux/actions/userActions';
 import historyActions from '../redux/actions/historyActions';
+import pageActions from '../redux/actions/pageActions';
 
 import initialize from '../utils/initialize';
 import { showAlert, showSignInAlert } from '../utils/helpers';
@@ -47,6 +48,7 @@ class Profile extends React.Component {
 			ordered_watches: [],
 			meta: null,
 		};
+		this.props.setPageLoader();
 	}
 
 	componentDidMount() {
@@ -59,9 +61,13 @@ class Profile extends React.Component {
 						logged_in: true 
 					}, () => this.loadMore());
 				}
+				else {
+					this.props.unsetPageLoader();
+				}
 			})
 			.catch(error => {
 				console.log(error);
+				this.props.unsetPageLoader();
 			});
 	}
 
@@ -82,11 +88,13 @@ class Profile extends React.Component {
 					});
 				}
 
+				this.props.unsetPageLoader();
 				this.LoadingBar.complete()
 			})
 			.catch(error => {
 				console.log(error);
 				this.LoadingBar.complete();
+				this.props.unsetPageLoader();
 				this.setState({ first_load: false });
 			});
 	}
@@ -213,5 +221,6 @@ class Profile extends React.Component {
 
 export default connect(state => state, {
 	...userActions,
-	...historyActions
+	...historyActions,
+	...pageActions
 })(Profile);

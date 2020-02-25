@@ -11,7 +11,7 @@ import fetch from 'isomorphic-unfetch';
 import classnames from 'classnames';
 import queryString from 'query-string';
 
-import { showAlert } from '../utils/helpers';
+import { showAlert, showSignInAlert } from '../utils/helpers';
 
 import Error from './error';
 
@@ -593,7 +593,12 @@ class Detail extends React.Component {
             .catch(error => {
                 console.log(error);
                 if (error.status === 200) {
-                    showAlert(error.data.status.message_client, '', 'Login', '', () => Router.push('/login'));
+                    // showAlert(error.data.status.message_client, '', 'Login', '', () => Router.push('/login'));
+                    showSignInAlert(`Please <b>Sign In</b><br/>
+                                Woops! Gonna sign in first!<br/>
+                                Only a click away and you<br/>
+                                can continue to enjoy<br/>
+                                <b>RCTI+</b>`, '', () => {}, true, 'Register', 'Login', true, true);
                 }
             });
     }

@@ -101,13 +101,16 @@ class Content extends React.Component {
         this.player = window.jwplayer('app-jwplayer');
         this.player.setup({
             autostart: true,
+            mute: true, //optional, but recommended
+            floating: false,
             file: this.state.player_url,
+            title: '',
             primary: 'html5',
             width: '100%',
             aspectratio: '16:9',
             displaytitle: true,
             setFullscreen: true,
-            stretching: 'fill',
+            stretching: 'exactfit',
             advertising: {
                 client: process.env.ADVERTISING_CLIENT,
                 tag: this.state.player_vmap
@@ -117,6 +120,10 @@ class Content extends React.Component {
             }
         }).seek(this.state.start_duration);
 
+        this.player.on('ready', () => {
+            this.player.play();
+        });
+
         this.player.on('setupError', error => {
             this.setState({
                 error: true,
@@ -125,6 +132,7 @@ class Content extends React.Component {
         });
 
         this.player.on('error', error => {
+            console.log(error);
             this.player.remove();
             this.setState({
                 error: true,
@@ -274,6 +282,7 @@ class Content extends React.Component {
                         startDuration = response_2.data.data.last_duration;
                     }
 
+                    
                     this.setState({
                         player_url: content.data.url,
                         player_vmap: content.data.vmap,
@@ -337,6 +346,7 @@ class Content extends React.Component {
 
         if (this.state.error || Object.keys(this.props.content_url).length <= 0) {
             title = 'Data Not Found';
+            console.log(this.state.error_data);
             errorRef = (
                 <div className="wrapper-content" style={{ margin: 0 }}>
                     <div style={{

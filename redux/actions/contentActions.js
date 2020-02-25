@@ -57,11 +57,11 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                     }
                     else if (results[i].data.status.code === 13) {
                         if (!getCookie('SIGNIN_POPUP_SHOWN')) {
-                            showSignInAlert(`Please <b>Sign In</b><br/>
-                                Woops! Gonna sign in first!<br/>
-                                Only a click away and you<br/>
-                                can continue to enjoy<br/>
-                                <b>RCTI+</b>`, '', () => {}, true, 'Register', 'Login', true, true);
+                            // showSignInAlert(`Please <b>Sign In</b><br/>
+                            //     Woops! Gonna sign in first!<br/>
+                            //     Only a click away and you<br/>
+                            //     can continue to enjoy<br/>
+                            //     <b>RCTI+</b>`, '', () => {}, true, 'Register', 'Login', true, true);
                             setSigninPopupFlag(true);
                         }
                     }

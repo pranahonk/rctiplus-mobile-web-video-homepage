@@ -12,7 +12,7 @@ import Layout from '../../../components/Layouts/Default';
 import NavBack from '../../../components/Includes/Navbar/NavBack';
 
 //load reactstrap components
-import { Button, ButtonGroup } from 'reactstrap';
+import { Button } from 'reactstrap';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
@@ -71,6 +71,7 @@ class Crop extends React.Component {
         canvas.width = crop.width;
         canvas.height = crop.height;
         const ctx = canvas.getContext('2d');
+        console.log(crop.width, crop.height);
 
         ctx.drawImage(
             image,
@@ -84,7 +85,7 @@ class Crop extends React.Component {
             crop.height
         );
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             canvas.toBlob(blob => {
                 if (!blob) {
                     //reject(new Error('Canvas is empty'));

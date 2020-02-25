@@ -249,6 +249,7 @@ class FormField extends React.Component {
                             showYearDropdown
                             dropdownMode="select"
                             dateFormat="dd/MM/yyyy"
+                            maxDate={Date.now()}
                             onChange={this.onChange.bind(this)}
                             invalid={this.state.value_invalid}
                             selected={this.state.value}

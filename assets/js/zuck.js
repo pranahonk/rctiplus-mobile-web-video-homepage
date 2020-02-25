@@ -815,9 +815,9 @@ module.exports = (window => {
 									const storyData = zuck.data[storyId];
 									const currentItem = storyData.currentItem || 0;
 									const item = storyData.items[currentItem];
-
+									console.log(window.screen);
 									if (
-										lastTouchOffset.x > window.screen.width / 4 ||
+										lastTouchOffset.x > window.screen.width / 3 ||
 										!option('previousTap')
 									) {
 										homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_swipe_next');
@@ -826,9 +826,16 @@ module.exports = (window => {
 										homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_swipe_previous');
 									}
 
+									console.log('MOVE ITEM');
 									moveStoryItem(direction);
 								} else {
-									translate(modalSlider, position.x, 300);
+									if (!index) {
+										modal.close();
+									}
+									else {
+										translate(modalSlider, position.x, 300);
+									}
+									
 								}
 							}
 
@@ -872,7 +879,6 @@ module.exports = (window => {
 							};
 
 							const storyViewerViewing = query('#zuck-modal .viewing');
-
 							if (storyViewerViewing && video) {
 								if (storyViewerViewing.classList.contains('muted')) {
 									unmuteVideoItem(video, storyViewerViewing);

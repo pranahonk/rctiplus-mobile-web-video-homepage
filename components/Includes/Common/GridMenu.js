@@ -26,7 +26,7 @@ class GridMenu extends React.Component {
                             Router.push('/exclusive');
                         }}>
                             <a>
-                                <Img className="menu-icon" src={['/exclusive.svg']}/>
+                                <img className="menu-icon" src={'/exclusive.svg'}/>
                                 <p className="menu-label">Exclusive</p>
                             </a>
                         </div>
@@ -37,7 +37,7 @@ class GridMenu extends React.Component {
                             Router.push('/trending');
                         }}>
                             <a>
-                                <Img className="menu-icon" src={['/news.svg']}/>
+                                <img className="menu-icon" src={'/news.svg'}/>
                                 <p className="menu-label">News</p>
                             </a>
                         </div>
