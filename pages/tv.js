@@ -268,7 +268,12 @@ class Tv extends React.Component {
 								let chats = this.state.chats;
 								if (change.type === 'added') {
 									if (!this.state.sending_chat) {
-										chats.push(change.doc.data());
+										let lastChat = chats[chats.length - 1];
+										let newChat = change.doc.data();
+										if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+											chats.push(newChat);
+										}
+										
 										this.setState({ chats: chats });
 									}
 								}
