@@ -161,20 +161,20 @@ class Tv extends React.Component {
 		this.player.on('setupError', error => {
 			console.log(error);
 			this.player.remove();
-            this.setState({
-                error: true,
-                error_data: error
-            });
-        });
+			this.setState({
+				error: true,
+				error_data: error
+			});
+		});
 
-        this.player.on('error', error => {
+		this.player.on('error', error => {
 			console.log(error);
-            this.player.remove();
-            this.setState({
-                error: true,
-                error_data: error
-            });
-        });
+			this.player.remove();
+			this.setState({
+				error: true,
+				error_data: error
+			});
+		});
 		this.player.on('fullscreen', () => {
 			if (screen.orientation.type === 'portrait-primary') {
 				document.querySelector("#live-tv-player").requestFullscreen();
@@ -194,11 +194,11 @@ class Tv extends React.Component {
 					conviva.updatePlayerAssetMetadata(this, {
 						playerType: 'JWPlayer',
 						content_type: 'N/A',
-						program_id: currentEpg.id, 
+						program_id: currentEpg.id,
 						program_name: currentEpg.title,
 						date_video: 'N/A',
 						time_video: 'N/A',
-						page_title:'N/A',
+						page_title: 'N/A',
 						genre: 'N/A',
 						page_view: 'N/A',
 						app_version: 'N/A',
@@ -213,11 +213,11 @@ class Tv extends React.Component {
 					conviva.updatePlayerAssetMetadata(this, {
 						playerType: 'JWPlayer',
 						content_type: 'N/A',
-						program_id: this.state.selected_catchup.id, 
+						program_id: this.state.selected_catchup.id,
 						program_name: this.state.selected_catchup.title,
 						date_video: 'N/A',
 						time_video: 'N/A',
-						page_title:'N/A',
+						page_title: 'N/A',
 						genre: 'N/A',
 						page_view: 'N/A',
 						app_version: 'N/A',
@@ -225,7 +225,7 @@ class Tv extends React.Component {
 						group_content_name: 'N/A',
 						exclusive_tab_name: 'N/A'
 					});
-					
+
 					liveTvCatchupSchedulePlay(this.state.selected_date, this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, this.state.selected_catchup.title, 'mweb_livetv_catchup_schedule_play');
 				}
 			}
@@ -273,15 +273,15 @@ class Tv extends React.Component {
 										if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
 											chats.push(newChat);
 										}
-										
+
 										this.setState({ chats: chats });
 									}
 								}
 								else if (change.type === 'removed') {
 									let removed = change.doc.data();
-									for (let i = 0; i < chats.length; i++){ 
+									for (let i = 0; i < chats.length; i++) {
 										if (chats[i].ts === removed.ts) {
-											chats.splice(i, 1); 
+											chats.splice(i, 1);
 										}
 									}
 									this.setState({ chats: chats });
@@ -291,7 +291,7 @@ class Tv extends React.Component {
 					snapshots[this.state.live_events[this.state.selected_index].id] = snapshot;
 					this.setState({ snapshots: snapshots });
 				});
-				
+
 			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id)
 				.then(res => {
 					this.setState({
@@ -351,14 +351,24 @@ class Tv extends React.Component {
 					console.log(error);
 					this.props.unsetPageLoader();
 				});
+
+			if (first === true && this.props.context_data.epg_id) {
+				this.selectCatchup(this.props.context_data.epg_id, 'url');
+			}
 		});
 
-		
+
 	}
 
-	selectCatchup(id) {
+	selectCatchup(id, ref = false) {
 		this.props.setPageLoader();
-		liveTvCatchupScheduleClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_catchup_schedule_clicked');
+		if (!ref) {
+			liveTvCatchupScheduleClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_catchup_schedule_clicked');
+		}
+		else {
+			this.setState({ selected_tab: 'catch_up_tv' });
+		}
+
 		this.props.getCatchupUrl(id)
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {
@@ -383,7 +393,7 @@ class Tv extends React.Component {
 					<svg style="font-size: 4.5rem" class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation"><circle cx="15.5" cy="9.5" r="1.5"></circle><circle cx="8.5" cy="9.5" r="1.5"></circle><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-6c-2.33 0-4.32 1.45-5.12 3.5h1.67c.69-1.19 1.97-2 3.45-2s2.75.81 3.45 2h1.67c-.8-2.05-2.79-3.5-5.12-3.5z"></path></svg>
 					`, 'Close');
 				}
-				
+
 				this.props.unsetPageLoader();
 			});
 	}
@@ -406,7 +416,7 @@ class Tv extends React.Component {
 						break;
 
 					case 'catch_up_tv':
-						liveTvShareCatchupClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'N/A','mweb_livetv_share_catchup_clicked');
+						liveTvShareCatchupClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'N/A', 'mweb_livetv_share_catchup_clicked');
 						break;
 				}
 			}
@@ -429,8 +439,8 @@ class Tv extends React.Component {
 
 	tryAgain() {
 		this.setState({ error: false }, () => {
-            this.initVOD();
-        });
+			this.initVOD();
+		});
 	}
 
 	onChangeChatInput(e) {
@@ -459,7 +469,7 @@ class Tv extends React.Component {
 				Woops! Gonna sign in first!<br/>
 				Only a click away and you<br/>
 				can continue to enjoy<br/>
-				<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+				<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
 		}
 	}
 
@@ -467,10 +477,10 @@ class Tv extends React.Component {
 		if (this.state.user_data) {
 			if (this.state.chat != '') {
 				const userData = this.state.user_data;
-				let user = userData.nickname ? userData.nickname : 
-						userData.display_name ? userData.display_name : 
-						userData.email ? userData.email.replace(/\d{4}$/, '****') : 
-						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
+				let user = userData.nickname ? userData.nickname :
+					userData.display_name ? userData.display_name :
+						userData.email ? userData.email.replace(/\d{4}$/, '****') :
+							userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
 
 				let newChat = {
 					ts: Date.now(),
@@ -485,10 +495,10 @@ class Tv extends React.Component {
 				this.setState({ chats: chats, chat: '', sending_chat: true }, () => {
 					const chatBox = document.getElementById('chat-messages');
 					chatBox.scrollTop = chatBox.scrollHeight;
-					
+
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
-					
+
 					this.props.setChat(this.state.live_events[this.state.selected_index].id, newChat.m, user, this.state.user_data.photo_url)
 						.then(response => {
 							newChat.sent = true;
@@ -512,7 +522,7 @@ class Tv extends React.Component {
 			Woops! Gonna sign in first!<br/>
 			Only a click away and you<br/>
 			can continue to enjoy<br/>
-			<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+			<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
 		}
 	}
 
@@ -524,9 +534,9 @@ class Tv extends React.Component {
 		chats[index] = lastChat;
 		this.setState({ chats: chats, sending_chat: true }, () => {
 			const userData = this.state.user_data;
-			let user = userData.nickname ? userData.nickname : 
-						userData.display_name ? userData.display_name : 
-						userData.email ? userData.email.replace(/\d{4}$/, '****') : 
+			let user = userData.nickname ? userData.nickname :
+				userData.display_name ? userData.display_name :
+					userData.email ? userData.email.replace(/\d{4}$/, '****') :
 						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
 			this.props.setChat(this.state.live_events[this.state.selected_index].id, lastChat.m, user, this.state.user_data.photo_url)
 				.then(response => {
@@ -550,14 +560,14 @@ class Tv extends React.Component {
 		let playerRef = (<div></div>);
 		if (this.state.error) {
 			playerRef = (
-				<div style={{ 
+				<div style={{
 					textAlign: 'center',
 					margin: 30
-					}}>
-					<Wrench/>
+				}}>
+					<Wrench />
 					<h5 style={{ color: '#8f8f8f' }}>
-						<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
-						<span style={{ fontSize: 12 }}>Please try again later,</span><br/>
+						<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+						<span style={{ fontSize: 12 }}>Please try again later,</span><br />
 						<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
 					</h5>
 				</div>
@@ -578,11 +588,12 @@ class Tv extends React.Component {
 		return (
 			<Layout className="live-tv-layout" title={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title}>
 				<Head>
-					<meta name="description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description}/>
-					<meta name="keywords" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].keywords}/>
+					<meta name="description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description} />
+					<meta name="keywords" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].keywords} />
 
 					<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-					<script dangerouslySetInnerHTML={{ __html: `
+					<script dangerouslySetInnerHTML={{
+						__html: `
 							window.googletag = window.googletag || {cmd: []};
 							googletag.cmd.push(function() {
 							googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[320, 50], [468, 60]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
@@ -678,13 +689,17 @@ class Tv extends React.Component {
 
 									</div>
 									{this.props.chats.catchup.map(c => (
-										<Row onClick={this.selectCatchup.bind(this, c.id)} key={c.id} className={'program-item'}>
-											<Col xs={9}>
-												<div className="title">{c.title}</div>
-												<div className="subtitle">{c.s} - {c.e}</div>
+										<Row key={c.id} className={'program-item'}>
+											<Col xs={9} onClick={this.selectCatchup.bind(this, c.id)}>
+												<Link href={`/tv?channel=${this.state.channel_code}&id=${c.id}&title=${c.title}`} as={`/tv/${this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`}>
+													<a style={{ textDecoration: 'none', color: 'white' }}>
+														<div className="title">{c.title}</div>
+														<div className="subtitle">{c.s} - {c.e}</div>
+													</a>
+												</Link>
 											</Col>
 											<Col className="right-side">
-												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code])} className="share-btn" />
+												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + `/tv/${this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`, ['rctiplus', this.props.chats.channel_code])} className="share-btn" />
 											</Col>
 										</Row>
 									))}
@@ -700,12 +715,12 @@ class Tv extends React.Component {
 									<Row key={i} className="chat-line">
 										<Col xs={2}>
 											<Img
-												loader={<PersonOutlineIcon className="chat-avatar"/>}
-												unloader={<PersonOutlineIcon className="chat-avatar"/>} 
-												className="chat-avatar" src={[chat.i]}/>
+												loader={<PersonOutlineIcon className="chat-avatar" />}
+												unloader={<PersonOutlineIcon className="chat-avatar" />}
+												className="chat-avatar" src={[chat.i]} />
 										</Col>
 										<Col className="chat-message" xs={10}>
-											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message"/> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} /> )) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
+											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
 										</Col>
 									</Row>
 								))}
@@ -715,11 +730,11 @@ class Tv extends React.Component {
 									<Row>
 										<Col xs={1}>
 											<Button className="emoji-button">
-												{this.state.emoji_picker_open ? (<KeyboardIcon onClick={this.toggleEmoji.bind(this)}/>) : (<SentimenVerySatifiedIcon onClick={this.toggleEmoji.bind(this)}/>)}
+												{this.state.emoji_picker_open ? (<KeyboardIcon onClick={this.toggleEmoji.bind(this)} />) : (<SentimenVerySatifiedIcon onClick={this.toggleEmoji.bind(this)} />)}
 											</Button>
 										</Col>
 										<Col xs={9}>
-											<Input 
+											<Input
 												onKeyDown={this.handleChatEnter.bind(this)}
 												onChange={this.onChangeChatInput.bind(this)}
 												onClick={this.checkLogin.bind(this)}
@@ -729,7 +744,7 @@ class Tv extends React.Component {
 												placeholder="Start Chatting"
 												className="chat-input"
 												maxLength={250}
-												rows={1}/>
+												rows={1} />
 										</Col>
 										<Col xs={1}>
 											<Button className="send-button" onClick={this.sendChat.bind(this)}>
@@ -738,13 +753,13 @@ class Tv extends React.Component {
 										</Col>
 									</Row>
 								</div>
-								<Picker 
+								<Picker
 									onSelect={emoji => {
 										this.onSelectEmoji(emoji);
 									}}
-									showPreview={false} 
-									darkMode 
-									style={{ height: this.state.emoji_picker_open ? 200 : 0 }}/>
+									showPreview={false}
+									darkMode
+									style={{ height: this.state.emoji_picker_open ? 200 : 0 }} />
 							</div>
 						</div>
 					</div>
