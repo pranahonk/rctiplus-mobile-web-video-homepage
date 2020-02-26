@@ -159,10 +159,14 @@ class Detail extends React.Component {
         return (
             <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
                 <Head>
-                    {/* <!-- Google Tag Manager (noscript) --> */}
-                    {/* <noscript key="gtm-noscript"><iframe src="asdsdasdsads"
-                    height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript> */}
-                    {/* <!-- End Google Tag Manager (noscript) --> */}
+                    {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
+                    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
+                    <script dangerouslySetInnerHTML={{ __html: `
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'UA-145455301-9');
+                    ` }}></script>
                 </Head>
                 <NavBack data={cdata} />
                 {this.state.iframe_opened ? (<iframe src={cdata.link} style={{ width: '100%', minHeight: 'calc(100vh - 50px)', paddingTop: 65 }} frameBorder="0" type="text/html"></iframe>) : (

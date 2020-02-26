@@ -223,6 +223,14 @@ class Trending extends React.Component {
                 <Head>
                     <meta name="description" content={metadata.description} />
                     <meta name="keywords" content={metadata.keywords} />
+                    {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
+                    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
+                    <script dangerouslySetInnerHTML={{ __html: `
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'UA-145455301-9');
+                    ` }}></script>
                 </Head>
 
                 {process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)}
