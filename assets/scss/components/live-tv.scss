@@ -1,3 +1,5 @@
+$default-player-space: 180px;
+
 .jwplayer {
     .jwplayer-display-container {
         display: flex;
@@ -76,9 +78,14 @@
     right: 0;
     z-index: 6;
     height: 43px;
+
     transition-property: height;
     transition-duration: 0.4s;
     transition-timing-function: ease-out;
+
+    -webkit-transition-property: height;
+    -webkit-transition-duration: 0.4s;
+    -webkit-transition-timing-function: ease-out;
 
     .box-chat {
         .chat-messages {
@@ -234,8 +241,9 @@
 }
 
 .live-chat-wrap-open {
-    max-height: calc(100vh - 200px);
-    height: calc(100vh - 200px);
+    max-height: calc(100vh - #{$default-player-space});
+    height: calc(100vh - #{$default-player-space});
+
     bottom: 0;
     z-index: 7;
     overflow: hidden;
@@ -417,5 +425,29 @@
 
     .season-list {
         height: 80%;
+    }
+}
+
+// handle iphone
+@media (max-device-height: 669px) and (min-device-height: 525px) {
+    .live-chat-wrap-open {
+        max-height: calc(100vh - 50%);
+        height: calc(100vh - 50%);
+
+        .box-chat {
+            height: calc(100vh - 353px);
+        }
+    }
+}
+
+// handle browser
+@media (max-height: 524px) {
+    .live-chat-wrap-open {
+        max-height: calc(100vh - 35%);
+        height: calc(100vh - 35%);
+
+        .box-chat {
+            height: calc(100vh - 253px);
+        }
     }
 }

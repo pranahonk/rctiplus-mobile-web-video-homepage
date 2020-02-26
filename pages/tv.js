@@ -578,9 +578,9 @@ class Tv extends React.Component {
 				<div>
 					<div style={{ minHeight: 180 }} id="live-tv-player"></div>
 					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
-					{/* <div id='div-gpt-ad-1581999069906-0' style={{ width: '100% !important' }}>
+					<div id='div-gpt-ad-1581999069906-0'>
 						<script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1581999069906-0'); });` }}></script>
-					</div> */}
+					</div>
 				</div>
 			);
 		}
