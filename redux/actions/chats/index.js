@@ -72,7 +72,6 @@ const listenChatMessages = id => {
     return dispatch => new Promise((resolve, reject) => {
         let db = firebaseApp.firestore();
         resolve(db.collection(`chat${id}`));
-            
     });
 };
 
@@ -80,7 +79,7 @@ const getChatMessages = id => {
     return dispatch => new Promise((resolve, reject) => {
         let db = firebaseApp.firestore();
         db.collection(`chat${id}`)
-            .limit(10)
+            .limit(5)
             .orderBy('ts', 'desc')
             .get()
             .then(querySnapshot => {

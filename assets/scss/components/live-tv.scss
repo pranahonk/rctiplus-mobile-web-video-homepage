@@ -449,7 +449,7 @@ $default-player-space: 180px;
 }
 
 // handle iphone
-@media (max-height: 669px) and (min-height: 525px) {
+@media (min-height: 525px) {
     .live-chat-wrap-open {
         max-height: calc(100vh - 50%);
         height: calc(100vh - 50%);

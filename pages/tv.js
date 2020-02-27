@@ -86,6 +86,8 @@ class Tv extends React.Component {
 		this.currentDate = now;
 		this.props.setCatchupDate(formatDateWord(now));
 		this.props.setPageLoader();
+
+		console.log('IS IOS:', isIOS);
 	}
 
 	componentDidMount() {
@@ -175,7 +177,7 @@ class Tv extends React.Component {
 						jwplayer().setMute(true);
 						elementJwplayer[0].classList.add('jwplayer-mute');
 						elementJwplayer[0].classList.remove('jwplayer-full');
-					} 
+					}
 					else {
 						jwplayer().setMute(false);
 						elementCreateWrapper.classList.add('jwplayer-full');
@@ -264,10 +266,44 @@ class Tv extends React.Component {
 		this.props.getChatMessages(id)
 			.then(chats => {
 				let sortedChats = chats.sort((a, b) => a.ts - b.ts);
+				console.log(JSON.stringify(sortedChats));
 				this.setState({ chats: sortedChats }, () => {
 					const chatBox = document.getElementById('chat-messages');
 					chatBox.scrollTop = chatBox.scrollHeight;
 					this.props.unsetPageLoader();
+					console.log(JSON.stringify(sortedChats));
+					this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
+						.then(collection => {
+							let snapshots = this.state.snapshots;
+							let snapshot = collection.onSnapshot(querySnapshot => {
+								querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
+									.forEach(change => {
+										let chats = this.state.chats;
+										if (change.type === 'added') {
+											if (!this.state.sending_chat) {
+												let lastChat = chats[chats.length - 1];
+												let newChat = change.doc.data();
+												if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+													chats.push(newChat);
+												}
+												this.setState({ chats: chats });
+											}
+										}
+
+										if (change.type === 'removed') {
+											let removed = change.doc.data();
+											for (let i = 0; i < chats.length; i++) {
+												if (chats[i].ts === removed.ts) {
+													chats.splice(i, 1);
+												}
+											}
+											this.setState({ chats: chats });
+										}
+									});
+							});
+							snapshots[this.state.live_events[this.state.selected_index].id] = snapshot;
+							this.setState({ snapshots: snapshots });
+						});
 				});
 			})
 			.catch(error => {
@@ -278,46 +314,9 @@ class Tv extends React.Component {
 
 	selectChannel(index, first = false) {
 		this.props.setPageLoader();
-		this.setState({ selected_index: index, error: false }, () => {
+		this.setState({ selected_index: index, error: false, chats: [] }, () => {
 			this.loadChatMessages(this.state.live_events[this.state.selected_index].id);
-			this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
-				.then(collection => {
-					let snapshots = this.state.snapshots;
-					// for (let i = 0; i < this.state.live_events.length; i++) {
-					// 	if (snapshots[this.state.live_events[i].id]) {
-					// 		snapshots[this.state.live_events[i].id]();
-					// 	}
-					// }
 
-					let snapshot = collection.onSnapshot(querySnapshot => {
-						querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
-							.forEach(change => {
-								let chats = this.state.chats;
-								if (change.type === 'added') {
-									if (!this.state.sending_chat) {
-										let lastChat = chats[chats.length - 1];
-										let newChat = change.doc.data();
-										if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-											chats.push(newChat);
-										}
-
-										this.setState({ chats: chats });
-									}
-								}
-								else if (change.type === 'removed') {
-									let removed = change.doc.data();
-									for (let i = 0; i < chats.length; i++) {
-										if (chats[i].ts === removed.ts) {
-											chats.splice(i, 1);
-										}
-									}
-									this.setState({ chats: chats });
-								}
-							});
-					});
-					snapshots[this.state.live_events[this.state.selected_index].id] = snapshot;
-					this.setState({ snapshots: snapshots });
-				});
 
 			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id)
 				.then(res => {
@@ -605,9 +604,9 @@ class Tv extends React.Component {
 				<div>
 					<div style={{ minHeight: 180 }} id="live-tv-player"></div>
 					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
-					{/* <div id='div-gpt-ad-1581999069906-0'>
+					<div id='div-gpt-ad-1581999069906-0'>
 						<script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1581999069906-0'); });` }}></script>
-					</div> */}
+					</div>
 				</div>
 			);
 		}
@@ -732,17 +731,17 @@ class Tv extends React.Component {
 							</TabPane>
 						</TabContent>
 					</div>
-					<div className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ? 
-						(isIOS ? 
-							{ height: 'calc(100vh - 50%)' } : 
-							{ height: 'calc(100vh - 40%)' }) 
+					<div className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
+						(isIOS ?
+							{ height: 'calc(100vh - 50%)' } :
+							{ height: 'calc(100vh - 40%)' })
 						: null}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
-						<div className="box-chat" style={this.state.chat_open ? 
-						(isIOS ? 
-							{ height: 'calc(100vh - 363px)' } : 
-							{ height: 'calc(100vh - 263px)' }) 
-						: null}>
+						<div className="box-chat" style={this.state.chat_open ?
+							(isIOS ?
+								{ height: 'calc(100vh - 363px)' } :
+								{ height: 'calc(100vh - 263px)' })
+							: null}>
 							<div className="chat-messages" id="chat-messages">
 								{this.state.chats.map((chat, i) => (
 									<Row key={i} className="chat-line">
