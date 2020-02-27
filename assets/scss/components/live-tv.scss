@@ -449,25 +449,25 @@ $default-player-space: 180px;
 }
 
 // handle iphone
-@media (max-device-height: 669px) and (min-device-height: 525px) {
+@media (max-height: 669px) and (min-height: 525px) {
     .live-chat-wrap-open {
         max-height: calc(100vh - 50%);
         height: calc(100vh - 50%);
 
         .box-chat {
-            height: calc(100vh - 353px);
+            height: calc(100vh - 363px);
         }
     }
 }
 
 // handle browser
-@media (max-height: 430px) {
+@media (max-height: 524px) {
     .live-chat-wrap-open {
-        max-height: calc(100vh - 45%);
-        height: calc(100vh - 45%);
+        max-height: calc(100vh - 40%);
+        height: calc(100vh - 40%);
 
         .box-chat {
-            height: calc(100vh - 253px);
+            height: calc(100vh - 263px);
         }
     }
 }
