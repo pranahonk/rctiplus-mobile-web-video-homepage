@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import queryString from 'query-string';
+import { isIOS } from 'react-device-detect';
 
 import pageActions from '../../redux/actions/pageActions';
 import historyActions from '../../redux/actions/historyActions';
@@ -65,13 +66,39 @@ class PlayerModal extends React.Component {
 			aspectratio: '16:9',
 			displaytitle: true,
 			setFullscreen: true,
-			stretching:'fill',
+			stretching: 'exactfit',
 			advertising: {
 				client: process.env.ADVERTISING_CLIENT,
 				tag: this.props.vmap
 			},
 			logo: {
 				hide: true
+			}
+        });
+
+        this.player.on('ready', () => {
+            if (isIOS) {
+				let elementJwplayerInit = document.querySelector(`#${this.props.playerId} > .jw-wrapper`);
+				let elementCreateWrapper = document.createElement('btn');
+				let elementMuteIcon = document.createElement('span');
+				elementCreateWrapper.classList.add('jwplayer-vol-off');
+				elementCreateWrapper.innerText = 'Tap to unmute ';
+
+				jwplayer().setMute(true);
+				elementJwplayerInit.appendChild(elementCreateWrapper);
+				elementCreateWrapper.appendChild(elementMuteIcon);
+				elementCreateWrapper.addEventListener('click', () => {
+					if (elementCreateWrapper === null) {
+						jwplayer().setMute(true);
+						elementJwplayer[0].classList.add('jwplayer-mute');
+						elementJwplayer[0].classList.remove('jwplayer-full');
+					} 
+					else {
+						jwplayer().setMute(false);
+						elementCreateWrapper.classList.add('jwplayer-full');
+						elementCreateWrapper.classList.remove('jwplayer-mute');
+					}
+				});
 			}
         });
         

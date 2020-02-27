@@ -32,6 +32,7 @@ import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { isIOS } from 'react-device-detect';
 
 import { BASE_URL, SITEMAP } from '../config';
 
@@ -98,7 +99,6 @@ class Tv extends React.Component {
 								break;
 							}
 						}
-
 					}
 					this.props.unsetPageLoader();
 				});
@@ -122,8 +122,8 @@ class Tv extends React.Component {
 
 	isLiveProgram(epg) {
 		const currentTime = new Date().getTime();
-		const startTime = new Date(formatDate(this.currentDate) + ' ' + epg.s).getTime();
-		const endTime = new Date(formatDate(this.currentDate) + ' ' + epg.e).getTime();
+		const startTime = new Date(formatDate(this.currentDate) + 'T' + epg.s).getTime();
+		const endTime = new Date(formatDate(this.currentDate) + 'T' + epg.e).getTime();
 		return currentTime > startTime && currentTime < endTime;
 	}
 
@@ -139,7 +139,8 @@ class Tv extends React.Component {
 	}
 
 	initVOD() {
-		this.player = window.jwplayer('live-tv-player');
+		const playerId = 'live-tv-player';
+		this.player = window.jwplayer(playerId);
 		this.player.setup({
 			autostart: true,
 			floating: false,
@@ -158,6 +159,32 @@ class Tv extends React.Component {
 				hide: true
 			}
 		});
+		this.player.on('ready', () => {
+			if (isIOS) {
+				let elementJwplayerInit = document.querySelector(`#${playerId} > .jw-wrapper`);
+				let elementCreateWrapper = document.createElement('btn');
+				let elementMuteIcon = document.createElement('span');
+				elementCreateWrapper.classList.add('jwplayer-vol-off');
+				elementCreateWrapper.innerText = 'Tap to unmute ';
+
+				jwplayer().setMute(true);
+				elementJwplayerInit.appendChild(elementCreateWrapper);
+				elementCreateWrapper.appendChild(elementMuteIcon);
+				elementCreateWrapper.addEventListener('click', () => {
+					if (elementCreateWrapper === null) {
+						jwplayer().setMute(true);
+						elementJwplayer[0].classList.add('jwplayer-mute');
+						elementJwplayer[0].classList.remove('jwplayer-full');
+					} 
+					else {
+						jwplayer().setMute(false);
+						elementCreateWrapper.classList.add('jwplayer-full');
+						elementCreateWrapper.classList.remove('jwplayer-mute');
+					}
+				});
+			}
+		});
+
 		this.player.on('setupError', error => {
 			console.log(error);
 			this.player.remove();
@@ -317,7 +344,7 @@ class Tv extends React.Component {
 
 			this.props.getEPG(formatDate(this.currentDate), this.state.live_events[this.state.selected_index].channel_code)
 				.then(response => {
-					let epg = response.data.data.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + ' ' + e.e).getTime());
+					let epg = response.data.data.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + 'T' + e.e).getTime());
 					this.setState({ epg: epg }, () => {
 						if (first != true) {
 							let programLive = this.getCurrentLiveEpg();
@@ -578,9 +605,9 @@ class Tv extends React.Component {
 				<div>
 					<div style={{ minHeight: 180 }} id="live-tv-player"></div>
 					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
-					<div id='div-gpt-ad-1581999069906-0'>
+					{/* <div id='div-gpt-ad-1581999069906-0'>
 						<script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1581999069906-0'); });` }}></script>
-					</div>
+					</div> */}
 				</div>
 			);
 		}
@@ -660,9 +687,9 @@ class Tv extends React.Component {
 					<div className="tab-content-wrap">
 						<TabContent activeTab={this.state.selected_tab}>
 							<TabPane tabId={'live'}>
-								{this.state.epg.map(e => {
+								{this.state.epg.map((e, i) => {
 									if (this.isLiveProgram(e)) {
-										return (<Row key={e.id} className={'program-item selected'}>
+										return (<Row key={i} className={'program-item selected'}>
 											<Col xs={9}>
 												<div className="title">{e.title} <FiberManualRecordIcon /></div>
 												<div className="subtitle">{e.s} - {e.e}</div>
@@ -673,20 +700,18 @@ class Tv extends React.Component {
 										</Row>);
 									}
 
-									return (<Row key={e.id} className={'program-item'}>
+									return (<Row key={i} className={'program-item'}>
 										<Col xs={9}>
 											<div className="title">{e.title}</div>
 											<div className="subtitle">{e.s} - {e.e}</div>
 										</Col>
 									</Row>);
 								})}
-
 							</TabPane>
 							<TabPane tabId={'catch_up_tv'}>
 								<div className="catch-up-wrapper">
 									<div className="catchup-dropdown-menu">
 										<Button onClick={this.toggleSelectModal.bind(this)} size="sm" color="link">{this.props.chats.catchup_date} <ExpandMoreIcon /></Button>
-
 									</div>
 									{this.props.chats.catchup.map(c => (
 										<Row key={c.id} className={'program-item'}>

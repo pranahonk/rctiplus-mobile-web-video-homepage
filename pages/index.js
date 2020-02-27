@@ -115,7 +115,7 @@ class Index_v2 extends React.Component {
                     <meta name="description" content={SITEMAP.home.description} />
                     <meta name="keywords" content={SITEMAP.home.keywords} />
                 </Head>
-                <BottomScrollListener offset={50} onBottom={this.bottomScrollFetch.bind(this)} />
+                <BottomScrollListener offset={150} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
                 {/* <NavDownloadApp /> */}
                 <Nav />

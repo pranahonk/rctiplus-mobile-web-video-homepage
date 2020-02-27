@@ -8,6 +8,7 @@ import { Picker } from 'emoji-mart';
 import TimeAgo from 'react-timeago';
 import fetch from 'isomorphic-unfetch';
 import queryString from 'query-string';
+import { isIOS } from 'react-device-detect';
 
 import initialize from '../utils/initialize';
 import { getCookie } from '../utils/cookie';
@@ -79,11 +80,11 @@ class LiveEvent extends React.Component {
 			// if (/windows phone/i.test(userAgent)) {
 			// 	return "Windows Phone";
 			// }
-		
+
 			// if (/android/i.test(userAgent)) {
 			// 	return "Android";
 			// }
-		
+
 			// // iOS detection from: http://stackoverflow.com/a/9039885/177710
 			// if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
 			// 	return "iOS";
@@ -172,6 +173,22 @@ class LiveEvent extends React.Component {
 					const chatBox = document.getElementById('chat-messages');
 					chatBox.scrollTop = chatBox.scrollHeight;
 					this.props.unsetPageLoader();
+					this.props.listenChatMessages(id)
+						.then(collection => {
+							let snapshots = this.state.snapshots;
+							let snapshot = collection.onSnapshot(querySnapshot => {
+								querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
+									.forEach(change => {
+										let chats = this.state.chats;
+										if (change.type === 'added') {
+											chats.push(change.doc.data());
+											this.setState({ chats: chats });
+										}
+									});
+							});
+							snapshots[id] = snapshot;
+							this.setState({ snapshots: snapshots });
+						});
 				});
 			})
 			.catch(error => {
@@ -197,7 +214,8 @@ class LiveEvent extends React.Component {
 			this.loadChatMessages(id);
 		}
 
-		this.player = window.jwplayer('live-event-player');
+		const playerId = 'live-event-player';
+		this.player = window.jwplayer(playerId);
 		this.player.setup({
 			autostart: true,
 			floating: false,
@@ -216,6 +234,33 @@ class LiveEvent extends React.Component {
 				hide: true
 			}
 		});
+
+		this.player.on('ready', () => {
+			if (isIOS) {
+				let elementJwplayerInit = document.querySelector(`#${playerId} > .jw-wrapper`);
+				let elementCreateWrapper = document.createElement('btn');
+				let elementMuteIcon = document.createElement('span');
+				elementCreateWrapper.classList.add('jwplayer-vol-off');
+				elementCreateWrapper.innerText = 'Tap to unmute ';
+
+				jwplayer().setMute(true);
+				elementJwplayerInit.appendChild(elementCreateWrapper);
+				elementCreateWrapper.appendChild(elementMuteIcon);
+				elementCreateWrapper.addEventListener('click', () => {
+					if (elementCreateWrapper === null) {
+						jwplayer().setMute(true);
+						elementJwplayer[0].classList.add('jwplayer-mute');
+						elementJwplayer[0].classList.remove('jwplayer-full');
+					}
+					else {
+						jwplayer().setMute(false);
+						elementCreateWrapper.classList.add('jwplayer-full');
+						elementCreateWrapper.classList.remove('jwplayer-mute');
+					}
+				});
+			}
+		});
+
 		this.player.on('setupError', error => {
 			console.log(error);
 			this.player.remove();
@@ -308,9 +353,9 @@ class LiveEvent extends React.Component {
 		this.setState({ chats: chats, sending_chat: true }, () => {
 			const { id } = this.props.selected_event.data;
 			const userData = this.state.user_data;
-			let user = userData.nickname ? userData.nickname : 
-						userData.display_name ? userData.display_name : 
-						userData.email ? userData.email.replace(/\d{4}$/, '****') : 
+			let user = userData.nickname ? userData.nickname :
+				userData.display_name ? userData.display_name :
+					userData.email ? userData.email.replace(/\d{4}$/, '****') :
 						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
 
 			this.props.setChat(id, lastChat.m, user, this.state.user_data.photo_url)
@@ -337,10 +382,10 @@ class LiveEvent extends React.Component {
 				const { id } = this.props.selected_event.data;
 
 				const userData = this.state.user_data;
-				let user = userData.nickname ? userData.nickname : 
-						userData.display_name ? userData.display_name : 
-						userData.email ? userData.email.replace(/\d{4}$/, '****') : 
-						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
+				let user = userData.nickname ? userData.nickname :
+					userData.display_name ? userData.display_name :
+						userData.email ? userData.email.replace(/\d{4}$/, '****') :
+							userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
 				let newChat = {
 					ts: Date.now(),
 					m: this.state.chat,

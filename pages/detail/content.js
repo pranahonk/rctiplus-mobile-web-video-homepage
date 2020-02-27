@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import fetch from 'isomorphic-unfetch';
 import queryString from 'query-string';
+import { isIOS } from 'react-device-detect';
 
 import initialize from '../../utils/initialize';
 import contentActions from '../../redux/actions/contentActions';
@@ -98,7 +99,8 @@ class Content extends React.Component {
 
     initVOD() {
         const content = this.props.content_url;
-        this.player = window.jwplayer('app-jwplayer');
+        const playerId = 'app-jwplayer';
+        this.player = window.jwplayer(playerId);
         this.player.setup({
             autostart: true,
             mute: true, //optional, but recommended
@@ -121,7 +123,30 @@ class Content extends React.Component {
         }).seek(this.state.start_duration);
 
         this.player.on('ready', () => {
-            this.player.play();
+            // this.player.play();
+            if (isIOS) {
+				let elementJwplayerInit = document.querySelector(`#${playerId} > .jw-wrapper`);
+				let elementCreateWrapper = document.createElement('btn');
+				let elementMuteIcon = document.createElement('span');
+				elementCreateWrapper.classList.add('jwplayer-vol-off');
+				elementCreateWrapper.innerText = 'Tap to unmute ';
+
+				jwplayer().setMute(true);
+				elementJwplayerInit.appendChild(elementCreateWrapper);
+				elementCreateWrapper.appendChild(elementMuteIcon);
+				elementCreateWrapper.addEventListener('click', () => {
+					if (elementCreateWrapper === null) {
+						jwplayer().setMute(true);
+						elementJwplayer[0].classList.add('jwplayer-mute');
+						elementJwplayer[0].classList.remove('jwplayer-full');
+					} 
+					else {
+						jwplayer().setMute(false);
+						elementCreateWrapper.classList.add('jwplayer-full');
+						elementCreateWrapper.classList.remove('jwplayer-mute');
+					}
+                });
+			}
         });
 
         this.player.on('setupError', error => {
@@ -157,16 +182,40 @@ class Content extends React.Component {
         });
 
         this.player.on('fullscreen', () => {
-			if (screen.orientation.type === 'portrait-primary') {
-				document.querySelector("#app-jwplayer").requestFullscreen();
+            if (screen.orientation.type === 'portrait-primary') {
+                if (document.documentElement.requestFullscreen) {
+                    document.querySelector(`#${playerId}`).requestFullscreen();
+                    console.log('REQ');
+                }
+                else if (document.documentElement.webkitRequestFullScreen) {
+                    document.querySelector(`#${playerId}`).webkitRequestFullScreen();
+                    console.log('WEBKIT');
+                }
                 screen.orientation.lock("landscape-primary");
                 this.setState({ hide_footer: false });
-			}
-			if (screen.orientation.type === 'landscape-primary') {
-				document.querySelector("#app-jwplayer").requestFullscreen();
+            }
+            if (screen.orientation.type === 'landscape-primary') {
+                if (document.documentElement.requestFullscreen) {
+                    document.querySelector(`#${playerId}`).requestFullscreen();
+                    console.log('REQ');
+                }
+                else if (document.documentElement.webkitRequestFullScreen) {
+                    document.querySelector(`#${playerId}`).webkitRequestFullScreen();
+                    console.log('WEBKIT');
+                }
                 screen.orientation.lock("portrait-primary");
                 this.setState({ hide_footer: true });
-			}
+            }
+            // if (screen.orientation.type === 'portrait-primary') {
+			// 	document.querySelector("#app-jwplayer").requestFullscreen();
+            //     screen.orientation.lock("landscape-primary");
+                
+			// }
+			// if (screen.orientation.type === 'landscape-primary') {
+			// 	document.querySelector("#app-jwplayer").requestFullscreen();
+            //     screen.orientation.lock("portrait-primary");
+                
+			// }
 		});
 
         this.player.on('play', () => {
