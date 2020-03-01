@@ -15,7 +15,7 @@ import Layout from '../components/Layouts/Default_v2';
 import NavDefault from '../components/Includes/Navbar/NavDefault_v2';
 import Bar from '../components/Includes/Common/Bar';
 
-import { ListGroup, ListGroupItem, Button } from 'reactstrap';
+import { ListGroup, ListGroupItem, Button, Badge } from 'reactstrap';
 import LoadingBar from 'react-top-loading-bar';
 
 import HistoryIcon from '@material-ui/icons/History';
@@ -47,17 +47,29 @@ class Profile extends React.Component {
 			continue_watches: [],
 			ordered_watches: [],
 			meta: null,
+			user_data: null
 		};
 		this.props.setPageLoader();
+	}
+
+	isProfileComplete() {
+		if (this.state.user_data) {
+			const data = this.state.user_data;
+			return data.nickname && data.display_name && (data.email || data.phone_number) && data.dob && data.gender && data.photo_url;
+		}
+		return false;
 	}
 
 	componentDidMount() {
 		this.props.getUserData()
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {
+					console.log(response.data.data);
+					const data = response.data.data;
 					this.setState({ 
 						profile_picture_url: response.data.data.photo_url, 
-						display_name: response.data.data.display_name,
+						user_data: data,
+						display_name: data.display_name ? data.display_name : data.email ? data.email : data.phone_number ? data.phone_number : '',
 						logged_in: true 
 					}, () => this.loadMore());
 				}
@@ -80,7 +92,6 @@ class Profile extends React.Component {
 					continueWatches.push.apply(continueWatches, response.data.data);
 					let orderedWatches = this.state.ordered_watches;
 					orderedWatches.push.apply(orderedWatches, response.data.data);
-					console.log(orderedWatches);
 					this.setState({
 						continue_watches: continueWatches,
 						ordered_watches: orderedWatches,
@@ -124,12 +135,21 @@ class Profile extends React.Component {
 					accountGeneralEvent('mweb_account_edit_profile_clicked');
 					Router.push('/edit-profile');
 				}}>
-					<Img 
-						alt={this.state.display_name}
-						unloader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>}
-						loader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>} 
-						className="rounded-profile-picture MuiSvgIcon-root" 
-						src={[this.state.profile_picture_url, '/static/placeholders/placeholder_landscape.png']} /> {this.state.display_name}
+					<div style={{ 
+						display: 'inline-block', 
+						position: 'relative', 
+						width: 30, 
+						height: 30,
+						marginRight: 10
+					}}>
+						<Img 
+							alt={this.state.display_name}
+							unloader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>}
+							loader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>} 
+							className="rounded-profile-picture MuiSvgIcon-root" 
+							src={[this.state.profile_picture_url, '/static/placeholders/placeholder_landscape.png']} />
+							{!this.isProfileComplete() ? (<Badge className="ribbon" color="danger"> </Badge>) : null}
+					</div> {this.state.display_name} 
 				</div>
 			);
 		}

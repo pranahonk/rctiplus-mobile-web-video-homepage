@@ -1,6 +1,7 @@
 const initialState = {
     loading: false,
-    fade: false
+    fade: false,
+    hide_footer: false
 };
 
 export default (state = initialState, action) => {
@@ -11,6 +12,8 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { loading: false });
         case 'FADE':
             return Object.assign({}, state, { fade: action.fade });
+        case 'TOGGLE_FOOTER':
+            return Object.assign({}, state, { hide_footer: action.state });
         default:
             return state;
     }

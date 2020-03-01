@@ -9,7 +9,7 @@ class Roov extends React.PureComponent {
     render() {
         return (
             <Layout title={SITEMAP.home.title}>
-                <iframe src="https://rctiplus.roov.id/" frameBorder="0" style={{ width: '100%', minHeight: 'calc(100vh)'}}></iframe>
+                <iframe src="https://rctiplus.roov.id/" frameBorder="0" style={{ width: '100%', minHeight: 'calc(100vh - 47px)'}}></iframe>
             </Layout>
         );
     }

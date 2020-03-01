@@ -16,7 +16,7 @@ import classnames from 'classnames';
 
 import Layout from '../components/Layouts/Default';
 
-import NavDefault from '../components/Includes/Navbar/NavTrending';
+import NavTrending from '../components/Includes/Navbar/NavTrending';
 import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
 
 import PlayerModal from '../components/Modals';
@@ -233,7 +233,8 @@ class Trending extends React.Component {
                     ` }}></script>
                 </Head>
 
-                {process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)}
+                {/* {process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)} */}
+                <NavTrending disableScrollListener />
 
                 <LoadingBar
                     progress={0}

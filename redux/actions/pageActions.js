@@ -14,7 +14,15 @@ const unsetPageLoader = () => {
     };
 };
 
+const toggleFooter = (state) => {
+    return dispatch => dispatch({
+        type: 'TOGGLE_FOOTER',
+        state: state
+    });
+};
+
 export default {
     setPageLoader,
-    unsetPageLoader
+    unsetPageLoader,
+    toggleFooter
 };

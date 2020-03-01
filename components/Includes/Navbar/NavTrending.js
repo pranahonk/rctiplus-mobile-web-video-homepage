@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
+import Link from 'next/link';
 
 import actions from '../../../redux/actions';
 import pageActions from '../../../redux/actions/pageActions';
@@ -13,7 +14,6 @@ import { Navbar, NavbarBrand } from 'reactstrap';
 
 import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
-
 
 class NavTrending extends Component {
     constructor(props) {
@@ -45,6 +45,15 @@ class NavTrending extends Component {
         }
     }
 
+    goToHome() {
+        qg("event","mweb_homepage_logo_clicked",
+        {
+            users_id: 0, // generate random jika blm login
+            date_time: '11/02/2020 10:52:00'
+        });
+        Router.push('/');
+    }
+
     componentDidMount() {
         if (!this.props.disableScrollListener) {
             document.addEventListener('scroll', () => {
@@ -64,25 +73,25 @@ class NavTrending extends Component {
                     <Navbar expand="md" className={'nav-container nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
                         <div className="left-top-link">
                             <div className="logo-top-wrapper">
-                                <NavbarBrand href="/">
+                                <NavbarBrand onClick={this.goToHome.bind(this)}>
                                     <img className="logo-top" src="/static/logo/rcti.png" />
                                 </NavbarBrand>
                             </div>
                         </div>
                         <div className="right-top-link">
-                            <div className="btn-link-top-nav">
-                                {this.state.token ? (
-                                    // <NavbarBrand style={{color: 'white', fontSize: 13}} onClick={this.signOut.bind(this)} href="#">
-                                    //     Logout
-                                    // </NavbarBrand>
-                                    <div></div>
-                                ) : (
-                                    <NavbarBrand style={{color: 'white', fontSize: 13}} href="/login">Login</NavbarBrand>
-                                )}
-                                <NavbarBrand style={{color: 'white'}} href="/trending/search">
-                                    <SearchIcon style={{fontSize: 20}}/>
-                                </NavbarBrand>
-                            </div>
+                            {this.state.token ? (
+                                <div className="btn-link-top-nav">
+                                    <Link href="/trending/search">
+                                        <SearchIcon style={{fontSize: 20, marginRight: 10}}/>
+                                    </Link>
+                                </div>
+                            ) : (
+                                <div className="btn-link-top-nav">
+                                    <NavbarBrand style={{color: 'white'}} href="/trending/search">
+                                        <SearchIcon style={{fontSize: 20}}/>
+                                    </NavbarBrand>
+                                </div>
+                            )}
                         </div>
                     </Navbar>
                     <StatusNotification />

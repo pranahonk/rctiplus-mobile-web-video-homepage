@@ -284,9 +284,9 @@ $default-player-space: 180px;
             left: 0;
             right: 0;
             z-index: 6;
-            margin-bottom: 7px;
+            // margin-bottom: 7px;
             padding-top: 5px;
-            padding-bottom: 10px;
+            // padding-bottom: 10px;
             background: #171717;
 
             .chat-box {
@@ -448,26 +448,26 @@ $default-player-space: 180px;
     }
 }
 
-// handle iphone
-@media (min-height: 525px) {
-    .live-chat-wrap-open {
-        max-height: calc(100vh - 50%);
-        height: calc(100vh - 50%);
+// // handle iphone
+// @media (min-height: 525px) {
+//     .live-chat-wrap-open {
+//         max-height: calc(100vh - 50%);
+//         height: calc(100vh - 50%);
 
-        .box-chat {
-            height: calc(100vh - 363px);
-        }
-    }
-}
+//         .box-chat {
+//             height: calc(100vh - 363px);
+//         }
+//     }
+// }
 
-// handle browser
-@media (max-height: 524px) {
-    .live-chat-wrap-open {
-        max-height: calc(100vh - 40%);
-        height: calc(100vh - 40%);
+// // handle browser
+// @media (max-height: 524px) {
+//     .live-chat-wrap-open {
+//         max-height: calc(100vh - 40%);
+//         height: calc(100vh - 40%);
 
-        .box-chat {
-            height: calc(100vh - 263px);
-        }
-    }
-}
+//         .box-chat {
+//             height: calc(100vh - 263px);
+//         }
+//     }
+// }

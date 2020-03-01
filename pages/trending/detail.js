@@ -82,13 +82,13 @@ class Detail extends React.Component {
                 console.log(error);
             });
 
-        this.props.getNewsFavoriteStatus(this.state.trending_detail_id)
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        // this.props.getNewsFavoriteStatus(this.state.trending_detail_id)
+        //     .then(response => {
+        //         console.log(response);
+        //     })
+        //     .catch(error => {
+        //         console.log(error);
+        //     });
     }
 
     openIframe() {

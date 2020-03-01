@@ -89,9 +89,66 @@ const setNewsFavorite = (newsId, love) => {
     });
 };
 
+const searchNews = (q, page = 1, length = 10, index = 'newz') => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/search/${index}?q=${q}&page=${page}&length=${length}`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                dispatch({
+                    type: 'SEARCH_NEWS_RESULT',
+                    result: response.data.data,
+                    meta: response && response.data && response.data.meta ? response.data.meta : null,
+                    query: q,
+                    search_show_more_allowed: response.data.data.length >= length
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const clearSearch = () => {
+    return dispatch => dispatch({
+        type: 'CLEAR_SEARCH'
+    });
+};
+
+const setSearch = (q, subject) => {
+    return dispatch => dispatch({
+        type: 'SET_SEARCH',
+        q: q,
+        subject: subject
+    });
+};
+
+const setQuery = q => {
+    return dispatch => dispatch({
+        type: 'SET_QUERY',
+        q: q
+    });
+};
+
+const toggleIsSearching = isSearching => {
+    return dispatch => dispatch({
+        type: 'TOGGLE_IS_SEARCHING',
+        is_searching: isSearching
+    });
+};
+
 export default {
     getTrendingContent,
     getTrendingRelated,
     getNewsFavoriteStatus,
-    setNewsFavorite
+    setNewsFavorite,
+    searchNews,
+    clearSearch,
+    setSearch,
+    setQuery,
+    toggleIsSearching
 };

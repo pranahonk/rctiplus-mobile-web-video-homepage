@@ -37,6 +37,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { DEV_API, VISITOR_TOKEN } from '../config';
 
 import '../assets/scss/components/live-event.scss';
+import 'emoji-mart/css/emoji-mart.css';
 
 class LiveEvent extends React.Component {
 
@@ -135,8 +136,6 @@ class LiveEvent extends React.Component {
 
 		this.player = null;
 		this.props.setPageLoader();
-
-		console.log(this.props.is_mobile);
 	}
 
 	componentDidMount() {
@@ -162,6 +161,18 @@ class LiveEvent extends React.Component {
 			.catch(error => {
 				console.log(error);
 			});
+	}
+
+	checkLogin() {
+		if (!this.state.user_data) {
+			showSignInAlert(`Please <b>Sign In</b><br/>
+				Woops! Gonna sign in first!<br/>
+				Only a click away and you<br/>
+				can continue to enjoy<br/>
+				<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+			return false;
+		}
+		return true;
 	}
 
 	loadChatMessages(id) {
@@ -318,10 +329,13 @@ class LiveEvent extends React.Component {
 	}
 
 	toggleChat() {
-		this.setState({ chat_open: !this.state.chat_open }, () => {
-			const chatBox = document.getElementById('chat-messages');
-			chatBox.scrollTop = chatBox.scrollHeight;
-		});
+		if (this.checkLogin()) {
+			this.setState({ chat_open: !this.state.chat_open }, () => {
+				this.props.toggleFooter(this.state.chat_open);
+				const chatBox = document.getElementById('chat-messages');
+				chatBox.scrollTop = chatBox.scrollHeight;
+			});
+		}
 	}
 
 	toggleEmoji() {
@@ -464,7 +478,7 @@ class LiveEvent extends React.Component {
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{playerRef}
 					<div className="title-wrap">
-						Live Chat Plus {this.props.selected_event && this.props.selected_event.data ? formatDateWord(new Date(this.props.selected_event.data.start_date)) : ''}
+						Live Chat Plus {this.props.selected_event && this.props.selected_event.data ? formatDateWord(new Date(this.props.selected_event.data.start_date.replace(' ', 'T'))) : ''}
 					</div>
 					<div className="content-wrap">
 						<div className="live-event-menu">
@@ -485,9 +499,17 @@ class LiveEvent extends React.Component {
 							</BottomScrollListener>
 						</div>
 					</div>
-					<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')}>
+					<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
+						(isIOS ?
+							{ height: 'calc(100vh - 50%)' } :
+							{ height: 'calc(100vh - 40%)' })
+						: null}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
-						<div className="box-chat">
+						<div className="box-chat" style={this.state.chat_open ?
+							(isIOS ?
+								{ height: 'calc(100vh - 363px)' } :
+								{ height: 'calc(100vh - 263px)' })
+							: null}>
 							<div className="chat-messages" id="chat-messages">
 								{this.state.chats.map((chat, i) => (
 									<Row key={i} className="chat-line">
@@ -515,6 +537,7 @@ class LiveEvent extends React.Component {
 											<Input
 												onKeyDown={this.handleChatEnter.bind(this)}
 												onChange={this.onChangeChatInput.bind(this)}
+												onClick={this.checkLogin.bind(this)}
 												value={this.state.chat}
 												type="textarea"
 												id="chat-input"

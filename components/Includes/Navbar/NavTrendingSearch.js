@@ -1,91 +1,141 @@
 import React, { Component } from 'react';
-import Router from 'next/router';
 import { connect } from 'react-redux';
+import Router, { withRouter } from 'next/router';
+import LoadingBar from 'react-top-loading-bar';
 
-import actions from '../../../redux/actions';
+import contentActions from '../../../redux/actions/trending/content';
 import pageActions from '../../../redux/actions/pageActions';
 
-import { getCookie, removeCookie } from '../../../utils/cookie';
-import '../../../assets/scss/components/navbar_trending_search.scss';
+import '../../../assets/scss/components/navbar-search.scss';
 
-//load reactstrap
-import { Navbar, NavbarBrand, Col, Row } from 'reactstrap';
+import { Navbar, NavbarBrand, Input } from 'reactstrap';
 
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import CloseIcon from '@material-ui/icons/Close';
 
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
-class NavTrendingSearch extends Component {
+import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked } from '../../../utils/appier';
+import { getCookie, setCookie } from '../../../utils/cookie';
+
+class NavbarTrendingSearch extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            token: getCookie('ACCESS_TOKEN'),
-            is_top: true
+            q: '',
+            length: 10
         };
-    }
 
-    signOut() {
-        if (this.state.token) {
-            this.props.setPageLoader();
-            const deviceId = new DeviceUUID().get();
-            this.props
-                .logout(deviceId)
-                .then(response => {
-                    this.props.unsetPageLoader();
-                    Router.push('/login');
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.props.unsetPageLoader();
-                    removeCookie('ACCESS_TOKEN');
-                });
-        }
-        else {
-            Router.push('/login');
-        }
+        this.subject = this.props.subject;
     }
 
     componentDidMount() {
-        if (!this.props.disableScrollListener) {
-            document.addEventListener('scroll', () => {
-                const isTop = window.scrollY < 150;
-                if (isTop !== this.state.is_top) {
-                    this.setState({is_top: isTop});
+        this.subject
+            .pipe(debounceTime(1))
+            .subscribe(() => {
+                this.props.toggleIsSearching(true);
+                if (this.props.trending_content.query) {
+                    searchKeywordEvent(this.props.trending_content.query, 'mweb_search_keyword');
                 }
+                
+                this.props.searchNews(this.props.trending_content.query, 1, this.state.length)
+                    .then(responses => {
+                        console.log(responses);
+                        this.props.unsetPageLoader();
+                        this.props.toggleIsSearching(false);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.props.unsetPageLoader();
+                        this.props.toggleIsSearching(false);
+                    });
             });
-        } else {
-            this.setState({is_top: false});
+    }
+
+    saveSearchHistory(q) {
+        let searchHistory = getCookie('SEARCH_HISTORY');
+        if (!searchHistory) {
+            setCookie('SEARCH_HISTORY', [q]);
         }
+        else {
+            searchHistory = JSON.parse(searchHistory);
+            if (searchHistory.indexOf(q) === -1) {
+                searchHistory.unshift(q);
+                setCookie('SEARCH_HISTORY', searchHistory);
+            }
+        }
+    }
+
+    onChangeQuery(e) {
+        this.changeQuery(e.target.value);
+    }
+
+    changeQuery(q) {
+        // this.setState({ q: q });
+        this.props.setQuery(q);
+    }
+
+    search() {
+        this.saveSearchHistory(this.props.trending_content.query);
+        this.props.clearSearch();
+        this.props.setPageLoader();
+        this.subject.next();
+    }
+
+    clearKeyword() {
+        this.props.clearSearch();
+        this.props.setQuery('');
+        searchKeywordEvent(this.props.trending_content.query, 'mweb_search_clear_keyword_clicked');
+        this.setState({ q: '' }, () => {
+            this.changeQuery(this.props.trending_content.query);
+        });
     }
 
     render() {
         return (
-                <div className="nav-home-container nav-fixed-top">
-                    <Navbar expand="md" className={'nav-container nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
-                        <Row className="wr-col-trn-search">
-                            <Col xs="2">
-                                <NavbarBrand onClick={() => Router.back()} style={{color: 'white'}}>
-                                <ArrowBackIcon/>
+            <div className="nav-home-container nav-fixed-top">
+                <Navbar style={{ backgroundColor: '#171717' }} expand="md" className={'nav-container nav-shadow nav-search'}>
+                    <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
+                    <div className="left-top-link">
+                        <div className="logo-top-wrapper">
+                            <NavbarBrand onClick={() => {
+                                if (this.props.router.asPath.indexOf('/explores') === 0) {
+                                    searchBackClicked(this.props.trending_content.query, 'mweb_search_back_clicked');
+                                }
+                                Router.back();
+                            }} style={{ color: 'white' }}>
+                                <ArrowBackIcon />
                             </NavbarBrand>
-                            </Col>
-                            <Col xs="8" className="input_trending_search">
-                                <input type="text" name="trending_search" className="trending_search"/>
-                            </Col>
-                            <Col xs="2" className="btn-link-top-nav">
-                                <NavbarBrand style={{color: 'white'}} href="/trending/search">
-                                    <SearchIcon style={{fontSize: 20}}/>
-                                </NavbarBrand>
-                            </Col>
-                        </Row>
-                    </Navbar>
-                    <StatusNotification />
-                </div>
-                );
+                        </div>
+                    </div>
+                    <div className="middle-top">
+                        <Input
+                            style={{ backgroundColor: '#171717 !important', borderBottom: '1px solid white !important', borderRadius: '0 !important' }}
+                            onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
+                            placeholder="Search"
+                            onChange={this.onChangeQuery.bind(this)}
+                            value={this.props.trending_content.query}
+                            id="search-news-input"
+                            className="search-input" />
+                    </div>
+                    <div className="right-top-link">
+                        <div className="btn-link-top-nav">
+                            <NavbarBrand style={{ color: 'white' }}>
+                                <CloseIcon style={{ fontSize: 20, marginRight: 10, visibility: (this.props.trending_content.query.length > 0 ? 'visible' : 'hidden') }} onClick={this.clearKeyword.bind(this)}/>
+                                <SearchIcon style={{ fontSize: 20 }} onClick={() => this.search()} />
+                            </NavbarBrand>
+                        </div>
+                    </div>
+                </Navbar>
+                <StatusNotification />
+            </div>
+        );
     }
 }
 export default connect(state => state, {
-    ...actions,
+    ...contentActions,
     ...pageActions
-})(NavTrendingSearch);
+})(withRouter(NavbarTrendingSearch));
