@@ -213,7 +213,7 @@ class Trending extends React.Component {
 
     goToDetail(article) {
         newsArticleClicked(article.id, article.title, article.category_source, 'mweb_news_article_clicked');
-        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase());
+        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").replace(/\\+/g, '-').replace(/\/+/g, '-').toLowerCase());
     }
 
     render() {
