@@ -25,7 +25,7 @@ const UIVersion = '2.0';
 
     const server = express();
     // server.use(device.capture());
-
+    // https://codeforgeek.com/how-to-detect-device-type-in-nodejs/
     // example of custom request handlers:
     // server.get('/a', (req, res) => app.render(req, res, '/b', req.query));
     // server.get('/b', (req, res) => app.render(req, res, '/a', req.query));
