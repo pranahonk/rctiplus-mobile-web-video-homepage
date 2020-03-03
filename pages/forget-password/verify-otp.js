@@ -25,7 +25,7 @@ class VerifyOtp extends React.Component {
             username: '',
             alert_message: 'Carefully check your Email for verification code. You only have 3 attempts',
             otp: '',
-            interval: 2,
+            interval: 60,
 			countdown_key: 0,
             current_time: Date.now(),
             submit_message: '',
