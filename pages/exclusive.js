@@ -451,7 +451,7 @@ class Exclusive extends React.Component {
 																		unloader={<img className="program-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
 																		loader={<img className="program-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>} 
 																		src={[this.state.meta.image_path + this.state.resolution + feed.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
-																	<PlayCircleOutlineIcon className="play-btn-icon" />
+																	{/* <PlayCircleOutlineIcon className="play-btn-icon" /> */}
 																</div>
 															)
 														}

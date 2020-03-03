@@ -71,7 +71,7 @@ class Tv extends React.Component {
 			url: '',
 			hashtags: [],
 			chat_open: false,
-			channel_code: this.props.context_data ? this.props.context_data.channel : 'rcti',
+			channel_code: this.props.context_data ? (this.props.context_data.channel === 'gtv' ? 'globaltv' : this.props.context_data.channel) : 'rcti',
 			error: false,
 			error_data: {},
 			emoji_picker_open: false,
@@ -668,7 +668,7 @@ class Tv extends React.Component {
 								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
-								<Link href="/tv?channel=globaltv" as="/tv/globaltv">
+								<Link href="/tv?channel=globaltv" as="/tv/gtv">
 									<Button size="sm" color="link" className={this.state.selected_index === 2 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 2)}>GTV</Button>
 								</Link>
 							</Col>

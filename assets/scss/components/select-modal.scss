@@ -1,3 +1,16 @@
+.select-modal {
+    .modal-content {
+        background-color: rgba(40, 40, 40, 0.65);
+    }
+
+    .modal-body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 1px;
+    }
+}
+
 .modal-body-select {
     text-align: center;
 }

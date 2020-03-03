@@ -70,7 +70,7 @@ class ActionModal extends React.Component {
 
     render() {
         return (
-            <Modal isOpen={this.props.open} toggle={this.props.toggle}>
+            <Modal className="action-modal" isOpen={this.props.open} toggle={this.props.toggle}>
                 <ModalBody>
                     <ThumbUpAltOutlinedIcon onClick={this.postLike.bind(this, 'LIKE')} className="modal-icon"/>
                     <ThumbDownOutlinedIcon onClick={this.postLike.bind(this, 'DISLIKE')} className="modal-icon"/>

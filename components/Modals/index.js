@@ -197,9 +197,9 @@ class PlayerModal extends React.Component {
         
 
         return (
-            <Modal isOpen={this.props.open} toggle={this.props.toggle}>
+            <Modal className="player-modal" isOpen={this.props.open} toggle={this.props.toggle}>
                 <ModalHeader toggle={this.props.toggle}>
-                    <ArrowBackIcon onClick={this.props.toggle}/>
+                    {/* <ArrowBackIcon onClick={this.props.toggle}/> */}
                 </ModalHeader>
                 <ModalBody className="modal-body-edited">
                     {this.renderPlayer()}
