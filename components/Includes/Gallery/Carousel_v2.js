@@ -44,7 +44,7 @@ class Crs_v2 extends Component {
 
     render() {
         return (
-                <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative', paddingTop: this.props.showStickyInstall ? 60 : 0 }}>
                     <Carousel statusFormatter={(current, total) => `${current}/${total}`} autoPlay showThumbs={false} showIndicators={false} stopOnHover showArrows={false} showStatus={false} swipeScrollTolerance={1} swipeable onSwipeEnd={(e) => {
                         const swipedIndex = e.target.getAttribute('data-index');
                         if (this.state.banner[swipedIndex]) {

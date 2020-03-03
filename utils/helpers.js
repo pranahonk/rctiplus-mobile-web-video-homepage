@@ -1,8 +1,5 @@
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import Router from 'next/router';
-// import 'sweetalert2/src/sweetalert2.scss';
-
-// import '../assets/scss/components/alert.scss';
 
 export const showAlert = (text, title, confirmText = 'OK', cancelText = '', confirmCallback = () => {}, styleInverse = false) => {
     let options = {

@@ -9,13 +9,15 @@ import { getCookie, removeCookie } from '../../../utils/cookie';
 import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent, newsGeneralEvent } from '../../../utils/appier';
 import '../../../assets/scss/components/navbar-v2.scss';
 
-import { Navbar, NavbarBrand } from 'reactstrap';
+import { Navbar, NavbarBrand, Button, Row, Col } from 'reactstrap';
 
 import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
+import CloseIcon from '@material-ui/icons/Close';
 
 
 class NavbarDef_v2 extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -111,6 +113,20 @@ class NavbarDef_v2 extends Component {
     render() {
         return (
             <div className="nav-home-container-v2 nav-fixed-top">
+                <div style={{ display: this.props.showStickyInstall ? 'block' : 'none' }} className="sticky-install-menu">
+                    <Row style={{ height: '100%', paddingRight: 5 }}>
+                        <Col xs={2} className="center-content" style={{ paddingRight: 0 }}>
+                            <CloseIcon onClick={() => this.props.closeStickyInstallFunction(this.props.parent)}/>
+                        </Col>
+                        <Col xs={6} className="center-content install-description">
+                            <img className="install-logo" src="/static/logo/rcti.png" />
+                            Lebih Asyik Nonton dengan Aplikasi RCTI+
+                        </Col>
+                        <Col xs={4} className="center-content" >
+                            <Button onClick={() => window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank')} className="btn-next" style={{ borderRadius: 3 }} size="sm">Install</Button>
+                        </Col>
+                    </Row>
+                </div>
                 <Navbar expand="md" className={'nav-container nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">

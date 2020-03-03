@@ -1,6 +1,31 @@
 .nav-home-container-v2 {
     color: #fff !important;
 
+    .sticky-install-menu {
+        background: white;
+        height: 60px;
+        color: #0C0C0C;
+
+        .install-logo {
+            width: 30px;
+            height: 30px;
+            margin: 5px;
+            margin-top: 0px;
+        }
+
+        .install-description {
+            font-size: 12px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .center-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
     .nav-container {
         padding: 8px 16px !important;
     }

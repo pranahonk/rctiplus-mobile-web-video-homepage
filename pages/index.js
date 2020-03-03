@@ -11,7 +11,6 @@ import initialize from '../utils/initialize';
 import { homeGeneralClicked } from '../utils/appier';
 
 import Layout from '../components/Layouts/Default_v2';
-import NavDownloadApp from '../components/Includes/Navbar/NavDownloadApp';
 import Nav from '../components/Includes/Navbar/NavDefault_v2';
 import Carousel from '../components/Includes/Gallery/Carousel_v2';
 import Stories from '../components/Includes/Gallery/Stories';
@@ -23,6 +22,7 @@ import StickyAds from '../components/Includes/Banner/StickyAds';
 import GridMenu from '../components/Includes/Common/GridMenu';
 
 import { SITEMAP } from '../config';
+import { setCookie, getCookie } from '../utils/cookie';
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -38,7 +38,8 @@ class Index_v2 extends React.Component {
             meta: null,
             resolution: 520,
             is_loading: false,
-            length: 5
+            length: 5,
+            show_sticky_install: false
         };
 
         this.props.setPageLoader();
@@ -72,6 +73,13 @@ class Index_v2 extends React.Component {
                 console.log(error);
                 this.props.unsetPageLoader();
             });
+        
+        if (getCookie('STICKY_INSTALL_CLOSED')) {
+            this.setState({ show_sticky_install: !getCookie('STICKY_INSTALL_CLOSED') });
+        }
+        else {
+            this.setState({ show_sticky_install: true });
+        }
     }
 
     bottomScrollFetch() {
@@ -102,8 +110,12 @@ class Index_v2 extends React.Component {
                         this.setState({ is_loading: false });
                     });
             });
-            
         }
+    }
+
+    closeStickyInstall(self) {
+        setCookie('STICKY_INSTALL_CLOSED', 1);
+        self.setState({ show_sticky_install: false });
     }
 
     render() {
@@ -116,13 +128,11 @@ class Index_v2 extends React.Component {
                     <meta name="keywords" content={SITEMAP.home.keywords} />
                 </Head>
                 <BottomScrollListener offset={150} onBottom={this.bottomScrollFetch.bind(this)} />
-                <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
-                {/* <NavDownloadApp /> */}
-                <Nav />
-                <Carousel>
+                <LoadingBar progress={0} height={3} color={this.state.show_sticky_install ? '#000' : '#fff'} onRef={ref => (this.LoadingBar = ref)} />
+                <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
+                <Carousel showStickyInstall={this.state.show_sticky_install}>
                     <GridMenu />
                 </Carousel>
-                {/* <h3>process.env.is_show_sticky_ads</h3> */}
                 <StickyAds />
                 <Stories />
                 <div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
