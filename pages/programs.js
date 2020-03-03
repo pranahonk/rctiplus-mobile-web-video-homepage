@@ -534,11 +534,11 @@ class Detail extends React.Component {
                     if (this.reference) {
                         switch (this.reference) {
                             case 'homepage':
-                                programAddMyListEvent(1, this.state.title, this.props.router.query.id, type, 'mweb_homepage_program_add_mylist_clicked');
+                                programAddMyListEvent('bookmark', this.state.title, this.props.router.query.id, type, 'mweb_homepage_program_add_mylist_clicked');
                                 break;
 
                             case 'library':
-                                libraryProgramAddMylistClicked(1, this.state.title, this.props.router.query.id, type, 'mweb_library_program_add_mylist_clicked');
+                                libraryProgramAddMylistClicked('bookmark', this.state.title, this.props.router.query.id, type, 'mweb_library_program_add_mylist_clicked');
                                 break;
 
                             case 'search':

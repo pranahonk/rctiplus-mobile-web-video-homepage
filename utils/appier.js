@@ -34,7 +34,7 @@ export const homeProgramClicked = (homepageTitle, programId, programTitle, genre
     {
         homepage_title: homepageTitle,
         program_id: programId,
-        program_title: programTitle,
+        program_name: programTitle,
         genre: genre,
         portrait_image: portraitImage,
         landscape_image: landscapeImage,
@@ -113,8 +113,8 @@ export const contentGeneralEvent = (homepageTitle, contentType, contentId, conte
         homepage_title: homepageTitle,
         content_type: contentType,
         content_id: contentId,
-        content_title: contentTitle,
-        program_title: programTitle,
+        content_name: contentTitle,
+        program_name: programTitle,
         genre: genre,
         portrait_image: portraitImage,
         landscape_image: landscapeImage,
@@ -140,8 +140,8 @@ export const programContentEvent = (programId, programTitle, contentType, conten
     {
         content_type: contentType,
         content_id: contentId,
-        content_title: contentTitle,
-        program_title: programTitle,
+        content_name: contentTitle,
+        program_name: programTitle,
         program_id: programId,
         users_id: userId,
         date_time: new Date().getTime() / 1000
@@ -164,7 +164,7 @@ export const programRateEvent = (status, programTitle, programId, programType, e
     qg('event', event,
     {
         status: status,
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
         program_type: programType,
         users_id: userId,
@@ -187,7 +187,7 @@ export const programShareEvent = (programTitle, programId, programType, event = 
 
     qg('event', event,
     {
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
         program_type: programType,
         users_id: userId,
@@ -218,7 +218,7 @@ export const programTrailerPlayEvent = (programId, programTitle, programType, du
 
     qg('event', event,
     {
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
         program_type: programType,
         duration: duration,
@@ -243,9 +243,9 @@ export const programContentDownloadEvent = (programId, programTitle, contentTitl
 
     qg('event', event,
     {
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
-        content_title: contentTitle,
+        content_name: contentTitle,
         content_type: contentType,
         content_id: contentId,
         users_id: userId,
@@ -268,9 +268,9 @@ export const programContentShareEvent = (programId, programTitle, contentTitle, 
 
     qg('event', event,
     {
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
-        content_title: contentTitle,
+        content_name: contentTitle,
         content_type: contentType,
         content_id: contentId,
         users_id: userId,
@@ -293,10 +293,10 @@ export const programContentAddMyListEvent = (programId, programTitle, contentId,
 
     qg('event', event,
     {
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
         content_id: contentId,
-        content_title: contentTitle,
+        content_name: contentTitle,
         content_type: contentType,
         users_id: userId,
         date_time: new Date().getTime() / 1000
@@ -318,7 +318,7 @@ export const programShowMoreEvent = (programId, programTitle, event = 'mweb_home
 
     qg('event', event,
     {
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
         users_id: userId,
         date_time: new Date().getTime() / 1000
@@ -398,10 +398,10 @@ export const programContentPlayEvent = (programId, programTitle, contentId, cont
 
     qg('event', event,
     {
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
         content_id: contentId,
-        content_title: contentTitle,
+        content_name: contentTitle,
         content_type: contentType,
         duration: duration,
         video_duration: videoDuration,
@@ -426,9 +426,9 @@ export const homepageContentPlayEvent = (homepageTitle, contentType, contentId, 
     qg('event', event,
     {
         homepage_title: homepageTitle,
-        program_title: programTitle,
+        program_name: programTitle,
         content_id: contentId,
-        content_title: contentTitle,
+        content_name: contentTitle,
         content_type: contentType,
         duration: duration,
         video_duration: videoDuration,
@@ -482,8 +482,8 @@ export const exclusiveContentEvent = (contentType, contentId, contentTitle, prog
     {
         content_type: contentType,
         content_id: contentId,
-        content_title: contentTitle,
-        program_title: programTitle,
+        content_name: contentTitle,
+        program_name: programTitle,
         genre: genre,
         portrait_image: portraitImage,
         landscape_image: landscapeImage,
@@ -509,8 +509,8 @@ export const exclusiveContentPlayEvent = (contentType, contentId, contentTitle, 
     {
         content_type: contentType,
         content_id: contentId,
-        content_title: contentTitle,
-        program_title: programTitle,
+        content_name: contentTitle,
+        program_name: programTitle,
         genre: genre,
         portrait_image: portraitImage,
         landscape_image: landscapeImage,
@@ -538,8 +538,8 @@ export const exclusiveShareEvent = (programId, programTitle, contentTitle, conte
     {
         content_type: contentType,
         content_id: contentId,
-        content_title: contentTitle,
-        program_title: programTitle,
+        content_name: contentTitle,
+        program_name: programTitle,
         program_id: programId,
         tab_name: tabName,
         photo_id: photoId,
@@ -591,7 +591,7 @@ export const liveTvChannelClicked = (channelId, channelName, programTitleLive, e
     {
         channel_id: channelId,
         channel_name: channelName,
-        program_title_live: programTitleLive,
+        program_name_live: programTitleLive,
         users_id: getUserId(),
         date_time: new Date().getTime() / 1000
     });
@@ -692,9 +692,9 @@ export const accountHistoryContentClicked = (programId, programTitle, contentTit
     qg('event', event,
     {
         program_id: programId,
-        program_title: programTitle,
+        program_name: programTitle,
         content_id: contentId,
-        content_title: contentTitle,
+        content_name: contentTitle,
         content_type: contentType,
         users_id: getUserId(),
         date_time: new Date().getTime() / 1000
@@ -705,9 +705,9 @@ export const accountHistoryContentPlayEvent = (contentType, contentId, contentTi
     console.log(event);
     qg('event', event,
     {
-        program_title: programTitle,
+        program_name: programTitle,
         content_id: contentId,
-        content_title: contentTitle,
+        content_name: contentTitle,
         content_type: contentType,
         genre: genre,
         portrait_image: portraitImage,
@@ -732,8 +732,8 @@ export const accountHistoryAddMyListClicked = (programId, programTitle, contentT
     qg('event', event, 
     {
         program_id: programId,
-        program_title: programTitle,
-        content_title: contentTitle,
+        program_name: programTitle,
+        content_name: contentTitle,
         content_type: contentType,
         content_id: contentId,
         users_id: getUserId(),
@@ -803,7 +803,7 @@ export const libraryProgramBackClicked = (programTitle, programId, programType, 
     console.log(event);
     qg('event', event,
     {
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
         program_type: programType,
         users_id: getUserId(),
@@ -820,7 +820,7 @@ export const libraryProgramRateClicked = (status, programTitle, programId, progr
     qg('event', event,
     {
         status: status,
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
         program_type: programType,
         users_id: getUserId(),
@@ -846,7 +846,7 @@ export const libraryProgramTrailerPlayEvent = (programTitle, programId, programT
     {
         duration: duration,
         video_duration: videoDuration,
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
         program_type: programType,
         users_id: getUserId(),
@@ -859,8 +859,8 @@ export const libraryProgramContentDownloadClicked = (programId, programTitle, co
     qg('event', event, 
     {
         program_id: programId,
-        program_title: programTitle,
-        content_title: contentTitle,
+        program_name: programTitle,
+        content_name: contentTitle,
         content_type: contentType,
         content_id: contentId,
         users_id: getUserId(),
@@ -886,10 +886,10 @@ export const libraryProgramContentPlayEvent = (programTitle, programId, contentT
     {
         duration: duration,
         video_duration: videoDuration,
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
         content_type: contentType,
-        content_title: contentTitle,
+        content_name: contentTitle,
         content_id: contentId,
         users_id: getUserId(),
         date_time: new Date().getTime() / 1000
@@ -1032,7 +1032,7 @@ export const searchProgramClicked = (programTitle, programId, programType, event
     console.log(event);
     qg('event', event, 
     {
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
         program_type: programType,
         users_id: getUserId(),
@@ -1045,7 +1045,7 @@ export const searchProgramRateClicked = (status, programTitle, programId, progra
     qg('event', event, 
     {
         status: status,
-        program_title: programTitle,
+        program_name: programTitle,
         program_id: programId,
         program_type: programType,
         users_id: getUserId(),
@@ -1070,7 +1070,7 @@ export const searchProgramTrailerPlayEvent = (programId, programTitle, programTy
     qg('event', event, 
     {
         program_id: programId,
-        program_title: programTitle,
+        program_name: programTitle,
         program_type: programType,
         duration: duration,
         video_duration: videoDuration,
@@ -1096,8 +1096,8 @@ export const searchProgramContentClicked = (programId, programTitle, contentTitl
     qg('event', event, 
     {
         program_id: programId,
-        program_title: programTitle,
-        content_title: contentTitle,
+        program_name: programTitle,
+        content_name: contentTitle,
         content_type: contentType,
         content_id: contentId,
         users_id: getUserId(),
@@ -1110,8 +1110,8 @@ export const searchProgramContentPlayEvent = (programId, programTitle, contentTi
     qg('event', event, 
     {
         program_id: programId,
-        program_title: programTitle,
-        content_title: contentTitle,
+        program_name: programTitle,
+        content_name: contentTitle,
         content_type: contentType,
         content_id: contentId,
         duration: duration,
@@ -1158,7 +1158,7 @@ export const searchProgramRelatedScrollHorizontalEvent = (programId, programTitl
     qg('event', event, 
     {
         program_id: programId,
-        program_title: programTitle,
+        program_name: programTitle,
         users_id: getUserId(),
         date_time: new Date().getTime() / 1000
     });
@@ -1186,9 +1186,9 @@ export const accountVideoProgress = (contentType, contentId, contentTitle, progr
     {
         content_type: contentType,
         content_id: contentId,
-        content_title: contentTitle,
+        content_name: contentTitle,
         genre: genre,
-        program_title: programTitle,
+        program_name: programTitle,
         portrait_image: portraitImage,
         landscape_image: landscapeImage,
         start_duration: startDuration,

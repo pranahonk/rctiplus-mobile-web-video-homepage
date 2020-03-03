@@ -6,6 +6,7 @@ const express = require('express');
 const { join } = require('path');
 const chalk = require('chalk');
 const next = require('next');
+// const device = require('express-device');
 // #endregion
 
 // #region variables/constants initialization
@@ -23,6 +24,7 @@ const UIVersion = '2.0';
     await app.prepare();
 
     const server = express();
+    // server.use(device.capture());
 
     // example of custom request handlers:
     // server.get('/a', (req, res) => app.render(req, res, '/b', req.query));

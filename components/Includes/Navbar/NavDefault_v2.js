@@ -65,7 +65,7 @@ class NavbarDef_v2 extends Component {
             
             default:
                 if (this.props.router.asPath.indexOf('/trending') === 0) {
-                    newsGeneralEvent('mweb_news_search_clicked');
+                    // newsGeneralEvent('mweb_news_search_clicked');
                 }
                 else {
                     homeGeneralClicked('mweb_library_clicked');
