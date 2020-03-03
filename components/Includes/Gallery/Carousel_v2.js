@@ -44,13 +44,26 @@ class Crs_v2 extends Component {
 
     render() {
         return (
-                <div style={{ position: 'relative', paddingTop: this.props.showStickyInstall ? 60 : 0 }}>
-                    <Carousel statusFormatter={(current, total) => `${current}/${total}`} autoPlay showThumbs={false} showIndicators={false} stopOnHover showArrows={false} showStatus={false} swipeScrollTolerance={1} swipeable onSwipeEnd={(e) => {
-                        const swipedIndex = e.target.getAttribute('data-index');
-                        if (this.state.banner[swipedIndex]) {
-                            const program = this.state.banner[swipedIndex];
-                            homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + this.state.resolution + program.portrait_image, this.state.meta.image_path + this.state.resolution + program.landscape_image, 'mweb_homepage_banner_swipe');
-                        }
+                <div style={{ 
+                    position: 'relative', 
+                    paddingTop: this.props.showStickyInstall ? 60 : 0 
+                }}>
+                    <Carousel 
+                        statusFormatter={(current, total) => `${current}/${total}`} 
+                        autoPlay 
+                        showThumbs={false} 
+                        showIndicators={false} 
+                        stopOnHover 
+                        showArrows={false} 
+                        showStatus={false} 
+                        swipeScrollTolerance={1} 
+                        swipeable 
+                        onSwipeEnd={(e) => {
+                            const swipedIndex = e.target.getAttribute('data-index');
+                            if (this.state.banner[swipedIndex]) {
+                                const program = this.state.banner[swipedIndex];
+                                homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + this.state.resolution + program.portrait_image, this.state.meta.image_path + this.state.resolution + program.landscape_image, 'mweb_homepage_banner_swipe');
+                            }
                     }}>
                         {this.state.banner.map((b, i) => (
                             <div data-index={i} onClick={this.goToProgram.bind(this, b)} key={b.id} style={{ 
