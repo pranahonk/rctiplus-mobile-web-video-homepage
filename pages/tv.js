@@ -285,6 +285,7 @@ class Tv extends React.Component {
 					let snapshot = collection.onSnapshot(querySnapshot => {
 						querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
 							.map(change => {
+								console.log('INCOMING CHATS');
 								let chats = this.state.chats;
 								if (change.type === 'added') {
 									if (!this.state.sending_chat) {
