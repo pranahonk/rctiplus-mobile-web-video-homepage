@@ -22,11 +22,20 @@ export default withRedux(initStore, { debug: false })(
             //console.log('NEWS TOKEN:', getNewsToken());
 
             // 4kuG@nteng
+
+            // DEVELOPMENT
+            // conviva.integrate({
+            //     key: 'ffc2bacab709e3c5eedc49af6520b33d3c204182',// change this to PROD_CUSTOMER_KEY when you release to production
+            //     gateway_host: "rcti-test.testonly.conviva.com", // make sure to remove this line entirely when you release to production
+            //     enableAdBreaks: true
+            // });
+
+            // PRODUCTION
             conviva.integrate({
-                key: 'ffc2bacab709e3c5eedc49af6520b33d3c204182',// change this to PROD_CUSTOMER_KEY when you release to production
-                gateway_host: "rcti-test.testonly.conviva.com", // make sure to remove this line entirely when you release to production
+                key: 'ff84ae928c3b33064b76dec08f12500465e59a6f',
                 enableAdBreaks: true
             });
+
             console.log('conviva integrated');
 
             register();
