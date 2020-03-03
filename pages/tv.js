@@ -668,7 +668,7 @@ class Tv extends React.Component {
 								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
-								<Link href="/tv?channel=globaltv" as="/tv/gtv">
+								<Link href="/tv?channel=gtv" as="/tv/gtv">
 									<Button size="sm" color="link" className={this.state.selected_index === 2 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 2)}>GTV</Button>
 								</Link>
 							</Col>
