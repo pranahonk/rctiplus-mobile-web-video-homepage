@@ -105,6 +105,12 @@ $jumbotron-height: 560px;
     margin-top: 75px;
     background-color: rgb(23, 23, 23);
 
+    .non-description-list {
+        .row {
+            margin-bottom: 25px;
+        }
+    }
+
     .action-icon {
         font-size: 1.2rem !important;
     }

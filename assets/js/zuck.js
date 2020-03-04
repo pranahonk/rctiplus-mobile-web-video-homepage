@@ -555,9 +555,13 @@ module.exports = (window => {
 			};
 
 			const createStoryViewer = function (storyData, className, forcePlay) {
-				const modalSlider = query(`#zuck-modal-slider-${id}`);
-				const storyItems = get(storyData, 'items');
+				let modalSlider = query(`#zuck-modal-slider-${id}`);
+				if (!modalSlider) {
+					modalContent.innerHTML = `<div id="zuck-modal-slider-${id}" class="slider"></div>`;
+				}
+				modalSlider = query(`#zuck-modal-slider-${id}`);
 
+				const storyItems = get(storyData, 'items');
 				storyData.timeAgo = storyItems && storyItems[0] ? timeAgo(get(storyItems[0], 'time')) : '';
 
 				let htmlItems = '';
@@ -669,6 +673,12 @@ module.exports = (window => {
 				} else {
 					modalSlider.appendChild(storyViewer);
 				}
+
+				// if (parent.firstChild) {
+				// 	parent.insertBefore(child, parent.firstChild);
+				// } else {
+				// 	parent.appendChild(child);
+				// }
 
 				if (forcePlay) {
 					const titleElms = document.getElementsByClassName('story-item-title');
@@ -829,8 +839,15 @@ module.exports = (window => {
 									console.log('MOVE ITEM');
 									moveStoryItem(direction);
 								} else {
+
 									if (!index) {
-										modal.close();
+										if (query('#zuck-modal .story-viewer.next')) {
+											translate(modalSlider, position.x, 300);
+										}
+										else {
+											modal.close();
+										}
+										
 									}
 									else {
 										translate(modalSlider, position.x, 300);
@@ -911,7 +928,6 @@ module.exports = (window => {
 					const modalContainer = query('#zuck-modal');
 					const callback = function () {
 						modalContent.innerHTML = `<div id="zuck-modal-slider-${id}" class="slider"></div>`;
-
 						const storyData = zuck.data[storyId];
 						const currentItem = storyData['currentItem'] || 0;
 						const modalSlider = query(`#zuck-modal-slider-${id}`);

@@ -3,6 +3,7 @@ import Router from 'next/router';
 import { connect } from 'react-redux';
 import contentActions from '../../../redux/actions/contentActions';
 import { Carousel } from 'react-responsive-carousel';
+import Img from 'react-image';
 
 import { homeBannerEvent } from '../../../utils/appier';
 
@@ -14,7 +15,7 @@ class Crs_v2 extends Component {
         this.state = {
             banner: [],
             meta: null,
-            resolution: 320
+            resolution: 420
         };
     }
 
@@ -49,14 +50,16 @@ class Crs_v2 extends Component {
                     paddingTop: this.props.showStickyInstall ? 60 : 0 
                 }}>
                     <Carousel 
+                        className="banner-carousel"
                         statusFormatter={(current, total) => `${current}/${total}`} 
                         autoPlay 
                         showThumbs={false} 
-                        showIndicators={false} 
+                        showIndicators 
                         stopOnHover 
                         showArrows={false} 
                         showStatus={false} 
                         swipeScrollTolerance={1} 
+                        infiniteLoop
                         swipeable 
                         onSwipeEnd={(e) => {
                             const swipedIndex = e.target.getAttribute('data-index');
@@ -67,17 +70,18 @@ class Crs_v2 extends Component {
                     }}>
                         {this.state.banner.map((b, i) => (
                             <div data-index={i} onClick={this.goToProgram.bind(this, b)} key={b.id} style={{ 
-                                backgroundImage: `url(${this.state.meta.image_path + this.state.resolution + b.portrait_image})`, 
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center', 
                                 width: '100%', 
                                 height: 320 
                             }}>
+                                <Img 
+                                    src={[`${this.state.meta.image_path + this.state.resolution + b.square_image}`, '/static/placeholders/placeholder_potrait.png']}
+                                    unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+									loader={<img src="/static/placeholders/placeholder_landscape.png"/>}/>
                             </div>
                             ))}
                     </Carousel>
                     {this.props.children}
-                    <div style={{ position: 'absolute', bottom: 0, backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 70%,#282828)', width: '100%', height: 100 }}></div>
+                    <div style={{ position: 'absolute', bottom: 0, backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 0%,#282828)', width: '100%', height: 100 }}></div>
                 </div>
                 );
     }

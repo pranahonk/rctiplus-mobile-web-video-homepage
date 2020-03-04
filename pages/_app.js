@@ -3,7 +3,12 @@ import App from 'next/app';
 import withRedux from 'next-redux-wrapper';
 import { register, unregister } from 'next-offline/runtime';
 import { initStore } from '../redux';
-import { setNewsToken, setVisitorToken, getVisitorToken, getNewsToken } from '../utils/cookie';
+import { setNewsToken, setVisitorToken, getVisitorToken } from '../utils/cookie';
+
+import 'sweetalert2/src/sweetalert2.scss';
+import '../assets/scss/apps/homepage/default.scss';
+
+import '../assets/scss/components/alert.scss';
 
 export default withRedux(initStore, { debug: false })(
     class MyApp extends App {

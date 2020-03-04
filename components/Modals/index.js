@@ -151,11 +151,11 @@ class PlayerModal extends React.Component {
 
         this.player.on('fullscreen', () => {
 			if (screen.orientation.type === 'portrait-primary') {
-				document.querySelector(this.props.playerId).requestFullscreen();
+				document.querySelector('#' + this.props.playerId).requestFullscreen();
 				screen.orientation.lock("landscape-primary")
 			}
 			if (screen.orientation.type === 'landscape-primary') {
-				document.querySelector(this.props.playerId).requestFullscreen();
+				document.querySelector('#' + this.props.playerId).requestFullscreen();
 				screen.orientation.lock("portrait-primary")
 			}
 		});

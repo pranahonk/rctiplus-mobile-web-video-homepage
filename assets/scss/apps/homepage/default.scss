@@ -119,8 +119,14 @@ body {
 }
 .stories-wrapper {
     padding: 4%;
+    padding-left: 0;
+    padding-right: 0;
     width: 100%;
     color: #fff;
+
+    #stories-react {
+        padding-left: 4%;
+    }
 }
 .content-wrapper {
     padding: 1%;

@@ -1046,7 +1046,10 @@ class Detail extends React.Component {
                 <div ref={ref => this.thumbnailRef = ref} style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
                 <div ref={ref => this.thumbnailContentRef = ref} className="content content-programs">
                     <div className="content-thumbnail">
-                        <Img alt={this.state.title} className="content-thumbnail-image" src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
+                        <Img alt={this.state.title} 
+                        className="content-thumbnail-image" src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, '/static/placeholders/placeholder_potrait.png']} 
+                        unloader={<img className="content-thumbnail-image" src="/static/placeholders/placeholder_potrait.png"/>}
+						loader={<img className="content-thumbnail-image" src="/static/placeholders/placeholder_potrait.png"/>}/>
                     </div>
                     <div className="watch-button-container">
                         <Button onClick={this.toggle.bind(this)} className="watch-button">
@@ -1130,7 +1133,7 @@ class Detail extends React.Component {
                         </TabPane>
                         <TabPane tabId={'2'}>
                             {this.state.contents['extra'].map(e => (
-                                <div key={e.id}>
+                                <div key={e.id} className="non-description-list">
                                     <Row>
                                         <Col xs={6} onClick={() => this.link(e, 'extra')}>
                                             <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
@@ -1156,7 +1159,7 @@ class Detail extends React.Component {
                         </TabPane>
                         <TabPane tabId={'3'}>
                             {this.state.contents['clip'].map(e => (
-                                <div key={e.id}>
+                                <div key={e.id} className="non-description-list">
                                     <Row>
                                         <Col xs={6} onClick={() => this.link(e, 'clip')}>
                                             <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
@@ -1185,7 +1188,7 @@ class Detail extends React.Component {
                                 {this.state.contents['photo'].map(e => (
                                     <Col xs={6} key={e.id} onClick={this.goToPhotoList.bind(this, e)}>
                                         <div>
-                                            <Img className="list-item-thumbnail list-item-photo" src={[this.state.meta.image_path + '140' + e.program_icon_image, '/static/placeholders/placeholder_landscape.png']} />
+                                            <Img className="list-item-thumbnail list-item-photo" src={[this.state.meta.image_path + '140' + (e.photos.length > 0 ? e.photos[0].image : e.program_icon_image), '/static/placeholders/placeholder_landscape.png']} />
                                             <PhotoLibraryIcon className="img-icon"/>
                                         </div>
                                     </Col>
