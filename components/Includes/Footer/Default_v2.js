@@ -36,7 +36,15 @@ class FooterNav_v2 extends Component {
                 <div className="footer-wrapper-list">
                     <div onClick={() => {
                         homeGeneralClicked('mweb_home_clicked');
-                        Router.push('/');
+                        switch (this.props.router.asPath) {
+                            case '/radio':
+                                window.location.href = '/';
+                                break
+
+                            default:
+                                Router.push('/');
+                                break;
+                        }
                     }}>
                         <a>
                             <HomeIcon className="nav-footer-icon" />
@@ -74,8 +82,17 @@ class FooterNav_v2 extends Component {
                                 homeGeneralClicked('mweb_library_clicked');
                                 break;
                         }
-                        
-                        Router.push('/explores');
+
+                        switch (this.props.router.asPath) {
+                            case '/radio':
+                            case '/profile':
+                                window.location.href = '/explores';
+                                break
+
+                            default:
+                                Router.push('/explores');
+                                break;
+                        }
                     }}>
                         <a>
                             <ImportContactsTwoToneIcon className="nav-footer-icon"/>
@@ -90,7 +107,15 @@ class FooterNav_v2 extends Component {
                         style={{ position: 'relative' }}
                         onClick={() => {
                             homeGeneralClicked('mweb_account_clicked');
-                            Router.push('/profile');
+                            switch (this.props.router.asPath) {
+                                case '/radio':
+                                    window.location.href = '/profile';
+                                    break
+    
+                                default:
+                                    Router.push('/profile');
+                                    break;
+                            }
                         }
                     }>
                         <a>

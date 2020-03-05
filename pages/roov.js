@@ -1,10 +1,20 @@
 import React from 'react';
-
+import { connect } from 'react-redux';
+import initialize from '../utils/initialize';
 import Layout from '../components/Layouts/Default_v2';
 
 import { SITEMAP } from '../config';
 
-class Roov extends React.PureComponent {
+class Roov extends React.Component {
+
+    static async getInitialProps(ctx) {
+        initialize(ctx);
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
 
     render() {
         return (
@@ -16,4 +26,4 @@ class Roov extends React.PureComponent {
 
 }
 
-export default Roov;
+export default connect(state => state, {})(Roov);

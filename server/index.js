@@ -113,6 +113,10 @@ const UIVersion = '2.0';
       return app.render(req, res, '/user/qrcode');
     });
 
+    server.get('/radio', (req, res) => {
+      return app.render(req, res, '/roov');
+    });
+
     server.get('/tv/:channel', (req, res) => {
       return app.render(req, res, '/tv', { channel: req.params.channel });
     });
@@ -156,10 +160,6 @@ const UIVersion = '2.0';
         id: req.params.id,
         title: req.params.title
       });
-    });
-
-    server.get('/radio', (req, res) => {
-      return app.render(req, res, '/roov');
     });
 
     // default request handler by next handler:
