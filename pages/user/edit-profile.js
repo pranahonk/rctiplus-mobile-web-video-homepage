@@ -24,6 +24,8 @@ import CameraAltIcon from '@material-ui/icons/CameraAlt';
 
 import '../../assets/scss/components/edit-profile.scss';
 
+import * as LoadImage from 'blueimp-load-image';
+
 
 class EditProfile extends React.Component {
 
@@ -113,7 +115,6 @@ class EditProfile extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-
     }
 
     formatDate(date) {
@@ -161,15 +162,70 @@ class EditProfile extends React.Component {
     }
 
     handleCameraTakePhoto(e, index) {
-        const reader = new FileReader();
         const self = this;
-        reader.onload = function(x) {
-            self.setState({ profile_photo_src: x.target.result }, () => {
+        LoadImage(e.target.files[0], img => {
+            const base64Data = img.toDataURL('image/jpeg');
+            self.setState({ profile_photo_src: base64Data }, () => {
                 self.props.setUserProfilePhoto(self.state.profile_photo_src);
                 Router.push('/user/photo/crop');
             });
-        };
-        reader.readAsDataURL(e.target.files[0]);
+        }, { orientation: true });
+        // const reader = new FileReader();
+        // const self = this;
+        // reader.onload = function(f) {
+        //     self.getOrientation(f, orientation => {
+        //         const imageReader = new FileReader();
+        //         imageReader.onload = function(x) {
+        //             self.setState({ profile_photo_src: x.target.result }, () => {
+        //                 self.props.setUserProfilePhoto(self.state.profile_photo_src, orientation);
+        //                 Router.push('/user/photo/crop');
+        //             });
+        //         };
+        //         imageReader.readAsDataURL(e.target.files[0]);
+        //     });
+        // };
+        // reader.readAsArrayBuffer(e.target.files[0]);
+    }
+
+    getOrientation(e, callback) {
+        const view = new DataView(e.target.result);
+        if (view.getUint16(0, false) != 0xFFD8) {
+            return callback(-2);
+        }
+
+        const length = view.byteLength;
+        let offset = 2;
+        while (offset < length) {
+            if (view.getUint16(offset + 2, false) <= 8) {
+                return callback(-1);
+            }
+            const marker = view.getUint16(offset, false);
+            offset += 2;
+            if (marker == 0xFFE1) {
+                if (view.getUint32(offset += 2, false) != 0x45786966) {
+                    return callback(-1);
+                }
+
+                const little = view.getUint16(offset += 6, false) == 0x4949;
+                offset += view.getUint32(offset + 4, little);
+
+                const tags = view.getUint16(offset, little);
+                offset += 2;
+                for (let i = 0; i < tags; i++) {
+                    if (view.getUint16(offset + (i * 12), little) == 0x0112) {
+                        return callback(view.getUint16(offset + (i * 12) + 8, little));
+                    }
+                }
+            }
+            else if ((marker & 0xFF00) != 0xFF00) {
+                break;
+            }
+            else {
+                offset += view.getUint16(offset, false);
+            }
+        }
+
+        return callback(-1);
     }
 
     render() {

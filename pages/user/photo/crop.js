@@ -24,6 +24,7 @@ class Crop extends React.Component {
         super(props);
         this.state = {
             profile_photo_src: this.props.user.profile_photo_src,
+            orientation: this.props.user.orientation,
             crop: {
                 aspect: 1,
                 unit: '%',

@@ -12,7 +12,8 @@ const initialState = {
     otp: '',
     location: '',
     profile_photo_src: '',
-    change_password: {}
+    change_password: {},
+    orientation: -1
 };
 
 export default (state = initialState, action) => {
@@ -41,7 +42,10 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, newValue);
 
         case 'SET_PROFILE_PHOTO_SRC':
-            return Object.assign({}, state, { profile_photo_src: action.src });
+            return Object.assign({}, state, { 
+                profile_photo_src: action.src,
+                orientation: action.orientation
+            });
         case 'SET_CHANGE_PASSWORD_DATA':
             return Object.assign({}, state, { change_password: action.change_password });
         default:
