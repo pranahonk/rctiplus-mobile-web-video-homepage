@@ -39,6 +39,8 @@ import { DEV_API, VISITOR_TOKEN } from '../config';
 import '../assets/scss/components/live-event.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
+const innerHeight = require('ios-inner-height');
+
 class LiveEvent extends React.Component {
 
 	static async getInitialProps(ctx) {
@@ -525,15 +527,11 @@ class LiveEvent extends React.Component {
 					</div>
 					<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
 						(isIOS ?
-							{ height: 'calc(100vh - 50%)' } :
-							{ height: 'calc(100vh - 40%)' })
+							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
+							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
 						: null}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
-						<div className="box-chat" style={this.state.chat_open ?
-							(isIOS ?
-								{ height: 'calc(100vh - 363px)' } :
-								{ height: 'calc(100vh - 263px)' })
-							: null}>
+						<div className="box-chat" style={{ height: 300 }}>
 							<div className="chat-messages" id="chat-messages">
 								{this.state.chats.map((chat, i) => (
 									<Row key={i} className="chat-line">
