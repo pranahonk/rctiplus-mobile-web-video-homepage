@@ -32,6 +32,9 @@
     height: 70%;
     padding: 20px;
     overflow-y: scroll;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .season-list h4 {
