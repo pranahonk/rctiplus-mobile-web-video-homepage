@@ -177,35 +177,59 @@ class LiveEvent extends React.Component {
 
 	loadChatMessages(id) {
 		this.props.setPageLoader();
-		this.props.getChatMessages(id)
-			.then(chats => {
-				let sortedChats = chats.sort((a, b) => a.ts - b.ts);
-				this.setState({ chats: sortedChats }, () => {
-					const chatBox = document.getElementById('chat-messages');
-					chatBox.scrollTop = chatBox.scrollHeight;
-					this.props.unsetPageLoader();
-					this.props.listenChatMessages(id)
-						.then(collection => {
-							let snapshots = this.state.snapshots;
-							let snapshot = collection.onSnapshot(querySnapshot => {
-								querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
-									.forEach(change => {
-										let chats = this.state.chats;
-										if (change.type === 'added') {
-											chats.push(change.doc.data());
-											this.setState({ chats: chats });
+		// this.props.getChatMessages(id)
+		// 	.then(chats => {
+		// 		let sortedChats = chats.sort((a, b) => a.ts - b.ts);
+
+		// 	})
+		// 	.catch(error => {
+		// 		console.log(error);
+		// 		this.props.unsetPageLoader();
+		// 	});
+
+		this.setState({ chats: [] }, () => {
+			const chatBox = document.getElementById('chat-messages');
+			chatBox.scrollTop = chatBox.scrollHeight;
+			this.props.unsetPageLoader();
+			this.props.listenChatMessages(id)
+				.then(collection => {
+					let snapshots = this.state.snapshots;
+					let snapshot = collection.onSnapshot(querySnapshot => {
+						querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
+							.map(change => {
+								let chats = this.state.chats;
+								if (change.type === 'added') {
+									if (!this.state.sending_chat) {
+										if (chats.length > 0) {
+											let lastChat = chats[chats.length - 1];
+											let newChat = change.doc.data();
+											if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+												chats.push(newChat);
+											}
 										}
-									});
+										else {
+											chats.push(change.doc.data());
+										}
+
+										this.setState({ chats: chats });
+									}
+								}
+
+								if (change.type === 'removed') {
+									let removed = change.doc.data();
+									for (let i = 0; i < chats.length; i++) {
+										if (chats[i].ts === removed.ts) {
+											chats.splice(i, 1);
+										}
+									}
+									this.setState({ chats: chats });
+								}
 							});
-							snapshots[id] = snapshot;
-							this.setState({ snapshots: snapshots });
-						});
+					});
+					snapshots[id] = snapshot;
+					this.setState({ snapshots: snapshots });
 				});
-			})
-			.catch(error => {
-				console.log(error);
-				this.props.unsetPageLoader();
-			});
+		});
 	}
 
 	initVOD() {
