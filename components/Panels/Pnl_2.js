@@ -96,7 +96,7 @@ class Pnl_2 extends React.Component {
 	render() {
 		return (
 			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className="homepage-content pnl_horizontal_landscape" id="pnl_horizontal_landscape" style={{ marginBottom: 20 }}>
-				<h4 className="content-title">{this.props.title}</h4>
+				<h2 className="content-title">{this.props.title}</h2>
 				<BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
 					{scrollRef => (
 						<div ref={scrollRef} className="swiper-container">
@@ -112,7 +112,7 @@ class Pnl_2 extends React.Component {
 										</div>
 		
 										<div className="txt-slider-panel">
-											<p><strong>{c.program_title ? c.program_title : this.props.title}</strong></p>
+											<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
 											<p>{c.content_title}</p>
 										</div>
 									</div>

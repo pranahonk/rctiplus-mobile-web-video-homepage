@@ -22,6 +22,7 @@ class Crs_v2 extends Component {
     componentDidMount() {
         this.props.getBanner().then(response => {
             const contents = this.props.contents;
+            console.log(contents.banner);
             this.setState({
                 banner: contents.banner,
                 meta: contents.meta,
@@ -35,12 +36,26 @@ class Crs_v2 extends Component {
             case 'url':
                 window.open(program.type_value, '_blank');
                 break;
-            case 'program':
-                const hyphenedTitle = program.title.replace(' ', '-');
-                Router.push(`/programs/${program.type_value}/${hyphenedTitle}`);
+            case 'episode':
+                if (program.type_value) {
+                    this.props.getContentShareLink(program.type_value, program.type)
+                        .then(response => {
+                            window.location.href = response.data.data.share_link;
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                }
                 break;
-        }
-        
+            case 'live_event':
+                if (program.type_value) {
+                    Router.push(`/live-event/${program.type_value}/${program.title.replace(/ +/g, '-')}`);
+                }
+                break;
+            case 'program':
+                Router.push(`/programs/${program.type_value}/${program.title.replace(/ +/g, '-')}`);
+                break;
+        }        
     }
 
     render() {
@@ -74,6 +89,7 @@ class Crs_v2 extends Component {
                                 height: 320 
                             }}>
                                 <Img 
+                                    alt={b.title}
                                     src={[`${this.state.meta.image_path + this.state.resolution + b.square_image}`, '/static/placeholders/placeholder_potrait.png']}
                                     unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 									loader={<img src="/static/placeholders/placeholder_landscape.png"/>}/>

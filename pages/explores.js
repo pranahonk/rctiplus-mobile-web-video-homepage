@@ -290,6 +290,16 @@ class Explores extends React.Component {
 		return SITEMAP['explore_for_you'];
 	}
 
+	getImageFileName(url) {
+		const segments = url.split('/');
+		if (segments.length <= 0) {
+			return '';
+		}
+
+		let filename = segments[segments.length - 1];
+		return filename.split('.').slice(0, -1).join('.');
+	}
+
 	render() {
 		const metadata = this.getMetadata();
 		return (
@@ -334,14 +344,14 @@ class Explores extends React.Component {
 							</div>
 							<div className="content-search">
 								<div className="header-list">
-									<p className="title">{this.state.selected_genre_name}</p>
+									<h2 className="title">{this.state.selected_genre_name}</h2>
 								</div>
 								<div className="content-list">
 									<Row>
 										{this.state.recommendations[`genre-${this.state.selected_genre_id}`] && this.state.recommendations[`genre-${this.state.selected_genre_id}`].map((r, i) => (
 											<Col xs={4} key={i} onClick={this.link.bind(this, r)}>
 												<Img 
-													alt={r.title} 
+													alt={this.getImageFileName(r.portrait_image)} 
 													className="content-image"
 													unloader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
 													loader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}

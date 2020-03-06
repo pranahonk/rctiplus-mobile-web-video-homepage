@@ -897,6 +897,16 @@ class Detail extends React.Component {
             
         }
 		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}${this.reference ? `?ref=${this.reference}_program${this.reference && this.homepageTitle ? `&homepage_title=${this.homepageTitle}` : ''}` : ''}`);
+    }
+    
+    getImageFileName(url) {
+		const segments = url.split('/');
+		if (segments.length <= 0) {
+			return '';
+		}
+
+		let filename = segments[segments.length - 1];
+		return filename.split('.').slice(0, -1).join('.');
 	}
 
     render() {
@@ -1046,7 +1056,7 @@ class Detail extends React.Component {
                 <div ref={ref => this.thumbnailRef = ref} style={{ backgroundImage: 'url(' + (this.state.meta.image_path + this.state.resolution + this.state.portrait_image) + ')' }} className="bg-jumbotron"></div>
                 <div ref={ref => this.thumbnailContentRef = ref} className="content content-programs">
                     <div className="content-thumbnail">
-                        <Img alt={this.state.title} 
+                        <Img alt={this.getImageFileName(this.state.portrait_image)} 
                         className="content-thumbnail-image" src={[this.state.meta.image_path + this.state.resolution + this.state.portrait_image, '/static/placeholders/placeholder_potrait.png']} 
                         unloader={<img className="content-thumbnail-image" src="/static/placeholders/placeholder_potrait.png"/>}
 						loader={<img className="content-thumbnail-image" src="/static/placeholders/placeholder_potrait.png"/>}/>
