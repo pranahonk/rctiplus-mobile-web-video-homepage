@@ -504,7 +504,8 @@ class LiveEvent extends React.Component {
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{playerRef}
 					<div className="title-wrap">
-						Live Chat Plus {this.props.selected_event && this.props.selected_event.data ? formatDateWord(new Date(this.props.selected_event.data.start_date.replace(' ', 'T'))) : ''}
+						{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
+						{/* Live Chat Plus {this.props.selected_event && this.props.selected_event.data ? formatDateWord(new Date(this.props.selected_event.data.start_date.replace(' ', 'T'))) : ''} */}
 					</div>
 					<div className="content-wrap">
 						<div className="live-event-menu">
