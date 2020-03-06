@@ -121,6 +121,13 @@ const UIVersion = '2.0';
       return app.render(req, res, '/tv', { channel: req.params.channel });
     });
 
+    server.get('/tv/:id/:title', (req, res) => {
+      return app.render(req, res, '/live-event', {
+        id: req.params.id,
+        title: req.params.title
+      });
+    });
+
     server.get('/tv/:channel/:epg_id/:epg_title', (req, res) => {
       return app.render(req, res, '/tv', {
         channel: req.params.channel,

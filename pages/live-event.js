@@ -177,6 +177,12 @@ class LiveEvent extends React.Component {
 		return true;
 	}
 
+	componentWillUnmount() {
+		for (let key in this.state.snapshots) {
+			this.state.snapshots[key]();
+		}
+	}
+
 	loadChatMessages(id) {
 		this.props.setPageLoader();
 		// this.props.getChatMessages(id)
@@ -213,6 +219,11 @@ class LiveEvent extends React.Component {
 											chats.push(change.doc.data());
 										}
 
+										const chatBox = document.getElementById('chat-messages');
+										chatBox.scrollTop = chatBox.scrollHeight;
+
+										const chatInput = document.getElementById('chat-input');
+										chatInput.style.height = `24px`;
 										this.setState({ chats: chats });
 									}
 								}
