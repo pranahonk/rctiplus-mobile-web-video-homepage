@@ -60,6 +60,27 @@ const postChat = (channelId, message, avatar, user) => {
     });
 };
 
+const getLiveChatBlock = (channelId) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/chat/${channelId}`);
+            if (response.status === 200) {
+                dispatch({
+                    type: 'GET_CHAT_BLOCK',
+                    data: response.data.data,
+                    status: response.data.status,
+                });
+                resolve(response);
+            } else {
+              reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const getLiveEvent = (type, infos = 'id,type,portrait_image,image_landscape,name,url,channel_code,epg_code,is_tvod,is_drm,chat,start_date,sorting', page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -233,5 +254,6 @@ export default {
     getCatchupUrl,
     setCatchupDate,
     setChannelCode,
-    setCatchupData
+    setCatchupData,
+    getLiveChatBlock,
 };
