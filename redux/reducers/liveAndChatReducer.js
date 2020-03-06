@@ -27,6 +27,11 @@ export default (state = initialState, action) => {
                 data: action.data, 
                 meta: action.meta 
             });
+        case 'GET_CHAT_BLOCK':
+            return Object.assign({}, state, {
+                status: action.status,
+                data: action.data,
+            });
         case 'SET_CATCHUP_DATE':
             return Object.assign({}, state, { catchup_date: action.date });
         case 'SET_CHANNEL_CODE':

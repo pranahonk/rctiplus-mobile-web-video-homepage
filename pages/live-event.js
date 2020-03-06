@@ -9,6 +9,8 @@ import TimeAgo from 'react-timeago';
 import fetch from 'isomorphic-unfetch';
 import queryString from 'query-string';
 import { isIOS } from 'react-device-detect';
+import MuteChat from '../components/Includes/Common/MuteChat';
+
 
 import initialize from '../utils/initialize';
 import { getCookie } from '../utils/cookie';
@@ -117,6 +119,10 @@ class LiveEvent extends React.Component {
 			user_data: null,
 			snapshots: [],
 			sending_chat: false,
+			block_user: {
+				status: false,
+				message: '',
+			},
 			chats: [],
 			live_events: [],
 			meta: {},
@@ -163,6 +169,22 @@ class LiveEvent extends React.Component {
 			.catch(error => {
 				console.log(error);
 			});
+	}
+	statusChatBlock(id) {
+		this.props.getLiveChatBlock(id)
+		.then(res => {
+				this.setState({
+					block_user: {
+						status: res.data.status.code === 0 ? false : true,
+						message: res.data.status.message_client,
+					},
+				});
+				
+			console.log('state:',this.state.block_user);
+		})
+		.catch((error) => {
+			console.log(error);
+		});
 	}
 
 	checkLogin() {
@@ -260,6 +282,7 @@ class LiveEvent extends React.Component {
 			type = this.props.selected_event.data.type;
 			portrait_image = this.props.selected_event.data.portrait_image;
 			this.loadChatMessages(id);
+			this.statusChatBlock(id);
 		}
 
 		const playerId = 'live-event-player';
@@ -431,6 +454,7 @@ class LiveEvent extends React.Component {
 		if (this.state.user_data) {
 			if (this.state.chat != '') {
 				const { id } = this.props.selected_event.data;
+				this.statusChatBlock(id);
 
 				const userData = this.state.user_data;
 				let user = userData.nickname ? userData.nickname :
@@ -544,6 +568,15 @@ class LiveEvent extends React.Component {
 						: null}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
 						<div className="box-chat" style={{ height: 300 }}>
+							<div className="wrap-live-chat__block" style= { this.state.block_user.status ? { display: 'flex' } : { display : 'none' }}>
+								<div className="block_chat" style = { this.state.chat_open ? { display: 'block' } : { display : 'none' } }>
+									<div>
+										<MuteChat className="icon-block__chat" />
+										<p>Sorry, you cannot send the message</p>
+										<span>{ this.state.block_user.message }</span>
+									</div>
+								</div>
+							</div>
 							<div className="chat-messages" id="chat-messages">
 								{this.state.chats.map((chat, i) => (
 									<Row key={i} className="chat-line">

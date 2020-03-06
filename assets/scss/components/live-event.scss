@@ -80,6 +80,35 @@
     transition-timing-function: ease-out;
 
     .box-chat {
+        .wrap-live-chat__block {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background:#000000;
+            opacity: 0.8;
+            z-index: 100;
+          .block_chat {
+            text-align: center;
+            svg {
+              margin-bottom: 1rem;
+            }
+            span, p {
+              color: #8f8f8f;
+            }
+            span {
+              font-size: 12px;
+              font-weight: 300;
+            }
+            p {
+              font-size: 14px;
+              font-weight: 600;
+              margin: 0;
+            }
+          }
+        }
         .chat-messages {
             padding-top: 10px;
             height: 100%;

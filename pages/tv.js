@@ -18,6 +18,7 @@ import Layout from '../components/Layouts/Default';
 import SelectDateModal from '../components/Modals/SelectDateModal';
 import ActionSheet from '../components/Modals/ActionSheet';
 import Wrench from '../components/Includes/Common/Wrench';
+import MuteChat from '../components/Includes/Common/MuteChat';
 
 import { formatDate, formatDateWord, getFormattedDateBefore } from '../utils/dateHelpers';
 import { showAlert, showSignInAlert } from '../utils/helpers';
@@ -81,7 +82,12 @@ class Tv extends React.Component {
 			chat: '',
 			user_data: null,
 			snapshots: [],
-			sending_chat: false
+			sending_chat: false,
+			block_user: {
+				status: false,
+				message: '',
+			},
+			test: true,
 		};
 
 		this.player = null;
@@ -321,11 +327,27 @@ class Tv extends React.Component {
 				});
 		});
 	}
-
+	statusChatBlock(id) {
+		this.props.getLiveChatBlock(id)
+		.then(res => {
+				this.setState({
+					block_user: {
+						status: res.data.status.code === 0 ? false : true,
+						message: res.data.status.message_client,
+					},
+				});
+				
+			console.log('state:',this.state.block_user);
+		})
+		.catch((error) => {
+			console.log(error);
+		});
+	}
 	selectChannel(index, first = false) {
 		this.props.setPageLoader();
 		this.setState({ selected_index: index, error: false, chats: [] }, () => {
 			this.loadChatMessages(this.state.live_events[this.state.selected_index].id);
+			this.statusChatBlock(this.state.live_events[this.state.selected_index].id);
 			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id)
 				.then(res => {
 					this.setState({
@@ -515,6 +537,7 @@ class Tv extends React.Component {
 	sendChat() {
 		if (this.state.user_data) {
 			if (this.state.chat != '') {
+				this.statusChatBlock(this.state.live_events[this.state.selected_index].id);
 				const userData = this.state.user_data;
 				let user = userData.nickname ? userData.nickname :
 					userData.display_name ? userData.display_name :
@@ -750,7 +773,24 @@ class Tv extends React.Component {
 							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
 						: null}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
+<<<<<<< HEAD
+						<div className="box-chat" style={this.state.chat_open ?
+							(isIOS ?
+								{ height: 'calc(100vh - 363px)' } :
+								{ height: 'calc(100vh - 263px)' })
+							: null}>
+							<div className="wrap-live-chat__block" style= { this.state.block_user.status ? { display: 'flex' } : { display : 'none' }}>
+								<div className="block_chat" style = { this.state.chat_open ? { display: 'block' } : { display : 'none' } }>
+									<div>
+										<MuteChat className="icon-block__chat" />
+										<p>Sorry, you cannot send the message</p>
+										<span>{ this.state.block_user.message }</span>
+									</div>
+								</div>
+							</div>
+=======
 						<div className="box-chat" style={{ height: 300 }}>
+>>>>>>> fb8ecf22c88c0fe7b92cb64fa2c4cde81cc2345a
 							<div className="chat-messages" id="chat-messages">
 								{this.state.chats.map((chat, i) => (
 									<Row key={i} className="chat-line">
