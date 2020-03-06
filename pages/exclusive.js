@@ -54,7 +54,7 @@ class Exclusive extends React.Component {
 			feeds: {},
 			feed_states: {},
 			categorical_feeds: {},
-			resolution: 593,
+			resolution: 393,
 			modal: false,
 			trailer_url: '',
 			action_sheet: false,
@@ -307,6 +307,16 @@ class Exclusive extends React.Component {
 		Router.push(`/programs/${program.program_id}/${program.title.replace(/ +/g, '-').toLowerCase()}?ref=exclusive`);
 	}
 
+	getImageFileName(url) {
+		const segments = url.split('/');
+		if (segments.length <= 0) {
+			return '';
+		}
+
+		let filename = segments[segments.length - 1];
+		return filename.split('.').slice(0, -1).join('.');
+	}
+
 	render() {
 		return (
 			<Layout title={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].title}>
@@ -378,11 +388,9 @@ class Exclusive extends React.Component {
 															</Col>
 															<Col xs="7">
 																<div onClick={this.goToDetail.bind(this, feed, 'title')} className="program-label">
-																	<div className="program-title">
-																		<strong>
-																			{feed.title.substring(0, 30) + (feed.title.length > 30 ? '...' : '')}
-																		</strong>
-																	</div>
+																	<h2 className="program-title">
+																		{feed.title.substring(0, 30) + (feed.title.length > 30 ? '...' : '')}
+																	</h2>
 																	<TimeAgo className="program-subtitle" date={Date.now() - feed.created_at} />
 																</div>
 															</Col>
@@ -435,7 +443,7 @@ class Exclusive extends React.Component {
 																	<Img 
 																		key={i} 
 																		data-index={i}
-																		alt={feed.title} 
+																		alt={`${this.getImageFileName(img)} - ${feed.title}`} 
 																		className="program-carousel-image" 
 																		unloader={<img className="program-carousel-image" src="/static/placeholders/placeholder_landscape.png"/>}
 																		loader={<img className="program-carousel-image" src="/static/placeholders/placeholder_landscape.png"/>} 
@@ -451,7 +459,7 @@ class Exclusive extends React.Component {
 																		unloader={<img className="program-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
 																		loader={<img className="program-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>} 
 																		src={[this.state.meta.image_path + this.state.resolution + feed.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
-																	<PlayCircleOutlineIcon className="play-btn-icon" />
+																	{/* <PlayCircleOutlineIcon className="play-btn-icon" /> */}
 																</div>
 															)
 														}

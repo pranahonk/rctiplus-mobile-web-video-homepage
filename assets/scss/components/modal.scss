@@ -22,3 +22,14 @@
     background-color: #282828;
     color: white;
 }
+
+
+.player-modal {
+    .modal-header {
+        button {
+            color: white !important;
+            font-weight: 0 !important;
+            opacity: 1 !important;
+        }
+    }
+}

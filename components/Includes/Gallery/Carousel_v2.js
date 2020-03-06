@@ -3,6 +3,7 @@ import Router from 'next/router';
 import { connect } from 'react-redux';
 import contentActions from '../../../redux/actions/contentActions';
 import { Carousel } from 'react-responsive-carousel';
+import Img from 'react-image';
 
 import { homeBannerEvent } from '../../../utils/appier';
 
@@ -14,13 +15,14 @@ class Crs_v2 extends Component {
         this.state = {
             banner: [],
             meta: null,
-            resolution: 320
+            resolution: 420
         };
     }
 
     componentDidMount() {
         this.props.getBanner().then(response => {
             const contents = this.props.contents;
+            console.log(contents.banner);
             this.setState({
                 banner: contents.banner,
                 meta: contents.meta,
@@ -34,12 +36,26 @@ class Crs_v2 extends Component {
             case 'url':
                 window.open(program.type_value, '_blank');
                 break;
-            case 'program':
-                const hyphenedTitle = program.title.replace(' ', '-');
-                Router.push(`/programs/${program.type_value}/${hyphenedTitle}`);
+            case 'episode':
+                if (program.type_value) {
+                    this.props.getContentShareLink(program.type_value, program.type)
+                        .then(response => {
+                            window.location.href = response.data.data.share_link;
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                }
                 break;
-        }
-        
+            case 'live_event':
+                if (program.type_value) {
+                    Router.push(`/live-event/${program.type_value}/${program.title.replace(/ +/g, '-')}`);
+                }
+                break;
+            case 'program':
+                Router.push(`/programs/${program.type_value}/${program.title.replace(/ +/g, '-')}`);
+                break;
+        }        
     }
 
     render() {
@@ -49,14 +65,16 @@ class Crs_v2 extends Component {
                     paddingTop: this.props.showStickyInstall ? 60 : 0 
                 }}>
                     <Carousel 
+                        className="banner-carousel"
                         statusFormatter={(current, total) => `${current}/${total}`} 
                         autoPlay 
                         showThumbs={false} 
-                        showIndicators={false} 
+                        showIndicators 
                         stopOnHover 
                         showArrows={false} 
                         showStatus={false} 
                         swipeScrollTolerance={1} 
+                        infiniteLoop
                         swipeable 
                         onSwipeEnd={(e) => {
                             const swipedIndex = e.target.getAttribute('data-index');
@@ -67,17 +85,19 @@ class Crs_v2 extends Component {
                     }}>
                         {this.state.banner.map((b, i) => (
                             <div data-index={i} onClick={this.goToProgram.bind(this, b)} key={b.id} style={{ 
-                                backgroundImage: `url(${this.state.meta.image_path + this.state.resolution + b.portrait_image})`, 
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center', 
                                 width: '100%', 
                                 height: 320 
                             }}>
+                                <Img 
+                                    alt={b.title}
+                                    src={[`${this.state.meta.image_path + this.state.resolution + b.square_image}`, '/static/placeholders/placeholder_potrait.png']}
+                                    unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+									loader={<img src="/static/placeholders/placeholder_landscape.png"/>}/>
                             </div>
                             ))}
                     </Carousel>
                     {this.props.children}
-                    <div style={{ position: 'absolute', bottom: 0, backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 70%,#282828)', width: '100%', height: 100 }}></div>
+                    <div style={{ position: 'absolute', bottom: 0, backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 0%,#282828)', width: '100%', height: 100 }}></div>
                 </div>
                 );
     }

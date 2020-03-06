@@ -20,7 +20,7 @@
     .live-event-slider {
         margin-right: -20px;
         padding-bottom: 25px;
-        height: 200px;
+        min-height: 200px;
         overflow-y: auto;
 
         .live-event-slide {
@@ -266,6 +266,7 @@
     height: calc(100vh - 200px);
     bottom: 0;
     z-index: 7;
+    vertical-align: bottom;
     overflow: hidden;
 
     .expand-icon {
@@ -277,6 +278,7 @@
         position: relative;
         padding: 0;
         background-color: #282828;
+        vertical-align: bottom;
 
         .chat-input-box {
             position: absolute;

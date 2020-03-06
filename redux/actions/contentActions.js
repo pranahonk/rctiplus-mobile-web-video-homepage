@@ -103,10 +103,27 @@ const getHomepageContents = (id, platform = 'mweb', page = 1, length = 21) => {
     });
 };
 
-const getBanner = (page = 1, length = 10) => {
+const getContentShareLink = (id, type) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/share?id=${id}&type=${type}`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
+};
+
+const getBanner = (page = 1, length = 10, infos = 'id,title,portrait_image,image_landscape,type,type_value,sorting,program_id,popup_img,link,summary,square_image,program_name') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/banner?page=${page}&length=${length}`);
+            const response = await axios.get(`/v1/banner?page=${page}&length=${length}&infos=${infos}`);
             if (response.data.status.code === 0) {
                 dispatch({ type: 'BANNER', data: response.data.data, meta: response.data.meta });
                 resolve(response);
@@ -443,6 +460,7 @@ export default {
     getProgramExtra,
     getProgramPhoto,
     getProgramClip,
+    getContentShareLink,
     selectSeason,
     setShowMoreAllowed
 };

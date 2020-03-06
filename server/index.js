@@ -6,6 +6,7 @@ const express = require('express');
 const { join } = require('path');
 const chalk = require('chalk');
 const next = require('next');
+// const device = require('express-device');
 // #endregion
 
 // #region variables/constants initialization
@@ -23,7 +24,8 @@ const UIVersion = '2.0';
     await app.prepare();
 
     const server = express();
-
+    // server.use(device.capture());
+    // https://codeforgeek.com/how-to-detect-device-type-in-nodejs/
     // example of custom request handlers:
     // server.get('/a', (req, res) => app.render(req, res, '/b', req.query));
     // server.get('/b', (req, res) => app.render(req, res, '/a', req.query));
@@ -111,6 +113,10 @@ const UIVersion = '2.0';
       return app.render(req, res, '/user/qrcode');
     });
 
+    server.get('/radio', (req, res) => {
+      return app.render(req, res, '/roov');
+    });
+
     server.get('/tv/:channel', (req, res) => {
       return app.render(req, res, '/tv', { channel: req.params.channel });
     });
@@ -154,10 +160,6 @@ const UIVersion = '2.0';
         id: req.params.id,
         title: req.params.title
       });
-    });
-
-    server.get('/radio', (req, res) => {
-      return app.render(req, res, '/roov');
     });
 
     // default request handler by next handler:

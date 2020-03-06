@@ -44,10 +44,11 @@ const setUserProfile = (nickname, fullname, dob, gender, phone_number, email, ot
     });
 };
 
-const setUserProfilePhoto = src => {
+const setUserProfilePhoto = (src, orientation = -1) => {
     return dispatch => dispatch({
         type: 'SET_PROFILE_PHOTO_SRC',
-        src: src
+        src: src,
+        orientation: orientation
     });
 };
 

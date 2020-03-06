@@ -42,6 +42,8 @@ import 'emoji-mart/css/emoji-mart.css';
 
 import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked } from '../utils/appier';
 
+const innerHeight = require('ios-inner-height');
+
 class Tv extends React.Component {
 
 	static getInitialProps(ctx) {
@@ -72,7 +74,7 @@ class Tv extends React.Component {
 			url: '',
 			hashtags: [],
 			chat_open: false,
-			channel_code: this.props.context_data ? this.props.context_data.channel : 'rcti',
+			channel_code: this.props.context_data ? (this.props.context_data.channel === 'gtv' ? 'globaltv' : this.props.context_data.channel) : 'rcti',
 			error: false,
 			error_data: {},
 			emoji_picker_open: false,
@@ -690,7 +692,7 @@ class Tv extends React.Component {
 								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
-								<Link href="/tv?channel=globaltv" as="/tv/globaltv">
+								<Link href="/tv?channel=gtv" as="/tv/gtv">
 									<Button size="sm" color="link" className={this.state.selected_index === 2 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 2)}>GTV</Button>
 								</Link>
 							</Col>
@@ -767,10 +769,11 @@ class Tv extends React.Component {
 					</div>
 					<div className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
 						(isIOS ?
-							{ height: 'calc(100vh - 50%)' } :
-							{ height: 'calc(100vh - 40%)' })
+							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
+							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
 						: null}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
+<<<<<<< HEAD
 						<div className="box-chat" style={this.state.chat_open ?
 							(isIOS ?
 								{ height: 'calc(100vh - 363px)' } :
@@ -785,6 +788,9 @@ class Tv extends React.Component {
 									</div>
 								</div>
 							</div>
+=======
+						<div className="box-chat" style={{ height: 300 }}>
+>>>>>>> fb8ecf22c88c0fe7b92cb64fa2c4cde81cc2345a
 							<div className="chat-messages" id="chat-messages">
 								{this.state.chats.map((chat, i) => (
 									<Row key={i} className="chat-line">

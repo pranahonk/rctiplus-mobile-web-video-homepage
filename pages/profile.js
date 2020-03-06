@@ -55,7 +55,7 @@ class Profile extends React.Component {
 	isProfileComplete() {
 		if (this.state.user_data) {
 			const data = this.state.user_data;
-			return data.nickname && data.display_name && (data.email || data.phone_number) && data.dob && data.gender && data.photo_url;
+			return data.nickname && data.display_name && data.email && data.phone_number && data.dob && data.gender && data.photo_url;
 		}
 		return false;
 	}

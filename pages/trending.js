@@ -281,12 +281,12 @@ class Trending extends React.Component {
                                                     const title = feed.title;
                                                     if (idx % 5 === 0) {
                                                         if (idx === 0) {
-                                                            return (<Col xs="12" className="box-trending" key={idx}><div onClick={() => this.goToDetail(feed)}><img className="box-img-trending" src={feed.cover} /><div className="font-trending-title-trending-parent" dangerouslySetInnerHTML={{ __html: title.substring(0, 60) + '...' }}></div></div></Col>);
+                                                            return (<Col xs="12" className="box-trending" key={idx}><div onClick={() => this.goToDetail(feed)}><img alt={title} className="box-img-trending" src={feed.cover} /><h2 className="font-trending-title-trending-parent" dangerouslySetInnerHTML={{ __html: title.substring(0, 60) + '...' }}></h2></div></Col>);
                                                         } else {
-                                                            return (<Col xs="12" className="box-trending" key={idx}><div onClick={() => this.goToDetail(feed)}><img className="box-img-trending" src={feed.cover} /><div className="font-trending-title-trending-child" dangerouslySetInnerHTML={{ __html: title.substring(0, 60) + '...' }}></div></div></Col>);
+                                                            return (<Col xs="12" className="box-trending" key={idx}><div onClick={() => this.goToDetail(feed)}><img alt={title} className="box-img-trending" src={feed.cover} /><h2 className="font-trending-title-trending-child" dangerouslySetInnerHTML={{ __html: title.substring(0, 60) + '...' }}></h2></div></Col>);
                                                         }
                                                     } else {
-                                                        return (<Col xs="6" className="box-trending" key={idx}><div onClick={() => this.goToDetail(feed)}><img className="box-img-trending" src={feed.cover} /><div className="font-trending-title-trending-default" dangerouslySetInnerHTML={{ __html: title.substring(0, 60) + '...' }}></div></div></Col>);
+                                                        return (<Col xs="6" className="box-trending" key={idx}><div onClick={() => this.goToDetail(feed)}><img alt={title} className="box-img-trending" src={feed.cover} /><h2 className="font-trending-title-trending-default" dangerouslySetInnerHTML={{ __html: title.substring(0, 60) + '...' }}></h2></div></Col>);
                                                     }
                                                 })}
                                             </Row>

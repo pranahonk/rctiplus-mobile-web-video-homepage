@@ -37,7 +37,8 @@ class MyList extends React.Component {
 			dropdown_open: false,
 			mylist: [],
 			ordered_list: [],
-			meta: {},
+			meta_mylist: {},
+			meta_related: {},
 			resolution: 593,
 			recommendations: [],
 			current_page: 1,
@@ -148,7 +149,7 @@ class MyList extends React.Component {
 			.then(response => {
 				const data = response.data.data;
 				const meta = response.data.meta;
-				this.setState({ mylist: data, ordered_list: data, meta: meta, current_page: 2 }, () => {
+				this.setState({ mylist: data, ordered_list: data, meta_mylist: meta, current_page: 2 }, () => {
 					this.props.setBookmarkShowMoreAllowed(data.length >= this.state.length);
 				});
 			})
@@ -156,7 +157,7 @@ class MyList extends React.Component {
 
 		this.props.getRecommendation(this.state.recommendation_page, this.state.length)
 			.then(response => {
-				this.setState({ recommendations: response.data.data, recommendation_page: this.state.recommendation_page + 1 });
+				this.setState({ recommendations: response.data.data, recommendation_page: this.state.recommendation_page + 1, meta_related: response.data.meta });
 			})
 			.catch(error => console.log(error));
 	}
@@ -203,7 +204,7 @@ class MyList extends React.Component {
 						<ListItem
 							key={i}
 							striped={!(i % 2)}
-							imageSrc={this.state.meta.image_path + (this.props.resolution ? this.props.resolution : this.state.resolution) + l.image}
+							imageSrc={this.state.meta_mylist.image_path + (this.props.resolution ? this.props.resolution : this.state.resolution) + l.image}
 							title={l.title}
 							link={() => this.linkProgram(l)}
 							subtitle={l.total_content + ' video'} />)}
@@ -218,7 +219,7 @@ class MyList extends React.Component {
 									<div ref={scrollRef} className="related-slider">
 										{this.state.recommendations.map(rp => (
 											<div onClick={() => this.linkRelated(rp)} key={rp.id} className="related-slide">
-												<Img alt={rp.title} src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
+												<Img alt={rp.title} src={[this.state.meta_related.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
 											</div>
 										))}
 									</div>

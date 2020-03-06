@@ -171,13 +171,13 @@ class Detail extends React.Component {
                 <NavBack data={cdata} />
                 {this.state.iframe_opened ? (<iframe src={cdata.link} style={{ width: '100%', minHeight: 'calc(100vh - 50px)', paddingTop: 65 }} frameBorder="0" type="text/html"></iframe>) : (
                     <div className="content-trending-detail">
-                        <p className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title }}></b></p>
+                        <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title }}></b></h1>
                         <p className="content-trending-detail-title-src-auth">{cdata.source} | {cdata.author}</p>
                         <small className="content-trending-detail-create">Publish Date : {formatDateTime(new Date(cdata.pubDate * 1000))}</small>
                         {this.renderActionButton()}
                         <div className="content-trending-detail-wrapper">
                             <div className="content-trending-detail-cover-container">
-                                <img className="content-trending-detail-cover" src={cdata.cover} />
+                                <img alt={cdata.title} className="content-trending-detail-cover" src={cdata.cover} />
                             </div>
                             <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>
                             <div onClick={this.openIframe.bind(this)} style={{ color: '-webkit-link', margin: 10, paddingBottom: 20 }}>Original article &gt;</div>

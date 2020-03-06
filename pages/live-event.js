@@ -41,6 +41,8 @@ import { DEV_API, VISITOR_TOKEN } from '../config';
 import '../assets/scss/components/live-event.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
+const innerHeight = require('ios-inner-height');
+
 class LiveEvent extends React.Component {
 
 	static async getInitialProps(ctx) {
@@ -199,35 +201,59 @@ class LiveEvent extends React.Component {
 
 	loadChatMessages(id) {
 		this.props.setPageLoader();
-		this.props.getChatMessages(id)
-			.then(chats => {
-				let sortedChats = chats.sort((a, b) => a.ts - b.ts);
-				this.setState({ chats: sortedChats }, () => {
-					const chatBox = document.getElementById('chat-messages');
-					chatBox.scrollTop = chatBox.scrollHeight;
-					this.props.unsetPageLoader();
-					this.props.listenChatMessages(id)
-						.then(collection => {
-							let snapshots = this.state.snapshots;
-							let snapshot = collection.onSnapshot(querySnapshot => {
-								querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
-									.forEach(change => {
-										let chats = this.state.chats;
-										if (change.type === 'added') {
-											chats.push(change.doc.data());
-											this.setState({ chats: chats });
+		// this.props.getChatMessages(id)
+		// 	.then(chats => {
+		// 		let sortedChats = chats.sort((a, b) => a.ts - b.ts);
+
+		// 	})
+		// 	.catch(error => {
+		// 		console.log(error);
+		// 		this.props.unsetPageLoader();
+		// 	});
+
+		this.setState({ chats: [] }, () => {
+			const chatBox = document.getElementById('chat-messages');
+			chatBox.scrollTop = chatBox.scrollHeight;
+			this.props.unsetPageLoader();
+			this.props.listenChatMessages(id)
+				.then(collection => {
+					let snapshots = this.state.snapshots;
+					let snapshot = collection.onSnapshot(querySnapshot => {
+						querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
+							.map(change => {
+								let chats = this.state.chats;
+								if (change.type === 'added') {
+									if (!this.state.sending_chat) {
+										if (chats.length > 0) {
+											let lastChat = chats[chats.length - 1];
+											let newChat = change.doc.data();
+											if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+												chats.push(newChat);
+											}
 										}
-									});
+										else {
+											chats.push(change.doc.data());
+										}
+
+										this.setState({ chats: chats });
+									}
+								}
+
+								if (change.type === 'removed') {
+									let removed = change.doc.data();
+									for (let i = 0; i < chats.length; i++) {
+										if (chats[i].ts === removed.ts) {
+											chats.splice(i, 1);
+										}
+									}
+									this.setState({ chats: chats });
+								}
 							});
-							snapshots[id] = snapshot;
-							this.setState({ snapshots: snapshots });
-						});
+					});
+					snapshots[id] = snapshot;
+					this.setState({ snapshots: snapshots });
 				});
-			})
-			.catch(error => {
-				console.log(error);
-				this.props.unsetPageLoader();
-			});
+		});
 	}
 
 	initVOD() {
@@ -525,15 +551,11 @@ class LiveEvent extends React.Component {
 					</div>
 					<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
 						(isIOS ?
-							{ height: 'calc(100vh - 50%)' } :
-							{ height: 'calc(100vh - 40%)' })
+							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
+							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
 						: null}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
-						<div className="box-chat" style={this.state.chat_open ?
-							(isIOS ?
-								{ height: 'calc(100vh - 363px)' } :
-								{ height: 'calc(100vh - 263px)' })
-							: null}>
+						<div className="box-chat" style={{ height: 300 }}>
 							<div className="wrap-live-chat__block" style= { this.state.block_user.status ? { display: 'flex' } : { display : 'none' }}>
 								<div className="block_chat" style = { this.state.chat_open ? { display: 'block' } : { display : 'none' } }>
 									<div>

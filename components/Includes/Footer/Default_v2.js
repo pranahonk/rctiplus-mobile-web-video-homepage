@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import Router, { withRouter } from 'next/router';
+import { connect } from 'react-redux';
+
+import userActions from '../../../redux/actions/userActions';
 
 import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent } from '../../../utils/appier';
 
 import '../../../assets/scss/components/footer-v2.scss';
+
+import { Badge } from 'reactstrap';
 
 import ImportantDevicesIcon from '@material-ui/icons/ImportantDevices';
 import HomeIcon from '@material-ui/icons/Home';
@@ -12,6 +17,18 @@ import ImportContactsTwoToneIcon from '@material-ui/icons/ImportContactsTwoTone'
 
 class FooterNav_v2 extends Component {
 
+    isProfileComplete() {
+        if (this.props.user && this.props.user.data) {
+            const data = this.props.user.data
+			return data.nickname && data.display_name && data.email && data.phone_number && data.dob && data.gender && data.photo_url;
+        }
+
+        return true;
+	}
+
+    componentDidMount() {
+        this.props.getUserData();
+    }
 
     render() {
         return (
@@ -19,7 +36,15 @@ class FooterNav_v2 extends Component {
                 <div className="footer-wrapper-list">
                     <div onClick={() => {
                         homeGeneralClicked('mweb_home_clicked');
-                        Router.push('/');
+                        switch (this.props.router.asPath) {
+                            case '/radio':
+                                window.location.href = '/';
+                                break
+
+                            default:
+                                Router.push('/');
+                                break;
+                        }
                     }}>
                         <a>
                             <HomeIcon className="nav-footer-icon" />
@@ -57,8 +82,17 @@ class FooterNav_v2 extends Component {
                                 homeGeneralClicked('mweb_library_clicked');
                                 break;
                         }
-                        
-                        Router.push('/explores');
+
+                        switch (this.props.router.asPath) {
+                            case '/radio':
+                            case '/profile':
+                                window.location.href = '/explores';
+                                break
+
+                            default:
+                                Router.push('/explores');
+                                break;
+                        }
                     }}>
                         <a>
                             <ImportContactsTwoToneIcon className="nav-footer-icon"/>
@@ -69,12 +103,24 @@ class FooterNav_v2 extends Component {
                 </div>
 
                 <div className="footer-wrapper-list">
-                    <div onClick={() => {
-                        homeGeneralClicked('mweb_account_clicked');
-                        Router.push('/profile');
-                    }}>
+                    <div
+                        style={{ position: 'relative' }}
+                        onClick={() => {
+                            homeGeneralClicked('mweb_account_clicked');
+                            switch (this.props.router.asPath) {
+                                case '/radio':
+                                    window.location.href = '/profile';
+                                    break
+    
+                                default:
+                                    Router.push('/profile');
+                                    break;
+                            }
+                        }
+                    }>
                         <a>
                             <AccountCircleOutlinedIcon className="nav-footer-icon" />
+                            {!this.isProfileComplete() ? (<Badge className="ribbon" color="danger"> </Badge>) : null}
                             <br />
                             Account
                         </a>
@@ -86,4 +132,4 @@ class FooterNav_v2 extends Component {
         );
     }
 }
-export default withRouter(FooterNav_v2);
+export default connect(state => state, userActions)(withRouter(FooterNav_v2));

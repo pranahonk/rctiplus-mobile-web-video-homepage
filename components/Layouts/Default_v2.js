@@ -5,15 +5,16 @@ import { withRouter } from 'next/router';
 //load scss style 
 //import '../../assets/scss/custom.scss';
 //import '../../assets/scss/global.scss';
-import 'sweetalert2/src/sweetalert2.scss';
-import '../../assets/scss/apps/homepage/default.scss';
+// import 'sweetalert2/src/sweetalert2.scss';
+// import '../../assets/scss/apps/homepage/default.scss';
 
-import '../../assets/scss/components/alert.scss';
+// import '../../assets/scss/components/alert.scss';
 
 //load redux
 import { connect } from 'react-redux';
 import actions from '../../redux/actions';
 import pageActions from '../../redux/actions/pageActions';
+import userActions from '../../redux/actions/userActions';
 
 //load footer
 import Footer from '../../components/Includes/Footer/Default_v2';
@@ -163,5 +164,6 @@ class Default_v2 extends React.Component {
 
 export default connect(state => state, {
     ...actions,
-    ...pageActions
+    ...pageActions,
+    ...userActions
 })(withRouter(Default_v2));
