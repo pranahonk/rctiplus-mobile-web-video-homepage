@@ -307,6 +307,24 @@ class LiveEvent extends React.Component {
 		});
 
 		this.player.on('ready', () => {
+			conviva.updatePlayerAssetMetadata(this, {
+				playerType: 'JWPlayer',
+				content_type: type,
+				program_id: id,
+				program_name: name,
+				date_video: 'N/A',
+				time_video: 'N/A',
+				page_title: 'N/A',
+				genre: 'N/A',
+				page_view: 'N/A',
+				app_version: 'N/A',
+				group_content_page_title: 'N/A',
+				group_content_name: 'N/A',
+				exclusive_tab_name: 'N/A',
+				asset_name: this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming',
+				content_name: this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'
+			});
+
 			if (isIOS) {
 				let elementJwplayerInit = document.querySelector(`#${playerId} > .jw-wrapper`);
 				let elementCreateWrapper = document.createElement('btn');
@@ -366,21 +384,21 @@ class LiveEvent extends React.Component {
 		});
 
 		this.player.on('play', () => {
-			conviva.updatePlayerAssetMetadata(this, {
-				playerType: 'JWPlayer',
-				content_type: type,
-				program_id: id,
-				program_name: name,
-				date_video: 'N/A',
-				time_video: 'N/A',
-				page_title: 'N/A',
-				genre: 'N/A',
-				page_view: 'N/A',
-				app_version: 'N/A',
-				group_content_page_title: 'N/A',
-				group_content_name: 'N/A',
-				exclusive_tab_name: 'N/A'
-			});
+			// conviva.updatePlayerAssetMetadata(this, {
+			// 	playerType: 'JWPlayer',
+			// 	content_type: type,
+			// 	program_id: id,
+			// 	program_name: name,
+			// 	date_video: 'N/A',
+			// 	time_video: 'N/A',
+			// 	page_title: 'N/A',
+			// 	genre: 'N/A',
+			// 	page_view: 'N/A',
+			// 	app_version: 'N/A',
+			// 	group_content_page_title: 'N/A',
+			// 	group_content_name: 'N/A',
+			// 	exclusive_tab_name: 'N/A'
+			// });
 		});
 	}
 
