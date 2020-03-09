@@ -779,13 +779,8 @@ class Tv extends React.Component {
 							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
 						: null}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
-<<<<<<< HEAD
-						<div className="box-chat" style={this.state.chat_open ?
-							(isIOS ?
-								{ height: 'calc(100vh - 363px)' } :
-								{ height: 'calc(100vh - 263px)' })
-							: null}>
-							<div className="wrap-live-chat__block" style= { this.state.block_user.status ? { display: 'flex' } : { display : 'none' }}>
+						<div className="box-chat" style={{ height: 300 }}>
+						<div className="wrap-live-chat__block" style= { this.state.block_user.status ? { display: 'flex' } : { display : 'none' }}>
 								<div className="block_chat" style = { this.state.chat_open ? { display: 'block' } : { display : 'none' } }>
 									<div>
 										<MuteChat className="icon-block__chat" />
@@ -794,9 +789,6 @@ class Tv extends React.Component {
 									</div>
 								</div>
 							</div>
-=======
-						<div className="box-chat" style={{ height: 300 }}>
->>>>>>> fb8ecf22c88c0fe7b92cb64fa2c4cde81cc2345a
 							<div className="chat-messages" id="chat-messages">
 								{this.state.chats.map((chat, i) => (
 									<Row key={i} className="chat-line">
