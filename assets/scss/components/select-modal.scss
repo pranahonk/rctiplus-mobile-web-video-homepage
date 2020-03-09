@@ -29,12 +29,13 @@
 }
 
 .season-list {
-    height: 70%;
+    height: 100vh;
     padding: 20px;
     overflow-y: scroll;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 .season-list h4 {

@@ -40,7 +40,7 @@ import { BASE_URL, SITEMAP } from '../config';
 import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
-import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked } from '../utils/appier';
+import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId } from '../utils/appier';
 
 const innerHeight = require('ios-inner-height');
 
@@ -224,32 +224,61 @@ class Tv extends React.Component {
 		});
 
 		const self = this;
+		this.player.on('firstFrame', () => {
+			switch (this.state.selected_tab) {
+				case 'live':
+					const currentEpg = self.getCurrentLiveEpg();
+					if (currentEpg != null) {
+						conviva.startMonitoring(self);
+						const assetMetadata = {
+							viewer_id: getUserId(),
+							application_name: 'RCTI+ MWEB',
+							asset_cdn: 'Conversant',
+							version: process.env.VERSION,
+							start_session: 0,
+							playerVersion: process.env.PLAYER_VERSION,
+							tv_id: this.state.selected_live_event.id,
+							tv_name: this.state.channel_code.toUpperCase(),
+							content_id: currentEpg.id,
+							asset_name: this.state.channel_code.toUpperCase()
+						};
+						console.log('FIRST FRAME CONVIVA', assetMetadata);
+						conviva.updatePlayerAssetMetadata(self, assetMetadata);
+					}
+					break;
+
+				case 'catch_up_tv':
+					break;
+			}
+		});
+
 		this.player.on('play', () => {
 			if (this.state.selected_tab === 'live') {
 				const currentEpg = self.getCurrentLiveEpg();
 				if (currentEpg != null) {
-					console.log(this.state.channel_code.toUpperCase());
-					conviva.updatePlayerAssetMetadata(this, {
+					const assetMetadata = {
 						playerType: 'JWPlayer',
-						content_type: 'N/A',
+						content_type: 'Live TV',
 						program_id: currentEpg.id,
 						program_name: currentEpg.title,
+						asset_name: this.state.channel_code.toUpperCase(),
 						date_video: 'N/A',
 						time_video: 'N/A',
 						page_title: 'N/A',
-						genre: 'N/A',
+						genre: 'Live TV',
 						page_view: 'N/A',
 						app_version: 'N/A',
 						group_content_page_title: 'N/A',
 						group_content_name: 'N/A',
-						exclusive_tab_name: 'N/A',
-						asset_name: this.state.channel_code.toUpperCase()
-					});
+						exclusive_tab_name: 'N/A'
+					};
+					console.log(assetMetadata);
+					conviva.updatePlayerAssetMetadata(self, assetMetadata);
 				}
 			}
 			else if (this.state.selected_tab === 'catch_up_tv') {
 				if (this.state.selected_catchup) {
-					conviva.updatePlayerAssetMetadata(this, {
+					conviva.updatePlayerAssetMetadata(self, {
 						playerType: 'JWPlayer',
 						content_type: 'N/A',
 						program_id: this.state.selected_catchup.id,
@@ -336,19 +365,19 @@ class Tv extends React.Component {
 	}
 	statusChatBlock(id) {
 		this.props.getLiveChatBlock(id)
-		.then(res => {
+			.then(res => {
 				this.setState({
 					block_user: {
 						status: res.data.status.code === 0 ? false : true,
 						message: res.data.status.message_client,
 					},
 				});
-				
-			console.log('state:',this.state.block_user);
-		})
-		.catch((error) => {
-			console.log(error);
-		});
+
+				console.log('state:', this.state.block_user);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
 	}
 	selectChannel(index, first = false) {
 		this.props.setPageLoader();
@@ -781,12 +810,12 @@ class Tv extends React.Component {
 						: null}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
 						<div className="box-chat" style={{ height: 300 }}>
-						<div className="wrap-live-chat__block" style= { this.state.block_user.status ? { display: 'flex' } : { display : 'none' }}>
-								<div className="block_chat" style = { this.state.chat_open ? { display: 'block' } : { display : 'none' } }>
+							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
+								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
 									<div>
 										<MuteChat className="icon-block__chat" />
 										<p>Sorry, you cannot send the message</p>
-										<span>{ this.state.block_user.message }</span>
+										<span>{this.state.block_user.message}</span>
 									</div>
 								</div>
 							</div>

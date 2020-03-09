@@ -4,7 +4,7 @@ import { formatDateTime } from '../utils/dateHelpers';
 const jwtDecode = require('jwt-decode');
 const TOKEN_KEY = 'ACCESS_TOKEN';
 
-const getUserId = () => {
+export const getUserId = () => {
     const accessToken = getCookie(TOKEN_KEY);
     let userId = new DeviceUUID().get();
     if (accessToken) {
