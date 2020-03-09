@@ -301,7 +301,13 @@ class Tv extends React.Component {
 											chats.push(change.doc.data());
 										}
 
-										this.setState({ chats: chats });
+										this.setState({ chats: chats }, () => {
+											const chatBox = document.getElementById('chat-messages');
+											chatBox.scrollTop = chatBox.scrollHeight;
+
+											const chatInput = document.getElementById('chat-input');
+											chatInput.style.height = `24px`;
+										});
 									}
 								}
 
