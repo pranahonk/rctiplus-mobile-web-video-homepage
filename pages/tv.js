@@ -779,7 +779,7 @@ class Tv extends React.Component {
 							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
 						: null}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
-						<div className="box-chat" style={{ height: 200 }}>
+						<div className="box-chat" style={{ height: 300 }}>
 						<div className="wrap-live-chat__block" style= { this.state.block_user.status ? { display: 'flex' } : { display : 'none' }}>
 								<div className="block_chat" style = { this.state.chat_open ? { display: 'block' } : { display : 'none' } }>
 									<div>
