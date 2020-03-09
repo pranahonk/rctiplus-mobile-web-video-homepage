@@ -344,6 +344,7 @@ class Tv extends React.Component {
 				});
 				
 			console.log('state:',this.state.block_user);
+			console.log('MERGE BRANCH');
 		})
 		.catch((error) => {
 			console.log(error);
