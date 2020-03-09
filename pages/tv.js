@@ -149,6 +149,9 @@ class Tv extends React.Component {
 	}
 
 	initVOD() {
+		if (this.player) {
+			this.player.remove();
+		}
 		const playerId = 'live-tv-player';
 		this.player = window.jwplayer(playerId);
 		this.player.setup({
@@ -224,12 +227,13 @@ class Tv extends React.Component {
 		});
 
 		const self = this;
-		this.player.on('firstFrame', () => {
-			switch (this.state.selected_tab) {
+		this.player.on('firstFrame', function() {
+			const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
+			switch (self.state.selected_tab) {	
 				case 'live':
 					const currentEpg = self.getCurrentLiveEpg();
 					if (currentEpg != null) {
-						conviva.startMonitoring(self);
+						conviva.startMonitoring(this);
 						const assetMetadata = {
 							viewer_id: getUserId(),
 							application_name: 'RCTI+ MWEB',
@@ -237,23 +241,39 @@ class Tv extends React.Component {
 							version: process.env.VERSION,
 							start_session: 0,
 							playerVersion: process.env.PLAYER_VERSION,
-							tv_id: this.state.selected_live_event.id,
-							tv_name: this.state.channel_code.toUpperCase(),
+							tv_id: self.state.selected_live_event.id,
+							tv_name: assetName.toUpperCase(),
 							content_id: currentEpg.id,
-							asset_name: this.state.channel_code.toUpperCase()
+							asset_name: assetName.toUpperCase()
 						};
 						console.log('FIRST FRAME CONVIVA', assetMetadata);
-						conviva.updatePlayerAssetMetadata(self, assetMetadata);
+						conviva.updatePlayerAssetMetadata(this, assetMetadata);
 					}
 					break;
 
 				case 'catch_up_tv':
+					conviva.startMonitoring(this);
+						const assetMetadata = {
+							viewer_id: getUserId(),
+							application_name: 'RCTI+ MWEB',
+							asset_cdn: 'Conversant',
+							version: process.env.VERSION,
+							start_session: 0,
+							playerVersion: process.env.PLAYER_VERSION,
+							tv_id: self.state.selected_live_event.id,
+							tv_name: assetName.toUpperCase(),
+							content_id: currentEpg.id,
+							asset_name: assetName.toUpperCase()
+						};
+						console.log('FIRST FRAME CONVIVA', assetMetadata);
+						conviva.updatePlayerAssetMetadata(this, assetMetadata);
 					break;
 			}
 		});
 
-		this.player.on('play', () => {
-			if (this.state.selected_tab === 'live') {
+		this.player.on('play', function() {
+			const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
+			if (self.state.selected_tab === 'live') {
 				const currentEpg = self.getCurrentLiveEpg();
 				if (currentEpg != null) {
 					const assetMetadata = {
@@ -261,7 +281,7 @@ class Tv extends React.Component {
 						content_type: 'Live TV',
 						program_id: currentEpg.id,
 						program_name: currentEpg.title,
-						asset_name: this.state.channel_code.toUpperCase(),
+						asset_name: assetName.toUpperCase(),
 						date_video: 'N/A',
 						time_video: 'N/A',
 						page_title: 'N/A',
@@ -273,16 +293,16 @@ class Tv extends React.Component {
 						exclusive_tab_name: 'N/A'
 					};
 					console.log(assetMetadata);
-					conviva.updatePlayerAssetMetadata(self, assetMetadata);
+					conviva.updatePlayerAssetMetadata(this, assetMetadata);
 				}
 			}
-			else if (this.state.selected_tab === 'catch_up_tv') {
-				if (this.state.selected_catchup) {
-					conviva.updatePlayerAssetMetadata(self, {
+			else if (self.state.selected_tab === 'catch_up_tv') {
+				if (self.state.selected_catchup) {
+					conviva.updatePlayerAssetMetadata(this, {
 						playerType: 'JWPlayer',
 						content_type: 'N/A',
-						program_id: this.state.selected_catchup.id,
-						program_name: this.state.selected_catchup.title,
+						program_id: self.state.selected_catchup.id,
+						program_name: self.state.selected_catchup.title,
 						date_video: 'N/A',
 						time_video: 'N/A',
 						page_title: 'N/A',
@@ -292,10 +312,10 @@ class Tv extends React.Component {
 						group_content_page_title: 'N/A',
 						group_content_name: 'N/A',
 						exclusive_tab_name: 'N/A',
-						asset_name: this.state.selected_catchup.title
+						asset_name: self.state.selected_catchup.title
 					});
 
-					liveTvCatchupSchedulePlay(this.state.selected_date, this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, this.state.selected_catchup.title, 'mweb_livetv_catchup_schedule_play');
+					liveTvCatchupSchedulePlay(self.state.selected_date, self.state.live_events[self.state.selected_index].id, self.state.live_events[self.state.selected_index].name, self.state.selected_catchup.title, 'mweb_livetv_catchup_schedule_play');
 				}
 			}
 		});
