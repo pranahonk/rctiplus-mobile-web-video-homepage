@@ -189,8 +189,9 @@ class Detail extends React.Component {
                                 {this.state.trending_related.map((tr, i) => (
                                     <Col xs={6} key={i}>
                                         <div onClick={() => this.goToDetail(tr)}><Img className="box-img-trending" 
-                                        unloader={<img className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
-										loader={<img className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
+                                        alt={tr.title}
+                                        unloader={<img alt={tr.title} className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
+										loader={<img alt={tr.title} className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
                                         src={[tr.cover, '/static/placeholders/placeholder_potrait.png']} /><div className="font-trending-title-trending-default" dangerouslySetInnerHTML={{ __html: `${tr.title.substring(0, 35)}...` }}></div></div>
                                     </Col>
                                 ))}
