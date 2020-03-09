@@ -307,25 +307,6 @@ class LiveEvent extends React.Component {
 		});
 
 		this.player.on('ready', () => {
-			console.log(this.props.selected_event.data);
-			conviva.updatePlayerAssetMetadata(this, {
-				playerType: 'JWPlayer',
-				content_type: type,
-				program_id: id,
-				program_name: name,
-				date_video: 'N/A',
-				time_video: 'N/A',
-				page_title: 'N/A',
-				genre: 'N/A',
-				page_view: 'N/A',
-				app_version: 'N/A',
-				group_content_page_title: 'N/A',
-				group_content_name: 'N/A',
-				exclusive_tab_name: 'N/A',
-				asset_name: this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming',
-				content_name: this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'
-			});
-
 			if (isIOS) {
 				let elementJwplayerInit = document.querySelector(`#${playerId} > .jw-wrapper`);
 				let elementCreateWrapper = document.createElement('btn');
@@ -378,28 +359,51 @@ class LiveEvent extends React.Component {
 				screen.orientation.lock("portrait-primary")
 			}
 		});
-		this.player.on('firstFrame', () => {
-			if (this.reference && this.homepageTitle && this.reference == 'homepage') {
-				contentGeneralEvent(this.homepageTitle, type, id, name, 'N/A', 'N/A', this.state.meta.image_path + this.state.resolution + portrait_image, 'N/A', 'mweb_homepage_live_event_play');
+
+		const self = this;
+		this.player.on('firstFrame', function() {
+			if (self.reference && self.homepageTitle && self.reference == 'homepage') {
+				contentGeneralEvent(self.homepageTitle, type, id, name, 'N/A', 'N/A', self.state.meta.image_path + self.state.resolution + portrait_image, 'N/A', 'mweb_homepage_live_event_play');
 			}
+
+			console.log(self.props.selected_event.data);
+			conviva.updatePlayerAssetMetadata(this, {
+				playerType: 'JWPlayer',
+				content_type: type,
+				program_id: id,
+				program_name: name,
+				date_video: 'N/A',
+				time_video: 'N/A',
+				page_title: 'N/A',
+				genre: 'N/A',
+				page_view: 'N/A',
+				app_version: 'N/A',
+				group_content_page_title: 'N/A',
+				group_content_name: 'N/A',
+				exclusive_tab_name: 'N/A',
+				asset_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming',
+				content_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming'
+			});
 		});
 
-		this.player.on('play', () => {
-			// conviva.updatePlayerAssetMetadata(this, {
-			// 	playerType: 'JWPlayer',
-			// 	content_type: type,
-			// 	program_id: id,
-			// 	program_name: name,
-			// 	date_video: 'N/A',
-			// 	time_video: 'N/A',
-			// 	page_title: 'N/A',
-			// 	genre: 'N/A',
-			// 	page_view: 'N/A',
-			// 	app_version: 'N/A',
-			// 	group_content_page_title: 'N/A',
-			// 	group_content_name: 'N/A',
-			// 	exclusive_tab_name: 'N/A'
-			// });
+		this.player.on('play', function() {
+			conviva.updatePlayerAssetMetadata(this, {
+				playerType: 'JWPlayer',
+				content_type: type,
+				program_id: id,
+				program_name: name,
+				date_video: 'N/A',
+				time_video: 'N/A',
+				page_title: 'N/A',
+				genre: 'N/A',
+				page_view: 'N/A',
+				app_version: 'N/A',
+				group_content_page_title: 'N/A',
+				group_content_name: 'N/A',
+				exclusive_tab_name: 'N/A',
+				asset_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming',
+				content_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming'
+			});
 		});
 	}
 

@@ -166,8 +166,6 @@ class Content extends React.Component {
         });
 
         this.player.on('firstFrame', () => {
-            console.log('FIRST FRAME', this.state.start_duration);
-            console.log(content.data);
             conviva.startMonitoring(this);
             conviva.updatePlayerAssetMetadata(this, {
                 viewer_id: Math.random().toString().substr(2, 9),
