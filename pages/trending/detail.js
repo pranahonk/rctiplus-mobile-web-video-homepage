@@ -192,7 +192,7 @@ class Detail extends React.Component {
                                         alt={tr.title}
                                         unloader={<img alt={tr.title} className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
 										loader={<img alt={tr.title} className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
-                                        src={[tr.cover, '/static/placeholders/placeholder_potrait.png']} /><div className="font-trending-title-trending-default" dangerouslySetInnerHTML={{ __html: `${tr.title.substring(0, 35)}...` }}></div></div>
+                                        src={[tr.cover, '/static/placeholders/placeholder_potrait.png']} /><h2 className="font-trending-title-trending-default" dangerouslySetInnerHTML={{ __html: `${tr.title.substring(0, 35)}...` }}></h2></div>
                                     </Col>
                                 ))}
                                 
