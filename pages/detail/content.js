@@ -165,18 +165,19 @@ class Content extends React.Component {
             });
         });
 
-        this.player.on('firstFrame', () => {
+        const self = this;
+        this.player.on('firstFrame', function() {
             conviva.startMonitoring(this);
             conviva.updatePlayerAssetMetadata(this, {
                 viewer_id: Math.random().toString().substr(2, 9),
                 application_name: 'MWEB',
                 asset_cdn: 'Conversant',
                 version: process.env.VERSION,
-                start_session: this.state.start_duration,
+                start_session: self.state.start_duration,
                 playerVersion: process.env.PLAYER_VERSION,
                 tv_id: content ? content.tv_id : 'N/A',
                 tv_name: content ? content.tv_name : 'N/A',
-                content_id: this.props.context_data.content_id ? this.props.context_data.content_id : 'N/A',
+                content_id: self.props.context_data.content_id ? self.props.context_data.content_id : 'N/A',
                 asset_name: content && content.data ? content.data.content_name : 'N/A'
             });
         });
@@ -218,7 +219,7 @@ class Content extends React.Component {
 			// }
 		});
 
-        this.player.on('play', () => {
+        this.player.on('play', function() {
             conviva.updatePlayerAssetMetadata(this, {
                 playerType: 'JWPlayer',
                 content_type: content && content.data ? content.data.content_type : 'N/A',
@@ -242,40 +243,40 @@ class Content extends React.Component {
             }
 
             setInterval(() => {
-                this.setState({ end_duration: this.player.getPosition() });
-                if (this.reference) {
-                    const data = this.props.context_data;
+                self.setState({ end_duration: self.player.getPosition() });
+                if (self.reference) {
+                    const data = self.props.context_data;
                     if (data) {
-                        switch (this.reference) {
+                        switch (self.reference) {
                             case 'homepage_program':
-                                programContentPlayEvent(data.id, data.title, data.content_id, data.content_title, data.type, this.player.getPosition(), content.data.duration, 'mweb_homepage_program_content_play');
+                                programContentPlayEvent(data.id, data.title, data.content_id, data.content_title, data.type, self.player.getPosition(), content.data.duration, 'mweb_homepage_program_content_play');
                                 break;
 
                             case 'exclusive_program':
                                 break;
 
                             case 'mylist_program':
-                                accountMylistContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_account_mylist_content_play');
+                                accountMylistContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), self.props.content.meta.image_path + '593' + self.props.content.data.portrait_image, self.props.content.meta.image_path + '593' + self.props.content.data.landscape_image, self.player.getPosition(), content.data.duration, 'mweb_account_mylist_content_play');
                                 break;
 
                             case 'library_program':
-                                libraryProgramContentPlayEvent(content.data.program_title, content.data.program_id, data.content_title, data.type, data.content_id, this.player.getPosition(), content.data.duration, 'mweb_library_program_content_play');
+                                libraryProgramContentPlayEvent(content.data.program_title, content.data.program_id, data.content_title, data.type, data.content_id, self.player.getPosition(), content.data.duration, 'mweb_library_program_content_play');
                                 break;
 
                             case 'search_program':
-                                searchProgramContentPlayEvent(data.program_id, content.data.program_title, data.content_title, data.type, data.content_id, this.player.getPosition(), content.data.duration, 'mweb_search_program_content_play');
+                                searchProgramContentPlayEvent(data.program_id, content.data.program_title, data.content_title, data.type, data.content_id, self.player.getPosition(), content.data.duration, 'mweb_search_program_content_play');
                                 break;
 
                             case 'homepage':
-                                homepageContentPlayEvent(this.homepageTitle ? this.homepageTitle : 'N/A', data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_homepage_content_play');
+                                homepageContentPlayEvent(self.homepageTitle ? self.homepageTitle : 'N/A', data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), self.props.content.meta.image_path + '593' + self.props.content.data.portrait_image, self.props.content.meta.image_path + '593' + self.props.content.data.landscape_image, self.player.getPosition(), content.data.duration, 'mweb_homepage_content_play');
                                 break;
 
                             case 'history':
-                                accountHistoryContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_account_history_content_play');
+                                accounselftoryContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), self.props.content.meta.image_path + '593' + self.props.content.data.portrait_image, self.props.content.meta.image_path + '593' + self.props.content.data.landscape_image, self.player.getPosition(), content.data.duration, 'mweb_account_history_content_play');
                                 break;
 
                             case 'continue_watching':
-                                accountContinueWatchingContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image, this.props.content.meta.image_path + '593' + this.props.content.data.landscape_image, this.player.getPosition(), content.data.duration, 'mweb_account_continue_watching_content_play');
+                                accountContinueWatchingContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), self.props.content.meta.image_path + '593' + self.props.content.data.portrait_image, self.props.content.meta.image_path + '593' + self.props.content.data.landscape_image, self.player.getPosition(), content.data.duration, 'mweb_account_continue_watching_content_play');
                                 break;
                         }
                     }
@@ -286,7 +287,7 @@ class Content extends React.Component {
             setInterval(() => {
                 console.log('POST HISTORY');
 
-                this.props.postHistory(this.props.context_data.content_id, this.props.context_data.type, this.player.getPosition())
+                self.props.postHistory(self.props.context_data.content_id, self.props.context_data.type, self.player.getPosition())
                     .then(response => {
                         // console.log(response);
                     })

@@ -101,6 +101,27 @@ class PlayerModal extends React.Component {
 				});
 			}
         });
+
+        const self = this;
+        this.player.on('firstFrame', function() {
+            conviva.startMonitoring(this);
+            conviva.updatePlayerAssetMetadata(this, {
+                playerType: 'JWPlayer',
+                content_type: 'Program',
+                program_id: self.props.program ? self.props.program.id : 'N/A',
+                program_name: self.props.program ? self.props.program.title : 'N/A',
+                date_video: 'N/A',
+                time_video: 'N/A',
+                page_title: 'N/A',
+                genre: self.props.program ? self.props.program.genre : 'N/A',
+                page_view: 'N/A',
+                app_version: 'N/A',
+                group_content_page_title: 'N/A',
+                group_content_name: 'N/A',
+                exclusive_tab_name: 'N/A',
+                asset_name: self.props.program ? self.props.program.title : 'N/A'
+            });
+        });
         
         this.player.on('setupError', error => {
             console.log('SETUP ERROR');
@@ -119,25 +140,42 @@ class PlayerModal extends React.Component {
             });
         });
 
-        this.player.on('play', () => {
-            this.intervalFn = setInterval(() => {
-                if (this.props.program) {
-                    if (this.reference) {
-                        switch (this.reference) {
+        this.player.on('play', function() {
+            conviva.updatePlayerAssetMetadata(this, {
+                playerType: 'JWPlayer',
+                content_type: 'Program',
+                program_id: self.props.program ? self.props.program.id : 'N/A',
+                program_name: self.props.program ? self.props.program.title : 'N/A',
+                date_video: 'N/A',
+                time_video: 'N/A',
+                page_title: 'N/A',
+                genre: self.props.program ? self.props.program.genre : 'N/A',
+                page_view: 'N/A',
+                app_version: 'N/A',
+                group_content_page_title: 'N/A',
+                group_content_name: 'N/A',
+                exclusive_tab_name: 'N/A',
+                asset_name: self.props.program ? self.props.program.title : 'N/A'
+            });
+
+            self.intervalFn = setInterval(() => {
+                if (self.props.program) {
+                    if (self.reference) {
+                        switch (self.reference) {
                             case 'library':
-                                libraryProgramTrailerPlayEvent(this.props.program.title, this.props.program.id, 'program', this.player.getPosition(), this.player.getDuration(), 'mweb_library_program_trailer_play');
+                                libraryProgramTrailerPlayEvent(self.props.program.title, self.props.program.id, 'program', self.player.getPosition(), self.player.getDuration(), 'mweb_library_program_trailer_play');
                                 break;
 
                             case 'search':
-                                searchProgramTrailerPlayEvent(this.props.program.id, this.props.program.title, 'program', this.player.getPosition(), this.player.getDuration(), 'mweb_search_program_trailer_play');
+                                searchProgramTrailerPlayEvent(self.props.program.id, self.props.program.title, 'program', self.player.getPosition(), self.player.getDuration(), 'mweb_search_program_trailer_play');
                                 break;
                         }
                     }
                     else {
-                        exclusiveContentPlayEvent(this.props.program.type, this.props.program.id, this.props.program.title, this.props.program.program_title, this.props.program.genre, this.props.meta.image_path + '300' + this.props.program.portrait_image, this.props.meta.image_path + '300' + this.props.program.landscape_image, this.player.getPosition(), this.player.getDuration(), 'mweb_exclusive_content_play');
+                        exclusiveContentPlayEvent(self.props.program.type, self.props.program.id, self.props.program.title, self.props.program.program_title, self.props.program.genre, self.props.meta.image_path + '300' + self.props.program.portrait_image, self.props.meta.image_path + '300' + self.props.program.landscape_image, self.player.getPosition(), self.player.getDuration(), 'mweb_exclusive_content_play');
                     }
-                    if (this.props.program.type) {
-                        this.props.postHistory(this.props.program.id, this.props.program.type, this.player.getPosition())
+                    if (self.props.program.type) {
+                        self.props.postHistory(self.props.program.id, self.props.program.type, self.player.getPosition())
                             .then(response => {
                                 // console.log(response);
                             })
