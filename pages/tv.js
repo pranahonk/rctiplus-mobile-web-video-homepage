@@ -228,6 +228,7 @@ class Tv extends React.Component {
 			if (this.state.selected_tab === 'live') {
 				const currentEpg = self.getCurrentLiveEpg();
 				if (currentEpg != null) {
+					console.log(this.state.channel_code.toUpperCase());
 					conviva.updatePlayerAssetMetadata(this, {
 						playerType: 'JWPlayer',
 						content_type: 'N/A',

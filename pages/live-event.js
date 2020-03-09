@@ -307,6 +307,7 @@ class LiveEvent extends React.Component {
 		});
 
 		this.player.on('ready', () => {
+			console.log(this.props.selected_event.data);
 			conviva.updatePlayerAssetMetadata(this, {
 				playerType: 'JWPlayer',
 				content_type: type,

@@ -167,6 +167,7 @@ class Content extends React.Component {
 
         this.player.on('firstFrame', () => {
             console.log('FIRST FRAME', this.state.start_duration);
+            console.log(content.data);
             conviva.startMonitoring(this);
             conviva.updatePlayerAssetMetadata(this, {
                 viewer_id: Math.random().toString().substr(2, 9),
@@ -177,7 +178,8 @@ class Content extends React.Component {
                 playerVersion: process.env.PLAYER_VERSION,
                 tv_id: content ? content.tv_id : 'N/A',
                 tv_name: content ? content.tv_name : 'N/A',
-                content_id: this.props.context_data.content_id ? this.props.context_data.content_id : 'N/A'
+                content_id: this.props.context_data.content_id ? this.props.context_data.content_id : 'N/A',
+                asset_name: content && content.data ? content.data.content_name : 'N/A'
             });
         });
 
@@ -221,9 +223,9 @@ class Content extends React.Component {
         this.player.on('play', () => {
             conviva.updatePlayerAssetMetadata(this, {
                 playerType: 'JWPlayer',
-                content_type: content ? content.content_type : 'N/A',
-                program_id: content ? content.program_id : 'N/A',
-                program_name: content ? content.program_title : 'N/A',
+                content_type: content && content.data ? content.data.content_type : 'N/A',
+                program_id: content && content.data ? content.data.program_id : 'N/A',
+                program_name: content && content.data ? content.data.program_title : 'N/A',
                 date_video: 'N/A',
                 time_video: 'N/A',
                 page_title: 'N/A',
@@ -232,7 +234,8 @@ class Content extends React.Component {
                 app_version: 'N/A',
                 group_content_page_title: 'N/A',
                 group_content_name: 'N/A',
-                exclusive_tab_name: 'N/A'
+                exclusive_tab_name: 'N/A',
+                asset_name: content && content.data ? content.data.content_name : 'N/A'
             });
 
             let genre = [];
