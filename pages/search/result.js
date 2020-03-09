@@ -99,6 +99,7 @@ class Result extends React.Component {
                                         
                                         {this.props.searches.search_results[i] && this.props.searches.search_results[i].status === 200 && this.props.searches.search_results[i].data.status.code === 0 && this.props.searches.search_results[i].data.data.map((c, i) => (
                                             <Col xs={4} key={i} onClick={this.link.bind(this, c, t)}>
+                                                <div className="new-label">{ c.label }</div>
                                                 <Img 
                                                     alt={c.title} 
                                                     className="content-image"
