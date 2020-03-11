@@ -86,7 +86,7 @@ class Crs_v2 extends Component {
                         {this.state.banner.map((b, i) => (
                             <div data-index={i} onClick={this.goToProgram.bind(this, b)} key={b.id} style={{ 
                                 width: '100%', 
-                                height: 320 
+                                minHeight: 320
                             }}>
                                 <Img 
                                     alt={b.title}
