@@ -215,17 +215,14 @@ class LiveEvent extends React.Component {
 			const chatBox = document.getElementById('chat-messages');
 			chatBox.scrollTop = chatBox.scrollHeight;
 			this.props.unsetPageLoader();
-			console.log(this.state.user_data);
 			if (true) {
 				this.props.listenChatMessages(id)
 					.then(collection => {
-						console.log(collection);
 						let snapshots = this.state.snapshots;
 						let snapshot = collection.onSnapshot(querySnapshot => {
 							querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
 								.map(change => {
 									let chats = this.state.chats;
-									console.log(chats);
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
@@ -276,7 +273,7 @@ class LiveEvent extends React.Component {
 		let portrait_image = '';
 		if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
 			url = this.props.selected_event_url.data.url;
-			vmap = this.props.selected_event_url.data.vmap;
+			vmap = this.props.selected_event_url.data[process.env.VMAP_KEY];
 			id = this.props.selected_event.data.id;
 			name = this.props.selected_event.data.name;
 			type = this.props.selected_event.data.type;
