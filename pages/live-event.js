@@ -215,9 +215,11 @@ class LiveEvent extends React.Component {
 			const chatBox = document.getElementById('chat-messages');
 			chatBox.scrollTop = chatBox.scrollHeight;
 			this.props.unsetPageLoader();
-			if (this.state.user_data) {
+			console.log(this.state.user_data);
+			if (true) {
 				this.props.listenChatMessages(id)
 					.then(collection => {
+						console.log(collection);
 						let snapshots = this.state.snapshots;
 						let snapshot = collection.onSnapshot(querySnapshot => {
 							querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
