@@ -173,20 +173,22 @@ class LiveEvent extends React.Component {
 			});
 	}
 	statusChatBlock(id) {
-		this.props.getLiveChatBlock(id)
-			.then(res => {
-				this.setState({
-					block_user: {
-						status: res.data.status.code === 0 ? false : true,
-						message: res.data.status.message_client,
-					},
-				});
+		// UNCOMMENT LAGI KALO UDAH
+		// this.props.getLiveChatBlock(id)
+		// 	.then(res => {
+		// 		console.log(res);
+		// 		this.setState({
+		// 			block_user: {
+		// 				status: res.data.status.code === 0 ? false : true,
+		// 				message: res.data.status.message_client,
+		// 			},
+		// 		});
 
-				console.log('state:', this.state.block_user);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+		// 		console.log('state:', this.state.block_user);
+		// 	})
+		// 	.catch((error) => {
+		// 		console.log(error);
+		// 	});
 	}
 
 	checkLogin() {
@@ -221,6 +223,7 @@ class LiveEvent extends React.Component {
 							querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
 								.map(change => {
 									let chats = this.state.chats;
+									console.log(chats);
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
