@@ -122,8 +122,22 @@ class Content extends React.Component {
             }
         }).seek(this.state.start_duration);
 
-        this.player.on('ready', () => {
-            // this.player.play();
+        const self = this;
+        this.player.on('ready', function() {
+            conviva.startMonitoring(this);
+            conviva.updatePlayerAssetMetadata(this, {
+                viewer_id: Math.random().toString().substr(2, 9),
+                application_name: 'MWEB',
+                asset_cdn: 'Conversant',
+                version: process.env.VERSION,
+                start_session: self.state.start_duration,
+                playerVersion: process.env.PLAYER_VERSION,
+                tv_id: content ? content.tv_id : 'N/A',
+                tv_name: content ? content.tv_name : 'N/A',
+                content_id: self.props.context_data.content_id ? self.props.context_data.content_id : 'N/A',
+                asset_name: content && content.data ? content.data.content_name : 'N/A'
+            });
+
             if (isIOS) {
 				let elementJwplayerInit = document.querySelector(`#${playerId} > .jw-wrapper`);
 				let elementCreateWrapper = document.createElement('btn');
@@ -165,23 +179,6 @@ class Content extends React.Component {
             });
         });
 
-        const self = this;
-        this.player.on('firstFrame', function() {
-            conviva.startMonitoring(this);
-            conviva.updatePlayerAssetMetadata(this, {
-                viewer_id: Math.random().toString().substr(2, 9),
-                application_name: 'MWEB',
-                asset_cdn: 'Conversant',
-                version: process.env.VERSION,
-                start_session: self.state.start_duration,
-                playerVersion: process.env.PLAYER_VERSION,
-                tv_id: content ? content.tv_id : 'N/A',
-                tv_name: content ? content.tv_name : 'N/A',
-                content_id: self.props.context_data.content_id ? self.props.context_data.content_id : 'N/A',
-                asset_name: content && content.data ? content.data.content_name : 'N/A'
-            });
-        });
-
         this.player.on('fullscreen', () => {
             if (screen.orientation.type === 'portrait-primary') {
                 if (document.documentElement.requestFullscreen) {
@@ -207,36 +204,9 @@ class Content extends React.Component {
                 screen.orientation.lock("portrait-primary");
                 this.setState({ hide_footer: true });
             }
-            // if (screen.orientation.type === 'portrait-primary') {
-			// 	document.querySelector("#app-jwplayer").requestFullscreen();
-            //     screen.orientation.lock("landscape-primary");
-                
-			// }
-			// if (screen.orientation.type === 'landscape-primary') {
-			// 	document.querySelector("#app-jwplayer").requestFullscreen();
-            //     screen.orientation.lock("portrait-primary");
-                
-			// }
 		});
 
         this.player.on('play', function() {
-            conviva.updatePlayerAssetMetadata(this, {
-                playerType: 'JWPlayer',
-                content_type: content && content.data ? content.data.content_type : 'N/A',
-                program_id: content && content.data ? content.data.program_id : 'N/A',
-                program_name: content && content.data ? content.data.program_title : 'N/A',
-                date_video: 'N/A',
-                time_video: 'N/A',
-                page_title: 'N/A',
-                genre: content && content.genre && content.genre.length > 0 ? content.genre[0].name : 'N/A',
-                page_view: 'N/A',
-                app_version: 'N/A',
-                group_content_page_title: 'N/A',
-                group_content_name: 'N/A',
-                exclusive_tab_name: 'N/A',
-                asset_name: content && content.data ? content.data.content_name : 'N/A'
-            });
-
             let genre = [];
             for (let i = 0; i < content.data.genre.length; i++) {
                 genre.push(content.data.genre[i].name);

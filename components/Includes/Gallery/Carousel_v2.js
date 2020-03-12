@@ -91,8 +91,8 @@ class Crs_v2 extends Component {
                                 <Img 
                                     alt={b.title}
                                     src={[`${this.state.meta.image_path + this.state.resolution + b.square_image}`, '/static/placeholders/placeholder_landscape.png']}
-                                    unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-									loader={<img src="/static/placeholders/placeholder_landscape.png"/>}/>
+                                    unloader={<img alt={b.title} src="/static/placeholders/placeholder_landscape.png"/>}
+									loader={<img alt={b.title} src="/static/placeholders/placeholder_landscape.png"/>}/>
                             </div>
                             ))}
                     </Carousel>

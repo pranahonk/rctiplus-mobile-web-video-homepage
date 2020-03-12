@@ -41,6 +41,8 @@ import { DEV_API, VISITOR_TOKEN } from '../config';
 import '../assets/scss/components/live-event.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
+import { getUserId } from '../utils/appier';
+
 const innerHeight = require('ios-inner-height');
 
 class LiveEvent extends React.Component {
@@ -147,10 +149,10 @@ class LiveEvent extends React.Component {
 	}
 
 	componentDidMount() {
-		this.initVOD();
 		this.props.getLiveEvent('non on air')
 			.then(response => {
 				this.setState({ live_events: response.data.data, meta: response.data.meta }, () => {
+					this.initVOD();
 					this.props.unsetPageLoader();
 				});
 			})
@@ -207,16 +209,6 @@ class LiveEvent extends React.Component {
 
 	loadChatMessages(id) {
 		this.props.setPageLoader();
-		// this.props.getChatMessages(id)
-		// 	.then(chats => {
-		// 		let sortedChats = chats.sort((a, b) => a.ts - b.ts);
-
-		// 	})
-		// 	.catch(error => {
-		// 		console.log(error);
-		// 		this.props.unsetPageLoader();
-		// 	});
-
 		this.setState({ chats: [] }, () => {
 			const chatBox = document.getElementById('chat-messages');
 			chatBox.scrollTop = chatBox.scrollHeight;
@@ -306,7 +298,25 @@ class LiveEvent extends React.Component {
 			}
 		});
 
-		this.player.on('ready', () => {
+		const self = this;
+		this.player.on('ready', function() {
+			conviva.startMonitoring(this);
+			const assetMetadata = {
+				viewer_id: getUserId(),
+				playerType: 'JWPlayer',
+				content_type: type,
+				content_id: id,
+				program_name: name,
+				application_name: 'RCTI+ MWEB',
+				asset_cdn: 'Conversant',
+				version: process.env.VERSION,
+				playerVersion: process.env.PLAYER_VERSION,
+				asset_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming',
+				content_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming'
+			};
+			console.log(assetMetadata);
+			conviva.updatePlayerAssetMetadata(this, assetMetadata);
+
 			if (isIOS) {
 				let elementJwplayerInit = document.querySelector(`#${playerId} > .jw-wrapper`);
 				let elementCreateWrapper = document.createElement('btn');
@@ -349,6 +359,7 @@ class LiveEvent extends React.Component {
 				error_data: error
 			});
 		});
+
 		this.player.on('fullscreen', () => {
 			if (screen.orientation.type === 'portrait-primary') {
 				document.querySelector("#live-event-player").requestFullscreen();
@@ -360,50 +371,11 @@ class LiveEvent extends React.Component {
 			}
 		});
 
-		const self = this;
-		this.player.on('firstFrame', function() {
-			if (self.reference && self.homepageTitle && self.reference == 'homepage') {
-				contentGeneralEvent(self.homepageTitle, type, id, name, 'N/A', 'N/A', self.state.meta.image_path + self.state.resolution + portrait_image, 'N/A', 'mweb_homepage_live_event_play');
+		
+		this.player.on('firstFrame', () => {
+			if (this.reference && this.homepageTitle && this.reference == 'homepage') {
+				contentGeneralEvent(this.homepageTitle, type, id, name, 'N/A', 'N/A', this.state.meta.image_path + this.state.resolution + portrait_image, 'N/A', 'mweb_homepage_live_event_play');
 			}
-
-			console.log(self.props.selected_event.data);
-			conviva.updatePlayerAssetMetadata(this, {
-				playerType: 'JWPlayer',
-				content_type: type,
-				program_id: id,
-				program_name: name,
-				date_video: 'N/A',
-				time_video: 'N/A',
-				page_title: 'N/A',
-				genre: 'N/A',
-				page_view: 'N/A',
-				app_version: 'N/A',
-				group_content_page_title: 'N/A',
-				group_content_name: 'N/A',
-				exclusive_tab_name: 'N/A',
-				asset_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming',
-				content_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming'
-			});
-		});
-
-		this.player.on('play', function() {
-			conviva.updatePlayerAssetMetadata(this, {
-				playerType: 'JWPlayer',
-				content_type: type,
-				program_id: id,
-				program_name: name,
-				date_video: 'N/A',
-				time_video: 'N/A',
-				page_title: 'N/A',
-				genre: 'N/A',
-				page_view: 'N/A',
-				app_version: 'N/A',
-				group_content_page_title: 'N/A',
-				group_content_name: 'N/A',
-				exclusive_tab_name: 'N/A',
-				asset_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming',
-				content_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming'
-			});
 		});
 	}
 

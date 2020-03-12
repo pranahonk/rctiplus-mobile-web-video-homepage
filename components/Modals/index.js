@@ -76,7 +76,26 @@ class PlayerModal extends React.Component {
 			}
         });
 
-        this.player.on('ready', () => {
+        const self = this;
+        this.player.on('ready', function() {
+            conviva.startMonitoring(this);
+            conviva.updatePlayerAssetMetadata(this, {
+                playerType: 'JWPlayer',
+                content_type: 'Program',
+                program_id: self.props.program ? self.props.program.id : 'N/A',
+                program_name: self.props.program ? self.props.program.title : 'N/A',
+                date_video: 'N/A',
+                time_video: 'N/A',
+                page_title: 'N/A',
+                genre: self.props.program ? self.props.program.genre : 'N/A',
+                page_view: 'N/A',
+                app_version: 'N/A',
+                group_content_page_title: 'N/A',
+                group_content_name: 'N/A',
+                exclusive_tab_name: 'N/A',
+                asset_name: self.props.program ? self.props.program.title : 'N/A'
+            });
+
             if (isIOS) {
 				let elementJwplayerInit = document.querySelector(`#${this.props.playerId} > .jw-wrapper`);
 				let elementCreateWrapper = document.createElement('btn');
@@ -101,27 +120,6 @@ class PlayerModal extends React.Component {
 				});
 			}
         });
-
-        const self = this;
-        this.player.on('firstFrame', function() {
-            conviva.startMonitoring(this);
-            conviva.updatePlayerAssetMetadata(this, {
-                playerType: 'JWPlayer',
-                content_type: 'Program',
-                program_id: self.props.program ? self.props.program.id : 'N/A',
-                program_name: self.props.program ? self.props.program.title : 'N/A',
-                date_video: 'N/A',
-                time_video: 'N/A',
-                page_title: 'N/A',
-                genre: self.props.program ? self.props.program.genre : 'N/A',
-                page_view: 'N/A',
-                app_version: 'N/A',
-                group_content_page_title: 'N/A',
-                group_content_name: 'N/A',
-                exclusive_tab_name: 'N/A',
-                asset_name: self.props.program ? self.props.program.title : 'N/A'
-            });
-        });
         
         this.player.on('setupError', error => {
             console.log('SETUP ERROR');
@@ -141,23 +139,6 @@ class PlayerModal extends React.Component {
         });
 
         this.player.on('play', function() {
-            conviva.updatePlayerAssetMetadata(this, {
-                playerType: 'JWPlayer',
-                content_type: 'Program',
-                program_id: self.props.program ? self.props.program.id : 'N/A',
-                program_name: self.props.program ? self.props.program.title : 'N/A',
-                date_video: 'N/A',
-                time_video: 'N/A',
-                page_title: 'N/A',
-                genre: self.props.program ? self.props.program.genre : 'N/A',
-                page_view: 'N/A',
-                app_version: 'N/A',
-                group_content_page_title: 'N/A',
-                group_content_name: 'N/A',
-                exclusive_tab_name: 'N/A',
-                asset_name: self.props.program ? self.props.program.title : 'N/A'
-            });
-
             self.intervalFn = setInterval(() => {
                 if (self.props.program) {
                     if (self.reference) {

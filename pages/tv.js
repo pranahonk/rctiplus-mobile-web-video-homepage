@@ -172,7 +172,51 @@ class Tv extends React.Component {
 				hide: true
 			}
 		});
-		this.player.on('ready', () => {
+
+		const self = this;
+		this.player.on('ready', function() {
+			const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
+			switch (self.state.selected_tab) {	
+				case 'live':
+					const currentEpg = self.getCurrentLiveEpg();
+					if (currentEpg != null) {
+						conviva.startMonitoring(this);
+						const assetMetadata = {
+							viewer_id: getUserId(),
+							application_name: 'RCTI+ MWEB',
+							asset_cdn: 'Conversant',
+							version: process.env.VERSION,
+							start_session: 0,
+							playerVersion: process.env.PLAYER_VERSION,
+							tv_id: self.state.selected_live_event.id,
+							tv_name: assetName.toUpperCase(),
+							content_id: currentEpg.id,
+							asset_name: assetName.toUpperCase()
+						};
+						console.log('FIRST FRAME CONVIVA', assetMetadata);
+						conviva.updatePlayerAssetMetadata(this, assetMetadata);
+					}
+					break;
+
+				case 'catch_up_tv':
+					conviva.startMonitoring(this);
+						const assetMetadata = {
+							viewer_id: getUserId(),
+							application_name: 'RCTI+ MWEB',
+							asset_cdn: 'Conversant',
+							version: process.env.VERSION,
+							start_session: 0,
+							playerVersion: process.env.PLAYER_VERSION,
+							tv_id: self.state.selected_live_event.id,
+							tv_name: assetName.toUpperCase(),
+							content_id: currentEpg.id,
+							asset_name: assetName.toUpperCase()
+						};
+						console.log('FIRST FRAME CONVIVA', assetMetadata);
+						conviva.updatePlayerAssetMetadata(this, assetMetadata);
+					break;
+			}
+
 			if (isIOS) {
 				let elementJwplayerInit = document.querySelector(`#${playerId} > .jw-wrapper`);
 				let elementCreateWrapper = document.createElement('btn');
@@ -226,95 +270,9 @@ class Tv extends React.Component {
 			}
 		});
 
-		const self = this;
-		this.player.on('firstFrame', function() {
-			const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
-			switch (self.state.selected_tab) {	
-				case 'live':
-					const currentEpg = self.getCurrentLiveEpg();
-					if (currentEpg != null) {
-						conviva.startMonitoring(this);
-						const assetMetadata = {
-							viewer_id: getUserId(),
-							application_name: 'RCTI+ MWEB',
-							asset_cdn: 'Conversant',
-							version: process.env.VERSION,
-							start_session: 0,
-							playerVersion: process.env.PLAYER_VERSION,
-							tv_id: self.state.selected_live_event.id,
-							tv_name: assetName.toUpperCase(),
-							content_id: currentEpg.id,
-							asset_name: assetName.toUpperCase()
-						};
-						console.log('FIRST FRAME CONVIVA', assetMetadata);
-						conviva.updatePlayerAssetMetadata(this, assetMetadata);
-					}
-					break;
-
-				case 'catch_up_tv':
-					conviva.startMonitoring(this);
-						const assetMetadata = {
-							viewer_id: getUserId(),
-							application_name: 'RCTI+ MWEB',
-							asset_cdn: 'Conversant',
-							version: process.env.VERSION,
-							start_session: 0,
-							playerVersion: process.env.PLAYER_VERSION,
-							tv_id: self.state.selected_live_event.id,
-							tv_name: assetName.toUpperCase(),
-							content_id: currentEpg.id,
-							asset_name: assetName.toUpperCase()
-						};
-						console.log('FIRST FRAME CONVIVA', assetMetadata);
-						conviva.updatePlayerAssetMetadata(this, assetMetadata);
-					break;
-			}
-		});
-
 		this.player.on('play', function() {
-			const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
-			if (self.state.selected_tab === 'live') {
-				const currentEpg = self.getCurrentLiveEpg();
-				if (currentEpg != null) {
-					const assetMetadata = {
-						playerType: 'JWPlayer',
-						content_type: 'Live TV',
-						program_id: currentEpg.id,
-						program_name: currentEpg.title,
-						asset_name: assetName.toUpperCase(),
-						date_video: 'N/A',
-						time_video: 'N/A',
-						page_title: 'N/A',
-						genre: 'Live TV',
-						page_view: 'N/A',
-						app_version: 'N/A',
-						group_content_page_title: 'N/A',
-						group_content_name: 'N/A',
-						exclusive_tab_name: 'N/A'
-					};
-					console.log(assetMetadata);
-					conviva.updatePlayerAssetMetadata(this, assetMetadata);
-				}
-			}
-			else if (self.state.selected_tab === 'catch_up_tv') {
+			if (self.state.selected_tab === 'catch_up_tv') {
 				if (self.state.selected_catchup) {
-					conviva.updatePlayerAssetMetadata(this, {
-						playerType: 'JWPlayer',
-						content_type: 'N/A',
-						program_id: self.state.selected_catchup.id,
-						program_name: self.state.selected_catchup.title,
-						date_video: 'N/A',
-						time_video: 'N/A',
-						page_title: 'N/A',
-						genre: 'N/A',
-						page_view: 'N/A',
-						app_version: 'N/A',
-						group_content_page_title: 'N/A',
-						group_content_name: 'N/A',
-						exclusive_tab_name: 'N/A',
-						asset_name: self.state.selected_catchup.title
-					});
-
 					liveTvCatchupSchedulePlay(self.state.selected_date, self.state.live_events[self.state.selected_index].id, self.state.live_events[self.state.selected_index].name, self.state.selected_catchup.title, 'mweb_livetv_catchup_schedule_play');
 				}
 			}
@@ -323,16 +281,6 @@ class Tv extends React.Component {
 
 	loadChatMessages(id) {
 		this.props.setPageLoader();
-		// this.props.getChatMessages(id)
-		// 	.then(chats => {
-		// 		let sortedChats = chats.sort((a, b) => a.ts - b.ts);
-
-		// 	})
-		// 	.catch(error => {
-		// 		console.log(error);
-		// 		this.props.unsetPageLoader();
-		// 	});
-
 		this.setState({ chats: [] }, () => {
 			const chatBox = document.getElementById('chat-messages');
 			chatBox.scrollTop = chatBox.scrollHeight;
