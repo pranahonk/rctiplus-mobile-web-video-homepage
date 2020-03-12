@@ -285,7 +285,8 @@ class Tv extends React.Component {
 			const chatBox = document.getElementById('chat-messages');
 			chatBox.scrollTop = chatBox.scrollHeight;
 			this.props.unsetPageLoader();
-			this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
+			if (this.state.user_data) {
+				this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
 				.then(collection => {
 					let snapshots = this.state.snapshots;
 					let snapshot = collection.onSnapshot(querySnapshot => {
@@ -329,8 +330,11 @@ class Tv extends React.Component {
 					// snapshots[this.state.live_events[this.state.selected_index].id] = snapshot;
 					// this.setState({ snapshots: snapshots });
 				});
+			}
+			
 		});
 	}
+
 	statusChatBlock(id) {
 		this.props.getLiveChatBlock(id)
 			.then(res => {
@@ -347,6 +351,7 @@ class Tv extends React.Component {
 				console.log(error);
 			});
 	}
+
 	selectChannel(index, first = false) {
 		this.props.setPageLoader();
 		this.setState({ selected_index: index, error: false, chats: [] }, () => {

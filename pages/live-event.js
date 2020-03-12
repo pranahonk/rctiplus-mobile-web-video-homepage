@@ -174,19 +174,19 @@ class LiveEvent extends React.Component {
 	}
 	statusChatBlock(id) {
 		this.props.getLiveChatBlock(id)
-		.then(res => {
+			.then(res => {
 				this.setState({
 					block_user: {
 						status: res.data.status.code === 0 ? false : true,
 						message: res.data.status.message_client,
 					},
 				});
-				
-			console.log('state:',this.state.block_user);
-		})
-		.catch((error) => {
-			console.log(error);
-		});
+
+				console.log('state:', this.state.block_user);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
 	}
 
 	checkLogin() {
@@ -213,49 +213,52 @@ class LiveEvent extends React.Component {
 			const chatBox = document.getElementById('chat-messages');
 			chatBox.scrollTop = chatBox.scrollHeight;
 			this.props.unsetPageLoader();
-			this.props.listenChatMessages(id)
-				.then(collection => {
-					let snapshots = this.state.snapshots;
-					let snapshot = collection.onSnapshot(querySnapshot => {
-						querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
-							.map(change => {
-								let chats = this.state.chats;
-								if (change.type === 'added') {
-									if (!this.state.sending_chat) {
-										if (chats.length > 0) {
-											let lastChat = chats[chats.length - 1];
-											let newChat = change.doc.data();
-											if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-												chats.push(newChat);
+			if (this.state.user_data) {
+				this.props.listenChatMessages(id)
+					.then(collection => {
+						let snapshots = this.state.snapshots;
+						let snapshot = collection.onSnapshot(querySnapshot => {
+							querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
+								.map(change => {
+									let chats = this.state.chats;
+									if (change.type === 'added') {
+										if (!this.state.sending_chat) {
+											if (chats.length > 0) {
+												let lastChat = chats[chats.length - 1];
+												let newChat = change.doc.data();
+												if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+													chats.push(newChat);
+												}
+											}
+											else {
+												chats.push(change.doc.data());
+											}
+
+											const chatBox = document.getElementById('chat-messages');
+											chatBox.scrollTop = chatBox.scrollHeight;
+
+											const chatInput = document.getElementById('chat-input');
+											chatInput.style.height = `24px`;
+											this.setState({ chats: chats });
+										}
+									}
+
+									if (change.type === 'removed') {
+										let removed = change.doc.data();
+										for (let i = 0; i < chats.length; i++) {
+											if (chats[i].ts === removed.ts) {
+												chats.splice(i, 1);
 											}
 										}
-										else {
-											chats.push(change.doc.data());
-										}
-
-										const chatBox = document.getElementById('chat-messages');
-										chatBox.scrollTop = chatBox.scrollHeight;
-
-										const chatInput = document.getElementById('chat-input');
-										chatInput.style.height = `24px`;
 										this.setState({ chats: chats });
 									}
-								}
-
-								if (change.type === 'removed') {
-									let removed = change.doc.data();
-									for (let i = 0; i < chats.length; i++) {
-										if (chats[i].ts === removed.ts) {
-											chats.splice(i, 1);
-										}
-									}
-									this.setState({ chats: chats });
-								}
-							});
+								});
+						});
+						snapshots[id] = snapshot;
+						this.setState({ snapshots: snapshots });
 					});
-					snapshots[id] = snapshot;
-					this.setState({ snapshots: snapshots });
-				});
+			}
+
 		});
 	}
 
@@ -299,7 +302,7 @@ class LiveEvent extends React.Component {
 		});
 
 		const self = this;
-		this.player.on('ready', function() {
+		this.player.on('ready', function () {
 			conviva.startMonitoring(this);
 			const assetMetadata = {
 				viewer_id: getUserId(),
@@ -371,7 +374,7 @@ class LiveEvent extends React.Component {
 			}
 		});
 
-		
+
 		this.player.on('firstFrame', () => {
 			if (this.reference && this.homepageTitle && this.reference == 'homepage') {
 				contentGeneralEvent(this.homepageTitle, type, id, name, 'N/A', 'N/A', this.state.meta.image_path + this.state.resolution + portrait_image, 'N/A', 'mweb_homepage_live_event_play');
@@ -563,12 +566,12 @@ class LiveEvent extends React.Component {
 						: null}>
 						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
 						<div className="box-chat" style={{ height: 300 }}>
-							<div className="wrap-live-chat__block" style= { this.state.block_user.status ? { display: 'flex' } : { display : 'none' }}>
-								<div className="block_chat" style = { this.state.chat_open ? { display: 'block' } : { display : 'none' } }>
+							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
+								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
 									<div>
 										<MuteChat className="icon-block__chat" />
 										<p>Sorry, you cannot send the message</p>
-										<span>{ this.state.block_user.message }</span>
+										<span>{this.state.block_user.message}</span>
 									</div>
 								</div>
 							</div>
