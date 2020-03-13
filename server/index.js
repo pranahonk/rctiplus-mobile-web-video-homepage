@@ -136,9 +136,9 @@ const UIVersion = '2.0';
       })
     });
 
-    server.get('/trending', (req, res) => {
-      return app.render(req, res, '/trending_v2');
-    });
+    // server.get('/trending', (req, res) => {
+    //   return app.render(req, res, '/trending_v2');
+    // });
 
     // server.get('/trending/:subcategory_id/:subcategory_title', (req, res) => {
     //   return app.render(req, res, '/trending_v2', {

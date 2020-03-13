@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 
-// import '../../assets/scss/carousel.scss';
+import '../../../assets/scss/plugins/carousel/headline-carousel.scss';
 
 class HeadlineCarousel extends React.Component {
 

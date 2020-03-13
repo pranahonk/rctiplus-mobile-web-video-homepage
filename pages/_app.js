@@ -3,7 +3,7 @@ import App from 'next/app';
 import withRedux from 'next-redux-wrapper';
 import { register, unregister } from 'next-offline/runtime';
 import { initStore } from '../redux';
-import { setNewsToken, setVisitorToken, getVisitorToken } from '../utils/cookie';
+import { setVisitorTokenNews, setNewsTokenV2, setNewsToken, setVisitorToken, getVisitorToken } from '../utils/cookie';
 
 import 'sweetalert2/src/sweetalert2.scss';
 import '../assets/scss/apps/homepage/default.scss';
@@ -33,6 +33,10 @@ export default withRedux(initStore, { debug: false })(
 
             setVisitorToken();
             setNewsToken();
+
+            setVisitorTokenNews();
+            setNewsTokenV2();
+
             console.log('VISITOR TOKEN:', getVisitorToken());
             //console.log('NEWS TOKEN:', getNewsToken());
 
