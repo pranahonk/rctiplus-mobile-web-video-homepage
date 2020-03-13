@@ -285,25 +285,39 @@ class Tv extends React.Component {
 			const chatBox = document.getElementById('chat-messages');
 			chatBox.scrollTop = chatBox.scrollHeight;
 			this.props.unsetPageLoader();
-			if (this.state.user_data) {
+			if (true) {
+				let firstLoadChat = true;
 				this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
 				.then(collection => {
 					let snapshots = this.state.snapshots;
-					let snapshot = collection.onSnapshot(querySnapshot => {
-						querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
+					// .orderBy('ts', 'desc').limit(3).
+					let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
+						querySnapshot.docChanges()
 							.map(change => {
+								console.log(change.doc.data().ts)
 								let chats = this.state.chats;
+								console.log(`${change.type}: ${change.doc.data().m}`);
 								if (change.type === 'added') {
 									if (!this.state.sending_chat) {
 										if (chats.length > 0) {
 											let lastChat = chats[chats.length - 1];
 											let newChat = change.doc.data();
 											if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-												chats.push(newChat);
+												if (firstLoadChat) {
+													chats.unshift(newChat);
+												}
+												else {
+													chats.push(newChat);
+												}
 											}
 										}
 										else {
-											chats.push(change.doc.data());
+											if (firstLoadChat) {
+												chats.unshift(change.doc.data());
+											}
+											else {
+												chats.push(change.doc.data());
+											}
 										}
 
 										this.setState({ chats: chats }, () => {
@@ -316,16 +330,18 @@ class Tv extends React.Component {
 									}
 								}
 
-								if (change.type === 'removed') {
-									let removed = change.doc.data();
-									for (let i = 0; i < chats.length; i++) {
-										if (chats[i].ts === removed.ts) {
-											chats.splice(i, 1);
-										}
-									}
-									this.setState({ chats: chats });
-								}
+								// if (change.type === 'removed') {
+								// 	let removed = change.doc.data();
+								// 	for (let i = 0; i < chats.length; i++) {
+								// 		if (chats[i].ts === removed.ts) {
+								// 			chats.splice(i, 1);
+								// 		}
+								// 	}
+								// 	this.setState({ chats: chats });
+								// }
 							});
+
+						firstLoadChat = false;
 					});
 					// snapshots[this.state.live_events[this.state.selected_index].id] = snapshot;
 					// this.setState({ snapshots: snapshots });
@@ -363,7 +379,7 @@ class Tv extends React.Component {
 						selected_live_event: this.state.live_events[this.state.selected_index],
 						selected_live_event_url: res.data.data,
 						player_url: res.data.data.url,
-						player_vmap: res.data.data[process.env.VMAP_KEY]
+						player_vmap: res.data.data.vmap
 					}, () => {
 						this.initVOD();
 						this.props.setChannelCode(this.state.selected_live_event.channel_code);
@@ -439,7 +455,7 @@ class Tv extends React.Component {
 				if (response.status === 200 && response.data.status.code === 0) {
 					this.setState({
 						player_url: response.data.data.url,
-						player_vmap: response.data.data[process.env.VMAP_KEY],
+						player_vmap: response.data.data.vmap,
 						selected_catchup: response.data.data,
 						error: false
 					}, () => this.initVOD());

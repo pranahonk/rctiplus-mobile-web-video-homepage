@@ -216,11 +216,12 @@ class LiveEvent extends React.Component {
 			chatBox.scrollTop = chatBox.scrollHeight;
 			this.props.unsetPageLoader();
 			if (true) {
+				let firstLoadChat = true;
 				this.props.listenChatMessages(id)
 					.then(collection => {
 						let snapshots = this.state.snapshots;
-						let snapshot = collection.onSnapshot(querySnapshot => {
-							querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
+						let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
+							querySnapshot.docChanges()
 								.map(change => {
 									let chats = this.state.chats;
 									if (change.type === 'added') {
@@ -229,11 +230,21 @@ class LiveEvent extends React.Component {
 												let lastChat = chats[chats.length - 1];
 												let newChat = change.doc.data();
 												if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-													chats.push(newChat);
+													if (firstLoadChat) {
+														chats.unshift(newChat);
+													}
+													else {
+														chats.push(newChat);
+													}
 												}
 											}
 											else {
-												chats.push(change.doc.data());
+												if (firstLoadChat) {
+													chats.unshift(change.doc.data());
+												}
+												else {
+													chats.push(change.doc.data());
+												}
 											}
 
 											const chatBox = document.getElementById('chat-messages');
@@ -245,15 +256,15 @@ class LiveEvent extends React.Component {
 										}
 									}
 
-									if (change.type === 'removed') {
-										let removed = change.doc.data();
-										for (let i = 0; i < chats.length; i++) {
-											if (chats[i].ts === removed.ts) {
-												chats.splice(i, 1);
-											}
-										}
-										this.setState({ chats: chats });
-									}
+									// if (change.type === 'removed') {
+									// 	let removed = change.doc.data();
+									// 	for (let i = 0; i < chats.length; i++) {
+									// 		if (chats[i].ts === removed.ts) {
+									// 			chats.splice(i, 1);
+									// 		}
+									// 	}
+									// 	this.setState({ chats: chats });
+									// }
 								});
 						});
 						snapshots[id] = snapshot;
