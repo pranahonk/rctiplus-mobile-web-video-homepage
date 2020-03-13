@@ -1,0 +1,129 @@
+.channels-content {
+    margin-top: 70px;
+    margin-bottom: 30px;
+    
+    ul {
+        padding-left: 5px;
+        list-style: none;
+    }
+
+    .navigation-tabs {
+        overflow: auto;
+        display: block;
+        white-space: nowrap;
+        scrollbar-width: none;
+        border-bottom: none;
+        width: 100%;
+
+        .navigation-tabs-item {
+            display: inline-block;
+            width: 50%;
+            text-align: center;
+            padding-left: 5px;
+            padding-right: 5px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #979797;
+            font-size: 14px;
+
+            .item-link {
+                padding: 0;
+                color: #8f8f8f;
+            }
+
+            .item-link:hover {
+                border: transparent;
+            }
+        }
+
+        .active {
+            border-bottom: 2px solid #fa262f;
+            
+            .item-link {
+                color: white;
+                font-weight: 600;
+            }
+        }
+    }
+
+    .tab-content {
+        .tab-pane {
+            .add-channel-list {
+                .list-group-item {
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    border: none;
+                    padding-top: 0;
+                    padding-bottom: 0;
+                    padding-left: 10px;
+                    padding-right: 10px;
+    
+                    .text-container {
+                        width: 60%;
+                        padding: 5px;
+    
+                        .list-group-item-heading {
+                            color: #dadada;
+                            font-size: 14px;
+                            font-weight: 900;
+                            letter-spacing: 0.48px;
+                            margin-block-start: 1em;
+                            margin-block-end: 0;
+                        }
+        
+                        .list-group-item-text {
+                            color: #dadada;
+                            font-size: 12px;
+                            letter-spacing: 0.4px;
+                            margin-block-start: 0;
+                        }
+                    }
+    
+                    .button-container {
+                        width: 40%;
+                        padding: 10px;
+    
+                        .add-button {
+                            width: 100%;
+                            height: 30px;
+                            background: transparent;
+                            color: #f7b500;
+                            border: solid 1px #f7b500;
+                            border-radius: 8px;
+                            letter-spacing: 0.44px;
+                            font-size: 12px;
+                        }
+                    }
+                }
+            }
+
+            .edit-channel-list {
+                .list-group-item {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border: none;
+                    padding-left: 20px;
+                    padding-right: 20px;
+                    padding-top: 0;
+                    padding-bottom: 0;
+
+                    .list-group-item-heading {
+                        color: #dadada;
+                        font-size: 17px;
+                        letter-spacing: 0.48px;
+                        margin-block-start: 0.5em;
+                        margin-block-end: 0.5em;
+                    }
+
+                    .remove-container {
+                        .remove-button {
+                            width: 25px;
+                            height: 25px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

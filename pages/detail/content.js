@@ -306,14 +306,14 @@ class Content extends React.Component {
                     
                     this.setState({
                         player_url: content.data.url,
-                        player_vmap: content.data.vmap,
+                        player_vmap: content.data[process.env.VMAP_KEY],
                         start_duration: startDuration
                     }, () => this.initVOD());
                 })
                 .catch(() => {
                     this.setState({
                         player_url: content.data.url,
-                        player_vmap: content.data.vmap,
+                        player_vmap: content.data[process.env.VMAP_KEY],
                         start_duration: 0
                     }, () => this.initVOD());
                 });

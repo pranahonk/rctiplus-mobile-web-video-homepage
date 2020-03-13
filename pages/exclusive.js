@@ -261,7 +261,7 @@ class Exclusive extends React.Component {
 			let vmap = '';
 			if (data && data.status === 200 && data.data.status.code === 0) {
 				video_url = data.data.data.url;
-				vmap = data.data.data.vmap;
+				vmap = data.data.data[process.env.VMAP_KEY];
 			}
 
 			this.setState({ 

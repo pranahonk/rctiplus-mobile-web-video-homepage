@@ -215,28 +215,36 @@ class LiveEvent extends React.Component {
 			const chatBox = document.getElementById('chat-messages');
 			chatBox.scrollTop = chatBox.scrollHeight;
 			this.props.unsetPageLoader();
-			console.log(this.state.user_data);
 			if (true) {
+				let firstLoadChat = true;
 				this.props.listenChatMessages(id)
 					.then(collection => {
-						console.log(collection);
 						let snapshots = this.state.snapshots;
-						let snapshot = collection.onSnapshot(querySnapshot => {
-							querySnapshot.docChanges().slice(Math.max(querySnapshot.docChanges().length - 10, 0))
+						let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
+							querySnapshot.docChanges()
 								.map(change => {
 									let chats = this.state.chats;
-									console.log(chats);
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
 												let lastChat = chats[chats.length - 1];
 												let newChat = change.doc.data();
 												if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-													chats.push(newChat);
+													if (firstLoadChat) {
+														chats.unshift(newChat);
+													}
+													else {
+														chats.push(newChat);
+													}
 												}
 											}
 											else {
-												chats.push(change.doc.data());
+												if (firstLoadChat) {
+													chats.unshift(change.doc.data());
+												}
+												else {
+													chats.push(change.doc.data());
+												}
 											}
 
 											const chatBox = document.getElementById('chat-messages');
@@ -248,15 +256,15 @@ class LiveEvent extends React.Component {
 										}
 									}
 
-									if (change.type === 'removed') {
-										let removed = change.doc.data();
-										for (let i = 0; i < chats.length; i++) {
-											if (chats[i].ts === removed.ts) {
-												chats.splice(i, 1);
-											}
-										}
-										this.setState({ chats: chats });
-									}
+									// if (change.type === 'removed') {
+									// 	let removed = change.doc.data();
+									// 	for (let i = 0; i < chats.length; i++) {
+									// 		if (chats[i].ts === removed.ts) {
+									// 			chats.splice(i, 1);
+									// 		}
+									// 	}
+									// 	this.setState({ chats: chats });
+									// }
 								});
 						});
 						snapshots[id] = snapshot;
@@ -276,7 +284,7 @@ class LiveEvent extends React.Component {
 		let portrait_image = '';
 		if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
 			url = this.props.selected_event_url.data.url;
-			vmap = this.props.selected_event_url.data.vmap;
+			vmap = this.props.selected_event_url.data[process.env.VMAP_KEY];
 			id = this.props.selected_event.data.id;
 			name = this.props.selected_event.data.name;
 			type = this.props.selected_event.data.type;

@@ -1,6 +1,6 @@
 import cookie from 'js-cookie';
 import ax from 'axios';
-import { NEWS_API, DEV_API, VISITOR_TOKEN } from '../config';
+import { NEWS_API_V2, NEWS_API, DEV_API, VISITOR_TOKEN } from '../config';
 
 const axios = ax.create({
     // baseURL: API + '/api',
@@ -78,8 +78,28 @@ export const getVisitorToken = () => {
     return null;
 };
 
+export const getVisitorTokenNews = () => {
+    const visitorTokenNews = cookie.get('VISITOR_TOKEN_NEWS');
+    if (visitorTokenNews) {
+        const data = JSON.parse(visitorTokenNews);
+        return data['VALUE'];
+    }
+
+    return null;
+};
+
 export const getNewsToken = () => {
     const newsToken = cookie.get('NEWS_TOKEN');
+    if (newsToken) {
+        const data = JSON.parse(newsToken);
+        return data['VALUE'];
+    }
+
+    return null;
+};
+
+export const getNewsTokenV2 = () => {
+    const newsToken = cookie.get('NEWS_TOKEN_V2');
     if (newsToken) {
         const data = JSON.parse(newsToken);
         return data['VALUE'];
@@ -102,7 +122,8 @@ export const setVisitorToken = async () => {
                 }));
                 return JSON.parse(cookieDataToken);
             }
-        } else {
+        } 
+        else {
             visitorToken = JSON.parse(cookie.get('VISITOR_TOKEN'));
             const dayDiff = (Date.now() - new Date(visitorToken['CREATED_AT']).getTime()) / (1000 * 60 * 60 * 24);
             if (dayDiff > 7) {
@@ -115,12 +136,57 @@ export const setVisitorToken = async () => {
                     }));
                     return JSON.parse(visitorToken);
                 }
-            } else {
+            } 
+            else {
                 return JSON.parse(visitorToken);
             }
         }
     } catch (error) {
         // console.log(error);
+    }
+
+    return null;
+};
+
+export const setVisitorTokenNews = async () => {
+    try {
+        let visitorTokenNews = cookie.get('VISITOR_TOKEN_NEWS');
+        let cookieDataToken = '';
+        if (!visitorTokenNews) {
+            const response = await axios.get(`/v1/visitor`, {
+                baseURL: NEWS_API_V2 + '/api'
+            });
+            if (response.status === 200 && response.data.status.code === 0) {
+                cookieDataToken = cookie.set('VISITOR_TOKEN_NEWS', JSON.stringify({
+                    NAME: 'VISITOR_TOKEN_NEWS',
+                    VALUE: response.data.data.access_token,
+                    CREATED_AT: new Date()
+                }));
+            }
+        }
+        else {
+            visitorTokenNews = JSON.parse(visitorTokenNews);
+            const dayDiff = (Date.now() - new Date(visitorTokenNews['CREATED_AT']).getTime()) / (1000 * 60 * 60 * 24);
+            if (dayDiff > 7) {
+                const response = await axios.get(`/v1/visitor`, {
+                    baseURL: NEWS_API_V2 + '/api'
+                });
+                if (response.status === 200 && response.data.status.code === 0) {
+                    cookieDataToken = cookie.set('VISITOR_TOKEN_NEWS', JSON.stringify({
+                        NAME: 'VISITOR_TOKEN_NEWS',
+                        VALUE: response.data.data.access_token,
+                        CREATED_AT: new Date()
+                    }));
+                    return JSON.parse(cookieDataToken);
+                }
+            }
+            else {
+                return visitorTokenNews;
+            }
+        }
+    }
+    catch (error) {
+        console.log(error);
     }
 
     return null;
@@ -139,12 +205,13 @@ export const setNewsToken = async () => {
             });
 
             if (response.status === 200 && response.data.status.code === 0) {
-                let cookieDataToken = cookie.set('NEWS_TOKEN', JSON.stringify({
+                newsToken = JSON.stringify({
                     NAME: 'NEWS_TOKEN',
                     VALUE: response.data.data.news_token,
                     CREATED_AT: new Date()
-                }));
-                return JSON.parse(cookieDataToken);
+                });
+                let cookieDataToken = cookie.set('NEWS_TOKEN', newsToken);
+                return JSON.parse(newsToken);
             }
         } else {
             newsToken = JSON.parse(cookie.get('NEWS_TOKEN'));
@@ -158,8 +225,65 @@ export const setNewsToken = async () => {
                     baseURL: NEWS_API + '/api'
                 });
                 if (response.status === 200 && response.data.status.code === 0) {
-                    let cookieDataToken = cookie.set('NEWS_TOKEN', JSON.stringify({
+                    newsToken = JSON.stringify({
                         NAME: 'NEWS_TOKEN',
+                        VALUE: response.data.data.news_token,
+                        CREATED_AT: new Date()
+                    });
+                    let cookieDataToken = cookie.set('NEWS_TOKEN', newsToken);
+                    return JSON.parse(newsToken);
+                }
+            } else {
+                return newsToken;
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+
+    return null;
+};
+
+export const setNewsTokenV2 = async () => {
+    try {
+        let newsToken = cookie.get('NEWS_TOKEN_V2');
+        let visitorToken = getVisitorToken();
+        if (!visitorToken) {
+            await setVisitorToken();
+            visitorToken = getVisitorToken();
+        }
+
+        if (!newsToken) {
+            const response = await axios.post(`/v1/token`, {
+                merchantName: 'RCTI+',
+                hostToken: visitorToken,
+                platform: 'mweb'
+            }, {
+                baseURL: NEWS_API_V2 + '/api'
+            });
+            if (response.status === 200 && response.data.status.code === 0) {
+                newsToken = JSON.stringify({
+                    NAME: 'NEWS_TOKEN_V2',
+                    VALUE: response.data.data.news_token,
+                    CREATED_AT: new Date()
+                });
+                let cookieDataToken = cookie.set('NEWS_TOKEN_V2', newsToken);
+                return JSON.parse(newsToken);
+            }
+        } else {
+            newsToken = JSON.parse(cookie.get('NEWS_TOKEN_V2'));
+            const dayDiff = (Date.now() - new Date(newsToken['CREATED_AT']).getTime()) / (1000 * 60 * 60 * 24);
+            if (dayDiff > 7) {
+                const response = await axios.post(`/v1/token`, {
+                    merchantName: 'RCTI+',
+                    hostToken: visitorToken,
+                    platform: 'mweb'
+                }, {
+                    baseURL: NEWS_API_V2 + '/api'
+                });
+                if (response.status === 200 && response.data.status.code === 0) {
+                    let cookieDataToken = cookie.set('NEWS_TOKEN_V2', JSON.stringify({
+                        NAME: 'NEWS_TOKEN_V2',
                         VALUE: response.data.data.news_token,
                         CREATED_AT: new Date()
                     }));
