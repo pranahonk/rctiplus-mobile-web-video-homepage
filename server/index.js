@@ -135,6 +135,24 @@ const UIVersion = '2.0';
         epg_title: req.params.epg_title
       })
     });
+
+    server.get('/trending', (req, res) => {
+      return app.render(req, res, '/trending_v2');
+    });
+
+    // server.get('/trending/:subcategory_id/:subcategory_title', (req, res) => {
+    //   return app.render(req, res, '/trending_v2', {
+    //     subcategory_id: req.params.subcategory_id,
+    //     subcategory_title: req.params.subcategory_title
+    //   });
+    // });
+
+    server.get('/trending/:subcategory_id/:subcategory_title', (req, res) => {
+      return app.render(req, res, '/trending', {
+        subcategory_id: req.params.subcategory_id,
+        subcategory_title: req.params.subcategory_title
+      });
+    });
     
     server.get('/trending/detail/:id/:title', (req, res) => {
       return app.render(req, res, '/trending/detail', {
@@ -154,13 +172,6 @@ const UIVersion = '2.0';
         id: req.params.id
       })
     })
-
-    server.get('/trending/:subcategory_id/:subcategory_title', (req, res) => {
-      return app.render(req, res, '/trending', {
-        subcategory_id: req.params.subcategory_id,
-        subcategory_title: req.params.subcategory_title
-      });
-    });
 
     server.get('/live-event/:id/:title', (req, res) => {
       return app.render(req, res, '/live-event', {
