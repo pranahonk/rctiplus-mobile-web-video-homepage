@@ -20,7 +20,7 @@ export default withRedux(initStore, { debug: false })(
             };
         }
 
-        componentDidMount() {
+        async componentDidMount() {
             if(screen.width < 500 ||
                 navigator.userAgent.match(/Android/i) ||
                 navigator.userAgent.match(/webOS/i) ||
@@ -31,11 +31,21 @@ export default withRedux(initStore, { debug: false })(
                 window.location.href = process.env.REDIRECT_WEB_DESKTOP
             }
 
-            setVisitorToken();
-            setNewsToken();
+            await Promise.all([
+                setVisitorToken(),
+                setVisitorTokenNews()
+            ]);
 
-            setVisitorTokenNews();
-            setNewsTokenV2();
+            await Promise.all([
+                setNewsToken(),
+                setNewsTokenV2()
+            ]);
+
+            // setVisitorToken();
+            // setNewsToken();
+
+            // setVisitorTokenNews();
+            // setNewsTokenV2();
 
             console.log('VISITOR TOKEN:', getVisitorToken());
             //console.log('NEWS TOKEN:', getNewsToken());

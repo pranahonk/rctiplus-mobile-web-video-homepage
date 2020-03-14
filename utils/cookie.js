@@ -62,6 +62,11 @@ export const checkToken = async () => {
     if (!newsToken) {
         await setNewsToken();
     }
+
+    const newsTokenV2 = getNewsTokenV2();
+    if (!newsTokenV2) {
+        await setNewsTokenV2();
+    }
 };
 
 export const setDeviceId = () => {
@@ -247,15 +252,11 @@ export const setNewsToken = async () => {
 export const setNewsTokenV2 = async () => {
     try {
         let newsToken = cookie.get('NEWS_TOKEN_V2');
-        let visitorToken = getVisitorToken();
-        if (!visitorToken) {
-            await setVisitorToken();
-            visitorToken = getVisitorToken();
-        }
-
+        let visitorToken = getCookie('ACCESS_TOKEN') ? getCookie('ACCESS_TOKEN') : getVisitorToken();
+        
         if (!newsToken) {
             const response = await axios.post(`/v1/token`, {
-                merchantName: 'RCTI+',
+                merchantName: 'rcti+',
                 hostToken: visitorToken,
                 platform: 'mweb'
             }, {
@@ -275,7 +276,7 @@ export const setNewsTokenV2 = async () => {
             const dayDiff = (Date.now() - new Date(newsToken['CREATED_AT']).getTime()) / (1000 * 60 * 60 * 24);
             if (dayDiff > 7) {
                 const response = await axios.post(`/v1/token`, {
-                    merchantName: 'RCTI+',
+                    merchantName: 'rcti+',
                     hostToken: visitorToken,
                     platform: 'mweb'
                 }, {

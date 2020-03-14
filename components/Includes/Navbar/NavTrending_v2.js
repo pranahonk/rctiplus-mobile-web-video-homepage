@@ -85,7 +85,7 @@ class NavTrending extends Component {
                                 </div>
                             ) : (
                                 <div className="btn-link-top-nav">
-                                    <NavbarBrand style={{color: 'white'}} href="/trending/search">
+                                    <NavbarBrand style={{color: 'white'}} href="/trending/search_v2">
                                         <SearchIcon style={{fontSize: 20}}/>
                                     </NavbarBrand>
                                 </div>
