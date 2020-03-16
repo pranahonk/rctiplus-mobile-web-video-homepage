@@ -159,7 +159,7 @@ const getArticle = id => {
 const getRelatedArticles = (id, page = 1, pageSize = 4) => {
     return () => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/news/related/${id}?page=${page}&pageSize=${pageSize}`);
+            const response = await axios.get(`/v1/related/${id}?pageSize=${pageSize}`);
             if (response.status === 200) {
                 resolve(response);
             }

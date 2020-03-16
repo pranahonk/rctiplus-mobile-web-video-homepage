@@ -47,6 +47,15 @@ class Detail extends React.Component {
 
         const data_news = await response_news.json();
 
+        const ress = await fetch(`${NEWS_API_V2}/api/v1/related/${programId}?pageSize=5`, {
+            method: 'GET',
+            headers: {
+                'Authorization': data_news.data.news_token
+            }
+        });
+
+        const related = await ress.json();
+
         const res = await fetch(`${NEWS_API_V2}/api/v1/news/${programId}`, {
             method: 'GET',
             headers: {
@@ -59,7 +68,7 @@ class Detail extends React.Component {
         if (error_code) {
             return { initial: false };
         }
-        return { initial: data, props_id: programId };
+        return { initial: data, props_id: programId, related: related };
     }
 
     constructor(props) {
@@ -70,6 +79,7 @@ class Detail extends React.Component {
             trending_related: [],
             iframe_opened: false
         };
+        console.log(this.props.related);
     }
 
     componentDidMount() {
