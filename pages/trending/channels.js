@@ -16,15 +16,22 @@ import newsv2Actions from '../../redux/actions/newsv2Actions';
 import pageActions from '../../redux/actions/pageActions';
 import { newsTabChannelClicked, newsAddCategoryChannelClicked, newsRemoveCategoryChannelClicked } from '../../utils/appier';
 
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 class Channels extends React.Component {
 
     state = {
-        active_tab: 'Tambah Kanal',
+        active_tab: 'Edit Kanal',
         is_category_loading: true,
         categories: [],
         channels: [],
         selected_channel_ids: []
     };
+
+    constructor(props) {
+        super(props);
+        this.onDragEnd = this.onDragEnd.bind(this);
+    }
 
     componentDidMount() {
         this.props.getChannels()
@@ -58,6 +65,23 @@ class Channels extends React.Component {
                 console.log(error);
                 this.setState({ is_category_loading: false });
             });
+    }
+
+    onDragEnd(result) {
+        console.log(result);
+        if (!result.destination) {
+            return;
+        }
+
+        const res = Array.from(this.state.categories);
+        const [removed] = res.splice(result.source.index, 1);
+        res.splice(result.destination.index, 0, removed);
+        
+        const categories = res;
+        console.log(this.state.categories);
+        this.setState({ categories }, () => {
+            console.log(this.state.categories);
+        });
     }
 
     toggleTab(tab) {
@@ -114,7 +138,7 @@ class Channels extends React.Component {
 
                         let categories = this.state.categories;
                         categories.splice(index, 1);
-                        
+
                         this.setState({ channels: channels, categories: categories });
                         this.props.unsetPageLoader();
                     });
@@ -162,39 +186,62 @@ class Channels extends React.Component {
                             <ListItemLoader />
                         </div>
                     ) : (
-                        <TabContent activeTab={this.state.active_tab}>
-                            <TabPane tabId={`Tambah Kanal`}>
-                                <ListGroup className="add-channel-list">
-                                    {this.state.channels.map((channel, i) => (
-                                        <ListGroupItem key={i}>
-                                            <div className="text-container">
-                                                <ListGroupItemHeading>{channel.name}</ListGroupItemHeading>
-                                                <ListGroupItemText></ListGroupItemText>
-                                            </div>
-                                            <div className="button-container">
-                                                <Button onClick={() => this.addChannel(channel, i)} className="add-button">Tambah</Button>
-                                            </div>
-                                        </ListGroupItem>
-                                    ))}
+                            <TabContent activeTab={this.state.active_tab}>
+                                <TabPane tabId={`Tambah Kanal`}>
+                                    <ListGroup className="add-channel-list">
+                                        {this.state.channels.map((channel, i) => (
+                                            <ListGroupItem key={i}>
+                                                <div className="text-container">
+                                                    <ListGroupItemHeading>{channel.name}</ListGroupItemHeading>
+                                                    <ListGroupItemText></ListGroupItemText>
+                                                </div>
+                                                <div className="button-container">
+                                                    <Button onClick={() => this.addChannel(channel, i)} className="add-button">Tambah</Button>
+                                                </div>
+                                            </ListGroupItem>
+                                        ))}
+
+                                    </ListGroup>
+                                </TabPane>
+                                <TabPane tabId={`Edit Kanal`}>
+                                    <DragDropContext onDragEnd={this.onDragEnd}>
+                                        <Droppable droppableId="droppable">
+                                            {(provided, snapshot) => (
+                                                <ul 
+                                                    {...provided.droppableProps}
+                                                    ref={provided.innerRef}
+                                                    className="edit-channel-list list-group">
+                                                    {this.state.categories.map((category, i) => (
+                                                        <Draggable 
+                                                            key={'item-' + category.id.toString()} 
+                                                            draggableId={'item-' + category.id.toString()} 
+                                                            index={i}>
+                                                            {(provided, snapshot) => (
+                                                                <div
+                                                                    className="list-group-item"
+                                                                    ref={provided.innerRef}
+                                                                    {...provided.draggableProps}
+                                                                    {...provided.dragHandleProps}
+                                                                    style={{ ...provided.draggableProps.style }}>
+                                                                    <ListGroupItemHeading>{category.name}</ListGroupItemHeading>
+                                                                    <div className="remove-container">
+                                                                        {category.label == 'priority' ? null : (
+                                                                            <RemoveCircleIcon onClick={() => this.removeChannel(category, i)} className="remove-button" />
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </Draggable>
+                                                    ))}
+                                                    {provided.placeholder}
+                                                </ul>
+                                            )}
+                                        </Droppable>
+                                    </DragDropContext>
                                     
-                                </ListGroup>
-                            </TabPane>
-                            <TabPane tabId={`Edit Kanal`}>
-                                <ListGroup className="edit-channel-list">
-                                    {this.state.categories.map((category, i) => (
-                                        <ListGroupItem key={i}>
-                                            <ListGroupItemHeading>{category.name}</ListGroupItemHeading>
-                                            <div className="remove-container">
-                                                {category.label == 'priority' ? null : (
-                                                    <RemoveCircleIcon onClick={() => this.removeChannel(category, i)} className="remove-button" />
-                                                )}
-                                            </div>
-                                        </ListGroupItem>
-                                    ))}
-                                </ListGroup>
-                            </TabPane>
-                        </TabContent>
-                    )}
+                                </TabPane>
+                            </TabContent>
+                        )}
                 </div>
             </Layout>
         );
