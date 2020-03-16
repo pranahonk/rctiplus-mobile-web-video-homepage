@@ -13,6 +13,7 @@ import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import '../../assets/scss/components/channels.scss';
 
 import newsv2Actions from '../../redux/actions/newsv2Actions';
+import pageActions from '../../redux/actions/pageActions';
 import { newsTabChannelClicked, newsAddCategoryChannelClicked, newsRemoveCategoryChannelClicked } from '../../utils/appier';
 
 class Channels extends React.Component {
@@ -42,9 +43,11 @@ class Channels extends React.Component {
             .then(response => {
                 let selectedChannelIds = [];
                 for (let i = 0; i < response.data.data.length; i++) {
-                    selectedChannelIds.push(response.data.data[i].id);
+                    if (response.data.data[i].label != 'priority') {
+                        selectedChannelIds.push(response.data.data[i].id);
+                    }
                 }
-                console.log(selectedChannelIds);
+
                 this.setState({
                     is_category_loading: false,
                     categories: response.data.data,
@@ -64,11 +67,39 @@ class Channels extends React.Component {
         }
     }
 
-    addChannel(category) {
+    addChannel(category, index) {
+        this.props.setPageLoader();
         newsAddCategoryChannelClicked(category.name, 'mweb_news_add_category_kanal_clicked');
+        let selectedChannelIds = this.state.selected_channel_ids;
+        const addedIndex = selectedChannelIds.indexOf(category.id);
+        if (addedIndex == -1) {
+            selectedChannelIds.push(category.id);
+            this.props.setCategory(selectedChannelIds)
+                .then(response => {
+                    console.log(response);
+                    this.setState({ selected_channel_ids: selectedChannelIds }, () => {
+                        let channels = this.state.channels;
+                        channels.splice(index, 1);
+
+                        let categories = this.state.categories;
+                        categories.push(category);
+
+                        this.setState({ channels: channels, categories: categories });
+                        this.props.unsetPageLoader();
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.props.unsetPageLoader();
+                });
+        }
+        else {
+            this.props.unsetPageLoader();
+        }
     }
 
-    removeChannel(category) {
+    removeChannel(category, index) {
+        this.props.setPageLoader();
         newsRemoveCategoryChannelClicked(category.name, 'mweb_news_remove_category_kanal_clicked');
         let selectedChannelIds = this.state.selected_channel_ids;
         const removedIndex = selectedChannelIds.indexOf(category.id);
@@ -77,10 +108,24 @@ class Channels extends React.Component {
             this.props.setCategory(selectedChannelIds)
                 .then(response => {
                     console.log(response);
+                    this.setState({ selected_channel_ids: selectedChannelIds }, () => {
+                        let channels = this.state.channels;
+                        channels.push(category);
+
+                        let categories = this.state.categories;
+                        categories.splice(index, 1);
+                        
+                        this.setState({ channels: channels, categories: categories });
+                        this.props.unsetPageLoader();
+                    });
                 })
                 .catch(error => {
                     console.log(error);
+                    this.props.unsetPageLoader();
                 });
+        }
+        else {
+            this.props.unsetPageLoader();
         }
     }
 
@@ -127,7 +172,7 @@ class Channels extends React.Component {
                                                 <ListGroupItemText></ListGroupItemText>
                                             </div>
                                             <div className="button-container">
-                                                <Button onClick={() => this.addChannel(channel)} className="add-button">Tambah</Button>
+                                                <Button onClick={() => this.addChannel(channel, i)} className="add-button">Tambah</Button>
                                             </div>
                                         </ListGroupItem>
                                     ))}
@@ -140,7 +185,9 @@ class Channels extends React.Component {
                                         <ListGroupItem key={i}>
                                             <ListGroupItemHeading>{category.name}</ListGroupItemHeading>
                                             <div className="remove-container">
-                                                <RemoveCircleIcon onClick={() => this.removeChannel(category)} className="remove-button" />
+                                                {category.label == 'priority' ? null : (
+                                                    <RemoveCircleIcon onClick={() => this.removeChannel(category, i)} className="remove-button" />
+                                                )}
                                             </div>
                                         </ListGroupItem>
                                     ))}
@@ -155,4 +202,7 @@ class Channels extends React.Component {
 
 }
 
-export default connect(state => state, newsv2Actions)(Channels);
+export default connect(state => state, {
+    ...newsv2Actions,
+    ...pageActions
+})(Channels);

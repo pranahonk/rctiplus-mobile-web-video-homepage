@@ -81,17 +81,17 @@ class Detail extends React.Component {
                 console.log(error);
             });
 
-        // this.props.getRelatedArticles(this.state.trending_detail_id)
-        //     .then(response => {
-        //         console.log(response);
-        //         if (response.status === 200) {
-        //             this.setState({ trending_related: response.data.data });
-        //             console.log(response.data.data);
-        //         }
-        //     })
-        //     .catch(error => {
-        //         console.log(error);
-        //     });
+        this.props.getRelatedArticles(this.state.trending_detail_id)
+            .then(response => {
+                console.log(response);
+                if (response.status === 200) {
+                    // this.setState({ trending_related: response.data.data });
+                    console.log(response.data.data);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
 
         // this.props.getNewsFavoriteStatus(this.state.trending_detail_id)
         //     .then(response => {
