@@ -33,7 +33,7 @@ let nextConfig = {
 	}
 };
 
-// nextConfig = withOffline(nextConfig);
+nextConfig = withOffline(nextConfig);
 nextConfig = withCSS(nextConfig);
 nextConfig = withSass(nextConfig);
 

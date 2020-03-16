@@ -91,9 +91,13 @@
                 .article-thumbnail-container {
                     margin-right: 10px;
                     width: 70%;
+                    height: 80px;
+                    overflow: hidden;
 
                     .article-thumbnail {
                         width: 100%;
+                        height: 100%;
+                        object-fit: cover;
                         border-radius: 3px;
                     }
                 }
@@ -136,12 +140,12 @@
             .article-description {
                 display: block;
 
-                .article-thumbnail-container {
+                .article-thumbnail-container-full-width {
                     margin-left: 0;
                     margin-right: 0;
                     width: 100%;
 
-                    .article-thumbnail {
+                    .article-thumbnail-full-width {
                         width: 100%;
                         border-radius: 0;
                     }

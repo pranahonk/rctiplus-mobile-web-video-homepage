@@ -47,15 +47,6 @@ class Detail extends React.Component {
 
         const data_news = await response_news.json();
 
-        const ress = await fetch(`${NEWS_API_V2}/api/v1/related/${programId}?pageSize=5`, {
-            method: 'GET',
-            headers: {
-                'Authorization': data_news.data.news_token
-            }
-        });
-
-        const related = await ress.json();
-
         const res = await fetch(`${NEWS_API_V2}/api/v1/news/${programId}`, {
             method: 'GET',
             headers: {
@@ -68,7 +59,7 @@ class Detail extends React.Component {
         if (error_code) {
             return { initial: false };
         }
-        return { initial: data, props_id: programId, related: related };
+        return { initial: data, props_id: programId };
     }
 
     constructor(props) {
@@ -79,7 +70,6 @@ class Detail extends React.Component {
             trending_related: [],
             iframe_opened: false
         };
-        console.log(this.props.related);
     }
 
     componentDidMount() {
@@ -95,8 +85,8 @@ class Detail extends React.Component {
             .then(response => {
                 console.log(response);
                 if (response.status === 200) {
-                    // this.setState({ trending_related: response.data.data });
                     console.log(response.data.data);
+                    this.setState({ trending_related: response.data.data });
                 }
             })
             .catch(error => {
@@ -177,6 +167,8 @@ class Detail extends React.Component {
 
     render() {
         const cdata = this.state.trending_detail_data;
+        // cdata.link = 'https://m.rctiplus.com';
+
         return (
             <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
                 <Head>
@@ -189,7 +181,7 @@ class Detail extends React.Component {
                         gtag('config', 'UA-145455301-9');
                     ` }}></script>
                 </Head>
-                <NavBack data={cdata} />
+                <NavBack data={cdata} disableScrollListener/>
                 {this.state.iframe_opened ? (<iframe src={cdata.link} style={{ width: '100%', minHeight: 'calc(100vh - 50px)', paddingTop: 65 }} frameBorder="0" type="text/html"></iframe>) : (
                     <div className="content-trending-detail">
                         <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title }}></b></h1>
@@ -206,7 +198,7 @@ class Detail extends React.Component {
                         {this.renderActionButton()}
                         <div className="content-trending-detail-related">
                             <p className="related-title"><strong>Related</strong></p>
-                            <Row className="related-content">
+                            <Row className="related-content" style={{ marginLeft: 0, marginRight: 0 }}>
                                 {this.state.trending_related.map((tr, i) => (
                                     <Col xs={6} key={i}>
                                         <div onClick={() => this.goToDetail(tr)}><Img className="box-img-trending" 

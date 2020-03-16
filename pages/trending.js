@@ -22,7 +22,7 @@ import AddIcon from '@material-ui/icons/Add';
 
 import { SITEMAP } from '../config';
 import { formatDateWordID } from '../utils/dateHelpers';
-import { removeCookie } from '../utils/cookie';
+import { removeCookie, getNewsChannels } from '../utils/cookie';
 
 import '../assets/scss/components/trending_v2.scss';
 
@@ -45,6 +45,7 @@ class Trending_v2 extends React.Component {
         load_error: false,
         load_content_error: false,
         tabs: [],
+        saved_tabs: getNewsChannels(),
         trending_articles: [],
         articles: {},
         pages: {},
@@ -53,10 +54,6 @@ class Trending_v2 extends React.Component {
         is_load_more: false,
         user_data: null
     };
-
-    constructor(props) {
-        super(props);
-    }
 
     bottomScrollFetch() {
         if (!this.state.is_load_more && this.state.load_more_allowed[this.state.active_tab]) {
@@ -133,20 +130,38 @@ class Trending_v2 extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getUserData()
-            .then(response => {
-                this.setState({ user_data: response.data.data });
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        // this.props.getUserData()
+        //     .then(response => {
+        //         this.setState({ user_data: response.data.data });
+        //     })
+        //     .catch(error => {
+        //         console.log(error);
+        //     });
 
         this.props.getCategory()
             .then(response => {
                 const data = response.data.data;
+                let sortedCategories = [];
+                let savedCategories = this.state.saved_tabs;
+                for (let i = 0; i < savedCategories.length; i++) {
+                    if (data.findIndex(c => c.id == savedCategories[i].id) == -1) {
+                        savedCategories.splice(i, 1);
+                        i--;
+                    }
+                    else {
+                        sortedCategories.push(savedCategories[i]);
+                    }
+                }
+
+                for (let i = 0; i < data.length; i++) {
+                    if (sortedCategories.findIndex(s => s.id == data[i].id) == -1) {
+                        sortedCategories.push(data[i]);
+                    }
+                }
+
                 if (data.length > 0) {
                     this.setState({
-                        tabs: data,
+                        tabs: sortedCategories,
                         active_tab: Object.keys(this.props.query).length > 0 ? this.props.query.subcategory_id.toString() : data[0].id.toString(),
                         is_tabs_loading: false
                     }, () => this.loadContents(Object.keys(this.props.query).length > 0 ? this.props.query.subcategory_id : data[0].id));
@@ -263,7 +278,8 @@ class Trending_v2 extends React.Component {
                                                         <AddIcon onClick={() => {
                                                             removeCookie('NEWS_TOKEN_V2');
                                                             newsAddChannelClicked('mweb_news_add_kanal_clicked');
-                                                            if (this.state.user_data) {
+                                                            // if (this.state.user_data) {
+                                                            if (true) {
                                                                 Router.push('/trending/channels');
                                                             }
                                                             else {
@@ -290,11 +306,11 @@ class Trending_v2 extends React.Component {
                                                             (j + 1) != 1 && (j + 1) % 5 === 0 ? (
                                                                 <ListGroupItem key={j} className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
                                                                     <div className="article-description">
-                                                                        <div className="article-thumbnail-container">
+                                                                        <div className="article-thumbnail-container-full-width">
                                                                             <Img
-                                                                                loader={<img className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                unloader={<img className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                className="article-thumbnail"
+                                                                                loader={<img className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                unloader={<img className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                className="article-thumbnail-full-width"
                                                                                 src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
                                                                         </div>
                                                                         <div className="article-title-container">

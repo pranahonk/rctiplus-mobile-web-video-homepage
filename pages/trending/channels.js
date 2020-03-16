@@ -17,13 +17,15 @@ import pageActions from '../../redux/actions/pageActions';
 import { newsTabChannelClicked, newsAddCategoryChannelClicked, newsRemoveCategoryChannelClicked } from '../../utils/appier';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { setNewsChannels, getNewsChannels } from '../../utils/cookie';
 
 class Channels extends React.Component {
 
     state = {
-        active_tab: 'Edit Kanal',
+        active_tab: 'Tambah Kanal',
         is_category_loading: true,
         categories: [],
+        saved_categories: getNewsChannels(),
         channels: [],
         selected_channel_ids: []
     };
@@ -49,17 +51,36 @@ class Channels extends React.Component {
         this.props.getCategory()
             .then(response => {
                 let selectedChannelIds = [];
-                for (let i = 0; i < response.data.data.length; i++) {
-                    if (response.data.data[i].label != 'priority') {
-                        selectedChannelIds.push(response.data.data[i].id);
+                let categories = response.data.data;
+                for (let i = 0; i < categories.length; i++) {
+                    if (categories[i].label != 'priority') {
+                        selectedChannelIds.push(categories[i].id);
+                    }
+                }
+
+                let sortedCategories = [];
+                let savedCategories = this.state.saved_categories;
+                for (let i = 0; i < savedCategories.length; i++) {
+                    if (categories.findIndex(c => c.id == savedCategories[i].id) == -1) {
+                        savedCategories.splice(i, 1);
+                        i--;
+                    }
+                    else {
+                        sortedCategories.push(savedCategories[i]);
+                    }
+                }
+
+                for (let i = 0; i < categories.length; i++) {
+                    if (sortedCategories.findIndex(s => s.id == categories[i].id) == -1) {
+                        sortedCategories.push(categories[i]);
                     }
                 }
 
                 this.setState({
                     is_category_loading: false,
-                    categories: response.data.data,
+                    categories: sortedCategories,
                     selected_channel_ids: selectedChannelIds
-                })
+                });
             })
             .catch(error => {
                 console.log(error);
@@ -68,7 +89,6 @@ class Channels extends React.Component {
     }
 
     onDragEnd(result) {
-        console.log(result);
         if (!result.destination) {
             return;
         }
@@ -78,9 +98,8 @@ class Channels extends React.Component {
         res.splice(result.destination.index, 0, removed);
         
         const categories = res;
-        console.log(this.state.categories);
         this.setState({ categories }, () => {
-            console.log(this.state.categories);
+            setNewsChannels(this.state.categories);
         });
     }
 
@@ -212,26 +231,29 @@ class Channels extends React.Component {
                                                     ref={provided.innerRef}
                                                     className="edit-channel-list list-group">
                                                     {this.state.categories.map((category, i) => (
-                                                        <Draggable 
-                                                            key={'item-' + category.id.toString()} 
-                                                            draggableId={'item-' + category.id.toString()} 
-                                                            index={i}>
-                                                            {(provided, snapshot) => (
-                                                                <div
-                                                                    className="list-group-item"
-                                                                    ref={provided.innerRef}
-                                                                    {...provided.draggableProps}
-                                                                    {...provided.dragHandleProps}
-                                                                    style={{ ...provided.draggableProps.style }}>
-                                                                    <ListGroupItemHeading>{category.name}</ListGroupItemHeading>
-                                                                    <div className="remove-container">
-                                                                        {category.label == 'priority' ? null : (
+                                                        category.label == 'priority' ? (
+                                                            <li className="list-group-item" key={'item-' + category.id.toString()}>
+                                                                <ListGroupItemHeading>{category.name}</ListGroupItemHeading>
+                                                            </li>
+                                                        ) : (
+                                                            <Draggable 
+                                                                key={'item-' + category.id.toString()} 
+                                                                draggableId={'item-' + category.id.toString()} 
+                                                                index={i}>
+                                                                {(provided, snapshot) => (
+                                                                    <li
+                                                                        className="list-group-item"
+                                                                        ref={provided.innerRef}
+                                                                        {...provided.draggableProps}
+                                                                        {...provided.dragHandleProps}>
+                                                                        <ListGroupItemHeading>{category.name}</ListGroupItemHeading>
+                                                                        <div className="remove-container">
                                                                             <RemoveCircleIcon onClick={() => this.removeChannel(category, i)} className="remove-button" />
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                        </Draggable>
+                                                                        </div>
+                                                                    </li>
+                                                                )}
+                                                            </Draggable>
+                                                        )
                                                     ))}
                                                     {provided.placeholder}
                                                 </ul>

@@ -49,7 +49,7 @@ class HeadlineCarousel extends React.Component {
                         <div className="caption">
                             <h3 className="title" dangerouslySetInnerHTML={{ __html: this.renderTitle(article.title) }}></h3>
                             <div className="description">
-                                <p>{article.source}&nbsp;&nbsp;</p>
+                                <p><strong>{article.source}</strong>&nbsp;&nbsp;</p>
                                 <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
                             </div>
                         </div>

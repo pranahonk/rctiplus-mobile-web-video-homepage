@@ -300,3 +300,16 @@ export const setNewsTokenV2 = async () => {
 
     return null;
 };
+
+export const setNewsChannels = channels => {
+    cookie.set('NEWS_CHANNELS', JSON.stringify(channels));
+};
+
+export const getNewsChannels = () => {
+    const newsChannels = cookie.get('NEWS_CHANNELS');
+    if (newsChannels) {
+        return JSON.parse(newsChannels);
+    }
+
+    return [];
+};
