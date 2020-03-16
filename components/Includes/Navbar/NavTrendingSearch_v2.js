@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import LoadingBar from 'react-top-loading-bar';
 
-import contentActions from '../../../redux/actions/trending/content';
+import newsv2Actions from '../../../redux/actions/newsv2Actions';
 import pageActions from '../../../redux/actions/pageActions';
 
 import '../../../assets/scss/components/navbar-search.scss';
@@ -37,11 +37,11 @@ class NavbarTrendingSearch extends Component {
             .pipe(debounceTime(1))
             .subscribe(() => {
                 this.props.toggleIsSearching(true);
-                if (this.props.trending_content.query) {
-                    searchKeywordEvent(this.props.trending_content.query, 'mweb_search_keyword');
+                if (this.props.newsv2.query) {
+                    searchKeywordEvent(this.props.newsv2.query, 'mweb_search_keyword');
                 }
                 
-                this.props.searchNews(this.props.trending_content.query, 1, this.state.length)
+                this.props.searchNews(this.props.newsv2.query, 1, this.state.length)
                     .then(responses => {
                         console.log(responses);
                         this.props.unsetPageLoader();
@@ -79,8 +79,8 @@ class NavbarTrendingSearch extends Component {
     }
 
     search() {
-        newsSearchClicked(this.props.trending_content.query, 'mweb_news_search_clicked');
-        this.saveSearchHistory(this.props.trending_content.query);
+        newsSearchClicked(this.props.newsv2.query, 'mweb_news_search_clicked');
+        this.saveSearchHistory(this.props.newsv2.query);
         this.props.clearSearch();
         this.props.setPageLoader();
         this.subject.next();
@@ -89,9 +89,9 @@ class NavbarTrendingSearch extends Component {
     clearKeyword() {
         this.props.clearSearch();
         this.props.setQuery('');
-        searchKeywordEvent(this.props.trending_content.query, 'mweb_search_clear_keyword_clicked');
+        searchKeywordEvent(this.props.newsv2.query, 'mweb_search_clear_keyword_clicked');
         this.setState({ q: '' }, () => {
-            this.changeQuery(this.props.trending_content.query);
+            this.changeQuery(this.props.newsv2.query);
         });
     }
 
@@ -104,7 +104,7 @@ class NavbarTrendingSearch extends Component {
                         <div className="logo-top-wrapper">
                             <NavbarBrand onClick={() => {
                                 if (this.props.router.asPath.indexOf('/explores') === 0) {
-                                    searchBackClicked(this.props.trending_content.query, 'mweb_search_back_clicked');
+                                    searchBackClicked(this.props.newsv2.query, 'mweb_search_back_clicked');
                                 }
                                 Router.back();
                             }} style={{ color: 'white' }}>
@@ -118,14 +118,14 @@ class NavbarTrendingSearch extends Component {
                             onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
                             placeholder="Search"
                             onChange={this.onChangeQuery.bind(this)}
-                            value={this.props.trending_content.query}
+                            value={this.props.newsv2.query}
                             id="search-news-input"
                             className="search-input" />
                     </div>
                     <div className="right-top-link">
                         <div className="btn-link-top-nav">
                             <NavbarBrand style={{ color: 'white' }}>
-                                <CloseIcon style={{ fontSize: 20, marginRight: 10, visibility: (this.props.trending_content.query.length > 0 ? 'visible' : 'hidden') }} onClick={this.clearKeyword.bind(this)}/>
+                                <CloseIcon style={{ fontSize: 20, marginRight: 10, visibility: (this.props.newsv2.query.length > 0 ? 'visible' : 'hidden') }} onClick={this.clearKeyword.bind(this)}/>
                                 <SearchIcon style={{ fontSize: 20 }} onClick={() => this.search()} />
                             </NavbarBrand>
                         </div>
@@ -137,6 +137,6 @@ class NavbarTrendingSearch extends Component {
     }
 }
 export default connect(state => state, {
-    ...contentActions,
+    ...newsv2Actions,
     ...pageActions
 })(withRouter(NavbarTrendingSearch));

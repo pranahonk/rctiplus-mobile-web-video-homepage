@@ -3,7 +3,7 @@
         min-height: 320px;
 
         .slide {
-            background: #000000;
+            background: #282828;
         }
 
         .slider {
@@ -29,6 +29,19 @@
         }
     }
 
+    .center-cropped {
+        width: 100%;
+        height: 220px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        overflow: hidden;
+
+        .thumbnail {
+            min-height: 100%;
+            min-width: 100%;
+        }
+    }
+
     .caption {
         background-color: #282828;
         text-align: left;
@@ -36,7 +49,6 @@
         padding-top: 10px;
         padding-left: 10px;
         padding-right: 10px;
-        margin-top: 30px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
