@@ -150,15 +150,26 @@ const UIVersion = '2.0';
     //   })
     // });
 
+    // server.get('/trending/detail/:id/:title', (req, res) => {
+    //   return app.render(req, res, '/trending/detail_v2', {
+    //     id: req.params.id,
+    //     title: req.params.title
+    //   })
+    // });
+
+    // server.get('/trending/search', (req, res) => {
+    //   return app.render(req, res, '/trending/search_v2');
+    // });
+
     server.get('/trending/detail/:id/:title', (req, res) => {
-      return app.render(req, res, '/trending/detail_v2', {
+      return app.render(req, res, '/trending/detail', {
         id: req.params.id,
         title: req.params.title
       })
     });
 
     server.get('/trending/search', (req, res) => {
-      return app.render(req, res, '/trending/search_v2');
+      return app.render(req, res, '/trending/search');
     });
 
     // server.get('/trending', (req, res) => {
