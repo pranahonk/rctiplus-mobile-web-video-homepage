@@ -22,7 +22,7 @@ import AddIcon from '@material-ui/icons/Add';
 
 import { SITEMAP } from '../config';
 import { formatDateWordID } from '../utils/dateHelpers';
-import { removeCookie, getNewsChannels } from '../utils/cookie';
+import { removeCookie, getNewsChannels, setNewsChannels } from '../utils/cookie';
 
 import '../assets/scss/components/trending_v2.scss';
 
@@ -149,6 +149,11 @@ class Trending_v2 extends React.Component {
                         if (categories.findIndex(c => c.id == savedCategories[i].id) == -1) {
                             sortedCategories.push(savedCategories[i]);
                         }
+                    }
+
+                    if (sortedCategories.length <= 0) {
+                        setNewsChannels(categories);
+                        sortedCategories = getNewsChannels();
                     }
 
                     if (sortedCategories.length > 0) {
