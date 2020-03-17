@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import Img from 'react-image';
 
-import Layout from '../components/Layouts/Default';
+import Layout from '../components/Layouts/Default_v2';
 import NavTrending from '../components/Includes/Navbar/NavTrending_v2';
 import HeadlineCarousel from '../components/Includes/Gallery/HeadlineCarousel';
 
