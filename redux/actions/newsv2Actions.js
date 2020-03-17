@@ -118,7 +118,7 @@ const getTrending = (category = 1, pageSize = 5, page = 1) => {
 const getNews = (subcategoryId = 1, pageSize = 10, page = 1) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/news?subcategory=${subcategoryId}&page=${page}&pageSize=${pageSize}`);
+            const response = await axios.get(`/v1/news?subcategory_id=${subcategoryId}&page=${page}&pageSize=${pageSize}`);
 
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
