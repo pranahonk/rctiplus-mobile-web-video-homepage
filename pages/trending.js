@@ -168,9 +168,11 @@ class Trending_v2 extends React.Component {
                     if (sortedCategories.length > 0) {
                         this.setState({
                             tabs: sortedCategories,
-                            active_tab: Object.keys(this.props.query).length > 0 ? this.props.query.subcategory_id.toString() : sortedCategories[0].id.toString(),
+                            active_tab: Object.keys(this.props.query).length > 0 ? (sortedCategories.findIndex(s => s.id == this.props.query.subcategory_id.toString()) != -1 ? this.props.query.subcategory_id.toString() : sortedCategories[0].id.toString()) : sortedCategories[0].id.toString(),
                             is_tabs_loading: false
-                        }, () => this.loadContents(Object.keys(this.props.query).length > 0 ? this.props.query.subcategory_id : sortedCategories[0].id));
+                        }, () => {
+                            this.loadContents(this.state.active_tab);
+                        });
                     }
                 })
                 .catch(error => {

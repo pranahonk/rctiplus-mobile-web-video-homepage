@@ -70,6 +70,8 @@ class Detail extends React.Component {
             trending_related: [],
             iframe_opened: false
         };
+
+        this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
     }
 
     componentDidMount() {
@@ -108,6 +110,20 @@ class Detail extends React.Component {
         //     });
     }
 
+    getRandom(arr, n) {
+        let result = new Array(n),
+            len = arr.length,
+            taken = new Array(len);
+        if (n > len)
+            throw new RangeError("getRandom: more elements taken than available");
+        while (n--) {
+            let x = Math.floor(Math.random() * len);
+            result[n] = arr[x in taken ? taken[x] : x];
+            taken[x] = --len in taken ? taken[len] : len;
+        }
+        return result;
+    }
+
     openIframe() {
         this.setState({ iframe_opened: !this.state.iframe_opened }, () => {
             if (this.state.iframe_opened) {
@@ -117,9 +133,15 @@ class Detail extends React.Component {
         });
     }
 
-    goToDetail(article) {
+    goToDetail(article, index) {
         newsRelatedArticleClicked(article.id, article.title, article.category_source, 'mweb_news_related_article_clicked');
-        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase());
+        if (this.redirectToPublisherIndex.indexOf(index) != -1) {
+            window.open(article.link, '_blank');
+        }
+        else {
+            Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase());
+        }
+        
     }
 
     setNewsFavorite() {
@@ -165,7 +187,7 @@ class Detail extends React.Component {
                 </div>
 
                 <div onClick={this.setNewsFavorite.bind(this)} className="sheet-action-button" style={{ float: 'right' }}>
-                    <i className="fas fa-heart"></i>
+                    {/* <i className="fas fa-heart"></i> */}
                 </div>
             </div>
         );
@@ -212,11 +234,11 @@ class Detail extends React.Component {
                         </div>
                         {this.renderActionButton()}
                         <div className="content-trending-detail-related">
-                            <p className="related-title"><strong>Related</strong></p>
+                            <p className="related-title"><strong>Related Articles</strong></p>
                             <Row className="related-content" style={{ marginLeft: 0, marginRight: 0 }}>
                                 {this.state.trending_related.map((tr, i) => (
                                     <Col xs={6} key={i}>
-                                        <div onClick={() => this.goToDetail(tr)}><Img className="box-img-trending" 
+                                        <div onClick={() => this.goToDetail(tr, i)}><Img className="box-img-trending" 
                                         alt={tr.title}
                                         unloader={<img alt={tr.title} className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
 										loader={<img alt={tr.title} className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
