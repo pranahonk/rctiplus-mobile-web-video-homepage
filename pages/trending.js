@@ -134,11 +134,14 @@ class Trending_v2 extends React.Component {
             this.props.getCategory()
                 .then(response => {
                     let categories = response.data.data;
-                    let sortedCategories = [];
+                    let sortedCategories = categories;
                     let savedCategories = savedCategoriesNews;
                     for (let i = 0; i < savedCategories.length; i++) {
                         if (categories.findIndex(c => c.id == savedCategories[i].id) != -1) {
-                            sortedCategories.push(savedCategories[i]);
+                            if (sortedCategories.findIndex(s => s.id == savedCategories[i].id) == -1) {
+                                sortedCategories.push(savedCategories[i]);
+                            }
+                            
                             savedCategories.splice(i, 1);
                             i--;
                         }
@@ -153,12 +156,12 @@ class Trending_v2 extends React.Component {
                     if (sortedCategories.length <= 0) {
                         setNewsChannels(categories);
                         sortedCategories = getNewsChannels();
-                    }
 
-                    for (let i = 0; i < sortedCategories.length; i++) {
-                        if (categories.findIndex(c => c.id == sortedCategories[i].id) == -1) {
-                            sortedCategories.splice(i, 1);
-                            i--;
+                        for (let i = 0; i < sortedCategories.length; i++) {
+                            if (categories.findIndex(c => c.id == sortedCategories[i].id) == -1) {
+                                sortedCategories.splice(i, 1);
+                                i--;
+                            }
                         }
                     }
 

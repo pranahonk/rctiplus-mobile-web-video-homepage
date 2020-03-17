@@ -9,6 +9,7 @@ import ListItemLoader from '../../components/Includes/Shimmer/ListItemLoader';
 
 import { Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Button } from 'reactstrap';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 
 import '../../assets/scss/components/channels.scss';
 
@@ -66,11 +67,14 @@ class Channels extends React.Component {
                         }
                     }
 
-                    let sortedCategories = [];
+                    let sortedCategories = categories;
                     let savedCategories = savedCategoriesNews;
                     for (let i = 0; i < savedCategories.length; i++) {
                         if (categories.findIndex(c => c.id == savedCategories[i].id) != -1) {
-                            sortedCategories.push(savedCategories[i]);
+                            if (sortedCategories.findIndex(s => s.id == savedCategories[i].id) == -1) {
+                                sortedCategories.push(savedCategories[i]);
+                            }
+                            
                             savedCategories.splice(i, 1);
                             i--;
                         }
@@ -133,7 +137,11 @@ class Channels extends React.Component {
                 let categories = this.state.categories;
                 categories.push(category);
 
-                this.setState({ channels: channels, categories: categories }, () => {
+                this.setState({ 
+                    channels: channels, 
+                    categories: categories,
+                    active_tab: 'Edit Kanal' 
+                }, () => {
                     setNewsChannels(this.state.categories);
                 });
                 this.props.unsetPageLoader();
@@ -177,7 +185,11 @@ class Channels extends React.Component {
                 categories.splice(index, 1);
                 console.log(categories);
 
-                this.setState({ channels: channels, categories: categories }, () => {
+                this.setState({ 
+                    channels: channels, 
+                    categories: categories,
+                    active_tab: 'Add Kanal'
+                }, () => {
                     setNewsChannels(this.state.categories);
                 });
                 this.props.unsetPageLoader();
@@ -254,7 +266,9 @@ class Channels extends React.Component {
                                                     {this.state.categories.map((category, i) => (
                                                         category.label == 'priority' ? (
                                                             <li className="list-group-item" key={'item-' + category.id.toString()}>
-                                                                <ListGroupItemHeading style={{ color: '#8f8f8f !important' }}>{category.name}</ListGroupItemHeading>
+                                                                <div className="remove-container">
+                                                                </div>
+                                                                <h5 className="list-group-item-heading" style={{ color: '#8f8f8f' }}>{category.name}</h5>
                                                             </li>
                                                         ) : (
                                                             <Draggable 
@@ -267,9 +281,12 @@ class Channels extends React.Component {
                                                                         ref={provided.innerRef}
                                                                         {...provided.draggableProps}
                                                                         {...provided.dragHandleProps}>
-                                                                        <ListGroupItemHeading>{category.name}</ListGroupItemHeading>
                                                                         <div className="remove-container">
                                                                             <RemoveCircleIcon onClick={() => this.removeChannel(category, i)} className="remove-button" />
+                                                                        </div>
+                                                                        <ListGroupItemHeading>{category.name}</ListGroupItemHeading>
+                                                                        <div className="sort-container">
+                                                                            <CompareArrowsIcon className="sort-button" />
                                                                         </div>
                                                                     </li>
                                                                 )}
