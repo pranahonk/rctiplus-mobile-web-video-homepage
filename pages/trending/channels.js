@@ -22,7 +22,7 @@ import { setNewsChannels, getNewsChannels } from '../../utils/cookie';
 class Channels extends React.Component {
 
     state = {
-        active_tab: 'Tambah Kanal',
+        active_tab: 'Add Kanal',
         is_category_loading: true,
         categories: [],
         saved_categories: [],
@@ -77,7 +77,7 @@ class Channels extends React.Component {
                     }
 
                     for (let i = 0; i < savedCategories.length; i++) {
-                        if (categories.findIndex(c => c.id == savedCategories[i].id) == -1) {
+                        if (categories.findIndex(c => c.id == savedCategories[i].id) == -1 && savedCategories[i].label != 'priority') {
                             sortedCategories.push(savedCategories[i]);
                         }
                     }
@@ -202,11 +202,11 @@ class Channels extends React.Component {
                     <Nav tabs className="navigation-tabs">
                         <NavItem
                             className={classnames({
-                                active: this.state.active_tab === 'Tambah Kanal',
+                                active: this.state.active_tab === 'Add Kanal',
                                 'navigation-tabs-item': true
                             })}
-                            onClick={() => this.toggleTab('Tambah Kanal')}>
-                            <NavLink className="item-link">Tambah Kanal</NavLink>
+                            onClick={() => this.toggleTab('Add Kanal')}>
+                            <NavLink className="item-link">Add Kanal</NavLink>
                         </NavItem>
                         <NavItem
                             className={classnames({
@@ -228,7 +228,7 @@ class Channels extends React.Component {
                         </div>
                     ) : (
                             <TabContent activeTab={this.state.active_tab}>
-                                <TabPane tabId={`Tambah Kanal`}>
+                                <TabPane tabId={`Add Kanal`}>
                                     <ListGroup className="add-channel-list">
                                         {this.state.channels.map((channel, i) => (
                                             <ListGroupItem key={i}>
@@ -237,7 +237,7 @@ class Channels extends React.Component {
                                                     <ListGroupItemText></ListGroupItemText>
                                                 </div>
                                                 <div className="button-container">
-                                                    <Button onClick={() => this.addChannel(channel, i)} className="add-button">Tambah</Button>
+                                                    <Button onClick={() => this.addChannel(channel, i)} className="add-button">Add</Button>
                                                 </div>
                                             </ListGroupItem>
                                         ))}
@@ -254,7 +254,7 @@ class Channels extends React.Component {
                                                     {this.state.categories.map((category, i) => (
                                                         category.label == 'priority' ? (
                                                             <li className="list-group-item" key={'item-' + category.id.toString()}>
-                                                                <ListGroupItemHeading>{category.name}</ListGroupItemHeading>
+                                                                <ListGroupItemHeading style={{ color: '#8f8f8f !important' }}>{category.name}</ListGroupItemHeading>
                                                             </li>
                                                         ) : (
                                                             <Draggable 

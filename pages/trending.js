@@ -60,7 +60,6 @@ class Trending_v2 extends React.Component {
             this.setState({ is_load_more: true }, () => {
                 this.loadArticles(this.state.active_tab, this.state.pages[this.state.active_tab]);
             });
-
         }
     }
 
@@ -154,6 +153,13 @@ class Trending_v2 extends React.Component {
                     if (sortedCategories.length <= 0) {
                         setNewsChannels(categories);
                         sortedCategories = getNewsChannels();
+                    }
+
+                    for (let i = 0; i < sortedCategories.length; i++) {
+                        if (categories.findIndex(c => c.id == sortedCategories[i].id) == -1) {
+                            sortedCategories.splice(i, 1);
+                            i--;
+                        }
                     }
 
                     if (sortedCategories.length > 0) {
