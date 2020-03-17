@@ -25,7 +25,7 @@ class Channels extends React.Component {
         active_tab: 'Tambah Kanal',
         is_category_loading: true,
         categories: [],
-        saved_categories: getNewsChannels(),
+        saved_categories: [],
         channels: [],
         selected_channel_ids: []
     };
@@ -36,56 +36,64 @@ class Channels extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getChannels()
-            .then(response => {
-                this.setState({
-                    is_category_loading: false,
-                    channels: response.data.data
+        const savedCategoriesNews = getNewsChannels();
+        this.setState({ saved_categories: savedCategoriesNews }, () => {
+            this.props.getChannels()
+                .then(response => {
+                    let channels = response.data.data;
+                    let savedChannels = savedCategoriesNews;
+
+                    for (let i = 0; i < channels.length; i++) {
+                        if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
+                            channels.splice(i, 1);
+                            i--;
+                        }
+                    }
+
+                    this.setState({ channels: channels });
+                })
+                .catch(error => {
+                    console.log(error);
                 });
-            })
-            .catch(error => {
-                console.log(error);
-                this.setState({ is_category_loading: false });
-            });
 
-        this.props.getCategory()
-            .then(response => {
-                let selectedChannelIds = [];
-                let categories = response.data.data;
-                for (let i = 0; i < categories.length; i++) {
-                    if (categories[i].label != 'priority') {
-                        selectedChannelIds.push(categories[i].id);
+            this.props.getCategory()
+                .then(response => {
+                    let selectedChannelIds = [];
+                    let categories = response.data.data;
+                    for (let i = 0; i < categories.length; i++) {
+                        if (categories[i].label != 'priority') {
+                            selectedChannelIds.push(categories[i].id);
+                        }
                     }
-                }
 
-                let sortedCategories = [];
-                let savedCategories = this.state.saved_categories;
-                for (let i = 0; i < savedCategories.length; i++) {
-                    if (categories.findIndex(c => c.id == savedCategories[i].id) == -1) {
-                        savedCategories.splice(i, 1);
-                        i--;
+                    let sortedCategories = [];
+                    let savedCategories = savedCategoriesNews;
+                    for (let i = 0; i < savedCategories.length; i++) {
+                        if (categories.findIndex(c => c.id == savedCategories[i].id) != -1) {
+                            sortedCategories.push(savedCategories[i]);
+                            savedCategories.splice(i, 1);
+                            i--;
+                        }
                     }
-                    else {
-                        sortedCategories.push(savedCategories[i]);
-                    }
-                }
 
-                for (let i = 0; i < categories.length; i++) {
-                    if (sortedCategories.findIndex(s => s.id == categories[i].id) == -1) {
-                        sortedCategories.push(categories[i]);
+                    for (let i = 0; i < savedCategories.length; i++) {
+                        if (categories.findIndex(c => c.id == savedCategories[i].id) == -1) {
+                            sortedCategories.push(savedCategories[i]);
+                        }
                     }
-                }
 
-                this.setState({
-                    is_category_loading: false,
-                    categories: sortedCategories,
-                    selected_channel_ids: selectedChannelIds
+                    this.setState({
+                        is_category_loading: false,
+                        categories: sortedCategories,
+                        selected_channel_ids: selectedChannelIds
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.setState({ is_category_loading: false });
                 });
-            })
-            .catch(error => {
-                console.log(error);
-                this.setState({ is_category_loading: false });
-            });
+        });
+        
     }
 
     onDragEnd(result) {
@@ -99,6 +107,7 @@ class Channels extends React.Component {
         
         const categories = res;
         this.setState({ categories }, () => {
+            console.log('SAVE CHANNELS');
             setNewsChannels(this.state.categories);
         });
     }
@@ -117,24 +126,37 @@ class Channels extends React.Component {
         const addedIndex = selectedChannelIds.indexOf(category.id);
         if (addedIndex == -1) {
             selectedChannelIds.push(category.id);
-            this.props.setCategory(selectedChannelIds)
-                .then(response => {
-                    console.log(response);
-                    this.setState({ selected_channel_ids: selectedChannelIds }, () => {
-                        let channels = this.state.channels;
-                        channels.splice(index, 1);
+            this.setState({ selected_channel_ids: selectedChannelIds }, () => {
+                let channels = this.state.channels;
+                channels.splice(index, 1);
 
-                        let categories = this.state.categories;
-                        categories.push(category);
+                let categories = this.state.categories;
+                categories.push(category);
 
-                        this.setState({ channels: channels, categories: categories });
-                        this.props.unsetPageLoader();
-                    });
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.props.unsetPageLoader();
+                this.setState({ channels: channels, categories: categories }, () => {
+                    setNewsChannels(this.state.categories);
                 });
+                this.props.unsetPageLoader();
+            });
+
+            // this.props.setCategory(selectedChannelIds)
+            //     .then(response => {
+            //         console.log(response);
+            //         this.setState({ selected_channel_ids: selectedChannelIds }, () => {
+            //             let channels = this.state.channels;
+            //             channels.splice(index, 1);
+
+            //             let categories = this.state.categories;
+            //             categories.push(category);
+
+            //             this.setState({ channels: channels, categories: categories });
+            //             this.props.unsetPageLoader();
+            //         });
+            //     })
+            //     .catch(error => {
+            //         console.log(error);
+            //         this.props.unsetPageLoader();
+            //     });
         }
         else {
             this.props.unsetPageLoader();
@@ -146,30 +168,30 @@ class Channels extends React.Component {
         newsRemoveCategoryChannelClicked(category.name, 'mweb_news_remove_category_kanal_clicked');
         let selectedChannelIds = this.state.selected_channel_ids;
         const removedIndex = selectedChannelIds.indexOf(category.id);
-        if (removedIndex != -1) {
             selectedChannelIds.splice(removedIndex, 1);
-            this.props.setCategory(selectedChannelIds)
-                .then(response => {
-                    console.log(response);
-                    this.setState({ selected_channel_ids: selectedChannelIds }, () => {
-                        let channels = this.state.channels;
-                        channels.push(category);
+            this.setState({ selected_channel_ids: selectedChannelIds }, () => {
+                let channels = this.state.channels;
+                channels.push(category);
 
-                        let categories = this.state.categories;
-                        categories.splice(index, 1);
+                let categories = this.state.categories;
+                categories.splice(index, 1);
+                console.log(categories);
 
-                        this.setState({ channels: channels, categories: categories });
-                        this.props.unsetPageLoader();
-                    });
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.props.unsetPageLoader();
+                this.setState({ channels: channels, categories: categories }, () => {
+                    setNewsChannels(this.state.categories);
                 });
-        }
-        else {
-            this.props.unsetPageLoader();
-        }
+                this.props.unsetPageLoader();
+            });
+            // this.props.setCategory(selectedChannelIds)
+            //     .then(response => {
+            //         console.log(response);
+                    
+            //     })
+            //     .catch(error => {
+            //         console.log(error);
+            //         this.props.unsetPageLoader();
+            //     });
+        
     }
 
     render() {
@@ -219,7 +241,6 @@ class Channels extends React.Component {
                                                 </div>
                                             </ListGroupItem>
                                         ))}
-
                                     </ListGroup>
                                 </TabPane>
                                 <TabPane tabId={`Edit Kanal`}>
@@ -260,7 +281,6 @@ class Channels extends React.Component {
                                             )}
                                         </Droppable>
                                     </DragDropContext>
-                                    
                                 </TabPane>
                             </TabContent>
                         )}

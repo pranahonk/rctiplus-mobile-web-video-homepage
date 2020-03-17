@@ -1,16 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
+import Link from 'next/link';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import Img from 'react-image';
 
 import { DEV_API, NEWS_API, BASE_URL, NEWS_API_V2 } from '../../config';
 
-import newsContentActions from '../../redux/actions/trending/content';
-
 import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
+import NavBackIframe from '../../components/Includes/Navbar/NavIframe';
 import '../../assets/scss/components/trending_detail.scss';
 
 import { FacebookShareButton, TwitterShareButton, EmailShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
@@ -73,6 +73,12 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
+        window.onhashchange = () => {
+            if (this.state.iframe_opened) {
+                this.setState({ iframe_opened: false });
+            }
+        };
+
         this.props.incrementCount(Number(this.state.trending_detail_id))
             .then(response => {
                 console.log(response);
@@ -181,7 +187,12 @@ class Detail extends React.Component {
                         gtag('config', 'UA-145455301-9');
                     ` }}></script>
                 </Head>
-                <NavBack data={cdata} disableScrollListener/>
+                {this.state.iframe_opened ? (<NavBackIframe closeFunction={() => {
+                    this.setState({ iframe_opened: false });
+                }} data={cdata} disableScrollListener/>) : (
+                    <NavBack data={cdata} disableScrollListener/>
+                )}
+                
                 {this.state.iframe_opened ? (<iframe src={cdata.link} style={{ width: '100%', minHeight: 'calc(100vh - 50px)', paddingTop: 65 }} frameBorder="0" type="text/html"></iframe>) : (
                     <div className="content-trending-detail">
                         <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title }}></b></h1>
@@ -193,7 +204,11 @@ class Detail extends React.Component {
                                 <img alt={cdata.title} className="content-trending-detail-cover" src={cdata.cover} />
                             </div>
                             <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>
-                            <div onClick={this.openIframe.bind(this)} style={{ color: '-webkit-link', margin: 10, paddingBottom: 20 }}>Original article &gt;</div>
+                            <Link href="#">
+                                <a>
+                                    <div onClick={this.openIframe.bind(this)} style={{ color: '-webkit-link', margin: 10, paddingBottom: 20 }}>Original article &gt;</div>
+                                </a>
+                            </Link>
                         </div>
                         {this.renderActionButton()}
                         <div className="content-trending-detail-related">

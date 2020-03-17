@@ -60,7 +60,7 @@ class Trending_v2 extends React.Component {
             this.setState({ is_load_more: true }, () => {
                 this.loadArticles(this.state.active_tab, this.state.pages[this.state.active_tab]);
             });
-            
+
         }
     }
 
@@ -130,52 +130,47 @@ class Trending_v2 extends React.Component {
     }
 
     componentDidMount() {
-        // this.props.getUserData()
-        //     .then(response => {
-        //         this.setState({ user_data: response.data.data });
-        //     })
-        //     .catch(error => {
-        //         console.log(error);
-        //     });
-
-        this.props.getCategory()
-            .then(response => {
-                const data = response.data.data;
-                let sortedCategories = [];
-                let savedCategories = this.state.saved_tabs;
-                for (let i = 0; i < savedCategories.length; i++) {
-                    if (data.findIndex(c => c.id == savedCategories[i].id) == -1) {
-                        savedCategories.splice(i, 1);
-                        i--;
+        const savedCategoriesNews = getNewsChannels();
+        this.setState({ saved_tabs: savedCategoriesNews }, () => {
+            this.props.getCategory()
+                .then(response => {
+                    let categories = response.data.data;
+                    let sortedCategories = [];
+                    let savedCategories = savedCategoriesNews;
+                    for (let i = 0; i < savedCategories.length; i++) {
+                        if (categories.findIndex(c => c.id == savedCategories[i].id) != -1) {
+                            sortedCategories.push(savedCategories[i]);
+                            savedCategories.splice(i, 1);
+                            i--;
+                        }
                     }
-                    else {
-                        sortedCategories.push(savedCategories[i]);
-                    }
-                }
 
-                for (let i = 0; i < data.length; i++) {
-                    if (sortedCategories.findIndex(s => s.id == data[i].id) == -1) {
-                        sortedCategories.push(data[i]);
+                    for (let i = 0; i < savedCategories.length; i++) {
+                        if (categories.findIndex(c => c.id == savedCategories[i].id) == -1) {
+                            sortedCategories.push(savedCategories[i]);
+                        }
                     }
-                }
 
-                if (data.length > 0) {
+                    if (sortedCategories.length > 0) {
+                        this.setState({
+                            tabs: sortedCategories,
+                            active_tab: Object.keys(this.props.query).length > 0 ? this.props.query.subcategory_id.toString() : sortedCategories[0].id.toString(),
+                            is_tabs_loading: false
+                        }, () => this.loadContents(Object.keys(this.props.query).length > 0 ? this.props.query.subcategory_id : sortedCategories[0].id));
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
                     this.setState({
-                        tabs: sortedCategories,
-                        active_tab: Object.keys(this.props.query).length > 0 ? this.props.query.subcategory_id.toString() : data[0].id.toString(),
-                        is_tabs_loading: false
-                    }, () => this.loadContents(Object.keys(this.props.query).length > 0 ? this.props.query.subcategory_id : data[0].id));
-                }
-            })
-            .catch(error => {
-                console.log(error);
-                this.setState({
-                    is_tabs_loading: false,
-                    is_articles_loading: false,
-                    is_trending_loading: false,
-                    load_error: true
+                        is_tabs_loading: false,
+                        is_articles_loading: false,
+                        is_trending_loading: false,
+                        load_error: true
+                    });
                 });
-            });
+        });
+
+
     }
 
     goToDetail(article) {
@@ -266,8 +261,8 @@ class Trending_v2 extends React.Component {
                                                                     active: this.state.active_tab == tab.id,
                                                                     'navigation-tabs-item': true
                                                                 })}>
-                                                                <Link 
-                                                                    href={`/trending?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}`} 
+                                                                <Link
+                                                                    href={`/trending?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}`}
                                                                     as={`/trending/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}`}>
                                                                     <NavLink onClick={() => this.toggleTab(tab.id.toString(), tab)} className="item-link">{tab.name}</NavLink>
                                                                 </Link>
@@ -287,9 +282,9 @@ class Trending_v2 extends React.Component {
                                                                 Woops! Gonna sign in first!<br/>
                                                                 Only a click away and you<br/>
                                                                 can continue to enjoy<br/>
-                                                                <b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+                                                                <b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
                                                             }
-                                                        }}/>
+                                                        }} />
                                                     </div>
                                                 </div>
                                             )}

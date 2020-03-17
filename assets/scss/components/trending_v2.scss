@@ -70,6 +70,10 @@
 
     .article-list {
         padding: 0;
+
+        a:hover {
+            text-decoration: none;
+        }
         
         .article {
             min-height: 120px;

@@ -1,5 +1,6 @@
 import React from 'react';
 import Router from 'next/router';
+import Link from 'next/link';
 import { connect } from 'react-redux';
 import Img from 'react-image';
 
@@ -32,16 +33,17 @@ class GridMenu extends React.Component {
                         </div>
                     </Col>
                     <Col className="menu-item">
-                        <div onClick={() => {
-                            homeGeneralClicked('mweb_news_clicked');
-                            Router.push('/trending');
-                        }}>
+                        <Link href="/trending">
                             <a>
-                                <img className="menu-icon" src={'/news.svg'}/>
-                                <p className="menu-label">News</p>
+                                <div onClick={() => {
+                                    homeGeneralClicked('mweb_news_clicked');
+                                    // Router.push('/trending');
+                                }}>
+                                    <img className="menu-icon" src={'/news.svg'}/>
+                                    <p className="menu-label">News</p>
+                                </div>
                             </a>
-                        </div>
-                        
+                        </Link>
                     </Col>
                     <Col className="menu-item">
                         <div onClick={() => {

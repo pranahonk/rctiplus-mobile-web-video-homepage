@@ -1,0 +1,33 @@
+.nav-logo-trending{
+    width:35%;
+}
+.btn-link-top-nav{
+    text-align: right;
+}
+.input_trending_detail{
+    text-align: right;
+    
+}
+
+.navbar-iframe {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px;
+    background-color: #f8f8f7;
+
+    .navbar-brand {
+        color: #8f8f8f !important;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+.trendingHeader {
+    font-size: 11px;
+    text-align: center;
+    padding-left: 5px;
+    padding-right: 5px;
+}
