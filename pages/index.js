@@ -135,7 +135,7 @@ class Index_v2 extends React.Component {
                 </Carousel>
                 <StickyAds />
                 <Stories />
-                <native-home></native-home>
+                {/* <native-home></native-home> */}
                 <div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
                     {contents.map((content, i) => {
                         switch (content.display_type) {
@@ -153,7 +153,7 @@ class Index_v2 extends React.Component {
                         }
                     })}
                 </div>
-                <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+                {/* <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
                 <script dangerouslySetInnerHTML={{ __html: `
                     window.googletag = window.googletag || {cmd: []};
                     googletag.cmd.push(function() {
@@ -162,11 +162,11 @@ class Index_v2 extends React.Component {
                         googletag.pubads().collapseEmptyDivs();
                         googletag.enableServices();
                     });
-                ` }}></script>
+                ` }}></script> */}
                 {/* <!-- /21865661642/RC_NATIVE-AD_MOBILE --> */}
-                <div id='div-gpt-ad-1584419593176-0'>
-                <script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584419593176-0'); });` }}></script>
-            </div>
+                {/* <div id='div-gpt-ad-1584419593176-0'>
+                    <script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584419593176-0'); });` }}></script>
+                </div> */}
         </Layout>
         );
     }
