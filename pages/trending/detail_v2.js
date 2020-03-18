@@ -232,7 +232,7 @@ class Detail extends React.Component {
 
                 {this.state.iframe_opened ? (<iframe src={cdata.link} style={{ width: '100%', minHeight: 'calc(100vh - 50px)', paddingTop: 65 }} frameBorder="0" type="text/html"></iframe>) : (
                     <ScrollPercentage onChange={(percentage, entry) => {
-                        if (percentage > 0.22) {
+                        if (percentage > 0.32) {
                             if (!this.state.scrolled_down) {
                                 this.setState({ scrolled_down: true });
                             }
