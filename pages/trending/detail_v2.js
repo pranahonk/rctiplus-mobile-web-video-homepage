@@ -281,7 +281,7 @@ class Detail extends React.Component {
                                                 </div>
                                                 <div className="article-source">
                                                     <p><strong>{article.source ? article.source : article.category_source}</strong>&nbsp;&nbsp;</p>
-                                                    <p>{formatDateWord(new Date(article.pubdate))}</p>
+                                                    <p>{formatDateWordID(new Date(article.pubdate))}</p>
                                                 </div>
                                             </ListGroupItem>
                                         ))}
