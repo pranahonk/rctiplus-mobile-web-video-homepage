@@ -326,15 +326,16 @@ class Trending_v2 extends React.Component {
                                                                         </div>
                                                                         <div className="article-title-container">
                                                                             <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title }}></h4>
+                                                                            <div className="article-source">
+                                                                                <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
+                                                                                <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div className="article-source">
-                                                                        <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
-                                                                        <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
-                                                                    </div>
+                                                                    
                                                                 </ListGroupItem>
                                                             ) : (
-                                                                    <ListGroupItem key={j} className={`article ${(j + 1) > 1 && (j + 1) % 4 <= 1 ? 'article-no-border' : ''}`} onClick={() => this.goToDetail(article)}>
+                                                                    <ListGroupItem key={j} className={`article ${(j + 1) > 1 && ((j + 2) % 5) == 0 ? 'article-no-border' : ''}`} onClick={() => this.goToDetail(article)}>
                                                                         <div className="article-description">
                                                                             <div className="article-thumbnail-container">
                                                                                 <Img

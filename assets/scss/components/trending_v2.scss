@@ -138,6 +138,7 @@
         .article-full-width {
             height: 320px;
             margin-bottom: 15px;
+            margin-top: 15px;
             padding: 0;
             border-bottom: solid 1px #303030;
 
@@ -147,16 +148,23 @@
                 .article-thumbnail-container-full-width {
                     margin-left: 0;
                     margin-right: 0;
+                    overflow: hidden;
                     width: 100%;
+                    height: 210px;
 
                     .article-thumbnail-full-width {
                         width: 100%;
+                        height: 100%;
                         border-radius: 0;
+                        object-fit: cover;
                     }
                 }
 
                 .article-title-container {
-                    height: 100%;
+                    height: 100px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-around;
 
                     .article-title {
                         font-size: 16px;
