@@ -7,6 +7,8 @@ export const API = process.env.API;
 
 export const DEV_API = process.env.DEV_API;
 
+export const CHAT_API = process.env.CHAT_API;
+
 // export const API = 'https://api.rctiplus.com';
 
 // export const DEV_API = 'https://dev-api.rctiplus.com';

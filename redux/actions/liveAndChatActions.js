@@ -1,8 +1,11 @@
 import ax from 'axios';
-import { DEV_API } from '../../config';
+import { DEV_API, CHAT_API } from '../../config';
 import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
+import socketIOClient from 'socket.io-client';
 
 const axios = ax.create({ baseURL: DEV_API + '/api' });
+const axiosChat = ax.create({ baseURL: CHAT_API });
+const socket = 'https://rc-chat-api.rctiplus.com/chat';
 
 axios.interceptors.request.use(async (request) => {
     await checkToken();
@@ -10,6 +13,13 @@ axios.interceptors.request.use(async (request) => {
     request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : accessToken;
     return request;
 });
+
+axiosChat.interceptors.request.use(async (request) => {
+    await checkToken()
+    const accessToken = getCookie('ACCESS_TOKEN');
+    request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : 'Bearer ' + accessToken;
+    return request
+})
 
 const setCatchupDate = date => {
     return dispatch => dispatch({
@@ -31,7 +41,39 @@ const setChannelCode = channelCode => {
         channel_code: channelCode
     });
 };
-
+const getChatSocket = (channelId) => {
+    // eslint-disable-next-line no-new
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axiosChat.get(`/v1/chats/${channelId}?length=10`);
+            if (response.status === 200) {
+                resolve(response);
+            } else {
+                reject(response);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    });
+};
+const postChatSocket = (channelId, message, avatar, user) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axiosChat.post(`/v1/chats/${channelId}`, {
+                msg: message,
+                avatar: avatar,
+                user: user,
+            });
+            if (response.status === 200) {
+                resolve(response);
+            } else {
+                reject(response);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    });
+};
 const postChat = (channelId, message, avatar, user) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -60,6 +102,16 @@ const postChat = (channelId, message, avatar, user) => {
     });
 };
 
+const listenSocketIo = (channelId) => {
+    return dispatch =>new Promise(async (resolve) => {
+        try {
+            const response = await socketIOClient(socket + channelId)
+            resolve(response)
+        } catch (error) {
+            console.log(error);
+        }
+    });
+};
 const getLiveChatBlock = (channelId) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -256,4 +308,7 @@ export default {
     setChannelCode,
     setCatchupData,
     getLiveChatBlock,
+    listenSocketIo,
+    postChatSocket,
+    getChatSocket,
 };
