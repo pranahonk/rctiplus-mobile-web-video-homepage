@@ -263,7 +263,7 @@ class Detail extends React.Component {
                                     </Link>
                                 </div>
                                 <div className="content-trending-detail-related">
-                                    <p className="related-title"><strong>Popular News</strong></p>
+                                    <p className="related-title"><strong>Related Articles</strong></p>
                                     <ListGroup>
                                         {this.state.trending_related.map((article, j) => (
                                             <ListGroupItem key={j} className={`article ${j == this.state.trending_related.length - 1 ? 'article-no-border' : ''}`} onClick={() => this.goToDetail(article, j)}>
