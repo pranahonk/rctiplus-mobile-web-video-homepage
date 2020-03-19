@@ -20,6 +20,8 @@ import trendingSubCategory from './trending/subCategory';
 import trendingContent from './trending/content';
 //import trendingContent from './trending/content';
 
+import newsv2Reducer from './newsv2Reducer';
+
 const rootReducer = combineReducers({
     authentication: authReducer,
     contents: contentReducer,
@@ -38,7 +40,8 @@ const rootReducer = combineReducers({
     players: playerReducer,
     pages: pageReducer,
     trending_sub_category: trendingSubCategory,
-    trending_content: trendingContent
+    trending_content: trendingContent,
+    newsv2: newsv2Reducer
 //    trendingContent: trendingContent
 });
 

@@ -15,7 +15,7 @@ class Stories extends React.Component {
 
         this.state = {
             stories: [],
-            resolution: 593
+            resolution: 375
         }
     }
 
@@ -43,7 +43,7 @@ class Stories extends React.Component {
                 }
                 let programImg = '';
                 if (story.program_img != null) {
-                    programImg = this.props.stories.video_path + story.program_img;
+                    programImg = this.props.stories.image_path + this.state.resolution  + story.program_img;
                 }
                 else {
                     programImg = 'static/placeholders/placeholder_potrait.png';

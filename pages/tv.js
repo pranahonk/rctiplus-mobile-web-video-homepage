@@ -242,6 +242,19 @@ class Tv extends React.Component {
 			}
 		});
 
+		this.player.on('mute', function() {
+			let elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
+			if (elementJwplayer[0] !== undefined) {
+				if (jwplayer().getMute()) {
+					elementJwplayer[0].classList.add('jwplayer-mute');
+					elementJwplayer[0].classList.remove('jwplayer-full');
+				} else {
+					elementJwplayer[0].classList.add('jwplayer-full');
+					elementJwplayer[0].classList.remove('jwplayer-mute');
+				}
+			}
+		});
+
 		this.player.on('setupError', error => {
 			console.log(error);
 			this.player.remove();

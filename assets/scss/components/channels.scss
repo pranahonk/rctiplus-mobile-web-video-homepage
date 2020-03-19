@@ -58,21 +58,13 @@
                     padding-left: 10px;
                     padding-right: 10px;
 
-                    -moz-user-select: none;
-                    -khtml-user-select: none;
-                    -webkit-user-select: none;
-                    user-select: none;
-                    /* Required to make elements draggable in old WebKit */
-                    -khtml-user-drag: element;
-                    -webkit-user-drag: element;
-    
                     .text-container {
                         width: 60%;
                         padding: 5px;
     
                         .list-group-item-heading {
                             color: #dadada;
-                            font-size: 14px;
+                            font-size: 17px;
                             font-weight: 900;
                             letter-spacing: 0.48px;
                             margin-block-start: 1em;
@@ -108,13 +100,13 @@
             .edit-channel-list {
                 .list-group-item {
                     display: flex;
-                    justify-content: space-between;
+                    // justify-content: space-between;
                     align-items: center;
                     border: none;
                     padding-left: 20px;
                     padding-right: 20px;
-                    padding-top: 0;
-                    padding-bottom: 0;
+                    padding-top: 5px;
+                    padding-bottom: 5px;
 
                     .list-group-item-heading {
                         color: #dadada;
@@ -122,12 +114,20 @@
                         letter-spacing: 0.48px;
                         margin-block-start: 0.5em;
                         margin-block-end: 0.5em;
+                        margin-left: 10px;
+                        width: 80%;
                     }
 
-                    .remove-container {
-                        .remove-button {
+                    .remove-container, .sort-container {
+                        width: 10%;
+
+                        .remove-button, .sort-button {
                             width: 25px;
                             height: 25px;
+                        }
+
+                        .sort-button {
+                            transform: rotate(90deg);
                         }
                     }
                 }

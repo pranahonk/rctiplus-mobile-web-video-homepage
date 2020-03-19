@@ -27,11 +27,16 @@ and open the template in the editor.
     justify-content: space-between;
     padding: 0px;
 }
+
+.nav-trending-detail {
+    background-color: #393939;
+}
+
 .row {
     display: flex;
     flex-wrap: wrap;
-    margin-right: 0px;
-    margin-left: 0px;
+    // margin-right: 0px;
+    // margin-left: 0px;
     width: 100%;
 }
 .trendingHeader{

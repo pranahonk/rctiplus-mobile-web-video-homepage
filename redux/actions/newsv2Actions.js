@@ -1,12 +1,19 @@
 import ax from 'axios';
 import { NEWS_API_V2 } from '../../config';
-import { getNewsTokenV2, getNewsToken, checkToken, getCookie } from '../../utils/cookie';
+import { getNewsTokenV2, checkToken, removeAccessToken, getAccessToken } from '../../utils/cookie';
 
 const axios = ax.create({ baseURL: NEWS_API_V2 + '/api' });
 
 axios.interceptors.request.use(async (request) => {
-    await checkToken();
-    request.headers['Authorization'] = getNewsTokenV2();
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+        removeAccessToken();
+        await checkToken();
+        request.headers['Authorization'] = getNewsTokenV2();
+    }
+    else {
+        request.headers['Authorization'] = accessToken;
+    }
     return request;
 });
 
@@ -25,10 +32,12 @@ const searchNews = (q, page = 1, pageSize = 10) => {
                 resolve(response);
             }
             else {
+                removeAccessToken();
                 reject(response);
             }
         }
         catch (error) {
+            removeAccessToken();
             reject(error);
         }
     });
@@ -72,10 +81,12 @@ const setCategory = categories => {
                 resolve(response);
             }
             else {
+                removeAccessToken();
                 reject(response);
             }
         }
         catch (error) {
+            removeAccessToken();
             reject(error);
         }
     });
@@ -89,10 +100,74 @@ const getCategory = () => {
                 resolve(response);
             }
             else {
+                removeAccessToken();
                 reject(response);
             }
         }
         catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
+const addCategory = categoryId => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v1/kanal`, {
+                category: categoryId
+            });
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
+const deleteCategory = categoryId => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.delete(`/v1/kanal/${categoryId}`);
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
+const updateCategoryOrder = (categoryId, sorting) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v1/update_kanal`, {
+                category: categoryId,
+                sorting: sorting
+            });
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
             reject(error);
         }
     });
@@ -106,10 +181,12 @@ const getTrending = (category = 1, pageSize = 5, page = 1) => {
                 resolve(response);
             }
             else {
+                removeAccessToken();
                 reject(response);
             }
         }
         catch (error) {
+            removeAccessToken();
             reject(error);
         }
     });
@@ -118,7 +195,7 @@ const getTrending = (category = 1, pageSize = 5, page = 1) => {
 const getNews = (subcategoryId = 1, pageSize = 10, page = 1) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/news?subcategory=${subcategoryId}&page=${page}&pageSize=${pageSize}`);
+            const response = await axios.get(`/v1/news?subcategory_id=${subcategoryId}&page=${page}&pageSize=${pageSize}`);
 
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
@@ -130,10 +207,12 @@ const getNews = (subcategoryId = 1, pageSize = 10, page = 1) => {
                 resolve(response);
             }
             else {
+                removeAccessToken();
                 reject(response);
             }
         }
         catch (error) {
+            removeAccessToken();
             reject(error);
         }
     });
@@ -147,10 +226,12 @@ const getArticle = id => {
                 resolve(response);
             }
             else {
+                removeAccessToken();
                 reject(response);
             }
         }
         catch (error) {
+            removeAccessToken();
             reject(error);
         }
     });
@@ -164,10 +245,12 @@ const getRelatedArticles = (id, page = 1, pageSize = 4) => {
                 resolve(response);
             }
             else {
+                removeAccessToken();
                 reject(response);
             }
         }
         catch (error) {
+            removeAccessToken();
             reject(error);
         }
     });
@@ -181,10 +264,12 @@ const getChannels = () => {
                 resolve(response);
             }
             else {
+                removeAccessToken();
                 reject(response);
             }
         }
         catch (error) {
+            removeAccessToken();
             reject(error);
         }
     });
@@ -201,10 +286,12 @@ const incrementCount = newsId => {
                 resolve(response);
             }
             else {
+                removeAccessToken();
                 reject(response);
             }
         }
         catch (error) {
+            removeAccessToken();
             reject(error);
         }
     });
@@ -218,10 +305,12 @@ const getPopularSearch = () => {
                 resolve(response);
             }
             else {
+                removeAccessToken();
                 reject(response);
             }
         }
         catch (error) {
+            removeAccessToken();
             reject(error);
         }
     });
@@ -235,6 +324,9 @@ export default {
     setSearch,
     setCategory,
     getCategory,
+    addCategory,
+    deleteCategory,
+    updateCategoryOrder,
     getTrending,
     getNews,
     getArticle,

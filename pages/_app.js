@@ -3,7 +3,7 @@ import App from 'next/app';
 import withRedux from 'next-redux-wrapper';
 import { register, unregister } from 'next-offline/runtime';
 import { initStore } from '../redux';
-import { setNewsToken, setVisitorToken, getVisitorToken } from '../utils/cookie';
+import { setVisitorTokenNews, setNewsTokenV2, setNewsToken, setVisitorToken, getVisitorToken, getVisitorTokenNews, getNewsToken, getNewsTokenV2 } from '../utils/cookie';
 
 import 'sweetalert2/src/sweetalert2.scss';
 import '../assets/scss/apps/homepage/default.scss';
@@ -20,7 +20,7 @@ export default withRedux(initStore, { debug: false })(
             };
         }
 
-        componentDidMount() {
+        async componentDidMount() {
             if(screen.width < 500 ||
                 navigator.userAgent.match(/Android/i) ||
                 navigator.userAgent.match(/webOS/i) ||
@@ -28,15 +28,49 @@ export default withRedux(initStore, { debug: false })(
                 navigator.userAgent.match(/iPod/i)) {
             } 
             else {
-                window.location.href = process.env.REDIRECT_WEB_DESKTOP
+                window.location.href = process.env.REDIRECT_WEB_DESKTOP + window.location.pathname;
             }
 
-            setVisitorToken();
-            setNewsToken();
+            console.log('WILL MOUNT -> SET TOKEN');
+
+            const visitorTokenNews = getVisitorTokenNews();
+            const visitorToken = getVisitorToken();
+            
+            let promises = [];
+            if (visitorToken == null) {
+                promises.push(setVisitorToken());
+            }
+            if (visitorTokenNews == null) {
+                promises.push(setVisitorTokenNews());
+            }
+
+            await Promise.all(promises);
+
+            const newsToken = getNewsToken();
+            const newsTokenV2 = getNewsTokenV2();
+
+            promises = [];
+            if (newsToken == null) {
+                promises.push(setNewsToken());
+            }
+            if (newsTokenV2 == null) {
+                promises.push(setNewsTokenV2());
+            }
+            
+            await Promise.all(promises);
+            
+            // setVisitorToken();
+            // setNewsToken();
+
+            // setVisitorTokenNews();
+            // setNewsTokenV2();
+
             console.log('VISITOR TOKEN:', getVisitorToken());
             //console.log('NEWS TOKEN:', getNewsToken());
 
             // 4kuG@nteng
+
+            console.log('CONVIVA:', conviva);
 
             switch (process.env.MODE) {
                 case 'DEVELOPMENT':
@@ -56,9 +90,6 @@ export default withRedux(initStore, { debug: false })(
                     });
                     break;
             }
-            
-
-            
 
             console.log('conviva integrated');
 

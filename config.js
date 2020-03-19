@@ -12,6 +12,7 @@ export const DEV_API = process.env.DEV_API;
 // export const DEV_API = 'https://dev-api.rctiplus.com';
 
 export const NEWS_API = process.env.NEWS_API;
+export const NEWS_API_V2 = process.env.NEWS_API_V2;
 // export const NEWS_API = 'https://api-v2.rctiplus.com/news';
 export const REWARDS_API = process.env.REWARDS_API;
 export const STATIC = process.env.STATIC;

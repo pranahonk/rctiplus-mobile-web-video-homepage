@@ -61,8 +61,8 @@ class NavTrendingSearch extends Component {
 
     render() {
         return (
-                <div className="nav-home-container nav-fixed-top">
-                    <Navbar expand="md" className={'nav-container nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
+                <div className={"nav-home-container nav-fixed-top"}>
+                    <Navbar expand="md" className={'nav-container nav-trending-detail nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
                         <Row className="wr-col-trn-search">
                             <Col xs="12">
                                 <NavbarBrand onClick={() => {
@@ -71,7 +71,7 @@ class NavTrendingSearch extends Component {
                                     }
                                     Router.back();
                                 }} style={{color: 'white'}}>
-                                <ArrowBackIcon/> <span className="trendingHeader">Trending</span>
+                                <ArrowBackIcon/> <span className="trendingHeader"></span>
                             </NavbarBrand>
                             </Col>
                         </Row>

@@ -110,11 +110,14 @@ class Pnl_2 extends React.Component {
 												src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
 											{/* <PlayCircleOutlineIcon className="play-btn-2" /> */}
 										</div>
-		
-										<div className="txt-slider-panel">
-											<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
-											<p>{c.content_title}</p>
-										</div>
+
+										{c.display_type == 'hide_url' ? null : (
+											<div className="txt-slider-panel">
+												<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
+												<p>{c.content_title}</p>
+											</div>
+										)}
+										
 									</div>
 							))}
 						</div>

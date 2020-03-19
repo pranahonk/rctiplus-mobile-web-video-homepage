@@ -837,6 +837,7 @@ class Detail extends React.Component {
     toggleTab(tab, tabName = 'Episode') {
         if (this.state.active_tab !== tab) {
             this.setState({ active_tab: tab }, () => {
+                console.log(this.state.contents);
                 if (this.reference) {
                     switch (this.reference) {
                         case 'homepage':
@@ -927,8 +928,8 @@ class Detail extends React.Component {
                                 <NavLink onClick={this.toggleTab.bind(this, idx.toString(), key)} className={classnames({ active: this.state.active_tab === idx.toString() })}>{key}</NavLink>
                             </Link>
                         </NavItem>);
-                idx++;
             }
+            idx++;
         }
 
         if (this.props.initial == false) {

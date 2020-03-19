@@ -1,0 +1,69 @@
+.headline-carousel {
+    .carousel {
+        min-height: 320px;
+
+        .slide {
+            background: #282828;
+        }
+
+        .slider {
+            min-height: 320px;
+        }
+    }
+
+    .control-dots {
+        bottom: 40% !important;
+
+        .dot {
+            margin-left: 6px;
+            margin-right: 6px;
+
+            transition-property: transform;
+            transition-duration: 0.5s;
+            transition-timing-function: ease-in-out;
+        }
+
+        .selected {
+            transform: scaleX(2);
+            border-radius: 3px !important;
+        }
+    }
+
+    .center-cropped {
+        width: 100%;
+        height: 220px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        overflow: hidden;
+
+        .thumbnail {
+            min-height: 100%;
+            min-width: 100%;
+        }
+    }
+
+    .caption {
+        background-color: #282828;
+        text-align: left;
+        height: 110px;
+        padding-top: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .title {
+            margin: 0;
+            font-size: 17px;
+            color: #ffffff;
+        }
+
+        .description {
+            display: flex;
+            flex-direction: row;
+            font-size: 11px;
+            color: #8f8f8f;
+        }
+    }
+}

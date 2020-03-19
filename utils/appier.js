@@ -993,6 +993,28 @@ export const newsArticleBackClicked = (articleId, articleName, category, event =
     newsArticleClicked(articleId, articleName, category, event);
 };
 
+export const newsAddChannelClicked = (event = 'mweb_news_add_kanal_clicked') => {
+    newsGeneralEvent(event);
+};
+
+export const newsTabChannelClicked = (tabName, event = 'mweb_news_tab_kanal_clicked') => {
+    newsTabClicked(tabName, event);
+};
+
+export const newsAddCategoryChannelClicked = (channelName, event = 'mweb_news_add_category_kanal_clicked') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        kanal_name: channelName,
+        users_id: getUserId(),
+        date_time: new Date().getTime() / 1000
+    });
+};
+
+export const newsRemoveCategoryChannelClicked = (channelName, event = 'mweb_news_remove_category_kanal_clicked') => {
+    newsAddCategoryChannelClicked(channelName, event);
+};
+
 export const searchKeywordEvent = (search, event = 'mweb_search_keyword') => {
     console.log(event);
     qg('event', event, 

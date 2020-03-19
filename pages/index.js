@@ -135,24 +135,39 @@ class Index_v2 extends React.Component {
                 </Carousel>
                 <StickyAds />
                 <Stories />
+                <native-home></native-home>
                 <div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
-                    {contents.map(content => {
+                    {contents.map((content, i) => {
                         switch (content.display_type) {
                             case 'horizontal_landscape_large':
-                                return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} />;
+                                return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} displayType={content.display_type}/>;
 
                             case 'horizontal_landscape':
-                                return <Panel2 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} />;
+                                return <Panel2 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} displayType={content.display_type}/>;
 
                             case 'horizontal':
-                                return <Panel3 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} />;
+                                return <Panel3 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} displayType={content.display_type}/>;
 
                             case 'vertical':
-                                return <Panel4 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} />;
+                                return <Panel4 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} displayType={content.display_type}/>;
                         }
                     })}
                 </div>
-            </Layout>
+                <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+                <script dangerouslySetInnerHTML={{ __html: `
+                    window.googletag = window.googletag || {cmd: []};
+                    googletag.cmd.push(function() {
+                        googletag.defineSlot('/21865661642/RC_NATIVE-AD_MOBILE', ['fluid'], 'div-gpt-ad-1584419593176-0').addService(googletag.pubads());
+                        googletag.pubads().enableSingleRequest();
+                        googletag.pubads().collapseEmptyDivs();
+                        googletag.enableServices();
+                    });
+                ` }}></script>
+                {/* <!-- /21865661642/RC_NATIVE-AD_MOBILE --> */}
+                <div id='div-gpt-ad-1584419593176-0'>
+                    <script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584419593176-0'); });` }}></script>
+                </div>
+        </Layout>
         );
     }
 
