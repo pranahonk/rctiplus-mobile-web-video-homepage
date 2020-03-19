@@ -7,21 +7,24 @@ import fetch from 'isomorphic-unfetch';
 import Img from 'react-image';
 import { ScrollPercentage } from 'react-scroll-percentage';
 
-import { DEV_API, NEWS_API, BASE_URL, NEWS_API_V2 } from '../../config';
+import { DEV_API, BASE_URL, NEWS_API_V2 } from '../../config';
 
 import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 import NavBackIframe from '../../components/Includes/Navbar/NavIframe';
 import '../../assets/scss/components/trending_detail.scss';
 
-import { FacebookShareButton, TwitterShareButton, EmailShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
-import { Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
+import { FacebookShareButton, TwitterShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
+import { ListGroup, ListGroupItem } from 'reactstrap';
 
-import { formatDateWordID, formatDateWord } from '../../utils/dateHelpers';
-import { newsRelatedArticleClicked, newsRateArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
+import { formatDateWordID } from '../../utils/dateHelpers';
+import { setAccessToken, removeAccessToken } from '../../utils/cookie';
+import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
 import newsv2Actions from '../../redux/actions/newsv2Actions';
 
 import ShareIcon from '@material-ui/icons/Share';
+
+import queryString from 'query-string';
 
 class Detail extends React.Component {
 
@@ -76,6 +79,23 @@ class Detail extends React.Component {
         };
 
         this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
+        this.accessToken = null;
+        this.platform = null;
+        const segments = this.props.router.asPath.split(/\?/);
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.token) {
+                this.accessToken = q.token;
+                setAccessToken(q.token);
+            }
+
+            if (q.platform) {
+                this.platform = q.platform;
+            }
+        }
+        else {
+            removeAccessToken();
+        }
     }
 
     componentDidMount() {
@@ -104,14 +124,6 @@ class Detail extends React.Component {
             .catch(error => {
                 console.log(error);
             });
-
-        // this.props.getNewsFavoriteStatus(this.state.trending_detail_id)
-        //     .then(response => {
-        //         console.log(response);
-        //     })
-        //     .catch(error => {
-        //         console.log(error);
-        //     });
     }
 
     getRandom(arr, n) {
@@ -143,13 +155,12 @@ class Detail extends React.Component {
             window.open(article.link, '_blank');
         }
         else {
-            Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase());
+            Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase() + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
         }
 
     }
 
     setNewsFavorite() {
-        const cdata = this.state.trending_detail_data;
         // newsRateArticleClicked(cdata.id, cdata.title, 'status_like', 'N/A', 'mweb_news_rate_article_clicked');
         // this.props.setNewsFavorite(this.state.trending_detail_id);
     }
@@ -159,7 +170,7 @@ class Detail extends React.Component {
         newsArticleShareClicked(cdata.id, cdata.title, cdata.category_source, 'mweb_news_share_article_clicked');
     }
 
-    renderActionButton(orientation = 'horizontal') {
+    renderActionButton() {
         const cdata = this.state.trending_detail_data;
         let hashtags = ['rcti', 'rctinews'];
         return (
@@ -195,10 +206,6 @@ class Detail extends React.Component {
                         .catch(error => console.log('Error sharing:', error));
                     }}/>
                 </div>
-
-                {/* <div onClick={this.setNewsFavorite.bind(this)} className="sheet-action-button" style={{ float: 'right' }}>
-                    <i className="fas fa-heart"></i>
-                </div> */}
             </div>
         );
     }
@@ -231,7 +238,7 @@ class Detail extends React.Component {
                 </div>
 
                 {this.state.iframe_opened ? (<iframe src={cdata.link} style={{ width: '100%', minHeight: 'calc(100vh - 50px)', paddingTop: 65 }} frameBorder="0" type="text/html"></iframe>) : (
-                    <ScrollPercentage onChange={(percentage, entry) => {
+                    <ScrollPercentage onChange={(percentage) => {
                         if (percentage > 0.32) {
                             if (!this.state.scrolled_down) {
                                 this.setState({ scrolled_down: true });
@@ -243,10 +250,9 @@ class Detail extends React.Component {
                             }
                         }
                     }}>
-                        {({ percentage, ref, entry }) => (
+                        {({ ref }) => (
                             <div ref={ref} className="content-trending-detail">
                                 <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title }}></b></h1>
-                                {/* <p className="content-trending-detail-title-src-auth">{cdata.source} | {cdata.author}</p> */}
                                 <small className="content-trending-detail-create"><strong>{cdata.source}</strong>&nbsp;&nbsp;{formatDateWordID(new Date(cdata.pubDate * 1000))}</small>
                                 {this.renderActionButton()}
                                 <div className="content-trending-detail-wrapper">
@@ -286,17 +292,6 @@ class Detail extends React.Component {
                                             </ListGroupItem>
                                         ))}
                                     </ListGroup>
-                                    {/* <Row className="related-content" style={{ marginLeft: 0, marginRight: 0 }}>
-                                        {this.state.trending_related.map((tr, i) => (
-                                            <Col xs={6} key={i}>
-                                                <div onClick={() => this.goToDetail(tr, i)}><Img className="box-img-trending"
-                                                    alt={tr.title}
-                                                    unloader={<img alt={tr.title} className="box-img-trending" src="/static/placeholders/placeholder_potrait.png" />}
-                                                    loader={<img alt={tr.title} className="box-img-trending" src="/static/placeholders/placeholder_potrait.png" />}
-                                                    src={[tr.cover, '/static/placeholders/placeholder_potrait.png']} /><h2 className="font-trending-title-trending-default" dangerouslySetInnerHTML={{ __html: `${tr.title.substring(0, 35)}...` }}></h2></div>
-                                            </Col>
-                                        ))}
-                                    </Row> */}
                                 </div>
                             </div>
                         )}

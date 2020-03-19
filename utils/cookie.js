@@ -313,3 +313,15 @@ export const getNewsChannels = () => {
 
     return [];
 };
+
+export const setAccessToken = token => {
+    setCookie('GLOBAL_ACCESS_TOKEN', token);
+};
+
+export const getAccessToken = () => {
+    return getCookie('GLOBAL_ACCESS_TOKEN');
+};
+
+export const removeAccessToken = () => {
+    removeCookie('GLOBAL_ACCESS_TOKEN');
+};

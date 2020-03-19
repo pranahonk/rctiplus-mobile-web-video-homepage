@@ -20,7 +20,17 @@ export default withRedux(initStore, { debug: false })(
             };
         }
 
-        async componentWillMount() {
+        async componentDidMount() {
+            if(screen.width < 500 ||
+                navigator.userAgent.match(/Android/i) ||
+                navigator.userAgent.match(/webOS/i) ||
+                navigator.userAgent.match(/iPhone/i) ||
+                navigator.userAgent.match(/iPod/i)) {
+            } 
+            else {
+                window.location.href = process.env.REDIRECT_WEB_DESKTOP + window.location.pathname;
+            }
+
             console.log('WILL MOUNT -> SET TOKEN');
 
             const visitorTokenNews = getVisitorTokenNews();
@@ -48,18 +58,6 @@ export default withRedux(initStore, { debug: false })(
             }
             
             await Promise.all(promises);
-        }
-
-        componentDidMount() {
-            if(screen.width < 500 ||
-                navigator.userAgent.match(/Android/i) ||
-                navigator.userAgent.match(/webOS/i) ||
-                navigator.userAgent.match(/iPhone/i) ||
-                navigator.userAgent.match(/iPod/i)) {
-            } 
-            else {
-                window.location.href = process.env.REDIRECT_WEB_DESKTOP
-            }
             
             // setVisitorToken();
             // setNewsToken();
@@ -71,6 +69,8 @@ export default withRedux(initStore, { debug: false })(
             //console.log('NEWS TOKEN:', getNewsToken());
 
             // 4kuG@nteng
+
+            console.log('CONVIVA:', conviva);
 
             switch (process.env.MODE) {
                 case 'DEVELOPMENT':

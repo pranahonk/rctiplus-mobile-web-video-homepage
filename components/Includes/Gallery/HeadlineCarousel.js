@@ -1,18 +1,42 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import Img from 'react-image';
 
 import { formatDateWordID } from '../../../utils/dateHelpers';
+import { setAccessToken, removeAccessToken } from '../../../utils/cookie';
 
 import '../../../assets/scss/plugins/carousel/headline-carousel.scss';
+
+import queryString from 'query-string';
 
 class HeadlineCarousel extends React.Component {
 
     MAX_TITLE_LENGTH = 95;
+
+    constructor(props) {
+        super(props);
+        this.accessToken = null;
+        this.platform = null;
+        const segments = this.props.router.asPath.split(/\?/);
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.token) {
+                this.accessToken = q.token;
+                setAccessToken(q.token);
+            }
+
+            if (q.platform) {
+                this.platform = q.platform;
+            }
+        }
+        else {
+            removeAccessToken();
+        }
+    }
 
     renderTitle(title) {
         if (title.length > this.MAX_TITLE_LENGTH) {
@@ -23,7 +47,7 @@ class HeadlineCarousel extends React.Component {
 
     goToDetail(article) {
         // newsArticleClicked(article.id, article.title, article.category_source, 'mweb_news_article_clicked');
-        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").replace(/\\+/g, '-').replace(/\/+/g, '-').toLowerCase());
+        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").replace(/\\+/g, '-').replace(/\/+/g, '-').toLowerCase() + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     render() {
@@ -61,4 +85,4 @@ class HeadlineCarousel extends React.Component {
 
 }
 
-export default connect(state => state, {})(HeadlineCarousel);
+export default connect(state => state, {})(withRouter(HeadlineCarousel));

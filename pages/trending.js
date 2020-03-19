@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Head from 'next/head';
 import Link from 'next/link';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import classnames from 'classnames';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import Img from 'react-image';
@@ -22,7 +22,7 @@ import AddIcon from '@material-ui/icons/Add';
 
 import { SITEMAP } from '../config';
 import { formatDateWordID } from '../utils/dateHelpers';
-import { removeCookie, getNewsChannels, setNewsChannels } from '../utils/cookie';
+import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken } from '../utils/cookie';
 
 import '../assets/scss/components/trending_v2.scss';
 
@@ -30,6 +30,8 @@ import newsv2Actions from '../redux/actions/newsv2Actions';
 import userActions from '../redux/actions/userActions';
 import { showSignInAlert } from '../utils/helpers';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
+
+import queryString from 'query-string';
 
 class Trending_v2 extends React.Component {
 
@@ -54,6 +56,26 @@ class Trending_v2 extends React.Component {
         is_load_more: false,
         user_data: null
     };
+
+    constructor(props) {
+        super(props);
+        this.accessToken = null;
+        this.platform = null;
+        const segments = this.props.router.asPath.split(/\?/);
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.token) {
+                this.accessToken = q.token;
+                setAccessToken(q.token);
+            }
+            if (q.platform) {
+                this.platform = q.platform;
+            }
+        }
+        else {
+            removeAccessToken();
+        }
+    }
 
     bottomScrollFetch() {
         if (!this.state.is_load_more && this.state.load_more_allowed[this.state.active_tab]) {
@@ -129,6 +151,19 @@ class Trending_v2 extends React.Component {
     }
 
     componentDidMount() {
+        this.props.getUserData()
+            .then(response => {
+                console.log(response);
+                this.fetchData(true);
+            })
+            .catch(error => {
+                console.log(error);
+                this.fetchData();
+            });
+        
+    }
+
+    fetchData(isLoggedIn = false) {
         const savedCategoriesNews = getNewsChannels();
         this.setState({ saved_tabs: savedCategoriesNews }, () => {
             this.props.getCategory()
@@ -147,11 +182,14 @@ class Trending_v2 extends React.Component {
                         }
                     }
 
-                    for (let i = 0; i < savedCategories.length; i++) {
-                        if (categories.findIndex(c => c.id == savedCategories[i].id) == -1) {
-                            sortedCategories.push(savedCategories[i]);
+                    if (!isLoggedIn) {
+                        for (let i = 0; i < savedCategories.length; i++) {
+                            if (categories.findIndex(c => c.id == savedCategories[i].id) == -1) {
+                                sortedCategories.push(savedCategories[i]);
+                            }
                         }
                     }
+                    
 
                     if (sortedCategories.length <= 0) {
                         setNewsChannels(categories);
@@ -185,13 +223,11 @@ class Trending_v2 extends React.Component {
                     });
                 });
         });
-
-
     }
 
     goToDetail(article) {
         newsArticleClicked(article.id, article.title, article.category_source, 'mweb_news_article_clicked');
-        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").replace(/\\+/g, '-').replace(/\/+/g, '-').toLowerCase());
+        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").replace(/\\+/g, '-').replace(/\/+/g, '-').toLowerCase() + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     getMetadata() {
@@ -278,8 +314,8 @@ class Trending_v2 extends React.Component {
                                                                     'navigation-tabs-item': true
                                                                 })}>
                                                                 <Link
-                                                                    href={`/trending?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}`}
-                                                                    as={`/trending/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}`}>
+                                                                    href={`/trending?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`}
+                                                                    as={`/trending/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
                                                                     <NavLink onClick={() => this.toggleTab(tab.id.toString(), tab)} className="item-link">{tab.name}</NavLink>
                                                                 </Link>
                                                             </NavItem>
@@ -291,7 +327,7 @@ class Trending_v2 extends React.Component {
                                                             newsAddChannelClicked('mweb_news_add_kanal_clicked');
                                                             // if (this.state.user_data) {
                                                             if (true) {
-                                                                Router.push('/trending/channels');
+                                                                Router.push('/trending/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
                                                             }
                                                             else {
                                                                 showSignInAlert(`Please <b>Sign In</b><br/>
@@ -311,7 +347,7 @@ class Trending_v2 extends React.Component {
                                         <TabContent activeTab={this.state.active_tab}>
                                             {this.state.tabs.map((tab, i) => (
                                                 <TabPane key={i} tabId={tab.id.toString()}>
-                                                    {this.state.is_trending_loading ? (<HeadlineLoader />) : (<HeadlineCarousel articles={this.state.trending_articles} />)}
+                                                    {tab.name === 'Berita Utama' ? (this.state.is_trending_loading ? (<HeadlineLoader />) : (<HeadlineCarousel articles={this.state.trending_articles} />)) : null}
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => (
                                                             (j + 1) != 1 && (j + 1) % 5 === 0 ? (
@@ -373,4 +409,4 @@ class Trending_v2 extends React.Component {
 export default connect(state => state, {
     ...newsv2Actions,
     ...userActions
-})(Trending_v2);
+})(withRouter(Trending_v2));
