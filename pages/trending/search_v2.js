@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
@@ -15,8 +15,10 @@ import { Row, Col } from 'reactstrap';
 import CloseIcon from '@material-ui/icons/Close';
 import '../../assets/scss/components/trending_search.scss';
 
-import { getCookie, setCookie, removeCookie } from '../../utils/cookie';
+import { getCookie, setCookie, removeCookie, removeAccessToken, setAccessToken } from '../../utils/cookie';
 import { Subject } from 'rxjs';
+
+import queryString from 'query-string';
 
 class Search extends React.Component {
 
@@ -28,8 +30,23 @@ class Search extends React.Component {
             q: ''
         };
 
-        console.log(getCookie('SEARCH_HISTORY'));
         this.subject = new Subject();
+        this.accessToken = null;
+        this.platform = null;
+        const segments = this.props.router.asPath.split(/\?/);
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.token) {
+                this.accessToken = q.token;
+                setAccessToken(q.token);
+            }
+            if (q.platform) {
+                this.platform = q.platform;
+            }
+        }
+        else {
+            removeAccessToken();
+        }
     }
 
     componentDidMount() {
@@ -40,7 +57,7 @@ class Search extends React.Component {
     }
 
     link(article) {
-        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase());
+        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase() + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     bottomScrollFetch() {
@@ -153,4 +170,4 @@ class Search extends React.Component {
 export default connect(state => state, {
     ...contentActions,
     ...pageActions
-})(Search);
+})(withRouter(Search));
