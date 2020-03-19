@@ -350,6 +350,7 @@ class Explores extends React.Component {
 									<Row>
 										{this.state.recommendations[`genre-${this.state.selected_genre_id}`] && this.state.recommendations[`genre-${this.state.selected_genre_id}`].map((r, i) => (
 											<Col xs={4} key={i} onClick={this.link.bind(this, r)}>
+											<div className="new-label" style={r.label === undefined || r.label === '' ? { display: 'none' } : { display: 'block' }}>{ r.label }</div>
 												<Img 
 													alt={this.getImageFileName(r.portrait_image)} 
 													className="content-image"

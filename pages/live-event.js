@@ -216,60 +216,59 @@ class LiveEvent extends React.Component {
 			chatBox.scrollTop = chatBox.scrollHeight;
 			this.props.unsetPageLoader();
 			if (true) {
-				let firstLoadChat = true;
-				this.props.listenChatMessages(id)
-					.then(collection => {
-						let snapshots = this.state.snapshots;
-						let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
-							querySnapshot.docChanges()
-								.map(change => {
-									let chats = this.state.chats;
-									if (change.type === 'added') {
-										if (!this.state.sending_chat) {
-											if (chats.length > 0) {
-												let lastChat = chats[chats.length - 1];
-												let newChat = change.doc.data();
-												if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-													if (firstLoadChat) {
-														chats.unshift(newChat);
-													}
-													else {
-														chats.push(newChat);
-													}
-												}
-											}
-											else {
-												if (firstLoadChat) {
-													chats.unshift(change.doc.data());
-												}
-												else {
-													chats.push(change.doc.data());
-												}
-											}
+				this.props.getChatSocket(id)
+				.then(data => {
+					let chats = this.state.chats;
+					if (!this.state.sending_chat) {
+						if (chats.length > 0) {
+							let lastChat = chats[chats.length - 1];
+							let newChat = data.data;
+							if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+								chats = newChat;
+							}
+							}
+							else {
+								chats = data.data;
+							}
 
-											const chatBox = document.getElementById('chat-messages');
-											chatBox.scrollTop = chatBox.scrollHeight;
+						this.setState({ chats: chats }, () => {
+							const chatBox = document.getElementById('chat-messages');
+							chatBox.scrollTop = chatBox.scrollHeight;
 
-											const chatInput = document.getElementById('chat-input');
-											chatInput.style.height = `24px`;
-											this.setState({ chats: chats });
-										}
-									}
-
-									// if (change.type === 'removed') {
-									// 	let removed = change.doc.data();
-									// 	for (let i = 0; i < chats.length; i++) {
-									// 		if (chats[i].ts === removed.ts) {
-									// 			chats.splice(i, 1);
-									// 		}
-									// 	}
-									// 	this.setState({ chats: chats });
-									// }
-								});
+							const chatInput = document.getElementById('chat-input');
+							chatInput.style.height = `24px`;
 						});
-						snapshots[id] = snapshot;
-						this.setState({ snapshots: snapshots });
-					});
+					}
+				})
+				.then(() => {
+					this.props.listenSocketIo(id)
+					.then((socket) => {
+						socket.on('message', (data) => {
+						let chats = this.state.chats;
+						let newChat = data;
+							if (chats.length > 0) {
+								let lastChat = chats[chats.length - 1];
+								if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+									chats.push(newChat);
+								}
+							}
+							else {
+								chats.push(newChat);
+							}
+	
+							this.setState({ chats: chats }, () => {
+								const chatBox = document.getElementById('chat-messages');
+								chatBox.scrollTop = chatBox.scrollHeight;
+	
+								const chatInput = document.getElementById('chat-input');
+								chatInput.style.height = `24px`;
+							});
+						})
+					})
+				})
+				.catch((err) => {
+					console.log(err);
+				});
 			}
 
 		});
@@ -478,8 +477,6 @@ class LiveEvent extends React.Component {
 		if (this.state.user_data) {
 			if (this.state.chat != '') {
 				const { id } = this.props.selected_event.data;
-				this.statusChatBlock(id);
-
 				const userData = this.state.user_data;
 				let user = userData.nickname ? userData.nickname :
 					userData.display_name ? userData.display_name :
@@ -494,29 +491,28 @@ class LiveEvent extends React.Component {
 					failed: false
 				};
 				let chats = this.state.chats;
-				chats.push(newChat);
+				// chats.push(newChat);
+				this.props.postChatSocket(id, this.state.chat, this.state.user_data.photo_url, user)
+				.then(response => {
+					newChat.sent = true;
+					if (response.status !== 200) {
+						newChat.failed = true
+					}
+					chats[chats.length - 1] = newChat;
+						this.setState({ chats: chats, sending_chat: false });
+				})
+				.catch(() => {
+					newChat.sent = true;
+					newChat.failed = true;
+					chats[chats.length - 1] = newChat;
+					this.setState({ chats: chats, sending_chat: false });
+				});
 				this.setState({ chats: chats, chat: '', sending_chat: true }, () => {
 					const chatBox = document.getElementById('chat-messages');
 					chatBox.scrollTop = chatBox.scrollHeight;
 
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
-
-					this.props.setChat(id, newChat.m, user, this.state.user_data.photo_url)
-						.then(response => {
-							newChat.sent = true;
-							if (response.status !== 200 || response.data.status.code !== 0) {
-								newChat.failed = true;
-							}
-							chats[chats.length - 1] = newChat;
-							this.setState({ chats: chats, sending_chat: false });
-						})
-						.catch(() => {
-							newChat.sent = true;
-							newChat.failed = true;
-							chats[chats.length - 1] = newChat;
-							this.setState({ chats: chats, sending_chat: false });
-						});
 				});
 			}
 		}

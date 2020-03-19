@@ -34,6 +34,8 @@ import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { isIOS } from 'react-device-detect';
+import socketIOClient from 'socket.io-client';
+import axios from 'axios';
 
 import { BASE_URL, SITEMAP } from '../config';
 
@@ -299,65 +301,59 @@ class Tv extends React.Component {
 			chatBox.scrollTop = chatBox.scrollHeight;
 			this.props.unsetPageLoader();
 			if (true) {
-				let firstLoadChat = true;
-				this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
-				.then(collection => {
-					let snapshots = this.state.snapshots;
-					// .orderBy('ts', 'desc').limit(3).
-					let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
-						querySnapshot.docChanges()
-							.map(change => {
-								console.log(change.doc.data().ts)
-								let chats = this.state.chats;
-								console.log(`${change.type}: ${change.doc.data().m}`);
-								if (change.type === 'added') {
-									if (!this.state.sending_chat) {
-										if (chats.length > 0) {
-											let lastChat = chats[chats.length - 1];
-											let newChat = change.doc.data();
-											if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-												if (firstLoadChat) {
-													chats.unshift(newChat);
-												}
-												else {
-													chats.push(newChat);
-												}
-											}
-										}
-										else {
-											if (firstLoadChat) {
-												chats.unshift(change.doc.data());
-											}
-											else {
-												chats.push(change.doc.data());
-											}
-										}
+				// let firstLoadChat = true;
+				this.props.getChatSocket(this.state.live_events[this.state.selected_index].id)
+				.then(data => {
+					let chats = this.state.chats;
+					if (!this.state.sending_chat) {
+						if (chats.length > 0) {
+							let lastChat = chats[chats.length - 1];
+							let newChat = data.data;
+							if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+								chats = newChat;
+							}
+							}
+							else {
+								chats = data.data;
+							}
 
-										this.setState({ chats: chats }, () => {
-											const chatBox = document.getElementById('chat-messages');
-											chatBox.scrollTop = chatBox.scrollHeight;
+						this.setState({ chats: chats }, () => {
+							const chatBox = document.getElementById('chat-messages');
+							chatBox.scrollTop = chatBox.scrollHeight;
 
-											const chatInput = document.getElementById('chat-input');
-											chatInput.style.height = `24px`;
-										});
-									}
+							const chatInput = document.getElementById('chat-input');
+							chatInput.style.height = `24px`;
+						});
+					}
+				})
+				.then(() => {
+					this.props.listenSocketIo(this.state.live_events[this.state.selected_index].id)
+					.then((socket) => {
+						socket.on('message', (data) => {
+						let chats = this.state.chats;
+						let newChat = data;
+							if (chats.length > 0) {
+								let lastChat = chats[chats.length - 1];
+								if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+									chats.push(newChat);
 								}
-
-								// if (change.type === 'removed') {
-								// 	let removed = change.doc.data();
-								// 	for (let i = 0; i < chats.length; i++) {
-								// 		if (chats[i].ts === removed.ts) {
-								// 			chats.splice(i, 1);
-								// 		}
-								// 	}
-								// 	this.setState({ chats: chats });
-								// }
+							}
+							else {
+								chats.push(newChat);
+							}
+	
+							this.setState({ chats: chats }, () => {
+								const chatBox = document.getElementById('chat-messages');
+								chatBox.scrollTop = chatBox.scrollHeight;
+	
+								const chatInput = document.getElementById('chat-input');
+								chatInput.style.height = `24px`;
 							});
-
-						firstLoadChat = false;
-					});
-					// snapshots[this.state.live_events[this.state.selected_index].id] = snapshot;
-					// this.setState({ snapshots: snapshots });
+						})
+					})
+				})
+				.catch((err) => {
+					console.log(err);
 				});
 			}
 			
@@ -581,7 +577,6 @@ class Tv extends React.Component {
 					userData.display_name ? userData.display_name :
 						userData.email ? userData.email.replace(/\d{4}$/, '****') :
 							userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
-
 				let newChat = {
 					ts: Date.now(),
 					m: this.state.chat,
@@ -591,29 +586,28 @@ class Tv extends React.Component {
 					failed: false
 				};
 				let chats = this.state.chats;
-				chats.push(newChat);
+				// chats.push(newChat);
+				this.props.postChatSocket(this.state.live_events[this.state.selected_index].id, this.state.chat, this.state.user_data.photo_url, user)
+				.then(response => {
+					newChat.sent = true;
+					if (response.status !== 200) {
+						newChat.failed = true
+					}
+					chats[chats.length - 1] = newChat;
+						this.setState({ chats: chats, sending_chat: false });
+				})
+				.catch(() => {
+					newChat.sent = true;
+					newChat.failed = true;
+					chats[chats.length - 1] = newChat;
+					this.setState({ chats: chats, sending_chat: false });
+				});
 				this.setState({ chats: chats, chat: '', sending_chat: true }, () => {
 					const chatBox = document.getElementById('chat-messages');
 					chatBox.scrollTop = chatBox.scrollHeight;
 
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
-
-					this.props.setChat(this.state.live_events[this.state.selected_index].id, newChat.m, user, this.state.user_data.photo_url)
-						.then(response => {
-							newChat.sent = true;
-							if (response.status !== 200 || response.data.status.code !== 0) {
-								newChat.failed = true;
-							}
-							chats[chats.length - 1] = newChat;
-							this.setState({ chats: chats, sending_chat: false });
-						})
-						.catch(() => {
-							newChat.sent = true;
-							newChat.failed = true;
-							chats[chats.length - 1] = newChat;
-							this.setState({ chats: chats, sending_chat: false });
-						});
 				});
 			}
 		}
