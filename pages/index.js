@@ -3,9 +3,11 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
+import { StickyContainer, Sticky } from 'react-sticky';
 
 import contentActions from '../redux/actions/contentActions';
 import pageActions from '../redux/actions/pageActions';
+import adsActions from '../redux/actions/adsActions';
 
 import initialize from '../utils/initialize';
 import { homeGeneralClicked } from '../utils/appier';
@@ -39,7 +41,8 @@ class Index_v2 extends React.Component {
             resolution: 520,
             is_loading: false,
             length: 5,
-            show_sticky_install: false
+            show_sticky_install: false,
+            sticky_ads_closed: false
         };
 
         this.props.setPageLoader();
@@ -133,9 +136,21 @@ class Index_v2 extends React.Component {
                 <Carousel showStickyInstall={this.state.show_sticky_install}>
                     <GridMenu />
                 </Carousel>
-                <StickyAds />
-                <Stories />
-                <native-home></native-home>
+                <StickyContainer>
+                    <Sticky>
+                        { ({ distanceFromTop }) => {
+                            if (distanceFromTop < 0) {
+                                if (!this.props.ads.ads_displayed) {
+                                    return (<StickyAds/>);
+                                }
+
+                                return (<StickyAds sticky/>);
+                            }
+                            return (<StickyAds/>);
+                        } }
+                    </Sticky>
+                </StickyContainer>
+                {/* <native-home></native-home> */}
                 <div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
                     {contents.map((content, i) => {
                         switch (content.display_type) {
@@ -153,7 +168,7 @@ class Index_v2 extends React.Component {
                         }
                     })}
                 </div>
-                <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+                {/* <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
                 <script dangerouslySetInnerHTML={{ __html: `
                     window.googletag = window.googletag || {cmd: []};
                     googletag.cmd.push(function() {
@@ -162,11 +177,11 @@ class Index_v2 extends React.Component {
                         googletag.pubads().collapseEmptyDivs();
                         googletag.enableServices();
                     });
-                ` }}></script>
+                ` }}></script> */}
                 {/* <!-- /21865661642/RC_NATIVE-AD_MOBILE --> */}
-                <div id='div-gpt-ad-1584419593176-0'>
+                {/* <div id='div-gpt-ad-1584419593176-0'>
                     <script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584419593176-0'); });` }}></script>
-                </div>
+                </div> */}
         </Layout>
         );
     }
@@ -175,5 +190,6 @@ class Index_v2 extends React.Component {
 
 export default connect(state => state, {
     ...contentActions,
-    ...pageActions
+    ...pageActions,
+    ...adsActions
 })(Index_v2);
