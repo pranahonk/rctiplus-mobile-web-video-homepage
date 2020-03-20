@@ -153,11 +153,6 @@ class Detail extends React.Component {
 
     }
 
-    setNewsFavorite() {
-        // newsRateArticleClicked(cdata.id, cdata.title, 'status_like', 'N/A', 'mweb_news_rate_article_clicked');
-        // this.props.setNewsFavorite(this.state.trending_detail_id);
-    }
-
     newsArticleShareClicked() {
         const cdata = this.state.trending_detail_data;
         newsArticleShareClicked(cdata.id, cdata.title, cdata.category_source, 'mweb_news_share_article_clicked');
@@ -169,22 +164,22 @@ class Detail extends React.Component {
         return (
             <div className="sheet-action-button-container">
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#034ea1' }}>
-                    <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${BASE_URL + this.props.router.asPath}`} url={BASE_URL + this.props.router.asPath}>
+                    <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${BASE_URL + this.props.router.asPath}`} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}>
                         <i className="fab fa-facebook-f"></i>
                     </FacebookShareButton>
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
-                    <WhatsappShareButton title={cdata.title} url={BASE_URL + this.props.router.asPath} separator=" - ">
+                    <WhatsappShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} separator=" - ">
                         <i className="fab fa-whatsapp"></i>
                     </WhatsappShareButton>
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#4a90e2' }}>
-                    <TwitterShareButton title={cdata.title} url={BASE_URL + this.props.router.asPath} hashtags={hashtags}>
+                    <TwitterShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} hashtags={hashtags}>
                         <i className="fab fa-twitter"></i>
                     </TwitterShareButton>
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
-                    <LineShareButton url={BASE_URL + this.props.router.asPath} title={cdata.title}>
+                    <LineShareButton url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} title={cdata.title}>
                         <i className="fab fa-line"></i>
                     </LineShareButton>
                 </div>
@@ -192,13 +187,13 @@ class Detail extends React.Component {
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
                         const cdata = this.state.trending_detail_data;
                         if (this.platform && (this.platform == 'android' || this.platform == 'ios')) {
-                            window.AndroidShareHandler.share(BASE_URL + this.props.router.asPath);
+                            window.AndroidShareHandler.share(BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1)));
                         }
                         else {
                             navigator.share({
                                     title: cdata.title,
                                     text: "",
-                                    url: BASE_URL + this.props.router.asPath
+                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
                                 })
                                 .then(() => console.log('Successful share'))
                                 .catch(error => console.log('Error sharing:', error));

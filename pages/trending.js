@@ -225,8 +225,8 @@ class Trending_v2 extends React.Component {
     }
 
     goToDetail(article) {
-        newsArticleClicked(article.id, article.title, article.category_source, 'mweb_news_article_clicked');
-        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").replace(/\\+/g, '-').replace(/\/+/g, '-').toLowerCase() + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
+        Router.push('/trending/detail/' + article.id + '/' + encodeURI(article.title.replace(/ +/g, "-").replace(/\\+/g, '-').replace(/\/+/g, '-').toLowerCase()) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     getMetadata() {
