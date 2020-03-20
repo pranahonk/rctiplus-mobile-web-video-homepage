@@ -153,6 +153,8 @@ class Tv extends React.Component {
 			this.player.remove();
 		}
 		const playerId = 'live-tv-player';
+		console.log('https://rc-static.rctiplus.id/vmap/vmap_ima_live_0_web_default_live.xml');
+		console.log(this.state.player_vmap);
 		this.player = window.jwplayer(playerId);
 		this.player.setup({
 			autostart: true,
@@ -166,7 +168,7 @@ class Tv extends React.Component {
 			stretching: 'exactfit',
 			advertising: {
 				client: process.env.ADVERTISING_CLIENT,
-				tag: this.state.player_vmap
+				schedule: this.state.player_vmap
 			},
 			logo: {
 				hide: true
@@ -392,7 +394,7 @@ class Tv extends React.Component {
 						selected_live_event: this.state.live_events[this.state.selected_index],
 						selected_live_event_url: res.data.data,
 						player_url: res.data.data.url,
-						player_vmap: res.data.data.vmap
+						player_vmap: res.data.data[process.env.VMAP_KEY]
 					}, () => {
 						this.initVOD();
 						this.props.setChannelCode(this.state.selected_live_event.channel_code);
@@ -468,7 +470,7 @@ class Tv extends React.Component {
 				if (response.status === 200 && response.data.status.code === 0) {
 					this.setState({
 						player_url: response.data.data.url,
-						player_vmap: response.data.data.vmap,
+						player_vmap: response.data.data[process.env.VMAP_KEY],
 						selected_catchup: response.data.data,
 						error: false
 					}, () => this.initVOD());

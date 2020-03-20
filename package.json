@@ -112,6 +112,7 @@
     "react-responsive-carousel": "^3.1.51",
     "react-scroll-percentage": "^4.2.0",
     "react-share": "^3.0.1",
+    "react-sticky": "^6.0.3",
     "react-timeago": "^4.4.0",
     "react-top-loading-bar": "^1.2.0",
     "react-verification-code-input": "^1.2.2",
