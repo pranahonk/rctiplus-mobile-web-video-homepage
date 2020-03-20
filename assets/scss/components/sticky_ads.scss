@@ -11,8 +11,8 @@ and open the template in the editor.
 .sticky-ads{
     color:#fff;
     margin:2% auto;
-    width:100%;
-    text-align:center;
+    width: 320px;
+    text-align: center;
 }
 
 .sticky-ads-off {
@@ -23,6 +23,8 @@ and open the template in the editor.
     position: fixed;
     bottom: calc(1% + 38px);
     z-index: 999999;
+    left: 50%;
+    transform: translateX(-50%);
 
     .ads-close-btn {
         position: absolute;

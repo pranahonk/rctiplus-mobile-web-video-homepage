@@ -73,7 +73,7 @@ class NavTrendingSearch extends Component {
                                     if (this.props.data && this.props.router.asPath.indexOf('/trending/detail') === 0) {
                                         newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
                                     }
-                                    Router.back();
+                                    this.props.closeFunction();
                                 }}/> 
                                 <ArrowForwardIosIcon style={{ visibility: 'hidden' }}/> 
                                 <div className="trendingHeader">
