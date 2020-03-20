@@ -95,12 +95,12 @@
                 .article-thumbnail-container {
                     margin-right: 10px;
                     width: 70%;
-                    height: 80px;
+                    min-height: 80px;
                     overflow: hidden;
 
                     .article-thumbnail {
                         width: 100%;
-                        height: 100%;
+                        min-height: 68px;
                         object-fit: cover;
                         border-radius: 3px;
                     }
@@ -136,7 +136,7 @@
         }
 
         .article-full-width {
-            height: 320px;
+            min-height: 320px;
             margin-bottom: 15px;
             margin-top: 15px;
             padding: 0;
@@ -150,11 +150,11 @@
                     margin-right: 0;
                     overflow: hidden;
                     width: 100%;
-                    height: 210px;
+                    min-height: 180px;
 
                     .article-thumbnail-full-width {
                         width: 100%;
-                        height: 100%;
+                        min-height: 180px;
                         border-radius: 0;
                         object-fit: cover;
                     }

@@ -160,7 +160,6 @@ class Trending_v2 extends React.Component {
                 console.log(error);
                 this.fetchData();
             });
-        
     }
 
     fetchData(isLoggedIn = false) {
