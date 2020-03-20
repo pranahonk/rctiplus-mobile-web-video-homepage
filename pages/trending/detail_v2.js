@@ -267,13 +267,13 @@ class Detail extends React.Component {
                                         <img alt={cdata.title} className="content-trending-detail-cover" src={cdata.cover} />
                                     </div>
                                     <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>
-                                    <Link href="#">
-                                        <a>
+                                    {/* <Link href="#" as={"#"}>
+                                        <a> */}
                                             <div onClick={this.openIframe.bind(this)} style={{ color: '#05b5f5', margin: 10, paddingBottom: 20 }}>
                                                 <i>Original Article</i>
                                             </div>
-                                        </a>
-                                    </Link>
+                                        {/* </a>
+                                    </Link> */}
                                 </div>
                                 <div className="content-trending-detail-related">
                                     <p className="related-title"><strong>Related Articles</strong></p>
