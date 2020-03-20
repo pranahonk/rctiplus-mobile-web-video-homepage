@@ -186,10 +186,10 @@ class Detail extends React.Component {
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: this.state.scrolled_down ? '#3a3a3a' : '', float: 'right' }}>
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
                         const cdata = this.state.trending_detail_data;
-                        // if (this.platform && (this.platform == 'android' || this.platform == 'ios')) {
-                        //     window.AndroidShareHandler.share(BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1)));
-                        // }
-                        // else {
+                        if (this.platform && (this.platform == 'android' || this.platform == 'ios')) {
+                            window.AndroidShareHandler.action(BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1)));
+                        }
+                        else {
                             navigator.share({
                                     title: cdata.title,
                                     text: "",
@@ -197,7 +197,7 @@ class Detail extends React.Component {
                                 })
                                 .then(() => console.log('Successful share'))
                                 .catch(error => console.log('Error sharing:', error));
-                        // }
+                        }
                     }}/>
                 </div>
             </div>
