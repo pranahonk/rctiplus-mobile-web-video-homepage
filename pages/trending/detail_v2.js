@@ -191,12 +191,18 @@ class Detail extends React.Component {
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: this.state.scrolled_down ? '#3a3a3a' : '', float: 'right' }}>
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
                         const cdata = this.state.trending_detail_data;
-                        navigator.share({
-                            title: cdata.title,
-                            text: "",
-                            url: BASE_URL + this.props.router.asPath
-                        }).then(() => console.log('Successful share'))
-                        .catch(error => console.log('Error sharing:', error));
+                        if (this.platform && (this.platform == 'android' || this.platform == 'ios')) {
+                            window.AndroidShareHandler.share(BASE_URL + this.props.router.asPath);
+                        }
+                        else {
+                            navigator.share({
+                                    title: cdata.title,
+                                    text: "",
+                                    url: BASE_URL + this.props.router.asPath
+                                })
+                                .then(() => console.log('Successful share'))
+                                .catch(error => console.log('Error sharing:', error));
+                        }
                     }}/>
                 </div>
             </div>
@@ -282,8 +288,9 @@ class Detail extends React.Component {
                                                 <div className="article-description">
                                                     <div className="article-thumbnail-container">
                                                         <Img
-                                                            loader={<img className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                                            unloader={<img className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
+                                                            alt={article.title}
+                                                            loader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
+                                                            unloader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
                                                             className="article-thumbnail"
                                                             src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
                                                     </div>

@@ -354,8 +354,9 @@ class Trending_v2 extends React.Component {
                                                                     <div className="article-description">
                                                                         <div className="article-thumbnail-container-full-width">
                                                                             <Img
-                                                                                loader={<img className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                unloader={<img className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                alt={article.title}
+                                                                                loader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                unloader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
                                                                                 className="article-thumbnail-full-width"
                                                                                 src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
                                                                         </div>
@@ -374,8 +375,9 @@ class Trending_v2 extends React.Component {
                                                                         <div className="article-description">
                                                                             <div className="article-thumbnail-container">
                                                                                 <Img
-                                                                                    loader={<img className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                    unloader={<img className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                    alt={article.title}
+                                                                                    loader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                    unloader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
                                                                                     className="article-thumbnail"
                                                                                     src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
                                                                             </div>
