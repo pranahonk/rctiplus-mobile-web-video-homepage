@@ -65,9 +65,10 @@ class HeadlineCarousel extends React.Component {
                         <div className="center-cropped">
                             <Img 
                                 className="thumbnail"
+                                alt={article.title}
                                 src={[article.cover, '/static/placeholders/placeholder_landscape.png']}
-                                loader={<img className="thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
-                                unloader={<img className="thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}/>
+                                loader={<img alt={article.title} className="thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
+                                unloader={<img alt={article.title} className="thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}/>
                             
                         </div>
                         <div className="caption">
