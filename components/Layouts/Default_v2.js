@@ -1,29 +1,32 @@
 import React from 'react';
 import Head from 'next/head';
 import { withRouter } from 'next/router';
-
-//load scss style 
-//import '../../assets/scss/custom.scss';
-//import '../../assets/scss/global.scss';
-// import 'sweetalert2/src/sweetalert2.scss';
-// import '../../assets/scss/apps/homepage/default.scss';
-
-// import '../../assets/scss/components/alert.scss';
-
-//load redux
 import { connect } from 'react-redux';
+
 import actions from '../../redux/actions';
 import pageActions from '../../redux/actions/pageActions';
 import userActions from '../../redux/actions/userActions';
 
-//load footer
 import Footer from '../../components/Includes/Footer/Default_v2';
-//import Analytics from '../../components/Includes/Google/Analytics';
 
 import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH } from '../../config';
 import { Spinner } from 'reactstrap';
 
+import queryString from 'query-string';
+
 class Default_v2 extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.platform = null;
+        const segments = this.props.router.asPath.split(/\?/);
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.platform) {
+                this.platform = q.platform;
+            }
+        }
+    }
 
     componentDidMount() {
         console.log('User added to home screen');
@@ -155,7 +158,7 @@ class Default_v2 extends React.Component {
                 ) : <div></div>}
 
                 <div style={{ overflowX: 'hidden', marginTop: -5 }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
-                <Footer />
+                {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>) : (<Footer />)}
             </div>
         )
     }

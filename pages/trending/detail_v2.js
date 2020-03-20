@@ -75,7 +75,8 @@ class Detail extends React.Component {
             trending_detail_data: this.props.initial,
             trending_related: [],
             iframe_opened: false,
-            scrolled_down: false
+            scrolled_down: false,
+            count: false
         };
 
         this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
@@ -104,14 +105,6 @@ class Detail extends React.Component {
                 this.setState({ iframe_opened: false });
             }
         };
-
-        this.props.incrementCount(Number(this.state.trending_detail_id))
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            });
 
         this.props.getRelatedArticles(this.state.trending_detail_id)
             .then(response => {
@@ -241,7 +234,20 @@ class Detail extends React.Component {
                     <ScrollPercentage onChange={(percentage) => {
                         if (percentage > 0.32) {
                             if (!this.state.scrolled_down) {
-                                this.setState({ scrolled_down: true });
+                                if (!this.state.count) {
+                                    this.props.incrementCount(Number(this.state.trending_detail_id))
+                                        .then(response => {
+                                            console.log(response);
+                                        })
+                                        .catch(error => {
+                                            console.log(error);
+                                        });
+                                    
+                                    this.setState({ scrolled_down: true, count: true });
+                                }
+                                else {
+                                    this.setState({ scrolled_down: true });
+                                }
                             }
                         }
                         else {

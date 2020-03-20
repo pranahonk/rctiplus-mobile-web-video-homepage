@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import classnames from 'classnames';
 
-import Layout from '../../components/Layouts/Default';
+import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 
 import ListItemLoader from '../../components/Includes/Shimmer/ListItemLoader';
@@ -311,7 +311,7 @@ class Channels extends React.Component {
                                             <ListGroupItem key={i}>
                                                 <div className="text-container">
                                                     <ListGroupItemHeading>{channel.name}</ListGroupItemHeading>
-                                                    <ListGroupItemText></ListGroupItemText>
+                                                    <ListGroupItemText>{channel.description}</ListGroupItemText>
                                                 </div>
                                                 <div className="button-container">
                                                     <Button onClick={() => this.addChannel(channel, i)} className="add-button">Add</Button>
