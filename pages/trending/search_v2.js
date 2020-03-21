@@ -5,7 +5,7 @@ import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 
-import contentActions from '../../redux/actions/trending/content';
+import newsv2Actions from '../../redux/actions/newsv2Actions';
 import pageActions from '../../redux/actions/pageActions';
 
 import Layout from '../../components/Layouts/Default_v2';
@@ -168,6 +168,6 @@ class Search extends React.Component {
 }
 
 export default connect(state => state, {
-    ...contentActions,
+    ...newsv2Actions,
     ...pageActions
 })(withRouter(Search));
