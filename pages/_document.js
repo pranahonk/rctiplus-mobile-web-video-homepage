@@ -3,7 +3,7 @@
 
 // ./pages/_document.js
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+// import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 class MyDocument extends Document {
 	static async getInitialProps(ctx) {
@@ -13,12 +13,12 @@ class MyDocument extends Document {
 
 	componentDidMount() {
 		console.log(new DeviceUUID().get());
-		const appInsights = new ApplicationInsights({ config: {
-			instrumentationKey: '2a8da5df-35c2-4e72-829f-a2fc4ec66f28'
-			/* ...Other Configuration Options... */
-		} });
-		appInsights.loadAppInsights();
-		appInsights.trackPageView(); // Manually call trackPageView to establish the current user/session/pageview
+		// const appInsights = new ApplicationInsights({ config: {
+		// 	instrumentationKey: '2a8da5df-35c2-4e72-829f-a2fc4ec66f28'
+		// 	/* ...Other Configuration Options... */
+		// } });
+		// appInsights.loadAppInsights();
+		// appInsights.trackPageView(); // Manually call trackPageView to establish the current user/session/pageview
 	}
 
 	render() {
