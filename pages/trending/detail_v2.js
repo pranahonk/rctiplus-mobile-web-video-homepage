@@ -236,8 +236,18 @@ class Detail extends React.Component {
                 <div className={`sticky-share-button ${this.state.scrolled_down ? 'sticky-share-button-viewed' : ''}`}>
                     {this.renderActionButton()}
                 </div>
-
-                {this.state.iframe_opened ? (<iframe src={cdata.link} style={{ width: '100%', minHeight: (this.platform && (this.platform == 'android' || this.platform == 'ios') ? 'calc(100vh)' : 'calc(100vh - 45px)'), paddingTop: 55 }} frameBorder="0" type="text/html"></iframe>) : (
+                
+                {this.state.iframe_opened ? (
+                    <div className="content-trending-detail" style={{ height: '100vh' }}>
+                        <iframe src={cdata.link} style={{ 
+                            width: '100%', 
+                            height: '100%', 
+                            display: 'block',
+                            margin: 0,
+                            padding: 0
+                        }} frameBorder="0" type="text/html"></iframe>
+                    </div>
+                ) : (
                     <ScrollPercentage onChange={(percentage) => {
                         if (percentage > 0.32) {
                             if (!this.state.scrolled_down) {
