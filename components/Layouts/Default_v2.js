@@ -157,7 +157,7 @@ class Default_v2 extends React.Component {
                     </div>
                 ) : <div></div>}
 
-                <div style={{ overflowX: 'hidden', marginTop: -5, height: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '100vh' : '', marginBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
+                <div style={{ overflowX: 'hidden', marginTop: 0, height: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '100vh' : '', marginBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
                 {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>) : (<Footer />)}
             </div>
         )
