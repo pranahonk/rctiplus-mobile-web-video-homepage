@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
-import Link from 'next/link';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import Img from 'react-image';
@@ -138,6 +137,8 @@ class Detail extends React.Component {
             if (this.state.iframe_opened) {
                 const cdata = this.state.trending_detail_data;
                 newsOriginalArticleClicked(cdata.id, cdata.title, cdata.category_source, 'mweb_news_original_article_clicked');
+                document.body.scrollTop = 0; // For Safari
+                document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
             }
         });
     }
@@ -164,24 +165,89 @@ class Detail extends React.Component {
         return (
             <div className="sheet-action-button-container">
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#034ea1' }}>
-                    <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${BASE_URL + this.props.router.asPath}`} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}>
-                        <i className="fab fa-facebook-f"></i>
-                    </FacebookShareButton>
+                    {this.platform && this.platform == 'ios' ? (
+                    <div onClick={() => {
+                                navigator.share({
+                                    title: cdata.title,
+                                    text: "",
+                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                })
+                                .then(() => console.log('Successful share'))
+                                .catch(error => console.log('Error sharing:', error));
+                        }}>
+                            <i className="fab fa-facebook-f"></i>
+                    </div>
+                    ) : (
+                        <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${BASE_URL + this.props.router.asPath}`} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}>
+                            <i className="fab fa-facebook-f"></i>
+                        </FacebookShareButton>
+                    )}
+                    
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
-                    <WhatsappShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} separator=" - ">
-                        <i className="fab fa-whatsapp"></i>
-                    </WhatsappShareButton>
+                    {(this.platform) ? (
+                        <div onClick={() => {
+                            if (this.platform == 'android') {
+                                window.open(`https://api.whatsapp.com/send?text=${cdata.title + ' - ' + BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}`);
+                            }
+                            else if (this.platform == 'ios') {
+                                navigator.share({
+                                    title: cdata.title,
+                                    text: "",
+                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                })
+                                .then(() => console.log('Successful share'))
+                                .catch(error => console.log('Error sharing:', error));
+                            }
+                        }}>
+                            <i className="fab fa-whatsapp"></i>
+                        </div>
+                    ) : (
+                        <WhatsappShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} separator=" - ">
+                            <i className="fab fa-whatsapp"></i>
+                        </WhatsappShareButton>
+                    )}
+                    
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#4a90e2' }}>
-                    <TwitterShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} hashtags={hashtags}>
-                        <i className="fab fa-twitter"></i>
-                    </TwitterShareButton>
+                    {this.platform && this.platform == 'ios' ? (
+                        <div onClick={() => {
+                                navigator.share({
+                                    title: cdata.title,
+                                    text: "",
+                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                })
+                                .then(() => console.log('Successful share'))
+                                .catch(error => console.log('Error sharing:', error));
+                        }}>
+                            <i className="fab fa-twitter"></i>
+                        </div>
+                    ) : (
+                        <TwitterShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} hashtags={hashtags}>
+                            <i className="fab fa-twitter"></i>
+                        </TwitterShareButton>
+                    )}
+                    
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
-                    <LineShareButton url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} title={cdata.title}>
-                        <i className="fab fa-line"></i>
-                    </LineShareButton>
+                    {this.platform && this.platform == 'ios' ? (
+                    <div onClick={() => {
+                                navigator.share({
+                                    title: cdata.title,
+                                    text: "",
+                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                })
+                                .then(() => console.log('Successful share'))
+                                .catch(error => console.log('Error sharing:', error));
+                        }}>
+                            <i className="fab fa-line"></i>
+                    </div>
+                    ) : (
+                        <LineShareButton url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} title={cdata.title}>
+                            <i className="fab fa-line"></i>
+                        </LineShareButton>
+                    )}
+                    
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: this.state.scrolled_down ? '#3a3a3a' : '', float: 'right' }}>
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
@@ -230,8 +296,18 @@ class Detail extends React.Component {
                 <div className={`sticky-share-button ${this.state.scrolled_down ? 'sticky-share-button-viewed' : ''}`}>
                     {this.renderActionButton()}
                 </div>
-
-                {this.state.iframe_opened ? (<iframe src={cdata.link} style={{ width: '100%', minHeight: (this.platform && (this.platform == 'android' || this.platform == 'ios') ? 'calc(100vh)' : 'calc(100vh - 50px)'), paddingTop: 65, marginBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios') ? -55 : 0) }} frameBorder="0" type="text/html"></iframe>) : (
+                
+                {this.state.iframe_opened ? (
+                    <div className="content-trending-detail" style={{ height: '100vh' }}>
+                        <iframe src={cdata.link} style={{ 
+                            width: '100%', 
+                            height: '100%', 
+                            display: 'block',
+                            margin: 0,
+                            padding: 0
+                        }} frameBorder="0" type="text/html"></iframe>
+                    </div>
+                ) : (
                     <ScrollPercentage onChange={(percentage) => {
                         if (percentage > 0.32) {
                             if (!this.state.scrolled_down) {
