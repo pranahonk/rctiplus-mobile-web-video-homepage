@@ -237,7 +237,7 @@ class Detail extends React.Component {
                     {this.renderActionButton()}
                 </div>
 
-                {this.state.iframe_opened ? (<iframe src={cdata.link} style={{ width: '100%', minHeight: (this.platform && (this.platform == 'android' || this.platform == 'ios') ? 'calc(100vh)' : 'calc(100vh - 45px)'), paddingTop: 65, marginBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios') ? -55 : 0) }} frameBorder="0" type="text/html"></iframe>) : (
+                {this.state.iframe_opened ? (<iframe src={cdata.link} style={{ width: '100%', minHeight: (this.platform && (this.platform == 'android' || this.platform == 'ios') ? 'calc(100vh)' : 'calc(100vh - 45px)'), paddingTop: 55 }} frameBorder="0" type="text/html"></iframe>) : (
                     <ScrollPercentage onChange={(percentage) => {
                         if (percentage > 0.32) {
                             if (!this.state.scrolled_down) {
