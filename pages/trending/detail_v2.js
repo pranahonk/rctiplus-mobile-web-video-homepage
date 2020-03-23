@@ -165,13 +165,41 @@ class Detail extends React.Component {
         return (
             <div className="sheet-action-button-container">
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#034ea1' }}>
-                    <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${BASE_URL + this.props.router.asPath}`} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}>
-                        <i className="fab fa-facebook-f"></i>
-                    </FacebookShareButton>
+                    {this.platform && this.platform == 'ios' ? (
+                    <div onClick={() => {
+                                navigator.share({
+                                    title: cdata.title,
+                                    text: "",
+                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                })
+                                .then(() => console.log('Successful share'))
+                                .catch(error => console.log('Error sharing:', error));
+                        }}>
+                            <i className="fab fa-facebook-f"></i>
+                    </div>
+                    ) : (
+                        <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${BASE_URL + this.props.router.asPath}`} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}>
+                            <i className="fab fa-facebook-f"></i>
+                        </FacebookShareButton>
+                    )}
+                    
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
                     {(this.platform) ? (
-                        <div onClick={() => window.location.href = `https://api.whatsapp.com/send?text=${cdata.title + ' - ' + BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}`}>
+                        <div onClick={() => {
+                            if (this.platform == 'android') {
+                                window.open(`https://api.whatsapp.com/send?text=${cdata.title + ' - ' + BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}`);
+                            }
+                            else if (this.platform == 'ios') {
+                                navigator.share({
+                                    title: cdata.title,
+                                    text: "",
+                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                })
+                                .then(() => console.log('Successful share'))
+                                .catch(error => console.log('Error sharing:', error));
+                            }
+                        }}>
                             <i className="fab fa-whatsapp"></i>
                         </div>
                     ) : (
@@ -182,14 +210,44 @@ class Detail extends React.Component {
                     
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#4a90e2' }}>
-                    <TwitterShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} hashtags={hashtags}>
-                        <i className="fab fa-twitter"></i>
-                    </TwitterShareButton>
+                    {this.platform && this.platform == 'ios' ? (
+                        <div onClick={() => {
+                                navigator.share({
+                                    title: cdata.title,
+                                    text: "",
+                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                })
+                                .then(() => console.log('Successful share'))
+                                .catch(error => console.log('Error sharing:', error));
+                        }}>
+                            <i className="fab fa-twitter"></i>
+                        </div>
+                    ) : (
+                        <TwitterShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} hashtags={hashtags}>
+                            <i className="fab fa-twitter"></i>
+                        </TwitterShareButton>
+                    )}
+                    
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
-                    <LineShareButton url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} title={cdata.title}>
-                        <i className="fab fa-line"></i>
-                    </LineShareButton>
+                    {this.platform && this.platform == 'ios' ? (
+                    <div onClick={() => {
+                                navigator.share({
+                                    title: cdata.title,
+                                    text: "",
+                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                })
+                                .then(() => console.log('Successful share'))
+                                .catch(error => console.log('Error sharing:', error));
+                        }}>
+                            <i className="fab fa-line"></i>
+                    </div>
+                    ) : (
+                        <LineShareButton url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} title={cdata.title}>
+                            <i className="fab fa-line"></i>
+                        </LineShareButton>
+                    )}
+                    
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: this.state.scrolled_down ? '#3a3a3a' : '', float: 'right' }}>
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
