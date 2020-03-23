@@ -23,12 +23,12 @@ class MyDocument extends Document {
 
 	render() {
 		return (
-			<Html lang="id">
+			<Html lang="id" style={{ height: '100%' }}>
 				<Head>
 					<script src="/static/js/device-uuid.min.js" type="text/javascript"></script>
 				</Head>
-				<body>
-					<Main />
+				<body style={{ height: '100%' }}>
+					<Main style={{ height: '100%' }}/>
 					<NextScript />
 				</body>
 			</Html>
