@@ -171,7 +171,7 @@ class Detail extends React.Component {
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
                     {(this.platform) ? (
-                        <div onClick={() => window.open(`https://api.whatsapp.com/send?text=${cdata.title + ' - ' + BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}`)}>
+                        <div onClick={() => window.location.href = `https://api.whatsapp.com/send?text=${cdata.title + ' - ' + BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}`}>
                             <i className="fab fa-whatsapp"></i>
                         </div>
                     ) : (
