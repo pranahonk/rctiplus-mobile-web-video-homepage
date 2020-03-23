@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
-import Link from 'next/link';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import Img from 'react-image';
@@ -169,9 +168,16 @@ class Detail extends React.Component {
                     </FacebookShareButton>
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
-                    <WhatsappShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} separator=" - ">
-                        <i className="fab fa-whatsapp"></i>
-                    </WhatsappShareButton>
+                    {(this.platform) ? (
+                        <div onClick={() => window.open(`https://api.whatsapp.com/send?text=${cdata.title + ' - ' + BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}`)}>
+                            <i className="fab fa-whatsapp"></i>
+                        </div>
+                    ) : (
+                        <WhatsappShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} separator=" - ">
+                            <i className="fab fa-whatsapp"></i>
+                        </WhatsappShareButton>
+                    )}
+                    
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#4a90e2' }}>
                     <TwitterShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} hashtags={hashtags}>
