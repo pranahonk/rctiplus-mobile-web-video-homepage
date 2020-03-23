@@ -137,6 +137,8 @@ class Detail extends React.Component {
             if (this.state.iframe_opened) {
                 const cdata = this.state.trending_detail_data;
                 newsOriginalArticleClicked(cdata.id, cdata.title, cdata.category_source, 'mweb_news_original_article_clicked');
+                document.body.scrollTop = 0; // For Safari
+                document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
             }
         });
     }
