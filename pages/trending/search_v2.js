@@ -109,6 +109,7 @@ class Search extends React.Component {
                         <Row key={i} style={{ marginTop: 10, opacity: 0.5 }}>
                             <Col xs={6} onClick={() => {
                                 this.props.setPageLoader();
+                                // TODO:
                                 this.props.setSearch(h, this.subject);
                             }}>{h}</Col>
                             <Col xs={6} style={{ textAlign: 'right', paddingRight: 15 }}><CloseIcon onClick={() => this.deleteSearchHistory(i)}/></Col>
