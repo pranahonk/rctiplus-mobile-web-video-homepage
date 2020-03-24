@@ -361,7 +361,7 @@ class Trending_v2 extends React.Component {
                                                                                 src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
                                                                         </div>
                                                                         <div className="article-title-container">
-                                                                            <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title }}></h4>
+                                                                            <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
                                                                             <div className="article-source">
                                                                                 <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
                                                                                 <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
@@ -371,26 +371,26 @@ class Trending_v2 extends React.Component {
                                                                     
                                                                 </ListGroupItem>
                                                             ) : (
-                                                                    <ListGroupItem key={j} className={`article ${(j + 1) > 1 && ((j + 2) % 5) == 0 ? 'article-no-border' : ''}`} onClick={() => this.goToDetail(article)}>
-                                                                        <div className="article-description">
-                                                                            <div className="article-thumbnail-container">
-                                                                                <Img
-                                                                                    alt={article.title}
-                                                                                    loader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                    unloader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                    className="article-thumbnail"
-                                                                                    src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
-                                                                            </div>
-                                                                            <div className="article-title-container">
-                                                                                <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title }}></h4>
-                                                                            </div>
+                                                                <ListGroupItem key={j} className={`article ${(j + 1) > 1 && ((j + 2) % 5) == 0 ? 'article-no-border' : ''}`} onClick={() => this.goToDetail(article)}>
+                                                                    <div className="article-description">
+                                                                        <div className="article-thumbnail-container">
+                                                                            <Img
+                                                                                alt={article.title}
+                                                                                loader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                unloader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                className="article-thumbnail"
+                                                                                src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
                                                                         </div>
-                                                                        <div className="article-source">
-                                                                            <p><strong>{article.source}</strong>&nbsp;&nbsp;</p>
-                                                                            <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                        <div className="article-title-container">
+                                                                            <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
                                                                         </div>
-                                                                    </ListGroupItem>
-                                                                )
+                                                                    </div>
+                                                                    <div className="article-source">
+                                                                        <p><strong>{article.source}</strong>&nbsp;&nbsp;</p>
+                                                                        <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                    </div>
+                                                                </ListGroupItem>
+                                                            )
                                                         ))}
                                                     </ListGroup>
                                                     {this.state.is_articles_loading ? (<ArticleLoader />) : null}

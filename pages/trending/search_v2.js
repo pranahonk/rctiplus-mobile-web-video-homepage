@@ -96,7 +96,7 @@ class Search extends React.Component {
             }
 
             return (
-                <div style={{ fontSize: 14 }}>
+                <div style={{ fontSize: 14 }} className="search-history">
                     <Row>
                         <Col xs={6}>
                             Search History
@@ -141,7 +141,7 @@ class Search extends React.Component {
                                     unloader={<img className="list-item-thumbnail" src="/static/placeholders/placeholder_landscape.png" />} />
                             </Col>
                             <Col xs={6}>
-                                <p className="item-title" dangerouslySetInnerHTML={{ __html: n.title.length > 60 ? n.title.substring(0, 60) + '...' : n.title }} onClick={() => this.link(n)}></p>
+                                <p className="item-title" dangerouslySetInnerHTML={{ __html: n.title.length > 60 ? n.title.substring(0, 60).replace(/\\/g, '') + '...' : n.title.replace(/\\/g, '') }} onClick={() => this.link(n)}></p>
                                 <p className="item-subtitle"><small>{n.source}</small></p>
                             </Col>
                         </Row>
