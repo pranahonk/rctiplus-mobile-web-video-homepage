@@ -101,7 +101,6 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
-        alert(this.props.router.asPath);
         window.onhashchange = () => {
             if (this.state.iframe_opened) {
                 this.setState({ iframe_opened: false });
@@ -362,7 +361,7 @@ class Detail extends React.Component {
                     }}>
                         {({ ref }) => (
                             <div ref={ref} className="content-trending-detail">
-                                <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title.replace(/\\/g, '') }}></b></h1>
+                                <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title.replace(/\\/g, '') + ' ' + this.props.router.asPath }}></b></h1>
                                 <small className="content-trending-detail-create"><strong>{cdata.source}</strong>&nbsp;&nbsp;{formatDateWordID(new Date(cdata.pubDate * 1000))}</small>
                                 {}
                                 <StickyContainer>
