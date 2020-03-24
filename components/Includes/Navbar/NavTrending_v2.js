@@ -68,7 +68,10 @@ class NavTrending extends Component {
 
     goToHome() {
         newsGeneralEvent('mweb_news_logo_clicked');
-        Router.push('/');
+        if (!this.platform) {
+            Router.push('/');
+        }
+        
     }
 
     componentDidMount() {

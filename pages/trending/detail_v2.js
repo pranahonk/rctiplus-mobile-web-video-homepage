@@ -5,6 +5,7 @@ import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import Img from 'react-image';
 import { ScrollPercentage } from 'react-scroll-percentage';
+import { StickyContainer, Sticky } from 'react-sticky';
 
 import { DEV_API, BASE_URL, NEWS_API_V2 } from '../../config';
 
@@ -75,6 +76,7 @@ class Detail extends React.Component {
             trending_related: [],
             iframe_opened: false,
             scrolled_down: false,
+            sticky_share_shown: false,
             count: false
         };
 
@@ -159,7 +161,7 @@ class Detail extends React.Component {
         newsArticleShareClicked(cdata.id, cdata.title, cdata.category_source, 'mweb_news_share_article_clicked');
     }
 
-    renderActionButton() {
+    renderActionButton(scrolledDown) {
         const cdata = this.state.trending_detail_data;
         let hashtags = ['rcti', 'rctinews'];
         return (
@@ -249,10 +251,10 @@ class Detail extends React.Component {
                     )}
                     
                 </div>
-                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: this.state.scrolled_down ? '#3a3a3a' : '', float: 'right' }}>
+                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: scrolledDown ? '#3a3a3a' : '', float: 'right' }}>
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
                         const cdata = this.state.trending_detail_data;
-                        if (this.platform && (this.platform == 'android' || this.platform == 'ios')) {
+                        if (this.platform && (this.platform == 'android')) {
                             window.AndroidShareHandler.action(BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1)), cdata.title);
                         }
                         else {
@@ -293,9 +295,33 @@ class Detail extends React.Component {
                     <NavBack data={cdata} disableScrollListener />
                 )}
 
-                <div className={`sticky-share-button ${this.state.scrolled_down ? 'sticky-share-button-viewed' : ''}`}>
-                    {this.renderActionButton()}
-                </div>
+                <StickyContainer>
+                    <Sticky>
+                        { ({ distanceFromTop }) => {
+                            const self = this;
+                            if (distanceFromTop < -100) {
+                                setTimeout(() => {
+                                    if (!self.state.sticky_share_shown) {
+                                        self.setState({ sticky_share_shown: true });
+                                    }
+                                    
+                                }, 300);
+                                return (
+                                    <div className={`sticky-share-button ${this.state.sticky_share_shown ? 'sticky-share-button-viewed' : ''}`}>
+                                        {this.renderActionButton(true)}
+                                    </div>
+                                );
+                            }
+                            setTimeout(() => {
+                                if (self.state.sticky_share_shown) {
+                                    self.setState({ sticky_share_shown: false });
+                                }
+                                
+                            }, 300);
+                            return <span></span>;
+                        } }
+                    </Sticky>
+                </StickyContainer>
                 
                 {this.state.iframe_opened ? (
                     <div className="content-trending-detail" style={{ height: '100vh' }}>
@@ -335,9 +361,21 @@ class Detail extends React.Component {
                     }}>
                         {({ ref }) => (
                             <div ref={ref} className="content-trending-detail">
-                                <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title }}></b></h1>
+                                <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title.replace(/\\/g, '') }}></b></h1>
                                 <small className="content-trending-detail-create"><strong>{cdata.source}</strong>&nbsp;&nbsp;{formatDateWordID(new Date(cdata.pubDate * 1000))}</small>
-                                {this.renderActionButton()}
+                                {}
+                                <StickyContainer>
+                                    <Sticky>
+                                        { ({ distanceFromTop }) => {
+                                            if (distanceFromTop < 0) {
+
+                                                return this.renderActionButton();
+                                            }
+                                            return (this.renderActionButton());
+                                        } }
+                                    </Sticky>
+                                </StickyContainer>
+
                                 <div className="content-trending-detail-wrapper">
                                     <div className="content-trending-detail-cover-container">
                                         <img alt={cdata.title} className="content-trending-detail-cover" src={cdata.cover} />
@@ -366,7 +404,7 @@ class Detail extends React.Component {
                                                             src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
                                                     </div>
                                                     <div className="article-title-container">
-                                                        <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title }}></h4>
+                                                        <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
                                                     </div>
                                                 </div>
                                                 <div className="article-source">
