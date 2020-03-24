@@ -101,6 +101,7 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
+        alert(this.props.router.asPath);
         window.onhashchange = () => {
             if (this.state.iframe_opened) {
                 this.setState({ iframe_opened: false });
