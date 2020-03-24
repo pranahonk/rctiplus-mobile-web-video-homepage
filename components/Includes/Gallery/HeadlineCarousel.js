@@ -73,7 +73,7 @@ class HeadlineCarousel extends React.Component {
                             
                         </div>
                         <div className="caption">
-                            <h3 className="title" dangerouslySetInnerHTML={{ __html: this.renderTitle(article.title) }}></h3>
+                            <h3 className="title" dangerouslySetInnerHTML={{ __html: this.renderTitle(article.title) + ' ' + this.props.router.asPath }}></h3>
                             <div className="description">
                                 <p><strong>{article.source}</strong>&nbsp;&nbsp;</p>
                                 <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
