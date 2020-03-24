@@ -254,7 +254,7 @@ class Detail extends React.Component {
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: scrolledDown ? '#3a3a3a' : '', float: 'right' }}>
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
                         const cdata = this.state.trending_detail_data;
-                        if (this.platform && (this.platform == 'android' || this.platform == 'ios')) {
+                        if (this.platform && (this.platform == 'android')) {
                             window.AndroidShareHandler.action(BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1)), cdata.title);
                         }
                         else {
@@ -361,7 +361,7 @@ class Detail extends React.Component {
                     }}>
                         {({ ref }) => (
                             <div ref={ref} className="content-trending-detail">
-                                <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title.replace(/\\/g, '') + ' ' + this.props.router.asPath }}></b></h1>
+                                <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title.replace(/\\/g, '') }}></b></h1>
                                 <small className="content-trending-detail-create"><strong>{cdata.source}</strong>&nbsp;&nbsp;{formatDateWordID(new Date(cdata.pubDate * 1000))}</small>
                                 {}
                                 <StickyContainer>
