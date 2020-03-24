@@ -76,6 +76,7 @@ class Detail extends React.Component {
             trending_related: [],
             iframe_opened: false,
             scrolled_down: false,
+            sticky_share_shown: false,
             count: false
         };
 
@@ -297,13 +298,26 @@ class Detail extends React.Component {
                 <StickyContainer>
                     <Sticky>
                         { ({ distanceFromTop }) => {
+                            const self = this;
                             if (distanceFromTop < -100) {
+                                setTimeout(() => {
+                                    if (!self.state.sticky_share_shown) {
+                                        self.setState({ sticky_share_shown: true });
+                                    }
+                                    
+                                }, 300);
                                 return (
-                                    <div className={`sticky-share-button sticky-share-button-viewed`}>
+                                    <div className={`sticky-share-button ${this.state.sticky_share_shown ? 'sticky-share-button-viewed' : ''}`}>
                                         {this.renderActionButton(true)}
                                     </div>
                                 );
                             }
+                            setTimeout(() => {
+                                if (self.state.sticky_share_shown) {
+                                    self.setState({ sticky_share_shown: false });
+                                }
+                                
+                            }, 300);
                             return <span></span>;
                         } }
                     </Sticky>

@@ -58,12 +58,15 @@ class NavbarTrendingSearch extends Component {
     saveSearchHistory(q) {
         let searchHistory = getCookie('SEARCH_HISTORY');
         if (!searchHistory) {
-            setCookie('SEARCH_HISTORY', [q]);
+            setCookie('SEARCH_HISTORY', [q.toLowerCase()]);
         }
         else {
             searchHistory = JSON.parse(searchHistory);
-            if (searchHistory.indexOf(q) === -1) {
-                searchHistory.unshift(q);
+            if (searchHistory.indexOf(q.toLowerCase()) === -1) {
+                if (searchHistory.length >= 5) {
+                    searchHistory.pop();
+                }
+                searchHistory.unshift(q.toLowerCase());
                 setCookie('SEARCH_HISTORY', searchHistory);
             }
         }
@@ -80,10 +83,12 @@ class NavbarTrendingSearch extends Component {
 
     search() {
         newsSearchClicked(this.props.newsv2.query, 'mweb_news_search_clicked');
-        this.saveSearchHistory(this.props.newsv2.query);
-        this.props.clearSearch();
-        this.props.setPageLoader();
-        this.subject.next();
+        if (this.props.newsv2.query) {
+            this.saveSearchHistory(this.props.newsv2.query);
+            this.props.clearSearch();
+            this.props.setPageLoader();
+            this.subject.next();
+        }
     }
 
     clearKeyword() {
