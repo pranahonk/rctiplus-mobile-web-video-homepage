@@ -22,7 +22,7 @@ import AddIcon from '@material-ui/icons/Add';
 
 import { SITEMAP } from '../config';
 import { formatDateWordID } from '../utils/dateHelpers';
-import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken } from '../utils/cookie';
+import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2 } from '../utils/cookie';
 
 import '../assets/scss/components/trending_v2.scss';
 
@@ -32,6 +32,8 @@ import { showSignInAlert } from '../utils/helpers';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
 
 import queryString from 'query-string';
+
+const jwtDecode = require('jwt-decode');
 
 class Trending_v2 extends React.Component {
 
@@ -151,15 +153,29 @@ class Trending_v2 extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getUserData()
-            .then(response => {
-                console.log(response);
+
+        if (this.accessToken) {
+            const decodedToken = jwtDecode(this.accessToken);
+            if (decodedToken && decodedToken.uid != '0') {
                 this.fetchData(true);
-            })
-            .catch(error => {
-                console.log(error);
+            }
+            else {
                 this.fetchData();
-            });
+            }
+        }
+        else {
+            this.props.getUserData()
+                .then(response => {
+                    console.log(response);
+                    this.fetchData(true);
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.fetchData();
+                });
+        }
+
+        
     }
 
     fetchData(isLoggedIn = false) {
