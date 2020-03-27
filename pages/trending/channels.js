@@ -180,10 +180,7 @@ class Channels extends React.Component {
                     decodedToken = jwtDecode(this.accessToken);
                 }
 
-                if (!this.state.user_data || (this.accessToken && decodedToken.uid == '0')) {
-                    setNewsChannels(this.state.categories);
-                }
-                else {
+                if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
                     this.props.setPageLoader();
                     let promises = [];
                     for (let i = 3; i < this.state.categories.length; i++) {
@@ -193,6 +190,23 @@ class Channels extends React.Component {
                     console.log(responses);
                     this.props.unsetPageLoader();
                 }
+                else {
+                    setNewsChannels(this.state.categories);
+                }
+
+                // if (!this.state.user_data || (this.accessToken && decodedToken.uid == '0')) {
+                //     setNewsChannels(this.state.categories);
+                // }
+                // else {
+                //     this.props.setPageLoader();
+                //     let promises = [];
+                //     for (let i = 3; i < this.state.categories.length; i++) {
+                //         promises.push(this.props.updateCategoryOrder(this.state.categories[i].id, this.state.categories.length - i));
+                //     }
+                //     const responses = await Promise.all(promises);
+                //     console.log(responses);
+                //     this.props.unsetPageLoader();
+                // }
             });
         }
         catch (error) {
