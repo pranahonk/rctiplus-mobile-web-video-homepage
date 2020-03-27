@@ -89,15 +89,14 @@ class Tv extends React.Component {
 				status: false,
 				message: '',
 			},
-			test: true,
+			ad_closed: true
 		};
 
 		this.player = null;
 		this.currentDate = now;
 		this.props.setCatchupDate(formatDateWord(now));
 		this.props.setPageLoader();
-
-		console.log('IS IOS:', isIOS);
+		this.pubAdsRefreshInterval = null;
 	}
 
 	componentDidMount() {
@@ -130,6 +129,8 @@ class Tv extends React.Component {
 			.catch(error => {
 				console.log(error);
 			});
+
+		this.refreshPubAds();
 	}
 
 	isLiveProgram(epg) {
@@ -175,6 +176,25 @@ class Tv extends React.Component {
 			logo: {
 				hide: true
 			}
+		});
+
+		this.player.on('adImpression', () => {
+			// this.setState({ ad_closed: true });
+		});
+
+		this.player.on('adComplete', () => {
+			// this.setState({ ad_closed: false }, () => {
+			// 	window.googletag = window.googletag || { cmd: [] };
+			// 	googletag.cmd.push(function () {
+			// 		googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60], [320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
+			// 		googletag.pubads().addEventListener('slotVisibilityChanged', function (event) {
+			// 			console.log(event);
+			// 		});
+			// 		googletag.pubads().enableSingleRequest();
+			// 		googletag.pubads().collapseEmptyDivs();
+			// 		googletag.enableServices();
+			// 	});
+			// });
 		});
 
 		const self = this;
@@ -652,6 +672,24 @@ class Tv extends React.Component {
 		});
 	}
 
+	adsClose() {
+		this.setState({ ad_closed: true }, () => {
+			clearInterval(this.pubAdsRefreshInterval);
+			setTimeout(() => {
+				this.setState({ ad_closed: false }, () => {
+					this.refreshPubAds();
+				});
+			}, 3100);
+		});
+	}
+
+	refreshPubAds() {
+		this.pubAdsRefreshInterval = setInterval(() => {
+			console.log('refresh');
+			googletag.pubads().refresh();
+		}, 600000);
+	}
+
 	render() {
 		let playerRef = (<div></div>);
 		if (this.state.error) {
@@ -674,9 +712,14 @@ class Tv extends React.Component {
 				<div>
 					<div style={{ minHeight: 180 }} id="live-tv-player"></div>
 					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
-					{/* <div id='div-gpt-ad-1581999069906-0'>
-						<script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1581999069906-0'); });` }}></script>
-					</div> */}
+					{this.state.ad_closed ? null : (
+						<div className='ads_wrapper'>
+							<div className='close_button' onClick={this.adsClose.bind(this)}>x</div>
+							<div id='div-gpt-ad-1581999069906-0' className='adsStyling'>
+								<script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1581999069906-0'); });` }}></script>
+							</div>
+						</div>
+					)}
 				</div>
 			);
 		}
@@ -690,9 +733,18 @@ class Tv extends React.Component {
 					<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 					<script dangerouslySetInnerHTML={{
 						__html: `
-							window.googletag = window.googletag || {cmd: []};
-							googletag.cmd.push(function() {
-							googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[320, 50], [468, 60]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
+						window.googletag = window.googletag || {cmd: []};
+						var i=2;
+						googletag.cmd.push(function() {
+							if(i===1){
+								googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
+							}
+							else {
+								googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
+							}
+							googletag.pubads().addEventListener('slotVisibilityChanged', function(event) {
+								console.log(event);
+							});
 							googletag.pubads().enableSingleRequest();
 							googletag.pubads().collapseEmptyDivs();
 							googletag.enableServices();

@@ -31,6 +31,33 @@ $default-player-space: 180px;
     }
 }
 
+.ads_wrapper{
+    width:100%;
+    height:50px;
+
+    .close_button{
+        border-radius: 180px;
+        background: black;
+        position: absolute;
+        right: 5px;
+        padding: 0px 8px 0px 8px;
+        color: white;
+        margin-top: 5px;
+        text-align: center;
+        z-index: 999999;
+    }
+}
+
+.adsStyling{
+    display: flex;
+    div{
+        width:320px;
+        height:50px;
+        margin:0 auto;
+        z-index:9999;
+    }
+}
+
 .tv-wrap {
     background-color: #171717;
     padding: 5px;

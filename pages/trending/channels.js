@@ -20,9 +20,11 @@ import userActions from '../../redux/actions/userActions';
 import { newsTabChannelClicked, newsAddCategoryChannelClicked, newsRemoveCategoryChannelClicked } from '../../utils/appier';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { setNewsChannels, getNewsChannels, setAccessToken, removeAccessToken } from '../../utils/cookie';
+import { setNewsChannels, getNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2 } from '../../utils/cookie';
 
 import queryString from 'query-string';
+
+const jwtDecode = require('jwt-decode');
 
 class Channels extends React.Component {
 
@@ -60,22 +62,39 @@ class Channels extends React.Component {
 
     componentDidMount() {
         const savedCategoriesNews = getNewsChannels();
-        this.props.getUserData()
-            .then(response => {
-                console.log(response);
-                this.setState({
-                    saved_categories: savedCategoriesNews,
-                    user_data: response.data.data
-                }, () => {
+        if (this.accessToken) {
+            const decodedToken = jwtDecode(this.accessToken);
+            if (decodedToken && decodedToken.uid != '0') {
+                this.setState({ saved_categories: savedCategoriesNews }, () => {
                     this.fetchData(savedCategoriesNews, true);
                 });
-            })
-            .catch(error => {
-                console.log(error);
+            }
+            else {
                 this.setState({ saved_categories: savedCategoriesNews }, () => {
                     this.fetchData(savedCategoriesNews);
                 });
-            });
+            }
+        }
+        else {
+            this.props.getUserData()
+                .then(response => {
+                    console.log(response);
+                    this.setState({
+                        saved_categories: savedCategoriesNews,
+                        user_data: response.data.data
+                    }, () => {
+                        this.fetchData(savedCategoriesNews, true);
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.setState({ saved_categories: savedCategoriesNews }, () => {
+                        this.fetchData(savedCategoriesNews);
+                    });
+                });
+        }
+
+        
     }
 
     fetchData(savedCategoriesNews, isLoggedIn = false) {
@@ -156,7 +175,12 @@ class Channels extends React.Component {
 
             const categories = res;
             this.setState({ categories }, async () => {
-                if (!this.state.user_data) {
+                let decodedToken = { uid: '0' };
+                if (this.accessToken) {
+                    decodedToken = jwtDecode(this.accessToken);
+                }
+
+                if (!this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
                     setNewsChannels(this.state.categories);
                 }
                 else {
@@ -190,7 +214,12 @@ class Channels extends React.Component {
         newsAddCategoryChannelClicked(category.name, 'mweb_news_add_category_kanal_clicked');
 
         try {
-            if (this.state.user_data) {
+            let decodedToken = { uid: '0' };
+            if (this.accessToken) {
+                decodedToken = jwtDecode(this.accessToken);
+            }
+
+            if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
                 let addResponse = await this.props.addCategory(category.id);
                 console.log(addResponse);
             }
@@ -211,7 +240,8 @@ class Channels extends React.Component {
                         categories: categories,
                         active_tab: 'Edit Kanal'
                     }, () => {
-                        if (!this.state.user_data) {
+
+                        if (!this.state.user_data || (this.accessToken && decodedToken.uid == '0')) {
                             setNewsChannels(this.state.categories);
                         }
                     });
@@ -235,7 +265,12 @@ class Channels extends React.Component {
         newsRemoveCategoryChannelClicked(category.name, 'mweb_news_remove_category_kanal_clicked');
 
         try {
-            if (this.state.user_data) {
+            let decodedToken = { uid: '0' };
+            if (this.accessToken) {
+                decodedToken = jwtDecode(this.accessToken);
+            }
+
+            if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
                 let deleteResponse = await this.props.deleteCategory(category.id);
                 console.log(deleteResponse);
             }
@@ -255,7 +290,12 @@ class Channels extends React.Component {
                     categories: categories,
                     active_tab: 'Add Kanal'
                 }, () => {
-                    if (!this.state.user_data) {
+                    let decodedToken = { uid: '0' };
+                    if (this.accessToken) {
+                        decodedToken = jwtDecode(this.accessToken);
+                    }
+
+                    if (!this.state.user_data || (this.accessToken && decodedToken.uid == '0')) {
                         setNewsChannels(this.state.categories);
                     }
                 });
