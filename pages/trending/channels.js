@@ -180,7 +180,7 @@ class Channels extends React.Component {
                     decodedToken = jwtDecode(this.accessToken);
                 }
 
-                if (!this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
+                if (!this.state.user_data || (this.accessToken && decodedToken.uid == '0')) {
                     setNewsChannels(this.state.categories);
                 }
                 else {
