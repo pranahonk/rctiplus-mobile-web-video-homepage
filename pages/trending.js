@@ -229,6 +229,10 @@ class Trending_v2 extends React.Component {
                     }
                 })
                 .catch(error => {
+                    if (this.platform && this.accessToken && (this.platform == 'android')) {
+                        window.AndroidTokenHandler.action(this.accessToken);
+                    }
+
                     console.log(error);
                     this.setState({
                         is_tabs_loading: false,
