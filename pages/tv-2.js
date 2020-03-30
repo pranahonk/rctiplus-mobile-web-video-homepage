@@ -338,7 +338,8 @@ class Tv extends React.Component {
 
             this.player.ima({
                 adTagUrl: this.state.player_vmap
-            });
+						});
+						// this.player.ima.initializeAdDisplayContainer();
         }
     }
 
