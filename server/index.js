@@ -136,6 +136,18 @@ const UIVersion = '2.0';
       })
     });
 
+    server.get('/tv-2/:channel', (req, res) => {
+      return app.render(req, res, '/tv-2', { channel: req.params.channel });
+    });
+
+    server.get('/tv-2/:channel/:epg_id/:epg_title', (req, res) => {
+      return app.render(req, res, '/tv-2', {
+        channel: req.params.channel,
+        epg_id: req.params.epg_id,
+        epg_title: req.params.epg_title
+      })
+    });
+
     // server.get('/trending/:subcategory_id/:subcategory_title', (req, res) => {
     //   return app.render(req, res, '/trending_old', {
     //     subcategory_id: req.params.subcategory_id,
