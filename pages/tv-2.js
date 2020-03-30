@@ -42,6 +42,11 @@ import 'emoji-mart/css/emoji-mart.css';
 
 import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId } from '../utils/appier';
 
+import videojs from 'video.js';
+import 'videojs-contrib-ads';
+import 'videojs-ima';
+import 'video.js/src/css/video-js.scss';
+
 const innerHeight = require('ios-inner-height');
 
 class Tv extends React.Component {
@@ -94,8 +99,15 @@ class Tv extends React.Component {
 		this.currentDate = now;
 		this.props.setCatchupDate(formatDateWord(now));
 		this.props.setPageLoader();
-		this.pubAdsRefreshInterval = null;
-	}
+        this.pubAdsRefreshInterval = null;
+        this.videoNode = null;
+    }
+    
+    componentWillUnmount() {
+        if (this.player) {
+            this.player.dispose();
+        }
+    }
 
 	componentDidMount() {
 		this.props.getLiveEvent('on air')
@@ -175,21 +187,21 @@ class Tv extends React.Component {
 			}
 		});
 
-		// this.player.on('adImpression', () => {
-		// 	this.setState({ ad_closed: true });
-		// });
+		this.player.on('adImpression', () => {
+			this.setState({ ad_closed: true });
+		});
 
-		// this.player.on('adComplete', () => {
-		// 	this.setState({ ad_closed: false }, () => {
-		// 		window.googletag = window.googletag || { cmd: [] };
-		// 		googletag.cmd.push(function () {
-		// 			googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60], [320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
-		// 			googletag.pubads().enableSingleRequest();
-		// 			googletag.pubads().collapseEmptyDivs();
-		// 			googletag.enableServices();
-		// 		});
-		// 	});
-		// });
+		this.player.on('adComplete', () => {
+			this.setState({ ad_closed: false }, () => {
+				window.googletag = window.googletag || { cmd: [] };
+				googletag.cmd.push(function () {
+					googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60], [320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
+					googletag.pubads().enableSingleRequest();
+					googletag.pubads().collapseEmptyDivs();
+					googletag.enableServices();
+				});
+			});
+		});
 
 		const self = this;
 		this.player.on('ready', function() {
@@ -308,7 +320,27 @@ class Tv extends React.Component {
 				}
 			}
 		});
-	}
+    }
+    
+    initPlayer() {
+        if (this.videoNode) {
+            this.player = videojs(this.videoNode, {
+                autoplay: true,
+                controls: true,
+                muted: true,
+                sources: [{
+                    src: this.state.player_url,
+                    type: 'application/x-mpegURL'
+                }]
+            }, function onPlayerReady() {
+                console.log('onPlayerReady', this);
+            });
+
+            this.player.ima({
+                adTagUrl: this.state.player_vmap
+            });
+        }
+    }
 
 	loadChatMessages(id) {
 		this.props.setPageLoader();
@@ -412,7 +444,8 @@ class Tv extends React.Component {
 						player_url: res.data.data.url,
 						player_vmap: res.data.data[process.env.VMAP_KEY]
 					}, () => {
-						this.initVOD();
+                        // this.initVOD();
+                        this.initPlayer();
 						this.props.setChannelCode(this.state.selected_live_event.channel_code);
 						this.props.setCatchupDate(formatDateWord(this.currentDate));
 						this.props.unsetPageLoader();
@@ -712,7 +745,25 @@ class Tv extends React.Component {
 		else {
 			playerRef = (
 				<div>
-					<div style={{ minHeight: 180 }} id="live-tv-player"></div>
+					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
+                    <div data-vjs-player>
+                        <video 
+                            style={{ 
+                                minHeight: 180,
+                                width: '100%'
+                            }}
+                            ref={ node => this.videoNode = node } 
+                            className="video-js vjs-default-skin vjs-big-play-centered"></video>
+                    </div>
+                    {/* <video
+                        style={{ 
+                            minHeight: 180,
+                            width: '100%'
+                        }}
+                        id="live-tv-player"
+                        className="video-js vjs-default-skin vjs-big-play-centered">
+                            <source src={this.state.player_url} type="application/x-mpegURL"/>
+                        </video> */}
 					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
 					{this.state.ad_closed ? null : (
 						<div className='ads_wrapper'>
