@@ -34,8 +34,6 @@ import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { isIOS } from 'react-device-detect';
-import socketIOClient from 'socket.io-client';
-import axios from 'axios';
 
 import { BASE_URL, SITEMAP } from '../config';
 
@@ -43,6 +41,11 @@ import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
 import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId } from '../utils/appier';
+
+import videojs from 'video.js';
+import 'videojs-contrib-ads';
+import 'videojs-ima';
+import 'video.js/src/css/video-js.scss';
 
 const innerHeight = require('ios-inner-height');
 
@@ -96,8 +99,15 @@ class Tv extends React.Component {
 		this.currentDate = now;
 		this.props.setCatchupDate(formatDateWord(now));
 		this.props.setPageLoader();
-		this.pubAdsRefreshInterval = null;
-	}
+        this.pubAdsRefreshInterval = null;
+        this.videoNode = null;
+    }
+    
+    componentWillUnmount() {
+        if (this.player) {
+            this.player.dispose();
+        }
+    }
 
 	componentDidMount() {
 		this.props.getLiveEvent('on air')
@@ -177,21 +187,21 @@ class Tv extends React.Component {
 			}
 		});
 
-		// this.player.on('adImpression', () => {
-		// 	this.setState({ ad_closed: true });
-		// });
+		this.player.on('adImpression', () => {
+			this.setState({ ad_closed: true });
+		});
 
-		// this.player.on('adComplete', () => {
-		// 	this.setState({ ad_closed: false }, () => {
-		// 		window.googletag = window.googletag || { cmd: [] };
-		// 		googletag.cmd.push(function () {
-		// 			googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60], [320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
-		// 			googletag.pubads().enableSingleRequest();
-		// 			googletag.pubads().collapseEmptyDivs();
-		// 			googletag.enableServices();
-		// 		});
-		// 	});
-		// });
+		this.player.on('adComplete', () => {
+			this.setState({ ad_closed: false }, () => {
+				window.googletag = window.googletag || { cmd: [] };
+				googletag.cmd.push(function () {
+					googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60], [320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
+					googletag.pubads().enableSingleRequest();
+					googletag.pubads().collapseEmptyDivs();
+					googletag.enableServices();
+				});
+			});
+		});
 
 		const self = this;
 		this.player.on('ready', function() {
@@ -310,7 +320,27 @@ class Tv extends React.Component {
 				}
 			}
 		});
-	}
+    }
+    
+    initPlayer() {
+        if (this.videoNode) {
+            this.player = videojs(this.videoNode, {
+                autoplay: true,
+                controls: true,
+                muted: true,
+                sources: [{
+                    src: this.state.player_url,
+                    type: 'application/x-mpegURL'
+                }]
+            }, function onPlayerReady() {
+                console.log('onPlayerReady', this);
+            });
+
+            this.player.ima({
+                adTagUrl: this.state.player_vmap
+            });
+        }
+    }
 
 	loadChatMessages(id) {
 		this.props.setPageLoader();
@@ -319,59 +349,65 @@ class Tv extends React.Component {
 			chatBox.scrollTop = chatBox.scrollHeight;
 			this.props.unsetPageLoader();
 			if (true) {
-				// let firstLoadChat = true;
-				this.props.getChatSocket(this.state.live_events[this.state.selected_index].id)
-				.then(data => {
-					let chats = this.state.chats;
-					if (!this.state.sending_chat) {
-						if (chats.length > 0) {
-							let lastChat = chats[chats.length - 1];
-							let newChat = data.data;
-							if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-								chats = newChat;
-							}
-							}
-							else {
-								chats = data.data;
-							}
+				let firstLoadChat = true;
+				this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
+				.then(collection => {
+					let snapshots = this.state.snapshots;
+					// .orderBy('ts', 'desc').limit(3).
+					let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
+						querySnapshot.docChanges()
+							.map(change => {
+								console.log(change.doc.data().ts)
+								let chats = this.state.chats;
+								console.log(`${change.type}: ${change.doc.data().m}`);
+								if (change.type === 'added') {
+									if (!this.state.sending_chat) {
+										if (chats.length > 0) {
+											let lastChat = chats[chats.length - 1];
+											let newChat = change.doc.data();
+											if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+												if (firstLoadChat) {
+													chats.unshift(newChat);
+												}
+												else {
+													chats.push(newChat);
+												}
+											}
+										}
+										else {
+											if (firstLoadChat) {
+												chats.unshift(change.doc.data());
+											}
+											else {
+												chats.push(change.doc.data());
+											}
+										}
 
-						this.setState({ chats: chats }, () => {
-							const chatBox = document.getElementById('chat-messages');
-							chatBox.scrollTop = chatBox.scrollHeight;
+										this.setState({ chats: chats }, () => {
+											const chatBox = document.getElementById('chat-messages');
+											chatBox.scrollTop = chatBox.scrollHeight;
 
-							const chatInput = document.getElementById('chat-input');
-							chatInput.style.height = `24px`;
-						});
-					}
-				})
-				.then(() => {
-					this.props.listenSocketIo(this.state.live_events[this.state.selected_index].id)
-					.then((socket) => {
-						socket.on('message', (data) => {
-						let chats = this.state.chats;
-						let newChat = data;
-							if (chats.length > 0) {
-								let lastChat = chats[chats.length - 1];
-								if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-									chats.push(newChat);
+											const chatInput = document.getElementById('chat-input');
+											chatInput.style.height = `24px`;
+										});
+									}
 								}
-							}
-							else {
-								chats.push(newChat);
-							}
-	
-							this.setState({ chats: chats }, () => {
-								const chatBox = document.getElementById('chat-messages');
-								chatBox.scrollTop = chatBox.scrollHeight;
-	
-								const chatInput = document.getElementById('chat-input');
-								chatInput.style.height = `24px`;
+
+								// if (change.type === 'removed') {
+								// 	let removed = change.doc.data();
+								// 	for (let i = 0; i < chats.length; i++) {
+								// 		if (chats[i].ts === removed.ts) {
+								// 			chats.splice(i, 1);
+								// 		}
+								// 	}
+								// 	this.setState({ chats: chats });
+								// }
 							});
-						})
-					})
-				})
-				.catch((err) => {
-					console.log(err);
+
+						firstLoadChat = false;
+					});
+					// snapshots[this.state.live_events[this.state.selected_index].id] = snapshot;
+					// this.setState({ snapshots: snapshots });
 				});
 			}
 			
@@ -408,7 +444,8 @@ class Tv extends React.Component {
 						player_url: res.data.data.url,
 						player_vmap: res.data.data[process.env.VMAP_KEY]
 					}, () => {
-						this.initVOD();
+                        // this.initVOD();
+                        this.initPlayer();
 						this.props.setChannelCode(this.state.selected_live_event.channel_code);
 						this.props.setCatchupDate(formatDateWord(this.currentDate));
 						this.props.unsetPageLoader();
@@ -595,6 +632,7 @@ class Tv extends React.Component {
 					userData.display_name ? userData.display_name :
 						userData.email ? userData.email.replace(/\d{4}$/, '****') :
 							userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
+
 				let newChat = {
 					ts: Date.now(),
 					m: this.state.chat,
@@ -604,28 +642,29 @@ class Tv extends React.Component {
 					failed: false
 				};
 				let chats = this.state.chats;
-				// chats.push(newChat);
-				this.props.postChatSocket(this.state.live_events[this.state.selected_index].id, this.state.chat, this.state.user_data.photo_url, user)
-				.then(response => {
-					newChat.sent = true;
-					if (response.status !== 200) {
-						newChat.failed = true
-					}
-					chats[chats.length - 1] = newChat;
-						this.setState({ chats: chats, sending_chat: false });
-				})
-				.catch(() => {
-					newChat.sent = true;
-					newChat.failed = true;
-					chats[chats.length - 1] = newChat;
-					this.setState({ chats: chats, sending_chat: false });
-				});
+				chats.push(newChat);
 				this.setState({ chats: chats, chat: '', sending_chat: true }, () => {
 					const chatBox = document.getElementById('chat-messages');
 					chatBox.scrollTop = chatBox.scrollHeight;
 
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
+
+					this.props.setChat(this.state.live_events[this.state.selected_index].id, newChat.m, user, this.state.user_data.photo_url)
+						.then(response => {
+							newChat.sent = true;
+							if (response.status !== 200 || response.data.status.code !== 0) {
+								newChat.failed = true;
+							}
+							chats[chats.length - 1] = newChat;
+							this.setState({ chats: chats, sending_chat: false });
+						})
+						.catch(() => {
+							newChat.sent = true;
+							newChat.failed = true;
+							chats[chats.length - 1] = newChat;
+							this.setState({ chats: chats, sending_chat: false });
+						});
 				});
 			}
 		}
@@ -706,7 +745,25 @@ class Tv extends React.Component {
 		else {
 			playerRef = (
 				<div>
-					<div style={{ minHeight: 180 }} id="live-tv-player"></div>
+					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
+                    <div data-vjs-player>
+                        <video 
+                            style={{ 
+                                minHeight: 180,
+                                width: '100%'
+                            }}
+                            ref={ node => this.videoNode = node } 
+                            className="video-js vjs-default-skin vjs-big-play-centered"></video>
+                    </div>
+                    {/* <video
+                        style={{ 
+                            minHeight: 180,
+                            width: '100%'
+                        }}
+                        id="live-tv-player"
+                        className="video-js vjs-default-skin vjs-big-play-centered">
+                            <source src={this.state.player_url} type="application/x-mpegURL"/>
+                        </video> */}
 					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
 					{this.state.ad_closed ? null : (
 						<div className='ads_wrapper'>
