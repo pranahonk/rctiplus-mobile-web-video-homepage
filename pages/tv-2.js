@@ -324,6 +324,7 @@ class Tv extends React.Component {
     
     initPlayer() {
         if (this.videoNode) {
+            const self = this;
             this.player = videojs(this.videoNode, {
                 autoplay: true,
                 controls: true,
@@ -334,10 +335,8 @@ class Tv extends React.Component {
                 }]
             }, function onPlayerReady() {
                 console.log('onPlayerReady', this);
-            });
-
-            this.player.ima({
-                adTagUrl: this.state.player_vmap
+                const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
+                // https://community.conviva.com/site/global/platforms/web_mobile_web/videojs/index.gsp
             });
         }
     }
@@ -782,6 +781,8 @@ class Tv extends React.Component {
 				<Head>
 					<meta name="description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description} />
 					<meta name="keywords" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].keywords} />
+
+                    <script src="/static/js/ConvivaLivePass_Videojs.js"></script>
 
 					<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 					<script dangerouslySetInnerHTML={{
