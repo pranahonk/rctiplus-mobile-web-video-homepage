@@ -125,8 +125,9 @@ class Default extends React.Component {
                     ` }}></script>
                     <noscript><img alt="Share" src="https://b.scorecardresearch.com/p?c1=2&amp;c2=9013027&amp;cv=2.0&amp;cj=1" /></noscript>
                     {/* End Comscore */}
+                    
                 </Head>
-                
+                <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
                 {/* <!-- Google Tag Manager (noscript) --> */}
                 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5F9P7H3"
                 height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript>

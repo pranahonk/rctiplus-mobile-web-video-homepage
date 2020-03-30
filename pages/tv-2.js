@@ -338,6 +338,11 @@ class Tv extends React.Component {
                 const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
                 // https://community.conviva.com/site/global/platforms/web_mobile_web/videojs/index.gsp
             });
+
+            this.player.ima({
+                adTagUrl: this.state.player_vmap
+            });
+            // this.player.ima.initializeAdDisplayContainer();
         }
     }
 
