@@ -26,6 +26,12 @@ body {
     background-color: $primary-bg-color;
     font-family: $primary-font-family;
 }
+
+// video js
+.vjs-big-play-button {
+	z-index: 9999;
+}
+
 .text-default-rcti {
     color: $primary-text-color;
 }

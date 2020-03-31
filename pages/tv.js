@@ -42,6 +42,11 @@ import 'emoji-mart/css/emoji-mart.css';
 
 import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId } from '../utils/appier';
 
+import videojs from 'video.js';
+import 'videojs-contrib-ads';
+import 'videojs-ima';
+import 'video.js/src/css/video-js.scss';
+
 const innerHeight = require('ios-inner-height');
 
 class Tv extends React.Component {
@@ -94,8 +99,15 @@ class Tv extends React.Component {
 		this.currentDate = now;
 		this.props.setCatchupDate(formatDateWord(now));
 		this.props.setPageLoader();
-		this.pubAdsRefreshInterval = null;
-	}
+        this.pubAdsRefreshInterval = null;
+        this.videoNode = null;
+    }
+    
+    componentWillUnmount() {
+        if (this.player) {
+            this.player.dispose();
+        }
+    }
 
 	componentDidMount() {
 		this.props.getLiveEvent('on air')
@@ -308,7 +320,26 @@ class Tv extends React.Component {
 				}
 			}
 		});
-	}
+    }
+    
+    initPlayer() {
+        if (this.videoNode) {
+            this.player = videojs(this.videoNode, {
+                autoplay: true,
+                controls: true,
+                muted: true,
+                sources: [{
+                    src: this.state.player_url,
+                    type: 'application/x-mpegURL'
+                }]
+            }, function onPlayerReady() {
+                console.log('onPlayerReady', this);
+            });
+
+            this.player.ima({ adTagUrl: this.state.player_vmap });
+			this.player.ima.initializeAdDisplayContainer();
+        }
+    }
 
 	loadChatMessages(id) {
 		this.props.setPageLoader();
@@ -412,7 +443,8 @@ class Tv extends React.Component {
 						player_url: res.data.data.url,
 						player_vmap: res.data.data[process.env.VMAP_KEY]
 					}, () => {
-						this.initVOD();
+                        // this.initVOD();
+                        this.initPlayer();
 						this.props.setChannelCode(this.state.selected_live_event.channel_code);
 						this.props.setCatchupDate(formatDateWord(this.currentDate));
 						this.props.unsetPageLoader();
@@ -489,7 +521,8 @@ class Tv extends React.Component {
 						player_vmap: response.data.data[process.env.VMAP_KEY],
 						selected_catchup: response.data.data,
 						error: false
-					}, () => this.initVOD());
+					// }, () => this.initVOD());
+					}, () => this.initPlayer());
 				}
 				else {
 					showAlert(response.data.status.message_server, `
@@ -554,7 +587,8 @@ class Tv extends React.Component {
 
 	tryAgain() {
 		this.setState({ error: false }, () => {
-			this.initVOD();
+			// this.initVOD();
+			this.initPlayer();
 		});
 	}
 
@@ -712,7 +746,17 @@ class Tv extends React.Component {
 		else {
 			playerRef = (
 				<div>
-					<div style={{ minHeight: 180 }} id="live-tv-player"></div>
+					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
+                    <div data-vjs-player>
+                        <video 
+												playsInline
+                            style={{ 
+                                minHeight: 180,
+                                width: '100%'
+                            }}
+                            ref={ node => this.videoNode = node } 
+                            className="video-js vjs-default-skin vjs-big-play-centered"></video>
+                    </div>
 					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
 					{this.state.ad_closed ? null : (
 						<div className='ads_wrapper'>

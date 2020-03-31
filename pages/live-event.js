@@ -43,6 +43,11 @@ import 'emoji-mart/css/emoji-mart.css';
 
 import { getUserId } from '../utils/appier';
 
+import videojs from 'video.js';
+import 'videojs-contrib-ads';
+import 'videojs-ima';
+import 'video.js/src/css/video-js.scss';
+
 const innerHeight = require('ios-inner-height');
 
 class LiveEvent extends React.Component {
@@ -145,14 +150,20 @@ class LiveEvent extends React.Component {
 		}
 
 		this.player = null;
+		this.videoNode = null;
 		this.props.setPageLoader();
 	}
-
+	componentWillUnmount() {
+		if (this.player) {
+				this.player.dispose();
+		}
+	}
 	componentDidMount() {
 		this.props.getLiveEvent('non on air')
 			.then(response => {
 				this.setState({ live_events: response.data.data, meta: response.data.meta }, () => {
-					this.initVOD();
+					// this.initVOD();
+					this.initPlayer();
 					this.props.unsetPageLoader();
 				});
 			})
@@ -274,6 +285,42 @@ class LiveEvent extends React.Component {
 
 		});
 	}
+	initPlayer() {
+		if (this.videoNode) {
+			let url = '';
+			let vmap = '';
+			let id = '';
+			let name = '';
+			let type = '';
+			let portrait_image = '';
+			if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
+				url = this.props.selected_event_url.data.url;
+				vmap = this.props.selected_event_url.data[process.env.VMAP_KEY];
+				id = this.props.selected_event.data.id;
+				name = this.props.selected_event.data.name;
+				type = this.props.selected_event.data.type;
+				portrait_image = this.props.selected_event.data.portrait_image;
+				this.loadChatMessages(id);
+				this.statusChatBlock(id);
+			}
+				this.player = videojs(this.videoNode, {
+						autoplay: true,
+						controls: true,
+						muted: true,
+						sources: [{
+								src: url,
+								type: 'application/x-mpegURL'
+						}]
+				}, function onPlayerReady() {
+						console.log('onPlayerReady', this);
+				});
+
+				this.player.ima({
+						adTagUrl: vmap
+				});
+				this.player.ima.initializeAdDisplayContainer();
+		}
+}
 
 	initVOD() {
 		let url = '';
@@ -551,7 +598,18 @@ class LiveEvent extends React.Component {
 			);
 		}
 		else {
-			playerRef = (<div style={{ minHeight: 180 }} id="live-event-player"></div>);
+			playerRef = (
+			<div data-vjs-player>
+						<video 
+						playsInline
+								style={{ 
+										minHeight: 180,
+										width: '100%'
+								}}
+								ref={ node => this.videoNode = node } 
+								className="video-js vjs-default-skin vjs-big-play-centered"></video>
+				</div>
+			);
 		}
 
 		return (

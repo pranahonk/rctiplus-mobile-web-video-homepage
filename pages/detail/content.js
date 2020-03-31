@@ -18,6 +18,11 @@ import Layout from '../../components/Layouts/Default';
 
 import '../../assets/scss/components/content.scss';
 
+import videojs from 'video.js';
+import 'videojs-contrib-ads';
+import 'videojs-ima';
+import 'video.js/src/css/video-js.scss';
+
 import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
 import { getCookie } from '../../utils/cookie';
 import { programContentPlayEvent, homepageContentPlayEvent, accountHistoryContentPlayEvent, accountMylistContentPlayEvent, accountContinueWatchingContentPlayEvent, libraryProgramContentPlayEvent, searchProgramContentPlayEvent, accountVideoProgress } from '../../utils/appier';
@@ -73,6 +78,7 @@ class Content extends React.Component {
             hide_footer: false
         };
         this.player = null;
+        this.videoNode = null;
 
         const segments = this.props.router.asPath.split(/\?/);
         this.reference = null;
@@ -88,6 +94,12 @@ class Content extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        if (this.player) {
+            this.player.dispose();
+        }
+    }
+
     shouldComponentUpdate(nextProps, nextState) {
         if (this.state.end_duration != nextState.end_duration) {
             return false;
@@ -95,7 +107,26 @@ class Content extends React.Component {
 
         return true;
     }
+    initPlayer() {
+        if (this.videoNode) {
+            this.player = videojs(this.videoNode, {
+                autoplay: true,
+                controls: true,
+                muted: true,
+                sources: [{
+                    src: this.state.player_url,
+                    type: 'application/x-mpegURL'
+                }]
+            }, function onPlayerReady() {
+                console.log('onPlayerReady', this);
+            });
 
+            this.player.ima({
+                adTagUrl: this.state.player_vmap
+						});
+						this.player.ima.initializeAdDisplayContainer();
+        }
+    }
 
     initVOD() {
         const content = this.props.content_url;
@@ -270,7 +301,8 @@ class Content extends React.Component {
 
     tryAgain() {
         this.setState({ error: false }, () => {
-            this.initVOD();
+            // this.initVOD();
+            this.initPlayer();
         });
     }
 
@@ -308,14 +340,16 @@ class Content extends React.Component {
                         player_url: content.data.url,
                         player_vmap: content.data[process.env.VMAP_KEY],
                         start_duration: startDuration
-                    }, () => this.initVOD());
+                    // }, () => this.initVOD());
+                    }, () => this.initPlayer());
                 })
                 .catch(() => {
                     this.setState({
                         player_url: content.data.url,
                         player_vmap: content.data[process.env.VMAP_KEY],
                         start_duration: 0
-                    }, () => this.initVOD());
+                    // }, () => this.initVOD());
+                    }, () => this.initPlayer());
                 });
 
         }
@@ -396,7 +430,15 @@ class Content extends React.Component {
                         <meta name="description" content={metadata.description} />
                     </Head>
                     <div className="player-container">
-                        <div id="app-jwplayer"></div>
+                        <div data-vjs-player>
+                        <video 
+						    playsInline
+                            style={{ 
+                                width: '100%'
+                            }}
+                            ref={ node => this.videoNode = node } 
+                            className="video-js vjs-default-skin vjs-big-play-centered"></video>
+                        </div>
                     </div>
                 </div>
             );

@@ -14,6 +14,11 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import '../../assets/scss/components/modal.scss';
 
+import videojs from 'video.js';
+import 'videojs-contrib-ads';
+import 'videojs-ima';
+import 'video.js/src/css/video-js.scss';
+
 import { exclusiveContentPlayEvent, libraryProgramTrailerPlayEvent, searchProgramTrailerPlayEvent } from '../../utils/appier';
 
 class PlayerModal extends React.Component {
@@ -26,6 +31,7 @@ class PlayerModal extends React.Component {
         };
         this.player = null;
         this.intervalFn = null;
+        this.videoNode = null;
 
         const segments = this.props.router.asPath.split(/\?/);
         this.reference = null;
@@ -34,6 +40,12 @@ class PlayerModal extends React.Component {
             if (q.ref) {
                 this.reference = q.ref;
             }
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.player) {
+            this.player.dispose();
         }
     }
 
@@ -46,7 +58,8 @@ class PlayerModal extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.open && !prevProps.open) {
-            this.setState({ error: false }, () => this.initVOD());
+            // this.setState({ error: false }, () => this.initVOD());
+            this.setState({ error: false }, () => this.initPlayer());
         }
         else if (!this.props.open && prevProps.open) {
             if (this.player) {
@@ -55,7 +68,26 @@ class PlayerModal extends React.Component {
             }
         }
     }
-    
+    initPlayer() {
+        if (this.videoNode) {
+            this.player = videojs(this.videoNode, {
+                autoplay: true,
+                controls: true,
+                muted: true,
+                sources: [{
+                    src: this.props.videoUrl,
+                    type: 'application/x-mpegURL'
+                }]
+            }, function onPlayerReady() {
+                console.log('onPlayerReady');
+            });
+
+            this.player.ima({
+                adTagUrl: this.props.vmap
+						});
+            this.player.ima.initializeAdDisplayContainer();
+        }
+    }
     initVOD() {
         this.player = window.jwplayer(this.props.playerId);
 		this.player.setup({
@@ -206,7 +238,19 @@ class PlayerModal extends React.Component {
             this.player.remove();
         }
         else {
-            playerRef = (<div id={this.props.playerId}></div>);
+            playerRef = (
+            <div>
+            <div data-vjs-player>
+                        <video 
+						    playsInline
+                            style={{ 
+                                width: '100%'
+                            }}
+                            ref={ node => this.videoNode = node } 
+                            className="video-js vjs-default-skin vjs-big-play-centered"></video>
+                    </div>
+            </div>
+            );
         }
 
         return this.state.error ? errorRef : playerRef;
