@@ -175,21 +175,21 @@ class Tv extends React.Component {
 			}
 		});
 
-		this.player.on('adImpression', () => {
-			this.setState({ ad_closed: true });
-		});
+		// this.player.on('adImpression', () => {
+		// 	this.setState({ ad_closed: true });
+		// });
 
-		this.player.on('adComplete', () => {
-			this.setState({ ad_closed: false }, () => {
-				window.googletag = window.googletag || { cmd: [] };
-				googletag.cmd.push(function () {
-					googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60], [320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
-					googletag.pubads().enableSingleRequest();
-					googletag.pubads().collapseEmptyDivs();
-					googletag.enableServices();
-				});
-			});
-		});
+		// this.player.on('adComplete', () => {
+		// 	this.setState({ ad_closed: false }, () => {
+		// 		window.googletag = window.googletag || { cmd: [] };
+		// 		googletag.cmd.push(function () {
+		// 			googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60], [320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
+		// 			googletag.pubads().enableSingleRequest();
+		// 			googletag.pubads().collapseEmptyDivs();
+		// 			googletag.enableServices();
+		// 		});
+		// 	});
+		// });
 
 		const self = this;
 		this.player.on('ready', function() {
