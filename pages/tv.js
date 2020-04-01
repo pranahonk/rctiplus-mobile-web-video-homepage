@@ -327,17 +327,17 @@ class Tv extends React.Component {
             this.player = videojs(this.videoNode, {
                 autoplay: true,
                 controls: true,
-                muted: true,
+                // muted: true,
                 sources: [{
                     src: this.state.player_url,
                     type: 'application/x-mpegURL'
                 }]
             }, function onPlayerReady() {
-                console.log('onPlayerReady', this);
+								console.log('onPlayerReady', this);
             });
 
             this.player.ima({ adTagUrl: this.state.player_vmap });
-			this.player.ima.initializeAdDisplayContainer();
+						this.player.ima.initializeAdDisplayContainer();
         }
     }
 

@@ -108,19 +108,83 @@ class Content extends React.Component {
         return true;
     }
     initPlayer() {
+        const content = this.props.content_url;
+        let genre = [];
+            for (let i = 0; i < content.data.genre.length; i++) {
+                genre.push(content.data.genre[i].name);
+            }
+        const self = this
         if (this.videoNode) {
             this.player = videojs(this.videoNode, {
                 autoplay: true,
                 controls: true,
-                muted: true,
                 sources: [{
                     src: this.state.player_url,
                     type: 'application/x-mpegURL'
                 }]
             }, function onPlayerReady() {
-                console.log('onPlayerReady', this);
+                const vm = this
+                console.log(vm)
+                console.log('onPlayerReady2', vm.currentTime());
+                // console.log(this.player.currentTime());
+                // vm.on('timeupdate', function() {
+                //     console.log(vm.currentTime())
+                // })
+                setInterval(() => {
+                    self.setState({ end_duration: vm.currentTime() });
+                    if (self.reference) {
+                        const data = self.props.context_data;
+                        if (data) {
+                            switch (self.reference) {
+                                case 'homepage_program':
+                                    programContentPlayEvent(data.id, data.title, data.content_id, data.content_title, data.type, vm.currentTime(), content.data.duration, 'mweb_homepage_program_content_play');
+                                    break;
+    
+                                case 'exclusive_program':
+                                    break;
+    
+                                case 'mylist_program':
+                                    accountMylistContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), self.props.content.meta.image_path + '593' + self.props.content.data.portrait_image, self.props.content.meta.image_path + '593' + self.props.content.data.landscape_image, vm.currentTime(), content.data.duration, 'mweb_account_mylist_content_play');
+                                    break;
+    
+                                case 'library_program':
+                                    libraryProgramContentPlayEvent(content.data.program_title, content.data.program_id, data.content_title, data.type, data.content_id, vm.currentTime(), content.data.duration, 'mweb_library_program_content_play');
+                                    break;
+    
+                                case 'search_program':
+                                    searchProgramContentPlayEvent(data.program_id, content.data.program_title, data.content_title, data.type, data.content_id, vm.currentTime(), content.data.duration, 'mweb_search_program_content_play');
+                                    break;
+    
+                                case 'homepage':
+                                    homepageContentPlayEvent(self.homepageTitle ? self.homepageTitle : 'N/A', data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), self.props.content.meta.image_path + '593' + self.props.content.data.portrait_image, self.props.content.meta.image_path + '593' + self.props.content.data.landscape_image, vm.currentTime(), content.data.duration, 'mweb_homepage_content_play');
+                                    break;
+    
+                                case 'history':
+                                    accounselftoryContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), self.props.content.meta.image_path + '593' + self.props.content.data.portrait_image, self.props.content.meta.image_path + '593' + self.props.content.data.landscape_image, vm.currentTime(), content.data.duration, 'mweb_account_history_content_play');
+                                    break;
+    
+                                case 'continue_watching':
+                                    accountContinueWatchingContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), self.props.content.meta.image_path + '593' + self.props.content.data.portrait_image, self.props.content.meta.image_path + '593' + self.props.content.data.landscape_image, vm.currentTime(), content.data.duration, 'mweb_account_continue_watching_content_play');
+                                    break;
+                            }
+                        }
+    
+                    }
+                }, 2500);
+                setInterval(() => {
+                    console.log('POST HISTORY');
+    
+                    self.props.postHistory(self.props.context_data.content_id, self.props.context_data.type, vm.currentTime())
+                        .then(response => {
+                            // console.log(response);
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                }, 10000);
             });
 
+            this.player.currentTime(this.state.start_duration);
             this.player.ima({
                 adTagUrl: this.state.player_vmap
 						});
