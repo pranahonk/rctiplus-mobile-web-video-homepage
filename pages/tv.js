@@ -333,7 +333,7 @@ class Tv extends React.Component {
 				this.player = videojs(this.videoNode, {
 					autoplay: true,
 					controls: true,
-					muted: true,
+					// muted: true,
 					sources: [{
 						src: this.state.player_url,
 						type: 'application/x-mpegURL'
@@ -391,7 +391,8 @@ class Tv extends React.Component {
 			else {
 				this.player.src(this.state.player_url);
 				this.player.ima.changeAdTag(this.state.player_vmap);
-				// this.player.ima.requestAds();
+				this.player.ima.initializeAdDisplayContainer();
+				this.player.ima.requestAds();
 
 				switch (this.state.selected_tab) {
 					case 'live':
