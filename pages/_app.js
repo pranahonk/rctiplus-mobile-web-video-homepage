@@ -70,7 +70,7 @@ export default withRedux(initStore, { debug: false })(
 
             // 4kuG@nteng
 
-            console.log('CONVIVA:', conviva);
+            // console.log('CONVIVA:', conviva);
 
             // switch (process.env.MODE) {
             //     case 'DEVELOPMENT':

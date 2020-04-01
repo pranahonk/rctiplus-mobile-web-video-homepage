@@ -378,6 +378,13 @@ class Tv extends React.Component {
 					}
 
 				});
+
+				this.player.on('error', () => {
+					this.setState({
+						error: true,
+						first_init_player: false
+					});
+				});
 				this.player.ima({ adTagUrl: this.state.player_vmap });
 				this.player.ima.initializeAdDisplayContainer();
 			}
@@ -527,6 +534,7 @@ class Tv extends React.Component {
 					console.log(error);
 					this.setState({
 						error: true,
+						first_init_player: true,
 						error_data: error.status === 200 ? error.data.status.message_client : ''
 					});
 					this.props.unsetPageLoader();
