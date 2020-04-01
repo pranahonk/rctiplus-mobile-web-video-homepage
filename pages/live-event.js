@@ -154,6 +154,10 @@ class LiveEvent extends React.Component {
 		this.props.setPageLoader();
 	}
 	componentWillUnmount() {
+		for (let key in this.state.snapshots) {
+			this.state.snapshots[key]();
+		}
+
 		if (this.player) {
 				this.player.dispose();
 		}
@@ -212,12 +216,6 @@ class LiveEvent extends React.Component {
 			return false;
 		}
 		return true;
-	}
-
-	componentWillUnmount() {
-		for (let key in this.state.snapshots) {
-			this.state.snapshots[key]();
-		}
 	}
 
 	loadChatMessages(id) {
