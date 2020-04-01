@@ -41,6 +41,7 @@ import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
 import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId } from '../utils/appier';
+import { convivaVideoJs } from '../utils/conviva';
 
 import videojs from 'video.js';
 import 'videojs-contrib-ads';
@@ -323,7 +324,12 @@ class Tv extends React.Component {
     }
     
     initPlayer() {
+		if (this.player) {
+			this.player.dispose();
+		}
+
         if (this.videoNode) {
+			const self = this;
             this.player = videojs(this.videoNode, {
                 autoplay: true,
                 controls: true,
@@ -333,7 +339,47 @@ class Tv extends React.Component {
                     type: 'application/x-mpegURL'
                 }]
             }, function onPlayerReady() {
-                console.log('onPlayerReady', this);
+				console.log('onPlayerReady', this);
+				const player = this;
+				const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
+				let convivaTracker = null;
+				
+				switch (self.state.selected_tab) {
+					case 'live':
+						const currentEpg = self.getCurrentLiveEpg();
+						if (currentEpg != null) {
+							convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
+								asset_name: assetName.toUpperCase(),
+								application_name: 'RCTI+ MWEB',
+								asset_cdn: 'Conversant',
+								version: process.env.VERSION,
+								start_session: '0',
+								player_version: process.env.PLAYER_VERSION,
+								tv_id: self.state.selected_live_event.id.toString(),
+								tv_name: assetName.toUpperCase(),
+								content_id: currentEpg.id.toString()
+							});
+							convivaTracker.createSession();
+						}
+						
+						break;
+
+					case 'catch_up_tv':
+						convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
+							asset_name: assetName.toUpperCase(),
+							application_name: 'RCTI+ MWEB',
+							asset_cdn: 'Conversant',
+							version: process.env.VERSION,
+							start_session: '0',
+							player_version: process.env.PLAYER_VERSION,
+							tv_id: self.state.selected_live_event.id.toString(),
+							tv_name: assetName.toUpperCase(),
+							content_id: self.state.selected_catchup.id
+						});
+						convivaTracker.createSession();
+						break;
+				}
+				
             });
 
             this.player.ima({ adTagUrl: this.state.player_vmap });
@@ -352,13 +398,10 @@ class Tv extends React.Component {
 				this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
 				.then(collection => {
 					let snapshots = this.state.snapshots;
-					// .orderBy('ts', 'desc').limit(3).
 					let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
 						querySnapshot.docChanges()
 							.map(change => {
-								console.log(change.doc.data().ts)
 								let chats = this.state.chats;
-								console.log(`${change.type}: ${change.doc.data().m}`);
 								if (change.type === 'added') {
 									if (!this.state.sending_chat) {
 										if (chats.length > 0) {
@@ -391,22 +434,10 @@ class Tv extends React.Component {
 										});
 									}
 								}
-
-								// if (change.type === 'removed') {
-								// 	let removed = change.doc.data();
-								// 	for (let i = 0; i < chats.length; i++) {
-								// 		if (chats[i].ts === removed.ts) {
-								// 			chats.splice(i, 1);
-								// 		}
-								// 	}
-								// 	this.setState({ chats: chats });
-								// }
 							});
 
 						firstLoadChat = false;
 					});
-					// snapshots[this.state.live_events[this.state.selected_index].id] = snapshot;
-					// this.setState({ snapshots: snapshots });
 				});
 			}
 			
@@ -749,7 +780,7 @@ class Tv extends React.Component {
 					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
                     <div data-vjs-player>
                         <video 
-												playsInline
+							playsInline
                             style={{ 
                                 minHeight: 180,
                                 width: '100%'
