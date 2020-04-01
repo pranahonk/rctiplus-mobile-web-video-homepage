@@ -93,22 +93,24 @@ class Tv extends React.Component {
 				status: false,
 				message: '',
 			},
-			ad_closed: true
+			ad_closed: true,
+			first_init_player: true
 		};
 
 		this.player = null;
 		this.currentDate = now;
 		this.props.setCatchupDate(formatDateWord(now));
 		this.props.setPageLoader();
-        this.pubAdsRefreshInterval = null;
-        this.videoNode = null;
-    }
-    
-    componentWillUnmount() {
-        if (this.player) {
-            this.player.dispose();
-        }
-    }
+		this.pubAdsRefreshInterval = null;
+		this.videoNode = null;
+		this.convivaTracker = null;
+	}
+
+	componentWillUnmount() {
+		if (this.player) {
+			this.player.dispose();
+		}
+	}
 
 	componentDidMount() {
 		this.props.getLiveEvent('on air')
@@ -205,9 +207,9 @@ class Tv extends React.Component {
 		// });
 
 		const self = this;
-		this.player.on('ready', function() {
+		this.player.on('ready', function () {
 			const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
-			switch (self.state.selected_tab) {	
+			switch (self.state.selected_tab) {
 				case 'live':
 					const currentEpg = self.getCurrentLiveEpg();
 					if (currentEpg != null) {
@@ -231,20 +233,20 @@ class Tv extends React.Component {
 
 				case 'catch_up_tv':
 					conviva.startMonitoring(this);
-						const assetMetadata = {
-							viewer_id: getUserId(),
-							application_name: 'RCTI+ MWEB',
-							asset_cdn: 'Conversant',
-							version: process.env.VERSION,
-							start_session: 0,
-							playerVersion: process.env.PLAYER_VERSION,
-							tv_id: self.state.selected_live_event.id,
-							tv_name: assetName.toUpperCase(),
-							content_id: currentEpg.id,
-							asset_name: assetName.toUpperCase()
-						};
-						console.log('FIRST FRAME CONVIVA', assetMetadata);
-						conviva.updatePlayerAssetMetadata(this, assetMetadata);
+					const assetMetadata = {
+						viewer_id: getUserId(),
+						application_name: 'RCTI+ MWEB',
+						asset_cdn: 'Conversant',
+						version: process.env.VERSION,
+						start_session: 0,
+						playerVersion: process.env.PLAYER_VERSION,
+						tv_id: self.state.selected_live_event.id,
+						tv_name: assetName.toUpperCase(),
+						content_id: currentEpg.id,
+						asset_name: assetName.toUpperCase()
+					};
+					console.log('FIRST FRAME CONVIVA', assetMetadata);
+					conviva.updatePlayerAssetMetadata(this, assetMetadata);
 					break;
 			}
 
@@ -273,7 +275,7 @@ class Tv extends React.Component {
 			}
 		});
 
-		this.player.on('mute', function() {
+		this.player.on('mute', function () {
 			let elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
 			if (elementJwplayer[0] !== undefined) {
 				if (jwplayer().getMute()) {
@@ -314,41 +316,53 @@ class Tv extends React.Component {
 			}
 		});
 
-		this.player.on('play', function() {
+		this.player.on('play', function () {
 			if (self.state.selected_tab === 'catch_up_tv') {
 				if (self.state.selected_catchup) {
 					liveTvCatchupSchedulePlay(self.state.selected_date, self.state.live_events[self.state.selected_index].id, self.state.live_events[self.state.selected_index].name, self.state.selected_catchup.title, 'mweb_livetv_catchup_schedule_play');
 				}
 			}
 		});
-    }
-    
-    initPlayer() {
-		if (this.player) {
-			this.player.dispose();
-		}
+	}
 
-        if (this.videoNode) {
-			const self = this;
-            this.player = videojs(this.videoNode, {
-                autoplay: true,
-                controls: true,
-                muted: true,
-                sources: [{
-                    src: this.state.player_url,
-                    type: 'application/x-mpegURL'
-                }]
-            }, function onPlayerReady() {
-				console.log('onPlayerReady', this);
-				const player = this;
-				const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
-				let convivaTracker = null;
-				
-				switch (self.state.selected_tab) {
-					case 'live':
-						const currentEpg = self.getCurrentLiveEpg();
-						if (currentEpg != null) {
-							convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
+	initPlayer() {
+		if (this.videoNode) {
+			const assetName = this.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : this.state.selected_live_event.channel_code;
+			if (this.state.first_init_player) {
+				const self = this;
+				this.player = videojs(this.videoNode, {
+					autoplay: true,
+					controls: true,
+					muted: true,
+					sources: [{
+						src: this.state.player_url,
+						type: 'application/x-mpegURL'
+					}]
+				}, function onPlayerReady() {
+					console.log('onPlayerReady', this);
+					const player = this;
+					switch (self.state.selected_tab) {
+						case 'live':
+							const currentEpg = self.getCurrentLiveEpg();
+							if (currentEpg != null) {
+								this.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
+									asset_name: assetName.toUpperCase(),
+									application_name: 'RCTI+ MWEB',
+									asset_cdn: 'Conversant',
+									version: process.env.VERSION,
+									start_session: '0',
+									player_version: process.env.PLAYER_VERSION,
+									tv_id: self.state.selected_live_event.id.toString(),
+									tv_name: assetName.toUpperCase(),
+									content_id: currentEpg.id.toString()
+								});
+								this.convivaTracker.createSession();
+							}
+
+							break;
+
+						case 'catch_up_tv':
+							this.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 								asset_name: assetName.toUpperCase(),
 								application_name: 'RCTI+ MWEB',
 								asset_cdn: 'Conversant',
@@ -357,35 +371,62 @@ class Tv extends React.Component {
 								player_version: process.env.PLAYER_VERSION,
 								tv_id: self.state.selected_live_event.id.toString(),
 								tv_name: assetName.toUpperCase(),
+								content_id: self.state.selected_catchup.id.toString()
+							});
+							this.convivaTracker.createSession();
+							break;
+					}
+
+				});
+				this.player.ima({ adTagUrl: this.state.player_vmap });
+				this.player.ima.initializeAdDisplayContainer();
+			}
+			else {
+				this.player.src(this.state.player_url);
+				this.player.ima.changeAdTag(this.state.player_vmap);
+				// this.player.ima.requestAds();
+
+				switch (this.state.selected_tab) {
+					case 'live':
+						const currentEpg = this.getCurrentLiveEpg();
+						if (currentEpg != null) {
+							this.convivaTracker = convivaVideoJs(assetName, this.player, true, this.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
+								asset_name: assetName.toUpperCase(),
+								application_name: 'RCTI+ MWEB',
+								asset_cdn: 'Conversant',
+								version: process.env.VERSION,
+								start_session: '0',
+								player_version: process.env.PLAYER_VERSION,
+								tv_id: this.state.selected_live_event.id.toString(),
+								tv_name: assetName.toUpperCase(),
 								content_id: currentEpg.id.toString()
 							});
-							convivaTracker.createSession();
+							this.convivaTracker.createSession();
 						}
-						
+
 						break;
 
 					case 'catch_up_tv':
-						convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
+						this.convivaTracker = convivaVideoJs(assetName, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 							asset_name: assetName.toUpperCase(),
 							application_name: 'RCTI+ MWEB',
 							asset_cdn: 'Conversant',
 							version: process.env.VERSION,
 							start_session: '0',
 							player_version: process.env.PLAYER_VERSION,
-							tv_id: self.state.selected_live_event.id.toString(),
+							tv_id: this.state.selected_live_event.id.toString(),
 							tv_name: assetName.toUpperCase(),
-							content_id: self.state.selected_catchup.id
+							content_id: this.state.selected_catchup.id.toString()
 						});
-						convivaTracker.createSession();
+						this.convivaTracker.createSession();
 						break;
 				}
-				
-            });
+			}
 
-            this.player.ima({ adTagUrl: this.state.player_vmap });
-			this.player.ima.initializeAdDisplayContainer();
-        }
-    }
+
+			this.setState({ first_init_player: false });
+		}
+	}
 
 	loadChatMessages(id) {
 		this.props.setPageLoader();
@@ -396,51 +437,51 @@ class Tv extends React.Component {
 			if (true) {
 				let firstLoadChat = true;
 				this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
-				.then(collection => {
-					let snapshots = this.state.snapshots;
-					let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
-						querySnapshot.docChanges()
-							.map(change => {
-								let chats = this.state.chats;
-								if (change.type === 'added') {
-									if (!this.state.sending_chat) {
-										if (chats.length > 0) {
-											let lastChat = chats[chats.length - 1];
-											let newChat = change.doc.data();
-											if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-												if (firstLoadChat) {
-													chats.unshift(newChat);
+					.then(collection => {
+						let snapshots = this.state.snapshots;
+						let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
+							querySnapshot.docChanges()
+								.map(change => {
+									let chats = this.state.chats;
+									if (change.type === 'added') {
+										if (!this.state.sending_chat) {
+											if (chats.length > 0) {
+												let lastChat = chats[chats.length - 1];
+												let newChat = change.doc.data();
+												if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+													if (firstLoadChat) {
+														chats.unshift(newChat);
+													}
+													else {
+														chats.push(newChat);
+													}
 												}
-												else {
-													chats.push(newChat);
-												}
-											}
-										}
-										else {
-											if (firstLoadChat) {
-												chats.unshift(change.doc.data());
 											}
 											else {
-												chats.push(change.doc.data());
+												if (firstLoadChat) {
+													chats.unshift(change.doc.data());
+												}
+												else {
+													chats.push(change.doc.data());
+												}
 											}
+
+											this.setState({ chats: chats }, () => {
+												const chatBox = document.getElementById('chat-messages');
+												chatBox.scrollTop = chatBox.scrollHeight;
+
+												const chatInput = document.getElementById('chat-input');
+												chatInput.style.height = `24px`;
+											});
 										}
-
-										this.setState({ chats: chats }, () => {
-											const chatBox = document.getElementById('chat-messages');
-											chatBox.scrollTop = chatBox.scrollHeight;
-
-											const chatInput = document.getElementById('chat-input');
-											chatInput.style.height = `24px`;
-										});
 									}
-								}
-							});
+								});
 
-						firstLoadChat = false;
+							firstLoadChat = false;
+						});
 					});
-				});
 			}
-			
+
 		});
 	}
 
@@ -472,10 +513,11 @@ class Tv extends React.Component {
 						selected_live_event: this.state.live_events[this.state.selected_index],
 						selected_live_event_url: res.data.data,
 						player_url: res.data.data.url,
-						player_vmap: res.data.data[process.env.VMAP_KEY]
+						player_vmap: res.data.data[process.env.VMAP_KEY],
+						selected_tab: 'live'
 					}, () => {
-                        // this.initVOD();
-                        this.initPlayer();
+						// this.initVOD();
+						this.initPlayer();
 						this.props.setChannelCode(this.state.selected_live_event.channel_code);
 						this.props.setCatchupDate(formatDateWord(this.currentDate));
 						this.props.unsetPageLoader();
@@ -552,7 +594,7 @@ class Tv extends React.Component {
 						player_vmap: response.data.data[process.env.VMAP_KEY],
 						selected_catchup: response.data.data,
 						error: false
-					// }, () => this.initVOD());
+						// }, () => this.initVOD());
 					}, () => this.initPlayer());
 				}
 				else {
@@ -778,16 +820,16 @@ class Tv extends React.Component {
 			playerRef = (
 				<div>
 					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
-                    <div data-vjs-player>
-                        <video 
+					<div data-vjs-player>
+						<video
 							playsInline
-                            style={{ 
-                                minHeight: 180,
-                                width: '100%'
-                            }}
-                            ref={ node => this.videoNode = node } 
-                            className="video-js vjs-default-skin vjs-big-play-centered"></video>
-                    </div>
+							style={{
+								minHeight: 180,
+								width: '100%'
+							}}
+							ref={node => this.videoNode = node}
+							className="video-js vjs-default-skin vjs-big-play-centered"></video>
+					</div>
 					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
 					{this.state.ad_closed ? null : (
 						<div className='ads_wrapper'>
