@@ -380,6 +380,14 @@ class Tv extends React.Component {
 					}
 				});
 
+				this.player.on('fullscreenchange', () => {
+					if (screen.orientation.type === 'portrait-primary') {
+						screen.orientation.lock("landscape-primary");
+					}
+					if (screen.orientation.type === 'landscape-primary') {
+						screen.orientation.lock("portrait-primary");
+					}
+				});
 				this.player.on('error', () => {
 					this.setState({
 						error: true,
