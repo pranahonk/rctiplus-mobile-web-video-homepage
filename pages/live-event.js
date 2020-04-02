@@ -39,6 +39,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { DEV_API, VISITOR_TOKEN } from '../config';
 
 import '../assets/scss/components/live-event.scss';
+import '../assets/scss/videojs.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
 import { getUserId } from '../utils/appier';
@@ -346,7 +347,8 @@ class LiveEvent extends React.Component {
 				displayCurrentQuality: true,
 			});
 			this.player.ima({
-				adTagUrl: vmap
+				adTagUrl: vmap,
+				preventLateAdStart: true 
 			});
 			this.player.ima.initializeAdDisplayContainer();
 		}
@@ -615,16 +617,19 @@ class LiveEvent extends React.Component {
 		let errorRef = (<div></div>);
 		if (this.state.error) {
 			errorRef = (
-				<div style={{
-					textAlign: 'center',
-					margin: 30
-				}}>
-					<Wrench />
-					<h5 style={{ color: '#8f8f8f' }}>
-						<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
-						<span style={{ fontSize: 12 }}>Please try again later,</span><br />
-						<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
-					</h5>
+				<div>
+					<span></span>
+					<div style={{
+						textAlign: 'center',
+						margin: 30
+					}}>
+						<Wrench />
+						<h5 style={{ color: '#8f8f8f' }}>
+							<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+							<span style={{ fontSize: 12 }}>Please try again later,</span><br />
+							<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+						</h5>
+					</div>
 				</div>
 			);
 		}
