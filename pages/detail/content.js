@@ -123,6 +123,9 @@ class Content extends React.Component {
             this.player = videojs(this.videoNode, {
                 autoplay: true,
                 controls: true,
+                fluid: true,
+                aspectratio: '16:9',
+                fill: true,
                 html5: {
                     hls: {
                       overrideNative: true,

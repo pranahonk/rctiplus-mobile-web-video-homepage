@@ -47,6 +47,9 @@ import videojs from 'video.js';
 import 'videojs-contrib-ads';
 import 'videojs-ima';
 import 'video.js/src/css/video-js.scss';
+import 'videojs-hls-quality-selector';
+import qualitySelector from 'videojs-hls-quality-selector';
+import qualityLevels from 'videojs-contrib-quality-levels';
 
 const innerHeight = require('ios-inner-height');
 
@@ -301,10 +304,13 @@ class LiveEvent extends React.Component {
 				this.loadChatMessages(id);
 				this.statusChatBlock(id);
 			}
+				videojs.registerPlugin('hlsQualitySelector', qualitySelector)
 				this.player = videojs(this.videoNode, {
 						autoplay: true,
 						controls: true,
-						muted: true,
+						fluid: true,
+						aspectratio: '16:9',
+						fill: true,
 						html5: {
 							hls: {
 								overrideNative: true,
@@ -318,10 +324,21 @@ class LiveEvent extends React.Component {
 						console.log('onPlayerReady', this);
 				});
 				this.player.play();
+				this.player.on('fullscreenchange', () => {
+					if (screen.orientation.type === 'portrait-primary') {
+							screen.orientation.lock("landscape-primary");
+					}
+					if (screen.orientation.type === 'landscape-primary') {
+							screen.orientation.lock("portrait-primary");
+					}
+				});
 				this.player.on('error', () => {
-					this.setState({
-							error: true,
-					});
+						this.setState({
+								error: true,
+						});
+				});
+				this.player.hlsQualitySelector({
+						displayCurrentQuality: true,
 				});
 				this.player.ima({
 						adTagUrl: vmap
