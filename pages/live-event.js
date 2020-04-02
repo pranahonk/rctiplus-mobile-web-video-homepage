@@ -633,7 +633,6 @@ class LiveEvent extends React.Component {
 							<video 
 							playsInline
 									style={{ 
-											minHeight: 180,
 											width: '100%'
 									}}
 									ref={ node => this.videoNode = node } 
