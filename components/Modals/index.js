@@ -18,6 +18,11 @@ import videojs from 'video.js';
 import 'videojs-contrib-ads';
 import 'videojs-ima';
 import 'video.js/src/css/video-js.scss';
+import 'videojs-hls-quality-selector';
+import qualitySelector from 'videojs-hls-quality-selector';
+import qualityLevels from 'videojs-contrib-quality-levels';
+import 'videojs-youtube';
+import 'videojs-landscape-fullscreen';
 
 import { exclusiveContentPlayEvent, libraryProgramTrailerPlayEvent, searchProgramTrailerPlayEvent } from '../../utils/appier';
 
@@ -64,24 +69,50 @@ class PlayerModal extends React.Component {
         else if (!this.props.open && prevProps.open) {
             if (this.player) {
                 clearInterval(this.intervalFn);
-                this.player.remove();
+                // this.player.remove();
+                this.player.dispose();
             }
         }
     }
     initPlayer() {
         if (this.videoNode) {
+            videojs.registerPlugin('hlsQualitySelector', qualitySelector)
             this.player = videojs(this.videoNode, {
                 autoplay: true,
                 controls: true,
-                muted: true,
+                html5: {
+                    hls: {
+                      overrideNative: true,
+                    },
+                },
                 sources: [{
                     src: this.props.videoUrl,
-                    type: 'application/x-mpegURL'
-                }]
+                    type: 'application/x-mpegURL',
+                }],
             }, function onPlayerReady() {
-                console.log('onPlayerReady');
+                const vm = this
+                console.log('onPlayerReady', vm.landscapeFullscreen);
+                vm.landscapeFullscreen({
+                        fullscreen: {
+                          enterOnRotate: true,
+                          alwaysInLandscapeMode: true,
+                          iOS: true,
+                    },
+                });
             });
-
+            this.player.on('play', function() {
+                this.player.controlBar.volumePanel.show();
+                this.player.controlBar.volumePanel.volumeControl.show();
+                this.player.controlBar.volumePanel.muteToggle.show();
+            });
+            this.player.on('error', () => {
+                this.setState({
+                    error: true,
+                });
+            });
+            this.player.hlsQualitySelector({
+                displayCurrentQuality: true,
+            }); 
             this.player.ima({
                 adTagUrl: this.props.vmap
 						});
@@ -219,6 +250,7 @@ class PlayerModal extends React.Component {
         if (this.state.error) {
             errorRef = (
                 <div className="wrapper-content" style={{ margin: 0 }}>
+                    .
                     <div style={{ 
                         textAlign: 'center',
                         position: 'fixed', 
@@ -235,7 +267,7 @@ class PlayerModal extends React.Component {
 					</div>
                 </div>
             );
-            this.player.remove();
+            // this.player.remove();
         }
         else {
             playerRef = (
@@ -244,10 +276,11 @@ class PlayerModal extends React.Component {
                         <video 
 						    playsInline
                             style={{ 
-                                width: '100%'
+                                width: '100%',
                             }}
                             ref={ node => this.videoNode = node } 
-                            className="video-js vjs-default-skin vjs-big-play-centered"></video>
+                            className="video-js vjs-default-skin vjs-big-play-centered"
+                            ></video>
                     </div>
             </div>
             );

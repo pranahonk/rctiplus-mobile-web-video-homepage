@@ -305,6 +305,11 @@ class LiveEvent extends React.Component {
 						autoplay: true,
 						controls: true,
 						muted: true,
+						html5: {
+							hls: {
+								overrideNative: true,
+							},
+						},
 						sources: [{
 								src: url,
 								type: 'application/x-mpegURL'
@@ -312,7 +317,12 @@ class LiveEvent extends React.Component {
 				}, function onPlayerReady() {
 						console.log('onPlayerReady', this);
 				});
-
+				this.player.play();
+				this.player.on('error', () => {
+					this.setState({
+							error: true,
+					});
+				});
 				this.player.ima({
 						adTagUrl: vmap
 				});
@@ -580,8 +590,9 @@ class LiveEvent extends React.Component {
 
 	render() {
 		let playerRef = (<div></div>);
+		let errorRef = (<div></div>);
 		if (this.state.error) {
-			playerRef = (
+			errorRef = (
 				<div style={{
 					textAlign: 'center',
 					margin: 30
@@ -617,7 +628,9 @@ class LiveEvent extends React.Component {
 					<meta name="keywords" content={`keywords`} />
 				</Head>
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
-					{playerRef}
+					{console.log(this.state)}
+					{/* { this.state.error ? errorRef : playerRef } */}
+					{(this.state.error) ? errorRef : playerRef}
 					<div className="title-wrap">
 						{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
 						{/* Live Chat Plus {this.props.selected_event && this.props.selected_event.data ? formatDateWord(new Date(this.props.selected_event.data.start_date.replace(' ', 'T'))) : ''} */}
