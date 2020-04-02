@@ -82,7 +82,7 @@ class PlayerModal extends React.Component {
                 controls: true,
                 html5: {
                     hls: {
-                      overrideNative: true,
+                        overrideNative: true,
                     },
                 },
                 sources: [{
@@ -94,9 +94,9 @@ class PlayerModal extends React.Component {
                 console.log('onPlayerReady', vm.landscapeFullscreen);
                 vm.landscapeFullscreen({
                         fullscreen: {
-                          enterOnRotate: true,
-                          alwaysInLandscapeMode: true,
-                          iOS: true,
+                        enterOnRotate: true,
+                        alwaysInLandscapeMode: true,
+                        iOS: true,
                     },
                 });
             });
@@ -110,12 +110,8 @@ class PlayerModal extends React.Component {
                     error: true,
                 });
             });
-            this.player.hlsQualitySelector({
-                displayCurrentQuality: true,
-            }); 
-            this.player.ima({
-                adTagUrl: this.props.vmap
-						});
+            this.player.hlsQualitySelector({ displayCurrentQuality: true }); 
+            this.player.ima({ adTagUrl: this.props.vmap });
             this.player.ima.initializeAdDisplayContainer();
         }
     }
