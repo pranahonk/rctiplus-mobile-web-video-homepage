@@ -524,7 +524,7 @@ class Detail extends React.Component {
             }
             
         }
-        Router.push(`/programs/${this.props.router.query.id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/photo/${photo.id}/${photo.title.replace(/ +/g, '-').toLowerCase()}`);
+        Router.push(`/programs/${this.props.router.query.id}/${this.props.initial.data.title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}/photo/${photo.id}/${photo.title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}`);
     }
 
     addToMyList(id, type, data = null) {
@@ -897,7 +897,7 @@ class Detail extends React.Component {
             }
             
         }
-		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').toLowerCase()}${this.reference ? `?ref=${this.reference}_program${this.reference && this.homepageTitle ? `&homepage_title=${this.homepageTitle}` : ''}` : ''}`);
+		Router.push(`/programs/${cw.program_id}/${this.props.initial.data.title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}/${type}/${cw.id}/${cw.title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}${this.reference ? `?ref=${this.reference}_program${this.reference && this.homepageTitle ? `&homepage_title=${this.homepageTitle}` : ''}` : ''}`);
     }
     
     getImageFileName(url) {

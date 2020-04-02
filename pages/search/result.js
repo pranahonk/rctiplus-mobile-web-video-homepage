@@ -56,10 +56,10 @@ class Result extends React.Component {
         searchProgramClicked(data.title, data.id, type, 'mweb_search_program_clicked');
 		switch (type) {
 			case 'program':                
-				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}?ref=search`);
+				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}?ref=search`);
 				break;
 			default:
-				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').toLowerCase()}/${type}/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}?ref=search`);
+				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}/${type}/${data.id}/${data.title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}?ref=search`);
 				break;
 		}
 	}
