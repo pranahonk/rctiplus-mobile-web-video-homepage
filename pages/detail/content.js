@@ -115,13 +115,19 @@ class Content extends React.Component {
             }
         const self = this
         if (this.videoNode) {
+            console.log(this.state.player_url)
             this.player = videojs(this.videoNode, {
                 autoplay: true,
                 controls: true,
+                html5: {
+                    hls: {
+                      overrideNative: true,
+                    },
+                },
                 sources: [{
                     src: this.state.player_url,
-                    type: 'application/x-mpegURL'
-                }]
+                    type: 'application/x-mpegURL',
+                }],
             }, function onPlayerReady() {
                 const vm = this
                 console.log(vm)
@@ -183,12 +189,15 @@ class Content extends React.Component {
                         });
                 }, 10000);
             });
-
+            // this.player.src({
+            //     src: this.state.player_url,
+            //     type: 'application/x-mpegURL'
+            // })
             this.player.currentTime(this.state.start_duration);
             this.player.ima({
                 adTagUrl: this.state.player_vmap
 						});
-						this.player.ima.initializeAdDisplayContainer();
+						// this.player.ima.initializeAdDisplayContainer();
         }
     }
 
