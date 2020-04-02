@@ -90,7 +90,7 @@ class PlayerModal extends React.Component {
                 }],
             }, function onPlayerReady() {
                 const vm = this
-                console.log('onPlayerReady', vm);
+                console.log('onPlayerReady modal', vm);
             });
             this.player.on('fullscreenchange', () => {
                 if (screen.orientation.type === 'portrait-primary') {
