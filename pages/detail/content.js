@@ -22,6 +22,11 @@ import videojs from 'video.js';
 import 'videojs-contrib-ads';
 import 'videojs-ima';
 import 'video.js/src/css/video-js.scss';
+import 'videojs-hls-quality-selector';
+import qualitySelector from 'videojs-hls-quality-selector';
+import qualityLevels from 'videojs-contrib-quality-levels';
+import 'videojs-youtube';
+import 'videojs-landscape-fullscreen';
 
 import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
 import { getCookie } from '../../utils/cookie';
@@ -115,7 +120,7 @@ class Content extends React.Component {
             }
         const self = this
         if (this.videoNode) {
-            console.log(this.state.player_url)
+            videojs.registerPlugin('hlsQualitySelector', qualitySelector)
             this.player = videojs(this.videoNode, {
                 autoplay: true,
                 controls: true,
@@ -130,12 +135,14 @@ class Content extends React.Component {
                 }],
             }, function onPlayerReady() {
                 const vm = this
-                console.log(vm)
-                console.log('onPlayerReady2', vm.currentTime());
-                // console.log(this.player.currentTime());
-                // vm.on('timeupdate', function() {
-                //     console.log(vm.currentTime())
-                // })
+                console.log('onPlayerReady2', vm);
+                vm.landscapeFullscreen({
+                    fullscreen: {
+                      enterOnRotate: true,
+                      alwaysInLandscapeMode: true,
+                      iOS: true,
+                    },
+                });
                 setInterval(() => {
                     self.setState({ end_duration: vm.currentTime() });
                     if (self.reference) {
@@ -189,15 +196,20 @@ class Content extends React.Component {
                         });
                 }, 10000);
             });
-            // this.player.src({
-            //     src: this.state.player_url,
-            //     type: 'application/x-mpegURL'
-            // })
+            this.player.play();
+            this.player.on('error', () => {
+                this.setState({
+                    error: true,
+                });
+            });
+            this.player.hlsQualitySelector({
+                displayCurrentQuality: true,
+            }); 
             this.player.currentTime(this.state.start_duration);
             this.player.ima({
                 adTagUrl: this.state.player_vmap
 						});
-						// this.player.ima.initializeAdDisplayContainer();
+            // this.player.ima.initializeAdDisplayContainer();
         }
     }
 
