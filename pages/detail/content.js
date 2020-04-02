@@ -199,7 +199,6 @@ class Content extends React.Component {
                     screen.orientation.lock("portrait-primary");
                 }
             });
-            this.player.play();
             this.player.on('error', () => {
                 this.setState({
                     error: true,
