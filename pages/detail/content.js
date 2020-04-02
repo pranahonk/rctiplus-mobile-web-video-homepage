@@ -191,6 +191,7 @@ class Content extends React.Component {
                         });
                 }, 10000);
             });
+            
             this.player.on('fullscreenchange', () => {
                 if (screen.orientation.type === 'portrait-primary') {
                     screen.orientation.lock("landscape-primary");
@@ -199,6 +200,14 @@ class Content extends React.Component {
                     screen.orientation.lock("portrait-primary");
                 }
             });
+            this.player.ready(function() {
+                const vm = this
+                const promise = vm.play();
+                if(promise !== undefined) {
+                    promise.then(() => console.log('play'))
+                    .catch((err) => console.log('err'))
+                }
+            })
             this.player.on('error', () => {
                 this.setState({
                     error: true,

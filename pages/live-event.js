@@ -39,6 +39,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { DEV_API, VISITOR_TOKEN } from '../config';
 
 import '../assets/scss/components/live-event.scss';
+import '../assets/scss/videojs.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
 import { getUserId } from '../utils/appier';
@@ -322,8 +323,16 @@ class LiveEvent extends React.Component {
 						}]
 				}, function onPlayerReady() {
 						console.log('onPlayerReady', this);
+
 				});
-				this.player.play();
+				this.player.ready(function() {
+					const vm = this
+					const promise = vm.play();
+					if(promise !== undefined) {
+						promise.then(() => console.log('play'))
+						.catch((err) => console.log('err'))
+					}
+				})
 				this.player.on('fullscreenchange', () => {
 					if (screen.orientation.type === 'portrait-primary') {
 							screen.orientation.lock("landscape-primary");
@@ -341,7 +350,8 @@ class LiveEvent extends React.Component {
 						displayCurrentQuality: true,
 				});
 				this.player.ima({
-						adTagUrl: vmap
+						adTagUrl: vmap,
+						preventLateAdStart: true 
 				});
 				this.player.ima.initializeAdDisplayContainer();
 		}
