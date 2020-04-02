@@ -266,17 +266,17 @@ class Explores extends React.Component {
 		libraryProgramClicked(data.title, data.id, data.type ? data.type : 'program', 'mweb_library_program_clicked');
 
 		if (!data.type) {
-			Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}?ref=library`);
+			Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}?ref=library`);
 			return;
 		}
 
 		switch (data.type) {
 			case 'program':
 				
-				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}?ref=library`);
+				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}?ref=library`);
 				break;
 			default:
-				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').toLowerCase()}/${data.type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}?ref=library`);
+				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}/${data.type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}?ref=library`);
 				break;
 		}
 	}
