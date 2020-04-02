@@ -610,30 +610,35 @@ class LiveEvent extends React.Component {
 		let errorRef = (<div></div>);
 		if (this.state.error) {
 			errorRef = (
-				<div style={{
-					textAlign: 'center',
-					margin: 30
-				}}>
-					<Wrench />
-					<h5 style={{ color: '#8f8f8f' }}>
-						<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
-						<span style={{ fontSize: 12 }}>Please try again later,</span><br />
-						<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
-					</h5>
+				<div>
+					<span></span>
+					<div style={{
+						textAlign: 'center',
+						margin: 30
+					}}>
+						<Wrench />
+						<h5 style={{ color: '#8f8f8f' }}>
+							<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+							<span style={{ fontSize: 12 }}>Please try again later,</span><br />
+							<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+						</h5>
+					</div>
 				</div>
 			);
 		}
 		else {
 			playerRef = (
-			<div data-vjs-player>
-						<video 
-						playsInline
-								style={{ 
-										minHeight: 180,
-										width: '100%'
-								}}
-								ref={ node => this.videoNode = node } 
-								className="video-js vjs-default-skin vjs-big-play-centered"></video>
+				<div>
+					<div data-vjs-player>
+							<video 
+							playsInline
+									style={{ 
+											minHeight: 180,
+											width: '100%'
+									}}
+									ref={ node => this.videoNode = node } 
+									className="video-js vjs-default-skin vjs-big-play-centered"></video>
+					</div>
 				</div>
 			);
 		}
