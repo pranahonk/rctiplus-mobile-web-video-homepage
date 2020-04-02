@@ -26,7 +26,6 @@ import 'videojs-hls-quality-selector';
 import qualitySelector from 'videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
 import 'videojs-youtube';
-// import 'videojs-landscape-fullscreen';
 
 import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
 import { getCookie } from '../../utils/cookie';
@@ -136,13 +135,6 @@ class Content extends React.Component {
             }, function onPlayerReady() {
                 const vm = this
                 console.log('onPlayerReady2', vm);
-                // vm.landscapeFullscreen({
-                //     fullscreen: {
-                //       enterOnRotate: true,
-                //       alwaysInLandscapeMode: true,
-                //       iOS: true,
-                //     },
-                // });
                 setInterval(() => {
                     self.setState({ end_duration: vm.currentTime() });
                     if (self.reference) {
@@ -195,6 +187,14 @@ class Content extends React.Component {
                             console.log(error);
                         });
                 }, 10000);
+            });
+            this.player.on('fullscreenchange', () => {
+                if (screen.orientation.type === 'portrait-primary') {
+                    screen.orientation.lock("landscape-primary");
+                }
+                if (screen.orientation.type === 'landscape-primary') {
+                    screen.orientation.lock("portrait-primary");
+                }
             });
             this.player.play();
             this.player.on('error', () => {

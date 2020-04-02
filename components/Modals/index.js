@@ -22,7 +22,6 @@ import 'videojs-hls-quality-selector';
 import qualitySelector from 'videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
 import 'videojs-youtube';
-import 'videojs-landscape-fullscreen';
 
 import { exclusiveContentPlayEvent, libraryProgramTrailerPlayEvent, searchProgramTrailerPlayEvent } from '../../utils/appier';
 
@@ -91,19 +90,15 @@ class PlayerModal extends React.Component {
                 }],
             }, function onPlayerReady() {
                 const vm = this
-                console.log('onPlayerReady', vm.landscapeFullscreen);
-                vm.landscapeFullscreen({
-                        fullscreen: {
-                          enterOnRotate: true,
-                          alwaysInLandscapeMode: true,
-                          iOS: true,
-                    },
-                });
+                console.log('onPlayerReady', vm);
             });
-            this.player.on('play', function() {
-                this.player.controlBar.volumePanel.show();
-                this.player.controlBar.volumePanel.volumeControl.show();
-                this.player.controlBar.volumePanel.muteToggle.show();
+            this.player.on('fullscreenchange', () => {
+                if (screen.orientation.type === 'portrait-primary') {
+                    screen.orientation.lock("landscape-primary");
+                }
+                if (screen.orientation.type === 'landscape-primary') {
+                    screen.orientation.lock("portrait-primary");
+                }
             });
             this.player.on('error', () => {
                 this.setState({
