@@ -48,6 +48,9 @@ import videojs from 'video.js';
 import 'videojs-contrib-ads';
 import 'videojs-ima';
 import 'video.js/src/css/video-js.scss';
+import 'videojs-hls-quality-selector';
+import qualitySelector from 'videojs-hls-quality-selector';
+import qualityLevels from 'videojs-contrib-quality-levels';
 
 const innerHeight = require('ios-inner-height');
 
@@ -88,21 +91,6 @@ class LiveEvent extends React.Component {
 		let isMobile = Boolean(userAgent.match(
 			/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
 		));
-
-		if (isMobile) {
-			// if (/windows phone/i.test(userAgent)) {
-			// 	return "Windows Phone";
-			// }
-
-			// if (/android/i.test(userAgent)) {
-			// 	return "Android";
-			// }
-
-			// // iOS detection from: http://stackoverflow.com/a/9039885/177710
-			// if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-			// 	return "iOS";
-			// }
-		}
 
 		const data = await Promise.all([
 			res[0].json(),
@@ -305,18 +293,21 @@ class LiveEvent extends React.Component {
 				this.statusChatBlock(id);
 			}
 			const self = this;
+			videojs.registerPlugin('hlsQualitySelector', qualitySelector);
 			this.player = videojs(this.videoNode, {
 				autoplay: true,
 				controls: true,
-				muted: true,
+				fluid: true,
+				aspectratio: '16:9',
+				fill: true,
 				html5: {
 					hls: {
 						overrideNative: true,
 					},
 				},
 				sources: [{
-					src: url,
-					type: 'application/x-mpegURL'
+						src: url,
+						type: 'application/x-mpegURL'
 				}]
 			}, function onPlayerReady() {
 				console.log('onPlayerReady', this);
@@ -336,16 +327,6 @@ class LiveEvent extends React.Component {
 				});
 				this.convivaTracker.createSession();
 
-				// playerType: 'JWPlayer',
-				// content_type: type,
-				// content_id: id,
-				// program_name: name,
-				// application_name: 'RCTI+ MWEB',
-				// asset_cdn: 'Conversant',
-				// version: process.env.VERSION,
-				// playerVersion: process.env.PLAYER_VERSION,
-				// asset_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming',
-				// content_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming'
 			});
 			this.player.play();
 			this.player.on('fullscreenchange', () => {
@@ -360,6 +341,9 @@ class LiveEvent extends React.Component {
 				this.setState({
 					error: true,
 				});
+			});
+			this.player.hlsQualitySelector({
+				displayCurrentQuality: true,
 			});
 			this.player.ima({
 				adTagUrl: vmap

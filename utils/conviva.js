@@ -1,4 +1,5 @@
 import { getUserId } from './appier';
+import { setCookie } from './cookie';
 
 export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName, tags) => {
     return {
@@ -24,8 +25,12 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
 
             const streamer = new Conviva.ConvivaVideojsStreamerProxy(this.player);
             this.sessionId = Conviva.LivePass.createSession(streamer, convivaMetadata);
+            console.log('CONVIVA SESSION CREATED WITH ID', this.sessionId);
+            setCookie('CONVIVA_SESSION_ID', this.sessionId);
+            return this.sessionId;
         },
         cleanUpSession: function() {
+            console.log('CLEAN UP SESSION: ' + this.sessionId);
             if (this.sessionId != null) {
                 Conviva.LivePass.cleanupSession(this.sessionId);
                 this.sessionId = null;

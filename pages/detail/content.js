@@ -25,12 +25,12 @@ import 'video.js/src/css/video-js.scss';
 import 'videojs-hls-quality-selector';
 import qualitySelector from 'videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
-import 'videojs-youtube';
-import 'videojs-landscape-fullscreen';
+// import 'videojs-youtube';
 
 import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
 import { getCookie } from '../../utils/cookie';
 import { programContentPlayEvent, homepageContentPlayEvent, accountHistoryContentPlayEvent, accountMylistContentPlayEvent, accountContinueWatchingContentPlayEvent, libraryProgramContentPlayEvent, searchProgramContentPlayEvent, accountVideoProgress } from '../../utils/appier';
+import { convivaVideoJs } from '../../utils/conviva';
 
 class Content extends React.Component {
 
@@ -84,6 +84,7 @@ class Content extends React.Component {
         };
         this.player = null;
         this.videoNode = null;
+        this.convivaTracker = null;
 
         const segments = this.props.router.asPath.split(/\?/);
         this.reference = null;
@@ -100,7 +101,7 @@ class Content extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this.player) {
+        if (this.player && this.videoNode) {
             this.player.dispose();
         }
     }
@@ -115,18 +116,21 @@ class Content extends React.Component {
     initPlayer() {
         const content = this.props.content_url;
         let genre = [];
-            for (let i = 0; i < content.data.genre.length; i++) {
-                genre.push(content.data.genre[i].name);
-            }
+        for (let i = 0; i < content.data.genre.length; i++) {
+            genre.push(content.data.genre[i].name);
+        }
         const self = this
         if (this.videoNode) {
             videojs.registerPlugin('hlsQualitySelector', qualitySelector)
             this.player = videojs(this.videoNode, {
                 autoplay: true,
                 controls: true,
+                fluid: true,
+                aspectratio: '16:9',
+                fill: true,
                 html5: {
                     hls: {
-                      overrideNative: true,
+                        overrideNative: true,
                     },
                 },
                 sources: [{
@@ -136,13 +140,6 @@ class Content extends React.Component {
             }, function onPlayerReady() {
                 const vm = this
                 console.log('onPlayerReady2', vm);
-                vm.landscapeFullscreen({
-                    fullscreen: {
-                      enterOnRotate: true,
-                      alwaysInLandscapeMode: true,
-                      iOS: true,
-                    },
-                });
                 setInterval(() => {
                     self.setState({ end_duration: vm.currentTime() });
                     if (self.reference) {
@@ -185,18 +182,48 @@ class Content extends React.Component {
                     }
                 }, 2500);
                 setInterval(() => {
-                    console.log('POST HISTORY');
+                    if (vm) {
+                        console.log('POST HISTORY');
     
-                    self.props.postHistory(self.props.context_data.content_id, self.props.context_data.type, vm.currentTime())
-                        .then(response => {
-                            // console.log(response);
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        });
+                        self.props.postHistory(self.props.context_data.content_id, self.props.context_data.type, vm.currentTime())
+                            .then(response => {
+                                // console.log(response);
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                    }
+                    
                 }, 10000);
+
+                setTimeout(() => {
+                    self.player.dispose();
+                }, 1000);
+
+                const player = this;
+                const assetName = content && content.data ? content.data.content_name : 'N/A';
+                self.convivaTracker = convivaVideoJs(assetName, player, true, this.state.player_url, assetName.toUpperCase(), {
+					asset_name: assetName.toUpperCase(),
+					application_name: 'RCTI+ MWEB',
+					player_type: 'VideoJS',
+					content_id: (self.props.context_data.content_id ? self.props.context_data.content_id : 'N/A').toString(),
+					program_name: assetName,
+					version: process.env.VERSION,
+					playerVersion: process.env.PLAYER_VERSION,
+                    content_name: assetName.toUpperCase(),
+                    start_session: self.state.start_duration.toString()
+                });
+                self.convivaTracker.createSession();
             });
-            this.player.play();
+            this.player.on('fullscreenchange', () => {
+                if (screen.orientation.type === 'portrait-primary') {
+                    screen.orientation.lock("landscape-primary");
+                }
+                if (screen.orientation.type === 'landscape-primary') {
+                    screen.orientation.lock("portrait-primary");
+                }
+            });
+            // this.player.play();
             this.player.on('error', () => {
                 this.setState({
                     error: true,
@@ -205,11 +232,11 @@ class Content extends React.Component {
             this.player.hlsQualitySelector({
                 displayCurrentQuality: true,
             }); 
+            
             this.player.currentTime(this.state.start_duration);
-            this.player.ima({
-                adTagUrl: this.state.player_vmap
-						});
-            // this.player.ima.initializeAdDisplayContainer();
+            
+            this.player.ima({ adTagUrl: this.state.player_vmap });
+            this.player.ima.initializeAdDisplayContainer();
         }
     }
 
@@ -411,6 +438,12 @@ class Content extends React.Component {
     }
 
     async componentDidMount() {
+        Router.events.on("routeChangeStart", () => {
+            if (this.player && this.videoNode) {
+                this.player.dispose();
+            }
+        });
+
         const content = this.props.content_url;
         if (Object.keys(content).length > 0 && content.status.code === 0) {
             this.props.getContinueWatchingByContentId(this.props.context_data.content_id, this.props.context_data.type)
@@ -516,13 +549,13 @@ class Content extends React.Component {
                     </Head>
                     <div className="player-container">
                         <div data-vjs-player>
-                        <video 
-						    playsInline
-                            style={{ 
-                                width: '100%'
-                            }}
-                            ref={ node => this.videoNode = node } 
-                            className="video-js vjs-default-skin vjs-big-play-centered"></video>
+                            <video 
+                                playsInline
+                                style={{ 
+                                    width: '100%'
+                                }}
+                                ref={ node => this.videoNode = node } 
+                                className="video-js vjs-default-skin vjs-big-play-centered"></video>
                         </div>
                     </div>
                 </div>
