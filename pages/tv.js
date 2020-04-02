@@ -328,11 +328,13 @@ class Tv extends React.Component {
 	initPlayer() {
 		if (this.videoNode) {
 			const assetName = this.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : this.state.selected_live_event.channel_code;
+			console.log(this.state.player_url);
 			if (this.state.first_init_player) {
 				const self = this;
 				this.player = videojs(this.videoNode, {
 					autoplay: true,
 					controls: true,
+					fluid: true,
 					// muted: true,
 					sources: [{
 						src: this.state.player_url,
@@ -376,19 +378,23 @@ class Tv extends React.Component {
 							this.convivaTracker.createSession();
 							break;
 					}
-
 				});
 
 				this.player.on('error', () => {
 					this.setState({
 						error: true,
-						first_init_player: false
+						first_init_player: true
 					});
 				});
-				this.player.ima({ adTagUrl: this.state.player_vmap });
+				this.player.ima({ 
+					adTagUrl: this.state.player_vmap,
+					preventLateAdStart: true 
+				});
 				this.player.ima.initializeAdDisplayContainer();
+				this.setState({ first_init_player: false });
 			}
 			else {
+				
 				this.player.src(this.state.player_url);
 				this.player.ima.changeAdTag(this.state.player_vmap);
 				this.player.ima.initializeAdDisplayContainer();
@@ -430,9 +436,6 @@ class Tv extends React.Component {
 						break;
 				}
 			}
-
-
-			this.setState({ first_init_player: false });
 		}
 	}
 
@@ -522,10 +525,16 @@ class Tv extends React.Component {
 						selected_live_event_url: res.data.data,
 						player_url: res.data.data.url,
 						player_vmap: res.data.data[process.env.VMAP_KEY],
-						selected_tab: 'live'
+						selected_tab: 'live',
+						error: false
 					}, () => {
 						// this.initVOD();
-						this.initPlayer();
+						if (!this.props.context_data.epg_id) {
+							this.initPlayer();
+						}
+						else if (first === true && this.props.context_data.epg_id) {
+							this.selectCatchup(this.props.context_data.epg_id, 'url');
+						}
 						this.props.setChannelCode(this.state.selected_live_event.channel_code);
 						this.props.setCatchupDate(formatDateWord(this.currentDate));
 						this.props.unsetPageLoader();
@@ -577,10 +586,6 @@ class Tv extends React.Component {
 					console.log(error);
 					this.props.unsetPageLoader();
 				});
-
-			if (first === true && this.props.context_data.epg_id) {
-				this.selectCatchup(this.props.context_data.epg_id, 'url');
-			}
 		});
 
 
@@ -833,7 +838,7 @@ class Tv extends React.Component {
 						<video
 							playsInline
 							style={{
-								minHeight: 180,
+								// minHeight: 180,
 								width: '100%'
 							}}
 							ref={node => this.videoNode = node}
@@ -965,7 +970,7 @@ class Tv extends React.Component {
 									{this.props.chats.catchup.map(c => (
 										<Row key={c.id} className={'program-item'}>
 											<Col xs={9} onClick={this.selectCatchup.bind(this, c.id)}>
-												<Link href={`/tv?channel=${this.state.channel_code}&id=${c.id}&title=${c.title}`} as={`/tv/${this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`}>
+												<Link href={`/tv?channel=${this.state.channel_code == 'globaltv' ? 'gtv' : this.state.channel_code}&id=${c.id}&title=${c.title}`} as={`/tv/${this.state.channel_code == 'globaltv' ? 'gtv' : this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`}>
 													<a style={{ textDecoration: 'none', color: 'white' }}>
 														<div className="title">{c.title}</div>
 														<div className="subtitle">{c.s} - {c.e}</div>
