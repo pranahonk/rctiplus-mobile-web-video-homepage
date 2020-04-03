@@ -621,7 +621,7 @@ class LiveEvent extends React.Component {
 		if (this.state.error) {
 			errorRef = (
 				<div>
-					<span></span>
+					<span>.</span>
 					<div style={{
 						textAlign: 'center',
 						margin: 30
