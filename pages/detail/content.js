@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import fetch from 'isomorphic-unfetch';
 import queryString from 'query-string';
-import { isIOS } from 'react-device-detect';
+import { isIOS, isAndroid } from 'react-device-detect';
 
 import initialize from '../../utils/initialize';
 import contentActions from '../../redux/actions/contentActions';
@@ -128,6 +128,7 @@ class Content extends React.Component {
             this.player = videojs(this.videoNode, {
                 autoplay: true,
                 controls: true,
+                mute: true,
                 fluid: true,
                 aspectratio: '16:9',
                 fill: true,
@@ -224,6 +225,29 @@ class Content extends React.Component {
             });
             this.player.ready(function() {
                 const vm = this
+                if(isIOS) {
+                    vm.muted(true)
+                    const wrapElement = document.getElementsByClassName('video-js');
+                    const elementCreateWrapper = document.createElement('btn');
+                    const elementMuteIcon = document.createElement('span');
+                    elementCreateWrapper.classList.add('jwplayer-vol-off');
+                    elementCreateWrapper.innerText = 'Tap to unmute ';
+                    wrapElement[0].appendChild(elementCreateWrapper);
+                    elementCreateWrapper.appendChild(elementMuteIcon);
+                    elementCreateWrapper.addEventListener('click', function() {
+                        console.log('mute video')
+                        if (elementCreateWrapper === null) {
+                            vm.muted(false);
+                            elementCreateWrapper.classList.add('jwplayer-mute');
+                            elementCreateWrapper.classList.remove('jwplayer-full');
+                        } 
+                        else {
+                            vm.muted(true);
+                            elementCreateWrapper.classList.add('jwplayer-full');
+                            elementCreateWrapper.classList.remove('jwplayer-mute');
+                        }
+                    });
+                }
                 const promise = vm.play();
                 if(promise !== undefined) {
                     promise.then(() => console.log('autoplay'))
