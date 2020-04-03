@@ -255,16 +255,24 @@ class Content extends React.Component {
                 back: 10
             });
 
-            this.player.on('pause', () => {
-                console.log('paused');
+            this.player.on('useractive', () => {
                 const seekButtons = document.getElementsByClassName('vjs-seek-button');
                 for (let i = 0; i < seekButtons.length; i++) {
                     seekButtons[i].style.display = 'block';
                 }
             });
 
+            this.player.on('userinactive', () => {
+                if (!this.player.paused()) {
+                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                    for (let i = 0; i < seekButtons.length; i++) {
+                        seekButtons[i].style.display = 'none';
+                    }
+                }
+                
+            });
+
             this.player.on('play', () => {
-                console.log('play');
                 const seekButtons = document.getElementsByClassName('vjs-seek-button');
                 for (let i = 0; i < seekButtons.length; i++) {
                     seekButtons[i].style.display = 'none';
