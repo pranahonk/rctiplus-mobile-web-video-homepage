@@ -80,6 +80,7 @@ class PlayerModal extends React.Component {
                 this.player.dispose();
             }
         }
+
     }
 
     initPlayer() {
@@ -302,9 +303,17 @@ class PlayerModal extends React.Component {
                         }}>
                         <Wrench/>
                         <h5 style={{ color: '#8f8f8f' }}>
-                            <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
-                            <span style={{ fontSize: 12 }}>Please try again later,</span><br/>
-                            <span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+                            {this.props.status && this.props.status.code === 12 ? (
+                                <div>
+                                    <span style={{ fontSize: 12 }}>{this.props.status.message_client}</span>
+                                </div>
+                            ) : (
+                                <div>
+                                    <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+                                    <span style={{ fontSize: 12 }}>Please try again later,</span><br />
+                                    <span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+                                </div>
+                            )}
                         </h5>
 					</div>
                 </div>

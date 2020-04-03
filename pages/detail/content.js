@@ -51,7 +51,7 @@ class Content extends React.Component {
         const error_code = res.statusCode > 200 ? res.statusCode : false;
         const data = await res.json();
         if (error_code || data.status.code != 0) {
-            return { initial: false, content_url: {}, content: {} };
+            return { initial: false, content_url: {}, content: {}, status: data.status };
         }
 
         const res_2 = await fetch(`${DEV_API}/api/v1/${ctx.query.type}/${ctx.query.content_id}`, {
@@ -64,13 +64,14 @@ class Content extends React.Component {
         const error_code_2 = res_2.statusCode > 200 ? res_2.statusCode : false;
         const data_2 = await res_2.json();
         if (error_code_2 || data_2.status.code != 0) {
-            return { initial: false, content_url: {}, content: {} };
+            return { initial: false, content_url: {}, content: {}, status: data.status };
         }
 
         return {
             context_data: ctx.query,
             content_url: data,
-            content: data_2
+            content: data_2,
+            status: false
         };
     }
 
@@ -116,6 +117,16 @@ class Content extends React.Component {
 
         return true;
     }
+
+    setSkipButtonCentered() {
+        const playerHeight = document.getElementById('vjs_video_3').clientHeight;
+        const seekButtons = document.getElementsByClassName('vjs-seek-button');
+        for (let i = 0; i < seekButtons.length; i++) {
+            seekButtons[i].style.bottom = (Math.floor(playerHeight / 2)) + 'px';
+        }
+    }
+
+
     initPlayer() {
         const content = this.props.content_url;
         let genre = [];
@@ -267,6 +278,27 @@ class Content extends React.Component {
                 forward: 10,
                 back: 10
             });
+
+            this.player.on('pause', () => {
+                console.log('paused');
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'block';
+                }
+            });
+
+            this.player.on('play', () => {
+                console.log('play');
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'none';
+                }
+            });
+
+            this.setSkipButtonCentered();
+            window.onresize = () => {
+                this.setSkipButtonCentered();
+            };
 
             this.player.currentTime(this.state.start_duration);
             
@@ -566,9 +598,17 @@ class Content extends React.Component {
                     }}>
                         <Wrench />
                         <h5 style={{ color: '#8f8f8f' }}>
-                            <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
-                            <span style={{ fontSize: 12 }}>Please try again later,</span><br />
-                            <span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+                            {this.props.status && this.props.status.code === 12 ? (
+                                <div>
+                                    <span style={{ fontSize: 12 }}>{this.props.status.message_client}</span>
+                                </div>
+                            ) : (
+                                <div>
+                                    <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+                                    <span style={{ fontSize: 12 }}>Please try again later,</span><br />
+                                    <span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+                                </div>
+                            )}
                         </h5>
                     </div>
                 </div>

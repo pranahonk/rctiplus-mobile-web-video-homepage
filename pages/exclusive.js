@@ -63,7 +63,8 @@ class Exclusive extends React.Component {
 			hashtags: [],
 			category: this.props.category,
 			selected_program: null,
-			vmap: ''
+			vmap: '',
+			status: false
 		};
 
 		this.player = null;
@@ -235,6 +236,7 @@ class Exclusive extends React.Component {
 			exclusiveContentEvent(program.type, program.id, program.title, program.program_title, program.genre, this.state.meta.image_path + this.state.resolution + program.portrait_image, this.state.meta.image_path + this.state.resolution + program.landscape_image, 'mweb_exclusive_content_clicked');
 
 			let data = null;
+			let status = false;
 			try {
 				switch (program.type) {
 					case 'episode':
@@ -256,9 +258,13 @@ class Exclusive extends React.Component {
 			}
 			catch (e) {
 				console.log(e);
+				if (e.data && e.data.status) {
+					status = e.data.status;
+				}
 			}			
 
 			let vmap = '';
+			
 			if (data && data.status === 200 && data.data.status.code === 0) {
 				video_url = data.data.data.url;
 				vmap = data.data.data[process.env.VMAP_KEY];
@@ -268,7 +274,8 @@ class Exclusive extends React.Component {
 				modal: !this.state.modal,
 				trailer_url: video_url,
 				vmap: vmap, 
-				selected_program: program 
+				selected_program: program ,
+				status: status
 			});
 		}
 	}
@@ -345,6 +352,7 @@ class Exclusive extends React.Component {
 					player={this.player}
 					vmap={this.state.vmap}
 					meta={this.state.meta}
+					status={this.state.status}
 					videoUrl={this.state.trailer_url} />
 
 				<ActionSheet
