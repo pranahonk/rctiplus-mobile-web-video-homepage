@@ -21,7 +21,10 @@ import 'video.js/src/css/video-js.scss';
 import 'videojs-hls-quality-selector';
 import qualitySelector from 'videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
-import 'videojs-youtube';
+// import 'videojs-youtube';
+
+import 'videojs-seek-buttons';
+import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
 
 import { exclusiveContentPlayEvent, libraryProgramTrailerPlayEvent, searchProgramTrailerPlayEvent } from '../../utils/appier';
 import { convivaVideoJs } from '../../utils/conviva';
@@ -145,6 +148,12 @@ class PlayerModal extends React.Component {
                     error: true,
                 });
             });
+
+            this.player.seekButtons({
+                forward: 10,
+                back: 10
+            });
+
             this.player.hlsQualitySelector({ displayCurrentQuality: true }); 
             this.player.ima({ adTagUrl: this.props.vmap });
             this.player.ima.initializeAdDisplayContainer();

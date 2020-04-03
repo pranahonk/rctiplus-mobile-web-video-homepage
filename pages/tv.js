@@ -97,7 +97,8 @@ class Tv extends React.Component {
 				message: '',
 			},
 			ad_closed: true,
-			first_init_player: true
+			first_init_player: true,
+			status: false
 		};
 
 		this.player = null;
@@ -333,6 +334,12 @@ class Tv extends React.Component {
 	}
 
 	initPlayer() {
+		
+		// status code 12 means the video is geoblock-ed
+		if (this.state.status && this.state.status.code === 12) {
+			return;
+		}
+
 		if (this.videoNode) {
 			const assetName = this.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : this.state.selected_live_event.channel_code;
 			if (this.state.first_init_player) {
@@ -550,7 +557,8 @@ class Tv extends React.Component {
 						player_url: res.data.data.url,
 						player_vmap: res.data.data[process.env.VMAP_KEY],
 						selected_tab: 'live',
-						error: false
+						error: false,
+						status: res.data.status
 					}, () => {
 						// this.initVOD();
 						if (!this.props.context_data.epg_id) {
@@ -569,7 +577,8 @@ class Tv extends React.Component {
 					this.setState({
 						error: true,
 						first_init_player: true,
-						error_data: error.status === 200 ? error.data.status.message_client : ''
+						error_data: error.status === 200 ? error.data.status.message_client : '',
+						status: error.data.status
 					});
 					this.props.unsetPageLoader();
 				});
@@ -847,9 +856,18 @@ class Tv extends React.Component {
 				}}>
 					<Wrench />
 					<h5 style={{ color: '#8f8f8f' }}>
-						<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
-						<span style={{ fontSize: 12 }}>Please try again later,</span><br />
-						<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+						{this.state.status && this.state.status.code === 12 ? (
+							<div>
+								<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
+							</div>
+						) : (
+							<div>
+								<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+								<span style={{ fontSize: 12 }}>Please try again later,</span><br />
+								<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+							</div>
+						)}
+						
 					</h5>
 				</div>
 			);

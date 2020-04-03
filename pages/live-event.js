@@ -123,7 +123,8 @@ class LiveEvent extends React.Component {
 			chats: [],
 			live_events: [],
 			meta: {},
-			resolution: 300
+			resolution: 300,
+			status: this.props.selected_event_url ? this.props.selected_event_url.status : false
 		};
 
 		const segments = this.props.router.asPath.split(/\?/);
@@ -144,6 +145,7 @@ class LiveEvent extends React.Component {
 		this.convivaTracker = null;
 		this.props.setPageLoader();
 	}
+	
 	componentWillUnmount() {
 		for (let key in this.state.snapshots) {
 			this.state.snapshots[key]();
@@ -307,8 +309,8 @@ class LiveEvent extends React.Component {
 					},
 				},
 				sources: [{
-						src: url,
-						type: 'application/x-mpegURL'
+					src: url,
+					type: 'application/x-mpegURL'
 				}]
 			}, function onPlayerReady() {
 				console.log('onPlayerReady', this);
@@ -329,14 +331,14 @@ class LiveEvent extends React.Component {
 				this.convivaTracker.createSession();
 
 			});
-			this.player.ready(function() {
+			this.player.ready(function () {
 				const vm = this
 				const promise = vm.play();
-				if(promise !== undefined) {
-						promise.then(() => console.log('play'))
+				if (promise !== undefined) {
+					promise.then(() => console.log('play'))
 						.catch((err) => console.log('err'))
 				}
-		})
+			})
 			this.player.on('fullscreenchange', () => {
 				if (screen.orientation.type === 'portrait-primary') {
 					screen.orientation.lock("landscape-primary");
@@ -356,7 +358,7 @@ class LiveEvent extends React.Component {
 			});
 			this.player.ima({
 				adTagUrl: vmap,
-				preventLateAdStart: true 
+				preventLateAdStart: true
 			});
 			this.player.ima.initializeAdDisplayContainer();
 		}
@@ -625,43 +627,51 @@ class LiveEvent extends React.Component {
 		let errorRef = (<div></div>);
 
 		if (this.state.error) {
-				errorRef = (
-						<div>
-							<span></span>
-								<div style={{ 
-									textAlign: 'center',
-									margin: 30,
-										}}>
-										<Wrench/>
-										<h5 style={{ color: '#8f8f8f' }}>
-												<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
-												<span style={{ fontSize: 12 }}>Please try again later,</span><br/>
-												<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
-										</h5>
-			</div>
-						</div>
-				);
-				// this.player.remove();
+			errorRef = (
+				<div>
+					<span></span>
+					<div style={{
+						textAlign: 'center',
+						margin: 30,
+					}}>
+						<Wrench />
+						<h5 style={{ color: '#8f8f8f' }}>
+							{this.state.status && this.state.status.code === 12 ? (
+								<div>
+									<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
+								</div>
+							) : (
+								<div>
+									<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+									<span style={{ fontSize: 12 }}>Please try again later,</span><br />
+									<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+								</div>
+							)}
+						</h5>
+					</div>
+				</div>
+			);
+			// this.player.remove();
 		}
 		else {
-				playerRef = (
+			playerRef = (
 				<div>
-						<div data-vjs-player>
-								<video 
-										playsInline
-										style={{ 
-												width: '100%',
-										}}
-										ref={ node => this.videoNode = node } 
-										className="video-js vjs-default-skin vjs-big-play-centered"
-										></video>
-						</div>
+					<div data-vjs-player>
+						<video
+							playsInline
+							style={{
+								width: '100%',
+							}}
+							ref={node => this.videoNode = node}
+							className="video-js vjs-default-skin vjs-big-play-centered"
+						></video>
+					</div>
 				</div>
-				);
+			);
 		}
 
 		return this.state.error ? errorRef : playerRef;
-}
+	}
 
 	render() {
 		return (
