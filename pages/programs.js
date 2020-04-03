@@ -375,6 +375,22 @@ class Detail extends React.Component {
                         meta: response.data.meta,
                         tabs: [],
                         response_data: response.data.data
+                    }, () => {
+                        const { episode, extra, clip, photo } = this.state.response_data;
+                        const tabsObj = {
+                            'Episode': episode,
+                            'Extra': extra,
+                            'Clip': clip,
+                            'Photo': photo
+                        };
+                        let idx = 1;
+                        for (let key in tabsObj) {
+                            if (tabsObj[key] > 0) {
+                                this.setState({ active_tab: idx.toString() });
+                                break;
+                            }
+                            idx++;
+                        }
                     });
 
                     this.props.getLikeHistory(this.props.router.query.id, 'program')
