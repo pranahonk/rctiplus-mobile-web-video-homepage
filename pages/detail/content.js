@@ -196,10 +196,6 @@ class Content extends React.Component {
                     
                 }, 10000);
 
-                setTimeout(() => {
-                    self.player.dispose();
-                }, 1000);
-
                 const player = this;
                 const assetName = content && content.data ? content.data.content_name : 'N/A';
                 self.convivaTracker = convivaVideoJs(assetName, player, true, this.state.player_url, assetName.toUpperCase(), {
@@ -241,7 +237,7 @@ class Content extends React.Component {
                 displayCurrentQuality: true,
             }); 
             
-            this.player.currentTime(this.state.start_duration);
+            // this.player.currentTime(this.state.start_duration);
             
             this.player.ima({ adTagUrl: this.state.player_vmap });
             this.player.ima.initializeAdDisplayContainer();
