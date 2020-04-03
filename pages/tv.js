@@ -51,6 +51,9 @@ import 'videojs-hls-quality-selector';
 import qualitySelector from 'videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
 
+import 'videojs-seek-buttons';
+import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
+
 const innerHeight = require('ios-inner-height');
 
 class Tv extends React.Component {
@@ -333,6 +336,30 @@ class Tv extends React.Component {
 		});
 	}
 
+	removeSkipButton() {
+		if (this.player) {
+			const playerChildNodes = this.player.el().childNodes;
+			for (let i = 0; i < playerChildNodes.length; i++) {
+				if (playerChildNodes[i].className == 'vjs-control-bar') {
+					let vjsControlBarChilds = playerChildNodes[i].childNodes;
+					for (let j = 0; j < vjsControlBarChilds.length; j++) {
+						if (vjsControlBarChilds[j].className == 'vjs-seek-button skip-back skip-10 vjs-control vjs-button' || vjsControlBarChilds[j].className == 'vjs-seek-button skip-forward skip-10 vjs-control vjs-button') {
+							vjsControlBarChilds[j].parentNode.removeChild(vjsControlBarChilds[j]);
+						}
+					}
+
+					vjsControlBarChilds = playerChildNodes[i].childNodes;
+					for (let j = 0; j < vjsControlBarChilds.length; j++) {
+						if (vjsControlBarChilds[j].className == 'vjs-seek-button skip-back skip-10 vjs-control vjs-button' || vjsControlBarChilds[j].className == 'vjs-seek-button skip-forward skip-10 vjs-control vjs-button') {
+							vjsControlBarChilds[j].parentNode.removeChild(vjsControlBarChilds[j]);
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
+
 	initPlayer() {
 		
 		// status code 12 means the video is geoblock-ed
@@ -365,6 +392,7 @@ class Tv extends React.Component {
 					const player = this;
 					switch (self.state.selected_tab) {
 						case 'live':
+							this.removeSkipButton();
 							const currentEpg = self.getCurrentLiveEpg();
 							if (currentEpg != null) {
 								self.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
@@ -384,6 +412,11 @@ class Tv extends React.Component {
 							break;
 
 						case 'catch_up_tv':
+							player.seekButtons({
+								forward: 10,
+								back: 10
+							});
+
 							self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 								asset_name: assetName.toUpperCase(),
 								application_name: 'RCTI+ MWEB',
@@ -415,12 +448,14 @@ class Tv extends React.Component {
 						first_init_player: true
 					});
 				});
+				
+				this.player.hlsQualitySelector({
+					displayCurrentQuality: true,
+				});
+
 				this.player.ima({ 
 					adTagUrl: this.state.player_vmap,
 					preventLateAdStart: true 
-				});
-				this.player.hlsQualitySelector({
-					displayCurrentQuality: true,
 				});
 				this.player.ima.initializeAdDisplayContainer();
 				this.setState({ first_init_player: false });
@@ -433,6 +468,7 @@ class Tv extends React.Component {
 
 				switch (this.state.selected_tab) {
 					case 'live':
+						this.removeSkipButton();
 						const currentEpg = this.getCurrentLiveEpg();
 						if (currentEpg != null) {
 							this.convivaTracker = convivaVideoJs(assetName, this.player, true, this.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
@@ -452,6 +488,10 @@ class Tv extends React.Component {
 						break;
 
 					case 'catch_up_tv':
+						this.player.seekButtons({
+							forward: 10,
+							back: 10
+						});
 						this.convivaTracker = convivaVideoJs(assetName, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 							asset_name: assetName.toUpperCase(),
 							application_name: 'RCTI+ MWEB',
