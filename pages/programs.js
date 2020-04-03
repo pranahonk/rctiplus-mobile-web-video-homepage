@@ -1169,7 +1169,7 @@ class Detail extends React.Component {
                                             <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
-                                            <p onClick={() => this.link(e, 'extra')} className="item-title">S{e.season ? e.season : ''}:E{e.episode ? e.episode : ''} {e.title}</p>
+                                            <p onClick={() => this.link(e, 'extra')} className="item-title">{e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
                                                     {this.state.bookmarked_extra.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'extra', e)} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'extra', e)} />)}
@@ -1195,7 +1195,7 @@ class Detail extends React.Component {
                                             <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
-                                            <p onClick={() => this.link(e, 'clip')} className="item-title">S{e.season ? e.season : ''}:E{e.episode ? e.episode : ''} {e.title}</p>
+                                            <p onClick={() => this.link(e, 'clip')} className="item-title">{e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
                                                     {this.state.bookmarked_clip.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'clip', e)} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'clip', e)} />)}
