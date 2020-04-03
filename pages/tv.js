@@ -51,6 +51,9 @@ import 'videojs-hls-quality-selector';
 import qualitySelector from 'videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
 
+import 'videojs-seek-buttons';
+import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
+
 const innerHeight = require('ios-inner-height');
 
 class Tv extends React.Component {
@@ -97,7 +100,8 @@ class Tv extends React.Component {
 				message: '',
 			},
 			ad_closed: true,
-			first_init_player: true
+			first_init_player: true,
+			status: false
 		};
 
 		this.player = null;
@@ -332,7 +336,37 @@ class Tv extends React.Component {
 		});
 	}
 
+	removeSkipButton() {
+		if (this.player) {
+			const playerChildNodes = this.player.el().childNodes;
+			for (let i = 0; i < playerChildNodes.length; i++) {
+				if (playerChildNodes[i].className == 'vjs-control-bar') {
+					let vjsControlBarChilds = playerChildNodes[i].childNodes;
+					for (let j = 0; j < vjsControlBarChilds.length; j++) {
+						if (vjsControlBarChilds[j].className == 'vjs-seek-button skip-back skip-10 vjs-control vjs-button' || vjsControlBarChilds[j].className == 'vjs-seek-button skip-forward skip-10 vjs-control vjs-button') {
+							vjsControlBarChilds[j].parentNode.removeChild(vjsControlBarChilds[j]);
+						}
+					}
+
+					vjsControlBarChilds = playerChildNodes[i].childNodes;
+					for (let j = 0; j < vjsControlBarChilds.length; j++) {
+						if (vjsControlBarChilds[j].className == 'vjs-seek-button skip-back skip-10 vjs-control vjs-button' || vjsControlBarChilds[j].className == 'vjs-seek-button skip-forward skip-10 vjs-control vjs-button') {
+							vjsControlBarChilds[j].parentNode.removeChild(vjsControlBarChilds[j]);
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
+
 	initPlayer() {
+		
+		// status code 12 means the video is geoblock-ed
+		if (this.state.status && this.state.status.code === 12) {
+			return;
+		}
+
 		if (this.videoNode) {
 			const assetName = this.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : this.state.selected_live_event.channel_code;
 			if (this.state.first_init_player) {
@@ -358,6 +392,7 @@ class Tv extends React.Component {
 					const player = this;
 					switch (self.state.selected_tab) {
 						case 'live':
+							this.removeSkipButton();
 							const currentEpg = self.getCurrentLiveEpg();
 							if (currentEpg != null) {
 								self.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
@@ -377,6 +412,11 @@ class Tv extends React.Component {
 							break;
 
 						case 'catch_up_tv':
+							player.seekButtons({
+								forward: 10,
+								back: 10
+							});
+
 							self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 								asset_name: assetName.toUpperCase(),
 								application_name: 'RCTI+ MWEB',
@@ -408,12 +448,14 @@ class Tv extends React.Component {
 						first_init_player: true
 					});
 				});
+				
+				this.player.hlsQualitySelector({
+					displayCurrentQuality: true,
+				});
+
 				this.player.ima({ 
 					adTagUrl: this.state.player_vmap,
 					preventLateAdStart: true 
-				});
-				this.player.hlsQualitySelector({
-					displayCurrentQuality: true,
 				});
 				this.player.ima.initializeAdDisplayContainer();
 				this.setState({ first_init_player: false });
@@ -426,6 +468,7 @@ class Tv extends React.Component {
 
 				switch (this.state.selected_tab) {
 					case 'live':
+						this.removeSkipButton();
 						const currentEpg = this.getCurrentLiveEpg();
 						if (currentEpg != null) {
 							this.convivaTracker = convivaVideoJs(assetName, this.player, true, this.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
@@ -445,6 +488,10 @@ class Tv extends React.Component {
 						break;
 
 					case 'catch_up_tv':
+						this.player.seekButtons({
+							forward: 10,
+							back: 10
+						});
 						this.convivaTracker = convivaVideoJs(assetName, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 							asset_name: assetName.toUpperCase(),
 							application_name: 'RCTI+ MWEB',
@@ -550,7 +597,8 @@ class Tv extends React.Component {
 						player_url: res.data.data.url,
 						player_vmap: res.data.data[process.env.VMAP_KEY],
 						selected_tab: 'live',
-						error: false
+						error: false,
+						status: res.data.status
 					}, () => {
 						// this.initVOD();
 						if (!this.props.context_data.epg_id) {
@@ -569,7 +617,8 @@ class Tv extends React.Component {
 					this.setState({
 						error: true,
 						first_init_player: true,
-						error_data: error.status === 200 ? error.data.status.message_client : ''
+						error_data: error.status === 200 ? error.data.status.message_client : '',
+						status: error.data.status
 					});
 					this.props.unsetPageLoader();
 				});
@@ -847,9 +896,18 @@ class Tv extends React.Component {
 				}}>
 					<Wrench />
 					<h5 style={{ color: '#8f8f8f' }}>
-						<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
-						<span style={{ fontSize: 12 }}>Please try again later,</span><br />
-						<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+						{this.state.status && this.state.status.code === 12 ? (
+							<div>
+								<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
+							</div>
+						) : (
+							<div>
+								<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+								<span style={{ fontSize: 12 }}>Please try again later,</span><br />
+								<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+							</div>
+						)}
+						
 					</h5>
 				</div>
 			);

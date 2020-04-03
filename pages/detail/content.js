@@ -27,6 +27,9 @@ import qualitySelector from 'videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
 // import 'videojs-youtube';
 
+import 'videojs-seek-buttons';
+import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
+
 import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
 import { getCookie } from '../../utils/cookie';
 import { programContentPlayEvent, homepageContentPlayEvent, accountHistoryContentPlayEvent, accountMylistContentPlayEvent, accountContinueWatchingContentPlayEvent, libraryProgramContentPlayEvent, searchProgramContentPlayEvent, accountVideoProgress } from '../../utils/appier';
@@ -136,7 +139,7 @@ class Content extends React.Component {
                 sources: [{
                     src: this.state.player_url,
                     type: 'application/x-mpegURL',
-                }],
+                }]
             }, function onPlayerReady() {
                 const vm = this
                 console.log('onPlayerReady2', vm);
@@ -196,10 +199,6 @@ class Content extends React.Component {
                     
                 }, 10000);
 
-                // setTimeout(() => {
-                //     self.player.dispose();
-                // }, 1000);
-
                 const player = this;
                 const assetName = content && content.data ? content.data.content_name : 'N/A';
                 self.convivaTracker = convivaVideoJs(assetName, player, true, this.state.player_url, assetName.toUpperCase(), {
@@ -238,8 +237,13 @@ class Content extends React.Component {
             });
             this.player.hlsQualitySelector({
                 displayCurrentQuality: true,
-            }); 
+            });
             
+            this.player.seekButtons({
+                forward: 10,
+                back: 10
+            });
+
             this.player.currentTime(this.state.start_duration);
             
             this.player.ima({ adTagUrl: this.state.player_vmap });
