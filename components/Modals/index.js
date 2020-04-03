@@ -149,12 +149,13 @@ class PlayerModal extends React.Component {
                 });
             });
 
+            this.player.hlsQualitySelector({ displayCurrentQuality: true }); 
+
             this.player.seekButtons({
                 forward: 10,
                 back: 10
             });
 
-            this.player.hlsQualitySelector({ displayCurrentQuality: true }); 
             this.player.ima({ adTagUrl: this.props.vmap });
             this.player.ima.initializeAdDisplayContainer();
         }
