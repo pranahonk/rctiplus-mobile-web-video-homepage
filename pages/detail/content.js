@@ -196,9 +196,9 @@ class Content extends React.Component {
                     
                 }, 10000);
 
-                setTimeout(() => {
-                    self.player.dispose();
-                }, 1000);
+                // setTimeout(() => {
+                //     self.player.dispose();
+                // }, 1000);
 
                 const player = this;
                 const assetName = content && content.data ? content.data.content_name : 'N/A';
@@ -215,7 +215,6 @@ class Content extends React.Component {
                 });
                 self.convivaTracker.createSession();
             });
-            
             this.player.on('fullscreenchange', () => {
                 if (screen.orientation.type === 'portrait-primary') {
                     screen.orientation.lock("landscape-primary");
@@ -228,7 +227,7 @@ class Content extends React.Component {
                 const vm = this
                 const promise = vm.play();
                 if(promise !== undefined) {
-                    promise.then(() => console.log('play'))
+                    promise.then(() => console.log('autoplay'))
                     .catch((err) => console.log('err'))
                 }
             })
