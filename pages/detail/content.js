@@ -235,7 +235,11 @@ class Content extends React.Component {
                 }
             });
             this.player.ready(function() {
-                const vm = this
+                const vm = this;
+                vm.on('error', e => {
+                    console.log(e);
+                });
+
                 if(isIOS) {
                     vm.muted(true)
                     const wrapElement = document.getElementsByClassName('video-js');
@@ -265,7 +269,8 @@ class Content extends React.Component {
                     .catch((err) => console.log('err'))
                 }
             })
-            this.player.on('error', () => {
+            this.player.on('error', (e) => {
+                console.log(e);
                 this.setState({
                     error: true,
                 });
@@ -310,8 +315,8 @@ class Content extends React.Component {
 
             this.player.currentTime(this.state.start_duration);
             
-            this.player.ima({ adTagUrl: this.state.player_vmap });
-            this.player.ima.initializeAdDisplayContainer();
+            // this.player.ima({ adTagUrl: this.state.player_vmap });
+            // this.player.ima.initializeAdDisplayContainer();
         }
     }
 
