@@ -329,7 +329,14 @@ class LiveEvent extends React.Component {
 				this.convivaTracker.createSession();
 
 			});
-			this.player.play();
+			this.player.ready(function() {
+				const vm = this
+				const promise = vm.play();
+				if(promise !== undefined) {
+						promise.then(() => console.log('play'))
+						.catch((err) => console.log('err'))
+				}
+		})
 			this.player.on('fullscreenchange', () => {
 				if (screen.orientation.type === 'portrait-primary') {
 					screen.orientation.lock("landscape-primary");
@@ -339,6 +346,7 @@ class LiveEvent extends React.Component {
 				}
 			});
 			this.player.on('error', () => {
+				console.log('err')
 				this.setState({
 					error: true,
 				});
@@ -612,13 +620,55 @@ class LiveEvent extends React.Component {
 
 	}
 
+	renderPlayer() {
+		let playerRef = (<div></div>);
+		let errorRef = (<div></div>);
+
+		if (this.state.error) {
+				errorRef = (
+						<div>
+							<span></span>
+								<div style={{ 
+									textAlign: 'center',
+									margin: 30,
+										}}>
+										<Wrench/>
+										<h5 style={{ color: '#8f8f8f' }}>
+												<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br/>
+												<span style={{ fontSize: 12 }}>Please try again later,</span><br/>
+												<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+										</h5>
+			</div>
+						</div>
+				);
+				// this.player.remove();
+		}
+		else {
+				playerRef = (
+				<div>
+						<div data-vjs-player>
+								<video 
+										playsInline
+										style={{ 
+												width: '100%',
+										}}
+										ref={ node => this.videoNode = node } 
+										className="video-js vjs-default-skin vjs-big-play-centered"
+										></video>
+						</div>
+				</div>
+				);
+		}
+
+		return this.state.error ? errorRef : playerRef;
+}
+
 	render() {
 		let playerRef = (<div></div>);
 		let errorRef = (<div></div>);
 		if (this.state.error) {
 			errorRef = (
 				<div>
-					.
 					<div style={{
 						textAlign: 'center',
 						margin: 30
@@ -656,7 +706,8 @@ class LiveEvent extends React.Component {
 				</Head>
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{/* { this.state.error ? errorRef : playerRef } */}
-					{(this.state.error) ? errorRef : playerRef}
+					{/* {(this.state.error) ? errorRef : playerRef} */}
+					{this.renderPlayer()}
 					<div className="title-wrap">
 						{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
 						{/* Live Chat Plus {this.props.selected_event && this.props.selected_event.data ? formatDateWord(new Date(this.props.selected_event.data.start_date.replace(' ', 'T'))) : ''} */}
