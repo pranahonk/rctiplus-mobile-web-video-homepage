@@ -1166,13 +1166,13 @@ class Detail extends React.Component {
                                             <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
-                                            <p onClick={() => this.link(e, 'extra')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
+                                            <p onClick={() => this.link(e, 'extra')} className="item-title">S{e.season ? e.season : ''}:E{e.episode ? e.episode : ''} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
                                                     {this.state.bookmarked_extra.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'extra', e)} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'extra', e)} />)}
                                                 </div>
                                                 <div className="action-button">
-                                                    <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'extra', e)} className="action-icon" />
+                                                    <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + (e.season ? e.season : '') + ':E' + (e.episode ? e.episode : '') + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'extra', e)} className="action-icon" />
                                                 </div>
                                                 <div className="action-button">
                                                     <GetAppIcon onClick={this.showOpenPlaystoreAlert.bind(this, e, 'extra')} className="action-icon" />
@@ -1192,13 +1192,13 @@ class Detail extends React.Component {
                                             <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
-                                            <p onClick={() => this.link(e, 'clip')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
+                                            <p onClick={() => this.link(e, 'clip')} className="item-title">S{e.season ? e.season : ''}:E{e.episode ? e.episode : ''} {e.title}</p>
                                             <div className="item-action-buttons">
                                                 <div className="action-button">
                                                     {this.state.bookmarked_clip.findIndex(b => b.id == e.id) !== -1 ? (<PlaylistAddCheckIcon className="action-icon action-icon__playlist-check" onClick={this.deleteFromMyList.bind(this, e.id, 'clip', e)} />) : (<PlaylistAddIcon className="action-icon" onClick={this.addToMyList.bind(this, e.id, 'clip', e)} />)}
                                                 </div>
                                                 <div className="action-button">
-                                                    <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + e.season + ':E' + e.episode + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'clip', e)} className="action-icon" />
+                                                    <ShareIcon onClick={this.toggleActionSheet.bind(this, 'S' + (e.season ? e.season : '') + ':E' + (e.episode ? e.episode : '') + ' ' + e.title, BASE_URL + this.props.router.asPath, ['rcti'], 'clip', e)} className="action-icon" />
                                                 </div>
                                                 <div className="action-button">
                                                     <GetAppIcon onClick={this.showOpenPlaystoreAlert.bind(this, e, 'clip')} className="action-icon" />
