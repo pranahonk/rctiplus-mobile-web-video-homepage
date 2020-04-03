@@ -1078,11 +1078,14 @@ class Detail extends React.Component {
                         unloader={<img className="content-thumbnail-image" src="/static/placeholders/placeholder_potrait.png"/>}
 						loader={<img className="content-thumbnail-image" src="/static/placeholders/placeholder_potrait.png"/>}/>
                     </div>
-                    <div className="watch-button-container">
-                        <Button onClick={this.toggle.bind(this)} className="watch-button">
-                            <PlayCircleFilledIcon /> Watch Trailer
-                        </Button>
-                    </div>
+                    {this.state.trailer_url ? (
+                        <div className="watch-button-container">
+                            <Button onClick={this.toggle.bind(this)} className="watch-button">
+                                <PlayCircleFilledIcon /> Watch Trailer
+                            </Button>
+                        </div>
+                    ) : null}
+                    
                     <h1 className="content-title-detail">{this.state.title}</h1>
                     <p className="content-genre">| {this.state.release_date} |
                         &nbsp;{this.state.genre.map((g, i) => {
