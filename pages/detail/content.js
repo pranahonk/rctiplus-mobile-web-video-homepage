@@ -117,6 +117,16 @@ class Content extends React.Component {
 
         return true;
     }
+
+    setSkipButtonCentered() {
+        const playerHeight = document.getElementById('vjs_video_3').clientHeight;
+        const seekButtons = document.getElementsByClassName('vjs-seek-button');
+        for (let i = 0; i < seekButtons.length; i++) {
+            seekButtons[i].style.bottom = (Math.floor(playerHeight / 2)) + 'px';
+        }
+    }
+
+
     initPlayer() {
         const content = this.props.content_url;
         let genre = [];
@@ -244,6 +254,27 @@ class Content extends React.Component {
                 forward: 10,
                 back: 10
             });
+
+            this.player.on('pause', () => {
+                console.log('paused');
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'block';
+                }
+            });
+
+            this.player.on('play', () => {
+                console.log('play');
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'none';
+                }
+            });
+
+            this.setSkipButtonCentered();
+            window.onresize = () => {
+                this.setSkipButtonCentered();
+            };
 
             this.player.currentTime(this.state.start_duration);
             
