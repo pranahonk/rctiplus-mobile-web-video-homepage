@@ -214,7 +214,6 @@ class Content extends React.Component {
                 });
                 self.convivaTracker.createSession();
             });
-            
             this.player.on('fullscreenchange', () => {
                 if (screen.orientation.type === 'portrait-primary') {
                     screen.orientation.lock("landscape-primary");
@@ -227,7 +226,7 @@ class Content extends React.Component {
                 const vm = this
                 const promise = vm.play();
                 if(promise !== undefined) {
-                    promise.then(() => console.log('play'))
+                    promise.then(() => console.log('autoplay'))
                     .catch((err) => console.log('err'))
                 }
             })
