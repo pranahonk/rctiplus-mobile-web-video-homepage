@@ -392,7 +392,7 @@ class Tv extends React.Component {
 					const player = this;
 					switch (self.state.selected_tab) {
 						case 'live':
-							this.removeSkipButton();
+							self.removeSkipButton();
 							const currentEpg = self.getCurrentLiveEpg();
 							if (currentEpg != null) {
 								self.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
