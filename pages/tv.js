@@ -47,6 +47,9 @@ import videojs from 'video.js';
 import 'videojs-contrib-ads';
 import 'videojs-ima';
 import 'video.js/src/css/video-js.scss';
+import 'videojs-hls-quality-selector';
+import qualitySelector from 'videojs-hls-quality-selector';
+import qualityLevels from 'videojs-contrib-quality-levels';
 
 const innerHeight = require('ios-inner-height');
 
@@ -109,6 +112,10 @@ class Tv extends React.Component {
 	componentWillUnmount() {
 		if (this.player) {
 			this.player.dispose();
+		}
+		console.log(this.convivaTracker);
+		if (this.convivaTracker) {
+			this.convivaTracker.cleanUpSession();
 		}
 	}
 
@@ -328,14 +335,20 @@ class Tv extends React.Component {
 	initPlayer() {
 		if (this.videoNode) {
 			const assetName = this.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : this.state.selected_live_event.channel_code;
-			console.log(this.state.player_url);
 			if (this.state.first_init_player) {
 				const self = this;
+				videojs.registerPlugin('hlsQualitySelector', qualitySelector);
 				this.player = videojs(this.videoNode, {
 					autoplay: true,
 					controls: true,
 					fluid: true,
-					// muted: true,
+					aspectratio: '16:9',
+					fill: true,
+					html5: {
+						hls: {
+							overrideNative: true,
+						},
+					},
 					sources: [{
 						src: this.state.player_url,
 						type: 'application/x-mpegURL'
@@ -347,7 +360,7 @@ class Tv extends React.Component {
 						case 'live':
 							const currentEpg = self.getCurrentLiveEpg();
 							if (currentEpg != null) {
-								this.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
+								self.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
 									asset_name: assetName.toUpperCase(),
 									application_name: 'RCTI+ MWEB',
 									asset_cdn: 'Conversant',
@@ -358,13 +371,13 @@ class Tv extends React.Component {
 									tv_name: assetName.toUpperCase(),
 									content_id: currentEpg.id.toString()
 								});
-								this.convivaTracker.createSession();
+								self.convivaTracker.createSession();
 							}
 
 							break;
 
 						case 'catch_up_tv':
-							this.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
+							self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 								asset_name: assetName.toUpperCase(),
 								application_name: 'RCTI+ MWEB',
 								asset_cdn: 'Conversant',
@@ -375,11 +388,12 @@ class Tv extends React.Component {
 								tv_name: assetName.toUpperCase(),
 								content_id: self.state.selected_catchup.id.toString()
 							});
-							this.convivaTracker.createSession();
+							self.convivaTracker.createSession();
 							break;
 					}
 				});
 
+				this.player.play();
 				this.player.on('fullscreenchange', () => {
 					if (screen.orientation.type === 'portrait-primary') {
 						screen.orientation.lock("landscape-primary");
@@ -398,11 +412,13 @@ class Tv extends React.Component {
 					adTagUrl: this.state.player_vmap,
 					preventLateAdStart: true 
 				});
+				this.player.hlsQualitySelector({
+					displayCurrentQuality: true,
+				});
 				this.player.ima.initializeAdDisplayContainer();
 				this.setState({ first_init_player: false });
 			}
 			else {
-				
 				this.player.src(this.state.player_url);
 				this.player.ima.changeAdTag(this.state.player_vmap);
 				this.player.ima.initializeAdDisplayContainer();

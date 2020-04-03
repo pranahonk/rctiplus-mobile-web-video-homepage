@@ -43,6 +43,10 @@ const UIVersion = '2.0';
       res.sendFile(`/lighthouse-reports/${req.params.page}.html`, { root: '.' });
     });
 
+    server.get('/profile', (req, res) => {
+      return app.render(req, res, '/profile');
+    });
+
     server.get('/programs/:id/:title', (req, res) => {
       return app.render(req, res, '/programs', { 
         id: req.params.id, 

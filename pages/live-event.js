@@ -43,6 +43,7 @@ import '../assets/scss/videojs.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
 import { getUserId } from '../utils/appier';
+import { convivaVideoJs } from '../utils/conviva';
 
 import videojs from 'video.js';
 import 'videojs-contrib-ads';
@@ -92,21 +93,6 @@ class LiveEvent extends React.Component {
 			/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
 		));
 
-		if (isMobile) {
-			// if (/windows phone/i.test(userAgent)) {
-			// 	return "Windows Phone";
-			// }
-
-			// if (/android/i.test(userAgent)) {
-			// 	return "Android";
-			// }
-
-			// // iOS detection from: http://stackoverflow.com/a/9039885/177710
-			// if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-			// 	return "iOS";
-			// }
-		}
-
 		const data = await Promise.all([
 			res[0].json(),
 			res[1].json()
@@ -155,6 +141,7 @@ class LiveEvent extends React.Component {
 
 		this.player = null;
 		this.videoNode = null;
+		this.convivaTracker = null;
 		this.props.setPageLoader();
 	}
 	componentWillUnmount() {
@@ -163,7 +150,7 @@ class LiveEvent extends React.Component {
 		}
 
 		if (this.player) {
-				this.player.dispose();
+			this.player.dispose();
 		}
 	}
 	componentDidMount() {
@@ -287,6 +274,7 @@ class LiveEvent extends React.Component {
 
 		});
 	}
+
 	initPlayer() {
 		if (this.videoNode) {
 			let url = '';
@@ -305,57 +293,66 @@ class LiveEvent extends React.Component {
 				this.loadChatMessages(id);
 				this.statusChatBlock(id);
 			}
-				videojs.registerPlugin('hlsQualitySelector', qualitySelector)
-				this.player = videojs(this.videoNode, {
-						autoplay: true,
-						controls: true,
-						fluid: true,
-						aspectratio: '16:9',
-						fill: true,
-						html5: {
-							hls: {
-								overrideNative: true,
-							},
-						},
-						sources: [{
-								src: url,
-								type: 'application/x-mpegURL'
-						}]
-				}, function onPlayerReady() {
-						console.log('onPlayerReady', this);
+			const self = this;
+			videojs.registerPlugin('hlsQualitySelector', qualitySelector);
+			this.player = videojs(this.videoNode, {
+				autoplay: true,
+				controls: true,
+				fluid: true,
+				aspectratio: '16:9',
+				fill: true,
+				html5: {
+					hls: {
+						overrideNative: true,
+					},
+				},
+				sources: [{
+						src: url,
+						type: 'application/x-mpegURL'
+				}]
+			}, function onPlayerReady() {
+				console.log('onPlayerReady', this);
+				const player = this;
+				const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
+				this.convivaTracker = convivaVideoJs(assetName, player, true, url, 'Live Event ' + assetName.toUpperCase(), {
+					asset_name: assetName.toUpperCase(),
+					application_name: 'RCTI+ MWEB',
+					player_type: 'VideoJS',
+					content_type: type,
+					content_id: id.toString(),
+					program_name: name,
+					asset_cdn: 'Conversant',
+					version: process.env.VERSION,
+					playerVersion: process.env.PLAYER_VERSION,
+					content_name: assetName.toUpperCase()
+				});
+				this.convivaTracker.createSession();
 
+			});
+			this.player.play();
+			this.player.on('fullscreenchange', () => {
+				if (screen.orientation.type === 'portrait-primary') {
+					screen.orientation.lock("landscape-primary");
+				}
+				if (screen.orientation.type === 'landscape-primary') {
+					screen.orientation.lock("portrait-primary");
+				}
+			});
+			this.player.on('error', () => {
+				this.setState({
+					error: true,
 				});
-				this.player.ready(function() {
-					const vm = this
-					const promise = vm.play();
-					if(promise !== undefined) {
-						promise.then(() => console.log('play'))
-						.catch((err) => console.log('err'))
-					}
-				})
-				this.player.on('fullscreenchange', () => {
-					if (screen.orientation.type === 'portrait-primary') {
-							screen.orientation.lock("landscape-primary");
-					}
-					if (screen.orientation.type === 'landscape-primary') {
-							screen.orientation.lock("portrait-primary");
-					}
-				});
-				this.player.on('error', () => {
-						this.setState({
-								error: true,
-						});
-				});
-				this.player.hlsQualitySelector({
-						displayCurrentQuality: true,
-				});
-				this.player.ima({
-						adTagUrl: vmap,
-						preventLateAdStart: true 
-				});
-				this.player.ima.initializeAdDisplayContainer();
+			});
+			this.player.hlsQualitySelector({
+				displayCurrentQuality: true,
+			});
+			this.player.ima({
+				adTagUrl: vmap,
+				preventLateAdStart: true 
+			});
+			this.player.ima.initializeAdDisplayContainer();
 		}
-}
+	}
 
 	initVOD() {
 		let url = '';
@@ -440,7 +437,7 @@ class LiveEvent extends React.Component {
 			}
 		});
 
-		this.player.on('mute', function() {
+		this.player.on('mute', function () {
 			let elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
 			if (elementJwplayer[0] !== undefined) {
 				if (jwplayer().getMute()) {
@@ -638,16 +635,15 @@ class LiveEvent extends React.Component {
 		}
 		else {
 			playerRef = (
-				<div>
-					<div data-vjs-player>
-							<video 
-							playsInline
-									style={{ 
-											width: '100%'
-									}}
-									ref={ node => this.videoNode = node } 
-									className="video-js vjs-default-skin vjs-big-play-centered"></video>
-					</div>
+				<div data-vjs-player>
+					<video
+						playsInline
+						style={{
+							minHeight: 180,
+							width: '100%'
+						}}
+						ref={node => this.videoNode = node}
+						className="video-js vjs-default-skin vjs-big-play-centered"></video>
 				</div>
 			);
 		}
@@ -659,7 +655,6 @@ class LiveEvent extends React.Component {
 					<meta name="keywords" content={`keywords`} />
 				</Head>
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
-					{console.log(this.state)}
 					{/* { this.state.error ? errorRef : playerRef } */}
 					{(this.state.error) ? errorRef : playerRef}
 					<div className="title-wrap">

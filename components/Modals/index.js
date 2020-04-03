@@ -24,6 +24,7 @@ import qualityLevels from 'videojs-contrib-quality-levels';
 import 'videojs-youtube';
 
 import { exclusiveContentPlayEvent, libraryProgramTrailerPlayEvent, searchProgramTrailerPlayEvent } from '../../utils/appier';
+import { convivaVideoJs } from '../../utils/conviva';
 
 class PlayerModal extends React.Component {
 
@@ -36,6 +37,7 @@ class PlayerModal extends React.Component {
         this.player = null;
         this.intervalFn = null;
         this.videoNode = null;
+        this.convivaTracker = null;
 
         const segments = this.props.router.asPath.split(/\?/);
         this.reference = null;
@@ -69,13 +71,18 @@ class PlayerModal extends React.Component {
             if (this.player) {
                 clearInterval(this.intervalFn);
                 // this.player.remove();
+                if (this.convivaTracker) {
+                    this.convivaTracker.cleanUpSession();
+                }
                 this.player.dispose();
             }
         }
     }
+
     initPlayer() {
         if (this.videoNode) {
-            videojs.registerPlugin('hlsQualitySelector', qualitySelector)
+            const self = this;
+            videojs.registerPlugin('hlsQualitySelector', qualitySelector);
             this.player = videojs(this.videoNode, {
                 autoplay: true,
                 controls: true,
@@ -84,7 +91,7 @@ class PlayerModal extends React.Component {
                 fill: true,
                 html5: {
                     hls: {
-                      overrideNative: true,
+                        overrideNative: true,
                     },
                 },
                 sources: [{
@@ -93,8 +100,30 @@ class PlayerModal extends React.Component {
                 }],
             }, function onPlayerReady() {
                 const vm = this
-                console.log('onPlayerReady modal', vm);
+                console.log('onPlayerReady', vm.landscapeFullscreen);
+                // vm.landscapeFullscreen({
+                //     fullscreen: {
+                //         enterOnRotate: true,
+                //         alwaysInLandscapeMode: true,
+                //         iOS: true,
+                //     },
+                // });
+
+                const player = this;
+                const assetName = self.props.program ? self.props.program.title : 'N/A';
+                self.convivaTracker = convivaVideoJs(assetName, player, true, self.props.videoUrl, assetName.toUpperCase(), {
+					asset_name: assetName.toUpperCase(),
+					application_name: 'RCTI+ MWEB',
+					player_type: 'VideoJS',
+					content_id: (self.props.program ? self.props.program.id : 'N/A').toString(),
+					program_name: assetName,
+					version: process.env.VERSION,
+					playerVersion: process.env.PLAYER_VERSION,
+					content_name: assetName.toUpperCase()
+                });
+                self.convivaTracker.createSession();
             });
+
             this.player.on('fullscreenchange', () => {
                 if (screen.orientation.type === 'portrait-primary') {
                     screen.orientation.lock("landscape-primary");
@@ -116,15 +145,12 @@ class PlayerModal extends React.Component {
                     error: true,
                 });
             });
-            this.player.hlsQualitySelector({
-                displayCurrentQuality: true,
-            }); 
-            this.player.ima({
-                adTagUrl: this.props.vmap
-						});
+            this.player.hlsQualitySelector({ displayCurrentQuality: true }); 
+            this.player.ima({ adTagUrl: this.props.vmap });
             this.player.ima.initializeAdDisplayContainer();
         }
     }
+
     initVOD() {
         this.player = window.jwplayer(this.props.playerId);
 		this.player.setup({
@@ -278,16 +304,16 @@ class PlayerModal extends React.Component {
         else {
             playerRef = (
             <div>
-            <div data-vjs-player>
-                        <video 
-						    playsInline
-                            style={{ 
-                                width: '100%',
-                            }}
-                            ref={ node => this.videoNode = node } 
-                            className="video-js vjs-default-skin vjs-big-play-centered"
-                            ></video>
-                    </div>
+                <div data-vjs-player>
+                    <video 
+                        playsInline
+                        style={{ 
+                            width: '100%',
+                        }}
+                        ref={ node => this.videoNode = node } 
+                        className="video-js vjs-default-skin vjs-big-play-centered"
+                        ></video>
+                </div>
             </div>
             );
         }
@@ -296,8 +322,6 @@ class PlayerModal extends React.Component {
     }
 
     render() {
-        
-
         return (
             <Modal className="player-modal" isOpen={this.props.open} toggle={this.props.toggle}>
                 <ModalHeader toggle={this.props.toggle}>
