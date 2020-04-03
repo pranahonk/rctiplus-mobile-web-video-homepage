@@ -132,6 +132,14 @@ class Default_v2 extends React.Component {
                     <noscript key="gtm-noscript"><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5F9P7H3"
                     height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript>
                     {/* <!-- End Google Tag Manager (noscript) --> */}
+
+                    {/* <!-- Start Alexa Certify Javascript --> */}
+                    <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
+                        _atrk_opts = { atrk_acct:"8oNJt1FYxz20cv", domain:"m.rctiplus.com",dynamic: true};
+                        (function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://certify-js.alexametrics.com/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
+                    ` }}></script>
+                    <noscript><img src="https://certify.alexametrics.com/atrk.gif?account=8oNJt1FYxz20cv" style={{ display: 'none' }} height="1" width="1" alt="" /></noscript>
+                    {/* <!-- End Alexa Certify Javascript --> */}
                 </Head>
                 
                 <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script>
