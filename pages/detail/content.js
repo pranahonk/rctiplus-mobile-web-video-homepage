@@ -283,11 +283,13 @@ class Content extends React.Component {
                 forward: 10,
                 back: 10
             });
-
+            
             this.player.on('useractive', () => {
-                const seekButtons = document.getElementsByClassName('vjs-seek-button');
-                for (let i = 0; i < seekButtons.length; i++) {
-                    seekButtons[i].style.display = 'block';
+                if (!this.player.paused()) {
+                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                    for (let i = 0; i < seekButtons.length; i++) {
+                        seekButtons[i].style.display = 'block';
+                    }
                 }
             });
 
@@ -298,13 +300,29 @@ class Content extends React.Component {
                         seekButtons[i].style.display = 'none';
                     }
                 }
-                
             });
 
             this.player.on('play', () => {
                 const seekButtons = document.getElementsByClassName('vjs-seek-button');
                 for (let i = 0; i < seekButtons.length; i++) {
                     seekButtons[i].style.display = 'none';
+                }
+
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
+                }
+            });
+
+            this.player.on('pause', () => {
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'none';
+                }
+
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'block';
                 }
             });
 
