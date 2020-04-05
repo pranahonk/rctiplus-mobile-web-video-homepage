@@ -13,7 +13,7 @@ import pageActions from '../redux/actions/pageActions';
 import userActions from '../redux/actions/userActions';
 import searchActions from '../redux/actions/searchActions';
 
-import Layout from '../components/Layouts/Default';
+import Layout from '../components/Layouts/Default_v2';
 import NavSearch from '../components/Includes/Navbar/NavSearch';
 import SearchResults from './search/result';
 

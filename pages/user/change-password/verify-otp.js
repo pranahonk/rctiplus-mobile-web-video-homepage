@@ -11,7 +11,7 @@ import notificationActions from '../../../redux/actions/notificationActions';
 
 import { showConfirmAlert } from '../../../utils/helpers';
 
-import Layout from '../../../components/Layouts/Default';
+import Layout from '../../../components/Layouts/Default_v2';
 import NavBack from '../../../components/Includes/Navbar/NavBack';
 
 //load reactstrap components

@@ -21,7 +21,7 @@ import likeActions from '../redux/actions/likeActions';
 import bookmarkActions from '../redux/actions/bookmarkActions';
 import pageActions from '../redux/actions/pageActions';
 
-import Layout from '../components/Layouts/Default';
+import Layout from '../components/Layouts/Default_v2';
 import Navbar from '../components/Includes/Navbar/NavDetail';
 import PlayerModal from '../components/Modals';
 import ActionModal from '../components/Modals/ActionModal';
