@@ -13,7 +13,7 @@ import bookmarkActions from '../../redux/actions/bookmarkActions';
 import searchActions from '../../redux/actions/searchActions';
 
 //load default layout
-import Layout from '../../components/Layouts/Default';
+import Layout from '../../components/Layouts/Default_v2';
 
 //load navbar default
 import NavBack from '../../components/Includes/Navbar/NavBack';

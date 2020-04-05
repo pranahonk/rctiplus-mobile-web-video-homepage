@@ -9,7 +9,7 @@ import LoadingBar from 'react-top-loading-bar';
 
 import { showAlert } from '../utils/helpers';
 
-import Layout from '../components/Layouts/Default';
+import Layout from '../components/Layouts/Default_v2';
 import NavBack from '../components/Includes/Navbar/NavBack';
 
 import '../assets/scss/components/signin.scss';

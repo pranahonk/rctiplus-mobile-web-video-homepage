@@ -1,7 +1,7 @@
 import React from 'react';
 import Router from 'next/router';
 
-import Layout from '../components/Layouts/Default';
+import Layout from '../components/Layouts/Default_v2';
 
 import { Button } from 'reactstrap';
 

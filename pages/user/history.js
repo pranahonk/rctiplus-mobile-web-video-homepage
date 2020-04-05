@@ -14,7 +14,7 @@ import initialize from '../../utils/initialize';
 import { showAlert } from '../../utils/helpers';
 import { accountGeneralEvent, accountHistoryClearHistoryClicked, accountHistoryContentClicked, accountHistoryShareClicked, accountHistoryDownloadClicked, accountHistoryAddMyListClicked } from '../../utils/appier';
 
-import Layout from '../../components/Layouts/Default';
+import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 import Bar from '../../components/Includes/Common/Bar';
 import ActionSheet from '../../components/Modals/ActionSheet';
