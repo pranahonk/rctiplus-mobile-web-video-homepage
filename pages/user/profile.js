@@ -4,7 +4,7 @@ import actions from '../../redux/actions';
 import initialize from '../../utils/initialize';
 
 //load default layout
-import Layout from '../../components/Layouts/Default';
+import Layout from '../../components/Layouts/Default_v2';
 
 //load navbar default
 import Nav from '../../components/Includes/Navbar/NavDefault';

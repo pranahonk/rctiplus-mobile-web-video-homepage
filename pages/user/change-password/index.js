@@ -6,7 +6,7 @@ import registerActions from '../../../redux/actions/registerActions';
 import userActions from '../../../redux/actions/userActions';
 import notificationActions from '../../../redux/actions/notificationActions';
 
-import Layout from '../../../components/Layouts/Default';
+import Layout from '../../../components/Layouts/Default_v2';
 import NavBack from '../../../components/Includes/Navbar/NavBack';
 
 //load reactstrap components

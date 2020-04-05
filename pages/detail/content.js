@@ -14,7 +14,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import Wrench from '../../components/Includes/Common/Wrench';
 
-import Layout from '../../components/Layouts/Default';
+import Layout from '../../components/Layouts/Default_v2';
 
 import '../../assets/scss/components/content.scss';
 

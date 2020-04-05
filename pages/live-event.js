@@ -23,7 +23,7 @@ import pageActions from '../redux/actions/pageActions';
 import chatsActions from '../redux/actions/chats';
 import userActions from '../redux/actions/userActions';
 
-import Layout from '../components/Layouts/Default';
+import Layout from '../components/Layouts/Default_v2';
 import Wrench from '../components/Includes/Common/Wrench';
 
 import { Row, Col, Button, Input } from 'reactstrap';

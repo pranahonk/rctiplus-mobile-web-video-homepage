@@ -8,7 +8,7 @@ import userActions from '../redux/actions/userActions';
 
 import initialize from '../utils/initialize';
 
-import Layout from '../components/Layouts/Default';
+import Layout from '../components/Layouts/Default_v2';
 import NavBack from '../components/Includes/Navbar/NavBack';
 import TabSignup from '../components/Includes/Tab/TabSignup';
 

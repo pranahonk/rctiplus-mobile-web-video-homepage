@@ -6,7 +6,7 @@ import fetch from 'isomorphic-unfetch';
 
 import contentActions from '../../redux/actions/contentActions';
 
-import Layout from '../../components/Layouts/Default';
+import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 import PhotoFeed from '../../components/Includes/Gallery/PhotoFeed';
 

@@ -6,7 +6,7 @@ import Router from 'next/router';
 import userActions from '../../redux/actions/userActions';
 import pageActions from '../../redux/actions/pageActions';
 
-import Layout from '../../components/Layouts/Default';
+import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 
 import { showAlert } from '../../utils/helpers';

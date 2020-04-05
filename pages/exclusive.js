@@ -16,7 +16,7 @@ import LoadingBar from 'react-top-loading-bar';
 import classnames from 'classnames';
 import { Carousel } from 'react-responsive-carousel';
 
-import Layout from '../components/Layouts/Default';
+import Layout from '../components/Layouts/Default_v2';
 
 import NavDefault from '../components/Includes/Navbar/NavDefault';
 import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';

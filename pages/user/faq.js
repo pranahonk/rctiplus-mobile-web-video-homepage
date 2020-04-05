@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import initialize from '../../utils/initialize';
 
-import Layout from '../../components/Layouts/Default';
+import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 
 import '../../assets/scss/components/privacy-policy.scss';
