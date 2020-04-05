@@ -41,7 +41,9 @@ class Step1 extends Component {
 
 		this.genderMap = {
 			'0': 'Female',
+			'3': 'Male',
 			'6': 'Male',
+			'9': 'Female',
 			'12': 'Female'
 		};
 
@@ -71,6 +73,7 @@ class Step1 extends Component {
 			}
 		};
 
+		console.log(this.state.gender);
 	}
 
 	handleSelectBirthdate(date) {
@@ -269,7 +272,7 @@ class Step1 extends Component {
 								</InputGroup>
 							</FormGroup>
 							<FormGroup className="btn-next-position">
-								<Button disabled={this.state.fullname && this.state.fullname.length < 4} className="btn-next block-btn">NEXT</Button>
+								<Button disabled={Boolean(this.state.fullname && this.state.fullname.length < 4)} className="btn-next block-btn">NEXT</Button>
 							</FormGroup>
 						</Form>
 					</div>
