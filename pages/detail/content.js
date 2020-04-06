@@ -393,7 +393,7 @@ class Content extends React.Component {
                     this.setState({
                         error: true,
                     });
-                }, 20000);
+                }, 40000);
             })
 
             this.player.on('playing', () => {
