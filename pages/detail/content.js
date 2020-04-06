@@ -146,7 +146,6 @@ class Content extends React.Component {
         if (this.videoNode) {
             videojs.registerPlugin('hlsQualitySelector', qualitySelector)
             this.player = videojs(this.videoNode, {
-                autoplay: true,
                 controls: true,
                 mute: true,
                 fluid: true,
@@ -164,6 +163,31 @@ class Content extends React.Component {
             }, function onPlayerReady() {
                 const vm = this
                 console.log('onPlayerReady2', vm);
+                // const bpb = vm.getChild('bigPlayButton');
+                if(isIOS) {
+                    vm.muted(true)
+                    const wrapElement = document.getElementsByClassName('video-js');
+                    const elementCreateWrapper = document.createElement('btn');
+                    const elementMuteIcon = document.createElement('span');
+                    elementCreateWrapper.classList.add('jwplayer-vol-off');
+                    elementCreateWrapper.innerText = 'Tap to unmute ';
+                    wrapElement[0].appendChild(elementCreateWrapper);
+                    elementCreateWrapper.appendChild(elementMuteIcon);
+                    elementCreateWrapper.addEventListener('click', function() {
+                        console.log('mute video')
+                        if (elementCreateWrapper === null) {
+                            vm.muted(false);
+                            elementCreateWrapper.classList.add('jwplayer-mute');
+                            elementCreateWrapper.classList.remove('jwplayer-full');
+                        } 
+                        else {
+                            vm.muted(false);
+                            elementCreateWrapper.classList.add('jwplayer-full');
+                            elementCreateWrapper.classList.remove('jwplayer-mute');
+                        }
+                    });
+                }
+                
                 self.historyAppierHandler = setInterval(() => {
                     self.setState({ end_duration: vm.currentTime() });
                     if (self.reference) {
@@ -281,7 +305,9 @@ class Content extends React.Component {
                 }
                 const promise = vm.play();
                 if(promise !== undefined) {
-                    promise.then(() => console.log('autoplay'))
+                    promise.then(() => {
+                    console.log('autoplay')
+                })
                     .catch((err) => console.log('err'))
                 }
             })
@@ -699,6 +725,7 @@ class Content extends React.Component {
                     <div className="player-container">
                         <div data-vjs-player>
                             <video 
+                                autoplay
                                 playsInline
                                 style={{ 
                                     width: '100%'
