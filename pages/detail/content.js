@@ -102,10 +102,19 @@ class Content extends React.Component {
                 this.homepageTitle = q.homepage_title;
             }
         }
+
+        this.historyHandler = null;
+        this.historyAppierHandler = null;
     }
 
     componentWillUnmount() {
         if (this.player && this.videoNode) {
+            if (this.historyHandler) {
+                clearInterval(this.historyHandler);
+            }
+            if (this.historyAppierHandler) {
+                clearInterval(this.historyAppierHandler);
+            }
             this.player.dispose();
         }
     }
@@ -155,7 +164,7 @@ class Content extends React.Component {
             }, function onPlayerReady() {
                 const vm = this
                 console.log('onPlayerReady2', vm);
-                setInterval(() => {
+                self.historyAppierHandler = setInterval(() => {
                     self.setState({ end_duration: vm.currentTime() });
                     if (self.reference) {
                         const data = self.props.context_data;
@@ -196,7 +205,7 @@ class Content extends React.Component {
     
                     }
                 }, 2500);
-                setInterval(() => {
+                self.historyHandler = setInterval(() => {
                     if (vm) {
                         console.log('POST HISTORY');
     
@@ -226,6 +235,7 @@ class Content extends React.Component {
                 });
                 self.convivaTracker.createSession();
             });
+
             this.player.on('fullscreenchange', () => {
                 if (screen.orientation.type === 'portrait-primary') {
                     screen.orientation.lock("landscape-primary");
@@ -237,6 +247,12 @@ class Content extends React.Component {
             this.player.ready(function() {
                 const vm = this;
                 vm.on('error', e => {
+                    if (self.historyHandler) {
+                        clearInterval(self.historyHandler);
+                    }
+                    if (self.historyAppierHandler) {
+                        clearInterval(self.historyAppierHandler);
+                    }
                     console.log(e);
                 });
 
@@ -271,6 +287,12 @@ class Content extends React.Component {
             })
             this.player.on('error', (e) => {
                 console.log(e);
+                if (this.historyHandler) {
+                    clearInterval(self.historyHandler);
+                }
+                if (this.historyAppierHandler) {
+                    clearInterval(self.historyAppierHandler);
+                }
                 this.setState({
                     error: true,
                 });
@@ -332,9 +354,30 @@ class Content extends React.Component {
             };
 
             this.player.currentTime(this.state.start_duration);
+
+            let disconnectHandler = null;
+            this.player.on('waiting', (e) => {
+                disconnectHandler = setTimeout(() => {
+                    if (this.historyHandler) {
+                        clearInterval(this.historyHandler);
+                    }
+                    if (this.historyAppierHandler) {
+                        clearInterval(this.historyAppierHandler);
+                    }
+                    this.setState({
+                        error: true,
+                    });
+                }, 20000);
+            })
+
+            this.player.on('playing', () => {
+                if (disconnectHandler) {
+                    clearTimeout(disconnectHandler);
+                }
+            });
             
-            // this.player.ima({ adTagUrl: this.state.player_vmap });
-            // this.player.ima.initializeAdDisplayContainer();
+            this.player.ima({ adTagUrl: this.state.player_vmap });
+            this.player.ima.initializeAdDisplayContainer();
         }
     }
 
