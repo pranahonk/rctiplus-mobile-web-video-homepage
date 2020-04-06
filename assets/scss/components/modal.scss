@@ -32,4 +32,25 @@
             opacity: 1 !important;
         }
     }
+
+    .player-modal-container {
+        .vjs-seek-button {
+            position: absolute !important;
+            display: none;
+            bottom: 80px;
+            transform: scale(2);
+        }
+    
+        .vjs-seek-button:hover {
+            display: block;
+        }
+    
+        .skip-back {
+            left: 30%;
+        }
+    
+        .skip-forward {
+            left: 60%;
+        }
+    }
 }

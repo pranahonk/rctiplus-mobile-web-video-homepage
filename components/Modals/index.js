@@ -83,6 +83,14 @@ class PlayerModal extends React.Component {
 
     }
 
+    setSkipButtonCentered() {
+        const playerHeight = document.getElementById(this.player.id()).clientHeight;
+        const seekButtons = document.getElementsByClassName('vjs-seek-button');
+        for (let i = 0; i < seekButtons.length; i++) {
+            seekButtons[i].style.bottom = (Math.floor(playerHeight / 2)) + 'px';
+        }
+    }
+
     initPlayer() {
         if (this.videoNode) {
             const self = this;
@@ -105,13 +113,11 @@ class PlayerModal extends React.Component {
             }, function onPlayerReady() {
                 const vm = this
                 console.log('onPlayerReady', vm.landscapeFullscreen);
-                // vm.landscapeFullscreen({
-                //     fullscreen: {
-                //         enterOnRotate: true,
-                //         alwaysInLandscapeMode: true,
-                //         iOS: true,
-                //     },
-                // });
+
+                self.setSkipButtonCentered();
+                window.onresize = () => {
+                    self.setSkipButtonCentered();
+                };
 
                 const player = this;
                 const assetName = self.props.program ? self.props.program.title : 'N/A';
@@ -128,6 +134,11 @@ class PlayerModal extends React.Component {
                 self.convivaTracker.createSession();
             });
 
+            this.player.seekButtons({
+                forward: 10,
+                back: 10
+            });
+
             this.player.on('fullscreenchange', () => {
                 if (screen.orientation.type === 'portrait-primary') {
                     screen.orientation.lock("landscape-primary");
@@ -136,6 +147,7 @@ class PlayerModal extends React.Component {
                     screen.orientation.lock("portrait-primary");
                 }
             });
+
             this.player.ready(function() {
                 const vm = this
                 const promise = vm.play();
@@ -143,19 +155,72 @@ class PlayerModal extends React.Component {
                     promise.then(() => console.log('play'))
                     .catch((err) => console.log('err'))
                 }
-            })
+            });
+
             this.player.on('error', () => {
                 this.setState({
                     error: true,
                 });
             });
 
-            this.player.hlsQualitySelector({ displayCurrentQuality: true }); 
-
-            this.player.seekButtons({
-                forward: 10,
-                back: 10
+            this.player.on('useractive', () => {
+                if (!this.player.paused()) {
+                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                    for (let i = 0; i < seekButtons.length; i++) {
+                        seekButtons[i].style.display = 'block';
+                    }
+                }
             });
+
+            this.player.on('userinactive', () => {
+                if (!this.player.paused()) {
+                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                    for (let i = 0; i < seekButtons.length; i++) {
+                        seekButtons[i].style.display = 'none';
+                    }
+                }
+            });
+
+            this.player.on('play', () => {
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'none';
+                }
+
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
+                }
+            });
+
+            this.player.on('pause', () => {
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'none';
+                }
+
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'block';
+                }
+            });
+
+            let disconnectHandler = null;
+            this.player.on('waiting', (e) => {
+                disconnectHandler = setTimeout(() => {
+                    this.setState({
+                        error: true,
+                    });
+                }, 20000);
+            })
+
+            this.player.on('playing', () => {
+                if (disconnectHandler) {
+                    clearTimeout(disconnectHandler);
+                }
+            });
+
+            this.player.hlsQualitySelector({ displayCurrentQuality: true }); 
 
             this.player.ima({ adTagUrl: this.props.vmap });
             this.player.ima.initializeAdDisplayContainer();
@@ -322,7 +387,7 @@ class PlayerModal extends React.Component {
         }
         else {
             playerRef = (
-            <div>
+            <div className="player-modal-container">
                 <div data-vjs-player>
                     <video 
                         playsInline

@@ -128,13 +128,12 @@ class Content extends React.Component {
     }
 
     setSkipButtonCentered() {
-        const playerHeight = document.getElementById('vjs_video_3').clientHeight;
+        const playerHeight = document.getElementById(this.player.id()).clientHeight;
         const seekButtons = document.getElementsByClassName('vjs-seek-button');
         for (let i = 0; i < seekButtons.length; i++) {
             seekButtons[i].style.bottom = (Math.floor(playerHeight / 2)) + 'px';
         }
     }
-
 
     initPlayer() {
         const content = this.props.content_url;
@@ -146,8 +145,9 @@ class Content extends React.Component {
         if (this.videoNode) {
             videojs.registerPlugin('hlsQualitySelector', qualitySelector)
             this.player = videojs(this.videoNode, {
+                autoplay: true,
                 controls: true,
-                mute: true,
+                muted: isIOS,
                 fluid: true,
                 aspectratio: '16:9',
                 fill: true,
@@ -308,7 +308,7 @@ class Content extends React.Component {
                     promise.then(() => {
                     console.log('autoplay')
                 })
-                    .catch((err) => console.log('err'))
+                    .catch((err) => console.log(err))
                 }
             })
             this.player.on('error', (e) => {
@@ -725,7 +725,7 @@ class Content extends React.Component {
                     <div className="player-container">
                         <div data-vjs-player>
                             <video 
-                                autoplay
+                                autoPlay
                                 playsInline
                                 style={{ 
                                     width: '100%'

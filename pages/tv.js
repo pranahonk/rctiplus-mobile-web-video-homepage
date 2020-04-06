@@ -360,6 +360,66 @@ class Tv extends React.Component {
 		}
 	}
 
+	setupPlayerBehavior() {
+		if (this.player) {
+			this.player.on('useractive', () => {
+                if (!this.player.paused()) {
+                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                    for (let i = 0; i < seekButtons.length; i++) {
+                        seekButtons[i].style.display = 'block';
+                    }
+                }
+            });
+
+            this.player.on('userinactive', () => {
+                if (!this.player.paused()) {
+                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                    for (let i = 0; i < seekButtons.length; i++) {
+                        seekButtons[i].style.display = 'none';
+                    }
+                }
+            });
+
+            this.player.on('play', () => {
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'none';
+                }
+
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
+                }
+            });
+
+            this.player.on('pause', () => {
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'none';
+                }
+
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'block';
+                }
+			});
+		}
+	}
+
+	setSkipButtonCentered() {
+		if (this.player) {
+			const player = document.getElementById(this.player.id());
+			if (player) {
+				const playerHeight = player.clientHeight;
+				const seekButtons = document.getElementsByClassName('vjs-seek-button');
+				for (let i = 0; i < seekButtons.length; i++) {
+					seekButtons[i].style.bottom = (Math.floor(playerHeight / 2)) + 'px';
+				}
+			}
+			
+		}
+    }
+
 	initPlayer() {
 		
 		// status code 12 means the video is geoblock-ed
@@ -374,6 +434,7 @@ class Tv extends React.Component {
 				videojs.registerPlugin('hlsQualitySelector', qualitySelector);
 				this.player = videojs(this.videoNode, {
 					autoplay: true,
+					muted: isIOS,
 					controls: true,
 					fluid: true,
 					aspectratio: '16:9',
@@ -416,6 +477,11 @@ class Tv extends React.Component {
 								forward: 10,
 								back: 10
 							});
+							self.setSkipButtonCentered();
+							window.onresize = () => {
+								self.setSkipButtonCentered();
+							};
+							self.setupPlayerBehavior();
 
 							self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 								asset_name: assetName.toUpperCase(),
@@ -431,9 +497,14 @@ class Tv extends React.Component {
 							self.convivaTracker.createSession();
 							break;
 					}
+
+					const promise = player.play();
+					if(promise !== undefined) {
+						promise.then(() => console.log('play'))
+						.catch((err) => console.log(err))
+					}
 				});
 
-				this.player.play();
 				this.player.on('fullscreenchange', () => {
 					if (screen.orientation.type === 'portrait-primary') {
 						screen.orientation.lock("landscape-primary");
@@ -451,6 +522,21 @@ class Tv extends React.Component {
 				
 				this.player.hlsQualitySelector({
 					displayCurrentQuality: true,
+				});
+
+				let disconnectHandler = null;
+				this.player.on('waiting', (e) => {
+					disconnectHandler = setTimeout(() => {
+						this.setState({
+							error: true,
+						});
+					}, 20000);
+				})
+
+				this.player.on('playing', () => {
+					if (disconnectHandler) {
+						clearTimeout(disconnectHandler);
+					}
 				});
 
 				this.player.ima({ 
@@ -492,6 +578,12 @@ class Tv extends React.Component {
 							forward: 10,
 							back: 10
 						});
+						this.setSkipButtonCentered();
+						window.onresize = () => {
+							this.setSkipButtonCentered();
+						};
+						this.setupPlayerBehavior();
+
 						this.convivaTracker = convivaVideoJs(assetName, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 							asset_name: assetName.toUpperCase(),
 							application_name: 'RCTI+ MWEB',
@@ -916,15 +1008,18 @@ class Tv extends React.Component {
 			playerRef = (
 				<div>
 					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
-					<div data-vjs-player>
-						<video
-							playsInline
-							style={{
-								// minHeight: 180,
-								width: '100%'
-							}}
-							ref={node => this.videoNode = node}
-							className="video-js vjs-default-skin vjs-big-play-centered"></video>
+					<div className="player-tv-container">
+						<div data-vjs-player>
+							<video
+								autoPlay
+								playsInline
+								style={{
+									// minHeight: 180,
+									width: '100%'
+								}}
+								ref={node => this.videoNode = node}
+								className="video-js vjs-default-skin vjs-big-play-centered"></video>
+						</div>
 					</div>
 					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
 					{this.state.ad_closed ? null : (

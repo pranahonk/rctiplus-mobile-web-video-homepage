@@ -356,6 +356,22 @@ class LiveEvent extends React.Component {
 			this.player.hlsQualitySelector({
 				displayCurrentQuality: true,
 			});
+
+			let disconnectHandler = null;
+			this.player.on('waiting', (e) => {
+				disconnectHandler = setTimeout(() => {
+					this.setState({
+						error: true,
+					});
+				}, 20000);
+			})
+
+			this.player.on('playing', () => {
+				if (disconnectHandler) {
+					clearTimeout(disconnectHandler);
+				}
+			});
+
 			this.player.ima({
 				adTagUrl: vmap,
 				preventLateAdStart: true
@@ -655,7 +671,7 @@ class LiveEvent extends React.Component {
 		}
 		else {
 			playerRef = (
-				<div>
+				<div className="player-liveevent-container">
 					<div data-vjs-player>
 						<video
 							playsInline
