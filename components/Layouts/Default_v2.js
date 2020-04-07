@@ -14,6 +14,10 @@ import { Spinner } from 'reactstrap';
 
 import queryString from 'query-string';
 
+import '../../node_modules/video.js/dist/video-js.min.css';
+import '../../node_modules/videojs-contrib-ads/dist/videojs.ads.css';
+import '../../node_modules/videojs-ima/dist/videojs.ima.css';
+
 class Default_v2 extends React.Component {
 
     constructor(props) {
@@ -133,8 +137,8 @@ class Default_v2 extends React.Component {
                     height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript>
                     {/* <!-- End Google Tag Manager (noscript) --> */}
                 </Head>
-                
-                <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script>
+                <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+                {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
                 {/* <!-- DO NOT touch the following DIV --> */}
                 <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `

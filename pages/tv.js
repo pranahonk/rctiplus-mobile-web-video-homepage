@@ -47,7 +47,6 @@ import videojs from 'video.js';
 import 'videojs-contrib-ads';
 import 'videojs-ima';
 import 'video.js/src/css/video-js.scss';
-import 'videojs-hls-quality-selector';
 import qualitySelector from 'videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
 
@@ -111,6 +110,7 @@ class Tv extends React.Component {
 		this.pubAdsRefreshInterval = null;
 		this.videoNode = null;
 		this.convivaTracker = null;
+		this.disconnectHandler = null;
 	}
 
 	componentWillUnmount() {
@@ -427,6 +427,11 @@ class Tv extends React.Component {
 			return;
 		}
 
+		if (this.disconnectHandler) {
+			clearTimeout(this.disconnectHandler);
+			this.disconnectHandler = null;
+		}
+
 		if (this.videoNode) {
 			const assetName = this.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : this.state.selected_live_event.channel_code;
 			if (this.state.first_init_player) {
@@ -524,9 +529,10 @@ class Tv extends React.Component {
 					displayCurrentQuality: true,
 				});
 
-				let disconnectHandler = null;
+				this.disconnectHandler = null;
 				this.player.on('waiting', (e) => {
-					disconnectHandler = setTimeout(() => {
+					this.disconnectHandler = setTimeout(() => {
+						console.log('ERROR');
 						this.setState({
 							error: true,
 						});
@@ -534,8 +540,8 @@ class Tv extends React.Component {
 				})
 
 				this.player.on('playing', () => {
-					if (disconnectHandler) {
-						clearTimeout(disconnectHandler);
+					if (this.disconnectHandler) {
+						clearTimeout(this.disconnectHandler);
 					}
 				});
 
@@ -1186,7 +1192,7 @@ class Tv extends React.Component {
 											<Img
 												loader={<PersonOutlineIcon className="chat-avatar" />}
 												unloader={<PersonOutlineIcon className="chat-avatar" />}
-												className="chat-avatar" src={[chat.i]} />
+												className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
 										</Col>
 										<Col className="chat-message" xs={10}>
 											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
