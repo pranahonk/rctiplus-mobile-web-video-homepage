@@ -13,6 +13,7 @@ import historyActions from '../../redux/actions/historyActions';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import Wrench from '../../components/Includes/Common/Wrench';
+import PauseIcon from '../../components/Includes/Common/PauseIcon';
 
 import Layout from '../../components/Layouts/Default';
 
@@ -83,7 +84,9 @@ class Content extends React.Component {
             error: false,
             error_data: {},
             end_duration: 0,
-            hide_footer: false
+            hide_footer: false,
+            playing: false,
+            user_active: false
         };
         this.player = null;
         this.videoNode = null;
@@ -339,6 +342,8 @@ class Content extends React.Component {
                     for (let i = 0; i < seekButtons.length; i++) {
                         seekButtons[i].style.display = 'block';
                     }
+
+                    this.setState({ user_active: true });
                 }
             });
 
@@ -348,6 +353,8 @@ class Content extends React.Component {
                     for (let i = 0; i < seekButtons.length; i++) {
                         seekButtons[i].style.display = 'none';
                     }
+
+                    this.setState({ user_active: false });
                 }
             });
 
@@ -368,6 +375,8 @@ class Content extends React.Component {
                 if (playButton.length > 0) {
                     playButton[0].style.display = 'none';
                 }
+
+                this.setState({ playing: true });
             });
 
             this.player.on('pause', () => {
@@ -380,6 +389,8 @@ class Content extends React.Component {
                 if (playButton.length > 0) {
                     playButton[0].style.display = 'block';
                 }
+
+                this.setState({ playing: false });
             });
 
             this.setSkipButtonCentered();
@@ -413,6 +424,7 @@ class Content extends React.Component {
                 if (this.disconnectHandler) {
                     clearTimeout(this.disconnectHandler);
                 }
+                this.setState({ playing: true });
             });
             
             this.player.ima({ adTagUrl: this.state.player_vmap });
@@ -737,6 +749,23 @@ class Content extends React.Component {
                     </Head>
                     <div className="player-container">
                         <div data-vjs-player>
+                            <div
+                                onClick={() => {
+                                    if (this.player) {
+                                        this.player.pause();
+                                    }
+                                }}
+                                style={{
+                                    position: 'absolute',
+                                    top: '45%',
+                                    left: '50%',
+                                    marginTop: '-0.81666em',
+                                    marginLeft: '-1.5em',
+                                    display: this.state.playing && this.state.user_active ? 'block' : 'none',
+                                    transform: 'scale(1.5)'
+                                }}>
+                                <PauseIcon/>
+                            </div>
                             <video 
                                 autoPlay
                                 playsInline
