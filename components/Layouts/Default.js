@@ -94,7 +94,7 @@ class Default extends React.Component {
                     {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
 
 
-                    <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
+                    <script src="/static/js/fontawesome.js" crossOrigin="anonymous"></script>
 
                     <script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
                     <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>
