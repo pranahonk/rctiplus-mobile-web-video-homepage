@@ -306,6 +306,7 @@ class Content extends React.Component {
                 const promise = vm.play();
                 if(promise !== undefined) {
                     promise.then(() => {
+                    vm.play()
                     console.log('autoplay')
                 })
                     .catch((err) => console.log(err))
