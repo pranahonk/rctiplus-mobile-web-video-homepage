@@ -162,7 +162,7 @@ class Default_v2 extends React.Component {
                 ) : <div></div>}
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
-                {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>) : (<Footer />)}
+                {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script src="/static/js/fontawesome.js" crossOrigin="anonymous"></script>) : (<Footer />)}
             </div>
         )
     }

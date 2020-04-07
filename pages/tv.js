@@ -154,7 +154,7 @@ class Tv extends React.Component {
 				console.log(error);
 			});
 
-		this.refreshPubAds();
+		// this.refreshPubAds();
 	}
 
 	isLiveProgram(epg) {
@@ -363,45 +363,45 @@ class Tv extends React.Component {
 	setupPlayerBehavior() {
 		if (this.player) {
 			this.player.on('useractive', () => {
-                if (!this.player.paused()) {
-                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
-                    for (let i = 0; i < seekButtons.length; i++) {
-                        seekButtons[i].style.display = 'block';
-                    }
-                }
-            });
+				if (!this.player.paused()) {
+					const seekButtons = document.getElementsByClassName('vjs-seek-button');
+					for (let i = 0; i < seekButtons.length; i++) {
+						seekButtons[i].style.display = 'block';
+					}
+				}
+			});
 
-            this.player.on('userinactive', () => {
-                if (!this.player.paused()) {
-                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
-                    for (let i = 0; i < seekButtons.length; i++) {
-                        seekButtons[i].style.display = 'none';
-                    }
-                }
-            });
+			this.player.on('userinactive', () => {
+				if (!this.player.paused()) {
+					const seekButtons = document.getElementsByClassName('vjs-seek-button');
+					for (let i = 0; i < seekButtons.length; i++) {
+						seekButtons[i].style.display = 'none';
+					}
+				}
+			});
 
-            this.player.on('play', () => {
-                const seekButtons = document.getElementsByClassName('vjs-seek-button');
-                for (let i = 0; i < seekButtons.length; i++) {
-                    seekButtons[i].style.display = 'none';
-                }
+			this.player.on('play', () => {
+				const seekButtons = document.getElementsByClassName('vjs-seek-button');
+				for (let i = 0; i < seekButtons.length; i++) {
+					seekButtons[i].style.display = 'none';
+				}
 
-                const playButton = document.getElementsByClassName('vjs-big-play-button');
-                if (playButton.length > 0) {
-                    playButton[0].style.display = 'none';
-                }
-            });
+				const playButton = document.getElementsByClassName('vjs-big-play-button');
+				if (playButton.length > 0) {
+					playButton[0].style.display = 'none';
+				}
+			});
 
-            this.player.on('pause', () => {
-                const seekButtons = document.getElementsByClassName('vjs-seek-button');
-                for (let i = 0; i < seekButtons.length; i++) {
-                    seekButtons[i].style.display = 'none';
-                }
+			this.player.on('pause', () => {
+				const seekButtons = document.getElementsByClassName('vjs-seek-button');
+				for (let i = 0; i < seekButtons.length; i++) {
+					seekButtons[i].style.display = 'none';
+				}
 
-                const playButton = document.getElementsByClassName('vjs-big-play-button');
-                if (playButton.length > 0) {
-                    playButton[0].style.display = 'block';
-                }
+				const playButton = document.getElementsByClassName('vjs-big-play-button');
+				if (playButton.length > 0) {
+					playButton[0].style.display = 'block';
+				}
 			});
 		}
 	}
@@ -416,12 +416,12 @@ class Tv extends React.Component {
 					seekButtons[i].style.bottom = (Math.floor(playerHeight / 2)) + 'px';
 				}
 			}
-			
+
 		}
-    }
+	}
 
 	initPlayer() {
-		
+
 		// status code 12 means the video is geoblock-ed
 		if (this.state.status && this.state.status.code === 12) {
 			return;
@@ -435,35 +435,63 @@ class Tv extends React.Component {
 		if (this.videoNode) {
 			const assetName = this.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : this.state.selected_live_event.channel_code;
 			if (this.state.first_init_player) {
-				const self = this;
-				videojs.registerPlugin('hlsQualitySelector', qualitySelector);
-				this.player = videojs(this.videoNode, {
-					id: 'tv-player',
-					autoplay: true,
-					muted: isIOS,
-					controls: true,
-					fluid: true,
-					aspectratio: '16:9',
-					fill: true,
-					html5: {
-						hls: {
-							overrideNative: true,
+				this.setState({ first_init_player: false }, () => {
+					const self = this;
+					videojs.registerPlugin('hlsQualitySelector', qualitySelector);
+					this.player = videojs(this.videoNode, {
+						id: 'tv-player',
+						muted: true,
+						controls: true,
+						fluid: true,
+						aspectratio: '16:9',
+						fill: true,
+						html5: {
+							hls: {
+								overrideNative: true,
+							},
 						},
-					},
-					sources: [{
-						src: this.state.player_url,
-						type: 'application/x-mpegURL'
-					}]
-				}, function onPlayerReady() {
-					console.log('onPlayerReady', this);
-					const player = this;
-					switch (self.state.selected_tab) {
-						case 'live':
-							self.removeSkipButton();
-							const currentEpg = self.getCurrentLiveEpg();
-							if (currentEpg != null) {
-								self.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
-									asset_name: assetName.toUpperCase(),
+						sources: [{
+							src: this.state.player_url,
+							type: 'application/x-mpegURL'
+						}]
+					}, function onPlayerReady() {
+						console.log('onPlayerReady', this);
+						const player = this;
+						switch (self.state.selected_tab) {
+							case 'live':
+								self.removeSkipButton();
+								const currentEpg = self.getCurrentLiveEpg();
+								if (currentEpg != null) {
+									self.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
+										asset_name: assetName.toUpperCase(),
+										application_name: 'RCTI+ MWEB',
+										asset_cdn: 'Conversant',
+										version: process.env.VERSION,
+										start_session: '0',
+										player_version: process.env.PLAYER_VERSION,
+										tv_id: self.state.selected_live_event.id.toString(),
+										tv_name: assetName.toUpperCase(),
+										content_id: currentEpg.id.toString(),
+										content_title: currentEpg.title
+									});
+									self.convivaTracker.createSession();
+								}
+
+								break;
+
+							case 'catch_up_tv':
+								player.seekButtons({
+									forward: 10,
+									back: 10
+								});
+								self.setSkipButtonCentered();
+								window.onresize = () => {
+									self.setSkipButtonCentered();
+								};
+								self.setupPlayerBehavior();
+
+								self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
+									asset_name: self.state.selected_catchup.title.toUpperCase(),
 									application_name: 'RCTI+ MWEB',
 									asset_cdn: 'Conversant',
 									version: process.env.VERSION,
@@ -471,89 +499,87 @@ class Tv extends React.Component {
 									player_version: process.env.PLAYER_VERSION,
 									tv_id: self.state.selected_live_event.id.toString(),
 									tv_name: assetName.toUpperCase(),
-									content_id: currentEpg.id.toString(),
-									content_title: currentEpg.title
+									content_id: self.state.selected_catchup.id.toString(),
+									content_title: self.state.selected_catchup.title
 								});
 								self.convivaTracker.createSession();
-							}
+								break;
+						}
 
-							break;
-
-						case 'catch_up_tv':
-							player.seekButtons({
-								forward: 10,
-								back: 10
-							});
-							self.setSkipButtonCentered();
-							window.onresize = () => {
-								self.setSkipButtonCentered();
-							};
-							self.setupPlayerBehavior();
-
-							self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
-								asset_name: self.state.selected_catchup.title.toUpperCase(),
-								application_name: 'RCTI+ MWEB',
-								asset_cdn: 'Conversant',
-								version: process.env.VERSION,
-								start_session: '0',
-								player_version: process.env.PLAYER_VERSION,
-								tv_id: self.state.selected_live_event.id.toString(),
-								tv_name: assetName.toUpperCase(),
-								content_id: self.state.selected_catchup.id.toString(),
-								content_title: self.state.selected_catchup.title
-							});
-							self.convivaTracker.createSession();
-							break;
-					}
-
-					const promise = player.play();
-					if(promise !== undefined) {
-						promise.then(() => console.log('play'))
-						.catch((err) => console.log(err))
-					}
-				});
-
-				this.player.on('fullscreenchange', () => {
-					if (screen.orientation.type === 'portrait-primary') {
-						screen.orientation.lock("landscape-primary");
-					}
-					if (screen.orientation.type === 'landscape-primary') {
-						screen.orientation.lock("portrait-primary");
-					}
-				});
-				this.player.on('error', () => {
-					this.setState({
-						error: true,
-						first_init_player: true
+						const promise = player.play();
+						if (promise !== undefined) {
+							promise.then(() => console.log('play'))
+								.catch((err) => console.log(err))
+						}
 					});
-				});
-				
-				this.player.hlsQualitySelector({
-					displayCurrentQuality: true,
-				});
 
-				this.disconnectHandler = null;
-				this.player.on('waiting', (e) => {
-					this.disconnectHandler = setTimeout(() => {
-						console.log('ERROR');
+					this.player.on('fullscreenchange', () => {
+						if (screen.orientation.type === 'portrait-primary') {
+							screen.orientation.lock("landscape-primary");
+						}
+						if (screen.orientation.type === 'landscape-primary') {
+							screen.orientation.lock("portrait-primary");
+						}
+					});
+					this.player.on('error', () => {
 						this.setState({
 							error: true,
+							first_init_player: true
 						});
-					}, 40000);
-				})
+					});
 
-				this.player.on('playing', () => {
-					if (this.disconnectHandler) {
-						clearTimeout(this.disconnectHandler);
-					}
-				});
+					this.player.hlsQualitySelector({
+						displayCurrentQuality: true,
+					});
 
-				this.player.ima({ 
-					adTagUrl: this.state.player_vmap,
-					preventLateAdStart: true 
+					this.disconnectHandler = null;
+					this.player.on('waiting', (e) => {
+						console.log('WAITING');
+						if (this.disconnectHandler) {
+							console.log('CLEAR TIMEOUT');
+							clearTimeout(this.disconnectHandler);
+						}
+
+						this.disconnectHandler = setTimeout(() => {
+							console.log('ERROR');
+							this.setState({
+								error: true,
+							});
+						}, 40000);
+					})
+
+					this.player.on('playing', () => {
+						if (this.disconnectHandler) {
+							console.log('CLEAR TIMEOUT');
+							clearTimeout(this.disconnectHandler);
+						}
+					});
+
+					this.player.on('adsready', () => {
+						console.log('ads ready');
+					});
+
+					this.player.on('readyforpreroll', () => {
+						console.log('ads ready for preroll');
+					});
+
+					this.player.on('contentplayback', () => {
+						console.log('contentplayback');
+					});
+
+					this.player.on('adended', () => {
+						console.log('ad ended');
+						this.player.muted(false);
+					});
+
+					this.player.ima({
+						adTagUrl: this.state.player_vmap,
+						preventLateAdStart: true,
+						autoPlayAdBreaks: true,
+						debug: true
+					});
+					this.player.ima.initializeAdDisplayContainer();
 				});
-				this.player.ima.initializeAdDisplayContainer();
-				this.setState({ first_init_player: false });
 			}
 			else {
 				this.player.src(this.state.player_url);
@@ -1003,13 +1029,13 @@ class Tv extends React.Component {
 								<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
 							</div>
 						) : (
-							<div>
-								<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
-								<span style={{ fontSize: 12 }}>Please try again later,</span><br />
-								<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
-							</div>
-						)}
-						
+								<div>
+									<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+									<span style={{ fontSize: 12 }}>Please try again later,</span><br />
+									<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+								</div>
+							)}
+
 					</h5>
 				</div>
 			);

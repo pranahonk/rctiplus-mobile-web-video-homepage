@@ -1,5 +1,5 @@
 import { getUserId } from './appier';
-import { setCookie } from './cookie';
+import { setCookie, getCookie } from './cookie';
 
 export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName, tags) => {
     return {
@@ -30,9 +30,10 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
             return this.sessionId;
         },
         cleanUpSession: function() {
-            console.log('CLEAN UP SESSION: ' + this.sessionId);
-            if (this.sessionId != null) {
-                Conviva.LivePass.cleanupSession(this.sessionId);
+            const sessionId = getCookie('CONVIVA_SESSION_ID');
+            console.log('CLEAN UP SESSION: ' + sessionId);
+            if (sessionId != null) {
+                Conviva.LivePass.cleanupSession(sessionId);
                 this.sessionId = null;
             }
         }
