@@ -757,7 +757,7 @@ class Content extends React.Component {
                                 }}
                                 style={{
                                     position: 'absolute',
-                                    top: '45%',
+                                    top: '40%',
                                     left: '50%',
                                     marginTop: '-0.81666em',
                                     marginLeft: '-1.5em',
