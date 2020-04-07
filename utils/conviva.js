@@ -21,7 +21,7 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
             }
             
             convivaMetadata.playerName = playerName;
-            convivaMetadata.viewerId = getUserId();
+            convivaMetadata.viewerId = getUserId().toString();
 
             const streamer = new Conviva.ConvivaVideojsStreamerProxy(this.player);
             this.sessionId = Conviva.LivePass.createSession(streamer, convivaMetadata);
