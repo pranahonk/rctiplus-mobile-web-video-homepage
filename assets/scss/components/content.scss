@@ -2,6 +2,12 @@
     height: 100%;
     padding-top: 35%;
 
+    .vjs-big-play-button {
+        background: none !important;
+        border: none !important;
+        transform: scale(1.5);
+    }
+
     .vjs-seek-button {
         position: absolute !important;
         display: none;
