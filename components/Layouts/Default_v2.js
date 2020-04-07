@@ -101,7 +101,7 @@ class Default_v2 extends React.Component {
                     {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
 
 
-                    <script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>
+                    <script src="/static/js/fontawesome.js" crossOrigin="anonymous"></script>
 
                     <script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
                     <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>
@@ -162,7 +162,7 @@ class Default_v2 extends React.Component {
                 ) : <div></div>}
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
-                {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script src="https://kit.fontawesome.com/18a4a7ecd2.js" crossOrigin="anonymous"></script>) : (<Footer />)}
+                {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script src="/static/js/fontawesome.js" crossOrigin="anonymous"></script>) : (<Footer />)}
             </div>
         )
     }
