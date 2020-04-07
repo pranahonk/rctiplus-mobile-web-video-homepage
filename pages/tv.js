@@ -438,6 +438,7 @@ class Tv extends React.Component {
 				const self = this;
 				videojs.registerPlugin('hlsQualitySelector', qualitySelector);
 				this.player = videojs(this.videoNode, {
+					id: 'tv-player',
 					autoplay: true,
 					muted: isIOS,
 					controls: true,
@@ -470,7 +471,8 @@ class Tv extends React.Component {
 									player_version: process.env.PLAYER_VERSION,
 									tv_id: self.state.selected_live_event.id.toString(),
 									tv_name: assetName.toUpperCase(),
-									content_id: currentEpg.id.toString()
+									content_id: currentEpg.id.toString(),
+									content_title: currentEpg.title
 								});
 								self.convivaTracker.createSession();
 							}
@@ -489,7 +491,7 @@ class Tv extends React.Component {
 							self.setupPlayerBehavior();
 
 							self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
-								asset_name: assetName.toUpperCase(),
+								asset_name: self.state.selected_catchup.title.toUpperCase(),
 								application_name: 'RCTI+ MWEB',
 								asset_cdn: 'Conversant',
 								version: process.env.VERSION,
@@ -497,7 +499,8 @@ class Tv extends React.Component {
 								player_version: process.env.PLAYER_VERSION,
 								tv_id: self.state.selected_live_event.id.toString(),
 								tv_name: assetName.toUpperCase(),
-								content_id: self.state.selected_catchup.id.toString()
+								content_id: self.state.selected_catchup.id.toString(),
+								content_title: self.state.selected_catchup.title
 							});
 							self.convivaTracker.createSession();
 							break;
@@ -572,7 +575,8 @@ class Tv extends React.Component {
 								player_version: process.env.PLAYER_VERSION,
 								tv_id: this.state.selected_live_event.id.toString(),
 								tv_name: assetName.toUpperCase(),
-								content_id: currentEpg.id.toString()
+								content_id: currentEpg.id.toString(),
+								content_title: currentEpg.title
 							});
 							this.convivaTracker.createSession();
 						}
@@ -589,9 +593,8 @@ class Tv extends React.Component {
 							this.setSkipButtonCentered();
 						};
 						this.setupPlayerBehavior();
-
 						this.convivaTracker = convivaVideoJs(assetName, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
-							asset_name: assetName.toUpperCase(),
+							asset_name: this.state.selected_catchup.title.toUpperCase(),
 							application_name: 'RCTI+ MWEB',
 							asset_cdn: 'Conversant',
 							version: process.env.VERSION,
@@ -599,7 +602,8 @@ class Tv extends React.Component {
 							player_version: process.env.PLAYER_VERSION,
 							tv_id: this.state.selected_live_event.id.toString(),
 							tv_name: assetName.toUpperCase(),
-							content_id: this.state.selected_catchup.id.toString()
+							content_id: this.state.selected_catchup.id.toString(),
+							content_title: this.state.selected_catchup.title
 						});
 						this.convivaTracker.createSession();
 						break;
