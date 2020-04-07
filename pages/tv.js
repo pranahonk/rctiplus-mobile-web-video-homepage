@@ -509,7 +509,11 @@ class Tv extends React.Component {
 						const promise = player.play();
 						if (promise !== undefined) {
 							promise.then(() => console.log('play'))
-								.catch((err) => console.log(err))
+								.catch((err) => {
+									console.log(err);
+									// player.muted(true);
+									// player.play();
+								})
 						}
 					});
 
