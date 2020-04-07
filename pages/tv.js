@@ -440,7 +440,7 @@ class Tv extends React.Component {
 					videojs.registerPlugin('hlsQualitySelector', qualitySelector);
 					this.player = videojs(this.videoNode, {
 						id: 'tv-player',
-						muted: true,
+						muted: isIOS,
 						controls: true,
 						fluid: true,
 						aspectratio: '16:9',
@@ -555,28 +555,9 @@ class Tv extends React.Component {
 						}
 					});
 
-					this.player.on('adsready', () => {
-						console.log('ads ready');
-					});
-
-					this.player.on('readyforpreroll', () => {
-						console.log('ads ready for preroll');
-					});
-
-					this.player.on('contentplayback', () => {
-						console.log('contentplayback');
-					});
-
-					this.player.on('adended', () => {
-						console.log('ad ended');
-						this.player.muted(false);
-					});
-
 					this.player.ima({
 						adTagUrl: this.state.player_vmap,
-						preventLateAdStart: true,
-						autoPlayAdBreaks: true,
-						debug: true
+						preventLateAdStart: true
 					});
 					this.player.ima.initializeAdDisplayContainer();
 				});

@@ -22,7 +22,6 @@ import videojs from 'video.js';
 import 'videojs-contrib-ads';
 import 'videojs-ima';
 import 'video.js/src/css/video-js.scss';
-import 'videojs-hls-quality-selector';
 import qualitySelector from 'videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
 // import 'videojs-youtube';
@@ -306,9 +305,12 @@ class Content extends React.Component {
                 const promise = vm.play();
                 if(promise !== undefined) {
                     promise.then(() => {
-                    console.log('autoplay')
-                })
-                    .catch((err) => console.log(err))
+                        console.log('autoplay')
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        vm.play();
+                    })
                 }
             })
             this.player.on('error', (e) => {
@@ -347,6 +349,13 @@ class Content extends React.Component {
                     for (let i = 0; i < seekButtons.length; i++) {
                         seekButtons[i].style.display = 'none';
                     }
+                }
+            });
+
+            this.player.on('ads-ad-started', () => {
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
                 }
             });
 
