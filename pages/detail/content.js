@@ -305,12 +305,10 @@ class Content extends React.Component {
                 const promise = vm.play();
                 if(promise !== undefined) {
                     promise.then(() => {
-                        console.log('autoplay')
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        vm.play();
-                    })
+                    vm.play()
+                    console.log('autoplay')
+                })
+                    .catch((err) => console.log(err))
                 }
             })
             this.player.on('error', (e) => {
