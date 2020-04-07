@@ -53,12 +53,6 @@ class PlayerModal extends React.Component {
         }
     }
 
-    componentWillUnmount() {
-        if (this.player) {
-            this.player.dispose();
-        }
-    }
-
     tryAgain() {
         this.props.setPageLoader();
         this.setState({ error: false }, () => {
@@ -78,6 +72,11 @@ class PlayerModal extends React.Component {
                 if (this.convivaTracker) {
                     this.convivaTracker.cleanUpSession();
                 }
+                if (this.disconnectHandler) {
+                    clearTimeout(this.disconnectHandler);
+                    this.disconnectHandler = null;
+                }
+
                 this.player.dispose();
             }
         }
@@ -179,6 +178,13 @@ class PlayerModal extends React.Component {
                     for (let i = 0; i < seekButtons.length; i++) {
                         seekButtons[i].style.display = 'none';
                     }
+                }
+            });
+
+            this.player.on('ads-ad-started', () => {
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
                 }
             });
 
