@@ -41,6 +41,7 @@ class PlayerModal extends React.Component {
         this.intervalFn = null;
         this.videoNode = null;
         this.convivaTracker = null;
+        this.disconnectHandler = null;
 
         const segments = this.props.router.asPath.split(/\?/);
         this.reference = null;
@@ -205,9 +206,14 @@ class PlayerModal extends React.Component {
                 }
             });
 
-            let disconnectHandler = null;
+            this.disconnectHandler = null;
             this.player.on('waiting', (e) => {
-                disconnectHandler = setTimeout(() => {
+                if (this.disconnectHandler) {
+                    clearTimeout(this.disconnectHandler);
+                    this.disconnectHandler = null;
+                }
+                
+                this.disconnectHandler = setTimeout(() => {
                     this.setState({
                         error: true,
                     });
@@ -215,8 +221,8 @@ class PlayerModal extends React.Component {
             })
 
             this.player.on('playing', () => {
-                if (disconnectHandler) {
-                    clearTimeout(disconnectHandler);
+                if (this.disconnectHandler) {
+                    clearTimeout(this.disconnectHandler);
                 }
             });
 

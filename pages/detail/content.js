@@ -104,6 +104,7 @@ class Content extends React.Component {
 
         this.historyHandler = null;
         this.historyAppierHandler = null;
+        this.disconnectHandler = null;
     }
 
     componentWillUnmount() {
@@ -388,9 +389,14 @@ class Content extends React.Component {
 
             this.player.currentTime(this.state.start_duration);
 
-            let disconnectHandler = null;
+            this.disconnectHandler = null;
             this.player.on('waiting', (e) => {
-                disconnectHandler = setTimeout(() => {
+                if (this.disconnectHandler) {
+                    clearTimeout(this.disconnectHandler);
+                    this.disconnectHandler = null;
+                }
+
+                this.disconnectHandler = setTimeout(() => {
                     if (this.historyHandler) {
                         clearInterval(this.historyHandler);
                     }
@@ -404,8 +410,8 @@ class Content extends React.Component {
             })
 
             this.player.on('playing', () => {
-                if (disconnectHandler) {
-                    clearTimeout(disconnectHandler);
+                if (this.disconnectHandler) {
+                    clearTimeout(this.disconnectHandler);
                 }
             });
             
