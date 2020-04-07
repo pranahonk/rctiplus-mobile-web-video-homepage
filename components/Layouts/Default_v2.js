@@ -18,6 +18,8 @@ import '../../node_modules/video.js/dist/video-js.min.css';
 import '../../node_modules/videojs-contrib-ads/dist/videojs.ads.css';
 import '../../node_modules/videojs-ima/dist/videojs.ima.css';
 
+import '../../assets/scss/videojs.scss';
+
 class Default_v2 extends React.Component {
 
     constructor(props) {
