@@ -25,7 +25,8 @@ export default withRedux(initStore, { debug: false })(
                 navigator.userAgent.match(/Android/i) ||
                 navigator.userAgent.match(/webOS/i) ||
                 navigator.userAgent.match(/iPhone/i) ||
-                navigator.userAgent.match(/iPod/i)) {
+                navigator.userAgent.match(/iPod/i) || 
+                navigator.userAgent.match(/iPad/i)) {
             } 
             else {
                 window.location.href = process.env.REDIRECT_WEB_DESKTOP + window.location.pathname;
