@@ -357,8 +357,15 @@ class Content extends React.Component {
                 }
             });
 
+            this.player.on('readyforpreroll', () => {
+                console.log('READY');
+            });
+
+            this.player.on('nopreroll', () => {
+                console.log('NO PRE ROLL');
+            });
+
             this.player.on('play', () => {
-                console.log('play')
                 const seekButtons = document.getElementsByClassName('vjs-seek-button');
                 for (let i = 0; i < seekButtons.length; i++) {
                     seekButtons[i].style.display = 'none';
@@ -379,9 +386,11 @@ class Content extends React.Component {
                     seekButtons[i].style.display = 'none';
                 }
 
-                const playButton = document.getElementsByClassName('vjs-big-play-button');
-                if (playButton.length > 0) {
-                    playButton[0].style.display = 'block';
+                if (pauseCounter++ > 0) {
+                    const playButton = document.getElementsByClassName('vjs-big-play-button');
+                    if (playButton.length > 0) {
+                        playButton[0].style.display = 'block';
+                    }
                 }
 
                 this.setState({ playing: false });
@@ -419,7 +428,6 @@ class Content extends React.Component {
             })
 
             this.player.on('playing', () => {
-                console.log('PLAYING');
                 if (this.disconnectHandler) {
                     clearTimeout(this.disconnectHandler);
                 }
@@ -427,8 +435,8 @@ class Content extends React.Component {
                 this.setState({ playing: true });
             });
             
-            // this.player.ima({ adTagUrl: this.state.player_vmap });
-            // this.player.ima.initializeAdDisplayContainer();
+            this.player.ima({ adTagUrl: this.state.player_vmap });
+            this.player.ima.initializeAdDisplayContainer();
         }
     }
 
