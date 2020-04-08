@@ -15,7 +15,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Wrench from '../../components/Includes/Common/Wrench';
 import PauseIcon from '../../components/Includes/Common/PauseIcon';
 
-import Layout from '../../components/Layouts/Default';
+import Layout from '../../components/Layouts/Default_v2';
 
 import '../../assets/scss/components/content.scss';
 
@@ -110,18 +110,6 @@ class Content extends React.Component {
         this.disconnectHandler = null;
     }
 
-    componentWillUnmount() {
-        if (this.player && this.videoNode) {
-            if (this.historyHandler) {
-                clearInterval(this.historyHandler);
-            }
-            if (this.historyAppierHandler) {
-                clearInterval(this.historyAppierHandler);
-            }
-            this.player.dispose();
-        }
-    }
-
     shouldComponentUpdate(nextProps, nextState) {
         if (this.state.end_duration != nextState.end_duration) {
             return false;
@@ -134,7 +122,7 @@ class Content extends React.Component {
         const playerHeight = document.getElementById(this.player.id()).clientHeight;
         const seekButtons = document.getElementsByClassName('vjs-seek-button');
         for (let i = 0; i < seekButtons.length; i++) {
-            seekButtons[i].style.bottom = (Math.floor(playerHeight / 2)) + 'px';
+            seekButtons[i].style.bottom = (Math.floor(playerHeight / 2) - 5) + 'px';
         }
     }
 
@@ -261,6 +249,10 @@ class Content extends React.Component {
                     start_session: self.state.start_duration.toString()
                 });
                 self.convivaTracker.createSession();
+
+                setTimeout(() => {
+                    self.setSkipButtonCentered(); // set centered with delay
+                }, 2000);
             });
 
             this.player.on('fullscreenchange', () => {
@@ -379,6 +371,7 @@ class Content extends React.Component {
                 this.setState({ playing: true });
             });
 
+            let pauseCounter = 0; // avoid trigger first pause
             this.player.on('pause', () => {
                 const seekButtons = document.getElementsByClassName('vjs-seek-button');
                 for (let i = 0; i < seekButtons.length; i++) {
@@ -421,14 +414,16 @@ class Content extends React.Component {
             })
 
             this.player.on('playing', () => {
+                console.log('PLAYING');
                 if (this.disconnectHandler) {
                     clearTimeout(this.disconnectHandler);
                 }
+
                 this.setState({ playing: true });
             });
             
-            this.player.ima({ adTagUrl: this.state.player_vmap });
-            this.player.ima.initializeAdDisplayContainer();
+            // this.player.ima({ adTagUrl: this.state.player_vmap });
+            // this.player.ima.initializeAdDisplayContainer();
         }
     }
 
@@ -632,6 +627,13 @@ class Content extends React.Component {
     async componentDidMount() {
         Router.events.on("routeChangeStart", () => {
             if (this.player && this.videoNode) {
+                if (this.historyHandler) {
+                    console.log('clear');
+                    clearInterval(this.historyHandler);
+                }
+                if (this.historyAppierHandler) {
+                    clearInterval(this.historyAppierHandler);
+                }
                 this.player.dispose();
             }
         });
@@ -762,7 +764,9 @@ class Content extends React.Component {
                                     marginTop: '-0.81666em',
                                     marginLeft: '-1.5em',
                                     display: this.state.playing && this.state.user_active ? 'block' : 'none',
-                                    transform: 'scale(1.5)'
+                                    transform: 'scale(1.5)',
+                                    height: '1.63332em',
+                                    width: '3em'
                                 }}>
                                 <PauseIcon/>
                             </div>
