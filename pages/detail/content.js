@@ -86,7 +86,8 @@ class Content extends React.Component {
             end_duration: 0,
             hide_footer: false,
             playing: false,
-            user_active: false
+            user_active: false,
+            quality_selector_shown: false
         };
         this.player = null;
         this.videoNode = null;
@@ -123,6 +124,63 @@ class Content extends React.Component {
         const seekButtons = document.getElementsByClassName('vjs-seek-button');
         for (let i = 0; i < seekButtons.length; i++) {
             seekButtons[i].style.bottom = (Math.floor(playerHeight / 2) - 5) + 'px';
+        }
+    }
+
+    changeQualityIconButton() {
+        const self = this;
+        setTimeout(() => {
+            const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+            if (qualitySelectorElement.length > 0) {
+                const childs = qualitySelectorElement[0].childNodes;
+                for (let i = 0; i < childs.length; i++) {
+                    if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
+                        if (isAndroid || isIOS) {
+                            console.log('test');
+                            childs[i].addEventListener('touchstart', function() {
+                                console.log('touch');
+                                self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                            });
+                            const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
+                            for (let j = 0; j < qualityItems.length; j++) {
+                                qualityItems[j].addEventListener('touchstart', function() {
+                                    console.log('touch');
+                                    self.setState({ quality_selector_shown: false });
+                                });
+                            }
+                        }
+                        else {
+                            childs[i].addEventListener('click', function() {
+                                console.log('click');
+                                self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                            });
+                        }
+                        
+                        
+                        const grandChilds = childs[i].childNodes;
+                        for (let j = 0; j < grandChilds.length; j++) {
+                            if (grandChilds[j].className == 'vjs-icon-placeholder') {
+                                grandChilds[j].innerHTML = '<i style="transform: scale(1.5)" class="fas fa-cog"></i>';
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }, 1000);
+    }
+
+    triggerQualityButtonClick(type = '') {
+        const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+        if (qualitySelectorElement.length > 0) {
+            const childs = qualitySelectorElement[0].childNodes;
+            for (let i = 0; i < childs.length; i++) {
+                if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button' && type == 'inactive') {
+                    childs[i].click();
+                    break;
+                }
+            }
         }
     }
 
@@ -301,12 +359,15 @@ class Content extends React.Component {
                 const promise = vm.play();
                 if(promise !== undefined) {
                     promise.then(() => {
-                    vm.play()
-                    console.log('autoplay')
-                })
+                        vm.play()
+                        console.log('autoplay')
+                    })
                     .catch((err) => console.log(err))
                 }
-            })
+
+                self.changeQualityIconButton();
+            });
+
             this.player.on('error', (e) => {
                 console.log(e);
                 if (this.historyHandler) {
@@ -345,8 +406,12 @@ class Content extends React.Component {
                     for (let i = 0; i < seekButtons.length; i++) {
                         seekButtons[i].style.display = 'none';
                     }
-
+                    
                     this.setState({ user_active: false });
+                }
+
+                if (this.state.quality_selector_shown) {
+                    this.triggerQualityButtonClick('inactive');
                 }
             });
 
@@ -355,14 +420,6 @@ class Content extends React.Component {
                 if (playButton.length > 0) {
                     playButton[0].style.display = 'none';
                 }
-            });
-
-            this.player.on('readyforpreroll', () => {
-                console.log('READY');
-            });
-
-            this.player.on('nopreroll', () => {
-                console.log('NO PRE ROLL');
             });
 
             this.player.on('play', () => {
