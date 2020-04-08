@@ -386,8 +386,8 @@ class PlayerModal extends React.Component {
                 this.setState({ playing: true });
             });
 
-            // this.player.ima({ adTagUrl: this.props.vmap });
-            // this.player.ima.initializeAdDisplayContainer();
+            this.player.ima({ adTagUrl: this.props.vmap });
+            this.player.ima.initializeAdDisplayContainer();
             this.setState({ screen_width: window.outerWidth });
         }
     }
