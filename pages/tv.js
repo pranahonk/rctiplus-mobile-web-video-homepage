@@ -451,9 +451,9 @@ class Tv extends React.Component {
 	changeQualityIconButton() {
         const self = this;
         setTimeout(() => {
-            const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+			const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
             if (qualitySelectorElement.length > 0) {
-                const childs = qualitySelectorElement[0].childNodes;
+				const childs = qualitySelectorElement[0].childNodes;
                 for (let i = 0; i < childs.length; i++) {
                     if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
                         childs[i].addEventListener('touchstart', function() {
@@ -472,7 +472,7 @@ class Tv extends React.Component {
                             self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
                         });
                         
-                        const grandChilds = childs[i].childNodes;
+						const grandChilds = childs[i].childNodes;
                         for (let j = 0; j < grandChilds.length; j++) {
                             if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
                                 grandChilds[j].classList.remove('vjs-icon-hd');
