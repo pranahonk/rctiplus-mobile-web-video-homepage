@@ -87,7 +87,8 @@ class Content extends React.Component {
             hide_footer: false,
             playing: false,
             user_active: false,
-            quality_selector_shown: false
+            quality_selector_shown: false,
+            screen_width: 320
         };
         this.player = null;
         this.videoNode = null;
@@ -119,11 +120,19 @@ class Content extends React.Component {
         return true;
     }
 
-    setSkipButtonCentered() {
+    setSkipButtonCentered(orientation = 'portrait') {
         const playerHeight = document.getElementById(this.player.id()).clientHeight;
         const seekButtons = document.getElementsByClassName('vjs-seek-button');
         for (let i = 0; i < seekButtons.length; i++) {
             seekButtons[i].style.bottom = (Math.floor(playerHeight / 2) - 5) + 'px';
+
+            if (i == 0) {
+                seekButtons[i].style.left = (this.state.screen_width - ((this.state.screen_width / 3) * (orientation == 'portrait' ? 2.35 : 2.20))) + 'px';
+            }
+            else if (i == 1) {
+                seekButtons[i].style.left = (this.state.screen_width - (this.state.screen_width / 3)) + 'px';
+            }
+            
         }
     }
 
@@ -308,6 +317,16 @@ class Content extends React.Component {
                 }, 2000);
             });
 
+            window.onorientationchange = () => {
+                this.player.userActive(false);
+                setTimeout(() => {
+                    this.setState({ screen_width: window.outerWidth }, () => {
+                        let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
+                        this.setSkipButtonCentered(orientation);
+                    });
+                }, 1000);
+            };
+
             this.player.on('fullscreenchange', () => {
                 if (screen.orientation.type === 'portrait-primary') {
                     screen.orientation.lock("landscape-primary");
@@ -360,7 +379,9 @@ class Content extends React.Component {
                     .catch((err) => console.log(err))
                 }
 
-                self.changeQualityIconButton();
+                setTimeout(() => {
+                    self.changeQualityIconButton();
+                }, 100);
             });
 
             this.player.on('error', (e) => {
@@ -487,8 +508,10 @@ class Content extends React.Component {
                 this.setState({ playing: true });
             });
             
+            
             this.player.ima({ adTagUrl: this.state.player_vmap });
             this.player.ima.initializeAdDisplayContainer();
+            this.setState({ screen_width: window.outerWidth });
         }
     }
 
@@ -824,14 +847,12 @@ class Content extends React.Component {
                                 }}
                                 style={{
                                     position: 'absolute',
-                                    top: '40%',
-                                    left: '50%',
+                                    top: '50%',
+                                    left: this.state.screen_width / 2,
                                     marginTop: '-0.81666em',
-                                    marginLeft: '-1.5em',
                                     display: this.state.playing && this.state.user_active ? 'block' : 'none',
-                                    transform: 'scale(1.5)',
-                                    height: '1.63332em',
-                                    width: '3em'
+                                    transform: 'scale(1.5) translateX(-30%) translateY(-30%)',
+                                    padding: 0
                                 }}>
                                 <PauseIcon/>
                             </div>
