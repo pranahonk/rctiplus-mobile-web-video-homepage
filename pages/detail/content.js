@@ -358,6 +358,7 @@ class Content extends React.Component {
             });
 
             this.player.on('play', () => {
+                console.log('play')
                 const seekButtons = document.getElementsByClassName('vjs-seek-button');
                 for (let i = 0; i < seekButtons.length; i++) {
                     seekButtons[i].style.display = 'none';
@@ -395,6 +396,10 @@ class Content extends React.Component {
 
             this.disconnectHandler = null;
             this.player.on('waiting', (e) => {
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
+                }
                 if (this.disconnectHandler) {
                     clearTimeout(this.disconnectHandler);
                     this.disconnectHandler = null;
@@ -771,6 +776,7 @@ class Content extends React.Component {
                                 <PauseIcon/>
                             </div>
                             <video 
+                                preload="auto"
                                 autoPlay
                                 playsInline
                                 style={{ 
