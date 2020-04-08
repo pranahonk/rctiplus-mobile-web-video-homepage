@@ -176,7 +176,7 @@ class PlayerModal extends React.Component {
                     type: 'application/x-mpegURL',
                 }],
             }, function onPlayerReady() {
-                const vm = this
+                const vm = this;
                 console.log('onPlayerReady', vm.landscapeFullscreen);
                 if(isIOS) {
                     vm.muted(true)

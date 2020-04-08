@@ -147,6 +147,7 @@ class LiveEvent extends React.Component {
 		this.player = null;
 		this.videoNode = null;
 		this.convivaTracker = null;
+		this.disconnectHandler = null;
 		this.props.setPageLoader();
 	}
 	
@@ -479,14 +480,18 @@ class LiveEvent extends React.Component {
 				displayCurrentQuality: true,
 			});
 
-			let disconnectHandler = null;
+			this.disconnectHandler = null;
 			this.player.on('waiting', (e) => {
 				const playButton = document.getElementsByClassName('vjs-big-play-button');
                 if (playButton.length > 0) {
                     playButton[0].style.display = 'none';
 				}
+				if (this.disconnectHandler) {
+                    clearTimeout(this.disconnectHandler);
+                    this.disconnectHandler = null;
+                }
 				
-				disconnectHandler = setTimeout(() => {
+				this.disconnectHandler = setTimeout(() => {
 					this.setState({
 						error: true,
 					});
@@ -494,8 +499,8 @@ class LiveEvent extends React.Component {
 			})
 
 			this.player.on('playing', () => {
-				if (disconnectHandler) {
-					clearTimeout(disconnectHandler);
+				if (this.disconnectHandler) {
+					clearTimeout(this.disconnectHandler);
 				}
 
 				this.setState({ playing: true });
