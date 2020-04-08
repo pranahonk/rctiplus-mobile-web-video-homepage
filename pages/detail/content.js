@@ -135,31 +135,26 @@ class Content extends React.Component {
                 const childs = qualitySelectorElement[0].childNodes;
                 for (let i = 0; i < childs.length; i++) {
                     if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
-                        if (isAndroid || isIOS) {
-                            console.log('test');
-                            childs[i].addEventListener('touchstart', function() {
+                        childs[i].addEventListener('touchstart', function() {
+                            console.log('touch');
+                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                        });
+                        const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
+                        for (let j = 0; j < qualityItems.length; j++) {
+                            qualityItems[j].addEventListener('touchstart', function() {
                                 console.log('touch');
-                                self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
-                            });
-                            const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
-                            for (let j = 0; j < qualityItems.length; j++) {
-                                qualityItems[j].addEventListener('touchstart', function() {
-                                    console.log('touch');
-                                    self.setState({ quality_selector_shown: false });
-                                });
-                            }
-                        }
-                        else {
-                            childs[i].addEventListener('click', function() {
-                                console.log('click');
-                                self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                                self.setState({ quality_selector_shown: false });
                             });
                         }
-                        
+                        childs[i].addEventListener('click', function() {
+                            console.log('click');
+                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                        });
                         
                         const grandChilds = childs[i].childNodes;
                         for (let j = 0; j < grandChilds.length; j++) {
-                            if (grandChilds[j].className == 'vjs-icon-placeholder') {
+                            if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
+                                grandChilds[j].classList.remove('vjs-icon-hd');
                                 grandChilds[j].innerHTML = '<i style="transform: scale(1.5)" class="fas fa-cog"></i>';
                                 break;
                             }
@@ -381,7 +376,7 @@ class Content extends React.Component {
                 });
             });
             this.player.hlsQualitySelector({
-                displayCurrentQuality: true,
+                displayCurrentQuality: false
             });
             
             this.player.seekButtons({
