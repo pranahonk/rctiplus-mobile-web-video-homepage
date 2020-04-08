@@ -132,7 +132,6 @@ class Content extends React.Component {
             else if (i == 1) {
                 seekButtons[i].style.left = (this.state.screen_width - (this.state.screen_width / 3)) + 'px';
             }
-            
         }
     }
 
@@ -318,13 +317,15 @@ class Content extends React.Component {
             });
 
             window.onorientationchange = () => {
-                this.player.userActive(false);
-                setTimeout(() => {
-                    this.setState({ screen_width: window.outerWidth }, () => {
-                        let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
-                        this.setSkipButtonCentered(orientation);
-                    });
-                }, 1000);
+                if (!isIOS) {
+                    this.player.userActive(false);
+                    setTimeout(() => {
+                        this.setState({ screen_width: window.outerWidth }, () => {
+                            let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
+                            this.setSkipButtonCentered(orientation);
+                        });
+                    }, 1000);
+                }
             };
 
             this.player.on('fullscreenchange', () => {

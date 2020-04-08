@@ -15,7 +15,6 @@ import MuteChat from '../components/Includes/Common/MuteChat';
 import initialize from '../utils/initialize';
 import { getCookie } from '../utils/cookie';
 import { showSignInAlert } from '../utils/helpers';
-import { formatDateWord } from '../utils/dateHelpers';
 import { contentGeneralEvent } from '../utils/appier';
 
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
@@ -23,7 +22,7 @@ import pageActions from '../redux/actions/pageActions';
 import chatsActions from '../redux/actions/chats';
 import userActions from '../redux/actions/userActions';
 
-import Layout from '../components/Layouts/Default';
+import Layout from '../components/Layouts/Default_v2';
 import Wrench from '../components/Includes/Common/Wrench';
 
 import { Row, Col, Button, Input } from 'reactstrap';
@@ -35,6 +34,7 @@ import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import PauseIcon from '../components/Includes/Common/PauseIcon';
 
 import { DEV_API, VISITOR_TOKEN } from '../config';
 
@@ -124,7 +124,11 @@ class LiveEvent extends React.Component {
 			live_events: [],
 			meta: {},
 			resolution: 300,
-			status: this.props.selected_event_url ? this.props.selected_event_url.status : false
+			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
+			screen_width: 320,
+			quality_selector_shown: false,
+			playing: false,
+            user_active: false
 		};
 
 		const segments = this.props.router.asPath.split(/\?/);
@@ -277,6 +281,58 @@ class LiveEvent extends React.Component {
 		});
 	}
 
+	changeQualityIconButton() {
+        const self = this;
+        setTimeout(() => {
+            const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+            if (qualitySelectorElement.length > 0) {
+                const childs = qualitySelectorElement[0].childNodes;
+                for (let i = 0; i < childs.length; i++) {
+                    if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
+                        childs[i].addEventListener('touchstart', function() {
+                            console.log('touch');
+                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                        });
+                        const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
+                        for (let j = 0; j < qualityItems.length; j++) {
+                            qualityItems[j].addEventListener('touchstart', function() {
+                                console.log('touch');
+                                self.setState({ quality_selector_shown: false });
+                            });
+                        }
+                        childs[i].addEventListener('click', function() {
+                            console.log('click');
+                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                        });
+                        
+                        const grandChilds = childs[i].childNodes;
+                        for (let j = 0; j < grandChilds.length; j++) {
+                            if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
+                                grandChilds[j].classList.remove('vjs-icon-hd');
+                                grandChilds[j].innerHTML = '<i style="transform: scale(1.5)" class="fas fa-cog"></i>';
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }, 1000);
+    }
+
+    triggerQualityButtonClick(type = '') {
+        const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+        if (qualitySelectorElement.length > 0) {
+            const childs = qualitySelectorElement[0].childNodes;
+            for (let i = 0; i < childs.length; i++) {
+                if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button' && type == 'inactive') {
+                    childs[i].click();
+                    break;
+                }
+            }
+        }
+    }
+
 	initPlayer() {
 		if (this.videoNode) {
 			let url = '';
@@ -301,6 +357,7 @@ class LiveEvent extends React.Component {
 				autoplay: true,
 				controls: true,
 				fluid: true,
+				muted: isIOS,
 				aspectratio: '16:9',
 				fill: true,
 				html5: {
@@ -314,6 +371,31 @@ class LiveEvent extends React.Component {
 				}]
 			}, function onPlayerReady() {
 				console.log('onPlayerReady', this);
+				const vm = this;
+				if(isIOS) {
+                    vm.muted(true)
+                    const wrapElement = document.getElementsByClassName('video-js');
+                    const elementCreateWrapper = document.createElement('btn');
+                    const elementMuteIcon = document.createElement('span');
+                    elementCreateWrapper.classList.add('jwplayer-vol-off');
+                    elementCreateWrapper.innerText = 'Tap to unmute ';
+                    wrapElement[0].appendChild(elementCreateWrapper);
+                    elementCreateWrapper.appendChild(elementMuteIcon);
+                    elementCreateWrapper.addEventListener('click', function() {
+                        console.log('mute video')
+                        if (elementCreateWrapper === null) {
+                            vm.muted(false);
+                            elementCreateWrapper.classList.add('jwplayer-mute');
+                            elementCreateWrapper.classList.remove('jwplayer-full');
+                        } 
+                        else {
+                            vm.muted(false);
+                            elementCreateWrapper.classList.add('jwplayer-full');
+                            elementCreateWrapper.classList.remove('jwplayer-mute');
+                        }
+                    });
+                }
+
 				const player = this;
 				const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
 				this.convivaTracker = convivaVideoJs(assetName, player, true, url, 'Live Event ' + assetName.toUpperCase(), {
@@ -338,7 +420,47 @@ class LiveEvent extends React.Component {
 					promise.then(() => console.log('play'))
 						.catch((err) => console.log('err'))
 				}
-			})
+
+				setTimeout(() => {
+                    self.changeQualityIconButton();
+                }, 100);
+			});
+
+			window.onorientationchange = () => {
+                if (!isIOS) {
+                    this.player.userActive(false);
+                    setTimeout(() => {
+                        this.setState({ screen_width: window.outerWidth });
+                    }, 1000);
+                }
+            };
+
+			this.player.on('useractive', () => {
+                if (!this.player.paused()) {
+                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                    for (let i = 0; i < seekButtons.length; i++) {
+                        seekButtons[i].style.display = 'block';
+                    }
+
+                    this.setState({ user_active: true });
+                }
+            });
+
+            this.player.on('userinactive', () => {
+                if (!this.player.paused()) {
+                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                    for (let i = 0; i < seekButtons.length; i++) {
+                        seekButtons[i].style.display = 'none';
+                    }
+                    
+                    this.setState({ user_active: false });
+                }
+
+                if (this.state.quality_selector_shown) {
+                    this.triggerQualityButtonClick('inactive');
+                }
+            });
+
 			this.player.on('fullscreenchange', () => {
 				if (screen.orientation.type === 'portrait-primary') {
 					screen.orientation.lock("landscape-primary");
@@ -359,6 +481,11 @@ class LiveEvent extends React.Component {
 
 			let disconnectHandler = null;
 			this.player.on('waiting', (e) => {
+				const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
+				}
+				
 				disconnectHandler = setTimeout(() => {
 					this.setState({
 						error: true,
@@ -370,13 +497,55 @@ class LiveEvent extends React.Component {
 				if (disconnectHandler) {
 					clearTimeout(disconnectHandler);
 				}
+
+				this.setState({ playing: true });
 			});
 
-			this.player.ima({
-				adTagUrl: vmap,
-				preventLateAdStart: true
-			});
-			this.player.ima.initializeAdDisplayContainer();
+			this.player.on('ads-ad-started', () => {
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
+                }
+            });
+
+            this.player.on('play', () => {
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'none';
+                }
+
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
+                }
+
+                this.setState({ playing: true });
+            });
+
+			let pauseCounter = 0; // avoid trigger first pause
+            this.player.on('pause', () => {
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'none';
+                }
+
+                if (pauseCounter++ > 0) {
+                    const playButton = document.getElementsByClassName('vjs-big-play-button');
+                    if (playButton.length > 0) {
+                        playButton[0].style.display = 'block';
+                    }
+                }
+
+                this.setState({ playing: false });
+            });
+
+			// this.player.ima({
+			// 	adTagUrl: vmap,
+			// 	preventLateAdStart: true
+			// });
+			// this.player.ima.initializeAdDisplayContainer();
+
+			this.setState({ screen_width: window.outerWidth });
 		}
 	}
 
@@ -673,7 +842,25 @@ class LiveEvent extends React.Component {
 			playerRef = (
 				<div className="player-liveevent-container">
 					<div data-vjs-player>
+						<div
+							onClick={() => {
+								if (this.player) {
+									this.player.pause();
+								}
+							}}
+							style={{
+								position: 'absolute',
+								top: '50%',
+								left: this.state.screen_width / 2,
+								marginTop: '-0.81666em',
+								display: this.state.playing && this.state.user_active ? 'block' : 'none',
+								transform: 'scale(1.5) translateX(-30%) translateY(-30%)',
+								padding: 0
+							}}>
+							<PauseIcon/>
+						</div>
 						<video
+							autoPlay
 							playsInline
 							style={{
 								width: '100%',

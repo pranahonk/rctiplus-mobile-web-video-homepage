@@ -14,7 +14,7 @@ import pageActions from '../redux/actions/pageActions';
 import chatsActions from '../redux/actions/chats';
 import userActions from '../redux/actions/userActions';
 
-import Layout from '../components/Layouts/Default';
+import Layout from '../components/Layouts/Default_v2';
 import SelectDateModal from '../components/Modals/SelectDateModal';
 import ActionSheet from '../components/Modals/ActionSheet';
 import Wrench from '../components/Includes/Common/Wrench';
@@ -33,6 +33,7 @@ import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import PauseIcon from '../components/Includes/Common/PauseIcon';
 import { isIOS } from 'react-device-detect';
 
 import { BASE_URL, SITEMAP } from '../config';
@@ -100,7 +101,11 @@ class Tv extends React.Component {
 			},
 			ad_closed: true,
 			first_init_player: true,
-			status: false
+			status: false,
+			screen_width: 320,
+			quality_selector_shown: false,
+			playing: false,
+            user_active: false
 		};
 
 		this.player = null;
@@ -368,6 +373,8 @@ class Tv extends React.Component {
 					for (let i = 0; i < seekButtons.length; i++) {
 						seekButtons[i].style.display = 'block';
 					}
+					
+					this.setState({ user_active: true });
 				}
 			});
 
@@ -377,7 +384,13 @@ class Tv extends React.Component {
 					for (let i = 0; i < seekButtons.length; i++) {
 						seekButtons[i].style.display = 'none';
 					}
+
+					this.setState({ user_active: false });
 				}
+
+				if (this.state.quality_selector_shown) {
+                    this.triggerQualityButtonClick('inactive');
+                }
 			});
 
 			this.player.on('play', () => {
@@ -390,6 +403,8 @@ class Tv extends React.Component {
 				if (playButton.length > 0) {
 					playButton[0].style.display = 'none';
 				}
+
+				this.setState({ playing: true });
 			});
 
 			this.player.on('pause', () => {
@@ -402,23 +417,88 @@ class Tv extends React.Component {
 				if (playButton.length > 0) {
 					playButton[0].style.display = 'block';
 				}
+
+				this.setState({ playing: false });
+			});
+
+			this.player.on('playing', () => {
+				this.setState({ playing: true });
 			});
 		}
 	}
 
-	setSkipButtonCentered() {
+	setSkipButtonCentered(orientation = 'portrait') {
 		if (this.player) {
 			const player = document.getElementById(this.player.id());
 			if (player) {
 				const playerHeight = player.clientHeight;
 				const seekButtons = document.getElementsByClassName('vjs-seek-button');
 				for (let i = 0; i < seekButtons.length; i++) {
-					seekButtons[i].style.bottom = (Math.floor(playerHeight / 2)) + 'px';
+					seekButtons[i].style.bottom = (Math.floor(playerHeight / 2) - 5) + 'px';
+
+					if (i == 0) {
+						seekButtons[i].style.left = (this.state.screen_width - ((this.state.screen_width / 3) * (orientation == 'portrait' ? 2.35 : 2.20))) + 'px';
+					}
+					else if (i == 1) {
+						seekButtons[i].style.left = (this.state.screen_width - (this.state.screen_width / 3)) + 'px';
+					}
 				}
 			}
 
 		}
 	}
+
+	changeQualityIconButton() {
+        const self = this;
+        setTimeout(() => {
+            const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+            if (qualitySelectorElement.length > 0) {
+                const childs = qualitySelectorElement[0].childNodes;
+                for (let i = 0; i < childs.length; i++) {
+                    if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
+                        childs[i].addEventListener('touchstart', function() {
+                            console.log('touch');
+                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                        });
+                        const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
+                        for (let j = 0; j < qualityItems.length; j++) {
+                            qualityItems[j].addEventListener('touchstart', function() {
+                                console.log('touch');
+                                self.setState({ quality_selector_shown: false });
+                            });
+                        }
+                        childs[i].addEventListener('click', function() {
+                            console.log('click');
+                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                        });
+                        
+                        const grandChilds = childs[i].childNodes;
+                        for (let j = 0; j < grandChilds.length; j++) {
+                            if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
+                                grandChilds[j].classList.remove('vjs-icon-hd');
+                                grandChilds[j].innerHTML = '<i style="transform: scale(1.5)" class="fas fa-cog"></i>';
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }, 1000);
+    }
+
+    triggerQualityButtonClick(type = '') {
+        const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+        if (qualitySelectorElement.length > 0) {
+            const childs = qualitySelectorElement[0].childNodes;
+            for (let i = 0; i < childs.length; i++) {
+                if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button' && type == 'inactive') {
+                    childs[i].click();
+                    break;
+                }
+            }
+        }
+    }
 
 	initPlayer() {
 
@@ -435,13 +515,14 @@ class Tv extends React.Component {
 		if (this.videoNode) {
 			const assetName = this.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : this.state.selected_live_event.channel_code;
 			if (this.state.first_init_player) {
-				this.setState({ first_init_player: false }, () => {
+				this.setState({ first_init_player: false, screen_width: window.outerWidth }, () => {
 					const self = this;
 					videojs.registerPlugin('hlsQualitySelector', qualitySelector);
 					this.player = videojs(this.videoNode, {
 						id: 'tv-player',
-						muted: isIOS,
+						autoplay: true,
 						controls: true,
+						muted: isIOS,
 						fluid: true,
 						aspectratio: '16:9',
 						fill: true,
@@ -476,7 +557,6 @@ class Tv extends React.Component {
 									});
 									self.convivaTracker.createSession();
 								}
-
 								break;
 
 							case 'catch_up_tv':
@@ -484,11 +564,12 @@ class Tv extends React.Component {
 									forward: 10,
 									back: 10
 								});
-								self.setSkipButtonCentered();
+								setTimeout(() => {
+									self.setSkipButtonCentered();
+								}, 2000);
 								window.onresize = () => {
 									self.setSkipButtonCentered();
 								};
-								self.setupPlayerBehavior();
 
 								self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 									asset_name: self.state.selected_catchup.title.toUpperCase(),
@@ -506,14 +587,35 @@ class Tv extends React.Component {
 								break;
 						}
 
-						const promise = player.play();
-						if (promise !== undefined) {
-							promise.then(() => console.log('play'))
-								.catch((err) => {
-									console.log(err);
-									// player.muted(true);
-									// player.play();
-								})
+						self.setupPlayerBehavior();
+						setTimeout(() => {
+							self.changeQualityIconButton();
+						}, 100);
+						
+						const vm = this;
+						if(isIOS) {
+							vm.muted(true)
+							const wrapElement = document.getElementsByClassName('video-js');
+							const elementCreateWrapper = document.createElement('btn');
+							const elementMuteIcon = document.createElement('span');
+							elementCreateWrapper.classList.add('jwplayer-vol-off');
+							elementCreateWrapper.innerText = 'Tap to unmute ';
+							wrapElement[0].appendChild(elementCreateWrapper);
+							elementCreateWrapper.appendChild(elementMuteIcon);
+							elementCreateWrapper.addEventListener('click', function() {
+								console.log('mute video');
+								vm.muted(false);
+								elementCreateWrapper.classList.remove('jwplayer-mute');
+								elementCreateWrapper.classList.add('jwplayer-full');
+							});
+						}
+						const promise = vm.play();
+						if(promise !== undefined) {
+							promise.then(() => {
+								vm.play()
+								console.log('autoplay');
+							})
+							.catch((err) => console.log(err))
 						}
 					});
 
@@ -533,12 +635,11 @@ class Tv extends React.Component {
 					});
 
 					this.player.hlsQualitySelector({
-						displayCurrentQuality: true,
+						displayCurrentQuality: true
 					});
 
 					this.disconnectHandler = null;
 					this.player.on('waiting', (e) => {
-						console.log('WAITING');
 						if (this.disconnectHandler) {
 							console.log('CLEAR TIMEOUT');
 							clearTimeout(this.disconnectHandler);
@@ -559,6 +660,18 @@ class Tv extends React.Component {
 						}
 					});
 
+					window.onorientationchange = () => {
+						if (!isIOS) {
+							this.player.userActive(false);
+							setTimeout(() => {
+								this.setState({ screen_width: window.outerWidth }, () => {
+									let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
+									this.setSkipButtonCentered(orientation);
+								});
+							}, 1000);
+						}
+					};
+
 					this.player.ima({
 						adTagUrl: this.state.player_vmap,
 						preventLateAdStart: true
@@ -571,6 +684,8 @@ class Tv extends React.Component {
 				this.player.ima.changeAdTag(this.state.player_vmap);
 				this.player.ima.initializeAdDisplayContainer();
 				this.player.ima.requestAds();
+
+				this.setupPlayerBehavior();
 
 				switch (this.state.selected_tab) {
 					case 'live':
@@ -599,11 +714,12 @@ class Tv extends React.Component {
 							forward: 10,
 							back: 10
 						});
-						this.setSkipButtonCentered();
+						setTimeout(() => {
+							this.setSkipButtonCentered();
+						}, 2000);
 						window.onresize = () => {
 							this.setSkipButtonCentered();
 						};
-						this.setupPlayerBehavior();
 						this.convivaTracker = convivaVideoJs(assetName, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 							asset_name: this.state.selected_catchup.title.toUpperCase(),
 							application_name: 'RCTI+ MWEB',
@@ -1031,6 +1147,23 @@ class Tv extends React.Component {
 					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
 					<div className="player-tv-container">
 						<div data-vjs-player>
+							<div
+                                onClick={() => {
+                                    if (this.player) {
+                                        this.player.pause();
+                                    }
+                                }}
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: this.state.screen_width / 2,
+                                    marginTop: '-0.81666em',
+                                    display: this.state.playing && this.state.user_active ? 'block' : 'none',
+                                    transform: 'scale(1.5) translateX(-30%) translateY(-30%)',
+                                    padding: 0
+                                }}>
+                                <PauseIcon/>
+                            </div>
 							<video
 								autoPlay
 								playsInline
