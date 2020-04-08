@@ -277,6 +277,10 @@ class PlayerModal extends React.Component {
                     promise.then(() => console.log('play'))
                     .catch((err) => console.log('err'))
                 }
+
+                setTimeout(() => {
+                    self.changeQualityIconButton();
+                }, 100);
             });
 
             this.player.hlsQualitySelector({ displayCurrentQuality: true }); 
