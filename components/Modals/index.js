@@ -10,6 +10,7 @@ import historyActions from '../../redux/actions/historyActions';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import Wrench from '../Includes/Common/Wrench';
+import PauseIcon from '../../components/Includes/Common/PauseIcon';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import '../../assets/scss/components/modal.scss';
@@ -35,7 +36,11 @@ class PlayerModal extends React.Component {
         super(props);
         this.state = {
             error: false,
-            error_data: {}
+            error_data: {},
+            playing: false,
+            user_active: false,
+            quality_selector_shown: false,
+            screen_width: 320
         };
         this.player = null;
         this.intervalFn = null;
@@ -83,11 +88,70 @@ class PlayerModal extends React.Component {
 
     }
 
-    setSkipButtonCentered() {
+    changeQualityIconButton() {
+        const self = this;
+        setTimeout(() => {
+            const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+            if (qualitySelectorElement.length > 0) {
+                const childs = qualitySelectorElement[0].childNodes;
+                for (let i = 0; i < childs.length; i++) {
+                    if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
+                        childs[i].addEventListener('touchstart', function() {
+                            console.log('touch');
+                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                        });
+                        const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
+                        for (let j = 0; j < qualityItems.length; j++) {
+                            qualityItems[j].addEventListener('touchstart', function() {
+                                console.log('touch');
+                                self.setState({ quality_selector_shown: false });
+                            });
+                        }
+                        childs[i].addEventListener('click', function() {
+                            console.log('click');
+                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                        });
+                        
+                        const grandChilds = childs[i].childNodes;
+                        for (let j = 0; j < grandChilds.length; j++) {
+                            if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
+                                grandChilds[j].classList.remove('vjs-icon-hd');
+                                grandChilds[j].innerHTML = '<i style="transform: scale(1.5)" class="fas fa-cog"></i>';
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }, 1000);
+    }
+
+    triggerQualityButtonClick(type = '') {
+        const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+        if (qualitySelectorElement.length > 0) {
+            const childs = qualitySelectorElement[0].childNodes;
+            for (let i = 0; i < childs.length; i++) {
+                if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button' && type == 'inactive') {
+                    childs[i].click();
+                    break;
+                }
+            }
+        }
+    }
+
+    setSkipButtonCentered(orientation = 'portrait') {
         const playerHeight = document.getElementById(this.player.id()).clientHeight;
         const seekButtons = document.getElementsByClassName('vjs-seek-button');
         for (let i = 0; i < seekButtons.length; i++) {
-            seekButtons[i].style.bottom = (Math.floor(playerHeight / 2)) + 'px';
+            seekButtons[i].style.bottom = (Math.floor(playerHeight / 2) - 5) + 'px';
+
+            if (i == 0) {
+                seekButtons[i].style.left = (this.state.screen_width - ((this.state.screen_width / 3) * (orientation == 'portrait' ? 2.35 : 2.20))) + 'px';
+            }
+            else if (i == 1) {
+                seekButtons[i].style.left = (this.state.screen_width - (this.state.screen_width / 3)) + 'px';
+            }
         }
     }
 
@@ -98,6 +162,7 @@ class PlayerModal extends React.Component {
             this.player = videojs(this.videoNode, {
                 autoplay: true,
                 controls: true,
+                muted: isIOS,
                 fluid: true,
                 aspectratio: '16:9',
                 fill: true,
@@ -113,11 +178,29 @@ class PlayerModal extends React.Component {
             }, function onPlayerReady() {
                 const vm = this
                 console.log('onPlayerReady', vm.landscapeFullscreen);
-
-                self.setSkipButtonCentered();
-                window.onresize = () => {
-                    self.setSkipButtonCentered();
-                };
+                if(isIOS) {
+                    vm.muted(true)
+                    const wrapElement = document.getElementsByClassName('video-js');
+                    const elementCreateWrapper = document.createElement('btn');
+                    const elementMuteIcon = document.createElement('span');
+                    elementCreateWrapper.classList.add('jwplayer-vol-off');
+                    elementCreateWrapper.innerText = 'Tap to unmute ';
+                    wrapElement[0].appendChild(elementCreateWrapper);
+                    elementCreateWrapper.appendChild(elementMuteIcon);
+                    elementCreateWrapper.addEventListener('click', function() {
+                        console.log('mute video')
+                        if (elementCreateWrapper === null) {
+                            vm.muted(false);
+                            elementCreateWrapper.classList.add('jwplayer-mute');
+                            elementCreateWrapper.classList.remove('jwplayer-full');
+                        } 
+                        else {
+                            vm.muted(false);
+                            elementCreateWrapper.classList.add('jwplayer-full');
+                            elementCreateWrapper.classList.remove('jwplayer-mute');
+                        }
+                    });
+                }
 
                 const player = this;
                 const assetName = self.props.program ? self.props.program.title : 'N/A';
@@ -132,12 +215,28 @@ class PlayerModal extends React.Component {
 					content_name: assetName.toUpperCase()
                 });
                 self.convivaTracker.createSession();
+                
+                setTimeout(() => {
+                    self.setSkipButtonCentered(); // set centered with delay
+                }, 2000);
             });
 
             this.player.seekButtons({
                 forward: 10,
                 back: 10
             });
+
+            window.onorientationchange = () => {
+                if (!isIOS) {
+                    this.player.userActive(false);
+                    setTimeout(() => {
+                        this.setState({ screen_width: window.outerWidth }, () => {
+                            let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
+                            this.setSkipButtonCentered(orientation);
+                        });
+                    }, 1000);
+                }
+            };
 
             this.player.on('fullscreenchange', () => {
                 if (screen.orientation.type === 'portrait-primary') {
@@ -149,13 +248,38 @@ class PlayerModal extends React.Component {
             });
 
             this.player.ready(function() {
-                const vm = this
+                const vm = this;
+                if(isIOS) {
+                    vm.muted(true)
+                    const wrapElement = document.getElementsByClassName('video-js');
+                    const elementCreateWrapper = document.createElement('btn');
+                    const elementMuteIcon = document.createElement('span');
+                    elementCreateWrapper.classList.add('jwplayer-vol-off');
+                    elementCreateWrapper.innerText = 'Tap to unmute ';
+                    wrapElement[0].appendChild(elementCreateWrapper);
+                    elementCreateWrapper.appendChild(elementMuteIcon);
+                    elementCreateWrapper.addEventListener('click', function() {
+                        console.log('mute video')
+                        if (elementCreateWrapper === null) {
+                            vm.muted(false);
+                            elementCreateWrapper.classList.add('jwplayer-mute');
+                            elementCreateWrapper.classList.remove('jwplayer-full');
+                        } 
+                        else {
+                            vm.muted(true);
+                            elementCreateWrapper.classList.add('jwplayer-full');
+                            elementCreateWrapper.classList.remove('jwplayer-mute');
+                        }
+                    });
+                }
                 const promise = vm.play();
                 if(promise !== undefined) {
                     promise.then(() => console.log('play'))
                     .catch((err) => console.log('err'))
                 }
             });
+
+            this.player.hlsQualitySelector({ displayCurrentQuality: true }); 
 
             this.player.on('error', () => {
                 this.setState({
@@ -169,6 +293,8 @@ class PlayerModal extends React.Component {
                     for (let i = 0; i < seekButtons.length; i++) {
                         seekButtons[i].style.display = 'block';
                     }
+
+                    this.setState({ user_active: true });
                 }
             });
 
@@ -178,6 +304,12 @@ class PlayerModal extends React.Component {
                     for (let i = 0; i < seekButtons.length; i++) {
                         seekButtons[i].style.display = 'none';
                     }
+
+                    this.setState({ user_active: false });
+                }
+
+                if (this.state.quality_selector_shown) {
+                    this.triggerQualityButtonClick('inactive');
                 }
             });
 
@@ -198,22 +330,38 @@ class PlayerModal extends React.Component {
                 if (playButton.length > 0) {
                     playButton[0].style.display = 'none';
                 }
+
+                this.setState({ playing: true });
             });
 
+            let pauseCounter = 0; // avoid trigger first pause
             this.player.on('pause', () => {
                 const seekButtons = document.getElementsByClassName('vjs-seek-button');
                 for (let i = 0; i < seekButtons.length; i++) {
                     seekButtons[i].style.display = 'none';
                 }
 
-                const playButton = document.getElementsByClassName('vjs-big-play-button');
-                if (playButton.length > 0) {
-                    playButton[0].style.display = 'block';
+                if (pauseCounter++ > 0) {
+                    const playButton = document.getElementsByClassName('vjs-big-play-button');
+                    if (playButton.length > 0) {
+                        playButton[0].style.display = 'block';
+                    }
                 }
+
+                this.setState({ playing: false });
             });
+
+            this.setSkipButtonCentered();
+            window.onresize = () => {
+                this.setSkipButtonCentered();
+            };
 
             this.disconnectHandler = null;
             this.player.on('waiting', (e) => {
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
+                }
                 if (this.disconnectHandler) {
                     clearTimeout(this.disconnectHandler);
                     this.disconnectHandler = null;
@@ -230,12 +378,13 @@ class PlayerModal extends React.Component {
                 if (this.disconnectHandler) {
                     clearTimeout(this.disconnectHandler);
                 }
+
+                this.setState({ playing: true });
             });
 
-            this.player.hlsQualitySelector({ displayCurrentQuality: true }); 
-
-            this.player.ima({ adTagUrl: this.props.vmap });
-            this.player.ima.initializeAdDisplayContainer();
+            // this.player.ima({ adTagUrl: this.props.vmap });
+            // this.player.ima.initializeAdDisplayContainer();
+            this.setState({ screen_width: window.outerWidth });
         }
     }
 
@@ -401,7 +550,25 @@ class PlayerModal extends React.Component {
             playerRef = (
             <div className="player-modal-container">
                 <div data-vjs-player>
+                    <div
+                        onClick={() => {
+                            if (this.player) {
+                                this.player.pause();
+                            }
+                        }}
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: this.state.screen_width / 2,
+                            marginTop: '-0.81666em',
+                            display: this.state.playing && this.state.user_active ? 'block' : 'none',
+                            transform: 'scale(1.5) translateX(-30%) translateY(-30%)',
+                            padding: 0
+                        }}>
+                        <PauseIcon/>
+                    </div>
                     <video 
+                        autoPlay
                         playsInline
                         style={{ 
                             width: '100%',
