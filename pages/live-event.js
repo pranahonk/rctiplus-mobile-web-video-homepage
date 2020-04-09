@@ -15,7 +15,6 @@ import MuteChat from '../components/Includes/Common/MuteChat';
 import initialize from '../utils/initialize';
 import { getCookie } from '../utils/cookie';
 import { showSignInAlert } from '../utils/helpers';
-import { formatDateWord } from '../utils/dateHelpers';
 import { contentGeneralEvent } from '../utils/appier';
 
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
@@ -35,13 +34,24 @@ import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import PauseIcon from '../components/Includes/Common/PauseIcon';
 
 import { DEV_API, VISITOR_TOKEN } from '../config';
 
 import '../assets/scss/components/live-event.scss';
+import '../assets/scss/videojs.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
 import { getUserId } from '../utils/appier';
+import { convivaVideoJs } from '../utils/conviva';
+
+import videojs from 'video.js';
+import 'videojs-contrib-ads';
+import 'videojs-ima';
+import 'video.js/src/css/video-js.scss';
+import 'videojs-hls-quality-selector';
+import qualitySelector from 'videojs-hls-quality-selector';
+import qualityLevels from 'videojs-contrib-quality-levels';
 
 const innerHeight = require('ios-inner-height');
 
@@ -83,21 +93,6 @@ class LiveEvent extends React.Component {
 			/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
 		));
 
-		if (isMobile) {
-			// if (/windows phone/i.test(userAgent)) {
-			// 	return "Windows Phone";
-			// }
-
-			// if (/android/i.test(userAgent)) {
-			// 	return "Android";
-			// }
-
-			// // iOS detection from: http://stackoverflow.com/a/9039885/177710
-			// if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-			// 	return "iOS";
-			// }
-		}
-
 		const data = await Promise.all([
 			res[0].json(),
 			res[1].json()
@@ -128,7 +123,12 @@ class LiveEvent extends React.Component {
 			chats: [],
 			live_events: [],
 			meta: {},
-			resolution: 300
+			resolution: 300,
+			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
+			screen_width: 320,
+			quality_selector_shown: false,
+			playing: false,
+            user_active: false
 		};
 
 		const segments = this.props.router.asPath.split(/\?/);
@@ -145,14 +145,27 @@ class LiveEvent extends React.Component {
 		}
 
 		this.player = null;
+		this.videoNode = null;
+		this.convivaTracker = null;
+		this.disconnectHandler = null;
 		this.props.setPageLoader();
 	}
+	
+	componentWillUnmount() {
+		for (let key in this.state.snapshots) {
+			this.state.snapshots[key]();
+		}
 
+		if (this.player) {
+			this.player.dispose();
+		}
+	}
 	componentDidMount() {
 		this.props.getLiveEvent('non on air')
 			.then(response => {
 				this.setState({ live_events: response.data.data, meta: response.data.meta }, () => {
-					this.initVOD();
+					// this.initVOD();
+					this.initPlayer();
 					this.props.unsetPageLoader();
 				});
 			})
@@ -201,12 +214,6 @@ class LiveEvent extends React.Component {
 			return false;
 		}
 		return true;
-	}
-
-	componentWillUnmount() {
-		for (let key in this.state.snapshots) {
-			this.state.snapshots[key]();
-		}
 	}
 
 	loadChatMessages(id) {
@@ -273,6 +280,278 @@ class LiveEvent extends React.Component {
 			}
 
 		});
+	}
+
+	changeQualityIconButton() {
+        const self = this;
+        setTimeout(() => {
+            const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+            if (qualitySelectorElement.length > 0) {
+                const childs = qualitySelectorElement[0].childNodes;
+                for (let i = 0; i < childs.length; i++) {
+                    if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
+                        childs[i].addEventListener('touchstart', function() {
+                            console.log('touch');
+                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                        });
+                        const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
+                        for (let j = 0; j < qualityItems.length; j++) {
+                            qualityItems[j].addEventListener('touchstart', function() {
+                                console.log('touch');
+                                self.setState({ quality_selector_shown: false });
+                            });
+                        }
+                        childs[i].addEventListener('click', function() {
+                            console.log('click');
+                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                        });
+                        
+                        const grandChilds = childs[i].childNodes;
+                        for (let j = 0; j < grandChilds.length; j++) {
+                            if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
+                                grandChilds[j].classList.remove('vjs-icon-hd');
+                                grandChilds[j].innerHTML = '<i style="transform: scale(1.5)" class="fas fa-cog"></i>';
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }, 1000);
+    }
+
+    triggerQualityButtonClick(type = '') {
+        const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+        if (qualitySelectorElement.length > 0) {
+            const childs = qualitySelectorElement[0].childNodes;
+            for (let i = 0; i < childs.length; i++) {
+                if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button' && type == 'inactive') {
+                    childs[i].click();
+                    break;
+                }
+            }
+        }
+    }
+
+	initPlayer() {
+		if (this.videoNode) {
+			let url = '';
+			let vmap = '';
+			let id = '';
+			let name = '';
+			let type = '';
+			let portrait_image = '';
+			if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
+				url = this.props.selected_event_url.data.url;
+				vmap = this.props.selected_event_url.data[process.env.VMAP_KEY];
+				id = this.props.selected_event.data.id;
+				name = this.props.selected_event.data.name;
+				type = this.props.selected_event.data.type;
+				portrait_image = this.props.selected_event.data.portrait_image;
+				this.loadChatMessages(id);
+				this.statusChatBlock(id);
+			}
+			const self = this;
+			videojs.registerPlugin('hlsQualitySelector', qualitySelector);
+			this.player = videojs(this.videoNode, {
+				autoplay: true,
+				controls: true,
+				fluid: true,
+				muted: isIOS,
+				aspectratio: '16:9',
+				fill: true,
+				html5: {
+					hls: {
+						overrideNative: true,
+					},
+				},
+				sources: [{
+					src: url,
+					type: 'application/x-mpegURL'
+				}]
+			}, function onPlayerReady() {
+				console.log('onPlayerReady', this);
+				const vm = this;
+				if(isIOS) {
+                    vm.muted(true)
+                    const wrapElement = document.getElementsByClassName('video-js');
+                    const elementCreateWrapper = document.createElement('btn');
+                    const elementMuteIcon = document.createElement('span');
+                    elementCreateWrapper.classList.add('jwplayer-vol-off');
+                    elementCreateWrapper.innerText = 'Tap to unmute ';
+                    wrapElement[0].appendChild(elementCreateWrapper);
+                    elementCreateWrapper.appendChild(elementMuteIcon);
+                    elementCreateWrapper.addEventListener('click', function() {
+                        console.log('mute video')
+                        if (elementCreateWrapper === null) {
+                            vm.muted(false);
+                            elementCreateWrapper.classList.add('jwplayer-mute');
+                            elementCreateWrapper.classList.remove('jwplayer-full');
+                        } 
+                        else {
+                            vm.muted(false);
+                            elementCreateWrapper.classList.add('jwplayer-full');
+                            elementCreateWrapper.classList.remove('jwplayer-mute');
+                        }
+                    });
+                }
+
+				const player = this;
+				const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
+				this.convivaTracker = convivaVideoJs(assetName, player, true, url, 'Live Event ' + assetName.toUpperCase(), {
+					asset_name: assetName.toUpperCase(),
+					application_name: 'RCTI+ MWEB',
+					player_type: 'VideoJS',
+					content_type: type,
+					content_id: id.toString(),
+					program_name: name,
+					asset_cdn: 'Conversant',
+					version: process.env.VERSION,
+					playerVersion: process.env.PLAYER_VERSION,
+					content_name: assetName.toUpperCase()
+				});
+				this.convivaTracker.createSession();
+
+			});
+			this.player.ready(function () {
+				const vm = this
+				const promise = vm.play();
+				if (promise !== undefined) {
+					promise.then(() => console.log('play'))
+						.catch((err) => console.log('err'))
+				}
+
+				setTimeout(() => {
+                    self.changeQualityIconButton();
+                }, 100);
+			});
+
+			window.onorientationchange = () => {
+                if (!isIOS) {
+                    this.player.userActive(false);
+                    setTimeout(() => {
+                        this.setState({ screen_width: window.outerWidth });
+                    }, 1000);
+                }
+            };
+
+			this.player.on('useractive', () => {
+                if (!this.player.paused()) {
+                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                    for (let i = 0; i < seekButtons.length; i++) {
+                        seekButtons[i].style.display = 'block';
+                    }
+
+                    this.setState({ user_active: true });
+                }
+            });
+
+            this.player.on('userinactive', () => {
+                if (!this.player.paused()) {
+                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                    for (let i = 0; i < seekButtons.length; i++) {
+                        seekButtons[i].style.display = 'none';
+                    }
+                    
+                    this.setState({ user_active: false });
+                }
+
+                if (this.state.quality_selector_shown) {
+                    this.triggerQualityButtonClick('inactive');
+                }
+            });
+
+			this.player.on('fullscreenchange', () => {
+				if (screen.orientation.type === 'portrait-primary') {
+					screen.orientation.lock("landscape-primary");
+				}
+				if (screen.orientation.type === 'landscape-primary') {
+					screen.orientation.lock("portrait-primary");
+				}
+			});
+			this.player.on('error', () => {
+				console.log('err')
+				this.setState({
+					error: true,
+				});
+			});
+			this.player.hlsQualitySelector({
+				displayCurrentQuality: true,
+			});
+
+			this.disconnectHandler = null;
+			this.player.on('waiting', (e) => {
+				const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
+				}
+				if (this.disconnectHandler) {
+                    clearTimeout(this.disconnectHandler);
+                    this.disconnectHandler = null;
+                }
+				
+				this.disconnectHandler = setTimeout(() => {
+					this.setState({
+						error: true,
+					});
+				}, 40000);
+			})
+
+			this.player.on('playing', () => {
+				if (this.disconnectHandler) {
+					clearTimeout(this.disconnectHandler);
+				}
+
+				this.setState({ playing: true });
+			});
+
+			this.player.on('ads-ad-started', () => {
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
+                }
+            });
+
+            this.player.on('play', () => {
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'none';
+                }
+
+                const playButton = document.getElementsByClassName('vjs-big-play-button');
+                if (playButton.length > 0) {
+                    playButton[0].style.display = 'none';
+                }
+
+                this.setState({ playing: true });
+            });
+
+			let pauseCounter = 0; // avoid trigger first pause
+            this.player.on('pause', () => {
+                const seekButtons = document.getElementsByClassName('vjs-seek-button');
+                for (let i = 0; i < seekButtons.length; i++) {
+                    seekButtons[i].style.display = 'none';
+                }
+
+                if (pauseCounter++ > 0) {
+                    const playButton = document.getElementsByClassName('vjs-big-play-button');
+                    if (playButton.length > 0) {
+                        playButton[0].style.display = 'block';
+                    }
+                }
+
+                this.setState({ playing: false });
+            });
+
+			// this.player.ima({
+			// 	adTagUrl: vmap,
+			// 	preventLateAdStart: true
+			// });
+			// this.player.ima.initializeAdDisplayContainer();
+
+			this.setState({ screen_width: window.outerWidth });
+		}
 	}
 
 	initVOD() {
@@ -358,7 +637,7 @@ class LiveEvent extends React.Component {
 			}
 		});
 
-		this.player.on('mute', function() {
+		this.player.on('mute', function () {
 			let elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
 			if (elementJwplayer[0] !== undefined) {
 				if (jwplayer().getMute()) {
@@ -533,27 +812,76 @@ class LiveEvent extends React.Component {
 
 	}
 
-	render() {
+	renderPlayer() {
 		let playerRef = (<div></div>);
+		let errorRef = (<div></div>);
+
 		if (this.state.error) {
+			errorRef = (
+				<div>
+					<span></span>
+					<div style={{
+						textAlign: 'center',
+						margin: 30,
+					}}>
+						<Wrench />
+						<h5 style={{ color: '#8f8f8f' }}>
+							{this.state.status && this.state.status.code === 12 ? (
+								<div>
+									<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
+								</div>
+							) : (
+								<div>
+									<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+									<span style={{ fontSize: 12 }}>Please try again later,</span><br />
+									<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+								</div>
+							)}
+						</h5>
+					</div>
+				</div>
+			);
+			// this.player.remove();
+		}
+		else {
 			playerRef = (
-				<div style={{
-					textAlign: 'center',
-					margin: 30
-				}}>
-					<Wrench />
-					<h5 style={{ color: '#8f8f8f' }}>
-						<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
-						<span style={{ fontSize: 12 }}>Please try again later,</span><br />
-						<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
-					</h5>
+				<div className="player-liveevent-container">
+					<div data-vjs-player>
+						<div
+							onClick={() => {
+								if (this.player) {
+									this.player.pause();
+								}
+							}}
+							style={{
+								position: 'absolute',
+								top: '50%',
+								left: this.state.screen_width / 2,
+								marginTop: '-0.81666em',
+								display: this.state.playing && this.state.user_active ? 'block' : 'none',
+								transform: 'scale(1.5) translateX(-30%) translateY(-30%)',
+								padding: 0
+							}}>
+							<PauseIcon/>
+						</div>
+						<video
+							autoPlay
+							playsInline
+							style={{
+								width: '100%',
+							}}
+							ref={node => this.videoNode = node}
+							className="video-js vjs-default-skin vjs-big-play-centered"
+						></video>
+					</div>
 				</div>
 			);
 		}
-		else {
-			playerRef = (<div style={{ minHeight: 180 }} id="live-event-player"></div>);
-		}
 
+		return this.state.error ? errorRef : playerRef;
+	}
+
+	render() {
 		return (
 			<Layout title="Live Event - RCTI+">
 				<Head>
@@ -561,7 +889,9 @@ class LiveEvent extends React.Component {
 					<meta name="keywords" content={`keywords`} />
 				</Head>
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
-					{playerRef}
+					{/* { this.state.error ? errorRef : playerRef } */}
+					{/* {(this.state.error) ? errorRef : playerRef} */}
+					{this.renderPlayer()}
 					<div className="title-wrap">
 						{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
 						{/* Live Chat Plus {this.props.selected_event && this.props.selected_event.data ? formatDateWord(new Date(this.props.selected_event.data.start_date.replace(' ', 'T'))) : ''} */}
