@@ -8,7 +8,7 @@ import adsActions from '../../../redux/actions/adsActions';
 class StickyAds extends React.Component {
     state = {
         closed: false
-    };
+    }
 
     render() {
         return (
@@ -56,9 +56,11 @@ class StickyAds extends React.Component {
                                 googletag.defineSlot('/21865661642/RC_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1584677577539-0').addService(googletag.pubads());
                                 googletag.pubads().enableSingleRequest();
                                 googletag.pubads().collapseEmptyDivs();
+
                                 googletag.pubads().addEventListener('slotRenderEnded', function(event) {
                                     if (event.isEmpty) {
                                         document.getElementById('sticky-ads-container').style.display = 'none';
+                                        console.log('EMPTY ADS');
                                     }
                                 });
                                 googletag.enableServices();
