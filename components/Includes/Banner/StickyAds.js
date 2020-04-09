@@ -12,7 +12,7 @@ class StickyAds extends React.Component {
 
     render() {
         return (
-            <div className={"sticky-ads " + (this.props.sticky ? 'sticky-ads-on' : '') + ' ' + (this.state.closed ? 'sticky-ads-off' : '')}>
+            <div id="sticky-ads-container" className={"sticky-ads " + (this.props.sticky ? 'sticky-ads-on' : '') + ' ' + (this.state.closed ? 'sticky-ads-off' : '')}>
                 {this.props.sticky ? (
                     <div className="ads-close-btn" onClick={() => this.props.toggleAds(false)}>x</div>
                 ) : null}
@@ -25,6 +25,11 @@ class StickyAds extends React.Component {
                                 googletag.defineSlot('/21865661642/PRO_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1584677487159-0').addService(googletag.pubads());
                                 googletag.pubads().enableSingleRequest();
                                 googletag.pubads().collapseEmptyDivs();
+                                googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+                                    if (event.isEmpty) {
+                                        document.getElementById('sticky-ads-container').style.display = 'none';
+                                    }
+                                });
                                 googletag.enableServices();
                             });
                         ` }}>
