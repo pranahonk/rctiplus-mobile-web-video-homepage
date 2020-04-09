@@ -818,7 +818,8 @@ class LiveEvent extends React.Component {
 					<span></span>
 					<div style={{
 						textAlign: 'center',
-						margin: 30,
+						padding: 30,
+						minHeight: 180
 					}}>
 						<Wrench />
 						<h5 style={{ color: '#8f8f8f' }}>
