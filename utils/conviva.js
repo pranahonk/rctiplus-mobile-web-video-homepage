@@ -5,9 +5,9 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
     return {
         assetName: assetName,
         player: player,
-        sessionId: null,
+        sessionId: getCookie('CONVIVA_SESSION_ID'),
         createSession: function() {
-            this.cleanUpSession();
+            // this.cleanUpSession();
 			
             const assetName = this.assetName.toUpperCase();
             let convivaMetadata = new Conviva.ConvivaContentInfo(assetName, tags);

@@ -572,7 +572,7 @@ class Tv extends React.Component {
 									self.setSkipButtonCentered();
 								};
 
-								self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
+								self.convivaTracker = convivaVideoJs(self.state.selected_catchup.title.toUpperCase(), player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 									asset_name: self.state.selected_catchup.title.toUpperCase(),
 									application_name: 'RCTI+ MWEB',
 									asset_cdn: 'Conversant',
@@ -721,7 +721,7 @@ class Tv extends React.Component {
 						window.onresize = () => {
 							this.setSkipButtonCentered();
 						};
-						this.convivaTracker = convivaVideoJs(assetName, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
+						this.convivaTracker = convivaVideoJs(this.state.selected_catchup.title, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
 							asset_name: this.state.selected_catchup.title.toUpperCase(),
 							application_name: 'RCTI+ MWEB',
 							asset_cdn: 'Conversant',
@@ -1122,7 +1122,8 @@ class Tv extends React.Component {
 			playerRef = (
 				<div style={{
 					textAlign: 'center',
-					margin: 30
+					padding: 30,
+					minHeight: 180
 				}}>
 					<Wrench />
 					<h5 style={{ color: '#8f8f8f' }}>
