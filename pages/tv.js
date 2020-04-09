@@ -33,6 +33,7 @@ import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import PauseIcon from '../components/Includes/Common/PauseIcon';
 import { isIOS } from 'react-device-detect';
 import socketIOClient from 'socket.io-client';
 import axios from 'axios';
@@ -43,6 +44,17 @@ import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
 import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId } from '../utils/appier';
+import { convivaVideoJs } from '../utils/conviva';
+
+import videojs from 'video.js';
+import 'videojs-contrib-ads';
+import 'videojs-ima';
+import 'video.js/src/css/video-js.scss';
+import qualitySelector from 'videojs-hls-quality-selector';
+import qualityLevels from 'videojs-contrib-quality-levels';
+
+import 'videojs-seek-buttons';
+import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
 
 const innerHeight = require('ios-inner-height');
 
@@ -89,7 +101,13 @@ class Tv extends React.Component {
 				status: false,
 				message: '',
 			},
-			ad_closed: true
+			ad_closed: true,
+			first_init_player: true,
+			status: false,
+			screen_width: 320,
+			quality_selector_shown: false,
+			playing: false,
+            user_active: false
 		};
 
 		this.player = null;
@@ -97,6 +115,19 @@ class Tv extends React.Component {
 		this.props.setCatchupDate(formatDateWord(now));
 		this.props.setPageLoader();
 		this.pubAdsRefreshInterval = null;
+		this.videoNode = null;
+		this.convivaTracker = null;
+		this.disconnectHandler = null;
+	}
+
+	componentWillUnmount() {
+		if (this.player) {
+			this.player.dispose();
+		}
+		console.log(this.convivaTracker);
+		if (this.convivaTracker) {
+			this.convivaTracker.cleanUpSession();
+		}
 	}
 
 	componentDidMount() {
@@ -130,7 +161,7 @@ class Tv extends React.Component {
 				console.log(error);
 			});
 
-		this.refreshPubAds();
+		// this.refreshPubAds();
 	}
 
 	isLiveProgram(epg) {
@@ -194,9 +225,9 @@ class Tv extends React.Component {
 		// });
 
 		const self = this;
-		this.player.on('ready', function() {
+		this.player.on('ready', function () {
 			const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
-			switch (self.state.selected_tab) {	
+			switch (self.state.selected_tab) {
 				case 'live':
 					const currentEpg = self.getCurrentLiveEpg();
 					if (currentEpg != null) {
@@ -220,20 +251,20 @@ class Tv extends React.Component {
 
 				case 'catch_up_tv':
 					conviva.startMonitoring(this);
-						const assetMetadata = {
-							viewer_id: getUserId(),
-							application_name: 'RCTI+ MWEB',
-							asset_cdn: 'Conversant',
-							version: process.env.VERSION,
-							start_session: 0,
-							playerVersion: process.env.PLAYER_VERSION,
-							tv_id: self.state.selected_live_event.id,
-							tv_name: assetName.toUpperCase(),
-							content_id: currentEpg.id,
-							asset_name: assetName.toUpperCase()
-						};
-						console.log('FIRST FRAME CONVIVA', assetMetadata);
-						conviva.updatePlayerAssetMetadata(this, assetMetadata);
+					const assetMetadata = {
+						viewer_id: getUserId(),
+						application_name: 'RCTI+ MWEB',
+						asset_cdn: 'Conversant',
+						version: process.env.VERSION,
+						start_session: 0,
+						playerVersion: process.env.PLAYER_VERSION,
+						tv_id: self.state.selected_live_event.id,
+						tv_name: assetName.toUpperCase(),
+						content_id: currentEpg.id,
+						asset_name: assetName.toUpperCase()
+					};
+					console.log('FIRST FRAME CONVIVA', assetMetadata);
+					conviva.updatePlayerAssetMetadata(this, assetMetadata);
 					break;
 			}
 
@@ -262,7 +293,7 @@ class Tv extends React.Component {
 			}
 		});
 
-		this.player.on('mute', function() {
+		this.player.on('mute', function () {
 			let elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
 			if (elementJwplayer[0] !== undefined) {
 				if (jwplayer().getMute()) {
@@ -303,13 +334,412 @@ class Tv extends React.Component {
 			}
 		});
 
-		this.player.on('play', function() {
+		this.player.on('play', function () {
 			if (self.state.selected_tab === 'catch_up_tv') {
 				if (self.state.selected_catchup) {
 					liveTvCatchupSchedulePlay(self.state.selected_date, self.state.live_events[self.state.selected_index].id, self.state.live_events[self.state.selected_index].name, self.state.selected_catchup.title, 'mweb_livetv_catchup_schedule_play');
 				}
 			}
 		});
+	}
+
+	removeSkipButton() {
+		if (this.player) {
+			const playerChildNodes = this.player.el().childNodes;
+			for (let i = 0; i < playerChildNodes.length; i++) {
+				if (playerChildNodes[i].className == 'vjs-control-bar') {
+					let vjsControlBarChilds = playerChildNodes[i].childNodes;
+					for (let j = 0; j < vjsControlBarChilds.length; j++) {
+						if (vjsControlBarChilds[j].className == 'vjs-seek-button skip-back skip-10 vjs-control vjs-button' || vjsControlBarChilds[j].className == 'vjs-seek-button skip-forward skip-10 vjs-control vjs-button') {
+							vjsControlBarChilds[j].parentNode.removeChild(vjsControlBarChilds[j]);
+						}
+					}
+
+					vjsControlBarChilds = playerChildNodes[i].childNodes;
+					for (let j = 0; j < vjsControlBarChilds.length; j++) {
+						if (vjsControlBarChilds[j].className == 'vjs-seek-button skip-back skip-10 vjs-control vjs-button' || vjsControlBarChilds[j].className == 'vjs-seek-button skip-forward skip-10 vjs-control vjs-button') {
+							vjsControlBarChilds[j].parentNode.removeChild(vjsControlBarChilds[j]);
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	setupPlayerBehavior() {
+		if (this.player) {
+			this.player.on('useractive', () => {
+				if (!this.player.paused()) {
+					const seekButtons = document.getElementsByClassName('vjs-seek-button');
+					for (let i = 0; i < seekButtons.length; i++) {
+						seekButtons[i].style.display = 'block';
+					}
+					
+					this.setState({ user_active: true });
+				}
+			});
+
+			this.player.on('userinactive', () => {
+				if (!this.player.paused()) {
+					const seekButtons = document.getElementsByClassName('vjs-seek-button');
+					for (let i = 0; i < seekButtons.length; i++) {
+						seekButtons[i].style.display = 'none';
+					}
+
+					this.setState({ user_active: false });
+				}
+
+				if (this.state.quality_selector_shown) {
+                    this.triggerQualityButtonClick('inactive');
+				}
+				this.setState({ quality_selector_shown: false });
+			});
+
+			this.player.on('play', () => {
+				const seekButtons = document.getElementsByClassName('vjs-seek-button');
+				for (let i = 0; i < seekButtons.length; i++) {
+					seekButtons[i].style.display = 'none';
+				}
+
+				const playButton = document.getElementsByClassName('vjs-big-play-button');
+				if (playButton.length > 0) {
+					playButton[0].style.display = 'none';
+				}
+
+				this.setState({ playing: true });
+			});
+
+			this.player.on('pause', () => {
+				const seekButtons = document.getElementsByClassName('vjs-seek-button');
+				for (let i = 0; i < seekButtons.length; i++) {
+					seekButtons[i].style.display = 'none';
+				}
+
+				const playButton = document.getElementsByClassName('vjs-big-play-button');
+				if (playButton.length > 0) {
+					playButton[0].style.display = 'block';
+				}
+
+				this.setState({ playing: false });
+			});
+
+			this.player.on('playing', () => {
+				this.setState({ playing: true });
+			});
+		}
+	}
+
+	setSkipButtonCentered(orientation = 'portrait') {
+		if (this.player) {
+			const player = document.getElementById(this.player.id());
+			if (player) {
+				const playerHeight = player.clientHeight;
+				const seekButtons = document.getElementsByClassName('vjs-seek-button');
+				for (let i = 0; i < seekButtons.length; i++) {
+					seekButtons[i].style.bottom = (Math.floor(playerHeight / 2) - 5) + 'px';
+
+					if (i == 0) {
+						seekButtons[i].style.left = (this.state.screen_width - ((this.state.screen_width / 3) * (orientation == 'portrait' ? 2.35 : 2.20))) + 'px';
+					}
+					else if (i == 1) {
+						seekButtons[i].style.left = (this.state.screen_width - (this.state.screen_width / 3)) + 'px';
+					}
+				}
+			}
+
+		}
+	}
+
+	changeQualityIconButton() {
+        const self = this;
+        setTimeout(() => {
+			const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+            if (qualitySelectorElement.length > 0) {
+				const childs = qualitySelectorElement[0].childNodes;
+                for (let i = 0; i < childs.length; i++) {
+                    if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
+                        childs[i].addEventListener('touchstart', function() {
+                            console.log('touch');
+                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                        });
+                        const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
+                        for (let j = 0; j < qualityItems.length; j++) {
+                            qualityItems[j].addEventListener('touchstart', function() {
+                                console.log('touch');
+                                self.setState({ quality_selector_shown: false });
+                            });
+                        }
+                        childs[i].addEventListener('click', function() {
+                            console.log('click');
+                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+                        });
+                        
+						const grandChilds = childs[i].childNodes;
+                        for (let j = 0; j < grandChilds.length; j++) {
+                            if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
+                                grandChilds[j].classList.remove('vjs-icon-hd');
+                                grandChilds[j].innerHTML = '<i style="transform: scale(1.5)" class="fas fa-cog"></i>';
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }, 1000);
+    }
+
+    triggerQualityButtonClick(type = '') {
+        const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+        if (qualitySelectorElement.length > 0) {
+            const childs = qualitySelectorElement[0].childNodes;
+            for (let i = 0; i < childs.length; i++) {
+                if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button' && type == 'inactive') {
+                    childs[i].click();
+                    break;
+                }
+            }
+        }
+    }
+
+	initPlayer() {
+
+		// status code 12 means the video is geoblock-ed
+		if (this.state.status && this.state.status.code === 12) {
+			return;
+		}
+
+		if (this.disconnectHandler) {
+			clearTimeout(this.disconnectHandler);
+			this.disconnectHandler = null;
+		}
+
+		if (this.videoNode) {
+			const assetName = this.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : this.state.selected_live_event.channel_code;
+			if (this.state.first_init_player) {
+				this.setState({ first_init_player: false, screen_width: window.outerWidth }, () => {
+					const self = this;
+					videojs.registerPlugin('hlsQualitySelector', qualitySelector);
+					this.player = videojs(this.videoNode, {
+						id: 'tv-player',
+						autoplay: true,
+						controls: true,
+						muted: isIOS,
+						fluid: true,
+						aspectratio: '16:9',
+						fill: true,
+						html5: {
+							hls: {
+								overrideNative: true,
+							},
+						},
+						sources: [{
+							src: this.state.player_url,
+							type: 'application/x-mpegURL'
+						}]
+					}, function onPlayerReady() {
+						console.log('onPlayerReady', this);
+						const player = this;
+						switch (self.state.selected_tab) {
+							case 'live':
+								self.removeSkipButton();
+								const currentEpg = self.getCurrentLiveEpg();
+								if (currentEpg != null) {
+									self.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
+										asset_name: assetName.toUpperCase(),
+										application_name: 'RCTI+ MWEB',
+										asset_cdn: 'Conversant',
+										version: process.env.VERSION,
+										start_session: '0',
+										player_version: process.env.PLAYER_VERSION,
+										tv_id: self.state.selected_live_event.id.toString(),
+										tv_name: assetName.toUpperCase(),
+										content_id: currentEpg.id.toString(),
+										content_title: currentEpg.title
+									});
+									self.convivaTracker.createSession();
+								}
+								break;
+
+							case 'catch_up_tv':
+								player.seekButtons({
+									forward: 10,
+									back: 10
+								});
+								setTimeout(() => {
+									self.setSkipButtonCentered();
+								}, 2000);
+								window.onresize = () => {
+									self.setSkipButtonCentered();
+								};
+
+								self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
+									asset_name: self.state.selected_catchup.title.toUpperCase(),
+									application_name: 'RCTI+ MWEB',
+									asset_cdn: 'Conversant',
+									version: process.env.VERSION,
+									start_session: '0',
+									player_version: process.env.PLAYER_VERSION,
+									tv_id: self.state.selected_live_event.id.toString(),
+									tv_name: assetName.toUpperCase(),
+									content_id: self.state.selected_catchup.id.toString(),
+									content_title: self.state.selected_catchup.title
+								});
+								self.convivaTracker.createSession();
+								break;
+						}
+
+						self.setupPlayerBehavior();
+						setTimeout(() => {
+							self.changeQualityIconButton();
+						}, 100);
+						
+						const vm = this;
+						if(isIOS) {
+							vm.muted(true)
+							const wrapElement = document.getElementsByClassName('video-js');
+							const elementCreateWrapper = document.createElement('btn');
+							const elementMuteIcon = document.createElement('span');
+							elementCreateWrapper.classList.add('jwplayer-vol-off');
+							elementCreateWrapper.innerText = 'Tap to unmute ';
+							wrapElement[0].appendChild(elementCreateWrapper);
+							elementCreateWrapper.appendChild(elementMuteIcon);
+							elementCreateWrapper.addEventListener('click', function() {
+								console.log('mute video');
+								vm.muted(false);
+								elementCreateWrapper.classList.remove('jwplayer-mute');
+								elementCreateWrapper.classList.add('jwplayer-full');
+							});
+						}
+						const promise = vm.play();
+						if(promise !== undefined) {
+							promise.then(() => {
+								vm.play()
+								console.log('autoplay');
+							})
+							.catch((err) => console.log(err))
+						}
+					});
+
+					this.player.on('fullscreenchange', () => {
+						if (screen.orientation.type === 'portrait-primary') {
+							screen.orientation.lock("landscape-primary");
+						}
+						if (screen.orientation.type === 'landscape-primary') {
+							screen.orientation.lock("portrait-primary");
+						}
+					});
+					this.player.on('error', () => {
+						this.setState({
+							error: true,
+							first_init_player: true
+						});
+					});
+
+					this.player.hlsQualitySelector({
+						displayCurrentQuality: true
+					});
+
+					this.disconnectHandler = null;
+					this.player.on('waiting', (e) => {
+						if (this.disconnectHandler) {
+							console.log('CLEAR TIMEOUT');
+							clearTimeout(this.disconnectHandler);
+						}
+
+						this.disconnectHandler = setTimeout(() => {
+							console.log('ERROR');
+							this.setState({
+								error: true,
+							});
+						}, 40000);
+					})
+
+					this.player.on('playing', () => {
+						if (this.disconnectHandler) {
+							console.log('CLEAR TIMEOUT');
+							clearTimeout(this.disconnectHandler);
+						}
+					});
+
+					window.onorientationchange = () => {
+						if (!isIOS) {
+							this.player.userActive(false);
+							setTimeout(() => {
+								this.setState({ screen_width: window.outerWidth }, () => {
+									let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
+									this.setSkipButtonCentered(orientation);
+								});
+							}, 1000);
+						}
+					};
+
+					this.player.ima({
+						adTagUrl: this.state.player_vmap,
+						preventLateAdStart: true
+					});
+					this.player.ima.initializeAdDisplayContainer();
+				});
+			}
+			else {
+				this.player.src(this.state.player_url);
+				this.player.ima.changeAdTag(this.state.player_vmap);
+				this.player.ima.initializeAdDisplayContainer();
+				this.player.ima.requestAds();
+
+				this.setupPlayerBehavior();
+
+				switch (this.state.selected_tab) {
+					case 'live':
+						this.removeSkipButton();
+						const currentEpg = this.getCurrentLiveEpg();
+						if (currentEpg != null) {
+							this.convivaTracker = convivaVideoJs(assetName, this.player, true, this.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
+								asset_name: assetName.toUpperCase(),
+								application_name: 'RCTI+ MWEB',
+								asset_cdn: 'Conversant',
+								version: process.env.VERSION,
+								start_session: '0',
+								player_version: process.env.PLAYER_VERSION,
+								tv_id: this.state.selected_live_event.id.toString(),
+								tv_name: assetName.toUpperCase(),
+								content_id: currentEpg.id.toString(),
+								content_title: currentEpg.title
+							});
+							this.convivaTracker.createSession();
+						}
+
+						break;
+
+					case 'catch_up_tv':
+						this.player.seekButtons({
+							forward: 10,
+							back: 10
+						});
+						setTimeout(() => {
+							this.setSkipButtonCentered();
+						}, 2000);
+						window.onresize = () => {
+							this.setSkipButtonCentered();
+						};
+						this.convivaTracker = convivaVideoJs(assetName, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
+							asset_name: this.state.selected_catchup.title.toUpperCase(),
+							application_name: 'RCTI+ MWEB',
+							asset_cdn: 'Conversant',
+							version: process.env.VERSION,
+							start_session: '0',
+							player_version: process.env.PLAYER_VERSION,
+							tv_id: this.state.selected_live_event.id.toString(),
+							tv_name: assetName.toUpperCase(),
+							content_id: this.state.selected_catchup.id.toString(),
+							content_title: this.state.selected_catchup.title
+						});
+						this.convivaTracker.createSession();
+						break;
+				}
+			}
+		}
 	}
 
 	loadChatMessages(id) {
@@ -374,7 +804,7 @@ class Tv extends React.Component {
 					console.log(err);
 				});
 			}
-			
+
 		});
 	}
 
@@ -406,9 +836,18 @@ class Tv extends React.Component {
 						selected_live_event: this.state.live_events[this.state.selected_index],
 						selected_live_event_url: res.data.data,
 						player_url: res.data.data.url,
-						player_vmap: res.data.data[process.env.VMAP_KEY]
+						player_vmap: res.data.data[process.env.VMAP_KEY],
+						selected_tab: 'live',
+						error: false,
+						status: res.data.status
 					}, () => {
-						this.initVOD();
+						// this.initVOD();
+						if (!this.props.context_data.epg_id) {
+							this.initPlayer();
+						}
+						else if (first === true && this.props.context_data.epg_id) {
+							this.selectCatchup(this.props.context_data.epg_id, 'url');
+						}
 						this.props.setChannelCode(this.state.selected_live_event.channel_code);
 						this.props.setCatchupDate(formatDateWord(this.currentDate));
 						this.props.unsetPageLoader();
@@ -418,7 +857,9 @@ class Tv extends React.Component {
 					console.log(error);
 					this.setState({
 						error: true,
-						error_data: error.status === 200 ? error.data.status.message_client : ''
+						first_init_player: true,
+						error_data: error.status === 200 ? error.data.status.message_client : '',
+						status: error.data.status
 					});
 					this.props.unsetPageLoader();
 				});
@@ -459,10 +900,6 @@ class Tv extends React.Component {
 					console.log(error);
 					this.props.unsetPageLoader();
 				});
-
-			if (first === true && this.props.context_data.epg_id) {
-				this.selectCatchup(this.props.context_data.epg_id, 'url');
-			}
 		});
 
 
@@ -485,7 +922,8 @@ class Tv extends React.Component {
 						player_vmap: response.data.data[process.env.VMAP_KEY],
 						selected_catchup: response.data.data,
 						error: false
-					}, () => this.initVOD());
+						// }, () => this.initVOD());
+					}, () => this.initPlayer());
 				}
 				else {
 					showAlert(response.data.status.message_server, `
@@ -550,7 +988,8 @@ class Tv extends React.Component {
 
 	tryAgain() {
 		this.setState({ error: false }, () => {
-			this.initVOD();
+			// this.initVOD();
+			this.initPlayer();
 		});
 	}
 
@@ -696,9 +1135,18 @@ class Tv extends React.Component {
 				}}>
 					<Wrench />
 					<h5 style={{ color: '#8f8f8f' }}>
-						<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
-						<span style={{ fontSize: 12 }}>Please try again later,</span><br />
-						<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+						{this.state.status && this.state.status.code === 12 ? (
+							<div>
+								<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
+							</div>
+						) : (
+								<div>
+									<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+									<span style={{ fontSize: 12 }}>Please try again later,</span><br />
+									<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+								</div>
+							)}
+
 					</h5>
 				</div>
 			);
@@ -706,7 +1154,37 @@ class Tv extends React.Component {
 		else {
 			playerRef = (
 				<div>
-					<div style={{ minHeight: 180 }} id="live-tv-player"></div>
+					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
+					<div className="player-tv-container">
+						<div data-vjs-player>
+							<div
+                                onClick={() => {
+                                    if (this.player) {
+                                        this.player.pause();
+                                    }
+                                }}
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: this.state.screen_width / 2,
+                                    marginTop: '-0.81666em',
+                                    display: this.state.playing && this.state.user_active ? 'block' : 'none',
+                                    transform: 'scale(1.5) translateX(-30%) translateY(-30%)',
+                                    padding: 0
+                                }}>
+                                <PauseIcon/>
+                            </div>
+							<video
+								autoPlay
+								playsInline
+								style={{
+									// minHeight: 180,
+									width: '100%'
+								}}
+								ref={node => this.videoNode = node}
+								className="video-js vjs-default-skin vjs-big-play-centered"></video>
+						</div>
+					</div>
 					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
 					{this.state.ad_closed ? null : (
 						<div className='ads_wrapper'>
@@ -833,7 +1311,7 @@ class Tv extends React.Component {
 									{this.props.chats.catchup.map(c => (
 										<Row key={c.id} className={'program-item'}>
 											<Col xs={9} onClick={this.selectCatchup.bind(this, c.id)}>
-												<Link href={`/tv?channel=${this.state.channel_code}&id=${c.id}&title=${c.title}`} as={`/tv/${this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`}>
+												<Link href={`/tv?channel=${this.state.channel_code == 'globaltv' ? 'gtv' : this.state.channel_code}&id=${c.id}&title=${c.title}`} as={`/tv/${this.state.channel_code == 'globaltv' ? 'gtv' : this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`}>
 													<a style={{ textDecoration: 'none', color: 'white' }}>
 														<div className="title">{c.title}</div>
 														<div className="subtitle">{c.s} - {c.e}</div>

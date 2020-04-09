@@ -7,12 +7,19 @@ import actions from '../../redux/actions';
 import pageActions from '../../redux/actions/pageActions';
 import userActions from '../../redux/actions/userActions';
 
-import Footer from '../../components/Includes/Footer/Default_v2';
+import Footer from '../../components/Includes/Footer/Default';
+import Footer_v2 from '../../components/Includes/Footer/Default_v2';
 
 import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH } from '../../config';
 import { Spinner } from 'reactstrap';
 
 import queryString from 'query-string';
+
+import '../../node_modules/video.js/dist/video-js.min.css';
+import '../../node_modules/videojs-contrib-ads/dist/videojs.ads.css';
+import '../../node_modules/videojs-ima/dist/videojs.ima.css';
+
+import '../../assets/scss/videojs.scss';
 
 class Default_v2 extends React.Component {
 
@@ -141,8 +148,8 @@ class Default_v2 extends React.Component {
                     <noscript><img src="https://certify.alexametrics.com/atrk.gif?account=8oNJt1FYxz20cv" style={{ display: 'none' }} height="1" width="1" alt="" /></noscript>
                     {/* <!-- End Alexa Certify Javascript --> */}
                 </Head>
-                
-                <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script>
+                <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+                {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
                 {/* <!-- DO NOT touch the following DIV --> */}
                 <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
@@ -166,7 +173,7 @@ class Default_v2 extends React.Component {
                 ) : <div></div>}
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
-                {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script src="/static/js/fontawesome.js" crossOrigin="anonymous"></script>) : (<Footer />)}
+                {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script src="/static/js/fontawesome.js" crossOrigin="anonymous"></script>) : (process.env.UI_VERSION == '2.0' ? (this.props.hideFooter || this.props.pages.hide_footer ? null : <Footer_v2 />) : (<Footer />))}
             </div>
         )
     }

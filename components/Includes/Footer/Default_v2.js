@@ -15,6 +15,8 @@ import HomeIcon from '@material-ui/icons/Home';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import ImportContactsTwoToneIcon from '@material-ui/icons/ImportContactsTwoTone';
 
+import { getCookie } from '../../../utils/cookie';
+
 class FooterNav_v2 extends Component {
 
     isProfileComplete() {
@@ -28,6 +30,12 @@ class FooterNav_v2 extends Component {
 
     componentDidMount() {
         this.props.getUserData();
+        Router.events.on("routeChangeStart", () => {
+            const convivaSessionId = getCookie('CONVIVA_SESSION_ID');
+            if (convivaSessionId != null) {
+                Conviva.LivePass.cleanupSession(convivaSessionId);
+            }
+        });
     }
 
     render() {
