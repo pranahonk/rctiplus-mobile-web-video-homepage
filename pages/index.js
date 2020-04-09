@@ -144,7 +144,15 @@ class Index_v2 extends React.Component {
                                 if (!this.props.ads.ads_displayed) {
                                     return (<StickyAds/>);
                                 }
-
+                                const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
+                                if (adsContents.length > 0) {
+                                    if (adsContents[0].tagName == 'SCRIPT') {
+                                        const stickyAds = document.getElementById('sticky-ads-container');
+                                        if (stickyAds) {
+                                            stickyAds.style.display = 'none'
+                                        }
+                                    }
+                                }
                                 return (<StickyAds sticky/>);
                             }
                             return (<StickyAds/>);
