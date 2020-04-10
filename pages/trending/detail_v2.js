@@ -196,7 +196,7 @@ class Detail extends React.Component {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
-                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                    url: BASE_URL + encodeURI(this.props.router.asPath),
                                 })
                                 .then(() => console.log('Successful share'))
                                 .catch(error => console.log('Error sharing:', error));
@@ -205,7 +205,7 @@ class Detail extends React.Component {
                             <i className="fab fa-whatsapp"></i>
                         </div>
                     ) : (
-                        <WhatsappShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} separator=" - ">
+                        <WhatsappShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath)} separator=" - ">
                             <i className="fab fa-whatsapp"></i>
                         </WhatsappShareButton>
                     )}
@@ -279,6 +279,12 @@ class Detail extends React.Component {
         return (
             <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
                 <Head>
+                    <meta name="description" content={cdata.title}></meta>
+                    <meta property="og:image" itemProp="image" content={cdata.cover}></meta>
+                    <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)}></meta>
+                    <meta property="og:image:type" content="image/jpeg" />
+                    <meta property="og:image:width" content="600" />
+                    <meta property="og:image:height" content="315" />
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
                     <script dangerouslySetInnerHTML={{
