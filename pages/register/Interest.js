@@ -6,7 +6,7 @@ import userActions from '../../redux/actions/userActions';
 import notificationActions from '../../redux/actions/notificationActions';
 
 //load default layout
-import Layout from '../../components/Layouts/Default';
+import Layout from '../../components/Layouts/Default_v2';
 
 //load navbar default
 import NavBack from '../../components/Includes/Navbar/NavBack';
