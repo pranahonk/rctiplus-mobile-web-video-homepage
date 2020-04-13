@@ -574,7 +574,7 @@ class Tv extends React.Component {
 									self.setSkipButtonCentered();
 								};
 
-								self.convivaTracker = convivaVideoJs(self.state.selected_catchup.title.toUpperCase(), player, player.duration(), self.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
+								self.convivaTracker = convivaVideoJs(self.state.selected_catchup.title.toUpperCase(), player, player.duration(), self.state.player_url, 'RCTI+ MWEB', {
 									asset_name: self.state.selected_catchup.title.toUpperCase(),
 									application_name: 'RCTI+ MWEB',
 									asset_cdn: 'Conversant',
