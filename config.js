@@ -42,9 +42,9 @@ export const MAIN_DESCRIPTION = 'Live Streaming Program RCTI, MNCTV, GTV & iNews
 export const MAIN_TITLE = 'RCTI+ - Live Streaming Program 4 TV Terpopuler';
 export const OPEN_GRAPH = {
     type: 'article',
-    url: 'https://m2.rctiplus.com',
+    url: process.env.BASE_URL,
     image: 'https://www.rcti.tv/img/favicon.png',
-    site_name: 'm2.rctiplus.com'
+    site_name: process.env.BASE_URL
 };
 
 export const SITE_NAME = 'RCTI+';
