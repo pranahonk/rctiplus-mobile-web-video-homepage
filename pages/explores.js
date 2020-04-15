@@ -21,7 +21,7 @@ import { Row, Col } from 'reactstrap';
 
 import '../assets/scss/components/explore.scss';
 
-import { VISITOR_TOKEN, DEV_API, SITEMAP } from '../config';
+import { VISITOR_TOKEN, DEV_API, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 import { getCookie } from '../utils/cookie';
 import { libraryGeneralEvent, libraryProgramClicked } from '../utils/appier';
 
@@ -307,6 +307,24 @@ class Explores extends React.Component {
 				<Head>
 					<meta name="description" content={metadata.description}/>
 					<meta name="keywords" content={metadata.keywords}/>
+					<meta property="og:title" content={metadata.title} />
+					<meta property="og:description" content={metadata.description} />
+					<meta property="og:image" itemProp="image" content={metadata.image} />
+					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content="600" />
+					<meta property="og:image:height" content="315" />
+					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+					<meta name="twitter:image" content={metadata.image} />
+					<meta name="twitter:image:alt" content={metadata.title} />
+					<meta name="twitter:title" content={metadata.title} />
+					<meta name="twitter:description" content={metadata.description} />
+					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
 				<BottomScrollListener offset={8} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />

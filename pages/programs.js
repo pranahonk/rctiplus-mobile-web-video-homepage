@@ -44,7 +44,7 @@ import { Button, Row, Col, Nav, NavItem, NavLink, TabContent, TabPane } from 're
 import '../assets/scss/plugins/carousel/carousel.scss';
 import '../assets/scss/components/detail.scss';
 
-import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME } from '../config';
+import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME, SITEMAP, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 import { getCookie } from '../utils/cookie';
 
 import { programRateEvent, programShareEvent, programContentShareEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked, searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent } from '../utils/appier';
@@ -110,6 +110,7 @@ class Detail extends React.Component {
             caption: '',
             url: '',
             hashtags: [],
+            pathProgram:'',
             contents: {
                 'episode': [],
                 'extra': [],
@@ -807,6 +808,7 @@ class Detail extends React.Component {
         }
         
         this.setState({ 
+            pathProgram: data.title,
             action_sheet: !this.state.action_sheet,
             caption: caption,
             url: url,
@@ -1030,6 +1032,25 @@ class Detail extends React.Component {
             <Layout title={title}>
                 <Head>
                     <meta name="description" content={metaDescription}/>
+                    <meta name="keywords" content={SITEMAP.home.keywords} />
+                    <meta property="og:title" content={title} />
+                    <meta property="og:description" content={metaDescription} />
+                    <meta property="og:image" itemProp="image" content={this.state.meta.image_path + this.state.resolution + this.state.portrait_image} />
+                    <meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+                    <meta property="og:image:type" content="image/jpeg" />
+                    <meta property="og:image:width" content="600" />
+                    <meta property="og:image:height" content="315" />
+                    <meta property="og:site_name" content={SITE_NAME} />
+                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+                    <meta name="twitter:image" content={this.state.meta.image_path + this.state.resolution + this.state.portrait_image} />
+                    <meta name="twitter:image:alt" content={this.props.initial.data.title} />
+                    <meta name="twitter:title" content={title} />
+                    <meta name="twitter:description" content={metaDescription} />
+                    <meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+                    <meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
                 </Head>
                 <Navbar data={this.props.initial}/>
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)}/>
@@ -1065,6 +1086,7 @@ class Detail extends React.Component {
 
                 <ActionSheet
                     caption={this.state.caption}
+                    path={}
                     url={this.state.url}
                     open={this.state.action_sheet}
                     hashtags={this.state.hashtags}

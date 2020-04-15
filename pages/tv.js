@@ -38,7 +38,7 @@ import { isIOS } from 'react-device-detect';
 import socketIOClient from 'socket.io-client';
 import axios from 'axios';
 
-import { BASE_URL, SITEMAP } from '../config';
+import { BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 
 import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
@@ -86,6 +86,7 @@ class Tv extends React.Component {
 			action_sheet: false,
 			caption: '',
 			url: '',
+			pathShare: '',
 			hashtags: [],
 			chat_open: false,
 			channel_code: this.props.context_data ? (this.props.context_data.channel === 'gtv' ? 'globaltv' : this.props.context_data.channel) : 'rcti',
@@ -950,10 +951,11 @@ class Tv extends React.Component {
 
 	toggleActionSheet(caption = '', url = '', hashtags = []) {
 		this.setState({
+			pathShare: this.state.live_events[this.state.selected_index].name,
 			action_sheet: !this.state.action_sheet,
 			caption: caption,
 			url: url,
-			hashtags: hashtags
+			hashtags: hashtags,
 		}, () => {
 			if (this.state.action_sheet) {
 				switch (this.state.selected_tab) {
@@ -1204,6 +1206,24 @@ class Tv extends React.Component {
 				<Head>
 					<meta name="description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description} />
 					<meta name="keywords" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].keywords} />
+					<meta property="og:title" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title} />
+					<meta property="og:description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description} />
+					<meta property="og:image" itemProp="image" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].image} />
+					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content="600" />
+					<meta property="og:image:height" content="315" />
+					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+					<meta name="twitter:image" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].image} />
+					<meta name="twitter:image:alt" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title} />
+					<meta name="twitter:title" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title} />
+					<meta name="twitter:description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description} />
+					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 
 					<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 					<script dangerouslySetInnerHTML={{

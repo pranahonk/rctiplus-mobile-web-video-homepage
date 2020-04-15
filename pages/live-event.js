@@ -36,7 +36,7 @@ import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import PauseIcon from '../components/Includes/Common/PauseIcon';
 
-import { DEV_API, VISITOR_TOKEN } from '../config';
+import { DEV_API, VISITOR_TOKEN, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, STATIC } from '../config';
 
 import '../assets/scss/components/live-event.scss';
 import '../assets/scss/videojs.scss';
@@ -877,13 +877,45 @@ class LiveEvent extends React.Component {
 
 		return this.state.error ? errorRef : playerRef;
 	}
+	getMeta() {
+		if(this.props.router.query === {}) {
+			return {
+				title: 'Live Event - RCTI+',
+				description: 'Nonton streaming online live event hanya di RCTI+',
+				image: '',
+			}
+		}
+		return {
+			title: 'Streaming ' + this.props.router.query.title.replace(/-/gi, ' ') + ' - RCTI+',
+			description: 'Nonton streaming online ' + this.props.router.query.title.replace(/-/gi, ' ') + 'tanggal ' + this.props.selected_event.start_date + ' WIB hanya di RCTI+ ',
+			image: this.props.selected_event.meta.image_path+'300'+this.props.selected_event.data.portrait_image,
+		}
+	}
 
 	render() {
 		return (
-			<Layout title="Live Event - RCTI+">
+			<Layout title={this.getMeta().title}>
 				<Head>
-					<meta name="description" content={`description`} />
-					<meta name="keywords" content={`keywords`} />
+					<meta name="description" content={this.getMeta().description} />
+					<meta name="keywords" content={this.getMeta().title} />
+					<meta property="og:title" content={this.getMeta().title} />
+					<meta property="og:description" content={this.getMeta().description} />
+					<meta property="og:image" itemProp="image" content={this.getMeta().image} />
+					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content="600" />
+					<meta property="og:image:height" content="315" />
+					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+					<meta name="twitter:image" content={this.getMeta().image} />
+					<meta name="twitter:image:alt" content={this.getMeta().title} />
+					<meta name="twitter:title" content={this.getMeta().title} />
+					<meta name="twitter:description" content={this.getMeta().description} />
+					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{/* { this.state.error ? errorRef : playerRef } */}

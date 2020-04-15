@@ -20,7 +20,7 @@ import WrenchIcon from '../components/Includes/Common/Wrench';
 import { Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem } from 'reactstrap';
 import AddIcon from '@material-ui/icons/Add';
 
-import { SITEMAP } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP } from '../config';
 import { formatDateWordID } from '../utils/dateHelpers';
 import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2 } from '../utils/cookie';
 
@@ -275,6 +275,22 @@ class Trending_v2 extends React.Component {
                 <Head>
                     <meta name="description" content={metadata.description} />
                     <meta name="keywords" content={metadata.keywords} />
+                    <meta property="og:title" content={metadata.title} />
+                    <meta property="og:image" itemProp="image" content={metadata.image}></meta>
+                    <meta property="og:url" content={encodeURI(this.props.router.asPath)}></meta>
+                    <meta property="og:image:type" content="image/jpeg" />
+                    <meta property="og:image:width" content="600" />
+                    <meta property="og:image:height" content="315" />
+                    <meta property="og:site_name" content={SITE_NAME}></meta>
+                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId}></meta>
+                    <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard}></meta>
+                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator}></meta>
+                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite}></meta>
+                    <meta name="twitter:image" content={metadata.image}></meta>
+                    <meta name="twitter:title" content={metadata.title}></meta>
+                    <meta name="twitter:description" content={metadata.description}></meta>
+                    <meta name="twitter:url" content={encodeURI(this.props.router.asPath)}></meta>
+                    <meta name="twitter:domain" content={encodeURI(this.props.router.asPath)}></meta>
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
                     <script dangerouslySetInnerHTML={{
