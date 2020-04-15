@@ -1086,7 +1086,7 @@ class Detail extends React.Component {
 
                 <ActionSheet
                     caption={this.state.caption}
-                    path={}
+                    path={this.state.pathProgram}
                     url={this.state.url}
                     open={this.state.action_sheet}
                     hashtags={this.state.hashtags}
