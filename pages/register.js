@@ -1,6 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 
 import registerActions from '../redux/actions/registerActions';
@@ -14,7 +14,7 @@ import TabSignup from '../components/Includes/Tab/TabSignup';
 
 import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback } from 'reactstrap';
 
-import { SITEMAP } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 
 class Signup extends React.Component {
 	static getInitialProps(ctx) {
@@ -89,6 +89,24 @@ class Signup extends React.Component {
 				<Head>
 					<meta name="description" content={SITEMAP.register.description}/>
 					<meta name="keywords" content={SITEMAP.register.keywords}/>
+					<meta property="og:title" content={SITEMAP.register.title} />
+					<meta property="og:description" content={SITEMAP.register.description} />
+					<meta property="og:image" itemProp="image" content={SITEMAP.register.image} />
+					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content="600" />
+					<meta property="og:image:height" content="315" />
+					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+					<meta name="twitter:image" content={SITEMAP.register.image} />
+					<meta name="twitter:image:alt" content={SITEMAP.register.title} />
+					<meta name="twitter:title" content={SITEMAP.register.title} />
+					<meta name="twitter:description" content={SITEMAP.register.description} />
+					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
 				<NavBack title="Register"/>
 				<div className="wrapper-content" style={{ marginTop: 40 }}>
@@ -154,4 +172,4 @@ class Signup extends React.Component {
 export default connect(state => state, {
 	...registerActions,
 	...userActions
-})(Signup);
+})(withRouter(Signup));

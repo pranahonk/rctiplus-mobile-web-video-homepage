@@ -83,32 +83,80 @@ export const SITEMAP = {
     terms_and_conditions: {
         title: `Halaman Terms and Conditions - ${SITE_NAME}`,
         description: `Untuk menggunakan layanan RCTI+, Anda harus mengikuti syarat dan ketentuan yang berlaku`,
-        keywords: `layanan rctiplus, layanan rcti+, rctiplus`
+        keywords: `layanan rctiplus, layanan rcti+, rctiplus`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     privacy_policy: {
         title: `Halaman Privacy Policy - ${SITE_NAME}`,
         description: `Kebijakan privasi ini menjelaskan teknik dan proses kerja kami tentang informasi yang terkumpul melalui layanan internet, mobile, aplikasi dan widget pada RCTI+`,
-        keywords: `privasi rctiplus, privasi rcti+, rctiplus`
+        keywords: `privasi rctiplus, privasi rcti+, rctiplus`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     contact_us: {
         title: `Hubungi Kami - ${SITE_NAME}`,
         description: `Hubungi kami terkait informasi, kebijakan privasi, serta syarat dan ketentuan yang ada di RCTI+ melalui halaman ini`,
-        keywords: `hubungi rctiplus, hubungi rcti+, rctiplus`
+        keywords: `hubungi rctiplus, hubungi rcti+, rctiplus`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     faq: {
         title: `Halaman Frequently Asked Questions - ${SITE_NAME}`,
         description: `Pertanyaan yang paling sering diajukan terkait informasi penggunaan dan program tayangan di RCTI+ beserta jawabannya`,
-        keywords: `faq rctiplus, faq rcti+, cara pakai rctiplus, rctiplus`
+        keywords: `faq rctiplus, faq rcti+, cara pakai rctiplus, rctiplus`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     register: {
         title: `Halaman Sign Up / Pendaftaran Akun - ${SITE_NAME}`,
         description: `Tempat pendaftaran / register akun di RCTI+. Buruan register sekarang, gratis streaming online sepuasnya`,
-        keywords: `register rctiplus, register rcti+, daftar rctiplus, rctiplus`
+        keywords: `register rctiplus, register rcti+, daftar rctiplus, rctiplus`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     login: {
         title: `Halaman Login Akun - ${SITE_NAME}`,
         description: `Tempat login akun dan nonton tayangan streaming tv online gratis di RCTI+`,
-        keywords: `login rctiplus, login rcti+, masuk rctiplus, rctiplus`
+        keywords: `login rctiplus, login rcti+, masuk rctiplus, rctiplus`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
+    },
+    interest: {
+        title: `Pilih Kategori Program Favorit Kamu - ${SITE_NAME}`,
+        description: `Sesuaikan program dan kategori favorit kamu di dalam aplikasi RCTI+`,
+        keywords: `rctiplus, rcti+`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
+    },
+    verification_email: {
+        title: `Selamat! Verifikasi Email Kamu Sudah Berhasil - ${SITE_NAME}`,
+        description: `Silahkan nikmati program favorit kamu`,
+        keywords: `rctiplus, rcti+`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
+    },
+    profile: {
+        title: `Profile User - ${SITE_NAME}`,
+        description: `Profile user untuk melanjutkan video yang belum selesai ditonton`,
+        keywords: `rctiplus, rcti+`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
+    },
+    edit_profile: {
+        title: `Edit Profile - ${SITE_NAME}`,
+        description: `Profile user untuk melanjutkan video yang belum selesai ditonton`,
+        keywords: `rctiplus, rcti+`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
+    },
+    history: {
+        title: `Riwayat Pencarian dan Tayangan - ${SITE_NAME}`,
+        description: `Kumpulan video dan program yang sudah ditonton`,
+        keywords: `rctiplus, rcti+`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
+    },
+    my_list: {
+        title: `Koleksi User - ${SITE_NAME}`,
+        description: `Kumpulan koleksi video dan program milik user`,
+        keywords: `rctiplus, rcti+`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
+    },
+    qr_code: {
+        title: `Scan QR Code- ${SITE_NAME}`,
+        description: `Scan QR Code menggunakan HP kamu disini`,
+        keywords: `rctiplus, rcti+`,
+        image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     exclusive_all: {
         title: `Nonton Tayangan Menarik dan Terbaru dari RCTI, MNC, GTV, iNews - ${SITE_NAME}`,
