@@ -109,6 +109,7 @@ class Detail extends React.Component {
             clip_length: 5,
             caption: '',
             url: '',
+            tabStatus: 'program',
             hashtags: [],
             pathProgram:'',
             contents: {
@@ -808,7 +809,8 @@ class Detail extends React.Component {
         }
         
         this.setState({ 
-            pathProgram: data.title,
+            pathProgram: caption,
+            tabStatus: contentType || this.state.tabStatus,
             action_sheet: !this.state.action_sheet,
             caption: caption,
             url: url,
@@ -1085,6 +1087,7 @@ class Detail extends React.Component {
                     toggle={this.toggleSelectModal.bind(this)}/>
 
                 <ActionSheet
+                    tabStatus={this.state.tabStatus}
                     caption={this.state.caption}
                     path={this.state.pathProgram}
                     url={this.state.url}

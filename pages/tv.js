@@ -86,6 +86,7 @@ class Tv extends React.Component {
 			action_sheet: false,
 			caption: '',
 			url: '',
+			tabStatus: '',
 			pathShare: '',
 			hashtags: [],
 			chat_open: false,
@@ -949,8 +950,9 @@ class Tv extends React.Component {
 		this.setState({ select_modal: !this.state.select_modal });
 	}
 
-	toggleActionSheet(caption = '', url = '', hashtags = []) {
+	toggleActionSheet(caption = '', url = '', hashtags = [], tabStatus = '') {
 		this.setState({
+			tabStatus: tabStatus,
 			pathShare: this.state.live_events[this.state.selected_index].name,
 			action_sheet: !this.state.action_sheet,
 			caption: caption,
@@ -1252,6 +1254,7 @@ class Tv extends React.Component {
 					toggle={this.toggleSelectModal.bind(this)} />
 
 				<ActionSheet
+					tabStatus= {this.state.tabStatus}
 					caption={this.state.caption}
 					url={this.state.url}
 					open={this.state.action_sheet}
@@ -1311,7 +1314,7 @@ class Tv extends React.Component {
 												<div className="subtitle">{e.s} - {e.e}</div>
 											</Col>
 											<Col className="right-side">
-												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Live TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + e.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code])} className="share-btn" />
+												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Live TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + e.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code],'livetv')} className="share-btn" />
 											</Col>
 										</Row>);
 									}
@@ -1340,7 +1343,7 @@ class Tv extends React.Component {
 												</Link>
 											</Col>
 											<Col className="right-side">
-												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + `/tv/${this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`, ['rctiplus', this.props.chats.channel_code])} className="share-btn" />
+												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + `/tv/${this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`, ['rctiplus', this.props.chats.channel_code], 'catchup')} className="share-btn" />
 											</Col>
 										</Row>
 									))}
