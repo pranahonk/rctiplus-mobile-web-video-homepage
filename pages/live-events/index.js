@@ -5,7 +5,7 @@ import Router, { withRouter } from 'next/router';
 
 import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavBack';
-import Thumbnail from '../../components/Includes/Navbar/Thumbnail';
+import Thumbnail from '../../components/Includes/Common/Thumbnail';
 
 import { Container, Row, Col } from 'reactstrap';
 import '../../assets/scss/components/live-event.scss';
