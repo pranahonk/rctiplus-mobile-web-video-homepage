@@ -9,10 +9,31 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 import '../../assets/scss/components/privacy-policy.scss';
 import { SITEMAP } from '../../config';
 
+import miscActions from '../../redux/actions/miscActions';
+import pageActions from '../../redux/actions/pageActions';
+
 class TermCond extends React.Component {
 
 	static getInitialProps(ctx) {
 		initialize(ctx);
+	}
+
+	state = {
+		tnc: ''
+	};
+
+	componentDidMount() {
+		this.props.setPageLoader();
+		this.props.getTnc()
+			.then(response => {
+				this.props.unsetPageLoader();
+				console.log(response);
+				this.setState({ tnc: response.data.data.value });
+			})
+			.catch(error => {
+				this.props.unsetPageLoader();
+				console.log(error);
+			});
 	}
 
 	render() {
@@ -24,7 +45,9 @@ class TermCond extends React.Component {
 				</Head>
 				<NavBack title="Terms and Conditions"/>
 				<div className="wrapper-content container-box-pp">
-					<iframe src="https://ssr.rctiplus.com/terms-&-conditions" width="100%" height="100%" frameBorder="0"></iframe>
+					{/* <iframe src="https://ssr.rctiplus.com/terms-&-conditions" width="100%" height="100%" frameBorder="0"></iframe> */}
+					<h3 style={{ textAlign: 'center', fontWeight: 900, marginBottom: 20 }}>TERMS AND CONDITIONS</h3>
+					<div style={{ padding: 10 }} dangerouslySetInnerHTML={{ __html: this.state.tnc }}></div>
 				</div>
 			</Layout>
 		);
@@ -32,4 +55,7 @@ class TermCond extends React.Component {
 
 }
 
-export default connect(state => state, {})(TermCond);
+export default connect(state => state, {
+	...miscActions,
+	...pageActions
+})(TermCond);
