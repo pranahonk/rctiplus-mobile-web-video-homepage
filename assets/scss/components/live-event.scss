@@ -404,7 +404,11 @@
 					font-weight: bold;
 				}
 			}
-			// Bootstrap class
+            // Bootstrap class
+            
+            .row {
+                margin: 0;
+            }
 			.col-6 {
 				padding: 5px;
 			}
