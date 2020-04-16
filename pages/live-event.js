@@ -878,7 +878,7 @@ class LiveEvent extends React.Component {
 		return this.state.error ? errorRef : playerRef;
 	}
 	getMeta() {
-		if(this.props.router.query === {}) {
+		if(Object.keys(this.props.router.query).length === 0) {
 			return {
 				title: 'Live Event - RCTI+',
 				description: 'Nonton streaming online live event hanya di RCTI+',
@@ -886,9 +886,9 @@ class LiveEvent extends React.Component {
 			}
 		}
 		return {
-			title: 'Streaming ' + this.props.router.query.title.replace(/-/gi, ' ') + ' - RCTI+',
-			description: 'Nonton streaming online ' + this.props.router.query.title.replace(/-/gi, ' ') + 'tanggal ' + this.props.selected_event.start_date + ' WIB hanya di RCTI+ ',
-			image: this.props.selected_event.meta.image_path+'300'+this.props.selected_event.data.portrait_image,
+			title: 'Streaming ' + this.props.router.query.title.replace(/-/gi, ' ') || '' + ' - RCTI+',
+			description: 'Nonton streaming online ' + this.props.router.query.title.replace(/-/gi, ' ') || '' + 'tanggal ' + this.props.selected_event.start_date || '' + ' WIB hanya di RCTI+ ',
+			image: this.props.selected_event.meta.image_path+'300'+this.props.selected_event.data.portrait_image || '',
 		}
 	}
 
