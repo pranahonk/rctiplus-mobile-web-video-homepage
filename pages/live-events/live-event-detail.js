@@ -9,21 +9,21 @@ import TimeAgo from 'react-timeago';
 import fetch from 'isomorphic-unfetch';
 import queryString from 'query-string';
 import { isIOS } from 'react-device-detect';
-import MuteChat from '../components/Includes/Common/MuteChat';
+import MuteChat from '../../components/Includes/Common/MuteChat';
 
 
-import initialize from '../utils/initialize';
-import { getCookie } from '../utils/cookie';
-import { showSignInAlert } from '../utils/helpers';
-import { contentGeneralEvent } from '../utils/appier';
+import initialize from '../../utils/initialize';
+import { getCookie } from '../../utils/cookie';
+import { showSignInAlert } from '../../utils/helpers';
+import { contentGeneralEvent } from '../../utils/appier';
 
-import liveAndChatActions from '../redux/actions/liveAndChatActions';
-import pageActions from '../redux/actions/pageActions';
-import chatsActions from '../redux/actions/chats';
-import userActions from '../redux/actions/userActions';
+import liveAndChatActions from '../../redux/actions/liveAndChatActions';
+import pageActions from '../../redux/actions/pageActions';
+import chatsActions from '../../redux/actions/chats';
+import userActions from '../../redux/actions/userActions';
 
-import Layout from '../components/Layouts/Default_v2';
-import Wrench from '../components/Includes/Common/Wrench';
+import Layout from '../../components/Layouts/Default_v2';
+import Wrench from '../../components/Includes/Common/Wrench';
 
 import { Row, Col, Button, Input } from 'reactstrap';
 
@@ -34,16 +34,16 @@ import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import PauseIcon from '../components/Includes/Common/PauseIcon';
+import PauseIcon from '../../components/Includes/Common/PauseIcon';
 
-import { DEV_API, VISITOR_TOKEN, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, STATIC } from '../config';
+import { DEV_API, VISITOR_TOKEN, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, STATIC } from '../../config';
 
-import '../assets/scss/components/live-event.scss';
-import '../assets/scss/videojs.scss';
+import '../../assets/scss/components/live-event.scss';
+import '../../assets/scss/videojs.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
-import { getUserId } from '../utils/appier';
-import { convivaVideoJs } from '../utils/conviva';
+import { getUserId } from '../../utils/appier';
+import { convivaVideoJs } from '../../utils/conviva';
 
 import videojs from 'video.js';
 import 'videojs-contrib-ads';

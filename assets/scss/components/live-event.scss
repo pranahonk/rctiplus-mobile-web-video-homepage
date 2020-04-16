@@ -385,3 +385,28 @@
         }
     }
 }
+
+#live-event {
+    &.le-container {
+			padding-top: 5%;
+			z-index: 99999;
+			color: #fff;
+			margin-left: 10px;
+			margin-right: 10px;
+			margin-top: 50px;
+			height: calc(100vh - 100px);
+			.le-live {
+				margin-bottom: 15px;
+			}
+			.le-title {
+				h1 {
+					font-size: 14px;
+					font-weight: bold;
+				}
+			}
+			// Bootstrap class
+			.col-6 {
+				padding: 5px;
+			}
+    }
+}

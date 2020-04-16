@@ -11,6 +11,7 @@ import '../../../assets/scss/components/footer-v2.scss';
 import { Badge } from 'reactstrap';
 
 import ImportantDevicesIcon from '@material-ui/icons/ImportantDevices';
+import LiveEventIcon from '../Common/LiveEventIcon';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import ImportContactsTwoToneIcon from '@material-ui/icons/ImportContactsTwoTone';
@@ -65,13 +66,13 @@ class FooterNav_v2 extends Component {
 
                 <div className="footer-wrapper-list">
                     <div onClick={() => {
-                        homeGeneralClicked('mweb_liveevent_clicked');
+                        homeGeneralClicked('mweb_live_event_clicked');
                         Router.push('/live-event');
                     }}>
                         <a>
-                            <LiveStreamIcon className="nav-footer-icon" />
+                            <LiveEventIcon marginBottom="3px" />
                             <br />
-                            LiveEvent
+                            Live Event
                         </a>
                     </div>
                 </div>
