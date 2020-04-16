@@ -14,6 +14,7 @@ import ImportantDevicesIcon from '@material-ui/icons/ImportantDevices';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import ImportContactsTwoToneIcon from '@material-ui/icons/ImportContactsTwoTone';
+import LiveStreamIcon from '../Common/LiveStream';
 
 import { getCookie } from '../../../utils/cookie';
 
@@ -64,13 +65,26 @@ class FooterNav_v2 extends Component {
 
                 <div className="footer-wrapper-list">
                     <div onClick={() => {
+                        homeGeneralClicked('mweb_liveevent_clicked');
+                        Router.push('/live-event');
+                    }}>
+                        <a>
+                            <LiveStreamIcon className="nav-footer-icon" />
+                            <br />
+                            LiveEvent
+                        </a>
+                    </div>
+                </div>
+
+                <div className="footer-wrapper-list">
+                    <div onClick={() => {
                         homeGeneralClicked('mweb_livetv_clicked');
                         Router.push('/tv/rcti');
                     }}>
                         <a>
                             <ImportantDevicesIcon className="nav-footer-icon" />
                             <br />
-                            Live TV
+                            LiveTV
                         </a>
                     </div>
                 </div>
