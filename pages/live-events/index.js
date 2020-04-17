@@ -30,13 +30,13 @@ class Index extends React.Component {
             <Container>
               <Row>
                 <Col xs="6">
-                  <Thumbnail label="Live" timer="10000" backgroundColor="#fa262f" statusLabel="1" statusTimer="1" src="https://rc-statsfsdfic.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
+                  <Thumbnail label="Live" timer="1000000000" backgroundColor="#fa262f" statusLabel="1" statusTimer="1" src="https://rc-statsfsdfic.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
                 </Col>
                 <Col xs="6">
-                  <Thumbnail label="Live" timer="10000" backgroundColor="#fa262f" statusLabel="1" statusTimer="1" src="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
+                  <Thumbnail label="Live" timer="1000000000" backgroundColor="#fa262f" statusLabel="1" statusTimer="1" src="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
                 </Col>
                 <Col xs="6">
-                  <Thumbnail label="Live" timer="10000" backgroundColor="#fa262f" statusLabel="1" statusTimer="1" src="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
+                  <Thumbnail label="Live" timer="1000000000" backgroundColor="#fa262f" statusLabel="1" statusTimer="1" src="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
                 </Col>
                 <Col xs="6">
                   <Thumbnail label="Live" timer="10000" backgroundColor="#fa262f" statusLabel="1" statusTimer="1" src="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
