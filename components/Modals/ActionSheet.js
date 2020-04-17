@@ -36,18 +36,78 @@ class ActionSheet extends React.Component {
 
     shareUtm(share, title) {
         const path = this.props.router.asPath;
-        if (path.includes('programs')) {
+        const camppaignName = title.replace(/\s/g, '-');
+        const { tabStatus } = this.props;
+        if (tabStatus === 'program') {
             if (path.includes('?ref=')) {
-                return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=programs' + title;
+                return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=programs' + camppaignName;
             }
-            return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=programs' + title;
+            return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=programs' + camppaignName;
+        }
+        if (tabStatus === 'episode') {
+            if (path.includes('?ref=')) {
+                return '&utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodEpisodes' + camppaignName;
+            }
+            return '?utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodEpisodes' + camppaignName;
+        }
+        if (tabStatus === 'extra') {
+            if (path.includes('?ref=')) {
+                return '&utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodExtras' + camppaignName;
+            }
+            return '?utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodExtras' + camppaignName;
+        }
+        if (tabStatus === 'clip') {
+            if (path.includes('?ref=')) {
+                return '&utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodClips' + camppaignName;
+            }
+            return '?utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodClips' + camppaignName;
+        }
+        if (tabStatus === 'photo') {
+            if (path.includes('?ref=')) {
+                return '&utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodPhoto' + camppaignName;
+            }
+            return '?utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodPhoto' + camppaignName;
+        }
+        if (path.includes('rcti') && tabStatus === 'livetv') {
+            if (path.includes('?ref=')) {
+                return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=streamingRCTI' + camppaignName;
+            }
+            return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=streamingRCTI' + camppaignName;
+        }
+        if (path.includes('mnctv') && tabStatus === 'livetv') {
+            if (path.includes('?ref=')) {
+                return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=streamingMNCTV' + camppaignName;
+            }
+            return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=streamingMNCTV' + camppaignName;
+        }
+        if (path.includes('gtv') && tabStatus === 'livetv') {
+            if (path.includes('?ref=')) {
+                return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=streaminGTV' + camppaignName;
+            }
+            return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=streamingGTV' + camppaignName;
+        }
+        if (path.includes('inews') && tabStatus === 'livetv') {
+            if (path.includes('?ref=')) {
+                return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=streamingINEWS' + camppaignName;
+            }
+            return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=streamingINEWS' + camppaignName;
+        }
+        if (tabStatus === 'catchup') {
+            if (path.includes('?ref=')) {
+                return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=streamingINEWS' + camppaignName;
+            }
+            return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=streamingINEWS' + camppaignName;
         }
         if (path.includes('exclusive')) {
             if (path.includes('?ref=')) {
-                return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=exclusive' + title;
+                return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=exclusive' + camppaignName;
             }
-            return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=exclusive' + title;
+            return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=exclusive' + camppaignName;
         }
+        if (path.includes('?ref=')) {
+            return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=gue-ganteng';
+        }
+        return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=gue-ganteng';
     }
     render() {
         const urlShare = REDIRECT_WEB_DESKTOP + this.props.url.substring(this.props.url.indexOf('rctiplus.com') + 12) || ''
@@ -61,34 +121,34 @@ class ActionSheet extends React.Component {
                     </p>
                     <div className="sheet-action-button-container-share">
                         <div className="sheet-action-button-share">
-                            <FacebookShareButton hashtag={this.props.hashtags.map(h => '#' + h).join(' ')} quote={this.props.caption + ' ' + urlShare + this.shareUtm('fb', this.props.path)} url={urlShare + this.shareUtm.bind(this,'fb', this.props.path)}>
+                            <FacebookShareButton hashtag={this.props.hashtags.map(h => '#' + h).join(' ')} quote={this.props.caption + ' ' + urlShare + this.shareUtm('fb', this.props.caption)} url={urlShare + this.shareUtm.bind(this,'fb', this.props.caption)}>
                                 <i className="fab fa-facebook-f"></i>
                             </FacebookShareButton>
                         </div>
                         <div className="sheet-action-button-share">
-                            <TwitterShareButton title={this.props.caption} url={urlShare + this.shareUtm('twit', this.props.path)} hashtags={this.props.hashtags}>
+                            <TwitterShareButton title={this.props.caption} url={urlShare + this.shareUtm('twit', this.props.caption)} hashtags={this.props.hashtags}>
                                 <i className="fab fa-twitter"></i>
                             </TwitterShareButton>
                         </div>
                         <div className="sheet-action-button-share">
-                            <LineShareButton url={urlShare + this.shareUtm('line', this.props.path)} title={this.props.caption}>
+                            <LineShareButton url={urlShare + this.shareUtm('line', this.props.caption)} title={this.props.caption}>
                                 <i className="fab fa-line"></i>
                             </LineShareButton>
                         </div>
                         <br/>
                         <div className="sheet-action-button-share">
-                            <EmailShareButton url={urlShare + this.shareUtm('msg', this.props.path)} subject={this.props.caption} body={this.props.caption + ' ' + urlShare + this.shareUtm('fb', this.props.path)} separator=" - " openWindow>
+                            <EmailShareButton url={urlShare + this.shareUtm('msg', this.props.caption)} subject={this.props.caption} body={this.props.caption + ' ' + urlShare + this.shareUtm('fb', this.props.caption)} separator=" - " openWindow>
                                 <i className="far fa-envelope"></i>
                             </EmailShareButton>
                         </div>
                         <div className="sheet-action-button-share">
-                            <WhatsappShareButton title={this.props.caption} url={urlShare + this.shareUtm('wa', this.props.path)} separator=" - ">
+                            <WhatsappShareButton title={this.props.caption} url={urlShare + this.shareUtm('wa', this.props.caption)} separator=" - ">
                                 <i className="fab fa-whatsapp"></i>
                             </WhatsappShareButton>
                         </div>
                         <div className="sheet-action-button-share">
                             <i onClick={this.copyToClipboard.bind(this)} className="far fa-copy"></i>
-                            <input type="hidden" id="url-copy" value={urlShare + this.shareUtm('copy', this.props.path)}/>
+                            <input type="hidden" id="url-copy" value={urlShare + this.shareUtm('copy', this.props.caption)}/>
                         </div>
                     </div>
                 </ModalBody>

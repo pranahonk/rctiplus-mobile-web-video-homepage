@@ -42,7 +42,7 @@ class PhotoFeed extends React.Component {
         }
     }
 
-    toggleActionSheet(caption = '', url = '', hashtags = []) {
+    toggleActionSheet(caption = '', url = '', hashtags = [], tabStatus) {
 		this.setState({
 			action_sheet: !this.state.action_sheet,
 			caption: caption,
@@ -55,6 +55,7 @@ class PhotoFeed extends React.Component {
         return (
             <Row className={'program-item row-edit ' + (this.props.keyIndex % 2 == 0 ? 'row-striped' : '')}>
                 <ActionSheet
+                    tabStatus="photo"
 					caption={this.props.title}
 					url={this.state.url}
 					open={this.state.action_sheet}
