@@ -23,7 +23,8 @@ import chatsActions from '../../redux/actions/chats';
 import userActions from '../../redux/actions/userActions';
 
 import Layout from '../../components/Layouts/Default_v2';
-import Wrench from '../../components/Includes/Common/Wrench';
+import Thumbnail from '../../components/Includes/Common/Thumbnail';
+import CountdownTimer from '../../components/Includes/Common/CountdownTimer';
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -36,6 +37,7 @@ import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ShareIcon from '@material-ui/icons/Share';
 import PauseIcon from '../../components/Includes/Common/PauseIcon';
+import Wrench from '../../components/Includes/Common/Wrench';
 
 import { DEV_API, VISITOR_TOKEN, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, STATIC } from '../../config';
 
@@ -152,6 +154,8 @@ class LiveEvent extends React.Component {
 		this.convivaTracker = null;
 		this.disconnectHandler = null;
 		this.props.setPageLoader();
+
+		console.log(this.props.selected_event);
 	}
 	
 	componentWillUnmount() {
@@ -923,7 +927,17 @@ class LiveEvent extends React.Component {
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{this.renderPlayer()}
 					<div className="title-wrap">
-						{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
+						<div style={{
+							display: 'flex',
+							alignItems: 'center'
+						}}>
+							<CountdownTimer 
+								position="relative"
+								timer="10000000" 
+								statusTimer="1"/>
+							{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
+						</div>
+						
 						<ShareIcon />
 					</div>
 					<div className="live-event-content-wrap">
@@ -940,21 +954,35 @@ class LiveEvent extends React.Component {
                             </NavItem>
                         </Nav>
 						<div className="live-event-menu">
-							<BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
-								{scrollRef => (
-									<div>
-										<p className="live-event-title"><strong>Live Event</strong></p>
-										<div ref={scrollRef} className="live-event-slider">
-											{this.state.live_events.map((le, i) => (
-												<div onClick={() => Router.push(`/live-event/${le.id}/${le.name.toLowerCase().replace(/ +/g, '-')}`)} key={i} className="live-event-slide">
-													<Img alt={'alt'} src={[this.state.meta.image_path + this.state.resolution + le.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="live-event-thumbnail" />
-													<div className="ribbon">Live</div>
-												</div>
-											))}
-										</div>
-									</div>
-								)}
-							</BottomScrollListener>
+							<TabContent activeTab={this.state.selected_tab}>
+								<TabPane tabId={'live-event'}>
+									<Row>
+										{this.state.live_events.map((le, i) => (
+											<Col xs={6} key={i} onClick={() => Router.push(`/live-event/${le.id}/${le.name.toLowerCase().replace(/ +/g, '-')}`)}>
+												<Thumbnail 
+												label="Live" 
+												backgroundColor="#fa262f" 
+												statusLabel="1" 
+												statusTimer="0" 
+												src={this.state.meta.image_path + this.state.resolution + le.landscape_image} alt={le.name}/>
+											</Col>
+										))}
+									</Row>
+								</TabPane>
+								<TabPane tabId={'missed-event'}>
+									<Row>
+										<Col xs={6}>
+											<Thumbnail label="Live" backgroundColor="#fa262f" statusLabel="0" statusTimer="0" src="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
+										</Col>
+										<Col xs={6}>
+											<Thumbnail label="Live" backgroundColor="#fa262f" statusLabel="0" statusTimer="0" src="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
+										</Col>
+										<Col xs={6}>
+											<Thumbnail label="Live" backgroundColor="#fa262f" statusLabel="0" statusTimer="0" src="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
+										</Col>
+									</Row>
+								</TabPane>
+							</TabContent>
 						</div>
 					</div>
 					<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?

@@ -12,7 +12,7 @@ class Thumbnail extends React.Component {
   render() {
     return (
       <div className="thumb-container">
-        <div className={'thumb-label'} style={{backgroudColor: this.props.backgroudColor, opacity: this.props.statusLabel}}>
+        <div className={'thumb-label'} style={{backgroudColor: this.props.backgroudColor, opacity: this.props.statusLabel }}>
           {this.props.label}
         </div>
             <CountdownTimer timer={this.props.timer} statusTimer={this.props.statusTimer} />
