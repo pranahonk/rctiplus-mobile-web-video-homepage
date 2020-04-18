@@ -1,3 +1,5 @@
+import { isIOS, isAndroid } from "react-device-detect";
+
 export const BASE_URL = process.env.BASE_URL;
 
 export const FE = process.env.FE;
@@ -6,6 +8,10 @@ export const VERSION = process.env.VERSION;
 export const API = process.env.API;
 
 export const DEV_API = process.env.DEV_API;
+
+export const CHAT_API = process.env.CHAT_API;
+
+export const REDIRECT_WEB_DESKTOP = process.env.REDIRECT_WEB_DESKTOP;
 
 // export const API = 'https://api.rctiplus.com';
 
@@ -46,8 +52,27 @@ export const OPEN_GRAPH = {
     image: 'https://www.rcti.tv/img/favicon.png',
     site_name: process.env.BASE_URL
 };
-
+export const GRAPH_SITEMAP = {
+    appId: '211272363627736',
+    twitterCard: 'summary_large_image',
+    twitterCreator: '@OfficialRCTI',
+    twitterSite: '@OfficialRCTI',
+};
 export const SITE_NAME = 'RCTI+';
+export const UTM_NAME = (utm, utmCampaign, utmMedium) => {
+    switch (utm) {
+        case utm === 'trending':
+            if (isIOS) {
+                return '?utm_source=RplusiOsApp&utm_medium=share_' + utmCampaign + '&utm_campaign=news' + utmMedium;
+            }
+            if (isAndroid) {
+                return '?utm_source=RplusaOsApp&utm_medium=sharenews&utm_campaign=trending';
+            }
+            return '?utm_source=Rplusmweb&utm_medium=sharenews&utm_campaign=trending';
+        default:
+            return '?utm_source=Rplusmweb&utm_medium=share_' + utmMedium + '&utm_campaign=news' + utmCampaign;
+    }
+};
 export const SITEMAP = {
     home: {
         title: `${SITE_NAME} - Live Streaming Program 4 TV Terpopuler`,
