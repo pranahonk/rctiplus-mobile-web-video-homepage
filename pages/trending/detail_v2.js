@@ -7,7 +7,7 @@ import Img from 'react-image';
 import { ScrollPercentage } from 'react-scroll-percentage';
 import { StickyContainer, Sticky } from 'react-sticky';
 
-import { DEV_API, BASE_URL, NEWS_API_V2 } from '../../config';
+import { DEV_API, BASE_URL, NEWS_API_V2, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, UTM_NAME } from '../../config';
 
 import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
@@ -25,6 +25,7 @@ import newsv2Actions from '../../redux/actions/newsv2Actions';
 import ShareIcon from '@material-ui/icons/Share';
 
 import queryString from 'query-string';
+import { isIOS } from 'react-device-detect';
 
 class Detail extends React.Component {
 
@@ -162,6 +163,7 @@ class Detail extends React.Component {
     }
 
     renderActionButton(scrolledDown) {
+        const URL_SHARE = REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1));
         const cdata = this.state.trending_detail_data;
         let hashtags = ['rcti', 'rctinews'];
         return (
@@ -172,15 +174,22 @@ class Detail extends React.Component {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
-                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'fb'),
                                 })
                                 .then(() => console.log('Successful share'))
                                 .catch(error => console.log('Error sharing:', error));
                         }}>
                             <i className="fab fa-facebook-f"></i>
                     </div>
-                    ) : (
-                        <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${BASE_URL + this.props.router.asPath}`} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}>
+                    ) : this.platform && (this.platform == 'android') ?
+                    (
+                        <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath) + UTM_NAME('trending', this.props.router.query.id, 'wa')}`} url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'fb')}>
+                            <i className="fab fa-facebook-f"></i>
+                        </FacebookShareButton>
+                    )
+                    :
+                    (
+                        <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'fb')}`} url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'fb')}>
                             <i className="fab fa-facebook-f"></i>
                         </FacebookShareButton>
                     )}
@@ -190,13 +199,13 @@ class Detail extends React.Component {
                     {(this.platform) ? (
                         <div onClick={() => {
                             if (this.platform == 'android') {
-                                window.open(`https://api.whatsapp.com/send?text=${cdata.title + ' - ' + BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))}`);
+                                window.open(`https://api.whatsapp.com/send?text=${cdata.title + ' - ' + URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'wa')}`);
                             }
                             else if (this.platform == 'ios') {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
-                                    url: BASE_URL + encodeURI(this.props.router.asPath),
+                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'wa'),
                                 })
                                 .then(() => console.log('Successful share'))
                                 .catch(error => console.log('Error sharing:', error));
@@ -205,7 +214,7 @@ class Detail extends React.Component {
                             <i className="fab fa-whatsapp"></i>
                         </div>
                     ) : (
-                        <WhatsappShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath)} separator=" - ">
+                        <WhatsappShareButton title={cdata.title} url={REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath) + UTM_NAME('trending', this.props.router.query.id, 'wa')} separator=" - ">
                             <i className="fab fa-whatsapp"></i>
                         </WhatsappShareButton>
                     )}
@@ -217,15 +226,22 @@ class Detail extends React.Component {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
-                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'twit'),
                                 })
                                 .then(() => console.log('Successful share'))
                                 .catch(error => console.log('Error sharing:', error));
                         }}>
                             <i className="fab fa-twitter"></i>
                         </div>
-                    ) : (
-                        <TwitterShareButton title={cdata.title} url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} hashtags={hashtags}>
+                    ) : this.platform && this.platform == 'android' ?
+                    (
+                        <TwitterShareButton title={cdata.title} url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'twit')} hashtags={hashtags}>
+                            <i className="fab fa-twitter"></i>
+                        </TwitterShareButton>
+                    )
+                    :
+                    (
+                        <TwitterShareButton title={cdata.title} url={REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath) + UTM_NAME('trending', this.props.router.query.id, 'twit')} hashtags={hashtags}>
                             <i className="fab fa-twitter"></i>
                         </TwitterShareButton>
                     )}
@@ -237,15 +253,19 @@ class Detail extends React.Component {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
-                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'line'),
                                 })
                                 .then(() => console.log('Successful share'))
                                 .catch(error => console.log('Error sharing:', error));
                         }}>
                             <i className="fab fa-line"></i>
                     </div>
-                    ) : (
-                        <LineShareButton url={BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))} title={cdata.title}>
+                    ) : this.platform && (this.platform == 'android') ?
+                        <LineShareButton url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'line')} title={cdata.title}>
+                            <i className="fab fa-line"></i>
+                        </LineShareButton>
+                    : (
+                        <LineShareButton url={REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath) + UTM_NAME('trending', this.props.router.query.id, 'line')} title={cdata.title}>
                             <i className="fab fa-line"></i>
                         </LineShareButton>
                     )}
@@ -255,13 +275,13 @@ class Detail extends React.Component {
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
                         const cdata = this.state.trending_detail_data;
                         if (this.platform && (this.platform == 'android')) {
-                            window.AndroidShareHandler.action(BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1)), cdata.title);
+                            window.AndroidShareHandler.action(URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'all'), cdata.title);
                         }
                         else {
                             navigator.share({
                                     title: cdata.title,
                                     text: "",
-                                    url: BASE_URL + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1))
+                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'all'),
                                 })
                                 .then(() => console.log('Successful share'))
                                 .catch(error => console.log('Error sharing:', error));
@@ -277,14 +297,24 @@ class Detail extends React.Component {
         // cdata.link = 'https://m.rctiplus.com';
 
         return (
-            <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
+            <Layout title={cdata.title}>
                 <Head>
-                    <meta name="description" content={cdata.title}></meta>
+                    <meta name="description" content={cdata.content.replace( /(<([^>]+)>)/ig, '')}></meta>
                     <meta property="og:image" itemProp="image" content={cdata.cover}></meta>
                     <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)}></meta>
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
+                    <meta property="og:site_name" content={SITE_NAME}></meta>
+                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId}></meta>
+                    <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard}></meta>
+                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator}></meta>
+                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite}></meta>
+                    <meta name="twitter:image" content={cdata.cover}></meta>
+                    <meta name="twitter:title" content={cdata.title}></meta>
+                    <meta name="twitter:description" content={cdata.content.replace( /(<([^>]+)>)/ig, '')}></meta>
+                    <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)}></meta>
+                    <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)}></meta>
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
                     <script dangerouslySetInnerHTML={{
