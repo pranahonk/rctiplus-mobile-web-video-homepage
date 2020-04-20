@@ -133,7 +133,8 @@ class LiveEvent extends React.Component {
 			quality_selector_shown: false,
 			playing: false,
             user_active: false,
-            selected_tab: 'live-event'
+			selected_tab: 'live-event',
+			is_live: this.isLive()
 		};
 
 		const segments = this.props.router.asPath.split(/\?/);
@@ -153,6 +154,7 @@ class LiveEvent extends React.Component {
 		this.videoNode = null;
 		this.convivaTracker = null;
 		this.disconnectHandler = null;
+		this.currentTime = new Date().getTime();
 		this.props.setPageLoader();
 
 		console.log(this.props.selected_event);
@@ -168,6 +170,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 	componentDidMount() {
+		console.log(this.state.is_live);
 		this.props.getLiveEvent('non on air')
 			.then(response => {
 				this.setState({ live_events: response.data.data, meta: response.data.meta }, () => {
@@ -192,6 +195,20 @@ class LiveEvent extends React.Component {
 				console.log(error);
 			});
 	}
+
+	isLive() {
+		if (this.props.selected_event) {
+			const { data } = this.props.selected_event;
+			const currentTime = new Date().getTime();
+			const startTime = new Date(data.start_date).getTime();
+			if (currentTime < startTime) {
+				return startTime - currentTime;
+			}
+		}
+
+		return false;
+	}
+
 	statusChatBlock(id) {
 		// UNCOMMENT LAGI KALO UDAH
 		this.props.getLiveChatBlock(id)
@@ -931,10 +948,13 @@ class LiveEvent extends React.Component {
 							display: 'flex',
 							alignItems: 'center'
 						}}>
-							<CountdownTimer 
-								position="relative"
-								timer="10000000" 
-								statusTimer="1"/>
+							{this.state.is_live ? (
+								<CountdownTimer 
+									position="relative"
+									timer={this.state.is_live} 
+									statusTimer="1"/>
+							) : null}
+							
 							{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
 						</div>
 						
