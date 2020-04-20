@@ -39,6 +39,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import ShareIcon from '@material-ui/icons/Share';
 import PauseIcon from '../../components/Includes/Common/PauseIcon';
 import Wrench from '../../components/Includes/Common/Wrench';
+import MissedIcon from '../../components/Includes/Common/Missed';
 
 import { DEV_API, VISITOR_TOKEN, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, STATIC } from '../../config';
 
@@ -902,7 +903,7 @@ class LiveEvent extends React.Component {
 						padding: 30,
 						minHeight: 180
 					}}>
-						<Wrench />
+						<MissedIcon />
 						<h5 style={{ color: '#8f8f8f' }}>
 							{this.state.status && this.state.status.code === 12 ? (
 								<div>
