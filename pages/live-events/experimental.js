@@ -209,6 +209,19 @@ class LiveEvent extends React.Component {
 		return false;
 	}
 
+	isEnded() {
+		if (this.props.selected_event) {
+			const { data } = this.props.selected_event;
+			const currentTime = new Date().getTime();
+			const endTime = new Date(data.end_date).getTime();
+			if (currentTime < endTime) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	statusChatBlock(id) {
 		// UNCOMMENT LAGI KALO UDAH
 		this.props.getLiveChatBlock(id)
@@ -863,6 +876,41 @@ class LiveEvent extends React.Component {
 				</div>
 			);
 			// this.player.remove();
+		}
+		else if (this.isEnded()) {
+			errorRef = (
+				<div>
+					<span></span>
+					<div style={{
+						textAlign: 'center',
+						padding: 30,
+						minHeight: 180
+					}}>
+						<Wrench />
+						<h5 style={{ color: '#8f8f8f' }}>
+							{this.state.status && this.state.status.code === 12 ? (
+								<div>
+									<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
+								</div>
+							) : (
+								<div>
+									<span style={{ fontSize: 12 }}>Sorry, Please check the video </span><br />
+									<span style={{ fontSize: 12 }}>on Missed Event</span><br/>
+									<Button style={{
+										fontSize: '0.8em',
+										backgroundColor: '#4a4a4a',
+										borderColor: '#4a4a4a',
+										padding: 6,
+										width: 138
+									}} onClick={() => this.setState({ selected_tab: 'missed-event' })}>See Missed Event</Button>
+								</div>
+							)}
+						</h5>
+					</div>
+				</div>
+			);
+
+			return errorRef;
 		}
 		else {
 			playerRef = (
