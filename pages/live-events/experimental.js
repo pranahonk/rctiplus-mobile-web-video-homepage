@@ -25,6 +25,7 @@ import userActions from '../../redux/actions/userActions';
 import Layout from '../../components/Layouts/Default_v2';
 import Thumbnail from '../../components/Includes/Common/Thumbnail';
 import CountdownTimer from '../../components/Includes/Common/CountdownTimer';
+import ActionSheet from '../../components/Modals/ActionSheet';
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -134,7 +135,12 @@ class LiveEvent extends React.Component {
 			playing: false,
             user_active: false,
 			selected_tab: 'live-event',
-			is_live: this.isLive()
+			is_live: this.isLive(),
+			action_sheet: false,
+			caption: '',
+			url: '',
+			hashtags: [],
+			tab_status: ''
 		};
 
 		const segments = this.props.router.asPath.split(/\?/);
@@ -757,6 +763,16 @@ class LiveEvent extends React.Component {
 		}
 	}
 
+	toggleActionSheet(caption = '', url = '', hashtags = [], tabStatus = 'livetv') {
+		this.setState({
+			tab_status: tabStatus,
+			action_sheet: !this.state.action_sheet,
+			caption: caption,
+			url: url,
+			hashtags: hashtags
+		});
+	}
+
 	resendChat(index) {
 		let chats = this.state.chats;
 		let lastChat = chats[index];
@@ -989,6 +1005,15 @@ class LiveEvent extends React.Component {
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
+				
+				<ActionSheet
+					tabStatus= {this.state.tabStatus}
+					caption={this.state.caption}
+					url={this.state.url}
+					open={this.state.action_sheet}
+					hashtags={this.state.hashtags}
+					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])} />
+
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{this.renderPlayer()}
 					<div className="title-wrap">
@@ -1006,7 +1031,7 @@ class LiveEvent extends React.Component {
 							{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
 						</div>
 						
-						<ShareIcon />
+						<ShareIcon onClick={() => this.toggleActionSheet((this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'), BASE_URL + this.props.router.asPath, ['rctiplus'], 'livetv')}/>
 					</div>
 					<div className="live-event-content-wrap">
                         <Nav tabs className="tab-wrap">

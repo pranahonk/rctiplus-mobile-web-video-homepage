@@ -105,9 +105,9 @@ class ActionSheet extends React.Component {
             return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=exclusive' + camppaignName;
         }
         if (path.includes('?ref=')) {
-            return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=gue-ganteng';
+            return '&utm_source=Rplusmweb&utm_medium=share_' + share; // + '&utm_campaign=gue-ganteng';
         }
-        return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=gue-ganteng';
+        return '?utm_source=Rplusmweb&utm_medium=share_' + share; // + '&utm_campaign=gue-ganteng';
     }
     render() {
         const urlShare = REDIRECT_WEB_DESKTOP + this.props.url.substring(this.props.url.indexOf('rctiplus.com') + 12) || ''
