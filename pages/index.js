@@ -38,7 +38,7 @@ class Index_v2 extends React.Component {
             page: 1,
             fetchAllowed: true,
             meta: null,
-            resolution: 520,
+            resolution: 320,
             is_loading: false,
             length: 5,
             show_sticky_install: false,
