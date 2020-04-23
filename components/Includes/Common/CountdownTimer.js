@@ -8,6 +8,7 @@ class CountdownTimer extends React.Component {
   now = Date.now();
 
   render() {
+    console.log(parseInt(this.props.timer))
     return (
         <Countdown
           key="1"

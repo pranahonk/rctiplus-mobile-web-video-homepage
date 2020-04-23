@@ -11,6 +11,12 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case 'POST_CHAT':
         case 'GET_LIVE_EVENT':
+        case 'GET_MISSED_EVENT':
+            return Object.assign({}, state, {
+                status: action.status,
+                data: action.data,
+                meta: action.meta,
+            });
         case 'GET_LIVE_EVENT_DETAIL':
         case 'GET_LIVE_EVENT_URL':
         case 'GET_LIVE_QUIZ':

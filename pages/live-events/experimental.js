@@ -15,7 +15,7 @@ import MuteChat from '../../components/Includes/Common/MuteChat';
 import initialize from '../../utils/initialize';
 import { getCookie } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
-import { contentGeneralEvent } from '../../utils/appier';
+import { contentGeneralEvent, liveEventTabClicked, liveShareEvent } from '../../utils/appier';
 
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
@@ -26,6 +26,8 @@ import Layout from '../../components/Layouts/Default_v2';
 import Thumbnail from '../../components/Includes/Common/Thumbnail';
 import CountdownTimer from '../../components/Includes/Common/CountdownTimer';
 import ActionSheet from '../../components/Modals/ActionSheet';
+import LiveIcon from '../../components/Includes/Common/LiveIcon';
+import StreamVideoIcon from '../../components/Includes/Common/StreamVideoIcon';
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -44,6 +46,7 @@ import MissedIcon from '../../components/Includes/Common/Missed';
 import { DEV_API, VISITOR_TOKEN, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, STATIC } from '../../config';
 
 import '../../assets/scss/components/live-event-v2.scss';
+import '../../assets/scss/components/live-event.scss';
 import '../../assets/scss/videojs.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
@@ -64,8 +67,8 @@ class LiveEvent extends React.Component {
 
 	static async getInitialProps(ctx) {
 		initialize(ctx);
-        // const id = ctx.query.id;
-        const id = 19;
+			const id = ctx.query.id;
+        // const id = 19;
 		const accessToken = getCookie('ACCESS_TOKEN');
 		const options = {
 			method: 'GET',
@@ -75,7 +78,9 @@ class LiveEvent extends React.Component {
 		};
 		const res = await Promise.all([
 			fetch(`${DEV_API}/api/v1/live-event/${id}`, options),
-			fetch(`${DEV_API}/api/v1/live-event/${id}/url`, options)
+			fetch(`${DEV_API}/api/v1/live-event/${id}/url`, options),
+			fetch(`${DEV_API}/api/v2/missed-event/${id}/url`, options),
+			fetch(`${DEV_API}/api/v1/missed-event/${id}`, options),
 		]);
 
 		const error_code = res[0].status > 200 ? res[0].status : false;
@@ -101,14 +106,15 @@ class LiveEvent extends React.Component {
 
 		const data = await Promise.all([
 			res[0].json(),
-			res[1].json()
+			res[1].json(),
+			res[2].json(),
+			res[3].json(),
 		]);
-
 		return {
-			selected_event: data[0],
-			selected_event_url: data[1],
+			selected_event: ctx.asPath.match('live-event') ? data[0] : data[3],
+			selected_event_url: ctx.asPath.match('live-event') ? data[1] : data[2],
 			user_agent: userAgent,
-			is_mobile: isMobile
+			is_mobile: isMobile,
 		};
 	}
 
@@ -128,6 +134,7 @@ class LiveEvent extends React.Component {
 			},
 			chats: [],
 			live_events: [],
+			missed_event: [],
 			meta: {},
 			resolution: 300,
 			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
@@ -177,7 +184,12 @@ class LiveEvent extends React.Component {
 		}
 	}
 	componentDidMount() {
-		console.log(this.state.is_live);
+		if (!this.props.router.asPath.match('live-event')) {
+			this.setState({
+				selected_tab: 'missed-event',
+			});
+		}
+		this.getMissedEvent();
 		this.props.getLiveEvent('non on air')
 			.then(response => {
 				this.setState({ live_events: response.data.data, meta: response.data.meta }, () => {
@@ -203,12 +215,28 @@ class LiveEvent extends React.Component {
 			});
 	}
 
+	getMissedEvent() {
+    this.props.setPageLoader();
+    this.props.getMissedEvent()
+    .then(({data: lists}) => {
+      this.setState({
+        missed_event: lists.data,
+      });
+      console.log(lists);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
 	isLive() {
-		if (this.props.selected_event) {
+		if (this.props.selected_event && this.props.selected_event.data) {
 			const { data } = this.props.selected_event;
 			const currentTime = new Date().getTime();
-			const startTime = new Date(data.start_date).getTime();
+			const startTime = data.release_date_quiz;
+			console.log(currentTime, startTime);
 			if (currentTime < startTime) {
+				console.log(startTime - currentTime);
 				return startTime - currentTime;
 			}
 		}
@@ -217,7 +245,11 @@ class LiveEvent extends React.Component {
 	}
 
 	isEnded() {
-		if (this.props.selected_event) {
+		if (this.props.router.asPath.match('missed-event')) {
+			return false;
+		}
+
+		if (this.props.selected_event && this.props.selected_event.data) {
 			const { data } = this.props.selected_event;
 			const currentTime = new Date().getTime();
 			const endTime = new Date(data.end_date).getTime();
@@ -875,7 +907,7 @@ class LiveEvent extends React.Component {
 						padding: 30,
 						minHeight: 180
 					}}>
-						<Wrench />
+						<StreamVideoIcon />
 						<h5 style={{ color: '#8f8f8f' }}>
 							{this.state.status && this.state.status.code === 12 ? (
 								<div>
@@ -974,14 +1006,22 @@ class LiveEvent extends React.Component {
 				image: '',
 			}
 		}
+		const { data, meta } = this.props.selected_event;
 		return {
 			title: 'Streaming ' + this.props.router.query.title.replace(/-/gi, ' ') || '' + ' - RCTI+',
 			description: 'Nonton streaming online ' + this.props.router.query.title.replace(/-/gi, ' ') || '' + 'tanggal ' + this.props.selected_event.start_date || '' + ' WIB hanya di RCTI+ ',
-			image: this.props.selected_event.meta.image_path+'300'+this.props.selected_event.data.portrait_image || '',
+			image: data && meta ? (this.props.selected_event.meta.image_path+'300'+this.props.selected_event.data.portrait_image) : '',
 		}
 	}
 
 	render() {
+		let { selected_event } = this.props;
+		let errorEvent = (<Col xs="12" key="1" className="le-error">
+				<LiveIcon />
+				<p>Ups! No Data Found</p>
+				<p>content isn't available right now</p>
+			</Col>
+		);
 		return (
 			<Layout title={this.getMeta().title}>
 				<Head>
@@ -1032,27 +1072,30 @@ class LiveEvent extends React.Component {
 							{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
 						</div>
 						
-						<ShareIcon onClick={() => this.toggleActionSheet((this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'), BASE_URL + this.props.router.asPath, ['rctiplus'], 'livetv')}/>
+						<ShareIcon onClick={() => {
+							liveShareEvent(selected_event.data.id, selected_event.data.name);
+							this.toggleActionSheet((this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'), BASE_URL + this.props.router.asPath, ['rctiplus'], 'livetv')
+						}}/>
 					</div>
 					<div className="live-event-content-wrap">
                         <Nav tabs className="tab-wrap">
                             <NavItem 
-                                onClick={() => this.setState({ selected_tab: 'live-event' })}
+                                onClick={() => this.setState({ selected_tab: 'live-event' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Live Event');})}
                                 className={this.state.selected_tab === 'live-event' ? 'selected' : ''}>
                                 <NavLink>Live Event</NavLink>
                             </NavItem>
                             <NavItem 
-                                onClick={() => this.setState({ selected_tab: 'missed-event' })}
+                                onClick={() => this.setState({ selected_tab: 'missed-event' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Missed Event');})}
                                 className={this.state.selected_tab === 'missed-event' ? 'selected' : ''}>
                                 <NavLink>Missed Event</NavLink>
                             </NavItem>
                         </Nav>
-						<div className="live-event-menu">
+						<div className="live-event-menu" id="live-event">
 							<TabContent activeTab={this.state.selected_tab}>
 								<TabPane tabId={'live-event'}>
 									<Row>
-										{this.state.live_events.map((le, i) => (
-											<Col xs={6} key={i} onClick={() => Router.push(`/live-event/${le.id}/${le.name.toLowerCase().replace(/ +/g, '-')}`)}>
+										{this.state.live_events.length > 0 ? this.state.live_events.map((le, i) => (
+											<Col xs={6} key={i} onClick={() => Router.push(`/live-event/${le.content_id}/${le.content_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}`)}>
 												<Thumbnail 
 												label="Live" 
 												backgroundColor="#fa262f" 
@@ -1060,20 +1103,21 @@ class LiveEvent extends React.Component {
 												statusTimer="0" 
 												src={this.state.meta.image_path + this.state.resolution + le.landscape_image} alt={le.name}/>
 											</Col>
-										))}
+										)) : errorEvent}
 									</Row>
 								</TabPane>
 								<TabPane tabId={'missed-event'}>
 									<Row>
-										<Col xs={6}>
-											<Thumbnail label="Live" backgroundColor="#fa262f" statusLabel="0" statusTimer="0" src="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
-										</Col>
-										<Col xs={6}>
-											<Thumbnail label="Live" backgroundColor="#fa262f" statusLabel="0" statusTimer="0" src="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
-										</Col>
-										<Col xs={6}>
-											<Thumbnail label="Live" backgroundColor="#fa262f" statusLabel="0" statusTimer="0" src="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg" alt="https://rc-static.rctiplus.id/media/250/files/fta_rcti/Landscape/4_anak_rantau/anakrantau_landscape.jpg"/>
-										</Col>
+									{this.state.missed_event.length > 0 ? this.state.missed_event.map((le, i) => (
+											<Col xs={6} key={i} onClick={() => Router.push(`/missed-event/${le.content_id}/${le.content_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}`)}>
+												<Thumbnail 
+												label="Live"
+												backgroundColor="#fa262f" 
+												statusLabel="0" 
+												statusTimer="0" 
+												src={this.state.meta.image_path + this.state.resolution + le.landscape_image} alt={le.name}/>
+											</Col>
+										)) : errorEvent}
 									</Row>
 								</TabPane>
 							</TabContent>
