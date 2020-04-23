@@ -204,7 +204,7 @@ class PlayerModal extends React.Component {
 
                 const player = this;
                 const assetName = self.props.program ? self.props.program.title : 'N/A';
-                self.convivaTracker = convivaVideoJs(assetName, player, true, self.props.videoUrl, assetName.toUpperCase(), {
+                self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.props.videoUrl, assetName.toUpperCase(), {
 					asset_name: assetName.toUpperCase(),
 					application_name: 'RCTI+ MWEB',
 					player_type: 'VideoJS',
