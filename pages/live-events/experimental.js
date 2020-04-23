@@ -67,8 +67,13 @@ class LiveEvent extends React.Component {
 
 	static async getInitialProps(ctx) {
 		initialize(ctx);
+<<<<<<< HEAD
 			const id = ctx.query.id;
         // const id = 19;
+=======
+        // const id = ctx.query.id;
+        const id = 21;
+>>>>>>> d923021ae6b51dbf3368ae803078df82d8dcac3b
 		const accessToken = getCookie('ACCESS_TOKEN');
 		const options = {
 			method: 'GET',
