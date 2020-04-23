@@ -9,7 +9,7 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
         createSession: function() {
             // this.cleanUpSession();
 			
-            const assetName = this.assetName.toUpperCase();
+            const assetName = this.assetName;
             let convivaMetadata = new Conviva.ConvivaContentInfo(assetName, tags);
             convivaMetadata.streamUrl = playerUrl;
             if (isLive === true) {

@@ -544,15 +544,15 @@ class Tv extends React.Component {
 								self.removeSkipButton();
 								const currentEpg = self.getCurrentLiveEpg();
 								if (currentEpg != null) {
-									self.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
-										asset_name: assetName.toUpperCase(),
+									self.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName, {
+										asset_name: assetName,
 										application_name: 'RCTI+ MWEB',
 										asset_cdn: 'Conversant',
 										version: process.env.VERSION,
 										start_session: '0',
 										player_version: process.env.PLAYER_VERSION,
 										tv_id: self.state.selected_live_event.id.toString(),
-										tv_name: assetName.toUpperCase(),
+										tv_name: assetName,
 										content_id: currentEpg.id.toString(),
 										content_title: currentEpg.title
 									});
@@ -573,7 +573,7 @@ class Tv extends React.Component {
 								};
 
 								self.convivaTracker = convivaVideoJs(self.state.selected_catchup.title.toUpperCase(), player, player.duration(), self.state.player_url, 'RCTI+ MWEB', {
-									asset_name: self.state.selected_catchup.title.toUpperCase(),
+									asset_name: self.state.selected_catchup.title,
 									application_name: 'RCTI+ MWEB',
 									asset_cdn: 'Conversant',
 									version: process.env.VERSION,
@@ -848,7 +848,7 @@ class Tv extends React.Component {
 						error: true,
 						first_init_player: true,
 						error_data: error.status === 200 ? error.data.status.message_client : '',
-						status: error.data.status
+						status: error.data ? error.data.status : ''
 					});
 					this.props.unsetPageLoader();
 				});

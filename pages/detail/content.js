@@ -298,15 +298,15 @@ class Content extends React.Component {
 
                 const player = this;
                 const assetName = content && content.data ? content.data.content_name : 'N/A';
-                self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), this.state.player_url, assetName.toUpperCase(), {
-					asset_name: assetName.toUpperCase(),
+                self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, assetName, {
+                    asset_name: assetName,
 					application_name: 'RCTI+ MWEB',
 					player_type: 'VideoJS',
 					content_id: (self.props.context_data.content_id ? self.props.context_data.content_id : 'N/A').toString(),
 					program_name: assetName,
 					version: process.env.VERSION,
 					playerVersion: process.env.PLAYER_VERSION,
-                    content_name: assetName.toUpperCase(),
+                    content_name: assetName,
                     start_session: self.state.start_duration.toString()
                 });
                 self.convivaTracker.createSession();
