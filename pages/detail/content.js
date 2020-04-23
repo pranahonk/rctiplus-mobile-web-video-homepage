@@ -298,7 +298,7 @@ class Content extends React.Component {
 
                 const player = this;
                 const assetName = content && content.data ? content.data.content_name : 'N/A';
-                self.convivaTracker = convivaVideoJs(assetName, player, true, this.state.player_url, assetName.toUpperCase(), {
+                self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), this.state.player_url, assetName.toUpperCase(), {
 					asset_name: assetName.toUpperCase(),
 					application_name: 'RCTI+ MWEB',
 					player_type: 'VideoJS',
