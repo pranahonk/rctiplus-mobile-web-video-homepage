@@ -544,8 +544,8 @@ class Tv extends React.Component {
 								self.removeSkipButton();
 								const currentEpg = self.getCurrentLiveEpg();
 								if (currentEpg != null) {
-									self.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName, {
-										asset_name: assetName,
+									self.convivaTracker = convivaVideoJs(assetName.toUpperCase(), player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
+										asset_name: assetName.toUpperCase(),
 										application_name: 'RCTI+ MWEB',
 										asset_cdn: 'Conversant',
 										version: process.env.VERSION,
