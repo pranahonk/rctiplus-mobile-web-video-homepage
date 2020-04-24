@@ -51,6 +51,7 @@ import '../../assets/scss/videojs.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
 import { getUserId } from '../../utils/appier';
+import { getCountdown } from '../../utils/helpers';
 import { convivaVideoJs } from '../../utils/conviva';
 
 import videojs from 'video.js';
@@ -85,7 +86,7 @@ class LiveEvent extends React.Component {
 
 		const error_code = res[0].status > 200 ? res[0].status : false;
 		const error_code_2 = res[1].status > 200 ? res[1].status : false;
-
+		console.log("testttt", res[0])
 		if (error_code || error_code_2) {
 			return {
 				selected_event: false,
@@ -120,6 +121,7 @@ class LiveEvent extends React.Component {
 
 	constructor(props) {
 		super(props);
+		console.log(this.props.selected_event);
 		this.state = {
 			error: false,
 			emoji_picker_open: false,
@@ -148,7 +150,8 @@ class LiveEvent extends React.Component {
 			caption: '',
 			url: '',
 			hashtags: [],
-			tab_status: ''
+			tab_status: '',
+			refreshUrl: null
 		};
 
 		const segments = this.props.router.asPath.split(/\?/);
@@ -170,8 +173,6 @@ class LiveEvent extends React.Component {
 		this.disconnectHandler = null;
 		this.currentTime = new Date().getTime();
 		this.props.setPageLoader();
-
-		console.log(this.props.selected_event);
 	}
 	
 	componentWillUnmount() {
@@ -184,7 +185,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 	componentDidMount() {
-		if (!this.props.router.asPath.match('live-event')) {
+		if (this.props.router.asPath.match('missed-event')) {
 			this.setState({
 				selected_tab: 'missed-event',
 			});
@@ -233,11 +234,9 @@ class LiveEvent extends React.Component {
 		if (this.props.selected_event && this.props.selected_event.data) {
 			const { data } = this.props.selected_event;
 			const currentTime = new Date().getTime();
-			const startTime = data.release_date_quiz;
-			console.log(currentTime, startTime);
+			const startTime = new Date(data.release_date_quiz * 1000).getTime();
 			if (currentTime < startTime) {
-				console.log(startTime - currentTime);
-				return startTime - currentTime;
+				return getCountdown(data.release_date_quiz);
 			}
 		}
 
@@ -894,6 +893,13 @@ class LiveEvent extends React.Component {
 
 	}
 
+	getPlayNow(status) {
+		const vm = this
+		if(status) {
+			window.location.reload(false);
+		}
+	}
+
 	renderPlayer() {
 		let playerRef = (<div></div>);
 		let errorRef = (<div></div>);
@@ -915,9 +921,9 @@ class LiveEvent extends React.Component {
 								</div>
 							) : (
 								<div>
-									<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
-									<span style={{ fontSize: 12 }}>Please try again later,</span><br />
-									<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
+									<p style={{ fontSize:12, color: '#ffffff', margin: '5px' }}>Video Error</p>
+									<span style={{ fontSize: 12 }}>Sorry, Error has occured.</span><br />
+									<span style={{ fontSize: 12 }}>Please try again later.</span>
 								</div>
 							)}
 						</h5>
@@ -935,7 +941,8 @@ class LiveEvent extends React.Component {
 						padding: 30,
 						minHeight: 180
 					}}>
-						<MissedIcon />
+						{/* <MissedIcon /> */}
+						<StreamVideoIcon />
 						<h5 style={{ color: '#8f8f8f' }}>
 							{this.state.status && this.state.status.code === 12 ? (
 								<div>
@@ -943,15 +950,16 @@ class LiveEvent extends React.Component {
 								</div>
 							) : (
 								<div>
+									<p style={{ fontSize:12, color: '#ffffff', margin: '5px' }}>Not Available</p>
 									<span style={{ fontSize: 12 }}>Sorry, Please check the video </span><br />
 									<span style={{ fontSize: 12 }}>on Missed Event</span><br/>
-									<Button style={{
+									{/* <Button style={{
 										fontSize: '0.8em',
 										backgroundColor: '#4a4a4a',
 										borderColor: '#4a4a4a',
 										padding: 6,
 										width: 138
-									}} onClick={() => this.setState({ selected_tab: 'missed-event' })}>See Missed Event</Button>
+									}} onClick={() => this.setState({ selected_tab: 'missed-event' })}>See Missed Event</Button> */}
 								</div>
 							)}
 						</h5>
@@ -1063,7 +1071,10 @@ class LiveEvent extends React.Component {
 							alignItems: 'center'
 						}}>
 							{this.state.is_live ? (
-								<CountdownTimer 
+								<CountdownTimer
+									id= {selected_event.data.id}
+									onUrl={this.getPlayNow}
+									key={this.state.is_live} 
 									position="relative"
 									timer={this.state.is_live} 
 									statusTimer="1"/>

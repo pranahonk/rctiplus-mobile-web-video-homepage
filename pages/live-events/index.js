@@ -11,6 +11,7 @@ import LiveIcon from '../../components/Includes/Common/LiveIcon';
 // redux
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
+import { getCountdown } from '../../utils/helpers';
 
 import { Container, Row, Col } from 'reactstrap';
 import '../../assets/scss/components/live-event.scss';
@@ -59,48 +60,15 @@ class Index extends React.Component {
   getLink(data, params = 'live-event') {
     Router.push(`/${params}/${data.content_id}/${data.content_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}`);
   }
-  getTimer(value) {
-    const time = new Date();
-    const date = new Date(parseInt(value) * 1000);
-    const resultTime = Math.floor((date.getTime() - time.getTime()) / 1000);
-    if ((date.getTime() > time.getTime())) {
-      return resultTime;
-    }
-    return 0;
-  }
-  getDetailEvent() {
-    console.log(this.state.live_event)
-    if (this.state.live_event === 0) {
-      return (
-        <Col xs="12" key="1" className="le-error">
-          <LiveIcon />
-          <p>Ups! No Data Found</p>
-          <p>content isn't available right now</p>
-        </Col>
-      );
-    }
-    this.state.live_event.map((list, i) => {
-      return (
-        <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
-          <Thumbnail
-          label="Live"
-          timer={this.getTimer(list.release_date_quiz)}
-          backgroundColor="#fa262f"
-          statusLabel="1"
-          statusTimer="1"
-          src={`${this.state.meta.image_path}/250/${list.landscape_image}`} alt={list.name}/>
-        </Col>
-      );
-    });
-  }
 
   render() {
     let liveEvent = this.state.live_event.map((list, i) => {
       return (
         <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
           <Thumbnail
+          key={list.content_id + list.content_title}
           label="Live"
-          timer={this.getTimer(list.release_date_quiz)}
+          timer={getCountdown(list.release_date_quiz)}
           backgroundColor="#fa262f"
           statusLabel="1"
           statusTimer="1"
@@ -112,6 +80,7 @@ class Index extends React.Component {
       return (
         <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'missed-event')}>
           <Thumbnail
+          key={list.content_id + list.content_title}
           label="Live"
           backgroundColor="#fa262f"
           statusLabel="0"
@@ -133,26 +102,33 @@ class Index extends React.Component {
         </Head>
         <NavBack title="Live Event"/>
         <div id="live-event" className="le-container">
-          <section className="le-live">
-            <div className="le-title">
-              <h1>Live Event</h1>
-            </div>
-            <Container>
-              <Row>
-                { this.state.live_event.length > 0 ? liveEvent : errorEvent }
-              </Row>
-            </Container>
-          </section>
-          <section className="le-missed_event">
-            <div className="le-title">
-              <h1>Missed Event</h1>
-            </div>
-            <Container>
-              <Row>
-                { this.state.missed_event.length > 0 ? missedEvent : errorEvent }
-              </Row>
-            </Container>
-          </section>
+          {this.state.live_event.length > 0 && this.state.missed_event.length > 0 ?
+            (<div>
+              <section className="le-live">
+                <div className="le-title">
+                  <h1>Live Event</h1>
+                </div>
+                <Container>
+                  <Row>
+                    { this.state.live_event.length > 0 ? liveEvent : errorEvent }
+                  </Row>
+                </Container>
+              </section>
+              <section className="le-missed_event">
+                <div className="le-title">
+                  <h1>Missed Event</h1>
+                </div>
+                <Container>
+                  <Row>
+                    { this.state.missed_event.length > 0 ? missedEvent : errorEvent }
+                  </Row>
+                </Container>
+              </section>
+              </div>) :
+              (<div className="le-full__error">
+                  { errorEvent }
+                </div>)
+          }
         </div>
       </Layout>
     );

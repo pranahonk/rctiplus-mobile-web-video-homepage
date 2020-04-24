@@ -119,3 +119,10 @@ export const showSignInAlert = (text, title, callback, buttonInverse = false, co
     const btnCancel = document.getElementsByClassName('swal2-cancel')[0];
     btnCancel.parentNode.insertBefore(btn, btnCancel.nextSibling)
 };
+
+export const getCountdown = (value) => {
+    const now = new Date().getTime();
+    const timeRelease = new Date(parseInt(value) * 1000).getTime();
+    const result = (timeRelease - now);
+    return result;
+}
