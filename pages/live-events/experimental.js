@@ -1142,7 +1142,7 @@ class LiveEvent extends React.Component {
 						<div className="live-event-menu" id="live-event">
 							<TabContent activeTab={this.state.selected_tab}>
 								<TabPane tabId={'live-event'}>
-									<Row>
+									<Row style={{marginLeft: '0 !important'}}>
 										{this.state.live_events.length > 0 ? this.state.live_events.map((le, i) => (
 											<Col xs={6} key={i} onClick={() => Router.push(`/live-event/${le.content_id}/${le.content_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}`)}>
 												<Thumbnail 
@@ -1158,7 +1158,7 @@ class LiveEvent extends React.Component {
 									</Row>
 								</TabPane>
 								<TabPane tabId={'missed-event'}>
-									<Row>
+									<Row style={{marginLeft: '0 !important'}}>
 									{this.state.missed_event.length > 0 ? this.state.missed_event.map((le, i) => (
 											<Col xs={6} key={i} onClick={() => Router.push(`/missed-event/${le.content_id}/${le.content_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}`)}>
 												<Thumbnail 
