@@ -618,11 +618,11 @@ class LiveEvent extends React.Component {
                 this.setState({ playing: false });
             });
 
-			// this.player.ima({
-			// 	adTagUrl: vmap,
-			// 	preventLateAdStart: true
-			// });
-			// this.player.ima.initializeAdDisplayContainer();
+			this.player.ima({
+				adTagUrl: vmap,
+				preventLateAdStart: true
+			});
+			this.player.ima.initializeAdDisplayContainer();
 
 			this.setState({ screen_width: window.outerWidth });
 		}
