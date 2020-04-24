@@ -28,6 +28,7 @@ import CountdownTimer from '../../components/Includes/Common/CountdownTimer';
 import ActionSheet from '../../components/Modals/ActionSheet';
 import LiveIcon from '../../components/Includes/Common/LiveIcon';
 import StreamVideoIcon from '../../components/Includes/Common/StreamVideoIcon';
+import NavBack from '../../components/Includes/Navbar/NavBack';
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -124,6 +125,7 @@ class LiveEvent extends React.Component {
 		console.log(this.props.selected_event);
 		this.state = {
 			error: false,
+			errorEnd: false,
 			emoji_picker_open: false,
 			chat_open: false,
 			chat: '',
@@ -236,7 +238,7 @@ class LiveEvent extends React.Component {
 			const currentTime = new Date().getTime();
 			const startTime = new Date(data.release_date_quiz * 1000).getTime();
 			if (currentTime < startTime) {
-				return getCountdown(data.release_date_quiz);
+				return [getCountdown(data.release_date_quiz)[0], getCountdown(data.release_date_quiz)[0]];
 			}
 		}
 
@@ -548,6 +550,11 @@ class LiveEvent extends React.Component {
 				console.log('err')
 				this.setState({
 					error: true,
+				});
+			});
+			this.player.on('ended', () => {
+				this.setState({
+					errorEnd: true,
 				});
 			});
 			this.player.hlsQualitySelector({
@@ -932,7 +939,8 @@ class LiveEvent extends React.Component {
 			);
 			// this.player.remove();
 		}
-		else if (this.isEnded()) {
+		if (this.state.errorEnd) {
+		// else if (this.isEnded()) {
 			errorRef = (
 				<div>
 					<span></span>
@@ -941,8 +949,7 @@ class LiveEvent extends React.Component {
 						padding: 30,
 						minHeight: 180
 					}}>
-						{/* <MissedIcon /> */}
-						<StreamVideoIcon />
+						<MissedIcon />
 						<h5 style={{ color: '#8f8f8f' }}>
 							{this.state.status && this.state.status.code === 12 ? (
 								<div>
@@ -969,7 +976,37 @@ class LiveEvent extends React.Component {
 
 			return errorRef;
 		}
-		else {
+		else if (this.isEnded()) {
+			errorRef = (
+				<div>
+					<span></span>
+					<div style={{
+						textAlign: 'center',
+						padding: 30,
+						minHeight: 180
+					}}>
+						{/* <MissedIcon /> */}
+						<StreamVideoIcon />
+						<h5 style={{ color: '#8f8f8f' }}>
+							{this.state.status && this.state.status.code === 12 ? (
+								<div>
+									<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
+								</div>
+							) : (
+								<div>
+									<p style={{ fontSize:12, color: '#ffffff', margin: '5px' }}>Not Available</p>
+									<span style={{ fontSize: 12 }}>Sorry, video is not available. </span><br />
+									<span style={{ fontSize: 12 }}>You can watch other video, below.</span><br/>
+								</div>
+							)}
+						</h5>
+					</div>
+				</div>
+			);
+
+			return errorRef;
+		}
+		if(!this.state.error && !this.state.errorEnd && !this.isEnded()) {
 			playerRef = (
 				<div className="player-liveevent-container">
 					<div data-vjs-player>
@@ -1062,7 +1099,7 @@ class LiveEvent extends React.Component {
 					open={this.state.action_sheet}
 					hashtags={this.state.hashtags}
 					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])} />
-
+				<NavBack navPlayer={true}/>
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{this.renderPlayer()}
 					<div className="title-wrap">
@@ -1070,13 +1107,14 @@ class LiveEvent extends React.Component {
 							display: 'flex',
 							alignItems: 'center'
 						}}>
-							{this.state.is_live ? (
+							{this.state.is_live[0] ? (
 								<CountdownTimer
 									id= {selected_event.data.id}
 									onUrl={this.getPlayNow}
-									key={this.state.is_live} 
+									statusPlay={this.state.is_live[1]}
+									key={this.state.is_live[0]} 
 									position="relative"
-									timer={this.state.is_live} 
+									timer={this.state.is_live[0]} 
 									statusTimer="1"/>
 							) : null}
 							
@@ -1109,9 +1147,11 @@ class LiveEvent extends React.Component {
 											<Col xs={6} key={i} onClick={() => Router.push(`/live-event/${le.content_id}/${le.content_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}`)}>
 												<Thumbnail 
 												label="Live" 
-												backgroundColor="#fa262f" 
-												statusLabel="1" 
-												statusTimer="0" 
+												timer={getCountdown(le.release_date_quiz)[0]}
+												statusPlay={getCountdown(le.release_date_quiz)[1]}
+												backgroundColor="#fa262f"
+												statusLabel="1"
+												statusTimer="1"
 												src={this.state.meta.image_path + this.state.resolution + le.landscape_image} alt={le.name}/>
 											</Col>
 										)) : errorEvent}

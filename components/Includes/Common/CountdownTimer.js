@@ -10,7 +10,9 @@ class CountdownTimer extends React.Component {
   render() {
     return (
       <div>
-      {this.props.statusTimer === '1' ?
+      {!this.props.statusPlay ?
+        <div className="thumb-timer" style={{opacity: this.props.statusTimer, position: this.props.position ? this.props.position + ' !important' : 'absolute', ...{ bottom: this.props.position ? 0 : 10 }}}><span>PLAYING NOW</span></div>
+         : this.props.statusTimer === '1' ?
           (<Countdown
             key={this.props.key}
             // eslint-disable-next-line radix

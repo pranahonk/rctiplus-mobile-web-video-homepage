@@ -124,5 +124,8 @@ export const getCountdown = (value) => {
     const now = new Date().getTime();
     const timeRelease = new Date(parseInt(value) * 1000).getTime();
     const result = (timeRelease - now);
-    return result;
+    if(timeRelease < now) {
+        return [result, false]
+    }
+    return [result, true];
 }

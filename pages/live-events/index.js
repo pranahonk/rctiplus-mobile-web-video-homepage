@@ -68,7 +68,8 @@ class Index extends React.Component {
           <Thumbnail
           key={list.content_id + list.content_title}
           label="Live"
-          timer={getCountdown(list.release_date_quiz)}
+          timer={getCountdown(list.release_date_quiz)[0]}
+          statusPlay={getCountdown(list.release_date_quiz)[1]}
           backgroundColor="#fa262f"
           statusLabel="1"
           statusTimer="1"
