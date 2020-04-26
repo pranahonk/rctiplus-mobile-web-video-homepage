@@ -137,7 +137,7 @@ const getLiveEvent = (type, infos = 'id,type,portrait_image,landscape_image,name
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             
-            const response = await axios.get(`/v1/live-event?type=${type}&infos=${infos}&page=${page}&length=${length}`);
+            const response = await axios.get(`/v2/live-event?type=${type}&length=${length}`);
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_LIVE_EVENT',
@@ -153,6 +153,28 @@ const getLiveEvent = (type, infos = 'id,type,portrait_image,landscape_image,name
         }
         catch (error) {
             reject(error);
+        }
+    });
+};
+
+const getMissedEvent = (page = 1, length = 10) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/missed-event?length=${length}`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_MISSED_EVENT',
+                    data: response.data.data,
+                    meta: response.data.meta,
+                    status: response.data.status,
+                });
+                resolve(response);
+            } else {
+                reject(response);
+            }
+        }
+        catch (error) {
+           reject(error);
         }
     });
 };
@@ -311,4 +333,5 @@ export default {
     listenSocketIo,
     postChatSocket,
     getChatSocket,
+    getMissedEvent,
 };

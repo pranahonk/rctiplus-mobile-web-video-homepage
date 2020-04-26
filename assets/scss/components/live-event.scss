@@ -397,7 +397,7 @@
 			height: calc(100vh - 100px);
 			.le-live {
 				margin-bottom: 15px;
-			}
+            }
 			.le-title {
 				h1 {
 					font-size: 14px;
@@ -405,12 +405,35 @@
 				}
 			}
             // Bootstrap class
-            
+            .container {
+                padding: 0;
+            }
             .row {
                 margin: 0;
             }
 			.col-6 {
 				padding: 5px;
 			}
+    }
+    .le-full__error {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        vertical-align: middle;
+    }
+    .le-error {
+        text-align: center;
+        font-size: 12px;
+        color: #8f8f8f;
+        padding: 30px;
+        p {
+            margin: 0;
+            font-weight: bold;
+            &:last-child {
+                font-size: 10px;
+                font-weight: normal;
+            }
+        }
     }
 }

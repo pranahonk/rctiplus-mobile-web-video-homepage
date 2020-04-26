@@ -27,7 +27,7 @@ class NavbarDef extends Component {
     render() {
         return (
             <div className="nav-fixed-top">
-                <Navbar expand="md" className="nav-container nav-shadow">
+                <Navbar expand="md" className="nav-container nav-shadow" style={this.props.navPlayer ? { boxShadow: 'none' , background: 0} : {}}>
                     <div className="top-link">
                         <div className="logo-top-wrapper">
                             <NavbarBrand onClick={() =>{ 

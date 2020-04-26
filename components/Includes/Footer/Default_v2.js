@@ -66,7 +66,7 @@ class FooterNav_v2 extends Component {
 
                 <div className="footer-wrapper-list">
                     <div onClick={() => {
-                        homeGeneralClicked('mweb_live_event_clicked');
+                        homeGeneralClicked('mweb_liveevent_clicked');
                         Router.push('/live-event');
                     }}>
                         <a>
