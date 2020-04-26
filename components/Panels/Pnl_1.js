@@ -46,7 +46,7 @@ class Pnl_1 extends React.Component {
 			case 'special':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
 
-				window.open(data.url, '_blank');
+				window.open(data.url ? data.url : data.link, '_blank');
 				break;
 
 			case 'program':
