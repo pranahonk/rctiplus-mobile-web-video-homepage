@@ -412,11 +412,11 @@ class LiveEvent extends React.Component {
 			let name = '';
 			let type = '';
 			let portrait_image = '';
-			let section_name = '';
+			let section_page = '';
 			if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
 				url = this.props.selected_event_url.data.url;
 				vmap = this.props.selected_event_url.data[process.env.VMAP_KEY];
-				section_name = this.props.selected_event_url.data.assets_name;
+				section_page = this.props.selected_event_url.data.assets_name;
 				id = this.props.selected_event.data.id;
 				name = this.props.selected_event.data.name;
 				type = this.props.selected_event.data.type;
@@ -483,7 +483,7 @@ class LiveEvent extends React.Component {
 					version: process.env.VERSION,
 					playerVersion: process.env.PLAYER_VERSION,
 					content_name: assetName.toUpperCase(),
-					section_name: section_name,
+					section_page: section_page,
 				});
 				this.convivaTracker.createSession();
 
