@@ -40,7 +40,7 @@ class Index_v2 extends React.Component {
             meta: null,
             resolution: 320,
             is_loading: false,
-            length: 5,
+            length: 10,
             show_sticky_install: false,
             sticky_ads_closed: false
         };
