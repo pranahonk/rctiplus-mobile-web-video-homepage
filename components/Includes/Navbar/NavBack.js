@@ -80,7 +80,7 @@ class NavbarDef extends Component {
                         </Dropdown>
                     </div>
                 </Navbar>
-                <StatusNotification/>
+                {this.props.navPlayer ? (<div/>) : (<StatusNotification/>)}
             </div>
         );
     }

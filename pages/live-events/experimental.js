@@ -8,6 +8,7 @@ import { Picker } from 'emoji-mart';
 import TimeAgo from 'react-timeago';
 import fetch from 'isomorphic-unfetch';
 import queryString from 'query-string';
+import { Offline } from 'react-detect-offline';
 import { isIOS } from 'react-device-detect';
 import MuteChat from '../../components/Includes/Common/MuteChat';
 
@@ -27,6 +28,7 @@ import Thumbnail from '../../components/Includes/Common/Thumbnail';
 import CountdownTimer from '../../components/Includes/Common/CountdownTimer';
 import ActionSheet from '../../components/Modals/ActionSheet';
 import LiveIcon from '../../components/Includes/Common/LiveIcon';
+import SignalIcon from '../../components/Includes/Common/SignalIcon';
 import StreamVideoIcon from '../../components/Includes/Common/StreamVideoIcon';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 
@@ -124,6 +126,7 @@ class LiveEvent extends React.Component {
 		super(props);
 		console.log(this.props.selected_event);
 		this.state = {
+			errorCon: false,
 			error: false,
 			errorEnd: false,
 			emoji_picker_open: false,
@@ -444,7 +447,7 @@ class LiveEvent extends React.Component {
 				},
 				sources: [{
 					src: url,
-					type: 'application/x-mpegURL'
+					type: url.match(/.mp4$/) ? 'video/mp4' : 'application/x-mpegURL',
 				}]
 			}, function onPlayerReady() {
 				console.log('onPlayerReady', this);
@@ -911,6 +914,28 @@ class LiveEvent extends React.Component {
 		let playerRef = (<div></div>);
 		let errorRef = (<div></div>);
 
+		if (this.state.errorCon) {
+			errorRef = (
+				<div>
+					<span></span>
+					<div style={{
+						textAlign: 'center',
+						padding: 30,
+						minHeight: 180
+					}}>
+						<SignalIcon />
+						<h5 style={{ color: '#8f8f8f' }}>
+							<div>
+								<p style={{ fontSize:12, color: '#ffffff', margin: '5px' }}>No Internet Connection</p>
+								<span style={{ fontSize: 12 }}>Please check your connection,</span><br />
+								<span style={{ fontSize: 12 }}>you seem to be offline.</span>
+							</div>
+						</h5>
+					</div>
+				</div>
+			);
+			return errorRef;
+		}
 		if (this.state.error) {
 			errorRef = (
 				<div>
@@ -937,7 +962,7 @@ class LiveEvent extends React.Component {
 					</div>
 				</div>
 			);
-			// this.player.remove();
+			return errorRef;
 		}
 		if (this.state.errorEnd) {
 		// else if (this.isEnded()) {
@@ -976,7 +1001,7 @@ class LiveEvent extends React.Component {
 
 			return errorRef;
 		}
-		else if (this.isEnded()) {
+		if (this.isEnded()) {
 			errorRef = (
 				<div>
 					<span></span>
@@ -1006,7 +1031,7 @@ class LiveEvent extends React.Component {
 
 			return errorRef;
 		}
-		if(!this.state.error && !this.state.errorEnd && !this.isEnded()) {
+		if(!this.state.error && !this.state.errorEnd && !this.isEnded() && !this.state.errorCon) {
 			playerRef = (
 				<div className="player-liveevent-container">
 					<div data-vjs-player>
@@ -1091,7 +1116,22 @@ class LiveEvent extends React.Component {
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
-				
+				<Offline onChange={(status) => {
+					if (!status) {
+							this.setState({
+								errorCon: true,
+							});
+							return false
+						} 
+						this.setState({
+								errorCon: false,
+							}, () => {
+								this.player.dispose();
+								setTimeout(() => {
+									this.initPlayer();
+								}, 500);
+							});
+					}} />
 				<ActionSheet
 					tabStatus= {this.state.tabStatus}
 					caption={this.state.caption}
