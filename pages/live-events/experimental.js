@@ -985,13 +985,6 @@ class LiveEvent extends React.Component {
 									<p style={{ fontSize:12, color: '#ffffff', margin: '5px' }}>Not Available</p>
 									<span style={{ fontSize: 12 }}>Sorry, Please check the video </span><br />
 									<span style={{ fontSize: 12 }}>on Missed Event</span><br/>
-									{/* <Button style={{
-										fontSize: '0.8em',
-										backgroundColor: '#4a4a4a',
-										borderColor: '#4a4a4a',
-										padding: 6,
-										width: 138
-									}} onClick={() => this.setState({ selected_tab: 'missed-event' })}>See Missed Event</Button> */}
 								</div>
 							)}
 						</h5>
@@ -1001,37 +994,36 @@ class LiveEvent extends React.Component {
 
 			return errorRef;
 		}
-		if (this.isEnded()) {
-			errorRef = (
-				<div>
-					<span></span>
-					<div style={{
-						textAlign: 'center',
-						padding: 30,
-						minHeight: 180
-					}}>
-						{/* <MissedIcon /> */}
-						<StreamVideoIcon />
-						<h5 style={{ color: '#8f8f8f' }}>
-							{this.state.status && this.state.status.code === 12 ? (
-								<div>
-									<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
-								</div>
-							) : (
-								<div>
-									<p style={{ fontSize:12, color: '#ffffff', margin: '5px' }}>Not Available</p>
-									<span style={{ fontSize: 12 }}>Sorry, video is not available. </span><br />
-									<span style={{ fontSize: 12 }}>You can watch other video, below.</span><br/>
-								</div>
-							)}
-						</h5>
-					</div>
-				</div>
-			);
+		// if (!this.isEnded()) {
+		// 	errorRef = (
+		// 		<div>
+		// 			<span></span>
+		// 			<div style={{
+		// 				textAlign: 'center',
+		// 				minHeight: 180
+		// 			}}>
+		// 				{/* <MissedIcon /> */}
+		// 				<StreamVideoIcon />
+		// 				<h5 style={{ color: '#8f8f8f' }}>
+		// 					{this.state.status && this.state.status.code === 12 ? (
+		// 						<div>
+		// 							<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
+		// 						</div>
+		// 					) : (
+		// 						<div>
+		// 							<p style={{ fontSize:12, color: '#ffffff', margin: '5px' }}>Not Available</p>
+		// 							<span style={{ fontSize: 12 }}>Sorry, video is not available. </span><br />
+		// 							<span style={{ fontSize: 12 }}>You can watch other video, below.</span><br/>
+		// 						</div>
+		// 					)}
+		// 				</h5>
+		// 			</div>
+		// 		</div>
+		// 	);
 
-			return errorRef;
-		}
-		if(!this.state.error && !this.state.errorEnd && !this.isEnded() && !this.state.errorCon) {
+		// 	return errorRef;
+		// }
+		if(!this.state.error || !this.state.errorEnd || !this.state.errorCon) {
 			playerRef = (
 				<div className="player-liveevent-container">
 					<div data-vjs-player>
@@ -1085,6 +1077,7 @@ class LiveEvent extends React.Component {
 	}
 
 	render() {
+		console.log(this.isEnded())
 		let { selected_event } = this.props;
 		let errorEvent = (<Col xs="12" key="1" className="le-error">
 				<LiveIcon />
@@ -1214,7 +1207,8 @@ class LiveEvent extends React.Component {
 							</TabContent>
 						</div>
 					</div>
-					<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
+					{ this.props.router.asPath.match('missed-event') || this.state.selected_tab === 'missed-event'  ? (<div />) : 
+					 (<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
 						(isIOS ?
 							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
 							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
@@ -1282,7 +1276,7 @@ class LiveEvent extends React.Component {
 									style={{ height: this.state.emoji_picker_open ? 200 : 0 }} />
 							</div>
 						</div>
-					</div>
+					</div>)}
 				</div>
 			</Layout>
 		);

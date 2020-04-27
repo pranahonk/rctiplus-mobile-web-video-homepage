@@ -37,6 +37,9 @@
     margin-bottom: 10px;
 
     .live-event-menu {
+        height: calc(100vh - 340px);
+        overflow: hidden;
+        overflow-y: visible;
         padding: 15px;
         
         .col-6 {
