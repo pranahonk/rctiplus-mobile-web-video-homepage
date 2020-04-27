@@ -66,6 +66,8 @@ import 'video.js/src/css/video-js.scss';
 import 'videojs-hls-quality-selector';
 import qualitySelector from 'videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
+import 'videojs-seek-buttons';
+import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
 
 const innerHeight = require('ios-inner-height');
 
@@ -193,7 +195,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 	componentDidMount() {
-		this.notAvailable();
+		this.getAvailable();
 		if (this.props.router.asPath.match('missed-event')) {
 			this.setState({
 				selected_tab: 'missed-event',
@@ -252,14 +254,15 @@ class LiveEvent extends React.Component {
 		return false;
 	}
 
-	notAvailable() {
+	getAvailable() {
+		if(this.props.router.asPath.match('missed-event')) {
+			this.setState({ isAvailable: false })
+			return false
+		}
 		if (this.props.selected_event && this.props.selected_event.data) {
 			const { data } = this.props.selected_event;
 			const currentTime = new Date().getTime();
 			const endTime = new Date(data.end_date).getTime();
-			console.log(currentTime)
-			console.log(endTime)
-			console.log(currentTime < endTime)
 			if (endTime < currentTime) {
 				this.setState({ isAvailable: true });
 			}
@@ -363,7 +366,88 @@ class LiveEvent extends React.Component {
 
 		});
 	}
+	setupPlayerBehavior() {
+		if (this.player) {
+			this.player.on('useractive', () => {
+				if (!this.player.paused()) {
+					const seekButtons = document.getElementsByClassName('vjs-seek-button');
+					for (let i = 0; i < seekButtons.length; i++) {
+						seekButtons[i].style.display = 'block';
+					}
+					
+					this.setState({ user_active: true });
+				}
+			});
 
+			this.player.on('userinactive', () => {
+				if (!this.player.paused()) {
+					const seekButtons = document.getElementsByClassName('vjs-seek-button');
+					for (let i = 0; i < seekButtons.length; i++) {
+						seekButtons[i].style.display = 'none';
+					}
+
+					this.setState({ user_active: false });
+				}
+
+				if (this.state.quality_selector_shown) {
+                    this.triggerQualityButtonClick('inactive');
+				}
+				this.setState({ quality_selector_shown: false });
+			});
+
+			this.player.on('play', () => {
+				const seekButtons = document.getElementsByClassName('vjs-seek-button');
+				for (let i = 0; i < seekButtons.length; i++) {
+					seekButtons[i].style.display = 'none';
+				}
+
+				const playButton = document.getElementsByClassName('vjs-big-play-button');
+				if (playButton.length > 0) {
+					playButton[0].style.display = 'none';
+				}
+
+				this.setState({ playing: true });
+			});
+
+			this.player.on('pause', () => {
+				const seekButtons = document.getElementsByClassName('vjs-seek-button');
+				for (let i = 0; i < seekButtons.length; i++) {
+					seekButtons[i].style.display = 'none';
+				}
+
+				const playButton = document.getElementsByClassName('vjs-big-play-button');
+				if (playButton.length > 0) {
+					playButton[0].style.display = 'block';
+				}
+
+				this.setState({ playing: false });
+			});
+
+			this.player.on('playing', () => {
+				this.setState({ playing: true });
+			});
+		}
+	}
+	setSkipButtonCentered(orientation = 'portrait') {
+		if (this.player) {
+			const player = document.getElementById(this.player.id());
+			if (player) {
+				const playerHeight = player.clientHeight;
+				const seekButtons = document.getElementsByClassName('vjs-seek-button');
+				for (let i = 0; i < seekButtons.length; i++) {
+					seekButtons[i].style.bottom = (Math.floor(playerHeight / 2) - 5) + 'px';
+
+					if (i == 0) {
+						seekButtons[i].style.left = (this.state.screen_width - ((this.state.screen_width / 3) * (orientation == 'portrait' ? 2.35 : 2.20))) + 'px';
+					}
+					else if (i == 1) {
+						seekButtons[i].style.left = (this.state.screen_width - (this.state.screen_width / 3)) + 'px';
+					}
+				}
+			}
+
+		}
+	}
 	changeQualityIconButton() {
         const self = this;
         setTimeout(() => {
@@ -471,7 +555,6 @@ class LiveEvent extends React.Component {
 
 				const player = this;
 				const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
-				console.log("assettttname", self.props.selected_event_url)
 				this.convivaTracker = convivaVideoJs(assetName, player, true, url, 'Live Event ' + assetName.toUpperCase(), {
 					asset_name: assetName.toUpperCase(),
 					application_name: 'RCTI+ MWEB',
@@ -487,6 +570,19 @@ class LiveEvent extends React.Component {
 				});
 				this.convivaTracker.createSession();
 
+				if(self.props.router.asPath.match('missed-event')) {
+					player.seekButtons({
+						forward: 10,
+						back: 10
+					});
+					setTimeout(() => {
+						self.setSkipButtonCentered();
+					}, 2000);
+					window.onresize = () => {
+						self.setSkipButtonCentered();
+					};
+				}
+
 			});
 			this.player.ready(function () {
 				const vm = this
@@ -497,6 +593,7 @@ class LiveEvent extends React.Component {
 				}
 
 				setTimeout(() => {
+										self.setupPlayerBehavior();
                     self.changeQualityIconButton();
                 }, 100);
 			});
