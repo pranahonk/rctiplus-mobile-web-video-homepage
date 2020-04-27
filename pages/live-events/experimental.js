@@ -31,6 +31,7 @@ import LiveIcon from '../../components/Includes/Common/LiveIcon';
 import SignalIcon from '../../components/Includes/Common/SignalIcon';
 import StreamVideoIcon from '../../components/Includes/Common/StreamVideoIcon';
 import NavBack from '../../components/Includes/Navbar/NavBack';
+import ErrorPlayer from '../../components/Includes/Player/ErrorPlayer';
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -56,6 +57,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import { getUserId } from '../../utils/appier';
 import { getCountdown } from '../../utils/helpers';
 import { convivaVideoJs } from '../../utils/conviva';
+import { triggerQualityButtonClick } from '../../utils/player';
 
 import videojs from 'video.js';
 import 'videojs-contrib-ads';
@@ -126,6 +128,7 @@ class LiveEvent extends React.Component {
 		super(props);
 		console.log(this.props.selected_event);
 		this.state = {
+			isAvailable: false,
 			errorCon: false,
 			error: false,
 			errorEnd: false,
@@ -190,6 +193,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 	componentDidMount() {
+		this.notAvailable();
 		if (this.props.router.asPath.match('missed-event')) {
 			this.setState({
 				selected_tab: 'missed-event',
@@ -248,21 +252,20 @@ class LiveEvent extends React.Component {
 		return false;
 	}
 
-	isEnded() {
-		if (this.props.router.asPath.match('missed-event')) {
-			return false;
-		}
-
+	notAvailable() {
 		if (this.props.selected_event && this.props.selected_event.data) {
 			const { data } = this.props.selected_event;
 			const currentTime = new Date().getTime();
 			const endTime = new Date(data.end_date).getTime();
-			if (currentTime < endTime) {
-				return false;
+			console.log(currentTime)
+			console.log(endTime)
+			console.log(currentTime < endTime)
+			if (endTime < currentTime) {
+				this.setState({ isAvailable: true });
 			}
+			return false;
 		}
-
-		return true;
+		this.setState({ isAvailable: true });
 	}
 
 	statusChatBlock(id) {
@@ -400,18 +403,6 @@ class LiveEvent extends React.Component {
         }, 1000);
     }
 
-    triggerQualityButtonClick(type = '') {
-        const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
-        if (qualitySelectorElement.length > 0) {
-            const childs = qualitySelectorElement[0].childNodes;
-            for (let i = 0; i < childs.length; i++) {
-                if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button' && type == 'inactive') {
-                    childs[i].click();
-                    break;
-                }
-            }
-        }
-    }
 
 	initPlayer() {
 		if (this.videoNode) {
@@ -421,9 +412,11 @@ class LiveEvent extends React.Component {
 			let name = '';
 			let type = '';
 			let portrait_image = '';
+			let section_name = '';
 			if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
 				url = this.props.selected_event_url.data.url;
 				vmap = this.props.selected_event_url.data[process.env.VMAP_KEY];
+				section_name = this.props.selected_event_url.data.assets_name;
 				id = this.props.selected_event.data.id;
 				name = this.props.selected_event.data.name;
 				type = this.props.selected_event.data.type;
@@ -478,6 +471,7 @@ class LiveEvent extends React.Component {
 
 				const player = this;
 				const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
+				console.log("assettttname", self.props.selected_event_url)
 				this.convivaTracker = convivaVideoJs(assetName, player, true, url, 'Live Event ' + assetName.toUpperCase(), {
 					asset_name: assetName.toUpperCase(),
 					application_name: 'RCTI+ MWEB',
@@ -488,7 +482,8 @@ class LiveEvent extends React.Component {
 					asset_cdn: 'Conversant',
 					version: process.env.VERSION,
 					playerVersion: process.env.PLAYER_VERSION,
-					content_name: assetName.toUpperCase()
+					content_name: assetName.toUpperCase(),
+					section_name: section_name,
 				});
 				this.convivaTracker.createSession();
 
@@ -537,7 +532,7 @@ class LiveEvent extends React.Component {
                 }
 
                 if (this.state.quality_selector_shown) {
-                    this.triggerQualityButtonClick('inactive');
+                    triggerQualityButtonClick('inactive');
                 }
             });
 
@@ -638,138 +633,6 @@ class LiveEvent extends React.Component {
 		}
 	}
 
-	initVOD() {
-		let url = '';
-		let vmap = '';
-		let id = '';
-		let name = '';
-		let type = '';
-		let portrait_image = '';
-		if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
-			url = this.props.selected_event_url.data.url;
-			vmap = this.props.selected_event_url.data[process.env.VMAP_KEY];
-			id = this.props.selected_event.data.id;
-			name = this.props.selected_event.data.name;
-			type = this.props.selected_event.data.type;
-			portrait_image = this.props.selected_event.data.portrait_image;
-			this.loadChatMessages(id);
-			this.statusChatBlock(id);
-		}
-
-		const playerId = 'live-event-player';
-		this.player = window.jwplayer(playerId);
-		this.player.setup({
-			autostart: true,
-			floating: false,
-			file: url,
-			primary: 'html5',
-			width: '100%',
-			aspectratio: '16:9',
-			displaytitle: true,
-			setFullscreen: true,
-			stretching: 'exactfit',
-			advertising: {
-				client: process.env.ADVERTISING_CLIENT,
-				tag: vmap
-			},
-			logo: {
-				hide: true
-			}
-		});
-
-		const self = this;
-		this.player.on('ready', function () {
-			conviva.startMonitoring(this);
-			const assetMetadata = {
-				viewer_id: getUserId(),
-				playerType: 'JWPlayer',
-				content_type: type,
-				content_id: id,
-				program_name: name,
-				application_name: 'RCTI+ MWEB',
-				asset_cdn: 'Conversant',
-				version: process.env.VERSION,
-				playerVersion: process.env.PLAYER_VERSION,
-				asset_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming',
-				content_name: self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming'
-			};
-			console.log(assetMetadata);
-			conviva.updatePlayerAssetMetadata(this, assetMetadata);
-
-			if (isIOS) {
-				let elementJwplayerInit = document.querySelector(`#${playerId} > .jw-wrapper`);
-				let elementCreateWrapper = document.createElement('btn');
-				let elementMuteIcon = document.createElement('span');
-				elementCreateWrapper.classList.add('jwplayer-vol-off');
-				elementCreateWrapper.innerText = 'Tap to unmute ';
-
-				jwplayer().setMute(true);
-				elementJwplayerInit.appendChild(elementCreateWrapper);
-				elementCreateWrapper.appendChild(elementMuteIcon);
-				elementCreateWrapper.addEventListener('click', () => {
-					if (elementCreateWrapper === null) {
-						jwplayer().setMute(true);
-						elementJwplayer[0].classList.add('jwplayer-mute');
-						elementJwplayer[0].classList.remove('jwplayer-full');
-					}
-					else {
-						jwplayer().setMute(false);
-						elementCreateWrapper.classList.add('jwplayer-full');
-						elementCreateWrapper.classList.remove('jwplayer-mute');
-					}
-				});
-			}
-		});
-
-		this.player.on('mute', function () {
-			let elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
-			if (elementJwplayer[0] !== undefined) {
-				if (jwplayer().getMute()) {
-					elementJwplayer[0].classList.add('jwplayer-mute');
-					elementJwplayer[0].classList.remove('jwplayer-full');
-				} else {
-					elementJwplayer[0].classList.add('jwplayer-full');
-					elementJwplayer[0].classList.remove('jwplayer-mute');
-				}
-			}
-		});
-
-		this.player.on('setupError', error => {
-			console.log(error);
-			this.player.remove();
-			this.setState({
-				error: true,
-				error_data: error
-			});
-		});
-
-		this.player.on('error', error => {
-			console.log(error);
-			this.player.remove();
-			this.setState({
-				error: true,
-				error_data: error
-			});
-		});
-
-		this.player.on('fullscreen', () => {
-			if (screen.orientation.type === 'portrait-primary') {
-				document.querySelector("#live-event-player").requestFullscreen();
-				screen.orientation.lock("landscape-primary")
-			}
-			if (screen.orientation.type === 'landscape-primary') {
-				document.querySelector("#live-event-player").requestFullscreen();
-				screen.orientation.lock("portrait-primary")
-			}
-		});
-
-
-		this.player.on('firstFrame', () => {
-			if (this.reference && this.homepageTitle && this.reference == 'homepage') {
-				contentGeneralEvent(this.homepageTitle, type, id, name, 'N/A', 'N/A', this.state.meta.image_path + this.state.resolution + portrait_image, 'N/A', 'mweb_homepage_live_event_play');
-			}
-		});
-	}
 
 	loadMore() {
 		// TODO
@@ -916,113 +779,52 @@ class LiveEvent extends React.Component {
 
 		if (this.state.errorCon) {
 			errorRef = (
-				<div>
-					<span></span>
-					<div style={{
-						textAlign: 'center',
-						padding: 30,
-						minHeight: 180
-					}}>
-						<SignalIcon />
-						<h5 style={{ color: '#8f8f8f' }}>
-							<div>
-								<p style={{ fontSize:12, color: '#ffffff', margin: '5px' }}>No Internet Connection</p>
-								<span style={{ fontSize: 12 }}>Please check your connection,</span><br />
-								<span style={{ fontSize: 12 }}>you seem to be offline.</span>
-							</div>
-						</h5>
-					</div>
-				</div>
-			);
+				<ErrorPlayer
+				iconError={<StreamVideoIcon />}
+				title="No Internet Connection"
+				content1="Please check your connection,"
+				content2="you seem to be offline."
+				status={ 500 }
+				statusCode={ 500 } />
+				);
 			return errorRef;
 		}
 		if (this.state.error) {
 			errorRef = (
-				<div>
-					<span></span>
-					<div style={{
-						textAlign: 'center',
-						padding: 30,
-						minHeight: 180
-					}}>
-						<StreamVideoIcon />
-						<h5 style={{ color: '#8f8f8f' }}>
-							{this.state.status && this.state.status.code === 12 ? (
-								<div>
-									<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
-								</div>
-							) : (
-								<div>
-									<p style={{ fontSize:12, color: '#ffffff', margin: '5px' }}>Video Error</p>
-									<span style={{ fontSize: 12 }}>Sorry, Error has occured.</span><br />
-									<span style={{ fontSize: 12 }}>Please try again later.</span>
-								</div>
-							)}
-						</h5>
-					</div>
-				</div>
-			);
+				<ErrorPlayer
+				iconError={<StreamVideoIcon />}
+				title="Video Error"
+				content1="Sorry, Error has occured."
+				content2="Please try again later."
+				status={ this.state.status }
+				statusCode={ this.state.statusCode } />
+				);
 			return errorRef;
 		}
 		if (this.state.errorEnd) {
-		// else if (this.isEnded()) {
-			errorRef = (
-				<div>
-					<span></span>
-					<div style={{
-						textAlign: 'center',
-						padding: 30,
-						minHeight: 180
-					}}>
-						<MissedIcon />
-						<h5 style={{ color: '#8f8f8f' }}>
-							{this.state.status && this.state.status.code === 12 ? (
-								<div>
-									<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
-								</div>
-							) : (
-								<div>
-									<p style={{ fontSize:12, color: '#ffffff', margin: '5px' }}>Not Available</p>
-									<span style={{ fontSize: 12 }}>Sorry, Please check the video </span><br />
-									<span style={{ fontSize: 12 }}>on Missed Event</span><br/>
-								</div>
-							)}
-						</h5>
-					</div>
-				</div>
-			);
+				errorRef = (<ErrorPlayer
+				iconError={<MissedIcon />}
+				title="Not Available"
+				content1="Sorry, Please check the video"
+				content2="on Missed Event"
+				status={ this.state.status }
+				statusCode={ this.state.statusCode } />
+				);
 
 			return errorRef;
 		}
-		// if (!this.isEnded()) {
-		// 	errorRef = (
-		// 		<div>
-		// 			<span></span>
-		// 			<div style={{
-		// 				textAlign: 'center',
-		// 				minHeight: 180
-		// 			}}>
-		// 				{/* <MissedIcon /> */}
-		// 				<StreamVideoIcon />
-		// 				<h5 style={{ color: '#8f8f8f' }}>
-		// 					{this.state.status && this.state.status.code === 12 ? (
-		// 						<div>
-		// 							<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
-		// 						</div>
-		// 					) : (
-		// 						<div>
-		// 							<p style={{ fontSize:12, color: '#ffffff', margin: '5px' }}>Not Available</p>
-		// 							<span style={{ fontSize: 12 }}>Sorry, video is not available. </span><br />
-		// 							<span style={{ fontSize: 12 }}>You can watch other video, below.</span><br/>
-		// 						</div>
-		// 					)}
-		// 				</h5>
-		// 			</div>
-		// 		</div>
-		// 	);
+		if (this.state.isAvailable) {
+				errorRef = (<ErrorPlayer
+				iconError={<MissedIcon />}
+				title="Not Available"
+				content1="Sorry, video is not available."
+				content2="You can watch other video, below."
+				status={ this.state.status }
+				statusCode={ this.state.statusCode } />
+				);
 
-		// 	return errorRef;
-		// }
+			return errorRef;
+		}
 		if(!this.state.error || !this.state.errorEnd || !this.state.errorCon) {
 			playerRef = (
 				<div className="player-liveevent-container">
@@ -1077,7 +879,6 @@ class LiveEvent extends React.Component {
 	}
 
 	render() {
-		console.log(this.isEnded())
 		let { selected_event } = this.props;
 		let errorEvent = (<Col xs="12" key="1" className="le-error">
 				<LiveIcon />
