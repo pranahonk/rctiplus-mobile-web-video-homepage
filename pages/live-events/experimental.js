@@ -222,7 +222,7 @@ class LiveEvent extends React.Component {
 	}
 
 	getMissedEvent() {
-    this.props.setPageLoader();
+    // this.props.setPageLoader();
     this.props.getMissedEvent()
     .then(({data: lists}) => {
       this.setState({
@@ -428,7 +428,7 @@ class LiveEvent extends React.Component {
 				name = this.props.selected_event.data.name;
 				type = this.props.selected_event.data.type;
 				portrait_image = this.props.selected_event.data.portrait_image;
-				this.loadChatMessages(id);
+				if(this.props.router.asPath.match('live-event')) this.loadChatMessages(id);
 				this.statusChatBlock(id);
 			}
 			const self = this;
