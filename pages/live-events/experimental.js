@@ -143,6 +143,7 @@ class LiveEvent extends React.Component {
 	constructor(props) {
 		super(props);
 		console.log(this.props.selected_event);
+		console.log(this.props.selected_event_url);
 		this.state = {
 			tabStatus: '',
 			isAvailable: false,
@@ -270,19 +271,24 @@ class LiveEvent extends React.Component {
 	}
 	getAvailable() {
 		if (this.props.selected_event && this.props.selected_event.data && this.props.selected_event_url && this.props.selected_event_url.data) {
+			// console.log("testt1")
 			const { data } = this.props.selected_event;
 			const currentTime = new Date().getTime();
 			const endTime = new Date(data.end_date).getTime();
-			if (endTime < currentTime) {
-				this.setState({ isAvailable: true });
+			if(this.props.router.asPath.match('/live-event/')) {
+				if (endTime < currentTime) {
+					this.setState({ isAvailable: true });
+				}
 			}
 			return false;
 		}
 		if(this.props.router.asPath.match('/missed-event/')) {
+			// console.log("testt2")
 			this.setState({ isAvailable: true })
 			return false
 		}
 		if(this.props.router.asPath.match('/live-event/') || !(this.props.selected_event_url && this.props.selected_event_url.data)) {
+			// console.log("testt3")
 			this.setState({ errorEnd: true })
 			return false
 		}
