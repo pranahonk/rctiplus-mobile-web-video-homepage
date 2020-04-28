@@ -85,7 +85,7 @@ class LiveEvent extends React.Component {
 			}
 		};
 		let res = null;
-		if (ctx.asPath.match('missed-event')) {
+		if (ctx.asPath.match('/missed-event/')) {
 			res = await Promise.all([
 				fetch(`${DEV_API}/api/v1/missed-event/${id}`, options),
 				fetch(`${DEV_API}/api/v2/missed-event/${id}/url`, options)
@@ -143,6 +143,7 @@ class LiveEvent extends React.Component {
 	constructor(props) {
 		super(props);
 		console.log(this.props.selected_event);
+		console.log(this.props.selected_event_url);
 		this.state = {
 			isAvailable: false,
 			errorCon: false,
@@ -210,7 +211,7 @@ class LiveEvent extends React.Component {
 	}
 	componentDidMount() {
 		this.getAvailable();
-		if (this.props.router.asPath.match('missed-event')) {
+		if (this.props.router.asPath.match('/missed-event/')) {
 			this.setState({
 				selected_tab: 'missed-event',
 			});
@@ -269,7 +270,7 @@ class LiveEvent extends React.Component {
 	}
 
 	getAvailable() {
-		if(this.props.router.asPath.match('missed-event')) {
+		if(this.props.router.asPath.match('/missed-event/')) {
 			this.setState({ isAvailable: false })
 			return false
 		}
@@ -519,7 +520,7 @@ class LiveEvent extends React.Component {
 				name = this.props.selected_event.data.name;
 				type = this.props.selected_event.data.type;
 				portrait_image = this.props.selected_event.data.portrait_image;
-				if(this.props.router.asPath.match('live-event')) this.loadChatMessages(id);
+				if(this.props.router.asPath.match('/live-event/')) this.loadChatMessages(id);
 				this.statusChatBlock(id);
 			}
 			const self = this;
@@ -586,7 +587,7 @@ class LiveEvent extends React.Component {
 				});
 				this.convivaTracker.createSession();
 
-				if(self.props.router.asPath.match('missed-event')) {
+				if(self.props.router.asPath.match('/missed-event/')) {
 					player.seekButtons({
 						forward: 10,
 						back: 10
@@ -1121,7 +1122,7 @@ class LiveEvent extends React.Component {
 							</TabContent>
 						</div>
 					</div>
-					{ this.props.router.asPath.match('missed-event') || this.state.selected_tab === 'missed-event'  ? (<div />) : 
+					{ this.props.router.asPath.match('/missed-event/') || this.state.selected_tab === 'missed-event'  ? (<div />) : 
 					 (<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
 						(isIOS ?
 							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
