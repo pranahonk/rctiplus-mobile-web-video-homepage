@@ -181,7 +181,7 @@ export const programRateEvent = (status, programTitle, programId, programType, e
     });
 };
 
-export const liveShareEvent = (contentId, contentName , event = 'mweb_homepage_live_event_share_clicked') => {
+export const liveShareEvent = (contentId = 'error', contentName = 'error' , event = 'mweb_homepage_live_event_share_clicked') => {
     console.log(event);
 
     qg('event', event,
