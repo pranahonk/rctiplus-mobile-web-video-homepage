@@ -580,7 +580,7 @@ class LiveEvent extends React.Component {
 				
 				const player = this;
 				const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
-				this.convivaTracker = convivaVideoJs(asset_name, player, true, url, 'Live Event ' + assetName.toUpperCase(), {
+				this.convivaTracker = convivaVideoJs(asset_name, player, self.props.router.asPath.match('/missed-event/') ? player.duration() : true, url, 'Live Event ' + assetName.toUpperCase(), {
 					// asset_name: assetName.toUpperCase(),
 					// asset_name: asset_name,
 					application_name: 'RCTI+ MWEB',
