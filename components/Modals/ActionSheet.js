@@ -7,7 +7,7 @@ import Router, { withRouter } from 'next/router';
 import { Modal, ModalBody } from 'reactstrap';
 import { FacebookShareButton, TwitterShareButton, EmailShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
 
-import { SITE_NAME, SITEMAP, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../../config';
+import { SITE_NAME, SITEMAP, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, SHARE_BASE_URL } from '../../config';
 
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -110,7 +110,7 @@ class ActionSheet extends React.Component {
         return '?utm_source=Rplusmweb&utm_medium=share_' + share; // + '&utm_campaign=gue-ganteng';
     }
     render() {
-        const urlShare = REDIRECT_WEB_DESKTOP + this.props.url.substring(this.props.url.indexOf('rctiplus.com') + 12) || ''
+        const urlShare = SHARE_BASE_URL + this.props.url.substring(this.props.url.indexOf('rctiplus.com') + 12) || ''
         return (
             <Modal className="modal-edit" isOpen={this.props.open} toggle={this.props.toggle}>
                 <CloseIcon className="close-icon-button" onClick={this.props.toggle}/>
