@@ -84,16 +84,28 @@ class LiveEvent extends React.Component {
 				'Authorization': accessToken ? accessToken : VISITOR_TOKEN
 			}
 		};
-		const res = await Promise.all([
-			fetch(`${DEV_API}/api/v1/live-event/${id}`, options),
-			fetch(`${DEV_API}/api/v1/live-event/${id}/url`, options),
-			fetch(`${DEV_API}/api/v2/missed-event/${id}/url`, options),
-			fetch(`${DEV_API}/api/v1/missed-event/${id}`, options),
-		]);
+		let res = null;
+		if (ctx.asPath.match('missed-event')) {
+			res = await Promise.all([
+				fetch(`${DEV_API}/api/v1/missed-event/${id}`, options),
+				fetch(`${DEV_API}/api/v2/missed-event/${id}/url`, options)
+			]);
+		}
+		else {
+			res = await Promise.all([
+				fetch(`${DEV_API}/api/v1/live-event/${id}`, options),
+				fetch(`${DEV_API}/api/v1/live-event/${id}/url`, options)
+			]);
+		}
+		// res = await Promise.all([
+		// 	fetch(`${DEV_API}/api/v1/live-event/${id}`, options),
+		// 	fetch(`${DEV_API}/api/v1/live-event/${id}/url`, options),
+		// 	fetch(`${DEV_API}/api/v1/missed-event/${id}`, options),
+		// 	fetch(`${DEV_API}/api/v2/missed-event/${id}/url`, options)
+		// ]);
 
 		const error_code = res[0].status > 200 ? res[0].status : false;
 		const error_code_2 = res[1].status > 200 ? res[1].status : false;
-		console.log("testttt", res[0])
 		if (error_code || error_code_2) {
 			return {
 				selected_event: false,
@@ -115,12 +127,14 @@ class LiveEvent extends React.Component {
 		const data = await Promise.all([
 			res[0].json(),
 			res[1].json(),
-			res[2].json(),
-			res[3].json(),
+			// res[2].json(),
+			// res[3].json(),
 		]);
 		return {
-			selected_event: ctx.asPath.match('live-event') ? data[0] : data[3],
-			selected_event_url: ctx.asPath.match('live-event') ? data[1] : data[2],
+			// selected_event: ctx.asPath.match('live-event') ? data[0] : data[2],
+			// selected_event_url: ctx.asPath.match('live-event') ? data[1] : data[3],
+			selected_event: data[0],
+			selected_event_url: data[1],
 			user_agent: userAgent,
 			is_mobile: isMobile,
 		};

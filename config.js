@@ -12,6 +12,7 @@ export const DEV_API = process.env.DEV_API;
 export const CHAT_API = process.env.CHAT_API;
 
 export const REDIRECT_WEB_DESKTOP = process.env.REDIRECT_WEB_DESKTOP;
+export const SHARE_BASE_URL = process.env.SHARE_BASE_URL;
 
 // export const API = 'https://api.rctiplus.com';
 
