@@ -588,6 +588,16 @@ class LiveEvent extends React.Component {
 					playerVersion: process.env.PLAYER_VERSION,
 					content_name: assetName.toUpperCase(),
 					section_page: self.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event',
+					tv_id: 'N/A',
+					tv_name: 'N/A',
+					date_video: 'N/A',
+					genre: 'N/A',
+					page_title: 'N/A',
+					page_view: 'N/A',
+					program_id: 'N/A',
+					screen_mode: 'portrait',
+					site: 'N/A',
+					time_video: 'N/A'
 				});
 				this.convivaTracker.createSession();
 
