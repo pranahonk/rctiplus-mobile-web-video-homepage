@@ -30,30 +30,33 @@ class Index extends React.Component {
     this.getMissedEvent();
   }
   getLiveEvent() {
-    this.props.setPageLoader();
+    this.props.setSeamlessLoad(true);
     this.props.getLiveEvent('non on air')
     .then(({data: lists}) => {
+      this.props.setSeamlessLoad(false);
       this.setState({
         live_event: lists.data,
         meta: lists.meta,
       });
       console.log(lists);
-      this.props.unsetPageLoader();
     })
     .catch((error) => {
+      this.props.setSeamlessLoad(false);
       console.log(error);
     });
   }
   getMissedEvent() {
-    this.props.setPageLoader();
+    this.props.setSeamlessLoad(true);
     this.props.getMissedEvent()
     .then(({data: lists}) => {
+      this.props.setSeamlessLoad(false);
       this.setState({
         missed_event: lists.data,
       });
       console.log(lists);
     })
     .catch((error) => {
+      this.props.setSeamlessLoad(false);
       console.log(error);
     });
   }
@@ -62,6 +65,7 @@ class Index extends React.Component {
   }
 
   render() {
+    console.log(this.props)
     let liveEvent = this.state.live_event.map((list, i) => {
       return (
         <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
@@ -125,8 +129,12 @@ class Index extends React.Component {
                   </Row>
                 </Container>
               </section>
-              </div>) :
-              (<div className="le-full__error">
+              </div>)
+              : this.props.pages.status
+              ? (<div className="le-full__error">
+                  <LiveIcon />
+                </div>)
+              : (<div className="le-full__error">
                   { errorEvent }
                 </div>)
           }
