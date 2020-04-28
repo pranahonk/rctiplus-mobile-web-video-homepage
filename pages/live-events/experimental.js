@@ -512,6 +512,7 @@ class LiveEvent extends React.Component {
 			let type = '';
 			let portrait_image = '';
 			let section_page = '';
+			let asset_cdn = '';
 			if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
 				url = this.props.selected_event_url.data.url;
 				vmap = this.props.selected_event_url.data[process.env.VMAP_KEY];
@@ -522,6 +523,7 @@ class LiveEvent extends React.Component {
 				portrait_image = this.props.selected_event.data.portrait_image;
 				if(this.props.router.asPath.match('/live-event/')) this.loadChatMessages(id);
 				this.statusChatBlock(id);
+				asset_cdn = this.props.selected_event_url.data.asset_cdn;
 			}
 			const self = this;
 			videojs.registerPlugin('hlsQualitySelector', qualitySelector);
@@ -579,7 +581,7 @@ class LiveEvent extends React.Component {
 					content_type: type,
 					content_id: id.toString(),
 					program_name: name,
-					asset_cdn: 'Conversant',
+					asset_cdn: asset_cdn,
 					version: process.env.VERSION,
 					playerVersion: process.env.PLAYER_VERSION,
 					content_name: assetName.toUpperCase(),
@@ -610,17 +612,22 @@ class LiveEvent extends React.Component {
 				}
 
 				setTimeout(() => {
-										self.setupPlayerBehavior();
+					self.setupPlayerBehavior();
                     self.changeQualityIconButton();
                 }, 100);
 			});
 
 			window.onorientationchange = () => {
                 if (!isIOS) {
-                    this.player.userActive(false);
-                    setTimeout(() => {
-                        this.setState({ screen_width: window.outerWidth });
-                    }, 1000);
+					this.player.userActive(false);
+					if (self.props.router.asPath.match('/missed-event/')) {
+						setTimeout(() => {
+							this.setState({ screen_width: window.outerWidth }, () => {
+								let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
+								this.setSkipButtonCentered(orientation);
+							});
+						}, 1000);
+					}
                 }
             };
 
