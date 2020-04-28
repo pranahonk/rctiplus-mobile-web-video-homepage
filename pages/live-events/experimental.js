@@ -143,8 +143,9 @@ class LiveEvent extends React.Component {
 	constructor(props) {
 		super(props);
 		console.log(this.props.selected_event);
-		console.log(this.props.selected_event_url);
+		console.log(this.props.router);
 		this.state = {
+			tabStatus: '',
 			isAvailable: false,
 			errorCon: false,
 			error: false,
@@ -268,12 +269,7 @@ class LiveEvent extends React.Component {
 
 		return false;
 	}
-
 	getAvailable() {
-		if(this.props.router.asPath.match('/missed-event/')) {
-			this.setState({ isAvailable: false })
-			return false
-		}
 		if (this.props.selected_event && this.props.selected_event.data) {
 			const { data } = this.props.selected_event;
 			const currentTime = new Date().getTime();
@@ -283,7 +279,14 @@ class LiveEvent extends React.Component {
 			}
 			return false;
 		}
-		this.setState({ isAvailable: true });
+		if(this.props.router.asPath.match('/missed-event/')) {
+			this.setState({ isAvailable: true })
+			return false
+		}
+		if(this.props.router.asPath.match('/live-event/')) {
+			this.setState({ errorEnd: true })
+			return false
+		}
 	}
 
 	statusChatBlock(id) {
@@ -791,7 +794,6 @@ class LiveEvent extends React.Component {
 
 	toggleActionSheet(caption = '', url = '', hashtags = [], tabStatus = 'livetv') {
 		this.setState({
-			tab_status: tabStatus,
 			action_sheet: !this.state.action_sheet,
 			caption: caption,
 			url: url,
@@ -925,7 +927,7 @@ class LiveEvent extends React.Component {
 		if (this.state.errorEnd) {
 				errorRef = (<ErrorPlayer
 				iconError={<MissedIcon />}
-				title="Not Available"
+				title=""
 				content1="Sorry, Please check the video"
 				content2="on Missed Event"
 				status={ this.state.status }
@@ -1077,7 +1079,7 @@ class LiveEvent extends React.Component {
 						</div>
 						
 						<ShareIcon onClick={() => {
-							liveShareEvent(selected_event.data.id, selected_event.data.name);
+							liveShareEvent(selected_event.data && selected_event.data.id || 'error', selected_event.data && selected_event.data.name || 'error');
 							this.toggleActionSheet((this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'), BASE_URL + this.props.router.asPath, ['rctiplus'], 'livetv')
 						}}/>
 					</div>

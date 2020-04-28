@@ -104,6 +104,18 @@ class ActionSheet extends React.Component {
             }
             return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=exclusive' + camppaignName;
         }
+        if (tabStatus === 'live-event') {
+            if (path.includes('?ref=')) {
+                return '&type=live-event&utm_source=Rplusmweb&utm_medium=share_' + share;
+            }
+            return '?type=live-event&utm_source=Rplusmweb&utm_medium=share_' + share;
+        }
+        if (tabStatus === 'missed-event') {
+            if (path.includes('?ref=')) {
+                return '&type=missed-event&utm_source=Rplusmweb&utm_medium=share_' + share;
+            }
+            return '?type=missed-event&utm_source=Rplusmweb&utm_medium=share_' + share;
+        }
         if (path.includes('?ref=')) {
             return '&utm_source=Rplusmweb&utm_medium=share_' + share; // + '&utm_campaign=gue-ganteng';
         }
