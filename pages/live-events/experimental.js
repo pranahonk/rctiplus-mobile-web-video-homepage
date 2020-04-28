@@ -603,7 +603,7 @@ class LiveEvent extends React.Component {
 					screen_mode: 'portrait',
 					site: 'N/A',
 					time_video: 'N/A'
-				});
+				}, asset_cdn);
 				this.convivaTracker.createSession();
 
 				if(self.props.router.asPath.match('/missed-event/')) {
