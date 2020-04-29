@@ -208,22 +208,7 @@ class LiveEvent extends React.Component {
 			});
 		}
 		this.getMissedEvent();
-		this.props.getLiveEvent('non on air')
-			.then(response => {
-				this.setState({ 
-					live_events: response.data.data ,
-					meta: response.data.meta.image_path,
-				}, () => {
-					// this.initVOD();
-					this.initPlayer();
-					this.props.unsetPageLoader();
-				});
-			})
-			.catch(error => {
-				console.log(error);
-				this.props.unsetPageLoader();
-			});
-
+		this.getLiveEvent();
 		this.props.getUserData()
 			.then(response => {
 				console.log(response);
@@ -235,11 +220,34 @@ class LiveEvent extends React.Component {
 				console.log(error);
 			});
 	}
-
+	getLiveEvent() {
+		this.props.setPageLoader();
+		this.props.setSeamlessLoad(true);
+		this.props.getLiveEvent('non on air')
+		.then(response => {
+			this.setState({ 
+				live_events: response.data.data ,
+				meta: response.data.meta.image_path,
+			}, () => {
+				// this.initVOD();
+				this.initPlayer();
+				this.props.setSeamlessLoad(false);
+				this.props.unsetPageLoader();
+			});
+		})
+		.catch(error => {
+			console.log(error);
+			this.props.setSeamlessLoad(false);
+			this.props.unsetPageLoader();
+		});
+	}
 	getMissedEvent() {
-    // this.props.setPageLoader();
+		this.props.setSeamlessLoad(true);
+    this.props.setPageLoader();
     this.props.getMissedEvent()
     .then(({data: lists}) => {
+			this.props.setSeamlessLoad(false);
+			this.props.unsetPageLoader();
       this.setState({
 				missed_event: lists.data,
 				meta: lists.meta.image_path,
@@ -247,6 +255,8 @@ class LiveEvent extends React.Component {
       console.log(lists);
     })
     .catch((error) => {
+			this.props.setSeamlessLoad(false);
+			this.props.unsetPageLoader();
       console.log(error);
     });
   }
@@ -1127,7 +1137,8 @@ class LiveEvent extends React.Component {
 												statusTimer="1"
 												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.name}/>
 											</Col>
-										)) : errorEvent}
+										)) : this.props.pages.status ? (<div/>)
+										 : errorEvent}
 									</Row>
 								</TabPane>
 								<TabPane tabId={'missed-event'}>
@@ -1141,7 +1152,8 @@ class LiveEvent extends React.Component {
 												statusTimer="0" 
 												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.name}/>
 											</Col>
-										)) : errorEvent}
+										)) : this.props.pages.status ? (<div/>)
+										: errorEvent}
 									</Row>
 								</TabPane>
 							</TabContent>
