@@ -153,7 +153,7 @@ class LiveEvent extends React.Component {
 			chats: [],
 			live_events: [],
 			missed_event: [],
-			meta: this.props.selected_event ? this.props.selected_event.meta.image_path : '',
+			meta: '',
 			resolution: 300,
 			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
 			screen_width: 320,
@@ -210,7 +210,10 @@ class LiveEvent extends React.Component {
 		this.getMissedEvent();
 		this.props.getLiveEvent('non on air')
 			.then(response => {
-				this.setState({ live_events: response.data.data }, () => {
+				this.setState({ 
+					live_events: response.data.data ,
+					meta: response.data.meta.image_path,
+				}, () => {
 					// this.initVOD();
 					this.initPlayer();
 					this.props.unsetPageLoader();
@@ -239,6 +242,7 @@ class LiveEvent extends React.Component {
     .then(({data: lists}) => {
       this.setState({
 				missed_event: lists.data,
+				meta: lists.meta.image_path,
       });
       console.log(lists);
     })
