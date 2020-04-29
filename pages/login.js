@@ -1,6 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import actions from '../redux/actions';
 import initialize from '../utils/initialize';
@@ -16,7 +16,7 @@ import '../assets/scss/components/signin.scss';
 
 import { Button, Form, FormGroup, Label, Input, FormFeedback, InputGroup } from 'reactstrap';
 
-import { SITEMAP } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 
 class Signin extends React.Component {
 	static getInitialProps(ctx) {
@@ -108,6 +108,24 @@ class Signin extends React.Component {
 				<Head>
 					<meta name="description" content={SITEMAP.login.description}/>
 					<meta name="keywords" content={SITEMAP.login.keywords}/>
+					<meta property="og:title" content={SITEMAP.login.title} />
+					<meta property="og:description" content={SITEMAP.login.description} />
+					<meta property="og:image" itemProp="image" content={SITEMAP.login.image} />
+					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content="600" />
+					<meta property="og:image:height" content="315" />
+					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+					<meta name="twitter:image" content={SITEMAP.login.image} />
+					<meta name="twitter:image:alt" content={SITEMAP.login.title} />
+					<meta name="twitter:title" content={SITEMAP.login.title} />
+					<meta name="twitter:description" content={SITEMAP.login.description} />
+					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
 				<LoadingBar
 					progress={this.state.progress_bar}
@@ -180,4 +198,4 @@ class Signin extends React.Component {
 	}
 }
 
-export default connect(state => state, actions)(Signin);
+export default connect(state => state, actions)(withRouter(Signin));

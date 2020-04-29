@@ -27,6 +27,15 @@ export const homeGeneralClicked = (event = 'mweb_homepage_logo_clicked') => {
         date_time: new Date().getTime() / 1000
     });
 };
+export const liveEventTabClicked = (event = 'mweb_liveevent_clicked', tabName) => {
+    console.log(event);
+    qg('event', event,
+    {
+        users_id: getUserId(),
+        tab_name: tabName,
+        date_time: new Date().getTime() / 1000
+    });
+};
 
 export const homeProgramClicked = (homepageTitle, programId, programTitle, genre, portraitImage, landscapeImage, event = 'mweb_homepage_program_clicked') => {
     console.log(event);
@@ -172,6 +181,17 @@ export const programRateEvent = (status, programTitle, programId, programType, e
     });
 };
 
+export const liveShareEvent = (contentId = 'error', contentName = 'error' , event = 'mweb_homepage_live_event_share_clicked') => {
+    console.log(event);
+
+    qg('event', event,
+    {
+        content_id: contentId,
+        content_name: contentName,
+        users_id: getUserId(),
+        date_time: new Date().getTime() / 1000
+    });
+};
 export const programShareEvent = (programTitle, programId, programType, event = 'mweb_homepage_program_share_clicked') => {
     console.log(event);
     const accessToken = getCookie(TOKEN_KEY);

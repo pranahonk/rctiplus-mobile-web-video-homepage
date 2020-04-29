@@ -23,14 +23,60 @@
     background-color: #171717;
     padding: 7px;
     font-size: 13px;
+    font-weight: 600;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.content-wrap {
+.live-event-content-wrap {
     background-color: rgb(40, 40, 40);
     color: white;
-    padding: 20px;
     padding-top: 5px;
     margin-bottom: 10px;
+
+    .live-event-menu {
+        height: calc(100vh - 340px);
+        overflow: hidden;
+        overflow-y: visible;
+        padding: 15px;
+        
+        .col-6 {
+            padding: 5px;
+        }
+    }
+
+    .tab-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        -webkit-box-flex: 1;
+        flex: 1 1 auto;
+        border-bottom: 1px solid #606060;
+    
+        .nav-item {   
+            text-transform: capitalize;
+            width: 50%;
+            padding: 6px 10px;
+            text-align: center;
+            font-size: 12px;
+            padding: 6px 10px;
+            font-weight: 600;
+    
+            .nav-link:hover {
+                border: none;
+            }
+        }
+    
+        .nav-link {
+            padding: 0;
+            color: white !important;
+        }
+    
+        .selected {
+            border-bottom: 2px solid #d42a31;
+        }
+    }
 
     .live-event-title {
         display: inline-block;
@@ -382,58 +428,6 @@
             transition-property: all;
             transition-duration: .6s;
             transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
-        }
-    }
-}
-
-#live-event {
-    &.le-container {
-			padding-top: 5%;
-			z-index: 99999;
-			color: #fff;
-			margin-left: 10px;
-			margin-right: 10px;
-			margin-top: 50px;
-			height: calc(100vh - 100px);
-			.le-live {
-				margin-bottom: 15px;
-            }
-			.le-title {
-				h1 {
-					font-size: 14px;
-					font-weight: bold;
-				}
-			}
-            // Bootstrap class
-            .container {
-                padding: 0;
-            }
-            .row {
-                margin: 0;
-            }
-			.col-6 {
-				padding: 5px;
-			}
-    }
-    .le-full__error {
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        vertical-align: middle;
-    }
-    .le-error {
-        text-align: center;
-        font-size: 12px;
-        color: #8f8f8f;
-        padding: 30px;
-        p {
-            margin: 0;
-            font-weight: bold;
-            &:last-child {
-                font-size: 10px;
-                font-weight: normal;
-            }
         }
     }
 }

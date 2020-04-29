@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import Router from 'next/router';
+import Head from 'next/head';
+import Router, { withRouter } from 'next/router';
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
@@ -24,6 +25,7 @@ import { Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } fr
 import ListItem from '../../components/Includes/Gallery/ListItem';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../../config';
 
 class MyList extends React.Component {
 
@@ -184,7 +186,29 @@ class MyList extends React.Component {
 
 
 		return (
-			<Layout title="My List">
+			<Layout title={SITEMAP.my_list.title}>
+				<Head>
+					<meta name="description" content={SITEMAP.my_list.description}/>
+					<meta name="keywords" content={SITEMAP.my_list.keywords}/>
+					<meta property="og:title" content={SITEMAP.my_list.title} />
+					<meta property="og:description" content={SITEMAP.my_list.description} />
+					<meta property="og:image" itemProp="image" content={SITEMAP.my_list.image} />
+					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content="600" />
+					<meta property="og:image:height" content="315" />
+					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+					<meta name="twitter:image" content={SITEMAP.my_list.image} />
+					<meta name="twitter:image:alt" content={SITEMAP.my_list.title} />
+					<meta name="twitter:title" content={SITEMAP.my_list.title} />
+					<meta name="twitter:description" content={SITEMAP.my_list.description} />
+					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
+				</Head>
 				<NavBack title="My List" />
 				<LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)}/>
 				<div className="wrapper-content container-box-ml" style={{ marginTop: 50 }}>
@@ -238,5 +262,5 @@ class MyList extends React.Component {
 
 export default connect(state => state, {
 	...bookmarkActions,
-	...searchActions
-})(MyList);
+	...searchActions,
+})(withRouter(MyList));

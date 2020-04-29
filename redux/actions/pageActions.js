@@ -21,8 +21,23 @@ const toggleFooter = (state) => {
     });
 };
 
+const setSeamlessLoad = (state) => {
+    return dispatch => dispatch({
+        type: 'SET_SEAMLESS_LOAD',
+        status: state,
+    });
+};
+const unsetSeamlessLoad = () => {
+    return dispatch => dispatch({
+        type: 'UNSET_SEAMLESS_LOAD',
+        status: true,
+    });
+};
+
 export default {
     setPageLoader,
     unsetPageLoader,
-    toggleFooter
+    toggleFooter,
+    setSeamlessLoad,
+    unsetSeamlessLoad,
 };

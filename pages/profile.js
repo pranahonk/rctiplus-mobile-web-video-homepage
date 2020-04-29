@@ -1,7 +1,8 @@
 import React from 'react'
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import Img from 'react-image';
+import Head from 'next/head';
 
 import userActions from '../redux/actions/userActions';
 import historyActions from '../redux/actions/historyActions';
@@ -27,6 +28,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 
 import '../assets/scss/components/profile.scss';
 
@@ -155,7 +158,29 @@ class Profile extends React.Component {
 		}
 
 		return (
-			<Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
+			<Layout title={SITEMAP.profile.title}>
+				<Head>
+					<meta name="description" content={SITEMAP.profile.description}/>
+					<meta name="keywords" content={SITEMAP.profile.keywords}/>
+					<meta property="og:title" content={SITEMAP.profile.title} />
+					<meta property="og:description" content={SITEMAP.profile.description} />
+					<meta property="og:image" itemProp="image" content={SITEMAP.profile.image} />
+					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content="600" />
+					<meta property="og:image:height" content="315" />
+					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+					<meta name="twitter:image" content={SITEMAP.profile.image} />
+					<meta name="twitter:image:alt" content={SITEMAP.profile.title} />
+					<meta name="twitter:title" content={SITEMAP.profile.title} />
+					<meta name="twitter:description" content={SITEMAP.profile.description} />
+					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
+				</Head>
 				<NavDefault disableScrollListener/>
 				<LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
 				<ListGroup className="list-menu-container">
@@ -243,4 +268,4 @@ export default connect(state => state, {
 	...userActions,
 	...historyActions,
 	...pageActions
-})(Profile);
+})(withRouter(Profile));

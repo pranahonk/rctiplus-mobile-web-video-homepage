@@ -216,10 +216,19 @@ const UIVersion = '2.0';
     });
 
     server.get('/live-event/:id/:title', (req, res) => {
-      return app.render(req, res, '/live-event', {
+      return app.render(req, res, '/live-events/experimental', {
         id: req.params.id,
         title: req.params.title
       });
+    });
+    server.get('/missed-event/:id/:title', (req, res) => {
+      return app.render(req, res, '/live-events/experimental', {
+        id: req.params.id,
+        title: req.params.title
+      });
+    });
+    server.get('/live-event', (req, res) => {
+      return app.render(req, res, '/live-events/index');
     });
 
     // default request handler by next handler:

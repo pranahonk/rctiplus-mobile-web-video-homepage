@@ -30,7 +30,7 @@ import qualityLevels from 'videojs-contrib-quality-levels';
 import 'videojs-seek-buttons';
 import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
 
-import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
+import { DEV_API, VISITOR_TOKEN, SITE_NAME, SITEMAP, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../../config';
 import { getCookie } from '../../utils/cookie';
 import { programContentPlayEvent, homepageContentPlayEvent, accountHistoryContentPlayEvent, accountMylistContentPlayEvent, accountContinueWatchingContentPlayEvent, libraryProgramContentPlayEvent, searchProgramContentPlayEvent, accountVideoProgress } from '../../utils/appier';
 import { convivaVideoJs } from '../../utils/conviva';
@@ -796,6 +796,7 @@ class Content extends React.Component {
     }
 
     render() {
+        const metadata = this.getMetadata();
         let playerRef = (<div></div>);
         let errorRef = (<div></div>);
         let title = '';
@@ -831,13 +832,9 @@ class Content extends React.Component {
             );
         }
         else {
-            const metadata = this.getMetadata();
             title = metadata.title;
             playerRef = (
                 <div>
-                    <Head>
-                        <meta name="description" content={metadata.description} />
-                    </Head>
                     <div className="player-container">
                         <div data-vjs-player>
                             <div
@@ -876,6 +873,27 @@ class Content extends React.Component {
 
         return (
             <Layout title={title} hideFooter={this.state.hide_footer}>
+            <Head>
+                    <meta name="description" content={metadata.description} />
+                    <meta property="og:title" content={title} />
+                    <meta property="og:description" content={metadata.description} />
+                    <meta property="og:image" itemProp="image" content={this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image} />
+                    <meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+                    <meta property="og:image:type" content="image/jpeg" />
+                    <meta property="og:image:width" content="600" />
+                    <meta property="og:image:height" content="315" />
+                    <meta property="og:site_name" content={SITE_NAME} />
+                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+                    <meta name="twitter:image" content={this.props.content.meta.image_path + '593' + this.props.content.data.portrait_image} />
+                    <meta name="twitter:image:alt" content={title} />
+                    <meta name="twitter:title" content={title} />
+                    <meta name="twitter:description" content={metadata.description} />
+                    <meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+                    <meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
+                </Head>
                 <ArrowBackIcon className="back-btn" onClick={() => Router.back()} />
                 {(this.state.error || Object.keys(this.props.content_url).length <= 0) ? errorRef : playerRef}
             </Layout>
