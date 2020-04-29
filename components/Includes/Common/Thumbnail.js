@@ -15,7 +15,7 @@ class Thumbnail extends React.Component {
         <div className={'thumb-label'} style={{backgroudColor: this.props.backgroudColor, opacity: this.props.statusLabel }}>
           {this.props.label}
         </div>
-            <CountdownTimer timer={this.props.timer} statusTimer={this.props.statusTimer} statusPlay={this.props.statusPlay}/>
+            <CountdownTimer timer={this.props.timer} timerCurrent={this.props.timerCurrent} statusTimer={this.props.statusTimer} statusPlay={this.props.statusPlay}/>
            <Img
               alt={this.props.src}
               className="thumb-img"
