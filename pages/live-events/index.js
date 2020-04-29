@@ -31,9 +31,11 @@ class Index extends React.Component {
   }
   getLiveEvent() {
     this.props.setSeamlessLoad(true);
+    this.props.setPageLoader();
     this.props.getLiveEvent('non on air')
     .then(({data: lists}) => {
       this.props.setSeamlessLoad(false);
+      this.props.unsetPageLoader();
       this.setState({
         live_event: lists.data,
         meta: lists.meta,
@@ -42,14 +44,17 @@ class Index extends React.Component {
     })
     .catch((error) => {
       this.props.setSeamlessLoad(false);
+      this.props.unsetPageLoader();
       console.log(error);
     });
   }
   getMissedEvent() {
     this.props.setSeamlessLoad(true);
+    this.props.setPageLoader();
     this.props.getMissedEvent()
     .then(({data: lists}) => {
       this.props.setSeamlessLoad(false);
+      this.props.unsetPageLoader();
       this.setState({
         missed_event: lists.data,
         meta: lists.meta,
@@ -57,6 +62,7 @@ class Index extends React.Component {
     })
     .catch((error) => {
       this.props.setSeamlessLoad(false);
+      this.props.unsetPageLoader();
       console.log(error);
     });
   }
@@ -131,9 +137,7 @@ class Index extends React.Component {
               </section>
               </div>)
               : this.props.pages.status
-              ? (<div className="le-full__error">
-                  <LiveIcon />
-                </div>)
+              ? (<div />)
               : (<div className="le-full__error">
                   { errorEvent }
                 </div>)

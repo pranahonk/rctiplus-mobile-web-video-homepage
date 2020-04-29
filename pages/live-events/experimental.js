@@ -153,7 +153,7 @@ class LiveEvent extends React.Component {
 			chats: [],
 			live_events: [],
 			missed_event: [],
-			meta: this.props.selected_event ? this.props.selected_event.meta.image_path : '',
+			meta: '',
 			resolution: 300,
 			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
 			screen_width: 320,
@@ -208,19 +208,7 @@ class LiveEvent extends React.Component {
 			});
 		}
 		this.getMissedEvent();
-		this.props.getLiveEvent('non on air')
-			.then(response => {
-				this.setState({ live_events: response.data.data }, () => {
-					// this.initVOD();
-					this.initPlayer();
-					this.props.unsetPageLoader();
-				});
-			})
-			.catch(error => {
-				console.log(error);
-				this.props.unsetPageLoader();
-			});
-
+		this.getLiveEvent();
 		this.props.getUserData()
 			.then(response => {
 				console.log(response);
@@ -232,17 +220,43 @@ class LiveEvent extends React.Component {
 				console.log(error);
 			});
 	}
-
+	getLiveEvent() {
+		this.props.setPageLoader();
+		this.props.setSeamlessLoad(true);
+		this.props.getLiveEvent('non on air')
+		.then(response => {
+			this.setState({ 
+				live_events: response.data.data ,
+				meta: response.data.meta.image_path,
+			}, () => {
+				// this.initVOD();
+				this.initPlayer();
+				this.props.setSeamlessLoad(false);
+				this.props.unsetPageLoader();
+			});
+		})
+		.catch(error => {
+			console.log(error);
+			this.props.setSeamlessLoad(false);
+			this.props.unsetPageLoader();
+		});
+	}
 	getMissedEvent() {
-    // this.props.setPageLoader();
+		this.props.setSeamlessLoad(true);
+    this.props.setPageLoader();
     this.props.getMissedEvent()
     .then(({data: lists}) => {
+			this.props.setSeamlessLoad(false);
+			this.props.unsetPageLoader();
       this.setState({
 				missed_event: lists.data,
+				meta: lists.meta.image_path,
       });
       console.log(lists);
     })
     .catch((error) => {
+			this.props.setSeamlessLoad(false);
+			this.props.unsetPageLoader();
       console.log(error);
     });
   }
@@ -1123,7 +1137,8 @@ class LiveEvent extends React.Component {
 												statusTimer="1"
 												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.name}/>
 											</Col>
-										)) : errorEvent}
+										)) : this.props.pages.status ? (<div/>)
+										 : errorEvent}
 									</Row>
 								</TabPane>
 								<TabPane tabId={'missed-event'}>
@@ -1137,7 +1152,8 @@ class LiveEvent extends React.Component {
 												statusTimer="0" 
 												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.name}/>
 											</Col>
-										)) : errorEvent}
+										)) : this.props.pages.status ? (<div/>)
+										: errorEvent}
 									</Row>
 								</TabPane>
 							</TabContent>
