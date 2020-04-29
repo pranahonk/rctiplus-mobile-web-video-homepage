@@ -52,6 +52,7 @@ class Index extends React.Component {
       this.props.setSeamlessLoad(false);
       this.setState({
         missed_event: lists.data,
+        meta: lists.meta,
       });
     })
     .catch((error) => {
@@ -64,7 +65,6 @@ class Index extends React.Component {
   }
 
   render() {
-    console.log(this.props)
     let liveEvent = this.state.live_event.map((list, i) => {
       return (
         <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
@@ -77,7 +77,7 @@ class Index extends React.Component {
           backgroundColor="#fa262f"
           statusLabel="1"
           statusTimer="1"
-          src={`${this.state.meta.image_path}/250/${list.landscape_image}`} alt={list.name}/>
+          src={`${this.state.meta.image_path}250${list.landscape_image}`} alt={list.name}/>
         </Col>
       );
     });
@@ -90,7 +90,7 @@ class Index extends React.Component {
           backgroundColor="#fa262f"
           statusLabel="0"
           statusTimer="0"
-          src={`${this.state.meta.image_path}/250/${list.landscape_image}`} alt={list.name}/>
+          src={`${this.state.meta.image_path}250${list.landscape_image}`} alt={list.name}/>
         </Col>
       );
     });
@@ -107,7 +107,7 @@ class Index extends React.Component {
         </Head>
         <NavBack title="Live Event"/>
         <div id="live-event" className="le-container">
-          {this.state.live_event.length > 0 && this.state.missed_event.length > 0 ?
+          {this.state.live_event.length > 0 || this.state.missed_event.length > 0 ?
             (<div>
               <section className="le-live">
                 <div className="le-title">
