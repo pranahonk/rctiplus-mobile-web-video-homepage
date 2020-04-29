@@ -120,9 +120,9 @@ export const showSignInAlert = (text, title, callback, buttonInverse = false, co
     btnCancel.parentNode.insertBefore(btn, btnCancel.nextSibling)
 };
 
-export const getCountdown = (value) => {
-    const now = new Date().getTime();
-    const timeRelease = new Date(parseInt(value) * 1000).getTime();
+export const getCountdown = (release, current) => {
+    const now = new Date(parseInt(current) * 1000).getTime();
+    const timeRelease = new Date(parseInt(release) * 1000).getTime();
     const result = (timeRelease - now);
     if(timeRelease < now) {
         return [result, false]

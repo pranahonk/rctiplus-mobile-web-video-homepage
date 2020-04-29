@@ -97,12 +97,6 @@ class LiveEvent extends React.Component {
 				fetch(`${DEV_API}/api/v1/live-event/${id}/url`, options)
 			]);
 		}
-		// res = await Promise.all([
-		// 	fetch(`${DEV_API}/api/v1/live-event/${id}`, options),
-		// 	fetch(`${DEV_API}/api/v1/live-event/${id}/url`, options),
-		// 	fetch(`${DEV_API}/api/v1/missed-event/${id}`, options),
-		// 	fetch(`${DEV_API}/api/v2/missed-event/${id}/url`, options)
-		// ]);
 
 		const error_code = res[0].status > 200 ? res[0].status : false;
 		const error_code_2 = res[1].status > 200 ? res[1].status : false;
@@ -127,12 +121,8 @@ class LiveEvent extends React.Component {
 		const data = await Promise.all([
 			res[0].json(),
 			res[1].json(),
-			// res[2].json(),
-			// res[3].json(),
 		]);
 		return {
-			// selected_event: ctx.asPath.match('live-event') ? data[0] : data[2],
-			// selected_event_url: ctx.asPath.match('live-event') ? data[1] : data[3],
 			selected_event: data[0],
 			selected_event_url: data[1],
 			user_agent: userAgent,
@@ -260,10 +250,13 @@ class LiveEvent extends React.Component {
 	isLive() {
 		if (this.props.selected_event && this.props.selected_event.data) {
 			const { data } = this.props.selected_event;
-			const currentTime = new Date().getTime();
+			const currentTime = new Date(data.current_date * 1000).getTime();
 			const startTime = new Date(data.release_date_quiz * 1000).getTime();
 			if (currentTime < startTime) {
-				return [getCountdown(data.release_date_quiz)[0], getCountdown(data.release_date_quiz)[0]];
+				return [getCountdown(data.release_date_quiz, data.current_date)[0], getCountdown(data.release_date_quiz, data.current_date)[0]];
+			}
+			else {
+				getCountdown(data.release_date_quiz, data.current_date)[1]
 			}
 		}
 
@@ -690,9 +683,11 @@ class LiveEvent extends React.Component {
 				});
 			});
 			this.player.on('ended', () => {
-				this.setState({
-					errorEnd: true,
-				});
+				if(!this.state.is_live) {
+					this.setState({
+						errorEnd: true,
+					});
+				} 
 			});
 			this.player.hlsQualitySelector({
 				displayCurrentQuality: true,
@@ -1079,7 +1074,7 @@ class LiveEvent extends React.Component {
 							display: 'flex',
 							alignItems: 'center'
 						}}>
-							{this.state.is_live[0] ? (
+						{this.state.is_live[0] ? (
 								<CountdownTimer
 									id= {selected_event.data.id}
 									onUrl={this.getPlayNow}
@@ -1087,6 +1082,7 @@ class LiveEvent extends React.Component {
 									key={this.state.is_live[0]} 
 									position="relative"
 									timer={this.state.is_live[0]} 
+									timerCurrent={ selected_event.data && selected_event.data.current_date } 
 									statusTimer="1"/>
 							) : null}
 							
@@ -1119,8 +1115,9 @@ class LiveEvent extends React.Component {
 											<Col xs={6} key={i} onClick={() => Router.push(`/live-event/${le.content_id}/${le.content_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}`)}>
 												<Thumbnail 
 												label="Live" 
-												timer={getCountdown(le.release_date_quiz)[0]}
-												statusPlay={getCountdown(le.release_date_quiz)[1]}
+												timer={getCountdown(le.release_date_quiz, le.current_date)[0]}
+												timerCurrent={ le.current_date }
+												statusPlay={getCountdown(le.release_date_quiz, le.current_date)[1]}
 												backgroundColor="#fa262f"
 												statusLabel="1"
 												statusTimer="1"

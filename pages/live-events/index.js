@@ -38,7 +38,7 @@ class Index extends React.Component {
         live_event: lists.data,
         meta: lists.meta,
       });
-      console.log(lists);
+      console.log(lists)
     })
     .catch((error) => {
       this.props.setSeamlessLoad(false);
@@ -53,7 +53,6 @@ class Index extends React.Component {
       this.setState({
         missed_event: lists.data,
       });
-      console.log(lists);
     })
     .catch((error) => {
       this.props.setSeamlessLoad(false);
@@ -72,8 +71,9 @@ class Index extends React.Component {
           <Thumbnail
           key={list.content_id + list.content_title}
           label="Live"
-          timer={getCountdown(list.release_date_quiz)[0]}
-          statusPlay={getCountdown(list.release_date_quiz)[1]}
+          timer={getCountdown(list.release_date_quiz, list.current_date)[0]}
+          timerCurrent={list.current_date}
+          statusPlay={getCountdown(list.release_date_quiz, list.current_date)[1]}
           backgroundColor="#fa262f"
           statusLabel="1"
           statusTimer="1"
