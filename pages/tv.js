@@ -1167,29 +1167,52 @@ class Tv extends React.Component {
 					failed: false
 				};
 				let chats = this.state.chats;
-				// chats.push(newChat);
-				this.props.postChatSocket(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.chat, this.state.user_data.photo_url, user)
-				.then(response => {
-					newChat.sent = true;
-					if (response.status !== 200) {
-						newChat.failed = true
-					}
-					chats[chats.length - 1] = newChat;
-						this.setState({ chats: chats, sending_chat: false });
-				})
-				.catch(() => {
-					newChat.sent = true;
-					newChat.failed = true;
-					chats[chats.length - 1] = newChat;
-					this.setState({ chats: chats, sending_chat: false });
-				});
+				chats.push(newChat);
 				this.setState({ chats: chats, chat: '', sending_chat: true }, () => {
 					const chatBox = document.getElementById('chat-messages');
 					chatBox.scrollTop = chatBox.scrollHeight;
 
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
+
+					this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, newChat.m, user, this.state.user_data.photo_url)
+						.then(response => {
+							newChat.sent = true;
+							if (response.status !== 200 || response.data.status.code !== 0) {
+								newChat.failed = true;
+							}
+							chats[chats.length - 1] = newChat;
+							this.setState({ chats: chats, sending_chat: false });
+						})
+						.catch(() => {
+							newChat.sent = true;
+							newChat.failed = true;
+							chats[chats.length - 1] = newChat;
+							this.setState({ chats: chats, sending_chat: false });
+						});
 				});
+				// this.props.postChatSocket(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.chat, this.state.user_data.photo_url, user)
+				// .then(response => {
+				// 	newChat.sent = true;
+				// 	if (response.status !== 200) {
+				// 		newChat.failed = true
+				// 	}
+				// 	chats[chats.length - 1] = newChat;
+				// 		this.setState({ chats: chats, sending_chat: false });
+				// })
+				// .catch(() => {
+				// 	newChat.sent = true;
+				// 	newChat.failed = true;
+				// 	chats[chats.length - 1] = newChat;
+				// 	this.setState({ chats: chats, sending_chat: false });
+				// });
+				// this.setState({ chats: chats, chat: '', sending_chat: true }, () => {
+				// 	const chatBox = document.getElementById('chat-messages');
+				// 	chatBox.scrollTop = chatBox.scrollHeight;
+
+				// 	const chatInput = document.getElementById('chat-input');
+				// 	chatInput.style.height = `24px`;
+				// });
 			}
 		}
 		else {
