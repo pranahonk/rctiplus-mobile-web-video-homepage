@@ -153,7 +153,7 @@ class LiveEvent extends React.Component {
 			chats: [],
 			live_events: [],
 			missed_event: [],
-			meta: {},
+			meta: this.props.selected_event ? this.props.selected_event.meta.image_path : '',
 			resolution: 300,
 			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
 			screen_width: 320,
@@ -210,7 +210,7 @@ class LiveEvent extends React.Component {
 		this.getMissedEvent();
 		this.props.getLiveEvent('non on air')
 			.then(response => {
-				this.setState({ live_events: response.data.data, meta: response.data.meta }, () => {
+				this.setState({ live_events: response.data.data }, () => {
 					// this.initVOD();
 					this.initPlayer();
 					this.props.unsetPageLoader();
@@ -239,7 +239,6 @@ class LiveEvent extends React.Component {
     .then(({data: lists}) => {
       this.setState({
 				missed_event: lists.data,
-				meta: lists.data.meta, 
       });
       console.log(lists);
     })
@@ -1122,7 +1121,7 @@ class LiveEvent extends React.Component {
 												backgroundColor="#fa262f"
 												statusLabel="1"
 												statusTimer="1"
-												src={this.state.meta.image_path + this.state.resolution + le.landscape_image} alt={le.name}/>
+												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.name}/>
 											</Col>
 										)) : errorEvent}
 									</Row>
@@ -1136,7 +1135,7 @@ class LiveEvent extends React.Component {
 												backgroundColor="#fa262f" 
 												statusLabel="0" 
 												statusTimer="0" 
-												src={this.state.meta.image_path + this.state.resolution + le.landscape_image} alt={le.name}/>
+												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.name}/>
 											</Col>
 										)) : errorEvent}
 									</Row>
