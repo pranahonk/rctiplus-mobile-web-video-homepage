@@ -238,7 +238,8 @@ class LiveEvent extends React.Component {
     this.props.getMissedEvent()
     .then(({data: lists}) => {
       this.setState({
-        missed_event: lists.data,
+				missed_event: lists.data,
+				meta: lists.data.meta, 
       });
       console.log(lists);
     })
