@@ -237,6 +237,7 @@ class LiveEvent extends React.Component {
 		})
 		.catch(error => {
 			console.log(error);
+			this.initPlayer();
 			this.props.setSeamlessLoad(false);
 			this.props.unsetPageLoader();
 		});
