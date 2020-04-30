@@ -564,7 +564,8 @@ class Tv extends React.Component {
 										program_id: 'N/A',
 										screen_mode: 'portrait',
 										time_video: 'N/A',
-										viewer_id: getUserId().toString()
+										viewer_id: getUserId().toString(),
+										application_name: 'RCTI+ MWEB'
 									};
 
 									self.convivaTracker = convivaVideoJs(assetName.toUpperCase(), player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), customTags);
@@ -600,7 +601,8 @@ class Tv extends React.Component {
 									program_id: 'N/A',
 									screen_mode: 'portrait',
 									time_video: 'N/A',
-									viewer_id: getUserId().toString()
+									viewer_id: getUserId().toString(),
+									application_name: 'RCTI+ MWEB'
 								};
 
 								self.convivaTracker = convivaVideoJs(self.state.selected_catchup.title.toUpperCase(), player, player.duration(), self.state.player_url, 'RCTI+ MWEB', customTags);
@@ -729,7 +731,8 @@ class Tv extends React.Component {
 								program_id: 'N/A',
 								screen_mode: 'portrait',
 								time_video: 'N/A',
-								viewer_id: getUserId().toString()
+								viewer_id: getUserId().toString(),
+								application_name: 'RCTI+ MWEB'
 							};
 
 							this.convivaTracker = convivaVideoJs(assetName.toUpperCase(), this.player, true, this.state.player_url, 'Live TV ' + assetName.toUpperCase(), customTags);
@@ -766,7 +769,8 @@ class Tv extends React.Component {
 							program_id: 'N/A',
 							screen_mode: 'portrait',
 							time_video: 'N/A',
-							viewer_id: getUserId().toString()
+							viewer_id: getUserId().toString(),
+							application_name: 'RCTI+ MWEB'
 						};
 
 						this.convivaTracker = convivaVideoJs(this.state.selected_catchup.title, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), customTags);
