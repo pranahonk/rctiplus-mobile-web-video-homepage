@@ -23,7 +23,7 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
                 convivaMetadata.duration = isLive;
             }
             
-            convivaMetadata.playerName = playerName;
+            convivaMetadata.playerName = 'RCTI+ MWEB';
             convivaMetadata.viewerId = getUserId().toString();
 
             const streamer = new Conviva.ConvivaVideojsStreamerProxy(this.player);
