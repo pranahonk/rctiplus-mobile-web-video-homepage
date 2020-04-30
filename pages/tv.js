@@ -235,7 +235,7 @@ class Tv extends React.Component {
 					if (currentEpg != null) {
 						conviva.startMonitoring(this);
 						const assetMetadata = {
-							viewer_id: getUserId(),
+							viewer_id: getUserId().toString(),
 							application_name: 'RCTI+ MWEB',
 							asset_cdn: 'Conversant',
 							version: process.env.VERSION,
@@ -254,7 +254,7 @@ class Tv extends React.Component {
 				case 'catch_up_tv':
 					conviva.startMonitoring(this);
 					const assetMetadata = {
-						viewer_id: getUserId(),
+						viewer_id: getUserId().toString(),
 						application_name: 'RCTI+ MWEB',
 						asset_cdn: 'Conversant',
 						version: process.env.VERSION,
@@ -549,14 +549,12 @@ class Tv extends React.Component {
 								const currentEpg = self.getCurrentLiveEpg();
 								if (currentEpg != null) {
 									const customTags = {
-										application_name: 'RCTI+ MWEB',
-										player_type: 'VideoJS',
+										app_version: process.env.APP_VERSION,
+										carrier: 'N/A',
+										connection_type: 'N/A',
 										content_type: 'live tv',
 										content_id: 'N/A',
 										program_name: 'N/A',
-										version: process.env.VERSION,
-										playerVersion: process.env.PLAYER_VERSION,
-										content_name: 'N/A',
 										tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id.toString() : self.state.selected_live_event.content_id.toString(),
 										tv_name: assetName.toUpperCase(),
 										date_video: 'N/A',
@@ -565,22 +563,9 @@ class Tv extends React.Component {
 										page_view: 'N/A',
 										program_id: 'N/A',
 										screen_mode: 'portrait',
-										site: 'N/A',
-										time_video: 'N/A'
+										time_video: 'N/A',
+										viewer_id: getUserId().toString()
 									};
-
-									// self.convivaTracker = convivaVideoJs(assetName, player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
-									// 	asset_name: assetName.toUpperCase(),
-									// 	application_name: 'RCTI+ MWEB',
-									// 	asset_cdn: 'Conversant',
-									// 	version: process.env.VERSION,
-									// 	start_session: '0',
-									// 	player_version: process.env.PLAYER_VERSION,
-									// 	tv_id: self.state.selected_live_event.id.toString(),
-									// 	tv_name: assetName.toUpperCase(),
-									// 	content_id: currentEpg.id.toString(),
-									// 	content_title: currentEpg.title
-									// });
 
 									self.convivaTracker = convivaVideoJs(assetName.toUpperCase(), player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), customTags);
 									self.convivaTracker.createSession();
@@ -600,14 +585,12 @@ class Tv extends React.Component {
 								};
 
 								const customTags = {
-									application_name: 'RCTI+ MWEB',
-									player_type: 'VideoJS',
+									app_version: process.env.APP_VERSION,
+									carrier: 'N/A',
+									connection_type: 'N/A',
 									content_type: 'catch up tv',
 									content_id: self.state.selected_catchup.id.toString(),
 									program_name: 'N/A',
-									version: process.env.VERSION,
-									playerVersion: process.env.PLAYER_VERSION,
-									content_name: self.state.selected_catchup.title,
 									tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id.toString() : self.state.selected_live_event.content_id.toString(),
 									tv_name: assetName.toUpperCase(),
 									date_video: 'N/A',
@@ -616,22 +599,9 @@ class Tv extends React.Component {
 									page_view: 'N/A',
 									program_id: 'N/A',
 									screen_mode: 'portrait',
-									site: 'N/A',
-									time_video: 'N/A'
+									time_video: 'N/A',
+									viewer_id: getUserId().toString()
 								};
-
-								// self.convivaTracker = convivaVideoJs(self.state.selected_catchup.title.toUpperCase(), player, player.duration(), self.state.player_url, 'RCTI+ MWEB', {
-								// 	asset_name: self.state.selected_catchup.title.toUpperCase(),
-								// 	application_name: 'RCTI+ MWEB',
-								// 	asset_cdn: 'Conversant',
-								// 	version: process.env.VERSION,
-								// 	start_session: '0',
-								// 	player_version: process.env.PLAYER_VERSION,
-								// 	tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id.toString() : self.state.selected_live_event.content_id.toString(),
-								// 	tv_name: assetName.toUpperCase(),
-								// 	content_id: self.state.selected_catchup.id.toString(),
-								// 	content_title: self.state.selected_catchup.title
-								// });
 
 								self.convivaTracker = convivaVideoJs(self.state.selected_catchup.title.toUpperCase(), player, player.duration(), self.state.player_url, 'RCTI+ MWEB', customTags);
 								self.convivaTracker.createSession();
@@ -744,14 +714,12 @@ class Tv extends React.Component {
 						const currentEpg = this.getCurrentLiveEpg();
 						if (currentEpg != null) {
 							const customTags = {
-								application_name: 'RCTI+ MWEB',
-								player_type: 'VideoJS',
+								app_version: process.env.APP_VERSION,
+								carrier: 'N/A',
+								connection_type: 'N/A',
 								content_type: 'live tv',
 								content_id: 'N/A',
 								program_name: 'N/A',
-								version: process.env.VERSION,
-								playerVersion: process.env.PLAYER_VERSION,
-								content_name: 'N/A',
 								tv_id: this.state.selected_live_event.id ? this.state.selected_live_event.id.toString() : this.state.selected_live_event.content_id.toString(),
 								tv_name: assetName.toUpperCase(),
 								date_video: 'N/A',
@@ -760,22 +728,9 @@ class Tv extends React.Component {
 								page_view: 'N/A',
 								program_id: 'N/A',
 								screen_mode: 'portrait',
-								site: 'N/A',
-								time_video: 'N/A'
+								time_video: 'N/A',
+								viewer_id: getUserId().toString()
 							};
-
-							// this.convivaTracker = convivaVideoJs(assetName.toUpperCase(), this.player, true, this.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
-							// 	asset_name: assetName.toUpperCase(),
-							// 	application_name: 'RCTI+ MWEB',
-							// 	asset_cdn: 'Conversant',
-							// 	version: process.env.VERSION,
-							// 	start_session: '0',
-							// 	player_version: process.env.PLAYER_VERSION,
-							// 	tv_id: this.state.selected_live_event.id ? this.state.selected_live_event.id.toString() : this.state.selected_live_event.content_id,
-							// 	tv_name: assetName.toUpperCase(),
-							// 	content_id: currentEpg.id.toString(),
-							// 	content_title: currentEpg.title
-							// });
 
 							this.convivaTracker = convivaVideoJs(assetName.toUpperCase(), this.player, true, this.state.player_url, 'Live TV ' + assetName.toUpperCase(), customTags);
 							this.convivaTracker.createSession();
@@ -796,14 +751,12 @@ class Tv extends React.Component {
 						};
 
 						const customTags = {
-							application_name: 'RCTI+ MWEB',
-							player_type: 'VideoJS',
+							app_version: process.env.APP_VERSION,
+							carrier: 'N/A',
+							connection_type: 'N/A',
 							content_type: 'catch up tv',
 							content_id: this.state.selected_catchup.id.toString(),
 							program_name: 'N/A',
-							version: process.env.VERSION,
-							playerVersion: process.env.PLAYER_VERSION,
-							content_name: this.state.selected_catchup.title,
 							tv_id: this.state.selected_live_event.id ? this.state.selected_live_event.id.toString() : this.state.selected_live_event.content_id.toString(),
 							tv_name: assetName.toUpperCase(),
 							date_video: 'N/A',
@@ -812,21 +765,9 @@ class Tv extends React.Component {
 							page_view: 'N/A',
 							program_id: 'N/A',
 							screen_mode: 'portrait',
-							site: 'N/A',
-							time_video: 'N/A'
+							time_video: 'N/A',
+							viewer_id: getUserId().toString()
 						};
-						// this.convivaTracker = convivaVideoJs(this.state.selected_catchup.title, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
-						// 	asset_name: this.state.selected_catchup.title.toUpperCase(),
-						// 	application_name: 'RCTI+ MWEB',
-						// 	asset_cdn: 'Conversant',
-						// 	version: process.env.VERSION,
-						// 	start_session: '0',
-						// 	player_version: process.env.PLAYER_VERSION,
-						// 	tv_id: this.state.selected_live_event.id ? this.state.selected_live_event.id.toString() : this.state.selected_live_event.content_id.toString(),
-						// 	tv_name: assetName.toUpperCase(),
-						// 	content_id: this.state.selected_catchup.id.toString(),
-						// 	content_title: this.state.selected_catchup.title
-						// });
 
 						this.convivaTracker = convivaVideoJs(this.state.selected_catchup.title, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), customTags);
 						this.convivaTracker.createSession();

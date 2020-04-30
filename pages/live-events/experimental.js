@@ -637,31 +637,28 @@ class LiveEvent extends React.Component {
 				
 				const player = this;
 				const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
-				this.convivaTracker = convivaVideoJs(asset_name, player, self.props.router.asPath.match('/missed-event/') ? player.duration() : true, url, 'Live Event ' + assetName.toUpperCase(), {
-					// asset_name: assetName.toUpperCase(),
-					// asset_name: asset_name,
-					application_name: 'RCTI+ MWEB',
-					player_type: 'VideoJS',
-					// content_type: type,
+
+				const customTags = {
+                    app_version: process.env.APP_VERSION,
+                    carrier: 'N/A',
+                    connection_type: 'N/A',
 					content_type: self.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event',
-					content_id: id.toString(),
-					program_name: name,
-					// asset_cdn: asset_cdn,
-					version: process.env.VERSION,
-					playerVersion: process.env.PLAYER_VERSION,
-					content_name: assetName.toUpperCase(),
 					section_page: self.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event',
-					tv_id: 'N/A',
-					tv_name: 'N/A',
-					date_video: 'N/A',
-					genre: 'N/A',
-					page_title: 'N/A',
-					page_view: 'N/A',
-					program_id: 'N/A',
-					screen_mode: 'portrait',
-					site: 'N/A',
-					time_video: 'N/A'
-				}, asset_cdn);
+                    content_id: id.toString(),
+					program_name: name,
+                    tv_id: 'N/A',
+                    tv_name: 'N/A',
+                    date_video: 'N/A',
+                    genre: 'N/A',
+                    page_title: 'N/A',
+                    page_view: 'N/A',
+                    program_id: 'N/A',
+                    screen_mode: 'portrait',
+                    time_video: 'N/A',
+                    viewer_id: getUserId().toString()
+                };
+
+				this.convivaTracker = convivaVideoJs(asset_name, player, self.props.router.asPath.match('/missed-event/') ? player.duration() : true, url, 'Live Event ' + assetName.toUpperCase(), customTags, asset_cdn);
 				this.convivaTracker.createSession();
 
 				if(self.props.router.asPath.match('/missed-event/')) {

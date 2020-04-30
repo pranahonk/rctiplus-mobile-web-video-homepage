@@ -32,7 +32,7 @@ import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
 
 import { DEV_API, VISITOR_TOKEN, SITE_NAME, SITEMAP, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../../config';
 import { getCookie } from '../../utils/cookie';
-import { programContentPlayEvent, homepageContentPlayEvent, accountHistoryContentPlayEvent, accountMylistContentPlayEvent, accountContinueWatchingContentPlayEvent, libraryProgramContentPlayEvent, searchProgramContentPlayEvent, accountVideoProgress } from '../../utils/appier';
+import { programContentPlayEvent, homepageContentPlayEvent, accountHistoryContentPlayEvent, accountMylistContentPlayEvent, accountContinueWatchingContentPlayEvent, libraryProgramContentPlayEvent, searchProgramContentPlayEvent, accountVideoProgress, getUserId } from '../../utils/appier';
 import { convivaVideoJs } from '../../utils/conviva';
 
 class Content extends React.Component {
@@ -298,17 +298,51 @@ class Content extends React.Component {
 
                 const player = this;
                 const assetName = content && content.data ? content.data.content_name : 'N/A';
-                self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, assetName, {
-                    asset_name: assetName,
-					application_name: 'RCTI+ MWEB',
-					player_type: 'VideoJS',
-					content_id: (self.props.context_data.content_id ? self.props.context_data.content_id : 'N/A').toString(),
-					program_name: assetName,
-					version: process.env.VERSION,
-					playerVersion: process.env.PLAYER_VERSION,
-                    content_name: assetName,
-                    start_session: self.state.start_duration.toString()
-                });
+                console.log(self.props.content);
+                console.log(self.props.content_url);
+
+                let videoUrlData = null;
+                let genre = '';
+                if (self.props.content_url) {
+                    videoUrlData = self.props.content_url.data;
+                    if (videoUrlData) {
+                        for (let i = 0; i < videoUrlData.genre.length; i++) {
+                            genre += videoUrlData.genre[i].name;
+                        }
+                    }
+                }
+                const customTags = {
+                    app_version: process.env.APP_VERSION,
+                    carrier: 'N/A',
+                    connection_type: 'N/A',
+                    content_type: (videoUrlData ? videoUrlData.content_type : 'N/A'),
+                    content_id: (videoUrlData ? videoUrlData.id : 'N/A').toString(),
+					program_name: (videoUrlData ? videoUrlData.program_title : 'N/A'),
+                    tv_id: 'N/A',
+                    tv_name: 'N/A',
+                    date_video: 'N/A',
+                    genre: (genre ? genre : 'N/A'),
+                    page_title: 'N/A',
+                    page_view: 'N/A',
+                    program_id: (videoUrlData ? videoUrlData.program_id : 'N/A').toString(),
+                    screen_mode: 'portrait',
+                    time_video: 'N/A',
+                    viewer_id: getUserId().toString()
+                };
+
+                // self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, assetName, {
+                //     asset_name: assetName,
+				// 	application_name: 'RCTI+ MWEB',
+				// 	player_type: 'VideoJS',
+				// 	content_id: (self.props.context_data.content_id ? self.props.context_data.content_id : 'N/A').toString(),
+				// 	program_name: assetName,
+				// 	version: process.env.VERSION,
+				// 	playerVersion: process.env.PLAYER_VERSION,
+                //     content_name: assetName,
+                //     start_session: self.state.start_duration.toString()
+                // });
+
+                self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, assetName, customTags);
                 self.convivaTracker.createSession();
 
                 setTimeout(() => {
