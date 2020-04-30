@@ -655,7 +655,8 @@ class LiveEvent extends React.Component {
                     program_id: 'N/A',
                     screen_mode: 'portrait',
                     time_video: 'N/A',
-                    viewer_id: getUserId().toString()
+                    viewer_id: getUserId().toString(),
+					application_name: 'RCTI+ MWEB'
                 };
 
 				this.convivaTracker = convivaVideoJs(asset_name, player, self.props.router.asPath.match('/missed-event/') ? player.duration() : true, url, 'Live Event ' + assetName.toUpperCase(), customTags, asset_cdn);

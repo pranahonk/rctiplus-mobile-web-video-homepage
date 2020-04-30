@@ -232,7 +232,8 @@ class PlayerModal extends React.Component {
                     program_id: (videoData ? videoData.program_id : 'N/A').toString(),
                     screen_mode: 'portrait',
                     time_video: 'N/A',
-                    viewer_id: getUserId().toString()
+                    viewer_id: getUserId().toString(),
+                    application_name: 'RCTI+ MWEB'
                 };
                 // self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.props.videoUrl, assetName.toUpperCase(), {
 				// 	asset_name: assetName.toUpperCase(),
