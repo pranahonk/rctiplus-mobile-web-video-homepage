@@ -65,7 +65,8 @@ class Exclusive extends React.Component {
 			selected_program: null,
 			pathExlusive: '',
 			vmap: '',
-			status: false
+			status: false,
+			data: null
 		};
 
 		this.player = null;
@@ -276,7 +277,8 @@ class Exclusive extends React.Component {
 				trailer_url: video_url,
 				vmap: vmap, 
 				selected_program: program ,
-				status: status
+				status: status,
+				data: data
 			});
 		}
 	}
@@ -373,6 +375,7 @@ class Exclusive extends React.Component {
 					vmap={this.state.vmap}
 					meta={this.state.meta}
 					status={this.state.status}
+					data={this.state.data}
 					videoUrl={this.state.trailer_url} />
 
 				<ActionSheet
