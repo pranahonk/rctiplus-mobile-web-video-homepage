@@ -699,8 +699,14 @@ class Tv extends React.Component {
 
 					this.player.ima({
 						adTagUrl: this.state.player_vmap,
-						preventLateAdStart: true
+						preventLateAdStart: true,
+						adsManagerLoadedCallback: () => {
+							this.player.ima.addEventListener(google.ima.AdEvent.Type.STARTED, () => {
+								console.log('google.ima.AdEvent.Type.STARTED');
+							});
+						}
 					});
+
 					this.player.ima.initializeAdDisplayContainer();
 				});
 			}
