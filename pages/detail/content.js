@@ -328,7 +328,8 @@ class Content extends React.Component {
                     screen_mode: 'portrait',
                     time_video: 'N/A',
                     viewer_id: getUserId().toString(),
-                    application_name: 'RCTI+ MWEB'
+                    application_name: 'RCTI+ MWEB',
+                    section_page: 'N/A'
                 };
 
                 self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, assetName, customTags);

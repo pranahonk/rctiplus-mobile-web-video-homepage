@@ -181,7 +181,7 @@ class Index_v2 extends React.Component {
                         console.log(content.content)
                         switch (content.display_type) {
                             case 'horizontal_landscape_large':
-                                return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} displayType={content.display_type}/>;
+                                return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={420} displayType={content.display_type}/>;
 
                             case 'horizontal_landscape':
                                 return <Panel2 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} displayType={content.display_type}/>;

@@ -107,9 +107,9 @@ class Index extends React.Component {
         </Col>
       );
     return (
-      <Layout title="Live event - RCTI+">
+      <Layout title={this.props.router.asPath.match('missed-event') ? 'Missed event - RCTI+' : 'Live event - RCTI+'}>
         <Head>
-          <meta name="description" content="LALALALA"/>
+          <meta name="description" content={this.props.router.asPath.match('missed-event') ? 'Missed event' : 'Live event'}/>
         </Head>
         <NavBack title="Live Event"/>
         <div id="live-event" className="le-container">
