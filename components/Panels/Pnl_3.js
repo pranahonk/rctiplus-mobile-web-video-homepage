@@ -48,7 +48,7 @@ class Pnl_3 extends React.Component {
 			case 'live':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_live_event_clicked');
 
-				Router.push(`/live-event/${data.content_id}/${data.content_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
+				Router.push(`/live-event/${data.content_id}/${data.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 
 			case 'program':

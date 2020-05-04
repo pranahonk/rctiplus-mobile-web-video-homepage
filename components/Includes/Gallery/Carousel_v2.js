@@ -49,7 +49,7 @@ class Crs_v2 extends Component {
                 break;
             case 'live_event':
                 if (program.type_value) {
-                    Router.push(`/live-event/${program.type_value}/${program.title.replace(/ +/g, '-')}`);
+                    Router.push(`/live-event/${program.type_value}/${program.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
                 }
                 break;
             case 'program':
