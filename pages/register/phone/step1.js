@@ -41,10 +41,7 @@ class Step1 extends Component {
 
 		this.genderMap = {
 			'0': 'Female',
-			'3': 'Male',
-			'6': 'Male',
-			'9': 'Female',
-			'12': 'Female'
+			'1': 'Male'
 		};
 
 		this.dateConfig = {
@@ -61,19 +58,19 @@ class Step1 extends Component {
 			date: {
 				format: 'DD',
 				caption: 'Day',
-				step: 1
+				step: 4
 			}
 		};
 
 		this.genderConfig = {
 			month: {
-				format: value => this.genderMap[value.getMonth()],
+				format: value => this.genderMap[value.getMonth() % 2],
 				caption: 'Mon',
-				step: 6
+				step: 1
 			}
 		};
 
-		console.log(this.state.gender);
+		console.log(this.genderConfig);
 	}
 
 	handleSelectBirthdate(date) {
@@ -91,7 +88,7 @@ class Step1 extends Component {
 	}
 
 	handleSelectGender(gender) {
-		const g = gender.getMonth();
+		const g = gender.getMonth() % 2;
 		this.setState({ gender: this.genderMap[g], genderpicker_open: false });
 		this.props.setGender(this.genderMap[g].toLowerCase());
 	}
