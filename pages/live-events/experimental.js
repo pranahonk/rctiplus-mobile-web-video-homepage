@@ -231,14 +231,14 @@ class LiveEvent extends React.Component {
 				meta: response.data.meta.image_path,
 			}, () => {
 				// this.initVOD();
-				// this.initPlayer();
+				this.initPlayer();
 				this.props.setSeamlessLoad(false);
 				this.props.unsetPageLoader();
 			});
 		})
 		.catch(error => {
 			console.log(error);
-			// this.initPlayer();
+			this.initPlayer();
 			this.props.setSeamlessLoad(false);
 			this.props.unsetPageLoader();
 		});
