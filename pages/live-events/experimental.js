@@ -1,6 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import Router, { withRouter } from 'next/router';
+import Link from 'next/link';
 import { connect } from 'react-redux';
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
@@ -591,6 +592,16 @@ class LiveEvent extends React.Component {
 				asset_cdn = this.props.selected_event_url.data.asset_cdn;
 			}
 			const self = this;
+
+			// console.log(vmap);
+			// this.props.getVmapResponse(vmap)
+			// 	.then(response => {
+			// 		console.log(response);
+			// 	})
+			// 	.catch(error => {
+			// 		console.log(error.message);
+			// 	});
+
 			videojs.registerPlugin('hlsQualitySelector', qualitySelector);
 			this.player = videojs(this.videoNode, {
 				autoplay: true,
@@ -599,10 +610,13 @@ class LiveEvent extends React.Component {
 				muted: isIOS,
 				aspectratio: '16:9',
 				fill: true,
+				errorDisplay: false,
 				html5: {
 					hls: {
 						overrideNative: true,
 					},
+					nativeAudioTracks: false,
+    			nativeVideoTracks: false,
 				},
 				sources: [{
 					src: url,
@@ -611,10 +625,16 @@ class LiveEvent extends React.Component {
 			}, function onPlayerReady() {
 				console.log('onPlayerReady', this);
 				const vm = this;
+				const reloadOptions = {
+					errorInterval: 50,
+				};
+				vm.reloadSourceOnError(reloadOptions);
 				if(isIOS) {
                     vm.muted(true)
-                    const wrapElement = document.getElementsByClassName('video-js');
-                    const elementCreateWrapper = document.createElement('btn');
+										const wrapElement = document.getElementsByClassName('video-js');
+										console.log(wrapElement)
+                    if(wrapElement[0] !== undefined) {
+										const elementCreateWrapper = document.createElement('btn');
                     const elementMuteIcon = document.createElement('span');
                     elementCreateWrapper.classList.add('jwplayer-vol-off');
                     elementCreateWrapper.innerText = 'Tap to unmute ';
@@ -633,7 +653,8 @@ class LiveEvent extends React.Component {
                             elementCreateWrapper.classList.remove('jwplayer-mute');
                         }
                     });
-                }
+								}
+						}
 				
 				const player = this;
 				const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
@@ -676,6 +697,7 @@ class LiveEvent extends React.Component {
 				}
 
 			});
+			videojs.registerPlugin('hlsQualitySelector', qualitySelector);
 			this.player.ready(function () {
 				const vm = this
 				const promise = vm.play();
@@ -738,18 +760,48 @@ class LiveEvent extends React.Component {
 					screen.orientation.lock("portrait-primary");
 				}
 			});
-			this.player.on('error', () => {
-				console.log('err')
-				this.setState({
-					error: true,
-				});
+
+			let errorCount = 0;
+			let isExecuting = false;
+			this.player.on('error', (e) => {
+				if (isIOS) {
+					console.log(e);
+					if (!isExecuting) {
+						isExecuting = true;
+						if (errorCount <= 1) {
+							this.player.error(null);
+						}
+						setTimeout(() => {
+							this.player.ready(() => {
+								console.log('READY');
+								if (errorCount++ <= 1) {
+									this.player.src([{
+										src: url,
+										type: url.match(/.mp4$/) ? 'video/mp4' : 'application/x-mpegURL',
+									}]);
+								}
+							});
+							isExecuting = false;
+						}, 1000);
+					}
+					
+				}
+				else {
+					console.log('err');
+					this.setState({
+						error: true,
+					});
+				}
+				
 			});
 			this.player.on('ended', () => {
-				if(!this.state.is_live) {
-					this.setState({
-						errorEnd: true,
-					});
-				} 
+				if (!isIOS) {
+					if(!this.state.is_live) {
+						this.setState({
+							errorEnd: true,
+						});
+					}
+				}
 			});
 			this.player.hlsQualitySelector({
 				displayCurrentQuality: true,
@@ -782,6 +834,7 @@ class LiveEvent extends React.Component {
 			});
 
 			this.player.on('ads-ad-started', () => {
+				console.log('ADS STARTED');
                 const playButton = document.getElementsByClassName('vjs-big-play-button');
                 if (playButton.length > 0) {
                     playButton[0].style.display = 'none';
@@ -1093,10 +1146,10 @@ class LiveEvent extends React.Component {
 		}
 		const { data, meta } = this.props.selected_event;
 		return {
-			title: 'Streaming ' + this.props.router.query.title.replace(/-/gi, ' ') || '' + ' - RCTI+',
-			description: 'Nonton streaming online ' + this.props.router.query.title.replace(/-/gi, ' ') || '' + 'tanggal ' + this.props.selected_event.start_date || '' + ' WIB hanya di RCTI+ ',
-			image: data && meta ? (this.props.selected_event.meta.image_path+'300'+this.props.selected_event.data.portrait_image) : '',
-		}
+			title: 'Streaming ' + (this.props.router.query.title.replace(/-/gi, ' ') || '') + ' - RCTI+',
+			description: 'Nonton streaming online ' + (this.props.router.query.title.replace(/-/gi, ' ') || '') + ' tanggal ' + (data && meta ? data.start_date : '') + ' WIB hanya di RCTI+ ',
+			image: data && meta ? (meta.image_path + '300' + data.portrait_image) : '',
+		};
 	}
 
 	render() {
@@ -1200,7 +1253,7 @@ class LiveEvent extends React.Component {
 								<TabPane tabId={'live-event'}>
 									<Row style={{marginLeft: '0 !important'}}>
 										{this.state.live_events.length > 0 ? this.state.live_events.map((le, i) => (
-											<Col xs={6} key={i} onClick={() => Router.push(`/live-event/${le.content_id}/${le.content_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}`)}>
+											<Col xs={6} key={i} onClick={() => Router.push(`/live-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`, undefined, { shallow: true })}>
 												<Thumbnail 
 												label="Live" 
 												timer={getCountdown(le.release_date_quiz, le.current_date)[0]}
@@ -1218,7 +1271,7 @@ class LiveEvent extends React.Component {
 								<TabPane tabId={'missed-event'}>
 									<Row style={{marginLeft: '0 !important'}}>
 									{this.state.missed_event.length > 0 ? this.state.missed_event.map((le, i) => (
-											<Col xs={6} key={i} onClick={() => Router.push(`/missed-event/${le.content_id}/${le.content_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}`)}>
+											<Col xs={6} key={i} onClick={() => Router.push(`/missed-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`)}>
 												<Thumbnail 
 												label="Live"
 												backgroundColor="#fa262f" 
