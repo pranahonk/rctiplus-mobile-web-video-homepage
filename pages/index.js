@@ -178,7 +178,6 @@ class Index_v2 extends React.Component {
                 {/* <native-home></native-home> */}
                 <div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
                     {contents.map((content, i) => {
-                        console.log(content.content)
                         switch (content.display_type) {
                             case 'horizontal_landscape_large':
                                 return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={420} displayType={content.display_type}/>;
