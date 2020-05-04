@@ -80,7 +80,7 @@ class Default_v2 extends React.Component {
                     <meta name="viewport" content={VIEWPORT} />
                     <meta name="description" content={MAIN_DESCRIPTION} />
                     {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]} />))}
-                    <link rel="icon" href="/static/logo/rcti.png?v=1.0" />
+                    <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
                     <link rel="canonical" href={`http://www.rctiplus.com${this.props.router.asPath}`}></link>
                     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />

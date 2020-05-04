@@ -15,7 +15,7 @@ class NavDownloadApp extends Component {
               <img className="logo-close" src="/static/btn/close@2x.png" />
             </Col>
 			<Col xs="7">
-              <img className="logo-topDownload" src="/static/logo/rcti.png" />
+              <img className="logo-topDownload" src="/static/logo/rcti-sm.png" />
 			  <div className="topDownload-txt">Lebih asyik nonton dengan aplikasi RCTI+</div>
 			  </Col>
             <Col xs="4">
