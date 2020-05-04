@@ -74,7 +74,7 @@ class NavbarDef extends Component {
                         <div className="left-top-link">
                             <div className="logo-top-wrapper">
                                 <NavbarBrand onClick={this.goToHome.bind(this)}>
-                                    <img className="logo-top" src="/static/logo/rcti.png" />
+                                    <img className="logo-top" src="/static/logo/rcti-sm.png" />
                                 </NavbarBrand>
                             </div>
                         </div>
