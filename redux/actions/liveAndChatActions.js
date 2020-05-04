@@ -317,6 +317,24 @@ const getCatchupUrl = catchupId => {
     });
 };
 
+export const getVmapResponse = url => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(url);
+            console.log(response);
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 export default {
     postChat,
     getLiveEvent,
@@ -334,4 +352,5 @@ export default {
     postChatSocket,
     getChatSocket,
     getMissedEvent,
+    getVmapResponse
 };

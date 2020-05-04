@@ -591,6 +591,16 @@ class LiveEvent extends React.Component {
 				asset_cdn = this.props.selected_event_url.data.asset_cdn;
 			}
 			const self = this;
+
+			// console.log(vmap);
+			// this.props.getVmapResponse(vmap)
+			// 	.then(response => {
+			// 		console.log(response);
+			// 	})
+			// 	.catch(error => {
+			// 		console.log(error.message);
+			// 	});
+
 			videojs.registerPlugin('hlsQualitySelector', qualitySelector);
 			this.player = videojs(this.videoNode, {
 				autoplay: true,
@@ -738,18 +748,48 @@ class LiveEvent extends React.Component {
 					screen.orientation.lock("portrait-primary");
 				}
 			});
-			this.player.on('error', () => {
-				console.log('err')
-				this.setState({
-					error: true,
-				});
+
+			let errorCount = 0;
+			let isExecuting = false;
+			this.player.on('error', (e) => {
+				if (isIOS) {
+					console.log(e);
+					if (!isExecuting) {
+						isExecuting = true;
+						if (errorCount <= 1) {
+							this.player.error(null);
+						}
+						setTimeout(() => {
+							this.player.ready(() => {
+								console.log('READY');
+								if (errorCount++ <= 1) {
+									this.player.src([{
+										src: url,
+										type: url.match(/.mp4$/) ? 'video/mp4' : 'application/x-mpegURL',
+									}]);
+								}
+							});
+							isExecuting = false;
+						}, 1000);
+					}
+					
+				}
+				else {
+					console.log('err');
+					this.setState({
+						error: true,
+					});
+				}
+				
 			});
 			this.player.on('ended', () => {
-				if(!this.state.is_live) {
-					this.setState({
-						errorEnd: true,
-					});
-				} 
+				if (!isIOS) {
+					if(!this.state.is_live) {
+						this.setState({
+							errorEnd: true,
+						});
+					}
+				}
 			});
 			this.player.hlsQualitySelector({
 				displayCurrentQuality: true,
@@ -782,6 +822,7 @@ class LiveEvent extends React.Component {
 			});
 
 			this.player.on('ads-ad-started', () => {
+				console.log('ADS STARTED');
                 const playButton = document.getElementsByClassName('vjs-big-play-button');
                 if (playButton.length > 0) {
                     playButton[0].style.display = 'none';
