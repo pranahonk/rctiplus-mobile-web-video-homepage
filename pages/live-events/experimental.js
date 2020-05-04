@@ -33,6 +33,7 @@ import SignalIcon from '../../components/Includes/Common/SignalIcon';
 import StreamVideoIcon from '../../components/Includes/Common/StreamVideoIcon';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 import ErrorPlayer from '../../components/Includes/Player/ErrorPlayer';
+import Toast from '../../components/Includes/Common/Toast';
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -888,7 +889,8 @@ class LiveEvent extends React.Component {
 	}
 
 	toggleChat() {
-		if (this.checkLogin()) {
+		// if (this.checkLogin()) {
+		if (true) {
 			this.setState({ chat_open: !this.state.chat_open }, () => {
 				this.props.toggleFooter(this.state.chat_open);
 				const chatBox = document.getElementById('chat-messages');
@@ -1292,7 +1294,12 @@ class LiveEvent extends React.Component {
 							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
 							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
 						: null}>
-						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
+						<div className="btn-chat">
+							<Button onClick={this.toggleChat.bind(this)} color="link">
+								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
+							</Button>
+							<Toast/>
+						</div>
 						<div className="box-chat" style={{ height: 300 }}>
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
 								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>

@@ -1,0 +1,81 @@
+.toast-wrapper {
+    opacity: 0; 
+    padding: 10px;
+    padding-left: 20px;
+    margin-top: 20px;
+    height: 52px;
+    color: #ffffff;
+    background: #282828;
+    position: fixed;
+    z-index: 999;
+    width: calc(100% - 40px);
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 10px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 1s ease-in-out 0s forwards;
+    animation-delay: 15s;
+  .toast-border {
+    position: absolute;
+    background: #60b1e5;
+    height: 52px;
+    width: 10px;
+    left: 0;
+    top: 0px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+  .toast-close {
+    position: absolute;
+    top: calc(1% - 10px);
+    left: calc(100% - 15px);
+    background-color: #060606;
+    border-radius: 100%;
+    color: #ffffff;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+  }
+  .toast-content {
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    line-height: 12px;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    .toast-content__time {
+      font-size: 10px;
+    }
+    .toast-content__title {
+      margin: 0 5px;
+      font-size: 12px;
+      font-weight: bold;
+      display: inline;
+    }
+    .toast-content__description {
+      margin: 0;
+      font-size: 11px;  
+      display: inline;
+    }
+  }
+}
+
+/* defines the animation */
+@keyframes fadeInUp {
+  from { 
+    opacity: 0;
+    -webkit-transform: translateX(-50%) translate3d(0, 100%, 0);
+    transform: translateX(-50%) translate3d(0, 100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+  }
+}
