@@ -25,29 +25,41 @@ class ChangePassword extends React.Component {
             current_password_invalid: false,
             password_match_invalid: false,
             at_least_eight_invalid: false,
+            password_cannot_same:false,
             view_raw: false,
             view_raw_re: false,
-            view_raw_cu: false
+            view_raw_cu: false,
+            user: this.props.user,
         };
     }
 
     componentDidMount() {
-        console.log(this.props.registration);
+        console.log(this.props);
     }
+    
+    // eslint-disable-next-line react/no-deprecated
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.user !== this.props.user) {
+            this.setState({
+                user: nextProps.user.data,
+            });
+        }
+      }
 
     handleSubmit(e) {
+        console.log(this.state.user)
         e.preventDefault();
         this.props.verify({ password: this.state.current_password })
             .then(response => {
                 if (response.status === 200 && response.data.status.code === 0) {
                     this.props.setChangePasswordData(this.state.current_password, this.state.password, this.state.confirm_password);
-                    if (this.props.user.email) {
+                    if (this.state.user.email) {
                         this.props.setUsernameType('EMAIL');
-                        this.props.setUsername(this.props.user.email);
+                        this.props.setUsername(this.state.user.email);
                     }
                     else {
                         this.props.setUsernameType('PHONE_NUMBER');
-                        this.props.setUsername(this.props.user.phone_number);
+                        this.props.setUsername(this.state.user.phone_number);
                     }
                     Router.push('/user/change-password/verify-otp');
                 }
@@ -78,7 +90,8 @@ class ChangePassword extends React.Component {
 		const passwordLength = password.length;
 		this.setState({
 			password: password,
-			at_least_eight_invalid: !(passwordLength >= 8)
+            at_least_eight_invalid: !(passwordLength >= 8),
+            password_cannot_same: !(password !== this.state.current_password),
 		}, () => {
 			this.props.setPassword(this.state.password);
 		});
@@ -97,7 +110,7 @@ class ChangePassword extends React.Component {
 			confirm_password: confirmPassword,
 			password_match_invalid: !(this.state.password === confirmPassword)
 		});
-	}
+    }
 
     render() {
         return (
@@ -129,10 +142,12 @@ class ChangePassword extends React.Component {
                                     name="password"
                                     id="password"
                                     placeholder="insert password"
-                                    invalid={this.state.at_least_eight_invalid}
+                                    invalid={this.state.at_least_eight_invalid || this.state.password_cannot_same}
                                     onChange={this.onPasswordChange.bind(this)} />
                                 <div onClick={this.togglePassword.bind(this)} className={'view-raw-c ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.at_least_eight_invalid ? 'invalid-border-color' : '')}></div>
-                                <FormFeedback>Password must at least 8 characters</FormFeedback>
+                                <FormFeedback>
+                                    {this.state.password === this.state.current_password ? `Password can't same with old password` : 'Password must at least 8 character'}
+                                </FormFeedback>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
