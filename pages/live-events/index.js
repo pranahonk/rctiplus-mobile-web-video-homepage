@@ -67,7 +67,7 @@ class Index extends React.Component {
     });
   }
   getLink(data, params = 'live-event') {
-    Router.push(`/${params}/${data.content_id}/${data.content_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}`);
+    Router.push(`/${params}/${data.content_id}/${data.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`);
   }
 
   render() {
