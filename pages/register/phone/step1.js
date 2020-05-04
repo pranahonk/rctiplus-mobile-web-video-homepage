@@ -266,7 +266,7 @@ class Step1 extends Component {
 										invalid={this.state.gender_invalid}
 										placeholder="Select gender"
 										className="inpt-form"
-										style={{ backgroundColor: '#272727', color: 'white' }}>
+										style={{ backgroundColor: '#272727', color: 'white', WebkitAppearance: 'none' }}>
 										<option>Select gender</option>
 										<option>Male</option>
 										<option>Female</option>
