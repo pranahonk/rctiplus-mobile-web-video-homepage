@@ -93,6 +93,15 @@ class Step1 extends Component {
 		this.props.setGender(this.genderMap[g].toLowerCase());
 	}
 
+	onChangeGender(e) {
+		if (e.target.value && e.target.value != 'Select gender') {
+			this.setState({ gender: e.target.value });
+		}
+		else {
+			this.setState({ gender: '' });
+		}
+    }
+
 	handleFullnameChange(e) {
 		this.setState({ fullname: e.target.value });
 		this.props.setFullname(e.target.value);
@@ -251,6 +260,18 @@ class Step1 extends Component {
 								<Label>Gender</Label>
 								<InputGroup>
 									<Input
+										type="select"
+										value={this.state.gender ? this.state.gender.charAt(0).toUpperCase() + this.state.gender.substring(1) : ''}
+										onChange={this.onChangeGender.bind(this)}
+										invalid={this.state.gender_invalid}
+										placeholder="Select gender"
+										className="inpt-form"
+										style={{ backgroundColor: '#272727', color: 'white' }}>
+										<option>Select gender</option>
+										<option>Male</option>
+										<option>Female</option>
+									</Input>
+									{/* <Input
 										className="inpt-form addon-right-input"
 										type="text"
 										name="gender"
@@ -264,7 +285,7 @@ class Step1 extends Component {
 										<InputGroupText className="inpt-form addon-right">
 											<ArrowDropdownIcon />
 										</InputGroupText>
-									</InputGroupAddon>
+									</InputGroupAddon> */}
 									<FormFeedback>{this.state.gender_invalid_message}</FormFeedback>
 								</InputGroup>
 							</FormGroup>
