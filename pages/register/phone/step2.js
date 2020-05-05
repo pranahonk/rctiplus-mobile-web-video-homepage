@@ -37,10 +37,11 @@ class Step2 extends Component {
 			req_otp_status: 0
 		};
 
+		this.otpInput = null;
 	}
 
 	componentDidMount() {
-		console.log(this.props.registration);
+		console.log(this.otpInput.__clearvalues__());
 		this.setState({ username: this.props.registration.username }, () => {
 			let username = this.state.username;
 			if (this.props.registration.username_type === 'PHONE_NUMBER') {
@@ -77,7 +78,8 @@ class Step2 extends Component {
 			this.props.verifyOtp(username, this.state.otp)
 				.then(response => {
 					if (response.data.status.code != 0) {
-						this.setState({ submit_message: 'Invalid verification code', is_submitting: false });
+						this.otpInput.__clearvalues__();
+						this.setState({ otp: '', submit_message: 'Invalid verification code', is_submitting: false });
 					}
 					else {
 						this.props.register({
@@ -234,6 +236,8 @@ class Step2 extends Component {
 								<ReactCodeInput
 									fields={4}
 									onChange={this.onChangeOtp.bind(this)}
+									ref={node => this.otpInput = node}
+									values={this.state.otp.toString().split('')}
 									className="otp-input" />
 							</FormGroup>
 							

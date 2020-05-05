@@ -32,6 +32,8 @@ class VerifyOtp extends React.Component {
             is_submitting: false,
             req_otp_status: 0
         };
+
+        this.otpInput = null;
     }
 
     componentDidMount() {
@@ -66,9 +68,11 @@ class VerifyOtp extends React.Component {
                                     break;
 
                                 default:
+                                    this.otpInput.__clearvalues__();
                                     this.setState({  
                                         is_submitting: false,
-                                        submit_message: 'Invalid verification code'
+                                        submit_message: 'Invalid verification code',
+                                        otp: ''
                                     });
                                     break;
                             }
@@ -198,6 +202,8 @@ class VerifyOtp extends React.Component {
                             <ReactCodeInput
                                 fields={4}
                                 onChange={this.onChangeOtp.bind(this)}
+                                values={this.state.otp.toString().split('')}
+                                ref={node => this.otpInput = node}
                                 className="otp-input-c" />
                         </FormGroup>
                         {actionElement}
