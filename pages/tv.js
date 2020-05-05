@@ -1096,8 +1096,7 @@ class Tv extends React.Component {
 	}
 
 	toggleChat() {
-		// if (this.checkLogin()) {
-		if (true) {
+		if (this.checkLogin()) {
 			this.setState({ chat_open: !this.state.chat_open }, () => {
 				if (this.state.chat_open) {
 					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
