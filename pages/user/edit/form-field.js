@@ -164,6 +164,8 @@ class FormField extends React.Component {
                                 })
                                 .catch(error => {
                                     if (error.status === 200) {
+                                        this.props.showNotification(error.data.status.message_server, false);
+                                        setTimeout(() => this.props.hideNotification(), 3000);
                                         this.setState({ value_invalid: true });
                                     }
                                 });

@@ -67,7 +67,8 @@ class EditProfile extends React.Component {
             otp: '',
             show_action_sheet: false,
             input_photo_accept: 'image/*',
-            profile_photo_src: 'https://cdn.zeplin.io/5c7fab96082323628629989f/assets/DDD7D5C6-7114-402B-A0C4-4EC7DE7707BC.svg'
+            profile_photo_src: 'https://cdn.zeplin.io/5c7fab96082323628629989f/assets/DDD7D5C6-7114-402B-A0C4-4EC7DE7707BC.svg',
+            capture: ''
         };
 
         this.inputPhotoElement = null;
@@ -275,13 +276,13 @@ class EditProfile extends React.Component {
                         }
                     ]}/>
                 <Actionsheet show={this.state.show_action_sheet} menus={[{ content: 'Camera', onClick: () => {
-                    this.setState({ input_photo_accept: 'image/*;capture=camera' }, () => this.inputPhotoElement.click());
+                    this.setState({ input_photo_accept: 'image/*', capture: 'camera' }, () => this.inputPhotoElement.click());
                 } }, { content: 'Gallery', onClick: () => {
-                    this.setState({ input_photo_accept: 'image/*' }, () => this.inputPhotoElement.click());
+                    this.setState({ input_photo_accept: 'image/*', capture: '' }, () => this.inputPhotoElementGallery.click());
                 } }]} onRequestClose={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })} cancelText="Cancel"/>
                 <div className="wrapper-content container-box-ep" style={{ marginTop: 50 }}>
-                    <input onChange={this.handleCameraTakePhoto.bind(this)} ref={input => this.inputPhotoElement = input} id="profile-photo-data" type="file" accept={this.state.input_photo_accept} style={{ display: 'none' }}/>
-                    
+                    <input onChange={this.handleCameraTakePhoto.bind(this)} ref={input => this.inputPhotoElement = input} id="profile-photo-data" type="file" accept={this.state.input_photo_accept} style={{ display: 'none' }} capture={this.state.capture}/>
+                    <input onChange={this.handleCameraTakePhoto.bind(this)} ref={input => this.inputPhotoElementGallery = input} type="file" accept={this.state.input_photo_accept} style={{ display: 'none' }}/>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
                         <FormGroup className="profile-photo-container">
                             <div className="profile-photo" onClick={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })}>
