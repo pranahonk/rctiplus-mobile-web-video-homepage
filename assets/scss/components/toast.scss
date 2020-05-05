@@ -14,7 +14,7 @@
     border-radius: 10px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.1);
     animation: fadeInUp 1s ease-in-out 0s forwards;
-    animation-delay: 15s;
+    animation-delay: 1s;
   .toast-border {
     position: absolute;
     background: #60b1e5;
@@ -63,6 +63,13 @@
       display: inline;
     }
   }
+}
+
+.chevron-right {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /* defines the animation */

@@ -41,6 +41,21 @@ const setChannelCode = channelCode => {
         channel_code: channelCode
     });
 };
+const getAdsChat = (channelId) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/sticky-message/${channelId}`);
+            if (response.status === 200) {
+                resolve(response);
+            } else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    });
+};
 const getChatSocket = (channelId) => {
     // eslint-disable-next-line no-new
     return dispatch => new Promise(async (resolve, reject) => {
@@ -352,5 +367,6 @@ export default {
     postChatSocket,
     getChatSocket,
     getMissedEvent,
-    getVmapResponse
+    getVmapResponse,
+    getAdsChat,
 };
