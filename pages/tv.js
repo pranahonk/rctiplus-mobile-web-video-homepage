@@ -8,6 +8,7 @@ import Img from 'react-image';
 import TimeAgo from 'react-timeago';
 
 import initialize from '../utils/initialize';
+import { getCountdown } from '../utils/helpers';
 
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 import pageActions from '../redux/actions/pageActions';
@@ -45,6 +46,7 @@ import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
 import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId } from '../utils/appier';
+import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTracking';
 import { convivaVideoJs } from '../utils/conviva';
 
 import videojs from 'video.js';
@@ -97,6 +99,7 @@ class Tv extends React.Component {
 			emoji_picker_open: false,
 			chats: [],
 			ads_data: null,
+			isAds: false,
 			chat: '',
 			user_data: null,
 			snapshots: [],
@@ -134,6 +137,7 @@ class Tv extends React.Component {
 	}
 
 	componentDidMount() {
+		initGA();
 		this.props.setPageLoader();
 		this.props.getLiveEvent('on air')
 			.then(response => {
@@ -924,7 +928,7 @@ class Tv extends React.Component {
 
 	selectChannel(index, first = false) {
 		this.props.setPageLoader();
-		this.setState({ selected_index: index, error: false, chats: [], ads_data: null, }, () => {
+		this.setState({ selected_index: index, error: false, chats: [], ads_data: null, isAds: false }, () => {
 			setTimeout(() => { 
 				if (this.state.chat_open) {
 					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
@@ -1105,7 +1109,7 @@ class Tv extends React.Component {
 	toggleChat() {
 		if (this.checkLogin()) {
 			this.setState({ chat_open: !this.state.chat_open }, () => {
-				if (this.state.chat_open) {
+				if (this.state.chat_open && !this.state.isAds) {
 					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
 						this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
 					}
@@ -1296,6 +1300,10 @@ class Tv extends React.Component {
 			.then(({data}) => {
 				this.setState({
 					ads_data: data,
+				}, () => {
+					if(this.state.ads_data) {
+						stickyAdsShowing(data, 'sticky_ads_showing')
+					}
 				});
 				console.log(this.state.ads_data);
 			})
@@ -1315,6 +1323,41 @@ class Tv extends React.Component {
 				}
 			}, 100);
 		});
+	}
+	callbackCount(end, current) {
+		console.log(this.state.isAds)
+		if(this.state.isAds) {
+			let distance = getCountdown(end, current)[0] || 100000;
+			const countdown = setInterval(() => {
+				console.log("callback from child", distance)
+				distance -= 1000
+				if (distance < 0 || !this.state.isAds) {
+					clearInterval(countdown)
+					this.setState({
+						ads_data: null,
+						isAds: false,
+					}, () => {
+						if(this.state.chat_open) {
+							setTimeout(() => { 
+								if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+									this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id); 
+								}
+							}, 100);
+						}
+					});
+				}
+			}
+			,1000)
+		}
+	}
+	getStatusAds(e) {
+		if(this.state.ads_data) {
+			console.log('STCKY-CLOSED',this.state.ads_data)
+			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+		}
+		this.setState({
+			isAds: e,
+		}, () => { console.log(this.state.isAds)})
 	}
 	render() {
 		let playerRef = (<div></div>);
@@ -1547,7 +1590,7 @@ class Tv extends React.Component {
 							<Button onClick={this.toggleChat.bind(this)} color="link">
 								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
 							</Button>
-							{this.state.ads_data ? (<Toast count={this.callbackAds.bind(this)} data={this.state.ads_data.data}/>) : (<div/>)}
+							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
 						</div>
 						<div className="box-chat" style={{ height: 300 }}>
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>

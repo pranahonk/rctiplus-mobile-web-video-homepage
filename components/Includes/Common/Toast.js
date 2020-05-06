@@ -16,6 +16,20 @@ class Toast extends React.Component {
     };
   }
 
+  componentWillUnmount() {
+    // this.props.callbackCount('12324234', this.state.timeCount, this.state.isStatus);
+    this.setState({isClose: false})
+  }
+  componentDidUpdate() {
+    let count = true
+    
+    if (count) {
+      console.log('updateeee', this.state.isclose)
+      if (this.props.data) this.props.callbackCount(this.props.data.end_date, this.props.data.current_date) 
+    }
+    count = false
+  }
+
   getUrl(value) {
     switch(value.type) {
       // case 'program':
@@ -46,7 +60,12 @@ class Toast extends React.Component {
     this.props.count(true)
   }
   isRender({days, hours, minutes, seconds}) { 
+    console.log(seconds)
     return (<div/>);
+  }
+  isClose() {
+    this.setState({isclose: true})
+    this.props.isAds(true)
   }
   render() {
     const { data } = this.props;
@@ -56,13 +75,13 @@ class Toast extends React.Component {
             this.state.isclose || !this.state.isStatus ? (<div/>) :
             (
               <div>
-              <Countdown date={Date.now() + this.state.timeCount} onComplete={this.completed.bind(this)} renderer={this.isRender}/>
+              <Countdown date={Date.now() + this.state.timeCount} onComplete={this.completed.bind(this)} renderer={this.isRender.bind(this)}/>
               <div className="toast-wrapper">
                 <div className="toast-wrap-border">
                   <div className="toast-border" />
                 </div>
                 <ChevronRight fontSize="small" className="chevron-right"/>
-                <div className="toast-close" onClick={() => this.setState({isclose: true})}>
+                <div className="toast-close" onClick={this.isClose.bind(this)}>
                   <Close fontSize="small"/>
                 </div>
                 <div className="toast-content">
