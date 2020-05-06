@@ -1,9 +1,10 @@
 .toast-wrapper {
     opacity: 0; 
-    padding: 10px;
+    padding: 10px 30px;
     padding-left: 20px;
     margin-top: 20px;
-    height: 52px;
+    // overflow: hidden;
+    // height: 52px;
     color: #ffffff;
     background: #282828;
     position: fixed;
@@ -15,16 +16,21 @@
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.1);
     animation: fadeInUp 1s ease-in-out 0s forwards;
     animation-delay: 1s;
-  .toast-border {
-    position: absolute;
-    background: #60b1e5;
-    height: 52px;
-    width: 10px;
-    left: 0;
-    top: 0px;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-  }
+    .toast-wrap-border {
+      width: 30px;
+      height: 100%;
+      overflow: hidden;
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+      .toast-border {
+        background: #60b1e5;
+        height: 100px;
+        width: 10px;
+      }
+    }
   .toast-close {
     position: absolute;
     top: calc(1% - 10px);
@@ -40,14 +46,14 @@
     font-size: 15px;
   }
   .toast-content {
-    overflow: hidden;
+    // overflow: hidden;
     height: 100%;
     width: 100%;
     line-height: 12px;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    // text-overflow: ellipsis;
+    // display: -webkit-box;
+    // -webkit-line-clamp: 2;
+    // -webkit-box-orient: vertical;
     .toast-content__time {
       font-size: 10px;
     }
@@ -67,7 +73,7 @@
 
 .chevron-right {
   position: absolute;
-  right: 0;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
 }
