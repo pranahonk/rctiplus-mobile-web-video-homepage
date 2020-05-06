@@ -11,7 +11,7 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 
 import '../../assets/scss/components/privacy-policy.scss';
 
-import { SITEMAP } from '../../config';
+import { SITEMAP, REDIRECT_WEB_DESKTOP, SITE_NAME, GRAPH_SITEMAP } from '../../config';
 import miscActions from '../../redux/actions/miscActions';
 import pageActions from '../../redux/actions/pageActions';
 
