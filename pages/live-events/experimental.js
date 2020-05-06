@@ -33,6 +33,7 @@ import SignalIcon from '../../components/Includes/Common/SignalIcon';
 import StreamVideoIcon from '../../components/Includes/Common/StreamVideoIcon';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 import ErrorPlayer from '../../components/Includes/Player/ErrorPlayer';
+import Toast from '../../components/Includes/Common/Toast';
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -154,6 +155,7 @@ class LiveEvent extends React.Component {
 			chats: [],
 			live_events: [],
 			missed_event: [],
+			ads_data: null,
 			meta: '',
 			resolution: 300,
 			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
@@ -890,6 +892,16 @@ class LiveEvent extends React.Component {
 	toggleChat() {
 		if (this.checkLogin()) {
 			this.setState({ chat_open: !this.state.chat_open }, () => {
+				if (this.state.chat_open) {
+					if(this.props.selected_event.data) {
+						this.getAds(this.props.selected_event.data.id);
+					}
+				}
+				if (!this.state.chat_open) {
+					this.setState((state,props) => ({
+						ads_data: null,
+					}));
+				}
 				this.props.toggleFooter(this.state.chat_open);
 				const chatBox = document.getElementById('chat-messages');
 				chatBox.scrollTop = chatBox.scrollHeight;
@@ -1152,6 +1164,33 @@ class LiveEvent extends React.Component {
 		};
 	}
 
+	getAds(id) {
+		if(id) {
+			this.props.getAdsChat(id)
+			.then(({data}) => {
+				this.setState({
+					ads_data: data,
+				});
+				console.log(this.state.ads_data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+		}
+	}
+	callbackAds(e) {
+		console.log(e)
+		this.setState({
+			ads_data: null,
+		}, () => {
+			setTimeout(() => { 
+				if (this.props.selected_event.data) {
+					this.getAds(this.props.selected_event.data.id); 
+				}
+			}, 100);
+		});
+	}
+
 	render() {
 		let { selected_event } = this.props;
 		let errorEvent = (<Col xs="12" key="1" className="le-error">
@@ -1292,7 +1331,12 @@ class LiveEvent extends React.Component {
 							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
 							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
 						: null}>
-						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
+						<div className="btn-chat">
+							<Button onClick={this.toggleChat.bind(this)} color="link">
+								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
+							</Button>
+							{this.state.ads_data ? (<Toast count={this.callbackAds.bind(this)} data={this.state.ads_data.data}/>) : (<div/>)}
+						</div>
 						<div className="box-chat" style={{ height: 300 }}>
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
 								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>

@@ -19,6 +19,7 @@ import SelectDateModal from '../components/Modals/SelectDateModal';
 import ActionSheet from '../components/Modals/ActionSheet';
 import Wrench from '../components/Includes/Common/Wrench';
 import MuteChat from '../components/Includes/Common/MuteChat';
+import Toast from '../components/Includes/Common/Toast';
 
 import { formatDate, formatDateWord, getFormattedDateBefore } from '../utils/dateHelpers';
 import { showAlert, showSignInAlert } from '../utils/helpers';
@@ -95,6 +96,7 @@ class Tv extends React.Component {
 			error_data: {},
 			emoji_picker_open: false,
 			chats: [],
+			ads_data: null,
 			chat: '',
 			user_data: null,
 			snapshots: [],
@@ -1096,6 +1098,16 @@ class Tv extends React.Component {
 	toggleChat() {
 		if (this.checkLogin()) {
 			this.setState({ chat_open: !this.state.chat_open }, () => {
+				if (this.state.chat_open) {
+					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+						this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
+					}
+				}
+				if (!this.state.chat_open) {
+					this.setState((state,props) => ({
+						ads_data: null,
+					}));
+				}
 				this.props.toggleFooter(this.state.chat_open);
 				if (this.state.chat_open) {
 					liveTvLiveChatClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_livechat_clicked');
@@ -1271,7 +1283,32 @@ class Tv extends React.Component {
 			googletag.pubads().refresh();
 		}, 600000);
 	}
-
+	getAds(id) {
+		if(id) {
+			this.props.getAdsChat(id)
+			.then(({data}) => {
+				this.setState({
+					ads_data: data,
+				});
+				console.log(this.state.ads_data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+		}
+	}
+	callbackAds(e) {
+		console.log(e)
+		this.setState({
+			ads_data: null,
+		}, () => {
+			setTimeout(() => { 
+				if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+					this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id); 
+				}
+			}, 100);
+		});
+	}
 	render() {
 		let playerRef = (<div></div>);
 		if (this.state.error) {
@@ -1499,7 +1536,12 @@ class Tv extends React.Component {
 							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
 							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
 						: null}>
-						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
+						<div className="btn-chat">
+							<Button onClick={this.toggleChat.bind(this)} color="link">
+								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
+							</Button>
+							{this.state.ads_data ? (<Toast count={this.callbackAds.bind(this)} data={this.state.ads_data.data}/>) : (<div/>)}
+						</div>
 						<div className="box-chat" style={{ height: 300 }}>
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
 								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
