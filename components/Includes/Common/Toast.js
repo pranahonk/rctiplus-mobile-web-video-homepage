@@ -43,14 +43,14 @@ class Toast extends React.Component {
       //   return SHARE_BASE_URL + '/programs/' + value.content_id + '/program-from-ads/clips';
       case 'url':
         return value.webview_url;
-      case 'news':
-        return SHARE_BASE_URL + '/trending';
+      // case 'news':
+      //   return SHARE_BASE_URL + '/trending';
       case 'roov':
         return SHARE_BASE_URL + '/radio';
-      case 'live_streaming':
-        return SHARE_BASE_URL + '/tv/rcti';
-      case 'live_event':
-        return SHARE_BASE_URL + '/live-event';
+      // case 'live_streaming':
+      //   return SHARE_BASE_URL + '/tv/rcti';
+      // case 'live_event':
+      //   return SHARE_BASE_URL + '/live-event';
       default:
         return value.webview_url;
     }
