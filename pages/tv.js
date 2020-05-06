@@ -1330,7 +1330,7 @@ class Tv extends React.Component {
 		if(this.state.isAds) {
 			let distance = getCountdown(end, current)[0] || 100000;
 			const countdown = setInterval(() => {
-				console.log("callback from child", distance)
+				// console.log("callback from child", distance)
 				distance -= 1000
 				if (distance < 0 || !this.state.isAds) {
 					clearInterval(countdown)

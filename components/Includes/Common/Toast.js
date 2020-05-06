@@ -4,6 +4,7 @@ import Close from '@material-ui/icons/Close';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 import Countdown from 'react-countdown-now';
 import { getCountdown, getTruncate } from '../../../utils/helpers';
+import { appierAdsClicked } from '../../../utils/appier';
 import { SHARE_BASE_URL } from '../../../config';
 
 class Toast extends React.Component {
@@ -18,20 +19,20 @@ class Toast extends React.Component {
 
   componentWillUnmount() {
     // this.props.callbackCount('12324234', this.state.timeCount, this.state.isStatus);
-    this.setState({isClose: false})
+    this.setState({isClose: false});
   }
   componentDidUpdate() {
-    let count = true
-    
+    let count = true;
+
     if (count) {
-      console.log('updateeee', this.state.isclose)
-      if (this.props.data) this.props.callbackCount(this.props.data.end_date, this.props.data.current_date) 
+      console.log('updateeee', this.state.isclose);
+      if (this.props.data) {this.props.callbackCount(this.props.data.end_date, this.props.data.current_date);}
     }
-    count = false
+    count = false;
   }
 
   getUrl(value) {
-    switch(value.type) {
+    switch (value.type) {
       // case 'program':
       //   return SHARE_BASE_URL + '/programs/' + value.content_id;
       // case 'episode':
@@ -51,21 +52,21 @@ class Toast extends React.Component {
       case 'live_event':
         return SHARE_BASE_URL + '/live-event';
       default:
-        return value.webview_url
+        return value.webview_url;
     }
   }
 
   completed() {
     console.log('this countdown complete');
-    this.props.count(true)
+    this.props.count(true);
   }
-  isRender({days, hours, minutes, seconds}) { 
-    console.log(seconds)
+  isRender({days, hours, minutes, seconds}) {
+    // console.log(seconds);
     return (<div/>);
   }
   isClose() {
-    this.setState({isclose: true})
-    this.props.isAds(true)
+    this.setState({isclose: true});
+    this.props.isAds(true);
   }
   render() {
     const { data } = this.props;
@@ -87,7 +88,10 @@ class Toast extends React.Component {
                 <div className="toast-content">
                   <span className="toast-content__time">{ data.time_diff }</span>
                   <h1 className="toast-content__title">{ data.sponsor_name }</h1>
-                  <p className="toast-content__description" onClick={() => window.open(this.getUrl(data),'_blank')}>{ getTruncate(data.description) }</p>
+                  <p className="toast-content__description" onClick={() => {
+                    appierAdsClicked(data, 'sticky_ads_clicked', 'clicked');
+                    window.open(this.getUrl(data),'_blank');
+                    }}>{ getTruncate(data.description) }</p>
                 </div>
               </div>
               </div>)
