@@ -1186,6 +1186,30 @@ export const searchProgramSeasonClicked = (programId, programName, season, event
         date_time: new Date().getTime() / 1000
     });
 };
+export const appierAdsShow = (data, event = 'gtag-event-rctiplus', channel_type = 'live-tv') => {
+    console.log(event);
+    qg('event', 'mweb_' +event, 
+    {
+      sponsor_id: data.id,
+      channel_id: data.channel_id,
+      channel_type: channel_type,
+      type: data.type,
+      users_id: getUserId(),
+      date_time: new Date().getTime() / 1000,
+    });
+};
+export const appierAdsClicked = (data, event = 'gtag-event-rctiplus', status = ' closed') => {
+    console.log(event);
+    qg('event', 'mweb_' + event, 
+    {
+      sponsor_id: data.id,
+      channel_id: data.channel_id,
+      channel_type: status,
+      type: data.type,
+      users_id: getUserId(),
+      date_time: new Date().getTime() / 1000,
+    });
+};
 
 export const searchProgramSeasonListClicked = (programId, programName, season, event = 'mweb_search_program_season_list_clicked') => {
     searchProgramSeasonClicked(programId, programName, season, event);

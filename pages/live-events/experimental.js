@@ -17,7 +17,8 @@ import MuteChat from '../../components/Includes/Common/MuteChat';
 import initialize from '../../utils/initialize';
 import { getCookie } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
-import { contentGeneralEvent, liveEventTabClicked, liveShareEvent } from '../../utils/appier';
+import { contentGeneralEvent, liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked } from '../../utils/appier';
+import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../utils/firebaseTracking';
 
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
@@ -156,6 +157,7 @@ class LiveEvent extends React.Component {
 			live_events: [],
 			missed_event: [],
 			ads_data: null,
+			isAds: false,
 			meta: '',
 			resolution: 300,
 			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
@@ -204,6 +206,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 	componentDidMount() {
+		initGA();
 		this.getAvailable();
 		if (this.props.router.asPath.match('/missed-event/')) {
 			this.setState({
@@ -892,7 +895,7 @@ class LiveEvent extends React.Component {
 	toggleChat() {
 		if (this.checkLogin()) {
 			this.setState({ chat_open: !this.state.chat_open }, () => {
-				if (this.state.chat_open) {
+				if (this.state.chat_open && !this.state.isAds) {
 					if(this.props.selected_event.data) {
 						this.getAds(this.props.selected_event.data.id);
 					}
@@ -1170,6 +1173,11 @@ class LiveEvent extends React.Component {
 			.then(({data}) => {
 				this.setState({
 					ads_data: data,
+				}, () => {
+					if (this.state.ads_data) {
+						stickyAdsShowing(data, 'sticky_ads_showing');
+						appierAdsShow(data, 'sticky_ads_showing', 'live-event');
+					}
 				});
 				console.log(this.state.ads_data);
 			})
@@ -1189,6 +1197,43 @@ class LiveEvent extends React.Component {
 				}
 			}, 100);
 		});
+	}
+
+	callbackCount(end, current) {
+		console.log(this.state.isAds)
+		if(this.state.isAds) {
+			let distance = getCountdown(end, current)[0] || 100000;
+			const countdown = setInterval(() => {
+				// console.log("callback from child", distance)
+				distance -= 1000
+				if (distance < 0 || !this.state.isAds) {
+					clearInterval(countdown)
+					this.setState({
+						ads_data: null,
+						isAds: false,
+					}, () => {
+						if(this.state.chat_open) {
+							setTimeout(() => { 
+								if (this.props.selected_event.data) {
+									this.getAds(this.props.selected_event.data.id); 
+								}
+							}, 100);
+						}
+					});
+				}
+			}
+			,1000)
+		}
+	}
+	getStatusAds(e) {
+		if(this.state.ads_data) {
+			console.log('STCKY-CLOSED',this.state.ads_data)
+			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+			appierAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+		}
+		this.setState({
+			isAds: e,
+		}, () => { console.log(this.state.isAds)})
 	}
 
 	render() {
@@ -1335,7 +1380,7 @@ class LiveEvent extends React.Component {
 							<Button onClick={this.toggleChat.bind(this)} color="link">
 								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
 							</Button>
-							{this.state.ads_data ? (<Toast count={this.callbackAds.bind(this)} data={this.state.ads_data.data}/>) : (<div/>)}
+							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
 						</div>
 						<div className="box-chat" style={{ height: 300 }}>
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
