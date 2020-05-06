@@ -924,7 +924,14 @@ class Tv extends React.Component {
 
 	selectChannel(index, first = false) {
 		this.props.setPageLoader();
-		this.setState({ selected_index: index, error: false, chats: [] }, () => {
+		this.setState({ selected_index: index, error: false, chats: [], ads_data: null, }, () => {
+			setTimeout(() => { 
+				if (this.state.chat_open) {
+					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+						this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id); 
+					}
+				}
+			}, 100);
 			let epgLoaded = false;
 			let catchupLoaded = false;
 

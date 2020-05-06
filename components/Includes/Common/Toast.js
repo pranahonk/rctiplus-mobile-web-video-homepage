@@ -3,7 +3,8 @@ import '../../../assets/scss/components/toast.scss';
 import Close from '@material-ui/icons/Close';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 import Countdown from 'react-countdown-now';
-import { getCountdown } from '../../../utils/helpers';
+import { getCountdown, getTruncate } from '../../../utils/helpers';
+import { SHARE_BASE_URL } from '../../../config';
 
 class Toast extends React.Component {
   constructor(props) {
@@ -13,6 +14,31 @@ class Toast extends React.Component {
       timeCount: props.data !== null ? getCountdown(props.data.end_date, props.data.current_date)[0] : 10000,
       isStatus:props.data !== null ? getCountdown(props.data.end_date, props.data.current_date)[1] : false,
     };
+  }
+
+  getUrl(value) {
+    switch(value.type) {
+      // case 'program':
+      //   return SHARE_BASE_URL + '/programs/' + value.content_id;
+      // case 'episode':
+      //   return SHARE_BASE_URL + '/programs/' + value.content_id + '/program-from-ads/episodes';
+      // case 'extra':
+      //   return SHARE_BASE_URL + '/programs/' + value.content_id + '/program-from-ads/extras';
+      // case 'clip':
+      //   return SHARE_BASE_URL + '/programs/' + value.content_id + '/program-from-ads/clips';
+      case 'url':
+        return value.webview_url;
+      case 'news':
+        return SHARE_BASE_URL + '/trending';
+      case 'roov':
+        return SHARE_BASE_URL + '/radio';
+      case 'live_streaming':
+        return SHARE_BASE_URL + '/tv/rcti';
+      case 'live_event':
+        return SHARE_BASE_URL + '/live-event';
+      default:
+        return value.webview_url
+    }
   }
 
   completed() {
@@ -32,7 +58,9 @@ class Toast extends React.Component {
               <div>
               <Countdown date={Date.now() + this.state.timeCount} onComplete={this.completed.bind(this)} renderer={this.isRender}/>
               <div className="toast-wrapper">
-                <div className="toast-border" />
+                <div className="toast-wrap-border">
+                  <div className="toast-border" />
+                </div>
                 <ChevronRight fontSize="small" className="chevron-right"/>
                 <div className="toast-close" onClick={() => this.setState({isclose: true})}>
                   <Close fontSize="small"/>
@@ -40,7 +68,7 @@ class Toast extends React.Component {
                 <div className="toast-content">
                   <span className="toast-content__time">{ data.time_diff }</span>
                   <h1 className="toast-content__title">{ data.sponsor_name }</h1>
-                  <p className="toast-content__description" onClick={() => window.open(data.webview_url,'_blank')}>{ data.description }</p>
+                  <p className="toast-content__description" onClick={() => window.open(this.getUrl(data),'_blank')}>{ getTruncate(data.description) }</p>
                 </div>
               </div>
               </div>)
