@@ -45,7 +45,7 @@ import { BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } fro
 import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
-import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId } from '../utils/appier';
+import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId, appierAdsShow, appierAdsClicked } from '../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTracking';
 import { convivaVideoJs } from '../utils/conviva';
 
@@ -1303,6 +1303,7 @@ class Tv extends React.Component {
 				}, () => {
 					if(this.state.ads_data) {
 						stickyAdsShowing(data, 'sticky_ads_showing')
+						appierAdsShow(data, 'sticky_ads_showing');
 					}
 				});
 				console.log(this.state.ads_data);
@@ -1354,6 +1355,7 @@ class Tv extends React.Component {
 		if(this.state.ads_data) {
 			console.log('STCKY-CLOSED',this.state.ads_data)
 			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+			appierAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
 		}
 		this.setState({
 			isAds: e,

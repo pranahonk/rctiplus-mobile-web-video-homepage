@@ -17,7 +17,7 @@ import MuteChat from '../../components/Includes/Common/MuteChat';
 import initialize from '../../utils/initialize';
 import { getCookie } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
-import { contentGeneralEvent, liveEventTabClicked, liveShareEvent } from '../../utils/appier';
+import { contentGeneralEvent, liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked } from '../../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../utils/firebaseTracking';
 
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
@@ -1176,6 +1176,7 @@ class LiveEvent extends React.Component {
 				}, () => {
 					if (this.state.ads_data) {
 						stickyAdsShowing(data, 'sticky_ads_showing');
+						appierAdsShow(data, 'sticky_ads_showing', 'live-event');
 					}
 				});
 				console.log(this.state.ads_data);
@@ -1228,6 +1229,7 @@ class LiveEvent extends React.Component {
 		if(this.state.ads_data) {
 			console.log('STCKY-CLOSED',this.state.ads_data)
 			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+			appierAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
 		}
 		this.setState({
 			isAds: e,
