@@ -616,7 +616,7 @@ class LiveEvent extends React.Component {
 						overrideNative: true,
 					},
 					nativeAudioTracks: false,
-    			nativeVideoTracks: false,
+					nativeVideoTracks: false,
 				},
 				sources: [{
 					src: url,
