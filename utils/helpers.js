@@ -121,7 +121,7 @@ export const showSignInAlert = (text, title, callback, buttonInverse = false, co
 };
 
 export const getCountdown = (release, current) => {
-    const now = new Date(parseInt(current) * 1000).getTime();
+    const now = new Date(parseInt(current) * 1000).getTime() || new Date().getTime();
     const timeRelease = new Date(parseInt(release) * 1000).getTime();
     const result = (timeRelease - now);
     if(timeRelease < now) {

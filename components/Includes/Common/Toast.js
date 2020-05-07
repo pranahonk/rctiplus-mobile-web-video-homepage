@@ -7,13 +7,15 @@ import { getCountdown, getTruncate } from '../../../utils/helpers';
 import { appierAdsClicked } from '../../../utils/appier';
 import { SHARE_BASE_URL } from '../../../config';
 
+const NOW = new Date();
+
 class Toast extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isclose: false,
-      timeCount: props.data !== null ? getCountdown(props.data.end_date, props.data.current_date)[0] : 10000,
-      isStatus:props.data !== null ? getCountdown(props.data.end_date, props.data.current_date)[1] : false,
+      timeCount: props.data !== null ? getCountdown(props.data.end_date, NOW)[0] : 10000,
+      isStatus:props.data !== null ? getCountdown(props.data.end_date, NOW)[1] : false,
     };
   }
 
@@ -25,8 +27,8 @@ class Toast extends React.Component {
     let count = true;
 
     if (count) {
-      console.log('updateeee', this.state.isclose);
-      if (this.props.data) {this.props.callbackCount(this.props.data.end_date, this.props.data.current_date);}
+      // console.log('updateeee', this.state.isclose);
+      if (this.props.data) {this.props.callbackCount(this.props.data.end_date, NOW);}
     }
     count = false;
   }
@@ -57,10 +59,11 @@ class Toast extends React.Component {
   }
 
   completed() {
-    console.log('this countdown complete');
+    // console.log('this countdown complete');
     this.props.count(true);
   }
   isRender({days, hours, minutes, seconds}) {
+    // console.log(this.state.timeCount)
     // console.log(seconds);
     return (<div/>);
   }
