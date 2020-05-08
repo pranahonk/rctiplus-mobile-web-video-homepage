@@ -138,6 +138,8 @@ class LiveEvent extends React.Component {
 		super(props);
 		console.log(this.props.selected_event);
 		console.log(this.props.selected_event_url);
+		this.playerContainerRef = React.createRef();
+		this.titleRef = React.createRef();
 		this.state = {
 			tabStatus: '',
 			isAvailable: false,
@@ -1295,8 +1297,10 @@ class LiveEvent extends React.Component {
 					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])} />
 				<NavBack navPlayer={true}/>
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
-					{this.renderPlayer()}
-					<div className="title-wrap">
+					<div ref={ this.playerContainerRef } >
+						{this.renderPlayer()}
+					</div>
+					<div ref= { this.titleRef } className="title-wrap">
 						<div style={{
 							display: 'flex',
 							alignItems: 'center'
@@ -1374,9 +1378,7 @@ class LiveEvent extends React.Component {
 					</div>
 					{ this.props.router.asPath.match('/missed-event/') || this.state.selected_tab === 'missed-event'  ? (<div />) : 
 					 (<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
-						(isIOS ?
-							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
-							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
+						{height: `calc(100vh - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
 						: null}>
 						<div className="btn-chat">
 							<Button onClick={this.toggleChat.bind(this)} color="link">
@@ -1384,7 +1386,7 @@ class LiveEvent extends React.Component {
 							</Button>
 							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
 						</div>
-						<div className="box-chat" style={{ height: 300 }}>
+						<div className="box-chat">
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
 								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
 									<div>
@@ -1443,7 +1445,7 @@ class LiveEvent extends React.Component {
 									}}
 									showPreview={false}
 									darkMode
-									style={{ height: this.state.emoji_picker_open ? 200 : 0 }} />
+									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
 							</div>
 						</div>
 					</div>)}

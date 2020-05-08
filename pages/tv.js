@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { connect } from 'react-redux';
@@ -70,6 +70,10 @@ class Tv extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.chatBoxRef = React.createRef();
+		this.playerContainerRef = React.createRef();
+		this.tvTabRef = React.createRef();
+		this.inputChatBoxRef = React.createRef();
 		const now = new Date();
 		this.state = {
 			live_events: [],
@@ -135,7 +139,9 @@ class Tv extends React.Component {
 			this.convivaTracker.cleanUpSession();
 		}
 	}
-
+	componentDidUpdate() {
+		// this.sample();
+	}
 	componentDidMount() {
 		initGA();
 		this.props.setPageLoader();
@@ -171,7 +177,10 @@ class Tv extends React.Component {
 
 		// this.refreshPubAds();
 	}
-
+	setHeightChatBox() {
+		let heightPlayer = this.playerContainerRef.current.clientHeight + this.tvTabRef.current.clientHeight;
+		return `calc(100vh - ${heightPlayer}px)`;
+	}
 	isLiveProgram(epg) {
 		const currentTime = new Date().getTime();
 		const startTime = new Date(formatDate(this.currentDate) + 'T' + epg.s).getTime();
@@ -1365,7 +1374,7 @@ class Tv extends React.Component {
 		let playerRef = (<div></div>);
 		if (this.state.error) {
 			playerRef = (
-				<div style={{
+				<div ref={ this.playerContainerRef } className="player-container" style={{
 					textAlign: 'center',
 					padding: 30,
 					minHeight: 180
@@ -1392,7 +1401,7 @@ class Tv extends React.Component {
 			playerRef = (
 				<div>
 					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
-					<div className="player-tv-container">
+					<div ref={ this.playerContainerRef } className="player-container player-tv-container">
 						<div data-vjs-player>
 							<div
                                 onClick={() => {
@@ -1495,7 +1504,7 @@ class Tv extends React.Component {
 
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{playerRef}
-					<div className="tv-wrap">
+					<div ref= {this.tvTabRef} className="tv-wrap">
 						<Row>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=rcti" as="/tv/rcti">
@@ -1583,10 +1592,14 @@ class Tv extends React.Component {
 							</TabPane>
 						</TabContent>
 					</div>
-					<div className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
+					{/* setHeightChatBox */}
+					{/* <div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
 						(isIOS ?
 							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
 							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
+						: null}> */}
+					<div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
+						{ height: this.setHeightChatBox() }
 						: null}>
 						<div className="btn-chat">
 							<Button onClick={this.toggleChat.bind(this)} color="link">
@@ -1594,7 +1607,8 @@ class Tv extends React.Component {
 							</Button>
 							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
 						</div>
-						<div className="box-chat" style={{ height: 300 }}>
+						{/* <div className="box-chat" style={{ height: 300 }}> */}
+						<div className="box-chat">
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
 								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
 									<div>
@@ -1620,7 +1634,7 @@ class Tv extends React.Component {
 								))}
 							</div>
 							<div className="chat-input-box">
-								<div className="chat-box">
+								<div ref={ this.inputChatBoxRef } className="chat-box">
 									<Row>
 										<Col xs={1}>
 											<Button className="emoji-button">
@@ -1653,7 +1667,7 @@ class Tv extends React.Component {
 									}}
 									showPreview={false}
 									darkMode
-									style={{ height: this.state.emoji_picker_open ? 200 : 0 }} />
+									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
 							</div>
 						</div>
 					</div>
