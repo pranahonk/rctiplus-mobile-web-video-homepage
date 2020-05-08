@@ -1374,8 +1374,9 @@ class Tv extends React.Component {
 		let playerRef = (<div></div>);
 		if (this.state.error) {
 			playerRef = (
-				<div ref={ this.playerContainerRef } className="player-container" style={{
+				<div ref={ this.playerContainerRef } style={{
 					textAlign: 'center',
+					padding: 30,
 					minHeight: 180
 				}}>
 					<Wrench />
@@ -1400,7 +1401,7 @@ class Tv extends React.Component {
 			playerRef = (
 				<div>
 					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
-					<div ref={ this.playerContainerRef } className="player-container player-tv-container">
+					<div ref={ this.playerContainerRef } className="player-tv-container">
 						<div data-vjs-player>
 							<div
                                 onClick={() => {
