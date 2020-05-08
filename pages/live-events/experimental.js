@@ -198,7 +198,9 @@ class LiveEvent extends React.Component {
 		this.currentTime = new Date().getTime();
 		this.props.setPageLoader();
 	}
-	
+	componentDidUpdate() {
+		console.log(this.playerContainerRef.current.clientHeight, this.titleRef.current.clientHeight)
+	}
 	componentWillUnmount() {
 		for (let key in this.state.snapshots) {
 			this.state.snapshots[key]();
@@ -1378,7 +1380,7 @@ class LiveEvent extends React.Component {
 					</div>
 					{ this.props.router.asPath.match('/missed-event/') || this.state.selected_tab === 'missed-event'  ? (<div />) : 
 					 (<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
-						{height: `calc(100vh - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
+						{height: `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
 						: null}>
 						<div className="btn-chat">
 							<Button onClick={this.toggleChat.bind(this)} color="link">

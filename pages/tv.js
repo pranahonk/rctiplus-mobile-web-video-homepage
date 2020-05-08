@@ -179,7 +179,7 @@ class Tv extends React.Component {
 	}
 	setHeightChatBox() {
 		let heightPlayer = this.playerContainerRef.current.clientHeight + this.tvTabRef.current.clientHeight;
-		return `calc(100vh - ${heightPlayer}px)`;
+		return `calc(100% - ${heightPlayer}px)`;
 	}
 	isLiveProgram(epg) {
 		const currentTime = new Date().getTime();
