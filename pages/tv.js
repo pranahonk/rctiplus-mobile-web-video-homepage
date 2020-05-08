@@ -1376,7 +1376,6 @@ class Tv extends React.Component {
 			playerRef = (
 				<div ref={ this.playerContainerRef } className="player-container" style={{
 					textAlign: 'center',
-					padding: 30,
 					minHeight: 180
 				}}>
 					<Wrench />
