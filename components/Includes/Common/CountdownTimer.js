@@ -5,7 +5,7 @@ import '../../../assets/scss/components/thumbnail.scss';
 
 class CountdownTimer extends React.Component {
 
-  now = Date.now(parseInt(this.props.timerCurrent));
+  now = Date.now(parseInt(this.props.timerCurrent)) || Date.now();
 
   render() {
     return (
