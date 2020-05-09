@@ -5,6 +5,7 @@ import ChevronRight from '@material-ui/icons/ChevronRight';
 import Countdown from 'react-countdown-now';
 import { getCountdown, getTruncate } from '../../../utils/helpers';
 import { appierAdsClicked } from '../../../utils/appier';
+import { RPLUSAdsClicked } from '../../../utils/internalTracking';
 import { SHARE_BASE_URL } from '../../../config';
 
 const NOW = new Date();
@@ -93,6 +94,7 @@ class Toast extends React.Component {
                   <h1 className="toast-content__title">{ data.sponsor_name }</h1>
                   <p className="toast-content__description" onClick={() => {
                     appierAdsClicked(data, 'sticky_ads_clicked', 'clicked');
+                    RPLUSAdsClicked(data, 'click', 'sticky_ads_clicked', 'clicked')
                     window.open(this.getUrl(data),'_blank');
                     }}>{ getTruncate(data.description) }</p>
                 </div>

@@ -19,7 +19,7 @@ import { getCookie } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
 import { contentGeneralEvent, liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked } from '../../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../utils/firebaseTracking';
-import { RPLUSAdsShowing } from '../../utils/internalTracking';
+import { RPLUSAdsShowing, RPLUSAdsClicked } from '../../utils/internalTracking';
 
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
@@ -1179,13 +1179,13 @@ class LiveEvent extends React.Component {
 				this.setState({
 					ads_data: data,
 				}, () => {
-					if (this.state.ads_data) {
+					if (data.data) {
 						stickyAdsShowing(data, 'sticky_ads_showing');
 						appierAdsShow(data, 'sticky_ads_showing', 'live-event');
-						// RPLUSAdsShowing();
+						RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
 					}
 				});
-				console.log(this.state.ads_data);
+				// console.log(this.state.ads_data);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -1236,6 +1236,7 @@ class LiveEvent extends React.Component {
 			console.log('STCKY-CLOSED',this.state.ads_data)
 			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
 			appierAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+			RPLUSAdsClicked(this.state.ads_data, 'click', 'sticky_ads_clicked', 'closed')
 		}
 		this.setState({
 			isAds: e,

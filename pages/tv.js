@@ -47,6 +47,7 @@ import 'emoji-mart/css/emoji-mart.css';
 
 import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId, appierAdsShow, appierAdsClicked } from '../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTracking';
+import { RPLUSAdsShowing, RPLUSAdsClicked } from '../utils/internalTracking';
 import { convivaVideoJs } from '../utils/conviva';
 
 import videojs from 'video.js';
@@ -1310,12 +1311,13 @@ class Tv extends React.Component {
 				this.setState({
 					ads_data: data,
 				}, () => {
-					if(this.state.ads_data) {
+					if(data.data) {
 						stickyAdsShowing(data, 'sticky_ads_showing')
 						appierAdsShow(data, 'sticky_ads_showing');
+						RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
 					}
 				});
-				console.log(this.state.ads_data);
+				// console.log(this.state.ads_data);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -1365,6 +1367,7 @@ class Tv extends React.Component {
 			console.log('STCKY-CLOSED',this.state.ads_data)
 			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
 			appierAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+			RPLUSAdsClicked(this.state.ads_data, 'click', 'sticky_ads_clicked', 'closed')
 		}
 		this.setState({
 			isAds: e,
