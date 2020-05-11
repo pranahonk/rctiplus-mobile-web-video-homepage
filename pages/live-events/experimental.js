@@ -67,8 +67,8 @@ import videojs from 'video.js';
 import 'videojs-contrib-ads';
 import 'videojs-ima';
 import 'video.js/src/css/video-js.scss';
-import 'videojs-hls-quality-selector';
-import qualitySelector from 'videojs-hls-quality-selector';
+// import 'videojs-hls-quality-selector';
+import qualitySelector from '../../assets/js/videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
 import 'videojs-seek-buttons';
 import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
@@ -815,6 +815,7 @@ class LiveEvent extends React.Component {
 			});
 			this.player.hlsQualitySelector({
 				displayCurrentQuality: true,
+				identifyBy: 'bitrate'
 			});
 
 			this.disconnectHandler = null;
