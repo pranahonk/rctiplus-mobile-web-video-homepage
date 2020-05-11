@@ -199,7 +199,7 @@ class LiveEvent extends React.Component {
 		this.props.setPageLoader();
 	}
 	componentDidUpdate() {
-		console.log(this.playerContainerRef.current.clientHeight, this.titleRef.current.clientHeight)
+		// console.log(this.playerContainerRef.current.clientHeight, this.titleRef.current.clientHeight)
 	}
 	componentWillUnmount() {
 		for (let key in this.state.snapshots) {
@@ -359,7 +359,6 @@ class LiveEvent extends React.Component {
 							querySnapshot.docChanges()
 								.map(change => {
 									let chats = this.state.chats;
-									console.log(chats);
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
