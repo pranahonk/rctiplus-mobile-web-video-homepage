@@ -151,8 +151,8 @@ class Default_v2 extends React.Component {
                     <noscript><img src="https://certify.alexametrics.com/atrk.gif?account=8oNJt1FYxz20cv" style={{ display: 'none' }} height="1" width="1" alt="" /></noscript>
                     {/* <!-- End Alexa Certify Javascript --> */}
                 </Head>
-                {/* <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script> */}
-                <script async type="text/javascript" src="/static/js/ima3.js"></script>
+                <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+                {/* <script async type="text/javascript" src="/static/js/ima3.js"></script> */}
 
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
