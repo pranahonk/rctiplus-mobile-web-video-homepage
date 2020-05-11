@@ -446,7 +446,7 @@ var HlsQualitySelectorPlugin = function () {
 
 
   HlsQualitySelectorPlugin.prototype.getIdentifierFromLevel = function getIdentifierFromLevel(level, format) {
-    var value = level[this._options.identifyBy] || level.height;
+    var value = level.height || level[this._options.identifyBy];
 
     if (format) {
       switch (this._options.identifyBy) {
@@ -510,10 +510,11 @@ var HlsQualitySelectorPlugin = function () {
     var qualityList = player.qualityLevels();
     var levels = qualityList.levels_ || [];
     var levelItems = [];
-
+    console.log(levels);
     if (levels && levels.length > 0) {
-      if (!levels[0].bitrate) {
-        levels = [{ bitrate: 0.39 }, { bitrate: 0.56 }, { bitrate: 1.10 }, { bitrate: 2.00 }];
+      if (!levels[0].bitrate && !levels[0].height) {
+        // levels = [{ bitrate: 420865 },{ bitrate: 770703 }, { bitrate: 1237103 }, { bitrate: 2403103 }];
+        levels = [];
       }
     }
 

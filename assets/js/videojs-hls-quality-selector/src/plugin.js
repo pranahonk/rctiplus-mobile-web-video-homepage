@@ -96,7 +96,7 @@ class HlsQualitySelectorPlugin {
    * @return {string|int} - Identifier, possibly formatted
    */
   getIdentifierFromLevel(level, format) {
-    let value = level[this._options.identifyBy] || level.height;
+    let value = level.height || level[this._options.identifyBy];
 
     if (format) {
       switch (this._options.identifyBy) {
@@ -157,10 +157,11 @@ class HlsQualitySelectorPlugin {
     const qualityList = player.qualityLevels();
     let levels = qualityList.levels_ || [];
     const levelItems = [];
-
+    console.log(levels);
     if (levels && levels.length > 0) {
-      if (!levels[0].bitrate) {
-        levels = [{ bitrate: 0.39 },{ bitrate: 0.56 }, { bitrate: 1.10 }, { bitrate: 2.00 }];
+      if (!levels[0].bitrate && !levels[0].height) {
+        // levels = [{ bitrate: 420865 },{ bitrate: 770703 }, { bitrate: 1237103 }, { bitrate: 2403103 }];
+        levels = [];
       }
     }
 
