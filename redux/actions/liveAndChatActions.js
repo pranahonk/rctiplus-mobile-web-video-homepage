@@ -1,8 +1,11 @@
 import ax from 'axios';
-import { DEV_API } from '../../config';
+import { DEV_API, CHAT_API } from '../../config';
 import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
+import socketIOClient from 'socket.io-client';
 
 const axios = ax.create({ baseURL: DEV_API + '/api' });
+const axiosChat = ax.create({ baseURL: CHAT_API });
+const socket = 'https://rc-chat-api.rctiplus.com/chat';
 
 axios.interceptors.request.use(async (request) => {
     await checkToken();
@@ -10,6 +13,13 @@ axios.interceptors.request.use(async (request) => {
     request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : accessToken;
     return request;
 });
+
+axiosChat.interceptors.request.use(async (request) => {
+    await checkToken()
+    const accessToken = getCookie('ACCESS_TOKEN');
+    request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : 'Bearer ' + accessToken;
+    return request
+})
 
 const setCatchupDate = date => {
     return dispatch => dispatch({
@@ -31,7 +41,54 @@ const setChannelCode = channelCode => {
         channel_code: channelCode
     });
 };
-
+const getAdsChat = (channelId) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/sticky-message/${channelId}`);
+            if (response.status === 200) {
+                resolve(response);
+            } else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    });
+};
+const getChatSocket = (channelId) => {
+    // eslint-disable-next-line no-new
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axiosChat.get(`/v1/chats/${channelId}?length=10`);
+            if (response.status === 200) {
+                resolve(response);
+            } else {
+                reject(response);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    });
+};
+const postChatSocket = (channelId, message, avatar, user) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axiosChat.post(`/v1/chats/${channelId}`, {
+                msg: message,
+                avatar: avatar,
+                user: user,
+            });
+            if (response.status === 200) {
+                resolve(response);
+            } else {
+                reject(response);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    });
+};
 const postChat = (channelId, message, avatar, user) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -60,6 +117,16 @@ const postChat = (channelId, message, avatar, user) => {
     });
 };
 
+const listenSocketIo = (channelId) => {
+    return dispatch =>new Promise(async (resolve) => {
+        try {
+            const response = await socketIOClient(socket + channelId)
+            resolve(response)
+        } catch (error) {
+            console.log(error);
+        }
+    });
+};
 const getLiveChatBlock = (channelId) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -81,11 +148,11 @@ const getLiveChatBlock = (channelId) => {
     });
 };
 
-const getLiveEvent = (type, infos = 'id,type,portrait_image,image_landscape,name,url,channel_code,epg_code,is_tvod,is_drm,chat,start_date,sorting', page = 1, length = 10) => {
+const getLiveEvent = (type, infos = 'id,type,portrait_image,landscape_image,name,url,channel_code,epg_code,is_tvod,is_drm,chat,start_date,sorting', page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             
-            const response = await axios.get(`/v1/live-event?type=${type}&infos=${infos}&page=${page}&length=${length}`);
+            const response = await axios.get(`/v2/live-event?type=${type}&length=${length}`);
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_LIVE_EVENT',
@@ -101,6 +168,28 @@ const getLiveEvent = (type, infos = 'id,type,portrait_image,image_landscape,name
         }
         catch (error) {
             reject(error);
+        }
+    });
+};
+
+const getMissedEvent = (page = 1, length = 10) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/missed-event?length=${length}`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_MISSED_EVENT',
+                    data: response.data.data,
+                    meta: response.data.meta,
+                    status: response.data.status,
+                });
+                resolve(response);
+            } else {
+                reject(response);
+            }
+        }
+        catch (error) {
+           reject(error);
         }
     });
 };
@@ -243,6 +332,24 @@ const getCatchupUrl = catchupId => {
     });
 };
 
+export const getVmapResponse = url => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(url);
+            console.log(response);
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 export default {
     postChat,
     getLiveEvent,
@@ -256,4 +363,10 @@ export default {
     setChannelCode,
     setCatchupData,
     getLiveChatBlock,
+    listenSocketIo,
+    postChatSocket,
+    getChatSocket,
+    getMissedEvent,
+    getVmapResponse,
+    getAdsChat,
 };

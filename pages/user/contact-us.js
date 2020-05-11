@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { connect } from 'react-redux';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 
 import userActions from '../../redux/actions/userActions';
 import pageActions from '../../redux/actions/pageActions';
@@ -13,7 +13,7 @@ import { showAlert } from '../../utils/helpers';
 import { accountContactUsFormEvent } from '../../utils/appier';
 
 import '../../assets/scss/components/contact-us.scss';
-import { SITEMAP } from '../../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../../config';
 
 import { Form, FormGroup, Label, Input, InputGroup, FormFeedback, Button } from 'reactstrap';
 
@@ -107,6 +107,24 @@ class ContactUs extends React.PureComponent {
 				<Head>
 					<meta name="description" content={SITEMAP.contact_us.description}/>
 					<meta name="keywords" content={SITEMAP.contact_us.keywords}/>
+                    <meta property="og:title" content={SITEMAP.contact_us.title} />
+					<meta property="og:description" content={SITEMAP.contact_us.description} />
+					<meta property="og:image" itemProp="image" content={SITEMAP.contact_us.image} />
+					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content="600" />
+					<meta property="og:image:height" content="315" />
+					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+					<meta name="twitter:image" content={SITEMAP.contact_us.image} />
+					<meta name="twitter:image:alt" content={SITEMAP.contact_us.title} />
+					<meta name="twitter:title" content={SITEMAP.contact_us.title} />
+					<meta name="twitter:description" content={SITEMAP.contact_us.description} />
+					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
                 <NavBack title="Contact Us"/>
                 <div className="wrapper-content container-box-cu">
@@ -175,4 +193,4 @@ class ContactUs extends React.PureComponent {
 export default connect(state => state, {
     ...userActions,
     ...pageActions
-})(ContactUs);
+})(withRouter(ContactUs));

@@ -504,10 +504,18 @@ var HlsQualitySelectorPlugin = function () {
   HlsQualitySelectorPlugin.prototype.onAddQualityLevel = function onAddQualityLevel() {
     var _this = this;
 
+    // https://liveevent5.rctiplus.id/liveevent/pendidikan_master.m3u8?auth_key=1656005450-0-0-85e3a9e9709089eda295ee4217b304ff
+    // https://rplus-recording.oss-ap-southeast-5.aliyuncs.com/m3u8/record/liveevent/asix/2020-05-07-14-59-01_2020-05-07-16-17-30.m3u8
     var player = this.player;
     var qualityList = player.qualityLevels();
     var levels = qualityList.levels_ || [];
     var levelItems = [];
+
+    if (levels && levels.length > 0) {
+      if (!levels[0].bitrate) {
+        levels = [{ bitrate: 0.39 }, { bitrate: 0.56 }, { bitrate: 1.10 }, { bitrate: 2.00 }];
+      }
+    }
 
     var _loop = function _loop(i) {
       if (!levelItems.filter(function (_existingItem) {

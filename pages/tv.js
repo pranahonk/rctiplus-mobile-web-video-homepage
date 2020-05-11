@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { connect } from 'react-redux';
@@ -8,6 +8,7 @@ import Img from 'react-image';
 import TimeAgo from 'react-timeago';
 
 import initialize from '../utils/initialize';
+import { getCountdown } from '../utils/helpers';
 
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 import pageActions from '../redux/actions/pageActions';
@@ -19,6 +20,7 @@ import SelectDateModal from '../components/Modals/SelectDateModal';
 import ActionSheet from '../components/Modals/ActionSheet';
 import Wrench from '../components/Includes/Common/Wrench';
 import MuteChat from '../components/Includes/Common/MuteChat';
+import Toast from '../components/Includes/Common/Toast';
 
 import { formatDate, formatDateWord, getFormattedDateBefore } from '../utils/dateHelpers';
 import { showAlert, showSignInAlert } from '../utils/helpers';
@@ -35,13 +37,17 @@ import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import PauseIcon from '../components/Includes/Common/PauseIcon';
 import { isIOS } from 'react-device-detect';
+import socketIOClient from 'socket.io-client';
+import axios from 'axios';
 
-import { BASE_URL, SITEMAP } from '../config';
+import { BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 
 import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
-import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId } from '../utils/appier';
+import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId, appierAdsShow, appierAdsClicked } from '../utils/appier';
+import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTracking';
+import { RPLUSAdsShowing, RPLUSAdsClicked } from '../utils/internalTracking';
 import { convivaVideoJs } from '../utils/conviva';
 
 import videojs from 'video.js';
@@ -65,6 +71,10 @@ class Tv extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.chatBoxRef = React.createRef();
+		this.playerContainerRef = React.createRef();
+		this.tvTabRef = React.createRef();
+		this.inputChatBoxRef = React.createRef();
 		const now = new Date();
 		this.state = {
 			live_events: [],
@@ -84,6 +94,8 @@ class Tv extends React.Component {
 			action_sheet: false,
 			caption: '',
 			url: '',
+			tabStatus: '',
+			pathShare: '',
 			hashtags: [],
 			chat_open: false,
 			channel_code: this.props.context_data ? (this.props.context_data.channel === 'gtv' ? 'globaltv' : this.props.context_data.channel) : 'rcti',
@@ -91,6 +103,8 @@ class Tv extends React.Component {
 			error_data: {},
 			emoji_picker_open: false,
 			chats: [],
+			ads_data: null,
+			isAds: false,
 			chat: '',
 			user_data: null,
 			snapshots: [],
@@ -111,7 +125,6 @@ class Tv extends React.Component {
 		this.player = null;
 		this.currentDate = now;
 		this.props.setCatchupDate(formatDateWord(now));
-		this.props.setPageLoader();
 		this.pubAdsRefreshInterval = null;
 		this.videoNode = null;
 		this.convivaTracker = null;
@@ -127,11 +140,16 @@ class Tv extends React.Component {
 			this.convivaTracker.cleanUpSession();
 		}
 	}
-
+	componentDidUpdate() {
+		// this.sample();
+	}
 	componentDidMount() {
+		initGA();
+		this.props.setPageLoader();
 		this.props.getLiveEvent('on air')
 			.then(response => {
 				this.setState({ live_events: response.data.data, meta: response.data.meta }, () => {
+					// this.props.unsetPageLoader();
 					if (this.state.live_events.length > 0) {
 						for (let i = 0; i < this.state.live_events.length; i++) {
 							if (this.state.live_events[i].channel_code === this.state.channel_code) {
@@ -140,7 +158,6 @@ class Tv extends React.Component {
 							}
 						}
 					}
-					this.props.unsetPageLoader();
 				});
 			})
 			.catch(error => {
@@ -161,7 +178,10 @@ class Tv extends React.Component {
 
 		// this.refreshPubAds();
 	}
-
+	setHeightChatBox() {
+		let heightPlayer = this.playerContainerRef.current.clientHeight + this.tvTabRef.current.clientHeight;
+		return `calc(100% - ${heightPlayer}px)`;
+	}
 	isLiveProgram(epg) {
 		const currentTime = new Date().getTime();
 		const startTime = new Date(formatDate(this.currentDate) + 'T' + epg.s).getTime();
@@ -231,13 +251,13 @@ class Tv extends React.Component {
 					if (currentEpg != null) {
 						conviva.startMonitoring(this);
 						const assetMetadata = {
-							viewer_id: getUserId(),
+							viewer_id: getUserId().toString(),
 							application_name: 'RCTI+ MWEB',
 							asset_cdn: 'Conversant',
 							version: process.env.VERSION,
 							start_session: 0,
 							playerVersion: process.env.PLAYER_VERSION,
-							tv_id: self.state.selected_live_event.id,
+							tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id : self.state.selected_live_event.content_id,
 							tv_name: assetName.toUpperCase(),
 							content_id: currentEpg.id,
 							asset_name: assetName.toUpperCase()
@@ -250,13 +270,13 @@ class Tv extends React.Component {
 				case 'catch_up_tv':
 					conviva.startMonitoring(this);
 					const assetMetadata = {
-						viewer_id: getUserId(),
+						viewer_id: getUserId().toString(),
 						application_name: 'RCTI+ MWEB',
 						asset_cdn: 'Conversant',
 						version: process.env.VERSION,
 						start_session: 0,
 						playerVersion: process.env.PLAYER_VERSION,
-						tv_id: self.state.selected_live_event.id,
+						tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id : self.state.selected_live_event.content_id,
 						tv_name: assetName.toUpperCase(),
 						content_id: currentEpg.id,
 						asset_name: assetName.toUpperCase()
@@ -335,7 +355,7 @@ class Tv extends React.Component {
 		this.player.on('play', function () {
 			if (self.state.selected_tab === 'catch_up_tv') {
 				if (self.state.selected_catchup) {
-					liveTvCatchupSchedulePlay(self.state.selected_date, self.state.live_events[self.state.selected_index].id, self.state.live_events[self.state.selected_index].name, self.state.selected_catchup.title, 'mweb_livetv_catchup_schedule_play');
+					liveTvCatchupSchedulePlay(self.state.selected_date, self.state.live_events[self.state.selected_index].id ? self.state.live_events[self.state.selected_index].id : self.state.live_events[self.state.selected_index].id, self.state.live_events[self.state.selected_index].name, self.state.selected_catchup.title, 'mweb_livetv_catchup_schedule_play');
 				}
 			}
 		});
@@ -544,18 +564,28 @@ class Tv extends React.Component {
 								self.removeSkipButton();
 								const currentEpg = self.getCurrentLiveEpg();
 								if (currentEpg != null) {
-									self.convivaTracker = convivaVideoJs(assetName.toUpperCase(), player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
-										asset_name: assetName.toUpperCase(),
+									const customTags = {
+										app_version: process.env.APP_VERSION,
+										carrier: 'N/A',
+										connection_type: 'N/A',
+										content_type: 'live tv',
+										content_id: 'N/A',
+										program_name: 'N/A',
+										tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id.toString() : self.state.selected_live_event.content_id.toString(),
+										tv_name: assetName.toUpperCase(),
+										date_video: 'N/A',
+										genre: 'N/A',
+										page_title: 'N/A',
+										page_view: 'N/A',
+										program_id: 'N/A',
+										screen_mode: 'portrait',
+										time_video: 'N/A',
+										viewer_id: getUserId().toString(),
 										application_name: 'RCTI+ MWEB',
-										asset_cdn: 'Conversant',
-										version: process.env.VERSION,
-										start_session: '0',
-										player_version: process.env.PLAYER_VERSION,
-										tv_id: self.state.selected_live_event.id.toString(),
-										tv_name: assetName,
-										content_id: currentEpg.id.toString(),
-										content_title: currentEpg.title
-									});
+										section_page: 'N/A'
+									};
+
+									self.convivaTracker = convivaVideoJs(assetName.toUpperCase(), player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), customTags);
 									self.convivaTracker.createSession();
 								}
 								break;
@@ -572,18 +602,28 @@ class Tv extends React.Component {
 									self.setSkipButtonCentered();
 								};
 
-								self.convivaTracker = convivaVideoJs(self.state.selected_catchup.title.toUpperCase(), player, player.duration(), self.state.player_url, 'RCTI+ MWEB', {
-									asset_name: self.state.selected_catchup.title,
-									application_name: 'RCTI+ MWEB',
-									asset_cdn: 'Conversant',
-									version: process.env.VERSION,
-									start_session: '0',
-									player_version: process.env.PLAYER_VERSION,
-									tv_id: self.state.selected_live_event.id.toString(),
-									tv_name: assetName.toUpperCase(),
+								const customTags = {
+									app_version: process.env.APP_VERSION,
+									carrier: 'N/A',
+									connection_type: 'N/A',
+									content_type: 'catch up tv',
 									content_id: self.state.selected_catchup.id.toString(),
-									content_title: self.state.selected_catchup.title
-								});
+									program_name: 'N/A',
+									tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id.toString() : self.state.selected_live_event.content_id.toString(),
+									tv_name: assetName.toUpperCase(),
+									date_video: 'N/A',
+									genre: 'N/A',
+									page_title: 'N/A',
+									page_view: 'N/A',
+									program_id: 'N/A',
+									screen_mode: 'portrait',
+									time_video: 'N/A',
+									viewer_id: getUserId().toString(),
+									application_name: 'RCTI+ MWEB',
+									section_page: 'N/A'
+								};
+
+								self.convivaTracker = convivaVideoJs(self.state.selected_catchup.title.toUpperCase(), player, player.duration(), self.state.player_url, 'RCTI+ MWEB', customTags);
 								self.convivaTracker.createSession();
 								break;
 						}
@@ -675,8 +715,14 @@ class Tv extends React.Component {
 
 					this.player.ima({
 						adTagUrl: this.state.player_vmap,
-						preventLateAdStart: true
+						preventLateAdStart: true,
+						adsManagerLoadedCallback: () => {
+							this.player.ima.addEventListener(google.ima.AdEvent.Type.STARTED, () => {
+								console.log('google.ima.AdEvent.Type.STARTED');
+							});
+						}
 					});
+
 					this.player.ima.initializeAdDisplayContainer();
 				});
 			}
@@ -693,18 +739,28 @@ class Tv extends React.Component {
 						this.removeSkipButton();
 						const currentEpg = this.getCurrentLiveEpg();
 						if (currentEpg != null) {
-							this.convivaTracker = convivaVideoJs(assetName, this.player, true, this.state.player_url, 'Live TV ' + assetName.toUpperCase(), {
-								asset_name: assetName.toUpperCase(),
-								application_name: 'RCTI+ MWEB',
-								asset_cdn: 'Conversant',
-								version: process.env.VERSION,
-								start_session: '0',
-								player_version: process.env.PLAYER_VERSION,
-								tv_id: this.state.selected_live_event.id.toString(),
+							const customTags = {
+								app_version: process.env.APP_VERSION,
+								carrier: 'N/A',
+								connection_type: 'N/A',
+								content_type: 'live tv',
+								content_id: 'N/A',
+								program_name: 'N/A',
+								tv_id: this.state.selected_live_event.id ? this.state.selected_live_event.id.toString() : this.state.selected_live_event.content_id.toString(),
 								tv_name: assetName.toUpperCase(),
-								content_id: currentEpg.id.toString(),
-								content_title: currentEpg.title
-							});
+								date_video: 'N/A',
+								genre: 'N/A',
+								page_title: 'N/A',
+								page_view: 'N/A',
+								program_id: 'N/A',
+								screen_mode: 'portrait',
+								time_video: 'N/A',
+								viewer_id: getUserId().toString(),
+								application_name: 'RCTI+ MWEB',
+								section_page: 'N/A'
+							};
+
+							this.convivaTracker = convivaVideoJs(assetName.toUpperCase(), this.player, true, this.state.player_url, 'Live TV ' + assetName.toUpperCase(), customTags);
 							this.convivaTracker.createSession();
 						}
 
@@ -721,18 +777,29 @@ class Tv extends React.Component {
 						window.onresize = () => {
 							this.setSkipButtonCentered();
 						};
-						this.convivaTracker = convivaVideoJs(this.state.selected_catchup.title, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), {
-							asset_name: this.state.selected_catchup.title.toUpperCase(),
-							application_name: 'RCTI+ MWEB',
-							asset_cdn: 'Conversant',
-							version: process.env.VERSION,
-							start_session: '0',
-							player_version: process.env.PLAYER_VERSION,
-							tv_id: this.state.selected_live_event.id.toString(),
-							tv_name: assetName.toUpperCase(),
+
+						const customTags = {
+							app_version: process.env.APP_VERSION,
+							carrier: 'N/A',
+							connection_type: 'N/A',
+							content_type: 'catch up tv',
 							content_id: this.state.selected_catchup.id.toString(),
-							content_title: this.state.selected_catchup.title
-						});
+							program_name: 'N/A',
+							tv_id: this.state.selected_live_event.id ? this.state.selected_live_event.id.toString() : this.state.selected_live_event.content_id.toString(),
+							tv_name: assetName.toUpperCase(),
+							date_video: 'N/A',
+							genre: 'N/A',
+							page_title: 'N/A',
+							page_view: 'N/A',
+							program_id: 'N/A',
+							screen_mode: 'portrait',
+							time_video: 'N/A',
+							viewer_id: getUserId().toString(),
+							application_name: 'RCTI+ MWEB',
+							section_page: 'N/A'
+						};
+
+						this.convivaTracker = convivaVideoJs(this.state.selected_catchup.title, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), customTags);
 						this.convivaTracker.createSession();
 						break;
 				}
@@ -741,20 +808,21 @@ class Tv extends React.Component {
 	}
 
 	loadChatMessages(id) {
-		this.props.setPageLoader();
+		// this.props.setPageLoader();
 		this.setState({ chats: [] }, () => {
 			const chatBox = document.getElementById('chat-messages');
 			chatBox.scrollTop = chatBox.scrollHeight;
-			this.props.unsetPageLoader();
+			// this.props.unsetPageLoader();
 			if (true) {
 				let firstLoadChat = true;
-				this.props.listenChatMessages(this.state.live_events[this.state.selected_index].id)
+				this.props.listenChatMessages(id)
 					.then(collection => {
 						let snapshots = this.state.snapshots;
 						let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
 							querySnapshot.docChanges()
 								.map(change => {
 									let chats = this.state.chats;
+									console.log(chats);
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
@@ -792,6 +860,60 @@ class Tv extends React.Component {
 							firstLoadChat = false;
 						});
 					});
+
+				// this.props.getChatSocket(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id)
+				// .then(data => {
+				// 	let chats = this.state.chats;
+				// 	if (!this.state.sending_chat) {
+				// 		if (chats.length > 0) {
+				// 			let lastChat = chats[chats.length - 1];
+				// 			let newChat = data.data;
+				// 			if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+				// 				chats = newChat;
+				// 			}
+				// 			}
+				// 			else {
+				// 				chats = data.data;
+				// 			}
+
+				// 		this.setState({ chats: chats }, () => {
+				// 			const chatBox = document.getElementById('chat-messages');
+				// 			chatBox.scrollTop = chatBox.scrollHeight;
+
+				// 			const chatInput = document.getElementById('chat-input');
+				// 			chatInput.style.height = `24px`;
+				// 		});
+				// 	}
+				// })
+				// .then(() => {
+				// 	this.props.listenSocketIo(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id)
+				// 	.then((socket) => {
+				// 		socket.on('message', (data) => {
+				// 		let chats = this.state.chats;
+				// 		let newChat = data;
+				// 			if (chats.length > 0) {
+				// 				let lastChat = chats[chats.length - 1];
+				// 				if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+				// 					chats.push(newChat);
+				// 				}
+				// 			}
+				// 			else {
+				// 				chats.push(newChat);
+				// 			}
+	
+				// 			this.setState({ chats: chats }, () => {
+				// 				const chatBox = document.getElementById('chat-messages');
+				// 				chatBox.scrollTop = chatBox.scrollHeight;
+	
+				// 				const chatInput = document.getElementById('chat-input');
+				// 				chatInput.style.height = `24px`;
+				// 			});
+				// 		})
+				// 	})
+				// })
+				// .catch((err) => {
+				// 	console.log(err);
+				// });
 			}
 
 		});
@@ -816,10 +938,20 @@ class Tv extends React.Component {
 
 	selectChannel(index, first = false) {
 		this.props.setPageLoader();
-		this.setState({ selected_index: index, error: false, chats: [] }, () => {
-			this.loadChatMessages(this.state.live_events[this.state.selected_index].id);
-			this.statusChatBlock(this.state.live_events[this.state.selected_index].id);
-			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id)
+		this.setState({ selected_index: index, error: false, chats: [], ads_data: null, isAds: false }, () => {
+			setTimeout(() => { 
+				if (this.state.chat_open) {
+					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+						this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id); 
+					}
+				}
+			}, 100);
+			let epgLoaded = false;
+			let catchupLoaded = false;
+
+			this.loadChatMessages(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
+			this.statusChatBlock(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
+			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id)
 				.then(res => {
 					this.setState({
 						selected_live_event: this.state.live_events[this.state.selected_index],
@@ -831,18 +963,53 @@ class Tv extends React.Component {
 						status: res.data.status
 					}, () => {
 						// this.initVOD();
-						if (!this.props.context_data.epg_id) {
-							this.initPlayer();
-						}
-						else if (first === true && this.props.context_data.epg_id) {
-							this.selectCatchup(this.props.context_data.epg_id, 'url');
-						}
-						this.props.setChannelCode(this.state.selected_live_event.channel_code);
-						this.props.setCatchupDate(formatDateWord(this.currentDate));
-						this.props.unsetPageLoader();
+
+						this.props.getEPG(formatDate(this.currentDate), this.state.live_events[this.state.selected_index].channel_code)
+							.then(response => {
+								epgLoaded = true;
+								let epg = response.data.data.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + 'T' + e.e).getTime());
+								this.setState({ epg: epg }, () => {
+									if (first != true) {
+										let programLive = this.getCurrentLiveEpg();
+										liveTvChannelClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, programLive ? programLive.title : 'N/A', 'mweb_livetv_channel_clicked');
+									}
+
+									if (!this.props.context_data.epg_id) {
+										this.initPlayer();
+									}
+									else if (first === true && this.props.context_data.epg_id) {
+										this.selectCatchup(this.props.context_data.epg_id, 'url');
+									}
+									this.props.setChannelCode(this.state.selected_live_event.channel_code);
+									this.props.setCatchupDate(formatDateWord(this.currentDate));
+									if (epgLoaded && catchupLoaded) {
+										this.props.unsetPageLoader();
+									}
+								});
+							})
+							.catch(error => {
+								epgLoaded = true;
+								console.log(error);
+								if (first != true) {
+									liveTvChannelClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'N/A', 'mweb_livetv_channel_clicked');
+								}
+
+								if (!this.props.context_data.epg_id) {
+									this.initPlayer();
+								}
+								else if (first === true && this.props.context_data.epg_id) {
+									this.selectCatchup(this.props.context_data.epg_id, 'url');
+								}
+								this.props.setChannelCode(this.state.selected_live_event.channel_code);
+								this.props.setCatchupDate(formatDateWord(this.currentDate));
+								if (epgLoaded && catchupLoaded) {
+									this.props.unsetPageLoader();
+								}
+							});
 					});
 				})
 				.catch(error => {
+					epgLoaded = true;
 					console.log(error);
 					this.setState({
 						error: true,
@@ -853,27 +1020,11 @@ class Tv extends React.Component {
 					this.props.unsetPageLoader();
 				});
 
-			this.props.getEPG(formatDate(this.currentDate), this.state.live_events[this.state.selected_index].channel_code)
-				.then(response => {
-					let epg = response.data.data.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + 'T' + e.e).getTime());
-					this.setState({ epg: epg }, () => {
-						if (first != true) {
-							let programLive = this.getCurrentLiveEpg();
-							liveTvChannelClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, programLive ? programLive.title : 'N/A', 'mweb_livetv_channel_clicked');
-						}
-						this.props.unsetPageLoader();
-					});
-				})
-				.catch(error => {
-					console.log(error);
-					if (first != true) {
-						liveTvChannelClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'N/A', 'mweb_livetv_channel_clicked');
-					}
-					this.props.unsetPageLoader();
-				});
+			
 
 			this.props.getEPG(formatDate(new Date(this.state.selected_date)), this.state.live_events[this.state.selected_index].channel_code)
 				.then(response => {
+					catchupLoaded = true;
 					let catchup = response.data.data.filter(e => {
 						if (e.s > e.e) {
 							return this.currentDate.getTime() > new Date(new Date(this.state.selected_date + ' ' + e.e).getTime() + (1 * 24 * 60 * 60 * 1000)).getTime();
@@ -882,12 +1033,17 @@ class Tv extends React.Component {
 					});
 					this.setState({ catchup: catchup }, () => {
 						this.props.setCatchupData(catchup);
-						this.props.unsetPageLoader();
+						if (epgLoaded && catchupLoaded) {
+							this.props.unsetPageLoader();
+						}
 					});
 				})
 				.catch(error => {
+					catchupLoaded = true;
 					console.log(error);
-					this.props.unsetPageLoader();
+					if (epgLoaded && catchupLoaded) {
+						this.props.unsetPageLoader();
+					}
 				});
 		});
 
@@ -897,7 +1053,7 @@ class Tv extends React.Component {
 	selectCatchup(id, ref = false) {
 		this.props.setPageLoader();
 		if (!ref) {
-			liveTvCatchupScheduleClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_catchup_schedule_clicked');
+			liveTvCatchupScheduleClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_catchup_schedule_clicked');
 		}
 		else {
 			this.setState({ selected_tab: 'catch_up_tv' });
@@ -937,21 +1093,23 @@ class Tv extends React.Component {
 		this.setState({ select_modal: !this.state.select_modal });
 	}
 
-	toggleActionSheet(caption = '', url = '', hashtags = []) {
+	toggleActionSheet(caption = '', url = '', hashtags = [], tabStatus = '') {
 		this.setState({
+			tabStatus: tabStatus,
+			pathShare: this.state.live_events[this.state.selected_index].name,
 			action_sheet: !this.state.action_sheet,
 			caption: caption,
 			url: url,
-			hashtags: hashtags
+			hashtags: hashtags,
 		}, () => {
 			if (this.state.action_sheet) {
 				switch (this.state.selected_tab) {
 					case 'live':
-						liveTvShareClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_share_clicked');
+						liveTvShareClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_share_clicked');
 						break;
 
 					case 'catch_up_tv':
-						liveTvShareCatchupClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'N/A', 'mweb_livetv_share_catchup_clicked');
+						liveTvShareCatchupClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'N/A', 'mweb_livetv_share_catchup_clicked');
 						break;
 				}
 			}
@@ -961,9 +1119,19 @@ class Tv extends React.Component {
 	toggleChat() {
 		if (this.checkLogin()) {
 			this.setState({ chat_open: !this.state.chat_open }, () => {
+				if (this.state.chat_open && !this.state.isAds) {
+					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+						this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
+					}
+				}
+				if (!this.state.chat_open) {
+					this.setState((state,props) => ({
+						ads_data: null,
+					}));
+				}
 				this.props.toggleFooter(this.state.chat_open);
 				if (this.state.chat_open) {
-					liveTvLiveChatClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_livechat_clicked');
+					liveTvLiveChatClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_livechat_clicked');
 				}
 				const chatBox = document.getElementById('chat-messages');
 				chatBox.scrollTop = chatBox.scrollHeight;
@@ -1017,13 +1185,12 @@ class Tv extends React.Component {
 	sendChat() {
 		if (this.state.user_data) {
 			if (this.state.chat != '') {
-				this.statusChatBlock(this.state.live_events[this.state.selected_index].id);
+				this.statusChatBlock(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
 				const userData = this.state.user_data;
 				let user = userData.nickname ? userData.nickname :
 					userData.display_name ? userData.display_name :
 						userData.email ? userData.email.replace(/\d{4}$/, '****') :
 							userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
-
 				let newChat = {
 					ts: Date.now(),
 					m: this.state.chat,
@@ -1041,7 +1208,7 @@ class Tv extends React.Component {
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
 
-					this.props.setChat(this.state.live_events[this.state.selected_index].id, newChat.m, user, this.state.user_data.photo_url)
+					this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, newChat.m, user, this.state.user_data.photo_url)
 						.then(response => {
 							newChat.sent = true;
 							if (response.status !== 200 || response.data.status.code !== 0) {
@@ -1057,6 +1224,28 @@ class Tv extends React.Component {
 							this.setState({ chats: chats, sending_chat: false });
 						});
 				});
+				// this.props.postChatSocket(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.chat, this.state.user_data.photo_url, user)
+				// .then(response => {
+				// 	newChat.sent = true;
+				// 	if (response.status !== 200) {
+				// 		newChat.failed = true
+				// 	}
+				// 	chats[chats.length - 1] = newChat;
+				// 		this.setState({ chats: chats, sending_chat: false });
+				// })
+				// .catch(() => {
+				// 	newChat.sent = true;
+				// 	newChat.failed = true;
+				// 	chats[chats.length - 1] = newChat;
+				// 	this.setState({ chats: chats, sending_chat: false });
+				// });
+				// this.setState({ chats: chats, chat: '', sending_chat: true }, () => {
+				// 	const chatBox = document.getElementById('chat-messages');
+				// 	chatBox.scrollTop = chatBox.scrollHeight;
+
+				// 	const chatInput = document.getElementById('chat-input');
+				// 	chatInput.style.height = `24px`;
+				// });
 			}
 		}
 		else {
@@ -1080,7 +1269,7 @@ class Tv extends React.Component {
 				userData.display_name ? userData.display_name :
 					userData.email ? userData.email.replace(/\d{4}$/, '****') :
 						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
-			this.props.setChat(this.state.live_events[this.state.selected_index].id, lastChat.m, user, this.state.user_data.photo_url)
+			this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, lastChat.m, user, this.state.user_data.photo_url)
 				.then(response => {
 					lastChat.sent = true;
 					if (response.status !== 200 || response.data.status.code !== 0) {
@@ -1115,12 +1304,80 @@ class Tv extends React.Component {
 			googletag.pubads().refresh();
 		}, 600000);
 	}
-
+	getAds(id) {
+		if(id) {
+			this.props.getAdsChat(id)
+			.then(({data}) => {
+				this.setState({
+					ads_data: data,
+				}, () => {
+					if(data.data) {
+						stickyAdsShowing(data, 'sticky_ads_showing')
+						appierAdsShow(data, 'sticky_ads_showing');
+						RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
+					}
+				});
+				// console.log(this.state.ads_data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+		}
+	}
+	callbackAds(e) {
+		console.log(e)
+		this.setState({
+			ads_data: null,
+		}, () => {
+			setTimeout(() => { 
+				if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+					this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id); 
+				}
+			}, 100);
+		});
+	}
+	callbackCount(end, current) {
+		console.log(this.state.isAds)
+		if(this.state.isAds) {
+			let distance = getCountdown(end, current)[0] || 100000;
+			const countdown = setInterval(() => {
+				// console.log("callback from child", distance)
+				distance -= 1000
+				if (distance < 0 || !this.state.isAds) {
+					clearInterval(countdown)
+					this.setState({
+						ads_data: null,
+						isAds: false,
+					}, () => {
+						if(this.state.chat_open) {
+							setTimeout(() => { 
+								if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+									this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id); 
+								}
+							}, 100);
+						}
+					});
+				}
+			}
+			,1000)
+		}
+	}
+	getStatusAds(e) {
+		if(this.state.ads_data) {
+			console.log('STCKY-CLOSED',this.state.ads_data)
+			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+			appierAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+			RPLUSAdsClicked(this.state.ads_data, 'click', 'sticky_ads_clicked', 'closed')
+		}
+		this.setState({
+			isAds: e,
+		}, () => { console.log(this.state.isAds)})
+	}
 	render() {
 		let playerRef = (<div></div>);
 		if (this.state.error) {
 			playerRef = (
-				<div style={{
+				<div ref={ this.playerContainerRef } style={{
 					textAlign: 'center',
 					padding: 30,
 					minHeight: 180
@@ -1147,7 +1404,7 @@ class Tv extends React.Component {
 			playerRef = (
 				<div>
 					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
-					<div className="player-tv-container">
+					<div ref={ this.playerContainerRef } className="player-tv-container">
 						<div data-vjs-player>
 							<div
                                 onClick={() => {
@@ -1195,6 +1452,24 @@ class Tv extends React.Component {
 				<Head>
 					<meta name="description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description} />
 					<meta name="keywords" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].keywords} />
+					<meta property="og:title" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title} />
+					<meta property="og:description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description} />
+					<meta property="og:image" itemProp="image" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].image} />
+					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content="600" />
+					<meta property="og:image:height" content="315" />
+					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+					<meta name="twitter:image" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].image} />
+					<meta name="twitter:image:alt" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title} />
+					<meta name="twitter:title" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title} />
+					<meta name="twitter:description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description} />
+					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 
 					<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 					<script dangerouslySetInnerHTML={{
@@ -1223,6 +1498,7 @@ class Tv extends React.Component {
 					toggle={this.toggleSelectModal.bind(this)} />
 
 				<ActionSheet
+					tabStatus= {this.state.tabStatus}
 					caption={this.state.caption}
 					url={this.state.url}
 					open={this.state.action_sheet}
@@ -1231,7 +1507,7 @@ class Tv extends React.Component {
 
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{playerRef}
-					<div className="tv-wrap">
+					<div ref= {this.tvTabRef} className="tv-wrap">
 						<Row>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=rcti" as="/tv/rcti">
@@ -1258,14 +1534,14 @@ class Tv extends React.Component {
 					<Nav tabs className="tab-wrap">
 						<NavItem onClick={() => {
 							this.setState({ selected_tab: 'live' }, () => {
-								liveTvTabClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'Live', 'mweb_livetv_tab_clicked');
+								liveTvTabClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'Live', 'mweb_livetv_tab_clicked');
 							});
 						}} className={this.state.selected_tab === 'live' ? 'selected' : ''}>
 							<NavLink>Live</NavLink>
 						</NavItem>
 						<NavItem onClick={() => {
 							this.setState({ selected_tab: 'catch_up_tv' }, () => {
-								liveTvTabClicked(this.state.live_events[this.state.selected_index].id, this.state.live_events[this.state.selected_index].name, 'Catch Up TV', 'mweb_livetv_tab_clicked');
+								liveTvTabClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'Catch Up TV', 'mweb_livetv_tab_clicked');
 							});
 						}} className={this.state.selected_tab === 'catch_up_tv' ? 'selected' : ''}>
 							<NavLink>Catch Up TV</NavLink>
@@ -1282,7 +1558,7 @@ class Tv extends React.Component {
 												<div className="subtitle">{e.s} - {e.e}</div>
 											</Col>
 											<Col className="right-side">
-												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Live TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + e.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code])} className="share-btn" />
+												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Live TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + e.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code],'livetv')} className="share-btn" />
 											</Col>
 										</Row>);
 									}
@@ -1311,7 +1587,7 @@ class Tv extends React.Component {
 												</Link>
 											</Col>
 											<Col className="right-side">
-												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + `/tv/${this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`, ['rctiplus', this.props.chats.channel_code])} className="share-btn" />
+												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + `/tv/${this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`, ['rctiplus', this.props.chats.channel_code], 'catchup')} className="share-btn" />
 											</Col>
 										</Row>
 									))}
@@ -1319,13 +1595,23 @@ class Tv extends React.Component {
 							</TabPane>
 						</TabContent>
 					</div>
-					<div className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
+					{/* setHeightChatBox */}
+					{/* <div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
 						(isIOS ?
 							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
 							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
+						: null}> */}
+					<div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
+						{ height: this.setHeightChatBox() }
 						: null}>
-						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
-						<div className="box-chat" style={{ height: 300 }}>
+						<div className="btn-chat">
+							<Button onClick={this.toggleChat.bind(this)} color="link">
+								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
+							</Button>
+							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
+						</div>
+						{/* <div className="box-chat" style={{ height: 300 }}> */}
+						<div className="box-chat">
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
 								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
 									<div>
@@ -1351,7 +1637,7 @@ class Tv extends React.Component {
 								))}
 							</div>
 							<div className="chat-input-box">
-								<div className="chat-box">
+								<div ref={ this.inputChatBoxRef } className="chat-box">
 									<Row>
 										<Col xs={1}>
 											<Button className="emoji-button">
@@ -1384,7 +1670,7 @@ class Tv extends React.Component {
 									}}
 									showPreview={false}
 									darkMode
-									style={{ height: this.state.emoji_picker_open ? 200 : 0 }} />
+									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
 							</div>
 						</div>
 					</div>

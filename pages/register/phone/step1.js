@@ -41,10 +41,7 @@ class Step1 extends Component {
 
 		this.genderMap = {
 			'0': 'Female',
-			'3': 'Male',
-			'6': 'Male',
-			'9': 'Female',
-			'12': 'Female'
+			'1': 'Male'
 		};
 
 		this.dateConfig = {
@@ -61,19 +58,19 @@ class Step1 extends Component {
 			date: {
 				format: 'DD',
 				caption: 'Day',
-				step: 1
+				step: 4
 			}
 		};
 
 		this.genderConfig = {
 			month: {
-				format: value => this.genderMap[value.getMonth()],
+				format: value => this.genderMap[value.getMonth() % 2],
 				caption: 'Mon',
-				step: 6
+				step: 1
 			}
 		};
 
-		console.log(this.state.gender);
+		console.log(this.genderConfig);
 	}
 
 	handleSelectBirthdate(date) {
@@ -91,10 +88,19 @@ class Step1 extends Component {
 	}
 
 	handleSelectGender(gender) {
-		const g = gender.getMonth();
+		const g = gender.getMonth() % 2;
 		this.setState({ gender: this.genderMap[g], genderpicker_open: false });
 		this.props.setGender(this.genderMap[g].toLowerCase());
 	}
+
+	onChangeGender(e) {
+		if (e.target.value && e.target.value != 'Select gender') {
+			this.setState({ gender: e.target.value });
+		}
+		else {
+			this.setState({ gender: '' });
+		}
+    }
 
 	handleFullnameChange(e) {
 		this.setState({ fullname: e.target.value });
@@ -254,6 +260,18 @@ class Step1 extends Component {
 								<Label>Gender</Label>
 								<InputGroup>
 									<Input
+										type="select"
+										value={this.state.gender ? this.state.gender.charAt(0).toUpperCase() + this.state.gender.substring(1) : ''}
+										onChange={this.onChangeGender.bind(this)}
+										invalid={this.state.gender_invalid}
+										placeholder="Select gender"
+										className="inpt-form"
+										style={{ backgroundColor: '#272727', color: 'white', WebkitAppearance: 'none' }}>
+										<option>Select gender</option>
+										<option>Male</option>
+										<option>Female</option>
+									</Input>
+									{/* <Input
 										className="inpt-form addon-right-input"
 										type="text"
 										name="gender"
@@ -267,7 +285,7 @@ class Step1 extends Component {
 										<InputGroupText className="inpt-form addon-right">
 											<ArrowDropdownIcon />
 										</InputGroupText>
-									</InputGroupAddon>
+									</InputGroupAddon> */}
 									<FormFeedback>{this.state.gender_invalid_message}</FormFeedback>
 								</InputGroup>
 							</FormGroup>

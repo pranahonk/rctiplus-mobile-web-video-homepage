@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
+import Head from 'next/head';
 import initialize from '../../utils/initialize';
 import Actionsheet from '../../assets/js/react-actionsheet/lib';
 
@@ -25,6 +26,7 @@ import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import '../../assets/scss/components/edit-profile.scss';
 
 import * as LoadImage from 'blueimp-load-image';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../../config';
 
 
 class EditProfile extends React.Component {
@@ -65,7 +67,8 @@ class EditProfile extends React.Component {
             otp: '',
             show_action_sheet: false,
             input_photo_accept: 'image/*',
-            profile_photo_src: 'https://cdn.zeplin.io/5c7fab96082323628629989f/assets/DDD7D5C6-7114-402B-A0C4-4EC7DE7707BC.svg'
+            profile_photo_src: 'https://cdn.zeplin.io/5c7fab96082323628629989f/assets/DDD7D5C6-7114-402B-A0C4-4EC7DE7707BC.svg',
+            capture: ''
         };
 
         this.inputPhotoElement = null;
@@ -167,7 +170,9 @@ class EditProfile extends React.Component {
             const base64Data = img.toDataURL('image/jpeg');
             self.setState({ profile_photo_src: base64Data }, () => {
                 self.props.setUserProfilePhoto(self.state.profile_photo_src);
-                Router.push('/user/photo/crop');
+                setTimeout(() => {
+                    Router.push('/user/photo/crop');
+                }, 1000);
             });
         }, { orientation: true });
         // const reader = new FileReader();
@@ -230,7 +235,29 @@ class EditProfile extends React.Component {
 
     render() {
         return (
-            <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
+            <Layout title={SITEMAP.edit_profile.title}>
+                <Head>
+                    <meta name="description" content={SITEMAP.edit_profile.description}/>
+					<meta name="keywords" content={SITEMAP.edit_profile.keywords}/>
+					<meta property="og:title" content={SITEMAP.edit_profile.title} />
+					<meta property="og:description" content={SITEMAP.edit_profile.description} />
+					<meta property="og:image" itemProp="image" content={SITEMAP.edit_profile.image} />
+					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content="600" />
+					<meta property="og:image:height" content="315" />
+					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+					<meta name="twitter:image" content={SITEMAP.edit_profile.image} />
+					<meta name="twitter:image:alt" content={SITEMAP.edit_profile.title} />
+					<meta name="twitter:title" content={SITEMAP.edit_profile.title} />
+					<meta name="twitter:description" content={SITEMAP.edit_profile.description} />
+					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
+                </Head>
                 <NavBack 
                     visible 
                     title="Edit Profile"
@@ -251,13 +278,13 @@ class EditProfile extends React.Component {
                         }
                     ]}/>
                 <Actionsheet show={this.state.show_action_sheet} menus={[{ content: 'Camera', onClick: () => {
-                    this.setState({ input_photo_accept: 'image/*;capture=camera' }, () => this.inputPhotoElement.click());
+                    this.setState({ input_photo_accept: 'image/*', capture: 'camera' }, () => this.inputPhotoElement.click());
                 } }, { content: 'Gallery', onClick: () => {
-                    this.setState({ input_photo_accept: 'image/*' }, () => this.inputPhotoElement.click());
+                    this.setState({ input_photo_accept: 'image/*', capture: '' }, () => this.inputPhotoElementGallery.click());
                 } }]} onRequestClose={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })} cancelText="Cancel"/>
                 <div className="wrapper-content container-box-ep" style={{ marginTop: 50 }}>
-                    <input onChange={this.handleCameraTakePhoto.bind(this)} ref={input => this.inputPhotoElement = input} id="profile-photo-data" type="file" accept={this.state.input_photo_accept} style={{ display: 'none' }}/>
-                    
+                    <input onChange={this.handleCameraTakePhoto.bind(this)} ref={input => this.inputPhotoElement = input} id="profile-photo-data" type="file" accept={this.state.input_photo_accept} style={{ display: 'none' }} capture={this.state.capture}/>
+                    <input onChange={this.handleCameraTakePhoto.bind(this)} ref={input => this.inputPhotoElementGallery = input} type="file" accept={this.state.input_photo_accept} style={{ display: 'none' }}/>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
                         <FormGroup className="profile-photo-container">
                             <div className="profile-photo" onClick={() => this.setState({ show_action_sheet: !this.state.show_action_sheet })}>
@@ -395,5 +422,5 @@ export default connect(state => state, {
     ...userActions,
     ...othersActions,
     ...actions,
-    ...pageActions
-})(EditProfile);
+    ...pageActions,
+})(withRouter(EditProfile));

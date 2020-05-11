@@ -100,6 +100,11 @@
     transition-duration: 0.4s;
     transition-timing-function: ease-out;
 
+    .btn-chat {
+        width: 100%;
+        text-align: left;
+    }
+
     .box-chat {
         .wrap-live-chat__block {
             position: absolute;
@@ -295,8 +300,8 @@
     }
 
     .box-chat {
-        height: calc(100vh - 253px);
-        position: relative;
+        height: 100%;
+        // position: relative;
         padding: 0;
         background-color: #282828;
         vertical-align: bottom;
@@ -307,10 +312,9 @@
             left: 0;
             right: 0;
             z-index: 6;
-            // margin-bottom: 7px;
-            padding-top: 5px;
-            // padding-bottom: 30px;
+            padding: 10px 0;
             background: #171717;
+            transition: all ease-out 0.3s;
 
             .chat-box {
                 padding: 5px 10px;
@@ -382,6 +386,59 @@
             transition-property: all;
             transition-duration: .6s;
             transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+        }
+    }
+}
+
+#live-event {
+    &.le-container {
+			padding-top: 5%;
+			z-index: 99999;
+			color: #fff;
+			margin-left: 10px;
+			margin-right: 10px;
+            margin-top: 50px;
+            overflow-x: hidden;
+			height: calc(100vh - 100px);
+			.le-live {
+				margin-bottom: 15px;
+            }
+			.le-title {
+				h1 {
+					font-size: 14px;
+					font-weight: bold;
+				}
+			}
+            // Bootstrap class
+            .container {
+                padding: 0;
+            }
+            .row {
+                margin: 0;
+            }
+			.col-6 {
+				padding: 5px;
+			}
+    }
+    .le-full__error {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        vertical-align: middle;
+    }
+    .le-error {
+        text-align: center;
+        font-size: 12px;
+        color: #8f8f8f;
+        padding: 30px;
+        p {
+            margin: 0;
+            font-weight: bold;
+            &:last-child {
+                font-size: 10px;
+                font-weight: normal;
+            }
         }
     }
 }

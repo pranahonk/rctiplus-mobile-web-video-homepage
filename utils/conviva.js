@@ -1,7 +1,7 @@
 import { getUserId } from './appier';
 import { setCookie, getCookie } from './cookie';
 
-export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName, tags) => {
+export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName, tags, cdn = '') => {
     return {
         assetName: assetName,
         player: player,
@@ -12,6 +12,9 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
             const assetName = this.assetName;
             let convivaMetadata = new Conviva.ConvivaContentInfo(assetName, tags);
             convivaMetadata.streamUrl = playerUrl;
+            if (cdn) {
+                convivaMetadata.cdn = cdn;
+            }
             if (isLive === true) {
                 convivaMetadata.isLive = isLive;
             }
@@ -20,7 +23,7 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
                 convivaMetadata.duration = isLive;
             }
             
-            convivaMetadata.playerName = playerName;
+            convivaMetadata.playerName = 'RCTI+ MWEB';
             convivaMetadata.viewerId = getUserId().toString();
 
             const streamer = new Conviva.ConvivaVideojsStreamerProxy(this.player);

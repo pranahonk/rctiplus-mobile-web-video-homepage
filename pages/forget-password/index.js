@@ -67,6 +67,12 @@ class ForgetPassword extends React.Component {
                                     });
                                     this.props.setUsernameType(message == 'please try again, email has been taken' ? 'EMAIL' : 'PHONE_NUMBER');
                                 }
+                                else if (message == 'Your phone is Available' || message == 'Your email is Available') {
+                                    this.setState({
+                                        username_invalid: true,
+                                        username_invalid_message: 'User has not been registered'
+                                    });
+                                }
                                 else {
                                     if (response.data.status.code != 0) {
                                         this.setState({

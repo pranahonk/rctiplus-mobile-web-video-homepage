@@ -155,8 +155,14 @@ class HlsQualitySelectorPlugin {
     // https://rplus-recording.oss-ap-southeast-5.aliyuncs.com/m3u8/record/liveevent/asix/2020-05-07-14-59-01_2020-05-07-16-17-30.m3u8
     const player = this.player;
     const qualityList = player.qualityLevels();
-    const levels = qualityList.levels_ || [];
+    let levels = qualityList.levels_ || [];
     const levelItems = [];
+
+    if (levels && levels.length > 0) {
+      if (!levels[0].bitrate) {
+        levels = [{ bitrate: 0.39 },{ bitrate: 0.56 }, { bitrate: 1.10 }, { bitrate: 2.00 }];
+      }
+    }
 
     for (let i = 0; i < levels.length; ++i) {
       if (!levelItems.filter(_existingItem => {

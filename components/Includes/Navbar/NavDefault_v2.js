@@ -122,7 +122,7 @@ class NavbarDef_v2 extends Component {
                             }}/>
                         </Col>
                         <Col xs={6} className="center-content install-description">
-                            <img className="install-logo" src="/static/logo/rcti.png" />
+                            <img className="install-logo" src="/static/logo/rcti-sm.png" />
                             Lebih Asyik Nonton dengan Aplikasi RCTI+
                         </Col>
                         <Col xs={4} className="center-content" >
@@ -137,7 +137,7 @@ class NavbarDef_v2 extends Component {
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
                             <NavbarBrand onClick={this.goToHome.bind(this)}>
-                                <img className="logo-top" src="/static/logo/rcti.png" />
+                                <img className="logo-top" src="/static/logo/rcti-sm.png" />
                             </NavbarBrand>
                         </div>
                     </div>

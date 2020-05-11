@@ -1,5 +1,5 @@
 import React from 'react';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
 import { connect } from 'react-redux';
@@ -31,7 +31,7 @@ import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 
 import '../assets/scss/components/exclusive.scss';
 
-import { SITEMAP } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 
 import { exclusiveGeneralEvent, exclusiveTabEvent, exclusiveContentEvent, exclusiveShareEvent, exclusiveProfileProgramEvent, exclusiveTitleProgramEvent, exclusivePhotoSlideNextEvent, exclusivePhotoSlidePreviousEvent } from '../utils/appier';
 
@@ -63,8 +63,10 @@ class Exclusive extends React.Component {
 			hashtags: [],
 			category: this.props.category,
 			selected_program: null,
+			pathExlusive: '',
 			vmap: '',
-			status: false
+			status: false,
+			data: null
 		};
 
 		this.player = null;
@@ -275,7 +277,8 @@ class Exclusive extends React.Component {
 				trailer_url: video_url,
 				vmap: vmap, 
 				selected_program: program ,
-				status: status
+				status: status,
+				data: data
 			});
 		}
 	}
@@ -294,10 +297,11 @@ class Exclusive extends React.Component {
 		}
 
 		this.setState({
+			pathExlusive: program.title.replace(/\s+/g,''),
 			action_sheet: !this.state.action_sheet,
 			caption: caption,
 			url: url,
-			hashtags: hashtags
+			hashtags: hashtags,
 		});
 	}
 
@@ -330,6 +334,24 @@ class Exclusive extends React.Component {
 				<Head>
 					<meta name="description" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].description}/>
 					<meta name="keywords" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].keywords}/>
+					<meta property="og:title" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].title} />
+					<meta property="og:description" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].description} />
+					<meta property="og:image" itemProp="image" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].image} />
+					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content="600" />
+					<meta property="og:image:height" content="315" />
+					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+					<meta name="twitter:image" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].image} />
+					<meta name="twitter:image:alt" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].title} />
+					<meta name="twitter:title" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].title} />
+					<meta name="twitter:description" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].description} />
+					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
 				{process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)}
 
@@ -353,10 +375,12 @@ class Exclusive extends React.Component {
 					vmap={this.state.vmap}
 					meta={this.state.meta}
 					status={this.state.status}
+					data={this.state.data}
 					videoUrl={this.state.trailer_url} />
 
 				<ActionSheet
 					caption={this.state.caption}
+					path={this.state.pathExlusive}
 					url={this.state.url}
 					open={this.state.action_sheet}
 					hashtags={this.state.hashtags}
@@ -493,4 +517,4 @@ export default connect(state => state, {
 	...contentActions,
 	...feedActions,
 	...pageActions
-})(Exclusive);
+})(withRouter(Exclusive));

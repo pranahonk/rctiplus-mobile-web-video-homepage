@@ -9,21 +9,21 @@ import TimeAgo from 'react-timeago';
 import fetch from 'isomorphic-unfetch';
 import queryString from 'query-string';
 import { isIOS } from 'react-device-detect';
-import MuteChat from '../components/Includes/Common/MuteChat';
+import MuteChat from '../../components/Includes/Common/MuteChat';
 
 
-import initialize from '../utils/initialize';
-import { getCookie } from '../utils/cookie';
-import { showSignInAlert } from '../utils/helpers';
-import { contentGeneralEvent } from '../utils/appier';
+import initialize from '../../utils/initialize';
+import { getCookie } from '../../utils/cookie';
+import { showSignInAlert } from '../../utils/helpers';
+import { contentGeneralEvent } from '../../utils/appier';
 
-import liveAndChatActions from '../redux/actions/liveAndChatActions';
-import pageActions from '../redux/actions/pageActions';
-import chatsActions from '../redux/actions/chats';
-import userActions from '../redux/actions/userActions';
+import liveAndChatActions from '../../redux/actions/liveAndChatActions';
+import pageActions from '../../redux/actions/pageActions';
+import chatsActions from '../../redux/actions/chats';
+import userActions from '../../redux/actions/userActions';
 
-import Layout from '../components/Layouts/Default_v2';
-import Wrench from '../components/Includes/Common/Wrench';
+import Layout from '../../components/Layouts/Default_v2';
+import Wrench from '../../components/Includes/Common/Wrench';
 
 import { Row, Col, Button, Input } from 'reactstrap';
 
@@ -34,16 +34,16 @@ import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import PauseIcon from '../components/Includes/Common/PauseIcon';
+import PauseIcon from '../../components/Includes/Common/PauseIcon';
 
-import { DEV_API, VISITOR_TOKEN } from '../config';
+import { DEV_API, VISITOR_TOKEN, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, STATIC } from '../../config';
 
-import '../assets/scss/components/live-event.scss';
-import '../assets/scss/videojs.scss';
+import '../../assets/scss/components/live-event.scss';
+import '../../assets/scss/videojs.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
-import { getUserId } from '../utils/appier';
-import { convivaVideoJs } from '../utils/conviva';
+import { getUserId } from '../../utils/appier';
+import { convivaVideoJs } from '../../utils/conviva';
 
 import videojs from 'video.js';
 import 'videojs-contrib-ads';
@@ -223,60 +223,59 @@ class LiveEvent extends React.Component {
 			chatBox.scrollTop = chatBox.scrollHeight;
 			this.props.unsetPageLoader();
 			if (true) {
-				let firstLoadChat = true;
-				this.props.listenChatMessages(id)
-					.then(collection => {
-						let snapshots = this.state.snapshots;
-						let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
-							querySnapshot.docChanges()
-								.map(change => {
-									let chats = this.state.chats;
-									if (change.type === 'added') {
-										if (!this.state.sending_chat) {
-											if (chats.length > 0) {
-												let lastChat = chats[chats.length - 1];
-												let newChat = change.doc.data();
-												if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-													if (firstLoadChat) {
-														chats.unshift(newChat);
-													}
-													else {
-														chats.push(newChat);
-													}
-												}
-											}
-											else {
-												if (firstLoadChat) {
-													chats.unshift(change.doc.data());
-												}
-												else {
-													chats.push(change.doc.data());
-												}
-											}
+				this.props.getChatSocket(id)
+				.then(data => {
+					let chats = this.state.chats;
+					if (!this.state.sending_chat) {
+						if (chats.length > 0) {
+							let lastChat = chats[chats.length - 1];
+							let newChat = data.data;
+							if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+								chats = newChat;
+							}
+							}
+							else {
+								chats = data.data;
+							}
 
-											const chatBox = document.getElementById('chat-messages');
-											chatBox.scrollTop = chatBox.scrollHeight;
+						this.setState({ chats: chats }, () => {
+							const chatBox = document.getElementById('chat-messages');
+							chatBox.scrollTop = chatBox.scrollHeight;
 
-											const chatInput = document.getElementById('chat-input');
-											chatInput.style.height = `24px`;
-											this.setState({ chats: chats });
-										}
-									}
-
-									// if (change.type === 'removed') {
-									// 	let removed = change.doc.data();
-									// 	for (let i = 0; i < chats.length; i++) {
-									// 		if (chats[i].ts === removed.ts) {
-									// 			chats.splice(i, 1);
-									// 		}
-									// 	}
-									// 	this.setState({ chats: chats });
-									// }
-								});
+							const chatInput = document.getElementById('chat-input');
+							chatInput.style.height = `24px`;
 						});
-						snapshots[id] = snapshot;
-						this.setState({ snapshots: snapshots });
-					});
+					}
+				})
+				.then(() => {
+					this.props.listenSocketIo(id)
+					.then((socket) => {
+						socket.on('message', (data) => {
+						let chats = this.state.chats;
+						let newChat = data;
+							if (chats.length > 0) {
+								let lastChat = chats[chats.length - 1];
+								if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+									chats.push(newChat);
+								}
+							}
+							else {
+								chats.push(newChat);
+							}
+	
+							this.setState({ chats: chats }, () => {
+								const chatBox = document.getElementById('chat-messages');
+								chatBox.scrollTop = chatBox.scrollHeight;
+	
+								const chatInput = document.getElementById('chat-input');
+								chatInput.style.height = `24px`;
+							});
+						})
+					})
+				})
+				.catch((err) => {
+					console.log(err);
+				});
 			}
 
 		});
@@ -757,8 +756,6 @@ class LiveEvent extends React.Component {
 		if (this.state.user_data) {
 			if (this.state.chat != '') {
 				const { id } = this.props.selected_event.data;
-				this.statusChatBlock(id);
-
 				const userData = this.state.user_data;
 				let user = userData.nickname ? userData.nickname :
 					userData.display_name ? userData.display_name :
@@ -773,29 +770,28 @@ class LiveEvent extends React.Component {
 					failed: false
 				};
 				let chats = this.state.chats;
-				chats.push(newChat);
+				// chats.push(newChat);
+				this.props.postChatSocket(id, this.state.chat, this.state.user_data.photo_url, user)
+				.then(response => {
+					newChat.sent = true;
+					if (response.status !== 200) {
+						newChat.failed = true
+					}
+					chats[chats.length - 1] = newChat;
+						this.setState({ chats: chats, sending_chat: false });
+				})
+				.catch(() => {
+					newChat.sent = true;
+					newChat.failed = true;
+					chats[chats.length - 1] = newChat;
+					this.setState({ chats: chats, sending_chat: false });
+				});
 				this.setState({ chats: chats, chat: '', sending_chat: true }, () => {
 					const chatBox = document.getElementById('chat-messages');
 					chatBox.scrollTop = chatBox.scrollHeight;
 
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
-
-					this.props.setChat(id, newChat.m, user, this.state.user_data.photo_url)
-						.then(response => {
-							newChat.sent = true;
-							if (response.status !== 200 || response.data.status.code !== 0) {
-								newChat.failed = true;
-							}
-							chats[chats.length - 1] = newChat;
-							this.setState({ chats: chats, sending_chat: false });
-						})
-						.catch(() => {
-							newChat.sent = true;
-							newChat.failed = true;
-							chats[chats.length - 1] = newChat;
-							this.setState({ chats: chats, sending_chat: false });
-						});
 				});
 			}
 		}
@@ -881,13 +877,45 @@ class LiveEvent extends React.Component {
 
 		return this.state.error ? errorRef : playerRef;
 	}
+	getMeta() {
+		if(Object.keys(this.props.router.query).length === 0) {
+			return {
+				title: 'Live Event - RCTI+',
+				description: 'Nonton streaming online live event hanya di RCTI+',
+				image: '',
+			}
+		}
+		return {
+			title: 'Streaming ' + this.props.router.query.title.replace(/-/gi, ' ') || '' + ' - RCTI+',
+			description: 'Nonton streaming online ' + this.props.router.query.title.replace(/-/gi, ' ') || '' + 'tanggal ' + this.props.selected_event.start_date || '' + ' WIB hanya di RCTI+ ',
+			image: this.props.selected_event.meta.image_path+'300'+this.props.selected_event.data.portrait_image || '',
+		}
+	}
 
 	render() {
 		return (
-			<Layout title="Live Event - RCTI+">
+			<Layout title={this.getMeta().title}>
 				<Head>
-					<meta name="description" content={`description`} />
-					<meta name="keywords" content={`keywords`} />
+					<meta name="description" content={this.getMeta().description} />
+					<meta name="keywords" content={this.getMeta().title} />
+					<meta property="og:title" content={this.getMeta().title} />
+					<meta property="og:description" content={this.getMeta().description} />
+					<meta property="og:image" itemProp="image" content={this.getMeta().image} />
+					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:image:type" content="image/jpeg" />
+					<meta property="og:image:width" content="600" />
+					<meta property="og:image:height" content="315" />
+					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+					<meta name="twitter:image" content={this.getMeta().image} />
+					<meta name="twitter:image:alt" content={this.getMeta().title} />
+					<meta name="twitter:title" content={this.getMeta().title} />
+					<meta name="twitter:description" content={this.getMeta().description} />
+					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{/* { this.state.error ? errorRef : playerRef } */}
