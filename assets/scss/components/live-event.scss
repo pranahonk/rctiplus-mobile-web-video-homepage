@@ -100,6 +100,11 @@
     transition-duration: 0.4s;
     transition-timing-function: ease-out;
 
+    .btn-chat {
+        width: 100%;
+        text-align: left;
+    }
+
     .box-chat {
         .wrap-live-chat__block {
             position: absolute;
@@ -295,8 +300,8 @@
     }
 
     .box-chat {
-        height: calc(100vh - 253px);
-        position: relative;
+        height: 100%;
+        // position: relative;
         padding: 0;
         background-color: #282828;
         vertical-align: bottom;
@@ -307,10 +312,9 @@
             left: 0;
             right: 0;
             z-index: 6;
-            // margin-bottom: 7px;
-            padding-top: 5px;
-            // padding-bottom: 30px;
+            padding: 10px 0;
             background: #171717;
+            transition: all ease-out 0.3s;
 
             .chat-box {
                 padding: 5px 10px;

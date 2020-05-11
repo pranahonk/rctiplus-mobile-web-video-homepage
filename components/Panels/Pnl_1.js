@@ -114,7 +114,14 @@ class Pnl_1 extends React.Component {
 											loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 											src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
 										{this.props.type === 'custom' ? (<div className="ribbon">Live</div>) : (<div></div>)}
-										{/* {c.content_type === 'live' ? (<CountdownTimer timer={getCountdown(c.release_date_quiz)} statusTimer="1"/>) : (<div></div>)} */}
+										{c.content_type === 'live' ? (
+											<div style={{ position: 'absolute', right: 0 }}>
+												<CountdownTimer 
+												timer={getCountdown(c.release_date_quiz, c.current_date)[0]} 
+												statusTimer="1"
+												statusPlay={getCountdown(c.release_date_quiz, c.current_date)[1]}/>
+											</div>
+											) : (<div></div>)}
 									</div>
 									{c.display_type == 'hide_url' ? null : (
 										<div className="txt-slider-panel no-bg">

@@ -121,11 +121,29 @@ export const showSignInAlert = (text, title, callback, buttonInverse = false, co
 };
 
 export const getCountdown = (release, current) => {
-    const now = new Date(parseInt(current) * 1000).getTime();
+    const now = new Date(parseInt(current) * 1000).getTime() || new Date().getTime();
     const timeRelease = new Date(parseInt(release) * 1000).getTime();
     const result = (timeRelease - now);
     if(timeRelease < now) {
         return [result, false]
     }
     return [result, true];
+}
+
+export const getTruncate = (text = '', clamp = '...', length = 100) => {
+    // text = `is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was po`
+    if (text.length <= length) return text;
+
+    var tcText = text.slice(0, length - clamp.length);
+    var last = tcText.length - 1;
+    
+
+    while (last > 0 && tcText[last] !== ' ' && tcText[last] !== clamp[0]) last -= 1;
+
+    // Fix for case when text dont have any `space`
+    last = last || length - clamp.length;
+
+    tcText =  tcText.slice(0, last);
+
+    return tcText + clamp;
 }

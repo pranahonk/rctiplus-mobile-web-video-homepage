@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { connect } from 'react-redux';
@@ -8,6 +8,7 @@ import Img from 'react-image';
 import TimeAgo from 'react-timeago';
 
 import initialize from '../utils/initialize';
+import { getCountdown } from '../utils/helpers';
 
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 import pageActions from '../redux/actions/pageActions';
@@ -19,6 +20,7 @@ import SelectDateModal from '../components/Modals/SelectDateModal';
 import ActionSheet from '../components/Modals/ActionSheet';
 import Wrench from '../components/Includes/Common/Wrench';
 import MuteChat from '../components/Includes/Common/MuteChat';
+import Toast from '../components/Includes/Common/Toast';
 
 import { formatDate, formatDateWord, getFormattedDateBefore } from '../utils/dateHelpers';
 import { showAlert, showSignInAlert } from '../utils/helpers';
@@ -43,7 +45,9 @@ import { BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } fro
 import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
-import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId } from '../utils/appier';
+import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId, appierAdsShow, appierAdsClicked } from '../utils/appier';
+import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTracking';
+import { RPLUSAdsShowing, RPLUSAdsClicked } from '../utils/internalTracking';
 import { convivaVideoJs } from '../utils/conviva';
 
 import videojs from 'video.js';
@@ -67,6 +71,10 @@ class Tv extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.chatBoxRef = React.createRef();
+		this.playerContainerRef = React.createRef();
+		this.tvTabRef = React.createRef();
+		this.inputChatBoxRef = React.createRef();
 		const now = new Date();
 		this.state = {
 			live_events: [],
@@ -95,6 +103,8 @@ class Tv extends React.Component {
 			error_data: {},
 			emoji_picker_open: false,
 			chats: [],
+			ads_data: null,
+			isAds: false,
 			chat: '',
 			user_data: null,
 			snapshots: [],
@@ -130,8 +140,11 @@ class Tv extends React.Component {
 			this.convivaTracker.cleanUpSession();
 		}
 	}
-
+	componentDidUpdate() {
+		// this.sample();
+	}
 	componentDidMount() {
+		initGA();
 		this.props.setPageLoader();
 		this.props.getLiveEvent('on air')
 			.then(response => {
@@ -165,7 +178,10 @@ class Tv extends React.Component {
 
 		// this.refreshPubAds();
 	}
-
+	setHeightChatBox() {
+		let heightPlayer = this.playerContainerRef.current.clientHeight + this.tvTabRef.current.clientHeight;
+		return `calc(100% - ${heightPlayer}px)`;
+	}
 	isLiveProgram(epg) {
 		const currentTime = new Date().getTime();
 		const startTime = new Date(formatDate(this.currentDate) + 'T' + epg.s).getTime();
@@ -922,7 +938,14 @@ class Tv extends React.Component {
 
 	selectChannel(index, first = false) {
 		this.props.setPageLoader();
-		this.setState({ selected_index: index, error: false, chats: [] }, () => {
+		this.setState({ selected_index: index, error: false, chats: [], ads_data: null, isAds: false }, () => {
+			setTimeout(() => { 
+				if (this.state.chat_open) {
+					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+						this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id); 
+					}
+				}
+			}, 100);
 			let epgLoaded = false;
 			let catchupLoaded = false;
 
@@ -1096,6 +1119,16 @@ class Tv extends React.Component {
 	toggleChat() {
 		if (this.checkLogin()) {
 			this.setState({ chat_open: !this.state.chat_open }, () => {
+				if (this.state.chat_open && !this.state.isAds) {
+					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+						this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
+					}
+				}
+				if (!this.state.chat_open) {
+					this.setState((state,props) => ({
+						ads_data: null,
+					}));
+				}
 				this.props.toggleFooter(this.state.chat_open);
 				if (this.state.chat_open) {
 					liveTvLiveChatClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_livechat_clicked');
@@ -1271,12 +1304,80 @@ class Tv extends React.Component {
 			googletag.pubads().refresh();
 		}, 600000);
 	}
-
+	getAds(id) {
+		if(id) {
+			this.props.getAdsChat(id)
+			.then(({data}) => {
+				this.setState({
+					ads_data: data,
+				}, () => {
+					if(data.data) {
+						stickyAdsShowing(data, 'sticky_ads_showing')
+						appierAdsShow(data, 'sticky_ads_showing');
+						RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
+					}
+				});
+				// console.log(this.state.ads_data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+		}
+	}
+	callbackAds(e) {
+		console.log(e)
+		this.setState({
+			ads_data: null,
+		}, () => {
+			setTimeout(() => { 
+				if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+					this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id); 
+				}
+			}, 100);
+		});
+	}
+	callbackCount(end, current) {
+		console.log(this.state.isAds)
+		if(this.state.isAds) {
+			let distance = getCountdown(end, current)[0] || 100000;
+			const countdown = setInterval(() => {
+				// console.log("callback from child", distance)
+				distance -= 1000
+				if (distance < 0 || !this.state.isAds) {
+					clearInterval(countdown)
+					this.setState({
+						ads_data: null,
+						isAds: false,
+					}, () => {
+						if(this.state.chat_open) {
+							setTimeout(() => { 
+								if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+									this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id); 
+								}
+							}, 100);
+						}
+					});
+				}
+			}
+			,1000)
+		}
+	}
+	getStatusAds(e) {
+		if(this.state.ads_data) {
+			console.log('STCKY-CLOSED',this.state.ads_data)
+			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+			appierAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+			RPLUSAdsClicked(this.state.ads_data, 'click', 'sticky_ads_clicked', 'closed')
+		}
+		this.setState({
+			isAds: e,
+		}, () => { console.log(this.state.isAds)})
+	}
 	render() {
 		let playerRef = (<div></div>);
 		if (this.state.error) {
 			playerRef = (
-				<div style={{
+				<div ref={ this.playerContainerRef } style={{
 					textAlign: 'center',
 					padding: 30,
 					minHeight: 180
@@ -1303,7 +1404,7 @@ class Tv extends React.Component {
 			playerRef = (
 				<div>
 					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
-					<div className="player-tv-container">
+					<div ref={ this.playerContainerRef } className="player-tv-container">
 						<div data-vjs-player>
 							<div
                                 onClick={() => {
@@ -1406,7 +1507,7 @@ class Tv extends React.Component {
 
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{playerRef}
-					<div className="tv-wrap">
+					<div ref= {this.tvTabRef} className="tv-wrap">
 						<Row>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=rcti" as="/tv/rcti">
@@ -1494,13 +1595,23 @@ class Tv extends React.Component {
 							</TabPane>
 						</TabContent>
 					</div>
-					<div className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
+					{/* setHeightChatBox */}
+					{/* <div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
 						(isIOS ?
 							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
 							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
+						: null}> */}
+					<div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
+						{ height: this.setHeightChatBox() }
 						: null}>
-						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
-						<div className="box-chat" style={{ height: 300 }}>
+						<div className="btn-chat">
+							<Button onClick={this.toggleChat.bind(this)} color="link">
+								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
+							</Button>
+							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
+						</div>
+						{/* <div className="box-chat" style={{ height: 300 }}> */}
+						<div className="box-chat">
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
 								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
 									<div>
@@ -1526,7 +1637,7 @@ class Tv extends React.Component {
 								))}
 							</div>
 							<div className="chat-input-box">
-								<div className="chat-box">
+								<div ref={ this.inputChatBoxRef } className="chat-box">
 									<Row>
 										<Col xs={1}>
 											<Button className="emoji-button">
@@ -1559,7 +1670,7 @@ class Tv extends React.Component {
 									}}
 									showPreview={false}
 									darkMode
-									style={{ height: this.state.emoji_picker_open ? 200 : 0 }} />
+									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
 							</div>
 						</div>
 					</div>

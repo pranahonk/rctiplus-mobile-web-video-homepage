@@ -17,7 +17,9 @@ import MuteChat from '../../components/Includes/Common/MuteChat';
 import initialize from '../../utils/initialize';
 import { getCookie } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
-import { contentGeneralEvent, liveEventTabClicked, liveShareEvent } from '../../utils/appier';
+import { contentGeneralEvent, liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked } from '../../utils/appier';
+import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../utils/firebaseTracking';
+import { RPLUSAdsShowing, RPLUSAdsClicked } from '../../utils/internalTracking';
 
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
@@ -33,6 +35,7 @@ import SignalIcon from '../../components/Includes/Common/SignalIcon';
 import StreamVideoIcon from '../../components/Includes/Common/StreamVideoIcon';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 import ErrorPlayer from '../../components/Includes/Player/ErrorPlayer';
+import Toast from '../../components/Includes/Common/Toast';
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -135,6 +138,8 @@ class LiveEvent extends React.Component {
 		super(props);
 		console.log(this.props.selected_event);
 		console.log(this.props.selected_event_url);
+		this.playerContainerRef = React.createRef();
+		this.titleRef = React.createRef();
 		this.state = {
 			tabStatus: '',
 			isAvailable: false,
@@ -154,6 +159,8 @@ class LiveEvent extends React.Component {
 			chats: [],
 			live_events: [],
 			missed_event: [],
+			ads_data: null,
+			isAds: false,
 			meta: '',
 			resolution: 300,
 			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
@@ -191,7 +198,9 @@ class LiveEvent extends React.Component {
 		this.currentTime = new Date().getTime();
 		this.props.setPageLoader();
 	}
-	
+	componentDidUpdate() {
+		console.log(this.playerContainerRef.current.clientHeight, this.titleRef.current.clientHeight)
+	}
 	componentWillUnmount() {
 		for (let key in this.state.snapshots) {
 			this.state.snapshots[key]();
@@ -202,6 +211,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 	componentDidMount() {
+		initGA();
 		this.getAvailable();
 		if (this.props.router.asPath.match('/missed-event/')) {
 			this.setState({
@@ -616,7 +626,7 @@ class LiveEvent extends React.Component {
 						overrideNative: true,
 					},
 					nativeAudioTracks: false,
-    			nativeVideoTracks: false,
+					nativeVideoTracks: false,
 				},
 				sources: [{
 					src: url,
@@ -890,6 +900,16 @@ class LiveEvent extends React.Component {
 	toggleChat() {
 		if (this.checkLogin()) {
 			this.setState({ chat_open: !this.state.chat_open }, () => {
+				if (this.state.chat_open && !this.state.isAds) {
+					if(this.props.selected_event.data) {
+						this.getAds(this.props.selected_event.data.id);
+					}
+				}
+				if (!this.state.chat_open) {
+					this.setState((state,props) => ({
+						ads_data: null,
+					}));
+				}
 				this.props.toggleFooter(this.state.chat_open);
 				const chatBox = document.getElementById('chat-messages');
 				chatBox.scrollTop = chatBox.scrollHeight;
@@ -1152,6 +1172,77 @@ class LiveEvent extends React.Component {
 		};
 	}
 
+	getAds(id) {
+		if(id) {
+			this.props.getAdsChat(id)
+			.then(({data}) => {
+				this.setState({
+					ads_data: data,
+				}, () => {
+					if (data.data) {
+						stickyAdsShowing(data, 'sticky_ads_showing');
+						appierAdsShow(data, 'sticky_ads_showing', 'live-event');
+						RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
+					}
+				});
+				// console.log(this.state.ads_data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+		}
+	}
+	callbackAds(e) {
+		console.log(e)
+		this.setState({
+			ads_data: null,
+		}, () => {
+			setTimeout(() => { 
+				if (this.props.selected_event.data) {
+					this.getAds(this.props.selected_event.data.id); 
+				}
+			}, 100);
+		});
+	}
+
+	callbackCount(end, current) {
+		console.log(this.state.isAds)
+		if(this.state.isAds) {
+			let distance = getCountdown(end, current)[0] || 100000;
+			const countdown = setInterval(() => {
+				// console.log("callback from child", distance)
+				distance -= 1000
+				if (distance < 0 || !this.state.isAds) {
+					clearInterval(countdown)
+					this.setState({
+						ads_data: null,
+						isAds: false,
+					}, () => {
+						if(this.state.chat_open) {
+							setTimeout(() => { 
+								if (this.props.selected_event.data) {
+									this.getAds(this.props.selected_event.data.id); 
+								}
+							}, 100);
+						}
+					});
+				}
+			}
+			,1000)
+		}
+	}
+	getStatusAds(e) {
+		if(this.state.ads_data) {
+			console.log('STCKY-CLOSED',this.state.ads_data)
+			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+			appierAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+			RPLUSAdsClicked(this.state.ads_data, 'click', 'sticky_ads_clicked', 'closed')
+		}
+		this.setState({
+			isAds: e,
+		}, () => { console.log(this.state.isAds)})
+	}
+
 	render() {
 		let { selected_event } = this.props;
 		let errorEvent = (<Col xs="12" key="1" className="le-error">
@@ -1209,8 +1300,10 @@ class LiveEvent extends React.Component {
 					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])} />
 				<NavBack navPlayer={true}/>
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
-					{this.renderPlayer()}
-					<div className="title-wrap">
+					<div ref={ this.playerContainerRef } >
+						{this.renderPlayer()}
+					</div>
+					<div ref= { this.titleRef } className="title-wrap">
 						<div style={{
 							display: 'flex',
 							alignItems: 'center'
@@ -1288,12 +1381,15 @@ class LiveEvent extends React.Component {
 					</div>
 					{ this.props.router.asPath.match('/missed-event/') || this.state.selected_tab === 'missed-event'  ? (<div />) : 
 					 (<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
-						(isIOS ?
-							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
-							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
+						{height: `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
 						: null}>
-						<Button onClick={this.toggleChat.bind(this)} color="link"><ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" /></Button>
-						<div className="box-chat" style={{ height: 300 }}>
+						<div className="btn-chat">
+							<Button onClick={this.toggleChat.bind(this)} color="link">
+								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
+							</Button>
+							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
+						</div>
+						<div className="box-chat">
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
 								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
 									<div>
@@ -1352,7 +1448,7 @@ class LiveEvent extends React.Component {
 									}}
 									showPreview={false}
 									darkMode
-									style={{ height: this.state.emoji_picker_open ? 200 : 0 }} />
+									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
 							</div>
 						</div>
 					</div>)}

@@ -170,7 +170,9 @@ class EditProfile extends React.Component {
             const base64Data = img.toDataURL('image/jpeg');
             self.setState({ profile_photo_src: base64Data }, () => {
                 self.props.setUserProfilePhoto(self.state.profile_photo_src);
-                Router.push('/user/photo/crop');
+                setTimeout(() => {
+                    Router.push('/user/photo/crop');
+                }, 1000);
             });
         }, { orientation: true });
         // const reader = new FileReader();
