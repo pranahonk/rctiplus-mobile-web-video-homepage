@@ -532,7 +532,7 @@ var HlsQualitySelectorPlugin = function () {
     var qualityList = player.qualityLevels();
     var levels = qualityList.levels_ || [];
     var levelItems = [];
-    console.log(levels);
+
     if (levels && levels.length > 0) {
       if (!levels[0].bitrate && !levels[0].height) {
         // levels = [{ bitrate: 420865 },{ bitrate: 770703 }, { bitrate: 1237103 }, { bitrate: 2403103 }];

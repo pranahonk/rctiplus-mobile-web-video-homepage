@@ -86,8 +86,6 @@ class HlsQualitySelectorPlugin {
 
   }
 
-
-
   /**
    * Get identifier from QualityLevels Representation
    *
@@ -121,10 +119,6 @@ class HlsQualitySelectorPlugin {
     return value;
   }
 
-
-
-
-
   /**
    *Set inner button text.
    *
@@ -157,7 +151,7 @@ class HlsQualitySelectorPlugin {
     const qualityList = player.qualityLevels();
     let levels = qualityList.levels_ || [];
     const levelItems = [];
-    console.log(levels);
+
     if (levels && levels.length > 0) {
       if (!levels[0].bitrate && !levels[0].height) {
         // levels = [{ bitrate: 420865 },{ bitrate: 770703 }, { bitrate: 1237103 }, { bitrate: 2403103 }];
