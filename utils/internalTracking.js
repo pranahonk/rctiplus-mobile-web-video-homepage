@@ -34,7 +34,7 @@ export const RPLUSAdsShowing = (value,eventType, eventName ,platform = 'MWEB') =
       'type': value.data.type || 'N/A',
       'platform': platform,
     },
-    'device-id': navigator.userAgent,
+    'device-id': new DeviceUUID().get(),
     'user-id': getUserId(),
     'content-id': 'N/A',
   };
@@ -51,11 +51,11 @@ export const RPLUSAdsClicked = (value,eventType, eventName , clickType, platform
       'sponsor_id': value.id || 'N/A',
       'channel_id': value.channel_id || 'N/A',
       'channel_type': value.channel,
-      'click_type': clickType,
+      'clicked_type': clickType,
       'type': value.type || 'N/A',
       'platform': platform,
     },
-    'device-id': navigator.userAgent,
+    'device-id': new DeviceUUID().get(),
     'user-id': getUserId(),
     'content-id': 'N/A',
   };
