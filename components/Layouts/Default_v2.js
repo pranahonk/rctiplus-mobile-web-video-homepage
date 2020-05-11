@@ -106,10 +106,12 @@ class Default_v2 extends React.Component {
 
                     <script src="/static/js/fontawesome.js" crossOrigin="anonymous"></script>
 
-                    <script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
-                    <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>
+                    {/* <script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
+                    <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script> */}
                     {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
-                    <script src="https://cdn.qgraph.io/dist/aiqua-wp.js"></script>
+                    
+                    {/* <script src="https://cdn.qgraph.io/dist/aiqua-wp.js"></script> */}
+                    <script src="/static/js/aiqua-wp.js"></script>
                     <script dangerouslySetInnerHTML={{ __html: `
                         AIQUA.init({
                             appId: 'c63c2960bf562e9ec2de',
@@ -118,6 +120,7 @@ class Default_v2 extends React.Component {
                     `}}>
                     </script>
                     <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+                    {/* <script src="/static/js/gpt.js"></script> */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         window.googletag = window.googletag || {cmd: []};
                         googletag.cmd.push(function() {
@@ -148,7 +151,9 @@ class Default_v2 extends React.Component {
                     <noscript><img src="https://certify.alexametrics.com/atrk.gif?account=8oNJt1FYxz20cv" style={{ display: 'none' }} height="1" width="1" alt="" /></noscript>
                     {/* <!-- End Alexa Certify Javascript --> */}
                 </Head>
-                <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+                {/* <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script> */}
+                <script async type="text/javascript" src="/static/js/ima3.js"></script>
+
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
                 {/* <!-- DO NOT touch the following DIV --> */}
