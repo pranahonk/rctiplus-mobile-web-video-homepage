@@ -10,6 +10,45 @@ class StickyAds extends React.Component {
         closed: false
     }
 
+    componentDidMount() {
+        switch (process.env.MODE) {
+            case 'PRODUCTION':
+                window.googletag = window.googletag || { cmd: [] };
+                googletag.cmd.push(function() {
+                    googletag.defineSlot('/21865661642/PRO_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1584677487159-0').addService(googletag.pubads());
+                    googletag.pubads().enableSingleRequest();
+                    googletag.pubads().collapseEmptyDivs();
+                    googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+                        if (event.isEmpty) {
+                            document.getElementById('sticky-ads-container').style.display = 'none';
+                        }
+                    });
+                    googletag.enableServices();
+                });
+                googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584677487159-0'); });
+                break;
+
+            case 'DEVELOPMENT':
+                window.googletag = window.googletag || {cmd: []};
+                googletag.cmd.push(function() {
+                    googletag.defineSlot('/21865661642/RC_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1584677577539-0').addService(googletag.pubads());
+                    googletag.pubads().enableSingleRequest();
+                    googletag.pubads().collapseEmptyDivs();
+
+                    googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+                        if (event.isEmpty) {
+                            document.getElementById('sticky-ads-container').style.display = 'none';
+                            console.log('EMPTY ADS');
+                        }
+                    });
+                    googletag.enableServices();
+                });
+                googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584677577539-0'); });
+                break;
+        }
+        
+    }
+
     render() {
         return (
             <div id="sticky-ads-container" className={"sticky-ads " + (this.props.sticky ? 'sticky-ads-on' : '') + ' ' + (this.state.closed ? 'sticky-ads-off' : '')}>
