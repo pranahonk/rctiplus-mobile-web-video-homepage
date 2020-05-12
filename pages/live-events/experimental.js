@@ -640,30 +640,30 @@ class LiveEvent extends React.Component {
 				vm.reloadSourceOnError(reloadOptions);
 				if(isIOS) {
                     vm.muted(true)
-										const wrapElement = document.getElementsByClassName('video-js');
-										console.log(wrapElement)
+					const wrapElement = document.getElementsByClassName('video-js');
+					console.log(wrapElement)
                     if(wrapElement[0] !== undefined) {
-										const elementCreateWrapper = document.createElement('btn');
-                    const elementMuteIcon = document.createElement('span');
-                    elementCreateWrapper.classList.add('jwplayer-vol-off');
-                    elementCreateWrapper.innerText = 'Tap to unmute ';
-                    wrapElement[0].appendChild(elementCreateWrapper);
-                    elementCreateWrapper.appendChild(elementMuteIcon);
-                    elementCreateWrapper.addEventListener('click', function() {
-                        console.log('mute video')
-                        if (elementCreateWrapper === null) {
-                            vm.muted(false);
-                            elementCreateWrapper.classList.add('jwplayer-mute');
-                            elementCreateWrapper.classList.remove('jwplayer-full');
-                        } 
-                        else {
-                            vm.muted(false);
-                            elementCreateWrapper.classList.add('jwplayer-full');
-                            elementCreateWrapper.classList.remove('jwplayer-mute');
-                        }
-                    });
-								}
-						}
+						const elementCreateWrapper = document.createElement('btn');
+						const elementMuteIcon = document.createElement('span');
+						elementCreateWrapper.classList.add('jwplayer-vol-off');
+						elementCreateWrapper.innerText = 'Tap to unmute ';
+						wrapElement[0].appendChild(elementCreateWrapper);
+						elementCreateWrapper.appendChild(elementMuteIcon);
+						elementCreateWrapper.addEventListener('click', function() {
+							console.log('mute video');
+							if (elementCreateWrapper === null) {
+								vm.muted(false);
+								elementCreateWrapper.classList.add('jwplayer-mute');
+								elementCreateWrapper.classList.remove('jwplayer-full');
+							} 
+							else {
+								vm.muted(false);
+								elementCreateWrapper.classList.add('jwplayer-full');
+								elementCreateWrapper.classList.remove('jwplayer-mute');
+							}
+						});
+					}
+				}
 				
 				const player = this;
 				const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
