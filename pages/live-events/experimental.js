@@ -1298,9 +1298,9 @@ class LiveEvent extends React.Component {
 					open={this.state.action_sheet}
 					hashtags={this.state.hashtags}
 					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])} />
-				<NavBack navPlayer={true}/>
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
-					<div ref={ this.playerContainerRef } >
+					<div ref={ this.playerContainerRef }  className="rplus-player-container">
+					<NavBack navPlayer={true} stylePos="absolute"/>
 						{this.renderPlayer()}
 					</div>
 					<div ref= { this.titleRef } className="title-wrap">
