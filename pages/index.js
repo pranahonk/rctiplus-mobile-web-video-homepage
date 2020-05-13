@@ -22,6 +22,7 @@ import Panel3 from '../components/Panels/Pnl_3';
 import Panel4 from '../components/Panels/Pnl_4';
 import StickyAds from '../components/Includes/Banner/StickyAds';
 import GridMenu from '../components/Includes/Common/GridMenu';
+import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 import { setCookie, getCookie } from '../utils/cookie';
@@ -42,10 +43,11 @@ class Index_v2 extends React.Component {
             is_loading: false,
             length: 10,
             show_sticky_install: false,
-            sticky_ads_closed: false
+            sticky_ads_closed: false,
+            isShimmer: true,
         };
 
-        this.props.setPageLoader();
+        // this.props.setPageLoader();
         this.swipe = {};
     }
 
@@ -70,11 +72,12 @@ class Index_v2 extends React.Component {
         this.props.getContents(this.state.page, this.state.length)
             .then(response => {
                 console.log(response);
-                this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta }, () => this.props.unsetPageLoader());
+                this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta, isShimmer:false }, () => this.props.unsetPageLoader());
             })
             .catch(error => {
                 console.log(error);
                 this.props.unsetPageLoader();
+                this.setState({ isShimmer: false });
             });
         
         if (getCookie('STICKY_INSTALL_CLOSED')) {
@@ -148,51 +151,54 @@ class Index_v2 extends React.Component {
                 </Head>
                 <BottomScrollListener offset={150} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color={this.state.show_sticky_install ? '#000' : '#fff'} onRef={ref => (this.LoadingBar = ref)} />
-                <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
-                <Carousel showStickyInstall={this.state.show_sticky_install}>
+                {this.state.isShimmer ? (<HomeLoader/>) : (
+                <div>
+                        <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
+                    <Carousel showStickyInstall={this.state.show_sticky_install}>
                     <GridMenu />
-                </Carousel>
-                <Stories/>
-                <StickyContainer>
-                    <Sticky>
-                        { ({ distanceFromTop }) => {
-                            if (distanceFromTop < 0) {
-                                if (!this.props.ads.ads_displayed) {
-                                    return (<StickyAds/>);
-                                }
-                                const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
-                                if (adsContents.length > 0) {
-                                    if (adsContents[0].tagName == 'SCRIPT') {
-                                        const stickyAds = document.getElementById('sticky-ads-container');
-                                        if (stickyAds) {
-                                            stickyAds.style.display = 'none'
+                    </Carousel>
+                    <Stories/>
+                    <StickyContainer>
+                        <Sticky>
+                            { ({ distanceFromTop }) => {
+                                if (distanceFromTop < 0) {
+                                    if (!this.props.ads.ads_displayed) {
+                                        return (<StickyAds/>);
+                                    }
+                                    const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
+                                    if (adsContents.length > 0) {
+                                        if (adsContents[0].tagName == 'SCRIPT') {
+                                            const stickyAds = document.getElementById('sticky-ads-container');
+                                            if (stickyAds) {
+                                                stickyAds.style.display = 'none'
+                                            }
                                         }
                                     }
+                                    return (<StickyAds sticky/>);
                                 }
-                                return (<StickyAds sticky/>);
+                                return (<StickyAds/>);
+                            } }
+                        </Sticky>
+                    </StickyContainer>
+                    <div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
+                        {contents.map((content, i) => {
+                            switch (content.display_type) {
+                                case 'horizontal_landscape_large':
+                                    return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={420} displayType={content.display_type}/>;
+
+                                case 'horizontal_landscape':
+                                    return <Panel2 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} displayType={content.display_type}/>;
+
+                                case 'horizontal':
+                                    return <Panel3 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} displayType={content.display_type}/>;
+
+                                case 'vertical':
+                                    return <Panel4 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} displayType={content.display_type}/>;
                             }
-                            return (<StickyAds/>);
-                        } }
-                    </Sticky>
-                </StickyContainer>
-                {/* <native-home></native-home> */}
-                <div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
-                    {contents.map((content, i) => {
-                        switch (content.display_type) {
-                            case 'horizontal_landscape_large':
-                                return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={420} displayType={content.display_type}/>;
-
-                            case 'horizontal_landscape':
-                                return <Panel2 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} displayType={content.display_type}/>;
-
-                            case 'horizontal':
-                                return <Panel3 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} displayType={content.display_type}/>;
-
-                            case 'vertical':
-                                return <Panel4 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={this.state.resolution - 100} displayType={content.display_type}/>;
-                        }
-                    })}
+                        })}
+                    </div>
                 </div>
+                )}
                 {/* <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
                 <script dangerouslySetInnerHTML={{ __html: `
                     window.googletag = window.googletag || {cmd: []};

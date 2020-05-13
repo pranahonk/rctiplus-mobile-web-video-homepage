@@ -19,7 +19,7 @@ import { getCookie } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
 import { contentGeneralEvent, liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked } from '../../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../utils/firebaseTracking';
-import { RPLUSAdsShowing } from '../../utils/internalTracking';
+import { RPLUSAdsShowing, RPLUSAdsClicked } from '../../utils/internalTracking';
 
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
@@ -67,8 +67,8 @@ import videojs from 'video.js';
 import 'videojs-contrib-ads';
 import 'videojs-ima';
 import 'video.js/src/css/video-js.scss';
-import 'videojs-hls-quality-selector';
-import qualitySelector from 'videojs-hls-quality-selector';
+// import 'videojs-hls-quality-selector';
+import qualitySelector from '../../assets/js/videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
 import 'videojs-seek-buttons';
 import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
@@ -162,7 +162,7 @@ class LiveEvent extends React.Component {
 			ads_data: null,
 			isAds: false,
 			meta: '',
-			resolution: 300,
+			resolution: 600,
 			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
 			screen_width: 320,
 			quality_selector_shown: false,
@@ -199,7 +199,7 @@ class LiveEvent extends React.Component {
 		this.props.setPageLoader();
 	}
 	componentDidUpdate() {
-		console.log(this.playerContainerRef.current.clientHeight, this.titleRef.current.clientHeight)
+		// console.log(this.playerContainerRef.current.clientHeight, this.titleRef.current.clientHeight)
 	}
 	componentWillUnmount() {
 		for (let key in this.state.snapshots) {
@@ -359,7 +359,6 @@ class LiveEvent extends React.Component {
 							querySnapshot.docChanges()
 								.map(change => {
 									let chats = this.state.chats;
-									console.log(chats);
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
@@ -641,30 +640,30 @@ class LiveEvent extends React.Component {
 				vm.reloadSourceOnError(reloadOptions);
 				if(isIOS) {
                     vm.muted(true)
-										const wrapElement = document.getElementsByClassName('video-js');
-										console.log(wrapElement)
+					const wrapElement = document.getElementsByClassName('video-js');
+					console.log(wrapElement)
                     if(wrapElement[0] !== undefined) {
-										const elementCreateWrapper = document.createElement('btn');
-                    const elementMuteIcon = document.createElement('span');
-                    elementCreateWrapper.classList.add('jwplayer-vol-off');
-                    elementCreateWrapper.innerText = 'Tap to unmute ';
-                    wrapElement[0].appendChild(elementCreateWrapper);
-                    elementCreateWrapper.appendChild(elementMuteIcon);
-                    elementCreateWrapper.addEventListener('click', function() {
-                        console.log('mute video')
-                        if (elementCreateWrapper === null) {
-                            vm.muted(false);
-                            elementCreateWrapper.classList.add('jwplayer-mute');
-                            elementCreateWrapper.classList.remove('jwplayer-full');
-                        } 
-                        else {
-                            vm.muted(false);
-                            elementCreateWrapper.classList.add('jwplayer-full');
-                            elementCreateWrapper.classList.remove('jwplayer-mute');
-                        }
-                    });
-								}
-						}
+						const elementCreateWrapper = document.createElement('btn');
+						const elementMuteIcon = document.createElement('span');
+						elementCreateWrapper.classList.add('jwplayer-vol-off');
+						elementCreateWrapper.innerText = 'Tap to unmute ';
+						wrapElement[0].appendChild(elementCreateWrapper);
+						elementCreateWrapper.appendChild(elementMuteIcon);
+						elementCreateWrapper.addEventListener('click', function() {
+							console.log('mute video');
+							if (elementCreateWrapper === null) {
+								vm.muted(false);
+								elementCreateWrapper.classList.add('jwplayer-mute');
+								elementCreateWrapper.classList.remove('jwplayer-full');
+							} 
+							else {
+								vm.muted(false);
+								elementCreateWrapper.classList.add('jwplayer-full');
+								elementCreateWrapper.classList.remove('jwplayer-mute');
+							}
+						});
+					}
+				}
 				
 				const player = this;
 				const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
@@ -815,6 +814,7 @@ class LiveEvent extends React.Component {
 			});
 			this.player.hlsQualitySelector({
 				displayCurrentQuality: true,
+				identifyBy: 'bitrate'
 			});
 
 			this.disconnectHandler = null;
@@ -1179,13 +1179,13 @@ class LiveEvent extends React.Component {
 				this.setState({
 					ads_data: data,
 				}, () => {
-					if (this.state.ads_data) {
+					if (data.data) {
 						stickyAdsShowing(data, 'sticky_ads_showing');
 						appierAdsShow(data, 'sticky_ads_showing', 'live-event');
-						// RPLUSAdsShowing();
+						RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
 					}
 				});
-				console.log(this.state.ads_data);
+				// console.log(this.state.ads_data);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -1236,6 +1236,7 @@ class LiveEvent extends React.Component {
 			console.log('STCKY-CLOSED',this.state.ads_data)
 			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
 			appierAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
+			RPLUSAdsClicked(this.state.ads_data, 'click', 'sticky_ads_clicked', 'closed')
 		}
 		this.setState({
 			isAds: e,
@@ -1297,9 +1298,9 @@ class LiveEvent extends React.Component {
 					open={this.state.action_sheet}
 					hashtags={this.state.hashtags}
 					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])} />
-				<NavBack navPlayer={true}/>
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
-					<div ref={ this.playerContainerRef } >
+					<div ref={ this.playerContainerRef }  className="rplus-player-container">
+					<NavBack navPlayer={true} stylePos="absolute"/>
 						{this.renderPlayer()}
 					</div>
 					<div ref= { this.titleRef } className="title-wrap">

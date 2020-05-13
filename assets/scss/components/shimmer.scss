@@ -1,0 +1,22 @@
+.shimmer-container {
+  margin: 20px;
+  overflow: hidden;
+  .carousel-homepage-shimmer {
+    position: relative;
+  }
+  .homepage-menu-shimmer {
+    margin: 10px;
+  }
+  .homepage-story-shimmer {
+    flex-wrap: nowrap;
+  }
+  .homepage-content-shimmer{ 
+    margin: 30px 0 0 0;
+  }
+  img {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+  }
+}
