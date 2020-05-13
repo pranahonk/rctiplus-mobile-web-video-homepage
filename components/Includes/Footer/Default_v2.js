@@ -150,7 +150,7 @@ class FooterNav_v2 extends Component {
                     </div>
                 </div>
 
-                <script src="/static/js/fontawesome.js" crossOrigin="anonymous"></script>
+                <script src="/static/js/fontawesome.min.js" crossOrigin="anonymous"></script>
             </div>
         );
     }
