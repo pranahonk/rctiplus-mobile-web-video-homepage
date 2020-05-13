@@ -162,7 +162,7 @@ class LiveEvent extends React.Component {
 			ads_data: null,
 			isAds: false,
 			meta: '',
-			resolution: 300,
+			resolution: 600,
 			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
 			screen_width: 320,
 			quality_selector_shown: false,
