@@ -29,7 +29,7 @@ import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 
 import '../assets/scss/components/profile.scss';
 
@@ -228,7 +228,7 @@ class Profile extends React.Component {
 									<Img 
 										alt={cw.title} 
 										className="list-item-thumbnail" 
-										src={[this.state.meta.image_path + 400 + cw.landscape_image, '/static/placeholders/placeholder_landscape.png']} 
+										src={[this.state.meta.image_path + RESOLUTION_IMG + cw.landscape_image, '/static/placeholders/placeholder_landscape.png']} 
 										loader={<img className="list-item-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
 										unloader={<img className="list-item-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}/>
 									<Bar percentage={(cw.last_duration / cw.duration) * 100} />

@@ -44,7 +44,7 @@ import { Button, Row, Col, Nav, NavItem, NavLink, TabContent, TabPane } from 're
 import '../assets/scss/plugins/carousel/carousel.scss';
 import '../assets/scss/components/detail.scss';
 
-import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME, SITEMAP, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
+import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME, SITEMAP, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 import { getCookie } from '../utils/cookie';
 
 import { programRateEvent, programShareEvent, programContentShareEvent, programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent, programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, programSeasonListEvent, programTabEvent, programContentEvent, accountMylistContentClicked, accountMylistRemoveMylistClicked, accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked, searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent } from '../utils/appier';
@@ -86,7 +86,7 @@ class Detail extends React.Component {
             genre: [],
             release_date: '',
             meta: {},
-            resolution: 130,
+            resolution: RESOLUTION_IMG,
             episodes: [],
             seasons: [],
             extras: [],
@@ -1159,7 +1159,7 @@ class Detail extends React.Component {
                                 <div key={e.id}>
                                     <Row>
                                         <Col xs={6} onClick={() => this.link(e, 'episode')}>
-                                            <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+                                            <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + RESOLUTION_IMG + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
                                             <p onClick={() => this.link(e, 'episode')} className="item-title">S{e.season}:E{e.episode} {e.title}</p>
@@ -1191,7 +1191,7 @@ class Detail extends React.Component {
                                 <div key={e.id} className="non-description-list">
                                     <Row>
                                         <Col xs={6} onClick={() => this.link(e, 'extra')}>
-                                            <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+                                            <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + RESOLUTION_IMG + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
                                             <p onClick={() => this.link(e, 'extra')} className="item-title">{e.title}</p>
@@ -1217,7 +1217,7 @@ class Detail extends React.Component {
                                 <div key={e.id} className="non-description-list">
                                     <Row>
                                         <Col xs={6} onClick={() => this.link(e, 'clip')}>
-                                            <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + '140' + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
+                                            <Img alt={e.title} className="list-item-thumbnail" src={[this.state.meta.image_path + RESOLUTION_IMG + e.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
                                         </Col>
                                         <Col xs={6}>
                                             <p onClick={() => this.link(e, 'clip')} className="item-title">{e.title}</p>
@@ -1243,7 +1243,7 @@ class Detail extends React.Component {
                                 {this.state.contents['photo'].map(e => (
                                     <Col xs={6} key={e.id} onClick={this.goToPhotoList.bind(this, e)}>
                                         <div>
-                                            <Img className="list-item-thumbnail list-item-photo" src={[this.state.meta.image_path + '140' + (e.photos.length > 0 ? e.photos[0].image : e.program_icon_image), '/static/placeholders/placeholder_landscape.png']} />
+                                            <Img className="list-item-thumbnail list-item-photo" src={[this.state.meta.image_path + RESOLUTION_IMG + (e.photos.length > 0 ? e.photos[0].image : e.program_icon_image), '/static/placeholders/placeholder_landscape.png']} />
                                             <PhotoLibraryIcon className="img-icon"/>
                                         </div>
                                     </Col>
@@ -1265,7 +1265,7 @@ class Detail extends React.Component {
                                         <div onClick={() => {
                                             Router.push(`/programs/${rp.id}/${rp.title.replace(/ +/g, '-').toLowerCase()}`);
                                         }} key={rp.id} className="related-slide">
-                                            <Img alt={rp.title} src={[this.state.meta.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
+                                            <Img alt={rp.title} src={[this.state.meta.image_path + RESOLUTION_IMG + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
                                         </div>
                                     ))}
                                 </div>

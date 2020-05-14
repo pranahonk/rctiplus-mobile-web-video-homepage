@@ -12,6 +12,7 @@ import LiveIcon from '../../components/Includes/Common/LiveIcon';
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
 import { getCountdown } from '../../utils/helpers';
+import { RESOLUTION_IMG } from '../../config';
 
 import { Container, Row, Col } from 'reactstrap';
 import '../../assets/scss/components/live-event.scss';
@@ -83,7 +84,7 @@ class Index extends React.Component {
           backgroundColor="#fa262f"
           statusLabel="1"
           statusTimer="1"
-          src={`${this.state.meta.image_path}600${list.landscape_image}`} alt={list.name}/>
+          src={`${this.state.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
         </Col>
       );
     });
@@ -96,7 +97,7 @@ class Index extends React.Component {
           backgroundColor="#fa262f"
           statusLabel="0"
           statusTimer="0"
-          src={`${this.state.meta.image_path}600${list.landscape_image}`} alt={list.name}/>
+          src={`${this.state.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
         </Col>
       );
     });

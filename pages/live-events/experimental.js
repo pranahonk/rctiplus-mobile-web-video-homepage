@@ -51,7 +51,7 @@ import PauseIcon from '../../components/Includes/Common/PauseIcon';
 import Wrench from '../../components/Includes/Common/Wrench';
 import MissedIcon from '../../components/Includes/Common/Missed';
 
-import { DEV_API, VISITOR_TOKEN, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, STATIC } from '../../config';
+import { DEV_API, VISITOR_TOKEN, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, STATIC, RESOLUTION_IMG } from '../../config';
 
 import '../../assets/scss/components/live-event-v2.scss';
 import '../../assets/scss/components/live-event.scss';
@@ -162,7 +162,7 @@ class LiveEvent extends React.Component {
 			ads_data: null,
 			isAds: false,
 			meta: '',
-			resolution: 600,
+			resolution: RESOLUTION_IMG,
 			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
 			screen_width: 320,
 			quality_selector_shown: false,
