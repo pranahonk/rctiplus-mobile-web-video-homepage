@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import actions from '../../redux/actions';
 import pageActions from '../../redux/actions/pageActions';
 import userActions from '../../redux/actions/userActions';
+import chatsActions from '../../redux/actions/chats';
 
 import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
@@ -41,6 +42,7 @@ class Default_v2 extends React.Component {
     }
 
     componentDidMount() {
+        this.props.initializeFirebase();
         console.log('User added to home screen');
         if (typeof window !== 'undefined') {
             window.addEventListener('beforeinstallprompt', async e => {
@@ -70,7 +72,7 @@ class Default_v2 extends React.Component {
         if (this.header && this.header == 0) {
             const navbar = document.getElementsByClassName('nav-fixed-top');
             if (navbar && navbar.length > 0) {
-                navbar[0].style.display = 'none';
+                navbar[0].style.display = 'none'; 
             }
         }
     }
@@ -195,5 +197,6 @@ class Default_v2 extends React.Component {
 export default connect(state => state, {
     ...actions,
     ...pageActions,
-    ...userActions
+    ...userActions,
+    ...chatsActions
 })(withRouter(Default_v2));
