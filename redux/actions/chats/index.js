@@ -3,31 +3,6 @@ import 'firebase/firebase-auth';
 import 'firebase/firestore';
 import 'firebase/analytics';
 
-if (!firebaseApp.apps.length) {
-    const configFirebase = JSON.stringify({
-        apiKey: process.env.FIREBASE_apiKey,
-        authDomain: process.env.FIREBASE_authDomain,
-        databaseURL: process.env.FIREBASE_databaseURL,
-        projectId: process.env.FIREBASE_projectId,
-        storageBucket: process.env.FIREBASE_storageBucket,
-        messagingSenderId: process.env.FIREBASE_messagingSenderId,
-        appId: process.env.FIREBASE_appId,
-        measurementId: process.env.FIREBASE_measurementId
-    });
-    // const configFirebase = JSON.stringify({
-    //     apiKey: "AIzaSyCFY5ljEzA9bz1jHZ4RTnay1KKE7ysa5Zk",
-    //     authDomain: "rcti-766db.firebaseapp.com",
-    //     databaseURL: "https://rcti-766db.firebaseio.com",
-    //     projectId: "rcti-766db",
-    //     storageBucket: "rcti-766db.appspot.com",
-    //     messagingSenderId: "102225357690",
-    //     appId: "1:102225357690:web:e90f10ab54a010c2",
-    //     measurementId: "G-JR2L0ZYPG7"
-    // });
-    firebaseApp.initializeApp(JSON.parse(configFirebase));
-    firebaseApp.analytics();
-}
-
 import ax from 'axios';
 import { DEV_API, API } from '../../../config';
 import { getCookie, getVisitorToken, checkToken } from '../../../utils/cookie';
@@ -39,6 +14,25 @@ axios.interceptors.request.use(async (request) => {
     request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : accessToken;
     return request;
 });
+
+const initializeFirebase = () => {
+    return () => {
+        if (!firebaseApp.apps.length) {
+            const configFirebase = JSON.stringify({
+                apiKey: process.env.FIREBASE_apiKey,
+                authDomain: process.env.FIREBASE_authDomain,
+                databaseURL: process.env.FIREBASE_databaseURL,
+                projectId: process.env.FIREBASE_projectId,
+                storageBucket: process.env.FIREBASE_storageBucket,
+                messagingSenderId: process.env.FIREBASE_messagingSenderId,
+                appId: process.env.FIREBASE_appId,
+                measurementId: process.env.FIREBASE_measurementId
+            });
+            firebaseApp.initializeApp(JSON.parse(configFirebase));
+            firebaseApp.analytics();
+        }
+    };
+};
 
 const listenChat = id => {
     let db = firebaseApp.firestore();
@@ -95,6 +89,7 @@ const getChatMessages = id => {
 };
 
 export default {
+    initializeFirebase,
     listenChat,
     setChat,
     getChatMessages,
