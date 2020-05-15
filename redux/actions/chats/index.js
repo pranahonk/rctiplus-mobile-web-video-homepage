@@ -1,6 +1,7 @@
 import firebaseApp from 'firebase/app';
 import 'firebase/firebase-auth';
 import 'firebase/firestore';
+import 'firebase/analytics';
 
 if (!firebaseApp.apps.length) {
     const configFirebase = JSON.stringify({
@@ -11,6 +12,7 @@ if (!firebaseApp.apps.length) {
         storageBucket: process.env.FIREBASE_storageBucket,
         messagingSenderId: process.env.FIREBASE_messagingSenderId,
         appId: process.env.FIREBASE_appId,
+        measurementId: process.env.FIREBASE_measurementId
     });
     // const configFirebase = JSON.stringify({
     //     apiKey: "AIzaSyCFY5ljEzA9bz1jHZ4RTnay1KKE7ysa5Zk",
@@ -23,7 +25,7 @@ if (!firebaseApp.apps.length) {
     //     measurementId: "G-JR2L0ZYPG7"
     // });
     firebaseApp.initializeApp(JSON.parse(configFirebase));
-    // firebaseApp.analytics();
+    firebaseApp.analytics();
 }
 
 import ax from 'axios';
