@@ -329,8 +329,7 @@ class Content extends React.Component {
                     time_video: 'N/A',
                     viewer_id: getUserId().toString(),
                     application_name: 'RCTI+ MWEB',
-                    section_page: 'N/A',
-                    ContentType: (videoUrlData ? 'content-'+videoUrlData.content_type : 'N/A'),
+                    section_page: 'N/A'
                 };
 
                 self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, assetName, customTags);
