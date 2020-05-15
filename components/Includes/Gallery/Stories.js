@@ -4,6 +4,7 @@ import Head from 'next/head';
 import storiesActions from '../../../redux/actions/storiesActions';
 
 import { homeStoryEvent } from '../../../utils/appier';
+import { RESOLUTION_IMG } from '../../../config';
 
 import '../../../assets/scss/components/stories.scss';
 
@@ -15,7 +16,7 @@ class Stories extends React.Component {
 
         this.state = {
             stories: [],
-            resolution: 375
+            resolution: RESOLUTION_IMG,
         }
     }
 

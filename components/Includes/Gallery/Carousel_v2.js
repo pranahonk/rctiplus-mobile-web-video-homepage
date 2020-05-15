@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import contentActions from '../../../redux/actions/contentActions';
 import { Carousel } from 'react-responsive-carousel';
 import Img from 'react-image';
+import { RESOLUTION_IMG } from '../../../config';
 
 import { homeBannerEvent } from '../../../utils/appier';
 
@@ -15,7 +16,7 @@ class Crs_v2 extends Component {
         this.state = {
             banner: [],
             meta: null,
-            resolution: 420
+            resolution: RESOLUTION_IMG,
         };
     }
 

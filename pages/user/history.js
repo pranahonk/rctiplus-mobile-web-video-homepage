@@ -25,7 +25,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../../config';
 
 import '../../assets/scss/components/history.scss';
 
@@ -40,7 +40,7 @@ class History extends React.Component {
 		this.state = {
 			dropdown_open: false,
 			order_by: 'date',
-			resolution: 200,
+			resolution: RESOLUTION_IMG,
 			page: 1,
 			length: 10,
 			load_more_allowed: true,

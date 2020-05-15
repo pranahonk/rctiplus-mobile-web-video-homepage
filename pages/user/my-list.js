@@ -25,7 +25,7 @@ import { Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } fr
 import ListItem from '../../components/Includes/Gallery/ListItem';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../../config';
 
 class MyList extends React.Component {
 
@@ -41,7 +41,7 @@ class MyList extends React.Component {
 			ordered_list: [],
 			meta_mylist: {},
 			meta_related: {},
-			resolution: 593,
+			resolution: RESOLUTION_IMG,
 			recommendations: [],
 			current_page: 1,
 			length: 10,
@@ -228,7 +228,7 @@ class MyList extends React.Component {
 						<ListItem
 							key={i}
 							striped={!(i % 2)}
-							imageSrc={this.state.meta_mylist.image_path + (this.props.resolution ? this.props.resolution : this.state.resolution) + l.image}
+							imageSrc={this.state.meta_mylist.image_path + this.props.resolution + l.image}
 							title={l.title}
 							link={() => this.linkProgram(l)}
 							subtitle={l.total_content + ' video'} />)}
@@ -243,7 +243,7 @@ class MyList extends React.Component {
 									<div ref={scrollRef} className="related-slider">
 										{this.state.recommendations.map(rp => (
 											<div onClick={() => this.linkRelated(rp)} key={rp.id} className="related-slide">
-												<Img alt={rp.title} src={[this.state.meta_related.image_path + '140' + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
+												<Img alt={rp.title} src={[this.state.meta_related.image_path + RESOLUTION_IMG + rp.portrait_image, '/static/placeholders/placeholder_potrait.png']} className="related-program-thumbnail" />
 											</div>
 										))}
 									</div>

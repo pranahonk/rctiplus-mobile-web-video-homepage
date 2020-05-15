@@ -31,7 +31,7 @@ import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 
 import '../assets/scss/components/exclusive.scss';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 
 import { exclusiveGeneralEvent, exclusiveTabEvent, exclusiveContentEvent, exclusiveShareEvent, exclusiveProfileProgramEvent, exclusiveTitleProgramEvent, exclusivePhotoSlideNextEvent, exclusivePhotoSlidePreviousEvent } from '../utils/appier';
 
@@ -54,7 +54,7 @@ class Exclusive extends React.Component {
 			feeds: {},
 			feed_states: {},
 			categorical_feeds: {},
-			resolution: 393,
+			resolution: RESOLUTION_IMG,
 			modal: false,
 			trailer_url: '',
 			action_sheet: false,

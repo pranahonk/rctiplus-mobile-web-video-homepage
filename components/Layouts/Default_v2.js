@@ -104,14 +104,12 @@ class Default_v2 extends React.Component {
                     {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
 
 
-                    <script src="/static/js/fontawesome.js" crossOrigin="anonymous"></script>
+                    <script src="/static/js/fontawesome.min.js" crossOrigin="anonymous" defer></script>
 
-                    {/* <script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
-                    <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script> */}
+                    {/*<script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
+                    <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>*/}
                     {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
-                    
-                    {/* <script src="https://cdn.qgraph.io/dist/aiqua-wp.js"></script> */}
-                    <script src="/static/js/aiqua-wp.js"></script>
+                    <script async src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
                     <script dangerouslySetInnerHTML={{ __html: `
                         AIQUA.init({
                             appId: 'c63c2960bf562e9ec2de',
@@ -120,7 +118,6 @@ class Default_v2 extends React.Component {
                     `}}>
                     </script>
                     <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-                    {/* <script src="/static/js/gpt.js"></script> */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         window.googletag = window.googletag || {cmd: []};
                         googletag.cmd.push(function() {
@@ -152,8 +149,6 @@ class Default_v2 extends React.Component {
                     {/* <!-- End Alexa Certify Javascript --> */}
                 </Head>
                 <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-                {/* <script async type="text/javascript" src="/static/js/ima3.js"></script> */}
-
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
                 {/* <!-- DO NOT touch the following DIV --> */}
@@ -178,7 +173,7 @@ class Default_v2 extends React.Component {
                 ) : <div></div>}
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
-                {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script src="/static/js/fontawesome.js" crossOrigin="anonymous"></script>) : (process.env.UI_VERSION == '2.0' ? (this.props.hideFooter || this.props.pages.hide_footer ? null : <Footer_v2 />) : (<Footer />))}
+                {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script async src="/static/js/fontawesome.min.js" crossOrigin="anonymous"></script>) : (process.env.UI_VERSION == '2.0' ? (this.props.hideFooter || this.props.pages.hide_footer ? null : <Footer_v2 />) : (<Footer />))}
             </div>
         )
     }

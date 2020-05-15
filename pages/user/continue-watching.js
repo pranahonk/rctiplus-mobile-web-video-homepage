@@ -21,6 +21,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
+import { RESOLUTION_IMG } from '../../config';
 
 import '../../assets/scss/components/continue-watching.scss';
 
@@ -41,7 +42,7 @@ class ContinueWatching extends React.Component {
 			ordered_watches: [],
 			meta: {},
 			load_more_allowed: true,
-			resolution: 300,
+			resolution: RESOLUTION_IMG,
 			action_sheet: false,
 			caption: '',
 			hashtags: [],

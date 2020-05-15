@@ -21,7 +21,7 @@ import { Row, Col } from 'reactstrap';
 
 import '../assets/scss/components/explore.scss';
 
-import { VISITOR_TOKEN, DEV_API, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
+import { VISITOR_TOKEN, DEV_API, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 import { getCookie } from '../utils/cookie';
 import { libraryGeneralEvent, libraryProgramClicked } from '../utils/appier';
 
@@ -76,7 +76,7 @@ class Explores extends React.Component {
 			interests: interests,
 			recommendations: {},
 			meta: this.props.interests.meta,
-			resolution: 140,
+			resolution: RESOLUTION_IMG,
 			page: {},
 			show_more_allowed: {},
 			length: 9,
@@ -352,7 +352,7 @@ class Explores extends React.Component {
 												className="content-image"
 												unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-												src={[this.state.meta.image_path + 100 + interest.image, '/static/placeholders/placeholder_landscape.png']} />
+												src={[this.state.meta.image_path + RESOLUTION_IMG + interest.image, '/static/placeholders/placeholder_landscape.png']} />
 											<div className="bg-black"></div>
 											<p className={`slide-title ${this.state.selected_genre_id == interest.id ? 'selected-slide-title' : ''}`}>{interest.name}</p>
 										</div>
