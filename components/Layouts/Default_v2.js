@@ -26,11 +26,16 @@ class Default_v2 extends React.Component {
     constructor(props) {
         super(props);
         this.platform = null;
+        this.header = null;
         const segments = this.props.router.asPath.split(/\?/);
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.platform) {
                 this.platform = q.platform;
+            }
+
+            if (q.header) {
+                this.header = q.header;
             }
         }
     }
@@ -60,6 +65,13 @@ class Default_v2 extends React.Component {
                     /* eslint-enable no-console */
                 }
             });
+        }
+
+        if (this.header && this.header == 0) {
+            const navbar = document.getElementsByClassName('nav-fixed-top');
+            if (navbar && navbar.length > 0) {
+                navbar[0].style.display = 'none';
+            }
         }
     }
 

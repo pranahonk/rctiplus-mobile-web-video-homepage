@@ -21,6 +21,13 @@ const toggleFooter = (state) => {
     });
 };
 
+const toggleNavbar = (state) => {
+    return dispatch => dispatch({
+        type: 'TOGGLE_NAVBAR',
+        state: state
+    });
+};
+
 const setSeamlessLoad = (state) => {
     return dispatch => dispatch({
         type: 'SET_SEAMLESS_LOAD',
@@ -38,6 +45,7 @@ export default {
     setPageLoader,
     unsetPageLoader,
     toggleFooter,
+    toggleNavbar,
     setSeamlessLoad,
-    unsetSeamlessLoad,
+    unsetSeamlessLoad
 };
