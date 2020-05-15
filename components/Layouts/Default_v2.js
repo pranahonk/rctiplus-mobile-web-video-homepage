@@ -70,7 +70,7 @@ class Default_v2 extends React.Component {
         if (this.header && this.header == 0) {
             const navbar = document.getElementsByClassName('nav-fixed-top');
             if (navbar && navbar.length > 0) {
-                navbar[0].style.display = 'none';
+                navbar[0].style.display = 'none'; 
             }
         }
     }
