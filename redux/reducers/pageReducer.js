@@ -2,7 +2,8 @@ const initialState = {
     loading: false,
     fade: false,
     hide_footer: false,
-    status: true,
+    hide_navbar: false,
+    status: true
 };
 
 export default (state = initialState, action) => {
@@ -15,6 +16,8 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { fade: action.fade });
         case 'TOGGLE_FOOTER':
             return Object.assign({}, state, { hide_footer: action.state });
+        case 'TOGGLE_NAVBAR':
+            return Object.assign({}, state, { hide_navbar: action.state });
         case 'SET_SEAMLESS_LOAD':
             return Object.assign({}, state, { status: action.status });
         case 'UNSET_SEAMLESS_LOAD':
