@@ -3,6 +3,7 @@ import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 
 import userActions from '../../../redux/actions/userActions';
+import chatsActions from '../../../redux/actions/chats';
 
 import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent } from '../../../utils/appier';
 
@@ -155,4 +156,7 @@ class FooterNav_v2 extends Component {
         );
     }
 }
-export default connect(state => state, userActions)(withRouter(FooterNav_v2));
+export default connect(state => state, {
+    ...userActions,
+    ...chatsActions
+})(withRouter(FooterNav_v2));
