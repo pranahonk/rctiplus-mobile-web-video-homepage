@@ -234,6 +234,10 @@ const UIVersion = '2.0';
       return app.render(req, res, '/live-events/index');
     });
 
+    server.get('/sample', (req, res) => {
+      return app.render(req, res, '/program-detail/index');
+    });
+
     // default request handler by next handler:
     server.get('*', (req, res) => {
       return handle(req, res);
