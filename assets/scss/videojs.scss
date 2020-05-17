@@ -4,3 +4,21 @@
     border: none !important;
     transform: scale(1.5);
 }
+.vjs-rplus-player {
+    width: 100%;
+    min-height: 180px;
+    video {
+        width: 100%;
+    }
+}
+.rplus-title-bar {
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    text-align: center;
+    width: 100%;
+    padding: 20px;
+    background: rgb(2,0,36);
+    background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,0,0,0) 100%);
+    transition: visibility .1s;
+}

@@ -12,7 +12,9 @@ class Index extends React.Component {
   render() {
     return (
       <>
-        <Player />
+        <div className="program-detail-player-container">
+          <Player />
+        </div>
       </>
     );
   }
