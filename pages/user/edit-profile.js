@@ -25,8 +25,13 @@ import CameraAltIcon from '@material-ui/icons/CameraAlt';
 
 import '../../assets/scss/components/edit-profile.scss';
 
-import * as LoadImage from 'blueimp-load-image';
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../../config';
+
+let LoadImage;
+
+if (typeof window !== 'undefined') {
+    LoadImage = require('blueimp-load-image');
+}
 
 
 class EditProfile extends React.Component {
@@ -167,7 +172,13 @@ class EditProfile extends React.Component {
     handleCameraTakePhoto(e, index) {
         const self = this;
         LoadImage(e.target.files[0], img => {
-            const base64Data = img.toDataURL('image/jpeg');
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const context = canvas.getContext('2d');
+            context.drawImage(img, 0, 0);
+
+            const base64Data = canvas.toDataURL('image/jpeg');
             self.setState({ profile_photo_src: base64Data }, () => {
                 self.props.setUserProfilePhoto(self.state.profile_photo_src);
                 setTimeout(() => {
