@@ -228,10 +228,10 @@ const UIVersion = '2.0';
       });
     });
     server.get('/live-event', (req, res) => {
-      return app.render(req, res, '/live-events/index');
+      return app.render(req, res, '/live-events');
     });
     server.get('/missed-event', (req, res) => {
-      return app.render(req, res, '/live-events/index');
+      return app.render(req, res, '/live-events');
     });
 
     // default request handler by next handler:
