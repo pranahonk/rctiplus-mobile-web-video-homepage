@@ -81,7 +81,8 @@ class Detail extends React.Component {
             count: false
         };
 
-        this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
+        // this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
+        this.redirectToPublisherIndex = [0, 1];
         this.accessToken = null;
         this.platform = null;
         const segments = this.props.router.asPath.split(/\?/);

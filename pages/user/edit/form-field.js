@@ -186,6 +186,7 @@ class FormField extends React.Component {
                         <Label for={this.props.others.label}>{this.props.others.label}</Label>
                         <InputGroup>
                             <Input
+                                id="form-field"
                                 value={this.state.value}
                                 onChange={this.onChange.bind(this)}
                                 valid={false && !this.state.value_invalid && !!this.state.value}
@@ -205,6 +206,7 @@ class FormField extends React.Component {
                         <Label for={this.props.others.label}>{this.props.others.label}</Label>
                         <InputGroup>
                             <Input
+                                id="form-field"
                                 type="select"
                                 value={this.state.value}
                                 onChange={this.onChange.bind(this)}
@@ -247,6 +249,7 @@ class FormField extends React.Component {
                     <FormGroup>
                         <Label className="form-label" for="birthdate">Birthdate</Label>
                         <DatePicker
+                            id="form-field"
                             showMonthDropdown
                             showYearDropdown
                             dropdownMode="select"
