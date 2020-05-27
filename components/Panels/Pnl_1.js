@@ -28,6 +28,8 @@ class Pnl_1 extends React.Component {
 		};
 	
 		this.swipe = {};
+
+		console.log(this.props.resolution);
 	}
 
 	onTouchStart(e) {
