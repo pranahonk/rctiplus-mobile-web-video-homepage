@@ -103,10 +103,7 @@ export default withRedux(initStore, { debug: false })(
                     break;
 
                 case 'PRODUCTION':
-                    const settings = {  };
-                    settings.gatewayUrl = 'https://rcti-test.testonly.conviva.com';
-                    Conviva.LivePass.initWithSettings('ffc2bacab709e3c5eedc49af6520b33d3c204182', settings);//
-                    // Conviva.LivePass.init('ff84ae928c3b33064b76dec08f12500465e59a6f');
+                    Conviva.LivePass.init('ff84ae928c3b33064b76dec08f12500465e59a6f');
                     break;
             }
             
