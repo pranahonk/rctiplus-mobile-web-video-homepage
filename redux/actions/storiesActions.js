@@ -10,7 +10,7 @@ axios.interceptors.request.use(async (request) => {
     return request;
 });
 
-const getStories = (page = 1, length = 10) => {
+const getStories = (page = 1, length = 20) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             await checkToken();
