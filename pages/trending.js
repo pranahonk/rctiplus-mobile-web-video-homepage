@@ -393,7 +393,7 @@ class Trending_v2 extends React.Component {
                                                     {tab.name === 'Berita Utama' ? (this.state.is_trending_loading ? (<HeadlineLoader />) : (<HeadlineCarousel articles={this.state.trending_articles} />)) : null}
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => (
-                                                            (j + 1) != 1 && (j + 1) % 5 === 0 ? (
+                                                            (j > 6) && (j + 1) != 1 && (j + 1) % 5 === 0 ? (
                                                                 <ListGroupItem key={j} className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
                                                                     <div className="article-description">
                                                                         <div className="article-thumbnail-container-full-width">
@@ -414,8 +414,8 @@ class Trending_v2 extends React.Component {
                                                                     </div>
                                                                     
                                                                 </ListGroupItem>
-                                                            ) : (
-                                                                <ListGroupItem key={j} className={`article ${(j + 1) > 1 && ((j + 2) % 5) == 0 ? 'article-no-border' : ''}`} onClick={() => this.goToDetail(article)}>
+                                                            ) : (j > 4) ? (
+                                                                <ListGroupItem key={j} className={`article ${(j > 4) && (j + 1) > 1 && ((j + 2) % 5) == 0 ? 'article-no-border' : ''}`} onClick={() => this.goToDetail(article)}>
                                                                     <div className="article-description">
                                                                         <div className="article-thumbnail-container">
                                                                             <Img
@@ -434,7 +434,7 @@ class Trending_v2 extends React.Component {
                                                                         <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
                                                                     </div>
                                                                 </ListGroupItem>
-                                                            )
+                                                            ) : ''
                                                         ))}
                                                     </ListGroup>
                                                     {this.state.is_articles_loading ? (<ArticleLoader />) : null}
