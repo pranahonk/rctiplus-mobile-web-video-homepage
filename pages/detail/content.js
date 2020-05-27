@@ -110,6 +110,8 @@ class Content extends React.Component {
         this.historyHandler = null;
         this.historyAppierHandler = null;
         this.disconnectHandler = null;
+
+        console.log(this.props.content);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
