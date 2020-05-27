@@ -70,6 +70,7 @@ class Index extends React.Component {
       season: 1,
       episodeClearStore: false,
       titleProgram: '',
+      statusTab: true,
     };
     this.type = 'program-detail';
     this.programId = props.router.query.id;
@@ -216,6 +217,7 @@ class Index extends React.Component {
             }
             break;
           default:
+            this.setState({statusTab: false});
             return;
         }
       }
@@ -223,7 +225,7 @@ class Index extends React.Component {
   }
   isTabs(data) {
     const tabs = [];
-    if (data.episode > 0) {tabs.push('Episodes');}
+    if (data.episode > 1) {tabs.push('Episodes');}
     if (data.extra > 0) {tabs.push('Extra');}
     if (data.clip > 0) {tabs.push('Clips');}
     if (data.photo > 0) {tabs.push('Photo');}
@@ -285,8 +287,8 @@ class Index extends React.Component {
     vm.props.dispatch(fetchEpisodeUrl(id,filter,season));
   }
   panelEpisode(props) {
-    if (!this.props.data.loading_episode || 
-        ((props && props.data && props.data.length > 0) && 
+    if (!this.props.data.loading_episode ||
+        ((props && props.data && props.data.length > 0) &&
         this.props.server['program-detail'].data.id === this.props.router.query.id)) {
         const pagination = {
           page: props.meta.pagination.current_page,
@@ -311,7 +313,7 @@ class Index extends React.Component {
           </>
           );
       }
-    
+
     return (
       <TabPane tabId="Episodes">
         <TabPanelLoader />
@@ -319,8 +321,8 @@ class Index extends React.Component {
     );
   }
   panelExtra(props) {
-    if (!this.props.data.loading_extra || 
-        ((props && props.data && props.data.length > 0) && 
+    if (!this.props.data.loading_extra ||
+        ((props && props.data && props.data.length > 0) &&
         this.props.server['program-detail'].data.id === this.props.router.query.id)) {
       const pagination = {
         page: props.meta.pagination.current_page,
@@ -342,8 +344,8 @@ class Index extends React.Component {
     );
   }
   panelClip(props) {
-    if (!this.props.data.loading_clip || 
-        ((props && props.data && props.data.length > 0) && 
+    if (!this.props.data.loading_clip ||
+        ((props && props.data && props.data.length > 0) &&
         this.props.server['program-detail'].data.id === this.props.router.query.id)) {
       const pagination = {
         page: props.meta.pagination.current_page,
@@ -365,8 +367,8 @@ class Index extends React.Component {
     );
   }
   panelPhoto(props) {
-    if (!this.props.data.loading_photo || 
-      ((props && props.data && props.data.length > 0) && 
+    if (!this.props.data.loading_photo ||
+      ((props && props.data && props.data.length > 0) &&
       this.props.server['program-detail'].data.id === this.props.router.query.id)) {
       const pagination = {
         page: props.meta.pagination.current_page,
@@ -444,7 +446,8 @@ class Index extends React.Component {
                 </div>
               </div>
             </Collapse>
-            <div className="list__content-wrapper">
+            { this.state.statusTab ?
+            (<div className="list__content-wrapper">
               <div className="tab__content-wrapper">
                 { this.tabContent() }
                 <TabContent activeTab={this.state.toggle}>
@@ -467,7 +470,7 @@ class Index extends React.Component {
                   ) }
                 </TabContent>
               </div>
-            </div>
+            </div>) : '' }
                   {this.panelRelated(
                     this.props.data &&
                     this.props.data['program-related']
