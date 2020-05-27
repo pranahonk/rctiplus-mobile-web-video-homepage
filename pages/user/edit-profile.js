@@ -308,6 +308,7 @@ class EditProfile extends React.Component {
                             <Label className="form-label-ep" for="nickname">Nickname (Live Chat)</Label>
                             <InputGroup>
                                 <Input
+                                    id="nickname-input"
                                     onClick={this.goToFormField.bind(this, 0, 'Nickname (Live Chat)', 'text', `
                                         <ul>
                                             <li>You may change your username back after 14 days</li>
@@ -325,6 +326,7 @@ class EditProfile extends React.Component {
                             <Label className="form-label-ep" for="fullname">Full Name</Label>
                             <InputGroup>
                                 <Input
+                                    id="fullname-input"
                                     onClick={this.goToFormField.bind(this, 1, 'Full Name', 'text', ``, 'insert full name', false, [], { length: 25, type: 'max' })}
                                     value={this.state.fullname}
                                     onChange={this.onChangeFullname.bind(this)}
@@ -337,6 +339,7 @@ class EditProfile extends React.Component {
                             <Label className="form-label-ep" for="birthdate">Birthdate</Label>
                             <InputGroup>
                                 <Input
+                                    id="birthdate-input"
                                     onClick={this.goToFormField.bind(this, 2, 'Birthdate', 'date', ``, 'dd/mm/yy', false)}
                                     value={this.formatDate(this.state.birthdate)}
                                     onChange={this.onChangeBirthdate.bind(this)}
@@ -349,6 +352,7 @@ class EditProfile extends React.Component {
                             <Label className="form-label-ep" for="gender">Gender</Label>
                             <InputGroup>
                                 <Input
+                                    id="gender-input"
                                     type="select"
                                     onClick={this.goToFormField.bind(this, 3, 'Gender', 'select', ``, 'select gender', false, ['Male', 'Female'])}
                                     value={this.state.gender ? this.state.gender.charAt(0).toUpperCase() + this.state.gender.substring(1) : ''}
@@ -382,6 +386,7 @@ class EditProfile extends React.Component {
                             <Label className="form-label-ep" for="phone_number">Phone Number</Label>
                             <InputGroup>
                                 <Input
+                                    id="phone-number-input"
                                     onClick={this.goToFormField.bind(this, 4, 'Phone Number', 'phone', `
                                         <ul>
                                             <li>Make sure the phone number is active because we will sent you verification code to verify and secure your account</li>
@@ -398,6 +403,7 @@ class EditProfile extends React.Component {
                             <Label className="form-label-ep" for="email">Email</Label>
                             <InputGroup>
                                 <Input
+                                    id="email-input"
                                     onClick={this.goToFormField.bind(this, 5, 'Email', 'email', ``, 'insert email', true)}
                                     value={this.state.email}
                                     onChange={this.onChangeEmail.bind(this)}
@@ -407,9 +413,10 @@ class EditProfile extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label-ep" for="nickname">Interests</Label>
+                            <Label className="form-label-ep" for="interests">Interests</Label>
                             <InputGroup>
                                 <Input
+                                    id="interests-input"
                                     onClick={() => Router.push('/user/edit/interest')}
                                     value={this.state.interests}
                                     onChange={this.onChangeInterests.bind(this)}
