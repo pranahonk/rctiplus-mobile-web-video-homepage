@@ -197,6 +197,8 @@ class LiveEvent extends React.Component {
 		this.disconnectHandler = null;
 		this.currentTime = new Date().getTime();
 		this.props.setPageLoader();
+
+		console.log(this.props.selected_event);
 	}
 	componentDidUpdate() {
 		// console.log(this.playerContainerRef.current.clientHeight, this.titleRef.current.clientHeight)
@@ -686,7 +688,8 @@ class LiveEvent extends React.Component {
                     screen_mode: 'portrait',
                     time_video: 'N/A',
                     viewer_id: getUserId().toString(),
-					application_name: 'RCTI+ MWEB'
+					application_name: 'RCTI+ MWEB',
+					genre: 'N/A'
                 };
 
 				this.convivaTracker = convivaVideoJs(asset_name, player, self.props.router.asPath.match('/missed-event/') ? player.duration() : true, url, 'Live Event ' + assetName.toUpperCase(), customTags, asset_cdn);
