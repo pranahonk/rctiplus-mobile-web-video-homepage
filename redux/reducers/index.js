@@ -16,6 +16,7 @@ import othersReducer from './othersReducer';
 import playerReducer from './playerReducer';
 import pageReducer from './pageReducer';
 import adsReducer from './adsReducer';
+import Program from './program-detail/programDetailReducer';
 
 import trendingSubCategory from './trending/subCategory';
 import trendingContent from './trending/content';
@@ -43,7 +44,8 @@ const rootReducer = combineReducers({
     trending_sub_category: trendingSubCategory,
     trending_content: trendingContent,
     newsv2: newsv2Reducer,
-    ads: adsReducer
+    ads: adsReducer,
+    Program: Program,
 });
 
 export default rootReducer;
