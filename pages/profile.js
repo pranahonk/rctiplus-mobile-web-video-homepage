@@ -134,7 +134,7 @@ class Profile extends React.Component {
 		);
 		if (this.state.logged_in) {
 			actionProfile = (
-				<div onClick={() => {
+				<div id="action-profile" onClick={() => {
 					accountGeneralEvent('mweb_account_edit_profile_clicked');
 					Router.push('/edit-profile');
 				}}>
