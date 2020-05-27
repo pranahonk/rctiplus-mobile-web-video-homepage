@@ -313,6 +313,24 @@ class Content extends React.Component {
                         }
                     }
                 }
+
+                let genreTags = 'N/A';
+                if (self.props.content && self.props.content.data && self.props.content.data.genre) {
+                    if (Array.isArray(self.props.content.data.genre)) {
+                        genreTags = '';
+                        const genres = self.props.content.data.genre;
+                        for (let i = 0; i < genres.length; i++) {
+                            genreTags += genres[i].name;
+                            if (i < genres.length - 1) {
+                                genreTags += ',';
+                            }
+                        }
+                    }
+                    else {
+                        genreTags = self.props.content.data.genre;
+                    }
+                }
+
                 const customTags = {
                     app_version: process.env.APP_VERSION,
                     carrier: 'N/A',
@@ -332,7 +350,7 @@ class Content extends React.Component {
                     viewer_id: getUserId().toString(),
                     application_name: 'RCTI+ MWEB',
                     section_page: 'N/A',
-                    genre: self.props.content && self.props.content.data ? self.props.content.data.genre : 'N/A'
+                    genre: genreTags
                 };
 
                 self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, assetName, customTags);

@@ -216,6 +216,23 @@ class PlayerModal extends React.Component {
                     }
                 }
 
+                let genreTags = 'N/A';
+                if (self.props.program && self.props.program.genre) {
+                    if (Array.isArray(self.props.program.genre)) {
+                        genreTags = '';
+                        const genres = self.props.program.genre;
+                        for (let i = 0; i < genres.length; i++) {
+                            genreTags += genres[i].name;
+                            if (i < genres.length - 1) {
+                                genreTags += ',';
+                            }
+                        }
+                    }
+                    else {
+                        genreTags = self.props.program.genre;
+                    }
+                }
+
                 const customTags = {
                     app_version: process.env.APP_VERSION,
                     carrier: 'N/A',
@@ -235,7 +252,7 @@ class PlayerModal extends React.Component {
                     viewer_id: getUserId().toString(),
                     application_name: 'RCTI+ MWEB',
                     section_page: 'N/A',
-                    genre: self.props.program ? self.props.program.genre : 'N/A'
+                    genre: genreTags
                 };
                 // self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.props.videoUrl, assetName.toUpperCase(), {
 				// 	asset_name: assetName.toUpperCase(),
