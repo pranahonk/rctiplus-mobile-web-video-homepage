@@ -151,6 +151,8 @@ class Detail extends React.Component {
         }
 
         this.swipe = {};
+
+        console.log(this.props.initial);
     }
 
     onTouchStart(e) {
