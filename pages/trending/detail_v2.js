@@ -334,7 +334,7 @@ class Detail extends React.Component {
 
                         ga('create', 'UA-145455301-5', 'auto');
                         ga('create', 'UA-145455301-17', 'auto', 'teamTracker');
-                        ga('create', ${cdata.ga_partner_id}, 'auto', 'partnerTracker');
+                        ga('create', '${cdata.ga_partner_id}', 'auto', 'partnerTracker');
 
                         ga('send', 'pageview');
                         ga('teamTracker.send', 'pageview');
