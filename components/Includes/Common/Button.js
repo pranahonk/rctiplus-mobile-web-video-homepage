@@ -14,7 +14,7 @@ export const ButtonOutline = ({icon, text, className, onclick }) => {
   );
 };
 
-export const ButtonPrimary = ({icon, text, onclick, className}) => {
+export const ButtonPrimary = ({icon, text, onclick, className, key}) => {
   return (
       <>
         <Ripples color="#282828" className="button-detail" onClick={onclick}>

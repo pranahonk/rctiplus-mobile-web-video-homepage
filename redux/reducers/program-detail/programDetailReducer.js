@@ -21,6 +21,7 @@ import {
   MORE_REQUEST,
   FETCH_BOOKMARK_SUCCESS,
   FETCH_POST_BOOKMARK_SUCCESS,
+  FETCH_DELETE_BOOKMARK_SUCCESS,
 } from '../../actions/program-detail/programDetail';
 const initialState = {
   loading: true,
@@ -232,9 +233,32 @@ export default (state = initialState, action) => {
         loading: false,
       };
     case FETCH_POST_BOOKMARK_SUCCESS:
+      if(state && state.bookmark.data) {
+        const initStateBookmark = state && state.bookmark.data
+        const newStateBookmark = action.payload
+        const dataBookmark = [...initStateBookmark[action.filter[1]], newStateBookmark]
+        const combine = {...initStateBookmark, [action.filter[1]]: dataBookmark}
+        console.log('PREV STATEEE', combine)
+        return {
+          ...state,
+          [action.filter[0]]: { ...state.bookmark, data: combine },
+          loading: false,
+        };
+      } 
       return {
         ...state,
-        [action.filter]: action.payload,
+        [action.filter[0]]: {data: { [action.filter[1]] : [action.payload] }},
+        loading: false,
+      }
+    case FETCH_DELETE_BOOKMARK_SUCCESS:
+      const initStateBookmark = state && state.bookmark.data
+      const newStateBookmark = action.payload
+      const dataBookmark = [...initStateBookmark[action.filter[1]], newStateBookmark]
+      dataBookmark.filter((item) => { item.id !== action.payload.id })
+      const combine = {...initStateBookmark, [action.filter[1]]: dataBookmark}
+      return {
+        ...state,
+        [action.filter[0]]: { ...state.bookmark, data: combine },
         loading: false,
       };
     default:

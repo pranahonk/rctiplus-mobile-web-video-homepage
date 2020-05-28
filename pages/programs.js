@@ -25,6 +25,7 @@ import {
   clearPlayer,
   fetchBookmark,
   postBookmark,
+  deleteBookmark,
 } from '../redux/actions/program-detail/programDetail';
 import Layout from '../components/Layouts/Default_v2';
 import { Button, Col, Nav, NavItem, NavLink, TabContent, TabPane, Collapse } from 'reactstrap';
@@ -78,6 +79,7 @@ class Index extends React.Component {
     this.typeEpisode = 'program-episode';
     this.programId = props.router.query.id;
     this.ref = React.createRef();
+    this.refPanelEpisode = React.createRef();
   }
   componentDidMount() {
     console.log('MOUNTED: ', this.props.data[this.typeEpisode]);
@@ -250,7 +252,7 @@ class Index extends React.Component {
             }
             break;
           case 'Photo':
-            if (!this.props.data['program-clip']) {
+            if (!this.props.data['program-photo']) {
               this.props.dispatch(fetchPhoto(programId, 'program-photo'));
             }
             break;
@@ -328,12 +330,13 @@ class Index extends React.Component {
   }
   addBookmark(id, type) {
     const vm = this;
-    vm.props.dispatch(postBookmark(id,type,'bookmark-success'));
+    vm.props.dispatch(postBookmark(id,type,'bookmark'));
   }
-  panelEpisode(props) {
+  panelEpisode(props, bookmark) {
     if (!this.props.data.loading_episode ||
         ((props && props.data && props.data.length > 0) &&
-        this.props.server['program-detail'].data.id === this.props.router.query.id)) {
+        this.props.server['program-detail'].data.id === this.props.router.query.id) &&
+        (bookmark && bookmark.data && bookmark.bookmark.data.episode)) {
         const pagination = {
           page: props.meta.pagination.current_page,
           total_page: props.meta.pagination.total_page,
@@ -346,6 +349,7 @@ class Index extends React.Component {
         return (
           <>
             <PanelEpisode
+              ref={this.refPanelEpisode}
               enableShowMore={{isNext:pagination.page < pagination.total_page, isLoading:this.props.data.loading_more}}
               data={props}
               query={query}
@@ -353,7 +357,9 @@ class Index extends React.Component {
               seasonSelected= { this.props.data.seasonSelected }
               onShowMore={() => { this.props.dispatch(fetchEpisode(this.props.router.query.id, 'program-episode',props.data[0].season, pagination.nextPage)); }}
               onSeason={() => {this.props.dispatch(fetchSeasonEpisode(this.props.router.query.id,'program-episode',1, pagination.nextPage));}}
-              onBookmark={this.addBookmark.bind(this)}
+              onBookmarkAdd={this.addBookmark.bind(this)}
+              onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')) }}
+              bookmark={bookmark}
             />
           </>
           );
@@ -376,7 +382,7 @@ class Index extends React.Component {
       return (
       <PanelExtra
         enableShowMore={{isNext:pagination.page < pagination.total_page, isLoading:this.props.data.loading_more}}
-        onShowMore={() => { this.props.dispatch(fetchEpisode(this.props.router.query.id, 'program-extra',pagination.nextPage)); }}
+        onShowMore={() => { this.props.dispatch(fetchExtra(this.props.router.query.id, 'program-extra',pagination.nextPage)); }}
         data={props}
       />
         );
@@ -424,7 +430,7 @@ class Index extends React.Component {
       return (
       <PanelPhoto
         enableShowMore={{isNext:pagination.page < pagination.total_page, isLoading:this.props.data.loading_more}}
-        onShowMore={() => { this.props.dispatch(fetchClip(this.props.router.query.id, 'program-clip',pagination.nextPage)); }}
+        onShowMore={() => { this.props.dispatch(fetchPhoto(this.props.router.query.id, 'program-photo',pagination.nextPage)); }}
         data={props}
       />
         );
@@ -500,7 +506,8 @@ class Index extends React.Component {
                   { this.panelEpisode(
                       this.props.data &&
                       this.props.data['program-episode'] &&
-                      this.props.data['program-episode']['season-' + this.props.data.seasonSelected]
+                      this.props.data['program-episode']['season-' + this.props.data.seasonSelected],
+                      this.props.data && this.props.data.bookmark
                       ) }
                   { this.panelExtra(
                     this.props.data &&

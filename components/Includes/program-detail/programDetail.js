@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, forwardRef } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Img from 'react-image';
@@ -9,12 +9,13 @@ import { ButtonPrimary, ButtonOutline } from '../Common/Button';
 import { ShareIcon } from '../Icons/Actions';
 import Dialog from '../../Modals/Dialog';
 import PlayListAdd from '@material-ui/icons/PlayListAdd';
+import PlayListAddCheck from '@material-ui/icons/PlayListAddCheck';
 import GetApp from '@material-ui/icons/GetApp';
 import { RESOLUTION_IMG } from '../../../config';
 import Ripples from 'react-ripples';
 const TabPanelLoader = dynamic(() => import('../Shimmer/detailProgramLoader').then((mod) => mod.TabPanelLoader));
 
-export const PanelEpisode = (props) => {
+export const PanelEpisode = forwardRef((props, ref) => {
   const linkRef = useRef(null);
   const pathImg = [props.data.meta.image_path, RESOLUTION_IMG];
   const link = (titleItem, idItem, typeItem) => {
@@ -24,6 +25,18 @@ export const PanelEpisode = (props) => {
     props.link(idItem,'data-player',1);
     Router.push(href,as, { shallow: true });
   };
+  const bookmark = (data, item) => {
+    if(data) {
+      const isBookmark = data.episode.find((list) => list.id === item.id)
+      if(isBookmark) {
+        return (<ButtonPrimary icon={ <PlayListAddCheck/> } onclick={() => { props.onBookmarkDelete(item.id, 'episode'); }}/>)
+      } 
+      else {
+        return (<ButtonPrimary icon={ <PlayListAdd/> } onclick={() => { props.onBookmarkAdd(item.id, 'episode'); }}/>)
+      }
+    }
+    return (<ButtonPrimary icon={ <PlayListAdd/> } onclick={() => { props.onBookmarkAdd(item.id, 'episode'); }}/>)
+  }
   return (
       <TabPane tabId="Episodes">
         <div className="episode-program">
@@ -49,7 +62,7 @@ export const PanelEpisode = (props) => {
               <div className="thumb-detail__content">
                 <h3>{ item.title }</h3>
                 <div className="action-button__content ">
-                  <ButtonPrimary icon={ <PlayListAdd/> } onclick={() => { props.onBookmark(item.id, 'episode'); }}/>
+                  { bookmark(props.bookmark && props.bookmark.data, item) }
                   <ButtonPrimary icon={ <ShareIcon/> }/>
                   <ButtonPrimary icon={ <GetApp/> }/>
                 </div>
@@ -66,12 +79,12 @@ export const PanelEpisode = (props) => {
         </div>
         { props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
           <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-            <ButtonOutline text="Show more" className="small-button" onclick={() => props.onShowMore}/>
+            <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
           </div>
         ) : '' }
       </TabPane>
   );
-};
+});
 
 export const PanelExtra = (props) => {
   const pathImg = [props.data.meta.image_path, RESOLUTION_IMG];

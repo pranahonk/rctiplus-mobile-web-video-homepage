@@ -74,6 +74,13 @@ const fetchPostBookmarkSuccess = (bookmark, filter) => {
     payload: bookmark,
   };
 };
+const fetchDeleteBookmarkSuccess = (bookmark, filter) => {
+  return {
+    type: FETCH_DELETE_BOOKMARK_SUCCESS,
+    filter: filter,
+    payload: bookmark,
+  };
+};
 const fetchRelatedProgramSuccess = (related, filter) => {
   return {
     type: FETCH_RELATED_PROGRAM_SUCCESS,
@@ -297,7 +304,6 @@ export const fetchBookmark = (programId, filter) => {
     dispatch(fetchDetailProgramRequest());
     axios.get(`/v1/mylist/${programId}`)
       .then(response => {
-        console.log(response);
         const data = response.data;
         dispatch(fetchBookmarkSuccess(data, filter));
       })
@@ -312,9 +318,23 @@ export const postBookmark = (id, type, filter) => {
     dispatch(fetchDetailProgramRequest());
     axios.post(`/v1/bookmark`, { id: id, type: type })
       .then(response => {
-        console.log(response);
-        const data = response.data;
-        dispatch(fetchPostBookmarkSuccess(data, filter));
+        const data = { id: id, last_duration: 0, is_bookmark: 1 };
+        dispatch(fetchPostBookmarkSuccess(data, [filter, type]));
+      })
+      .catch(error => {
+        console.log(error);
+        dispatch(fetchDetailProgramFailure(error.message));
+      });
+  };
+};
+export const deleteBookmark = (id, type, filter) => {
+  console.log(id, type, filter)
+  return function(dispatch) {
+    dispatch(fetchDetailProgramRequest());
+    axios.delete(`/v1/bookmark?id=${id}&type=${type}`)
+      .then(response => {
+        const data = { id: id, last_duration: 0, is_bookmark: 1 };
+        dispatch(fetchDeleteBookmarkSuccess(data, [filter, type]));
       })
       .catch(error => {
         console.log(error);
@@ -347,3 +367,4 @@ export const FETCH_PHOTO_REQUEST = 'FETCH_PHOTO_REQUEST';
 export const MORE_REQUEST = 'MORE_REQUEST';
 export const FETCH_BOOKMARK_SUCCESS = 'FETCH_BOOKMARK_SUCCESS';
 export const FETCH_POST_BOOKMARK_SUCCESS = 'FETCH_POST_BOOKMARK_SUCCESS';
+export const FETCH_DELETE_BOOKMARK_SUCCESS = 'FETCH_DELETE_BOOKMARK_SUCCESS';
