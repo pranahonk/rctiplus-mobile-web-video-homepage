@@ -12,13 +12,15 @@ import {
   CLEAR_CLIP,
   CLEAR_EXTRA,
   EPISODE_FAILURE,
-  FETCH_EPISODE_URL_SUCCESS,
+  FETCH_PLAYER_URL_SUCCESS,
   CLEAR_PLAYER,
   FETCH_EPISODE_REQUEST,
   FETCH_EXTRA_REQUEST,
   FETCH_CLIP_REQUEST,
   FETCH_PHOTO_REQUEST,
   MORE_REQUEST,
+  FETCH_BOOKMARK_SUCCESS,
+  FETCH_POST_BOOKMARK_SUCCESS,
 } from '../../actions/program-detail/programDetail';
 const initialState = {
   loading: true,
@@ -96,19 +98,19 @@ export default (state = initialState, action) => {
     case CLEAR_CLIP:
       return {
         ...state,
-        [action.filter]: {},
+        [action.filter]: null,
         loading: false,
       };
     case CLEAR_EXTRA:
       return {
         ...state,
-        [action.filter]: {},
+        [action.filter]: null,
         loading: false,
       };
     case CLEAR_PLAYER:
       return {
         ...state,
-        [action.filter]: {},
+        [action.filter]: null,
         loading: false,
       };
     case FETCH_EXTRA_SUCCESS:
@@ -215,13 +217,25 @@ export default (state = initialState, action) => {
         loading: false,
         loading_episode: false,
       };
-    case FETCH_EPISODE_URL_SUCCESS:
-      console.log('STATE URL:', state)
+    case FETCH_PLAYER_URL_SUCCESS:
+      console.log('STATE URL:', action)
       return {
         ...state,
-        [action.filter[0]]: action.payload,
+        [action.filter[0]]:{...action.payload, isFullscreen: action.isFullscreen},
         loading: false,
         update_player: true,
+      };
+    case FETCH_BOOKMARK_SUCCESS:
+      return {
+        ...state,
+        [action.filter]: action.payload,
+        loading: false,
+      };
+    case FETCH_POST_BOOKMARK_SUCCESS:
+      return {
+        ...state,
+        [action.filter]: action.payload,
+        loading: false,
       };
     default:
       return state;

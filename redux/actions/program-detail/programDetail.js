@@ -60,6 +60,20 @@ const fetchDetailProgramSuccess = (detailProgram, filter) => {
     payload: detailProgram,
   };
 };
+const fetchBookmarkSuccess = (bookmark, filter) => {
+  return {
+    type: FETCH_BOOKMARK_SUCCESS,
+    filter: filter,
+    payload: bookmark,
+  };
+};
+const fetchPostBookmarkSuccess = (bookmark, filter) => {
+  return {
+    type: FETCH_POST_BOOKMARK_SUCCESS,
+    filter: filter,
+    payload: bookmark,
+  };
+};
 const fetchRelatedProgramSuccess = (related, filter) => {
   return {
     type: FETCH_RELATED_PROGRAM_SUCCESS,
@@ -126,11 +140,12 @@ const fetchPhotoSuccess = (clip, filter) => {
     payload: clip,
   };
 };
-const fetchEpisodeUrlSuccess = (clip, filter) => {
+const fetchPlayerUrlSuccess = (clip, filter, isFullscreen) => {
   return {
-    type: FETCH_EPISODE_URL_SUCCESS,
+    type: FETCH_PLAYER_URL_SUCCESS,
     filter: filter,
     payload: clip,
+    isFullscreen: isFullscreen,
   };
 };
 export const fetcFromServer = (params = {}) => {
@@ -262,14 +277,44 @@ export const fetchPhoto = (programId, filter, page = 1, length = 5) => {
       });
   };
 };
-export const fetchEpisodeUrl = (episodeId, filter, season) => {
+export const fetchPlayerUrl = (episodeId, filter, season, isFullscreen = false) => {
   return function(dispatch) {
     dispatch(fetchDetailProgramRequest());
     axios.get(`/v1/episode/${episodeId}/url`)
       .then(response => {
         console.log(response);
         const data = response.data;
-        dispatch(fetchEpisodeUrlSuccess(data, [filter, season]));
+        dispatch(fetchPlayerUrlSuccess(data, [filter, season], isFullscreen));
+      })
+      .catch(error => {
+        console.log(error);
+        dispatch(fetchDetailProgramFailure(error.message));
+      });
+  };
+};
+export const fetchBookmark = (programId, filter) => {
+  return function(dispatch) {
+    dispatch(fetchDetailProgramRequest());
+    axios.get(`/v1/mylist/${programId}`)
+      .then(response => {
+        console.log(response);
+        const data = response.data;
+        dispatch(fetchBookmarkSuccess(data, filter));
+      })
+      .catch(error => {
+        console.log(error);
+        dispatch(fetchDetailProgramFailure(error.message));
+      });
+  };
+};
+export const postBookmark = (id, type, filter) => {
+  return function(dispatch) {
+    dispatch(fetchDetailProgramRequest());
+    axios.post(`/v1/bookmark`, { id: id, type: type })
+      .then(response => {
+        console.log(response);
+        const data = response.data;
+        dispatch(fetchPostBookmarkSuccess(data, filter));
       })
       .catch(error => {
         console.log(error);
@@ -293,10 +338,12 @@ export const FETCH_RELATED_PROGRAM_SUCCESS = 'FETCH_RELATED_PROGRAM_SUCCESS';
 export const CLEAR_CLIP = 'CLEAR_CLIP';
 export const CLEAR_EXTRA = 'CLEAR_EXTRA';
 export const EPISODE_FAILURE = 'EPISODE_FAILURE';
-export const FETCH_EPISODE_URL_SUCCESS = 'FETCH_EPISODE_URL_SUCCESS';
+export const FETCH_PLAYER_URL_SUCCESS = 'FETCH_PLAYER_URL_SUCCESS';
 export const CLEAR_PLAYER = 'CLEAR_PLAYER';
 export const FETCH_EPISODE_REQUEST = 'FETCH_EPISODE_REQUEST';
 export const FETCH_EXTRA_REQUEST = 'FETCH_EXTRA_REQUEST';
 export const FETCH_CLIP_REQUEST = 'FETCH_CLIP_REQUEST';
 export const FETCH_PHOTO_REQUEST = 'FETCH_PHOTO_REQUEST';
 export const MORE_REQUEST = 'MORE_REQUEST';
+export const FETCH_BOOKMARK_SUCCESS = 'FETCH_BOOKMARK_SUCCESS';
+export const FETCH_POST_BOOKMARK_SUCCESS = 'FETCH_POST_BOOKMARK_SUCCESS';

@@ -9,6 +9,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PlayListAdd from '@material-ui/icons/PlayListAdd';
 import GetApp from '@material-ui/icons/GetApp';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
+import { urlRegex } from '../utils/regex';
 import {
   fetchDetailProgram,
   fetchEpisode,
@@ -20,8 +21,10 @@ import {
   fetchPhoto,
   setClearClip,
   setClearExtra,
-  fetchEpisodeUrl,
+  fetchPlayerUrl,
   clearPlayer,
+  fetchBookmark,
+  postBookmark,
 } from '../redux/actions/program-detail/programDetail';
 import Layout from '../components/Layouts/Default_v2';
 import { Button, Col, Nav, NavItem, NavLink, TabContent, TabPane, Collapse } from 'reactstrap';
@@ -70,15 +73,17 @@ class Index extends React.Component {
       season: 1,
       episodeClearStore: false,
       titleProgram: '',
-      statusTab: true,
     };
     this.type = 'program-detail';
+    this.typeEpisode = 'program-episode';
     this.programId = props.router.query.id;
     this.ref = React.createRef();
   }
   componentDidMount() {
-    console.log('MOUNTED: ', this.props.data['program-episode']);
-    this.setState({episodeClearStore: true}, () => this.loadFirstTab(this.programId));
+    console.log('MOUNTED: ', this.props.data[this.typeEpisode]);
+    this.setState({
+      episodeClearStore: true,
+    }, () => this.loadFirstTab(this.programId));
     this.loadRelated(this.programId,1);
     if (this.props.server && this.props.server[this.type].data) {
       if (this.isTabs(this.props.server[this.type].data).length > 0) {
@@ -86,7 +91,7 @@ class Index extends React.Component {
       }
     }
     if (this.props.router.query.content_id) {
-      this.props.dispatch(fetchEpisodeUrl(this.props.router.query.content_id,'episode-url',1));
+      this.props.dispatch(fetchPlayerUrl(this.props.router.query.content_id,'data-player',1));
     }
   }
   shouldComponentUpdate() {
@@ -135,6 +140,34 @@ class Index extends React.Component {
       return '/static/placeholders/placeholder_landscape.png';
     }
   }
+  getUrlMainContent(mainData) {
+    if (this.props && this.props.data[this.typeEpisode] && this.props.data[this.typeEpisode]['season-1']) {
+      const detailData = this.props && this.props.data[this.typeEpisode] && this.props.data[this.typeEpisode]['season-1'].data[0];
+      return (
+        <>
+          <Link
+            href={`/programs?id=${mainData.id}&title=${urlRegex(mainData.title)}&content_type=episode&content_id=${detailData.id}&content_title=${urlRegex(detailData.title)}`}
+            as={`/programs/${mainData.id}/${urlRegex(mainData.title)}/episode/${detailData.id}/${urlRegex(detailData.title)}`}
+            shallow>
+            <a onClick={ () => { this.props.dispatch(fetchPlayerUrl(detailData.id,'data-player',1)); } }>
+              <ButtonOutline icon={<PlayArrowIcon/>} text="Play" />
+            </a>
+          </Link>
+          { mainData.trailer_url ? (
+            <Link
+              href={`/programs?id=${mainData.id}&title=${urlRegex(mainData.title)}`}
+              as={`/programs/${mainData.id}/${urlRegex(mainData.title)}`}
+              shallow
+            >
+            <a onClick={ () => { this.props.dispatch(fetchPlayerUrl(mainData.id,'data-player',1, true)); } }>
+              <ButtonOutline text="Trailer" />
+            </a>
+            </Link>
+          ) : (<></>) }
+        </>
+      );
+    }
+  }
   mainContent() {
     if (this.props.server && this.props.server[this.type].data) {
       const { data, meta } = this.props.server[this.type];
@@ -149,8 +182,7 @@ class Index extends React.Component {
               loader={<img className="background__program-detail" src={this.getPathImage(...pathImg, false)}/>}/>
             </div>
             <div className="player__button--wrapper">
-              <ButtonOutline icon={<PlayArrowIcon/>} text="Play" />
-              <ButtonOutline text="Trailer" />
+              { this.getUrlMainContent(data) }
             </div>
             <div className="content--wrapper">
               <h1 className="content-title">
@@ -191,7 +223,13 @@ class Index extends React.Component {
     this.props.dispatch(fetchRelatedProgram(data));
   }
   loadFirstTab(programId) {
+    this.props.dispatch(fetchBookmark(programId, 'bookmark'));
     if (this.props.server && this.props.server[this.type].data) {
+      if (this.props.server[this.type].data.category === 'movie') {
+        this.props.dispatch(fetchEpisode(programId, 'program-episode'));
+        this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
+        this.props.dispatch(seasonSelected(1));
+      }
       if (this.isTabs(this.props.server[this.type].data).length > 0) {
         switch (this.isTabs(this.props.server[this.type].data)[0]) {
           case 'Episodes':
@@ -217,7 +255,6 @@ class Index extends React.Component {
             }
             break;
           default:
-            this.setState({statusTab: false});
             return;
         }
       }
@@ -225,18 +262,18 @@ class Index extends React.Component {
   }
   isTabs(data) {
     const tabs = [];
-    if (data.episode > 1) {tabs.push('Episodes');}
+    if (data.episode > 0 && this.props && this.props.server['program-detail'] && this.props.server['program-detail'].data.category === 'series') {tabs.push('Episodes');}
     if (data.extra > 0) {tabs.push('Extra');}
     if (data.clip > 0) {tabs.push('Clips');}
     if (data.photo > 0) {tabs.push('Photo');}
-
     return tabs;
   }
   tabContent() {
     if (this.props.server && this.props.server[this.type].data) {
       const { data, meta } = this.props.server[this.type];
-      this.isTabs(data);
+      // this.isTabs(data);
       if (data && this.isTabs(data).length > 0) {
+        console.log('TRUEEE TAB');
         return (
           <Nav tabs className="flex-nav">
             {
@@ -254,6 +291,9 @@ class Index extends React.Component {
               <div className="tab-slider" role="presentation"/>
             </Nav>
         );
+      }
+      if (this.props && this.props.server['program-detail'] && this.props.server['program-detail'].data.category === 'movie') {
+        return (<></>);
       }
       return (<TabListLoader/>);
     }
@@ -284,7 +324,11 @@ class Index extends React.Component {
   }
   getLinkVideo(id, filter, season) {
     const vm = this;
-    vm.props.dispatch(fetchEpisodeUrl(id,filter,season));
+    vm.props.dispatch(fetchPlayerUrl(id,filter,season));
+  }
+  addBookmark(id, type) {
+    const vm = this;
+    vm.props.dispatch(postBookmark(id,type,'bookmark-success'));
   }
   panelEpisode(props) {
     if (!this.props.data.loading_episode ||
@@ -309,6 +353,7 @@ class Index extends React.Component {
               seasonSelected= { this.props.data.seasonSelected }
               onShowMore={() => { this.props.dispatch(fetchEpisode(this.props.router.query.id, 'program-episode',props.data[0].season, pagination.nextPage)); }}
               onSeason={() => {this.props.dispatch(fetchSeasonEpisode(this.props.router.query.id,'program-episode',1, pagination.nextPage));}}
+              onBookmark={this.addBookmark.bind(this)}
             />
           </>
           );
@@ -321,9 +366,8 @@ class Index extends React.Component {
     );
   }
   panelExtra(props) {
-    if (!this.props.data.loading_extra ||
-        ((props && props.data && props.data.length > 0) &&
-        this.props.server['program-detail'].data.id === this.props.router.query.id)) {
+    if (!this.props.data.loading_extra) {
+      if (props && props.data && props.data.length > 0 && props.meta) {
       const pagination = {
         page: props.meta.pagination.current_page,
         total_page: props.meta.pagination.total_page,
@@ -336,6 +380,7 @@ class Index extends React.Component {
         data={props}
       />
         );
+      }
     }
     return (
       <TabPane tabId="Extra">
@@ -344,9 +389,9 @@ class Index extends React.Component {
     );
   }
   panelClip(props) {
-    if (!this.props.data.loading_clip ||
-        ((props && props.data && props.data.length > 0) &&
-        this.props.server['program-detail'].data.id === this.props.router.query.id)) {
+    console.log(props);
+    if (!this.props.data.loading_clip) {
+      if (props && props.data && props.data.length > 0) {
       const pagination = {
         page: props.meta.pagination.current_page,
         total_page: props.meta.pagination.total_page,
@@ -360,6 +405,7 @@ class Index extends React.Component {
       />
         );
     }
+  }
     return (
       <TabPane tabId="Clips">
         <TabPanelLoader />
@@ -412,12 +458,12 @@ class Index extends React.Component {
     }
   }
   switchPanel() {
-    if (this.props.data && this.props.data['episode-url'] && this.props.data['episode-url'].data) {
+    if (this.props.data && this.props.data['data-player'] && this.props.data['data-player'].data) {
       console.log('RERENDER PLAYERRRRR');
-      const data = this.props.data && this.props.data['episode-url'] && this.props.data['episode-url'].data;
+      const data = this.props.data && this.props.data['data-player'];
       return (
         <div className="program-detail-player-wrapper">
-            <Player data={ data } ref={this.ref}/>
+            <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref}/>
         </div>
       );
     }
@@ -446,8 +492,8 @@ class Index extends React.Component {
                 </div>
               </div>
             </Collapse>
-            { this.state.statusTab ?
-            (<div className="list__content-wrapper">
+            {/* { movie } */}
+            <div className="list__content-wrapper">
               <div className="tab__content-wrapper">
                 { this.tabContent() }
                 <TabContent activeTab={this.state.toggle}>
@@ -470,11 +516,11 @@ class Index extends React.Component {
                   ) }
                 </TabContent>
               </div>
-            </div>) : '' }
-                  {this.panelRelated(
-                    this.props.data &&
-                    this.props.data['program-related']
-                  )}
+            </div>
+            {this.panelRelated(
+              this.props.data &&
+              this.props.data['program-related']
+            )}
         </div>
       </Layout>
     );

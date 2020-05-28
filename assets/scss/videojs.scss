@@ -52,6 +52,30 @@
     align-items: center;
     transition: visibility .1s;
 }
+.rplus-progress-control {
+    width: 100% !important;
+    z-index: 999 !important;
+    top: -2px !important;
+    .vjs-progress-holder {
+        margin: 0 !important;
+        background: #939393 !important;
+        height: 4px !important;
+        .vjs-load-progress {
+            background: #fa262f !important;
+        }
+        .vjs-play-progress {
+            background: #fa262f !important;
+            &::before {
+                content: '' !important;
+            }
+            &:hover {
+                &::after {
+                    content: '\F111' !important;
+                }
+            }
+        }
+    }
+}
 .vjs-fullscreen-control {
     order: 1;
 }
@@ -61,4 +85,10 @@
 
 .vjs-control-bar {
     z-index: 999;
+    bottom: 5px !important;
+}
+.vjs-fullscreen {
+    .rplus-progress-control {
+        display: none !important;
+    }
 }

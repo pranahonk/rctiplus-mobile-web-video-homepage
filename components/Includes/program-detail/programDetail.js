@@ -11,6 +11,7 @@ import Dialog from '../../Modals/Dialog';
 import PlayListAdd from '@material-ui/icons/PlayListAdd';
 import GetApp from '@material-ui/icons/GetApp';
 import { RESOLUTION_IMG } from '../../../config';
+import Ripples from 'react-ripples';
 const TabPanelLoader = dynamic(() => import('../Shimmer/detailProgramLoader').then((mod) => mod.TabPanelLoader));
 
 export const PanelEpisode = (props) => {
@@ -20,7 +21,7 @@ export const PanelEpisode = (props) => {
     const href = `/programs?id=${props.query.id}&title=${props.query.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}&content_type=${typeItem}&content_id=${idItem}&content_title=${titleItem.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`;
     const as = `/programs/${props.query.id}/${props.query.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}/${typeItem}/${idItem}/${titleItem.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`;
     // return [href, as]
-    props.link(idItem,'episode-url',1);
+    props.link(idItem,'data-player',1);
     Router.push(href,as, { shallow: true });
   };
   return (
@@ -48,7 +49,7 @@ export const PanelEpisode = (props) => {
               <div className="thumb-detail__content">
                 <h3>{ item.title }</h3>
                 <div className="action-button__content ">
-                  <ButtonPrimary icon={ <PlayListAdd/> }/>
+                  <ButtonPrimary icon={ <PlayListAdd/> } onclick={() => { props.onBookmark(item.id, 'episode'); }}/>
                   <ButtonPrimary icon={ <ShareIcon/> }/>
                   <ButtonPrimary icon={ <GetApp/> }/>
                 </div>
@@ -65,7 +66,7 @@ export const PanelEpisode = (props) => {
         </div>
         { props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
           <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-            <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
+            <ButtonOutline text="Show more" className="small-button" onclick={() => props.onShowMore}/>
           </div>
         ) : '' }
       </TabPane>
@@ -105,7 +106,7 @@ export const PanelExtra = (props) => {
           );
         }) }
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ?(
+      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
         <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
           <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
         </div>
@@ -202,7 +203,7 @@ export const PanelRelated = (props) => {
   const link = (id, title) => {
     const href = `/programs?id=${id}&title=${title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`;
     const as = `/programs/${id}/${title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`;
-    props.hasPlayer('episode-url');
+    props.hasPlayer('data-player');
     Router.push(href,as);
   };
   return (
@@ -211,7 +212,7 @@ export const PanelRelated = (props) => {
             <div ref={containerRef} className="related__program-list">
               { props.data.data.map((item, i) => {
                 return (
-                  <Link key={i} 
+                  <Link key={i}
                         href={`/programs?id=${item.id}&title=${item.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`}
                         as={`/programs/${item.id}/${item.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`}
                   >

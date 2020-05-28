@@ -8,6 +8,7 @@ const Component = videojs.getComponent('Component');
 const Button = videojs.getComponent('Button');
 const PlayToggle = videojs.getComponent('PlayToggle');
 const VolumeMenuButton = videojs.getComponent('MuteToggle');
+const ProgressControl = videojs.getComponent('ProgressControl');
 
 // export class PlayButton extends Plugin {
 //   constructor(player, options) {
@@ -33,6 +34,12 @@ const VolumeMenuButton = videojs.getComponent('MuteToggle');
 //     });
 //   }
 // }
+export const ProgressControlCustom = videojs.extend(ProgressControl, {
+  constructor: function(player, options) {
+    ProgressControl.apply(this, arguments);
+    this.addClass('rplus-progress-control');
+  },
+});
 export const MuteToggleCustom = videojs.extend(VolumeMenuButton, {
   constructor: function(player, options) {
     VolumeMenuButton.apply(this, arguments);
@@ -65,6 +72,9 @@ export const PlayToggleCustom = videojs.extend(PlayToggle, {
       videojs.log('USER CLICK PLAY');
       this.initIconPause();
     });
+    // player.on('playing', () => {
+    //   this.hideButton();
+    // });
     player.on('pause', () => {
       videojs.log('USER CLICK PAUSE');
       this.initIconPlay();

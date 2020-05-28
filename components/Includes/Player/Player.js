@@ -5,7 +5,7 @@ import 'videojs-ima';
 import 'videojs-seek-buttons';
 import qualitySelector from 'videojs-hls-quality-selector';
 import qualityLevels from 'videojs-contrib-quality-levels';
-import TitleOverlay, { PlayToggleCustom, MuteToggleCustom } from '../../../assets/js/videojs-plugin/videojs-custom-overlay';
+import TitleOverlay, { PlayToggleCustom, MuteToggleCustom, ProgressControlCustom } from '../../../assets/js/videojs-plugin/videojs-custom';
 import 'video.js/dist/video-js.css';
 import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
 
@@ -15,7 +15,7 @@ const Player = forwardRef((props, ref) => {
   // const url = 'https://linier3.rctiplus.id/live/eds/RCTI_Logo/sa_hls/RCTI_Logo.m3u8?auth_key=1589835489-0-0-1016cbaa7b736ae7ebb8adf5f03d7191';
   const vmap = 'https://rc-static.rctiplus.id/vmap/vmap_ima_vod_episode_45_0_web_defaultvod.xml';
   const initRef = useRef(ref);
-  const [videoPlayer, setVideoPlayer] = useState(null)
+  const [videoPlayer, setVideoPlayer] = useState(null);
   const optionsPlayer = {
     autoplay: true,
     muted: true,
@@ -37,6 +37,12 @@ const Player = forwardRef((props, ref) => {
       nativeVideoTracks: false,
     },
   };
+  // const fetchXml = () => {
+  //   fetch('https://rc-static.rctiplus.id/vmap/vmap_ima_vod_episode_4068_0_web_defaultvod.xml')
+  //   .then(response => response.text())
+  //   .then(str => (new window.DOMParser()).parseFromString(str, 'text/xml'))
+  //   .then(data => console.log('XML: ',data));
+  // };
   const onAdEvent = useCallback((event) => {
     console.log('ADS: ' + event.type);
   },[]);
@@ -46,14 +52,17 @@ const Player = forwardRef((props, ref) => {
     videojs.registerComponent('TitleBar', TitleOverlay);
     videojs.registerComponent('PlayToggleCustom', PlayToggleCustom);
     videojs.registerComponent('MuteToggleCustom', MuteToggleCustom);
+    videojs.registerComponent('ProgressControlCustom', ProgressControlCustom);
     const player = videojs(initRef.current,optionsPlayer, () => {
+    if (props.isFullscreen) player.requestFullscreen();
     console.log('onPlayerReady',!videojs.browser.IS_SAFARI, player);
       player.src({
           src: props.data.url,
           type: 'application/x-mpegURL',
       });
+      player.on;
       player.on('playing', function() {
-        console.log('PLAYINGGGGGGGG')
+        console.log('PLAYINGGGGGGGG');
       });
       player.on('ended', function() {
         console.log('ENDED');
@@ -82,6 +91,7 @@ const Player = forwardRef((props, ref) => {
       player.removeChild('BigPlayButton');
       player.addChild('TitleBar', { text: 'TEST COMPONENT' });
       player.addChild('PlayToggleCustom');
+      player.addChild('ProgressControlCustom');
       if (!videojs.browser.IS_SAFARI) {
         player.addChild('MuteToggleCustom');
       }
@@ -125,15 +135,15 @@ const Player = forwardRef((props, ref) => {
       player.ima(optionAds);
       player.ima.initializeAdDisplayContainer();
       player.ima.setAdBreakReadyListener(() => {
-        videojs.log('ADS PLAYBREAK')
+        videojs.log('ADS PLAYBREAK');
         player.ima.playAdBreak();
-      })
+      });
     });
-    setVideoPlayer(player)
+    setVideoPlayer(player);
     return () => {
       console.log('CLEANUP_PLAYER');
-      if(videoPlayer !== null) {
-        console.log('DISPOSEEEEEE')
+      if (videoPlayer !== null) {
+        console.log('DISPOSEEEEEE');
         player.dispose();
       }
     };
@@ -141,13 +151,13 @@ const Player = forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log('PLAYER_UPDATE', props.data);
-    if(videoPlayer !== null) {
+    if (videoPlayer !== null) {
       videoPlayer.src({
         src: props.data.url,
         type: 'application/x-mpegURL',
     });
     }
-  },[props.data])
+  },[props.data]);
 
   return (
     <>
