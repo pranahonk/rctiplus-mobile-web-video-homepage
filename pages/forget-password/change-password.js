@@ -103,7 +103,7 @@ class ChangePassword extends React.Component {
                                     invalid={this.state.at_least_eight_invalid}
                                     onChange={this.onPasswordChange.bind(this)} />
                                 <div onClick={this.togglePassword.bind(this)} className={'view-raw-c ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.at_least_eight_invalid ? 'invalid-border-color' : '')}></div>
-                                <FormFeedback>Password must at least 8 characters</FormFeedback>
+                                <FormFeedback id="invalid-password-num-chars">Password must at least 8 characters</FormFeedback>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
@@ -118,7 +118,7 @@ class ChangePassword extends React.Component {
                                     invalid={this.state.password_match_invalid}
                                     onChange={this.onConfirmPasswordChange.bind(this)} />
                                 <div onClick={this.togglePassword.bind(this, 're')} className={'view-raw-c ' + (this.state.view_raw_re ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.password_match_invalid ? 'invalid-border-color' : '')}></div>
-                                <FormFeedback>Password must match</FormFeedback>
+                                <FormFeedback id="invalid-password-not-match">Password must match</FormFeedback>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
