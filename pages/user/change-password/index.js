@@ -130,7 +130,7 @@ class ChangePassword extends React.Component {
                                     invalid={this.state.current_password_invalid}
                                     onChange={this.onCurrentPasswordChange.bind(this)} />
                                 <div onClick={this.togglePassword.bind(this, 'cu')} className={'view-raw-c ' + (this.state.view_raw_cu ? 'fas_fa-eye-slash' : 'fas_fa-eye')}></div>
-                                <FormFeedback>please try again again, password is incorrect</FormFeedback>
+                                <FormFeedback id="invalid-password">please try again again, password is incorrect</FormFeedback>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
@@ -145,7 +145,7 @@ class ChangePassword extends React.Component {
                                     invalid={this.state.at_least_eight_invalid || this.state.password_cannot_same}
                                     onChange={this.onPasswordChange.bind(this)} />
                                 <div onClick={this.togglePassword.bind(this)} className={'view-raw-c ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.at_least_eight_invalid ? 'invalid-border-color' : '')}></div>
-                                <FormFeedback>
+                                <FormFeedback id="invalid-current-password">
                                     {this.state.password === this.state.current_password ? `Password can't same with old password` : 'Password must at least 8 character'}
                                 </FormFeedback>
                             </InputGroup>
@@ -162,7 +162,7 @@ class ChangePassword extends React.Component {
                                     invalid={this.state.password_match_invalid}
                                     onChange={this.onConfirmPasswordChange.bind(this)} />
                                 <div onClick={this.togglePassword.bind(this, 're')} className={'view-raw-c ' + (this.state.view_raw_re ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.password_match_invalid ? 'invalid-border-color' : '')}></div>
-                                <FormFeedback>Password must match</FormFeedback>
+                                <FormFeedback id="invalid-password-not-match">Password must match</FormFeedback>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>

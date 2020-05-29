@@ -135,6 +135,7 @@ class TabSignup extends React.Component {
 				<Nav tabs>
 					<NavItem className="nav-signup-item">
 						<NavLink
+							id="register-email"
 							style={{ fontSize: '0.8rem' }}
 							className={classnames({ active: this.state.activeTab === '2' })}
 							onClick={() => {
@@ -145,6 +146,7 @@ class TabSignup extends React.Component {
 					</NavItem>
 					<NavItem className="nav-signup-item">
 						<NavLink
+							id="register-phone"
 							style={{ fontSize: '0.8rem' }}
 							className={classnames({ active: this.state.activeTab === '1' })}
 							onClick={() => {
@@ -172,6 +174,7 @@ class TabSignup extends React.Component {
 									invalid={this.state.phone_number_invalid}
 									onChange={this.onChangeUsername.bind(this)} />
 								<FormFeedback
+								id="invalid-phone-number"
 								// valid={!this.state.phone_number_invalid && !!this.props.registration.username}
 								>{this.state.phone_invalid_message}</FormFeedback>
 							</InputGroup>
@@ -189,7 +192,7 @@ class TabSignup extends React.Component {
 									placeholder="insert email"
 									invalid={this.state.email_invalid}
 									onChange={this.onChangeUsername.bind(this)} />
-								<FormFeedback>{this.state.email_invalid_message}</FormFeedback>
+								<FormFeedback id="invalid-email">{this.state.email_invalid_message}</FormFeedback>
 							</InputGroup>
 						</FormGroup>
 					</TabPane>

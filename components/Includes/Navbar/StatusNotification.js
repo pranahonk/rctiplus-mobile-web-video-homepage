@@ -13,7 +13,7 @@ class StatusNotification extends React.Component {
 
     render() {
         return (
-            <div className={'top-notification-container' + ' ' + (this.props.notification.progress ? 'notification-progress notification-show' : (this.props.notification.success ? 'notification-success' : 'notification-danger')) + ' ' + (this.props.notification.show ? 'notification-show' : '') + ' ' + (this.props.notification.size === 'medium' ? 'notification-medium' : '')}>
+            <div id="no-internet" className={'top-notification-container' + ' ' + (this.props.notification.progress ? 'notification-progress notification-show' : (this.props.notification.success ? 'notification-success' : 'notification-danger')) + ' ' + (this.props.notification.show ? 'notification-show' : '') + ' ' + (this.props.notification.size === 'medium' ? 'notification-medium' : '')}>
                 <p>{this.props.notification.content}</p>
                 <Offline polling={{ interval: 30000 }} onChange={online => {
                     if (!online) {

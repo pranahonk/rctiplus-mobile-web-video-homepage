@@ -88,7 +88,7 @@ class Signin extends React.Component {
 							is_username_invalid: false,
 							username_invalid_message: this.props.authentication.message
 						}, () => {
-							showAlert('User has not been registered', 'Invalid', 'OK', '', () => {}, true);
+							showAlert('User has not been registered', 'Invalid', 'OK', '', () => {}, true, 'not-registered');
 						});
 						break;
 				}
@@ -148,7 +148,7 @@ class Signin extends React.Component {
 										defaultValue={this.state.emailphone}
 										invalid={this.state.is_username_invalid}
 										onChange={this.onChangeUsername.bind(this)}/>
-									<FormFeedback>{this.state.username_invalid_message}</FormFeedback>
+									<FormFeedback id="invalid-username">{this.state.username_invalid_message}</FormFeedback>
 								</InputGroup>
 								
 							</FormGroup>
@@ -165,18 +165,18 @@ class Signin extends React.Component {
 										onChange={e => this.setState({ password: e.target.value })}
 										invalid={this.state.is_password_invalid}/>
 									<div onClick={this.togglePassword.bind(this)} className={'view-raw ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye')}></div>
-									<FormFeedback>{this.state.password_invalid_message}</FormFeedback>
+									<FormFeedback id="invalid-password">{this.state.password_invalid_message}</FormFeedback>
 								</InputGroup>
 							</FormGroup>
 							<p className="text-center">
-								<a href="/forget-password" className="text-white fnt-12">
+								<a id="forgot-password-link" href="/forget-password" className="text-white fnt-12">
 									Forgot Password?
 								</a>
 							</p>
 							<Button id="submit-login" disabled={this.state.emailphone.length < 6} className="btn-next block-btn" style={{ marginTop: 20 }}>Log In</Button>
 							<p className="text-center fnt-10 el-margin-20 el-white" style={{ fontSize: 12 }}>
 								Don't have an account?<br/>
-								<a href="/register" className="text-red">
+								<a id="register-link" href="/register" className="text-red">
 									Register
 								</a> here.&nbsp;
 							</p>

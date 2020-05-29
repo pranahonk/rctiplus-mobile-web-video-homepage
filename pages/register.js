@@ -125,7 +125,7 @@ class Signup extends React.Component {
 										invalid={this.state.at_least_eight_invalid}
 										onChange={this.onPasswordChange.bind(this)} />
 									<div onClick={this.togglePassword.bind(this)} className={'view-raw ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.at_least_eight_invalid ? 'invalid-border-color' : '')}></div>
-									<FormFeedback>Password must at least 8 characters</FormFeedback>
+									<FormFeedback id="invalid-password-num-chars">Password must at least 8 characters</FormFeedback>
 								</InputGroup>
 							</FormGroup>
 							<FormGroup>
@@ -140,7 +140,7 @@ class Signup extends React.Component {
 										invalid={this.state.password_match_invalid}
 										onChange={this.onConfirmPasswordChange.bind(this)} />
 									<div onClick={this.togglePassword.bind(this, 're')} className={'view-raw ' + (this.state.view_raw_re ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.password_match_invalid ? 'invalid-border-color' : '')}></div>
-									<FormFeedback>Password must match</FormFeedback>
+									<FormFeedback id="invalid-password-not-match">Password must match</FormFeedback>
 								</InputGroup>
 							</FormGroup>
 							<Button id="button-next" disabled={!this.props.registration.username || this.props.registration.username.length < 6} className="btn-next block-btn">NEXT</Button>
