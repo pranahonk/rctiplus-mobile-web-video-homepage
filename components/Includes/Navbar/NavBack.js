@@ -70,12 +70,12 @@ class NavbarDef extends Component {
                         <p>{this.props.title}</p>
                     </div>
                     <div style={{ visibility: this.state.visibility }} className="right-menu">
-                        <Dropdown isOpen={this.state.dropdown_open} toggle={this.toggle.bind(this)}>
+                        <Dropdown id="action-three-dot" isOpen={this.state.dropdown_open} toggle={this.toggle.bind(this)}>
                             <DropdownToggle>
                                 <MoreVertIcon/>
                             </DropdownToggle>
                             <DropdownMenu>
-                                {this.state.dropdown_menu.map((d, i) => <DropdownItem key={i} onClick={d.callback}>{d.label}</DropdownItem>)}
+                                {this.state.dropdown_menu.map((d, i) => <DropdownItem key={i} id={d.id} onClick={d.callback}>{d.label}</DropdownItem>)}
                             </DropdownMenu>
                         </Dropdown>
                     </div>

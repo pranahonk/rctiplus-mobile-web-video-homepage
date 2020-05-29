@@ -261,6 +261,7 @@ class Step1 extends Component {
 								<InputGroup>
 									<Input
 										type="select"
+										id="gender"
 										value={this.state.gender ? this.state.gender.charAt(0).toUpperCase() + this.state.gender.substring(1) : ''}
 										onChange={this.onChangeGender.bind(this)}
 										invalid={this.state.gender_invalid}
@@ -290,7 +291,7 @@ class Step1 extends Component {
 								</InputGroup>
 							</FormGroup>
 							<FormGroup className="btn-next-position">
-								<Button disabled={Boolean(this.state.fullname && this.state.fullname.length < 4)} className="btn-next block-btn">NEXT</Button>
+								<Button id="button-next" disabled={Boolean(this.state.fullname && this.state.fullname.length < 4)} className="btn-next block-btn">NEXT</Button>
 							</FormGroup>
 						</Form>
 					</div>

@@ -108,6 +108,7 @@ class ForgetPassword extends React.Component {
                             <Label for="username">Email or Phone Number</Label>
                             <InputGroup>
                                 <Input 
+                                    id="input-email-phone"
                                     onChange={this.onChangeUsername.bind(this)}
                                     valid={false && !this.state.username_invalid && !!this.state.username}
                                     invalid={this.state.username_invalid}
@@ -116,7 +117,7 @@ class ForgetPassword extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Button disabled={this.state.username == '' || this.state.username_invalid} className="btn-next block-btn">Next</Button>
+                            <Button id="button-next" disabled={this.state.username == '' || this.state.username_invalid} className="btn-next block-btn">Next</Button>
                         </FormGroup>
                     </Form>
                 </div>

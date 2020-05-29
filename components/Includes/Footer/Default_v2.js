@@ -45,7 +45,7 @@ class FooterNav_v2 extends Component {
         return (
             <div className="nav-footer-v2">
                 <div className="footer-wrapper-list">
-                    <div onClick={() => {
+                    <div id="action-home" onClick={() => {
                         homeGeneralClicked('mweb_home_clicked');
                         switch (this.props.router.asPath) {
                             case '/radio':
@@ -66,7 +66,7 @@ class FooterNav_v2 extends Component {
                 </div>
 
                 <div className="footer-wrapper-list">
-                    <div onClick={() => {
+                    <div id="action-live-event" onClick={() => {
                         homeGeneralClicked('mweb_liveevent_clicked');
                         Router.push('/live-event');
                     }}>
@@ -79,7 +79,7 @@ class FooterNav_v2 extends Component {
                 </div>
 
                 <div className="footer-wrapper-list">
-                    <div onClick={() => {
+                    <div id="action-live-tv" onClick={() => {
                         homeGeneralClicked('mweb_livetv_clicked');
                         Router.push('/tv/rcti');
                     }}>
@@ -92,7 +92,7 @@ class FooterNav_v2 extends Component {
                 </div>
 
                 <div className="footer-wrapper-list">
-                    <div onClick={() => {
+                    <div id="action-library" onClick={() => {
                         switch (this.props.router.asPath) {
                             case '/exclusive':
                                 exclusiveGeneralEvent('mweb_exclusive_library_clicked');
@@ -128,6 +128,7 @@ class FooterNav_v2 extends Component {
 
                 <div className="footer-wrapper-list">
                     <div
+                        id="action-account"
                         style={{ position: 'relative' }}
                         onClick={() => {
                             homeGeneralClicked('mweb_account_clicked');

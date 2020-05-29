@@ -126,7 +126,7 @@ class Profile extends React.Component {
 			<div className="profile-action">
 				<p><AccountCircleIcon/> Hi</p>
 				<p className="subtitle">To enjoy all the features, please login now</p>
-				<p className="sub-btn"><Button onClick={() => {
+				<p className="sub-btn"><Button id="button-login" onClick={() => {
 					accountGeneralEvent('mweb_account_signin_clicked');
 					Router.push('/login');
 				}} className="btn-next btn-login">Login</Button></p>
@@ -187,13 +187,13 @@ class Profile extends React.Component {
 					<ListGroupItem>
 						{actionProfile}
 					</ListGroupItem>
-					<ListGroupItem onClick={() => {
+					<ListGroupItem id="action-qrcode" onClick={() => {
 						accountGeneralEvent('mweb_account_scan_qrcode_clicked');
 						Router.push('/qrcode');
 					}}>
 						<img className="MuiSvgIcon-root" src="static/btn/qrcode.png"/> Scan QR Code
 					</ListGroupItem>
-					<ListGroupItem onClick={() => {
+					<ListGroupItem id="action-history" onClick={() => {
 						accountGeneralEvent('mweb_account_history_clicked');
 						if (!this.state.logged_in) {
 							showSignInAlert(`Please <b>Sign In</b><br/>
@@ -208,16 +208,16 @@ class Profile extends React.Component {
 					}}>
 						<HistoryIcon/> History
 					</ListGroupItem>
-					<ListGroupItem onClick={this.showOpenPlaystoreAlert.bind(this)}>
+					<ListGroupItem id="action-download" onClick={this.showOpenPlaystoreAlert.bind(this)}>
 						<GetAppIcon/> Download
 					</ListGroupItem>
-					<ListGroupItem onClick={() => {
+					<ListGroupItem id="action-mylist" onClick={() => {
 						accountGeneralEvent('mweb_account_mylist_clicked');
 						Router.push('/mylist');
 					}}>
 						<PlaylistAddCheckIcon/> My List
 					</ListGroupItem>
-					<ListGroupItem onClick={() => {
+					<ListGroupItem id="action-continue-watching" onClick={() => {
 						accountGeneralEvent('mweb_account_continue_watching_clicked');
 						Router.push('/continue-watching');
 					}}>
@@ -236,25 +236,25 @@ class Profile extends React.Component {
 							))}
 						</div>
 					</ListGroupItem>
-					<ListGroupItem onClick={() => {
+					<ListGroupItem id="action-tnc" onClick={() => {
 						accountGeneralEvent('mweb_account_tnc_clicked');
 						Router.push('/terms-&-conditions');
 					}}>
 						<InfoOutlinedIcon/> Term &amp; Condition
 					</ListGroupItem>
-					<ListGroupItem onClick={() => {
+					<ListGroupItem id="action-privacy-policy" onClick={() => {
 						accountGeneralEvent('mweb_account_privacy_policy_clicked');
 						Router.push('/privacy-policy');
 					}}>
 						<LockOutlinedIcon/> Privacy Policy
 					</ListGroupItem>
-					<ListGroupItem onClick={() => {
+					<ListGroupItem id="action-contact-us" onClick={() => {
 						accountGeneralEvent('mweb_account_contact_us_clicked');
 						Router.push('/contact-us');
 					}}>
 						<MailOutlineOutlinedIcon/> Contact Us
 					</ListGroupItem>
-					<ListGroupItem onClick={() => Router.push('/faq')}>
+					<ListGroupItem id="action-faq" onClick={() => Router.push('/faq')}>
 						<HelpOutlineOutlinedIcon/> FAQ
 					</ListGroupItem>
 				</ListGroup>
