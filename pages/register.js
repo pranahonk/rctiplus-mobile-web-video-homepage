@@ -143,7 +143,7 @@ class Signup extends React.Component {
 									<FormFeedback>Password must match</FormFeedback>
 								</InputGroup>
 							</FormGroup>
-							<Button disabled={!this.props.registration.username || this.props.registration.username.length < 6} className="btn-next block-btn">NEXT</Button>
+							<Button id="button-next" disabled={!this.props.registration.username || this.props.registration.username.length < 6} className="btn-next block-btn">NEXT</Button>
 							{/* <p className="text-center fnt-10 el-margin-20 el-white">
 								By clicking the Sign Up button, you agree to our&nbsp;
 								<a href="/terms-&amp;-conditions" className="text-red fnt-11">

@@ -32,7 +32,7 @@ export default class Step1 extends Component {
 						<Checkmark />
 					</div>
 					<FormGroup className="btn-next-position" style={{ marginTop: 50, width: '80%', margin: '50px auto' }}>
-						<Button onClick={this.goToHome.bind(this)} className="btn-next">Done</Button>
+						<Button id="button-next-verification" onClick={this.goToHome.bind(this)} className="btn-next">Done</Button>
 					</FormGroup>
 				</div>
 			</Layout>
