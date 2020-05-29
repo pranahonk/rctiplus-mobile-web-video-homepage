@@ -275,10 +275,12 @@ class EditProfile extends React.Component {
                     dropdownMenu={[
                         {
                             label: 'Change Password',
+                            id: 'action-change-pw',
                             callback: () => { Router.push('/user/change-password') }
                         },
                         {
                             label: 'Log Out',
+                            id: 'action-logout',
                             callback: () => {
                                 accountGeneralEvent('mweb_account_signout_clicked');
                                 const deviceId = new DeviceUUID().get();
@@ -288,7 +290,7 @@ class EditProfile extends React.Component {
                             }
                         }
                     ]}/>
-                <Actionsheet show={this.state.show_action_sheet} menus={[{ content: 'Camera', onClick: () => {
+                <Actionsheet id="action-upload-photo" show={this.state.show_action_sheet} menus={[{ content: 'Camera', onClick: () => {
                     this.setState({ input_photo_accept: 'image/*', capture: 'camera' }, () => this.inputPhotoElement.click());
                 } }, { content: 'Gallery', onClick: () => {
                     this.setState({ input_photo_accept: 'image/*', capture: '' }, () => this.inputPhotoElementGallery.click());

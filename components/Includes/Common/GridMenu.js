@@ -22,7 +22,7 @@ class GridMenu extends React.Component {
             <div className="menu-container">
                 <Row className="grid-menu-container">
                     <Col className="menu-item">
-                        <div onClick={() => {
+                        <div id="action-exclusive" onClick={() => {
                             homeGeneralClicked('mweb_exclusive_clicked');
                             Router.push('/exclusive');
                         }}>
@@ -33,7 +33,7 @@ class GridMenu extends React.Component {
                         </div>
                     </Col>
                     <Col className="menu-item">
-                        <Link href="/trending">
+                        <Link id="action-news" href="/trending">
                             <a>
                                 <div onClick={() => {
                                     homeGeneralClicked('mweb_news_clicked');
@@ -46,7 +46,7 @@ class GridMenu extends React.Component {
                         </Link>
                     </Col>
                     <Col className="menu-item">
-                        <div onClick={() => {
+                        <div id="action-radio" onClick={() => {
                             homeGeneralClicked('mweb_radio_clicked');
                             setTimeout(() => Router.push('/radio'), 500);
                         }}>

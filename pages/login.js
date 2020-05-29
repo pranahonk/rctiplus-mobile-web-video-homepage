@@ -173,7 +173,7 @@ class Signin extends React.Component {
 									Forgot Password?
 								</a>
 							</p>
-							<Button disabled={this.state.emailphone.length < 6} className="btn-next block-btn" style={{ marginTop: 20 }}>Log In</Button>
+							<Button id="submit-login" disabled={this.state.emailphone.length < 6} className="btn-next block-btn" style={{ marginTop: 20 }}>Log In</Button>
 							<p className="text-center fnt-10 el-margin-20 el-white" style={{ fontSize: 12 }}>
 								Don't have an account?<br/>
 								<a href="/register" className="text-red">
