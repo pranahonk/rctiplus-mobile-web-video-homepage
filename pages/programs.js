@@ -574,9 +574,9 @@ class Index extends React.Component {
     const { props, state } = this
     return (
       <Layout>
-        {/* <HeadMeta data={props.data && props.data['tracking-program'] } 
+        <HeadMeta data={props.data && props.data['tracking-program'] } 
                   router={props.router} 
-                  dataPlayer={props.data && props.data['description-player']}/> */}
+                  dataPlayer={props.data && props.data['description-player']}/>
         <div className="program-detail-container animated fadeInDown go">
           { this.switchPanel() }
           <div className="action__button--wrapper">
