@@ -7,6 +7,7 @@ import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 import { TabPane } from 'reactstrap';
 import { ButtonPrimary, ButtonOutline } from '../Common/Button';
 import ShareIcon from '../IconCustom/ShareIcon';
+import ThumbUpIcon, {ThumbUpIconSolid} from '../IconCustom/Actions';
 import Dialog from '../../Modals/Dialog';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
@@ -289,8 +290,8 @@ export const RatedModal = (props) => {
     <div>
       <Modal isOpen={props.open} toggle={props.toggle} className="modal-custom rate-modal">
         <div className="rate-content-modal">
-          <ButtonPrimary className="button-20" icon={ <FontAwesomeIcon icon={faThumbsUp} size="2x"/> } onclick={() => onAction('LIKE', 'like', 'program')} />
-          <ButtonPrimary className="button-20" icon={ <FontAwesomeIcon icon={faThumbsDown} size="2x"/> } onclick={() => onAction('DISLIKE', 'like', 'program')} />
+          <ButtonPrimary className="button-20" icon={ <ThumbUpIcon width="50" height="50" /> } onclick={() => onAction('LIKE', 'like', 'program')} />
+          <ButtonPrimary className="button-20" icon={ <ThumbUpIcon width="50" height="50" rotate="180" /> } onclick={() => onAction('DISLIKE', 'like', 'program')} />
         </div>
         <div className="close-modal">
           <ButtonPrimary
@@ -314,17 +315,17 @@ export const ActionMenu = (props) => {
       const isLike = data.data[0].status === 'LIKE';
       const isDislike = data.data[0].status === 'DISLIKE';
       if (isLike) {
-        return (<ButtonPrimary className="button-20" icon={ <FontAwesomeIcon icon={faThumbsUpSolid}/> } text="Rated" onclick={() => {indifferent('INDIFFERENT', 'like', 'program');}}/>);
+        return (<ButtonPrimary className="button-20" icon={ <ThumbUpIconSolid /> } text="Rated" onclick={() => {indifferent('INDIFFERENT', 'like', 'program');}}/>);
       } else if (isDislike) {
 
-        return (<ButtonPrimary className="button-20" icon={ <FontAwesomeIcon icon={faThumbsDownSolid}/> } text="Rated" onclick={() => {indifferent('INDIFFERENT', 'like', 'program');}}/>);
+        return (<ButtonPrimary className="button-20" icon={ <ThumbUpIconSolid rotate="180" viewBox="-5 4 30 21" height="24" width="25" /> } text="Rated" onclick={() => {indifferent('INDIFFERENT', 'like', 'program');}}/>);
       } else {
 
-        return (<ButtonPrimary className="button-20" icon={ <FontAwesomeIcon icon={faThumbsUp}/> } text="Rated" onclick={() => props.onRate()}/>);
+        return (<ButtonPrimary className="button-20" icon={ <ThumbUpIcon /> } text="Rated" onclick={() => props.onRate()}/>);
       }
     }
     return (
-      <ButtonPrimary status={[isLogin, alertSignIn]}  className="button-20" icon={ <FontAwesomeIcon icon={faThumbsUp}/> } text="Rated" onclick={() => props.onRate()}/>
+      <ButtonPrimary status={[isLogin, alertSignIn]}  className="button-20" icon={ <ThumbUpIcon /> } text="Rated" onclick={() => props.onRate()}/>
     );
   };
   return (

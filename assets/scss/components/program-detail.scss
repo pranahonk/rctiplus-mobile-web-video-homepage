@@ -243,22 +243,22 @@ h3, h4, p {
       @for $z from 1 through 4 {
         @if $z == 1 {
           .active.Extra:nth-child(#{$z}) ~ .tab-slider {
-            left: 0 !important;
-            width: calc(100%/3) !important;
+            left: 0;
+            width: calc(100%/3);
             text-overflow: $i;
           }
         }
         @else if $z == 2 {
           .active.Extra:nth-last-child(#{$z}) ~ .tab-slider {
-            left: 50% !important;
-            width: calc(100%/2) !important;
+            left: 50% ;
+            width: calc(100%/2);
             text-overflow: $z;
           }
         }
         @else if $z == 3 {
           .active.Extra:nth-last-child(#{$z}) ~ .tab-slider {
-            left: 33.333% !important;
-            width: calc(100%/3) !important;
+            left: 33.333% ;
+            width: calc(100%/3);
             text-overflow: $z;
           }
         }
