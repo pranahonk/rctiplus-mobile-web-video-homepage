@@ -6,7 +6,7 @@ import Router from 'next/router';
 import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 import { TabPane } from 'reactstrap';
 import { ButtonPrimary, ButtonOutline } from '../Common/Button';
-import ShareIcon from '../Icons/ShareIcon';
+import ShareIcon from '../IconCustom/ShareIcon';
 import Dialog from '../../Modals/Dialog';
 import PlayListAdd from '@material-ui/icons/PlayListAdd';
 import PlayListAddCheck from '@material-ui/icons/PlayListAddCheck';
