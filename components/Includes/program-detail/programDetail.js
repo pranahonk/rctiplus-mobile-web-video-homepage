@@ -8,8 +8,8 @@ import { TabPane } from 'reactstrap';
 import { ButtonPrimary, ButtonOutline } from '../Common/Button';
 import ShareIcon from '../IconCustom/ShareIcon';
 import Dialog from '../../Modals/Dialog';
-import PlayListAdd from '@material-ui/icons/PlayListAdd';
-import PlayListAddCheck from '@material-ui/icons/PlayListAddCheck';
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import GetApp from '@material-ui/icons/GetApp';
 import { RESOLUTION_IMG } from '../../../config';
 import { showAlert, showSignInAlert } from '../../../utils/helpers';
@@ -363,7 +363,7 @@ const bookmark = (data, item, type, props) => {
     const isBookmark = data[type].find((list) => list.id === item.id);
     if (isBookmark) {
       return (<ButtonPrimary
-      icon={ <PlayListAddCheck/> }
+      icon={ <PlaylistAddCheckIcon/> }
       status={[props.isLogin, alertSignIn]}
       text={type === 'program' ? 'My List' : ''}
       className={ type === 'program' ? 'button-20' : '' }
@@ -371,7 +371,7 @@ const bookmark = (data, item, type, props) => {
     }
     else {
       return (<ButtonPrimary
-      icon={ <PlayListAdd/> }
+      icon={ <PlaylistAddIcon/> }
       status={[props.isLogin, alertSignIn]}
       text={type === 'program' ? 'My List' : ''}
       className={ type === 'program' ? 'button-20' : '' }
@@ -379,7 +379,7 @@ const bookmark = (data, item, type, props) => {
     }
   }
   return (<ButtonPrimary
-  icon={ <PlayListAdd/> }
+  icon={ <PlaylistAddIcon/> }
   status={[props.isLogin, alertSignIn]}
   text={type === 'program' ? 'My List' : ''}
   className={ type === 'program' ? 'button-20' : '' }

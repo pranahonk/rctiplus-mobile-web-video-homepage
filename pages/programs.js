@@ -6,8 +6,6 @@ import Router, { withRouter } from 'next/router';
 import classnames from 'classnames';
 import Img from 'react-image';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import PlayListAdd from '@material-ui/icons/PlayListAdd';
-import PlayListAddCheck from '@material-ui/icons/PlayListAddCheck';
 import GetApp from '@material-ui/icons/GetApp';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import { urlRegex } from '../utils/regex';
