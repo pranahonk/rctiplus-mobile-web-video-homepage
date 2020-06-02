@@ -41,8 +41,8 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 
 import { Button, Row, Col, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
-import '../assets/scss/plugins/carousel/carousel.scss';
-import '../assets/scss/components/detail.scss';
+import '../../assets/scss/plugins/carousel/carousel.scss';
+import '../../assets/scss/components/detail.scss';
 
 import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME, SITEMAP, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../../config';
 import { getCookie } from '../../utils/cookie';
