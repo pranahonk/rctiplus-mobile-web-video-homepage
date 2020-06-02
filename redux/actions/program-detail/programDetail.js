@@ -81,6 +81,27 @@ const fetchDeleteBookmarkSuccess = (bookmark, filter) => {
     payload: bookmark,
   };
 };
+const fetchLikeSuccess = (like, filter) => {
+  return {
+    type: FETCH_LIKE_SUCCESS,
+    filter: filter,
+    payload: like,
+  };
+};
+const fetchPostLikeSuccess = (like, filter) => {
+  return {
+    type: FETCH_POST_LIKE_SUCCESS,
+    filter: filter,
+    payload: like,
+  };
+};
+const tempLikePost = (like, filter) => {
+  return {
+    type: TEMP_POST_LIKE_SUCCESS,
+    filter: filter,
+    payload: like,
+  };
+};
 const fetchRelatedProgramSuccess = (related, filter) => {
   return {
     type: FETCH_RELATED_PROGRAM_SUCCESS,
@@ -147,12 +168,19 @@ const fetchPhotoSuccess = (clip, filter) => {
     payload: clip,
   };
 };
-const fetchPlayerUrlSuccess = (clip, filter, isFullscreen) => {
+const fetchPlayerUrlSuccess = (player, filter, isFullscreen) => {
   return {
     type: FETCH_PLAYER_URL_SUCCESS,
     filter: filter,
-    payload: clip,
+    payload: player,
     isFullscreen: isFullscreen,
+  };
+};
+const fetchDetailDescSuccess = (desc, filter) => {
+  return {
+    type: FETCH_DETAIL_DESCRIPTION_SUCCESS,
+    filter: filter,
+    payload: desc,
   };
 };
 export const fetcFromServer = (params = {}) => {
@@ -236,7 +264,6 @@ export const fetchExtra = (programId, filter, page = 1, length = 5) => {
     }
     axios.get(`/v1/program/${programId}/extra?page=${page}&length=${length}`)
       .then(response => {
-        console.log(response);
         const data = response.data;
         dispatch(fetchExtraSuccess(data, filter));
       })
@@ -255,7 +282,6 @@ export const fetchClip = (programId, filter, page = 1, length = 5) => {
     }
     axios.get(`/v1/program/${programId}/clip?page=${page}&length=${length}`)
       .then(response => {
-        console.log(response);
         const data = response.data;
         dispatch(fetchClipSuccess(data, filter));
       })
@@ -274,7 +300,6 @@ export const fetchPhoto = (programId, filter, page = 1, length = 5) => {
     }
     axios.get(`/v1/program/${programId}/photo?page=${page}&length=${length}`)
       .then(response => {
-        console.log(response);
         const data = response.data;
         dispatch(fetchPhotoSuccess(data, filter));
       })
@@ -284,14 +309,13 @@ export const fetchPhoto = (programId, filter, page = 1, length = 5) => {
       });
   };
 };
-export const fetchPlayerUrl = (episodeId, filter, season, isFullscreen = false) => {
+export const fetchPlayerUrl = (episodeId, filter, type, isFullscreen = false) => {
   return function(dispatch) {
     dispatch(fetchDetailProgramRequest());
-    axios.get(`/v1/episode/${episodeId}/url`)
+    axios.get(`/v1/${type}/${episodeId}/url`)
       .then(response => {
-        console.log(response);
         const data = response.data;
-        dispatch(fetchPlayerUrlSuccess(data, [filter, season], isFullscreen));
+        dispatch(fetchPlayerUrlSuccess(data, [filter, type], isFullscreen));
       })
       .catch(error => {
         console.log(error);
@@ -342,6 +366,61 @@ export const deleteBookmark = (id, type, filter) => {
       });
   };
 };
+export const fetchLike = (programId, filter, type = 'all', page = 1, length = 10) => {
+  return function(dispatch) {
+    dispatch(fetchDetailProgramRequest());
+    axios.get(`/v1/like?id=${programId}&type=${type}&page=${page}&length=${length}`)
+      .then(response => {
+        const data = response.data;
+        dispatch(fetchLikeSuccess(data, filter));
+      })
+      .catch(error => {
+        console.log(error);
+        dispatch(fetchDetailProgramFailure(error.message));
+      });
+  };
+};
+export const postLike = (id, type, filter, status = 'INDIFFERENT') => {
+  return function(dispatch) {
+    const data = { id: id, content_type: type, status: status };
+    dispatch(tempLikePost(data, filter))
+    dispatch(fetchDetailProgramRequest());
+    axios.post(`/v1/like`, { 
+      id: id,
+      type: type,
+      status: status,
+    })
+      .then(response => {
+        dispatch(fetchPostLikeSuccess(data, filter));
+      })
+      .catch(error => {
+        console.log(error);
+        dispatch(fetchDetailProgramFailure(error.message));
+      });
+  };
+};
+
+export const fetchDetailDesc = (id, filter, contetType) => {
+  return function(dispatch) {
+    axios.get(`/v1/${contetType}/${id}`)
+      .then(response => {
+        const data = response.data;
+        dispatch(fetchDetailDescSuccess(data, filter));
+      })
+      .catch(error => {
+        console.log(error);
+        dispatch(fetchDetailProgramFailure(error.message));
+      });
+  };
+};
+
+export const dataShareSeo = (data, filter) => {
+  return {
+    type: DATA_SHARE_SEO,
+    filter: filter,
+    payload: data,
+  }
+}
 
 
 
@@ -368,3 +447,8 @@ export const MORE_REQUEST = 'MORE_REQUEST';
 export const FETCH_BOOKMARK_SUCCESS = 'FETCH_BOOKMARK_SUCCESS';
 export const FETCH_POST_BOOKMARK_SUCCESS = 'FETCH_POST_BOOKMARK_SUCCESS';
 export const FETCH_DELETE_BOOKMARK_SUCCESS = 'FETCH_DELETE_BOOKMARK_SUCCESS';
+export const FETCH_LIKE_SUCCESS = 'FETCH_LIKE_SUCCESS';
+export const FETCH_POST_LIKE_SUCCESS = 'FETCH_POST_LIKE_SUCCESS';
+export const TEMP_POST_LIKE_SUCCESS = 'TEMP_POST_LIKE_SUCCESS';
+export const FETCH_DETAIL_DESCRIPTION_SUCCESS = 'FETCH_DETAIL_DESCRIPTION_SUCCESS';
+export const DATA_SHARE_SEO = 'DATA_SHARE_SEO';

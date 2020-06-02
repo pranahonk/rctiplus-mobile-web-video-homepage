@@ -40,6 +40,12 @@ export const ProgressControlCustom = videojs.extend(ProgressControl, {
     this.addClass('rplus-progress-control');
   },
 });
+export const ForwardCustom = videojs.extend(Button, {
+  constructor: function(player, options) {
+    Button.apply(this, arguments);
+    this.addClass('rplus-foward-custom');
+  },
+});
 export const MuteToggleCustom = videojs.extend(VolumeMenuButton, {
   constructor: function(player, options) {
     VolumeMenuButton.apply(this, arguments);

@@ -38,25 +38,26 @@ class ActionSheet extends React.Component {
         const path = this.props.router.asPath;
         const camppaignName = title.replace(/\s/g, '-');
         const { tabStatus } = this.props;
-        if (tabStatus === 'program') {
+        console.log(tabStatus)
+        if (tabStatus === 'program' || tabStatus === '/programs') {
             if (path.includes('?ref=')) {
                 return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=programs' + camppaignName;
             }
             return '?utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=programs' + camppaignName;
         }
-        if (tabStatus === 'episode') {
+        if (tabStatus === 'episode' || tabStatus === 'episodes') {
             if (path.includes('?ref=')) {
                 return '&utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodEpisodes' + camppaignName;
             }
             return '?utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodEpisodes' + camppaignName;
         }
-        if (tabStatus === 'extra') {
+        if (tabStatus === 'extra' && tabStatus === 'extras') {
             if (path.includes('?ref=')) {
                 return '&utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodExtras' + camppaignName;
             }
             return '?utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodExtras' + camppaignName;
         }
-        if (tabStatus === 'clip') {
+        if (tabStatus === 'clip' && tabStatus === 'clips') {
             if (path.includes('?ref=')) {
                 return '&utm_source=Rplusmweb&utm_medium=share_' + share + camppaignName + '&utm_campaign=vodClips' + camppaignName;
             }
@@ -122,7 +123,18 @@ class ActionSheet extends React.Component {
         return '?utm_source=Rplusmweb&utm_medium=share_' + share; // + '&utm_campaign=gue-ganteng';
     }
     render() {
-        const urlShare = SHARE_BASE_URL + this.props.url.substring(this.props.url.indexOf('rctiplus.com') + 12) || ''
+        let hashtag = ['rctiplus'];
+        if (this.props.hashtags) {
+            this.props.hashtags.map((item) => {
+                if (item.name) {
+                    hashtag = [item.name, ...hashtag];
+                } else {
+                    hashtag = this.props.hashtags;
+                }
+
+            });
+        }
+        const urlShare = SHARE_BASE_URL + `${this.props.url}`
         return (
             <Modal className="modal-edit" isOpen={this.props.open} toggle={this.props.toggle}>
                 <CloseIcon className="close-icon-button" onClick={this.props.toggle}/>
@@ -133,12 +145,12 @@ class ActionSheet extends React.Component {
                     </p>
                     <div className="sheet-action-button-container-share">
                         <div className="sheet-action-button-share">
-                            <FacebookShareButton hashtag={this.props.hashtags.map(h => '#' + h).join(' ')} quote={this.props.caption + ' ' + urlShare + this.shareUtm('fb', this.props.caption)} url={urlShare + this.shareUtm.bind(this,'fb', this.props.caption)}>
+                            <FacebookShareButton hashtag={hashtag.map(h => '#' + h).join(' ')} quote={this.props.caption + ' ' + urlShare + this.shareUtm('fb', this.props.caption)} url={urlShare + this.shareUtm.bind(this,'fb', this.props.caption)}>
                                 <i className="fab fa-facebook-f"></i>
                             </FacebookShareButton>
                         </div>
                         <div className="sheet-action-button-share">
-                            <TwitterShareButton title={this.props.caption} url={urlShare + this.shareUtm('twit', this.props.caption)} hashtags={this.props.hashtags}>
+                            <TwitterShareButton title={this.props.caption} url={urlShare + this.shareUtm('twit', this.props.caption)} hashtags={hashtag}>
                                 <i className="fab fa-twitter"></i>
                             </TwitterShareButton>
                         </div>

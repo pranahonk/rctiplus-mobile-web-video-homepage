@@ -22,6 +22,11 @@ import {
   FETCH_BOOKMARK_SUCCESS,
   FETCH_POST_BOOKMARK_SUCCESS,
   FETCH_DELETE_BOOKMARK_SUCCESS,
+  FETCH_LIKE_SUCCESS,
+  FETCH_POST_LIKE_SUCCESS,
+  FETCH_DETAIL_DESCRIPTION_SUCCESS,
+  TEMP_POST_LIKE_SUCCESS,
+  DATA_SHARE_SEO,
 } from '../../actions/program-detail/programDetail';
 const initialState = {
   loading: true,
@@ -219,7 +224,6 @@ export default (state = initialState, action) => {
         loading_episode: false,
       };
     case FETCH_PLAYER_URL_SUCCESS:
-      console.log('STATE URL:', action)
       return {
         ...state,
         [action.filter[0]]:{...action.payload, isFullscreen: action.isFullscreen},
@@ -238,7 +242,6 @@ export default (state = initialState, action) => {
         const newStateBookmark = action.payload
         const dataBookmark = [...initStateBookmark[action.filter[1]], newStateBookmark]
         const combine = {...initStateBookmark, [action.filter[1]]: dataBookmark}
-        console.log('PREV STATEEE', combine)
         return {
           ...state,
           [action.filter[0]]: { ...state.bookmark, data: combine },
@@ -254,11 +257,43 @@ export default (state = initialState, action) => {
       const initStateBookmark = state && state.bookmark.data
       const newStateBookmark = action.payload
       const dataBookmark = [...initStateBookmark[action.filter[1]], newStateBookmark]
-      dataBookmark.filter((item) => { item.id !== action.payload.id })
-      const combine = {...initStateBookmark, [action.filter[1]]: dataBookmark}
+      const resultBookmark = dataBookmark.filter((item) => { 
+        return (item.id !== action.payload.id) 
+      })
+      const combine = {...initStateBookmark, [action.filter[1]]: resultBookmark}
       return {
         ...state,
         [action.filter[0]]: { ...state.bookmark, data: combine },
+        loading: false,
+      };
+    case FETCH_LIKE_SUCCESS:
+      return {
+        ...state,
+        [action.filter]: action.payload ,
+        loading: false,
+      };
+    case FETCH_POST_LIKE_SUCCESS:
+      return {
+        ...state,
+        [action.filter]: {...state.like, data: [action.payload]},
+        loading: false,
+      };
+    case FETCH_POST_LIKE_SUCCESS:
+      return {
+        ...state,
+        [action.filter]: {...state.like, data: [action.payload]},
+        loading: false,
+      };
+    case FETCH_DETAIL_DESCRIPTION_SUCCESS:
+      return {
+        ...state,
+        [action.filter]: action.payload,
+        loading: false,
+      };
+    case DATA_SHARE_SEO:
+      return {
+        ...state,
+        [action.filter]: action.payload,
         loading: false,
       };
     default:

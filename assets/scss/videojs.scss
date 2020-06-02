@@ -70,7 +70,7 @@
             }
             &:hover {
                 &::after {
-                    content: '\F111' !important;
+                    content: '' !important;
                 }
             }
         }

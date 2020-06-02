@@ -14,13 +14,21 @@ export const ButtonOutline = ({icon, text, className, onclick }) => {
   );
 };
 
-export const ButtonPrimary = ({icon, text, onclick, className, key}) => {
+export const ButtonPrimary = ({icon, text, onclick, className, key, status}) => {
+  const onClick = () => {
+    console.log('CLICKKKKK', status[0])
+    if (!status[0]) {
+      status[1]();
+      return false;
+    }
+    onclick();
+  };
   return (
       <>
-        <Ripples color="#282828" className="button-detail" onClick={onclick}>
-          <button>
+        <Ripples color="#282828" className={'button-detail ' + className }>
+          <button onClick={() => {onClick()}}>
             { icon }
-            <h6>{ text }</h6>
+            <h3>{ text }</h3>
           </button>
         </Ripples>
       </>
@@ -60,11 +68,16 @@ ButtonOutline.propTypes = {
 };
 ButtonOutline.defaultProps = {
   className: '',
-  onclick: () => console.log('CLICK')
+  onclick: () => console.log('CLICK'),
 };
 ButtonPrimary.propTypes = {
   text: PropTypes.string,
   icon: PropTypes.element,
   className: PropTypes.string,
 };
+ButtonPrimary.defaultProps = {
+  status: [true, true],
+  onclick: () => console.log('CLICK'),
+  className: '',
+}
 
