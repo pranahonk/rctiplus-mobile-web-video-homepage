@@ -32,7 +32,9 @@ class FooterNav_v2 extends Component {
 	}
 
     componentDidMount() {
-        this.props.getUserData();
+        this.props.getUserData()
+            .then(response => console.log(response))
+            .catch(error => console.log(error));
         Router.events.on("routeChangeStart", () => {
             const convivaSessionId = getCookie('CONVIVA_SESSION_ID');
             if (convivaSessionId != null) {
