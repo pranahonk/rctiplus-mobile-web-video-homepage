@@ -9,6 +9,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import GetApp from '@material-ui/icons/GetApp';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import { urlRegex } from '../utils/regex';
+import queryString from 'query-string';
 import {
   fetchDetailProgram, fetchEpisode, fetchSeasonEpisode,
   seasonSelected, fetchRelatedProgram, fetchExtra,
@@ -17,12 +18,26 @@ import {
   fetchBookmark, postBookmark, deleteBookmark,
   fetchLike, postLike, fetchDetailDesc, dataShareSeo,
 } from '../redux/actions/program-detail/programDetail';
+import { 
+        programRateEvent, programShareEvent, programContentShareEvent, 
+        programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent,
+        programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, 
+        programSeasonListEvent, programTabEvent, programContentEvent, 
+        accountMylistContentClicked, accountMylistRemoveMylistClicked, 
+        accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, 
+        libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, 
+        libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, 
+        libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, 
+        libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, 
+        searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked,
+        searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, 
+        searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent } from '../utils/appier';
 import Layout from '../components/Layouts/Default_v2';
-import { Button, Col, Nav, NavItem, NavLink, TabContent, TabPane, Collapse } from 'reactstrap';
+import { Nav, NavItem, NavLink, TabContent, TabPane, Collapse } from 'reactstrap';
 import '../assets/scss/components/program-detail.scss';
-import { BASE_URL, DEV_API, VISITOR_TOKEN, SITE_NAME, SITEMAP, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
+import { RESOLUTION_IMG } from '../config';
 import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
-import { alertDownload, alertSignIn } from '../components/Includes/program-detail/programDetail';
+import { alertDownload } from '../components/Includes/program-detail/programDetail';
 const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const HeadMeta = dynamic(() => import('../components/Seo/HeadMeta'));
 const MainLoader = dynamic(() => import('../components/Includes/Shimmer/detailProgramLoader').then((mod) => mod.MainLoader));
@@ -81,6 +96,8 @@ class Index extends React.Component {
     this.refPanelPhoto = React.createRef();
   }
   componentDidMount() {
+    // eslint-disable-next-line no-undef
+    console.log('MOUNTED: ',queryString.parse(location.search))
     this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] , 'tracking-program'));
     if (this.props.router.query.content_id) {
       const {content_id , content_type} = this.props.router.query;

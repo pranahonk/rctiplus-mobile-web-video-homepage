@@ -123,7 +123,7 @@ class Default_v2 extends React.Component {
                     {/*<script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
                     <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>*/}
                     {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
-                    <script async src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
+                    <script src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
                     <script dangerouslySetInnerHTML={{ __html: `
                         AIQUA.init({
                             appId: 'c63c2960bf562e9ec2de',

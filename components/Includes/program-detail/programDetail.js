@@ -259,7 +259,7 @@ export const PanelRelated = (props) => {
   return (
     <div className="related__program-wrapper">
       <h4>Related Program</h4>
-            <div ref={containerRef} className="related__program-list">
+            <div ref={containerRef} className="related__program-list" onTouchStart={(e) => onTouchStart(e)}>
               { props.data.data.map((item, i) => {
                 return (
                   <Link key={i}
@@ -386,3 +386,7 @@ const bookmark = (data, item, type, props) => {
   className={ type === 'program' ? 'button-20' : '' }
   onclick={() => { props.onBookmarkAdd(item.id, type); }}/>);
 };
+
+const onTouchStart = (e) => {
+  console.log('DATA: ', e)
+}
