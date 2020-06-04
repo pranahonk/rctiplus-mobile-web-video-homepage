@@ -11,6 +11,7 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 import PhotoFeed from '../../components/Includes/Gallery/PhotoFeed';
 
 import '../../assets/scss/components/photo-detail.scss';
+import '../../assets/scss/plugins/carousel/carousel.scss';
 
 import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
 import { getCookie } from '../../utils/cookie';

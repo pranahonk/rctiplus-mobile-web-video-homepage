@@ -10,6 +10,7 @@ import GetApp from '@material-ui/icons/GetApp';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import { urlRegex } from '../utils/regex';
 import queryString from 'query-string';
+import { StickyContainer, Sticky } from 'react-sticky';
 import {
   fetchDetailProgram, fetchEpisode, fetchSeasonEpisode,
   seasonSelected, fetchRelatedProgram, fetchExtra,
@@ -90,13 +91,13 @@ class Index extends React.Component {
     this.typeEpisode = 'program-episode';
     this.programId = props.router.query.id;
     this.ref = React.createRef();
+    this.refMainContent = React.createRef();
     this.refPanelEpisode = React.createRef();
     this.refPanelExtra = React.createRef();
     this.refPanelClip = React.createRef();
     this.refPanelPhoto = React.createRef();
   }
   componentDidMount() {
-    // eslint-disable-next-line no-undef
     console.log('MOUNTED: ',queryString.parse(location.search))
     this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] , 'tracking-program'));
     if (this.props.router.query.content_id) {
@@ -120,6 +121,11 @@ class Index extends React.Component {
         if (this.props.router.query.content_type === 'clip') {
           this.setState({toggle: 'Clips'});
           this.props.dispatch(fetchClip(this.programId, 'program-clip'));
+          return false;
+        }
+        if (this.props.router.query.content_type === 'photos') {
+          this.setState({toggle: 'Photo'});
+          this.props.dispatch(fetchPhoto(this.programId, 'program-photo'));
           return false;
         }
         this.setState({toggle: this.isTabs(this.props.server[this.type].data)[0]});
@@ -313,7 +319,9 @@ class Index extends React.Component {
     if (data.episode > 0 && this.props && this.props.server['program-detail'] && this.props.server['program-detail'].data.category === 'series') {tabs.push('Episodes');}
     if (data.extra > 0) {tabs.push('Extra');}
     if (data.clip > 0) {tabs.push('Clips');}
-    // if (data.photo > 0) {tabs.push('Photo');}
+    if (!this.props.router.query.content_id) {
+      if (data.photo > 0) {tabs.push('Photo');}
+    }
     return tabs;
   }
   tabContent() {
@@ -493,22 +501,26 @@ class Index extends React.Component {
     );
   }
   panelPhoto(props) {
-    if (!this.props.data.loading_photo ||
-      ((props && props.data && props.data.length > 0) &&
-      this.props.server['program-detail'].data.id === this.props.router.query.id)) {
-      const pagination = {
-        page: props.meta.pagination.current_page,
-        total_page: props.meta.pagination.total_page,
-        nextPage: props.meta.pagination.current_page + 1,
-      };
-      return (
-      <PanelPhoto
-        ref={this.refPanelPhoto}
-        enableShowMore={{isNext:pagination.page < pagination.total_page, isLoading:this.props.data.loading_more}}
-        onShowMore={() => { this.props.dispatch(fetchPhoto(this.props.router.query.id, 'program-photo',pagination.nextPage)); }}
-        data={props}
-      />
-        );
+    if (!this.props.data.loading_photo && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data) {
+      console.log('TRUEEEE PHOTO', props && props.data && props.data.length)
+      if ((props && props.data && props.data.length > 0) 
+        && (this.props.server['program-detail'].data.id === parseInt(this.props.router.query.id))) {
+          console.log('TRUEEEE PHOTO 2')
+            const pagination = {
+              page: props.meta.pagination.current_page,
+              total_page: props.meta.pagination.total_page,
+              nextPage: props.meta.pagination.current_page + 1,
+            };
+            return (
+            <PanelPhoto
+              ref={this.refPanelPhoto}
+              enableShowMore={{isNext:pagination.page < pagination.total_page, isLoading:this.props.data.loading_more}}
+              onShowMore={() => { this.props.dispatch(fetchPhoto(this.props.router.query.id, 'program-photo',pagination.nextPage)); }}
+              data={props}
+              query={this.query()}
+            />
+      );
+        }
     }
     return (
       <TabPane tabId="Photo">
@@ -542,8 +554,8 @@ class Index extends React.Component {
       if(this.props.data && this.props.data['data-player'] && this.props.data['data-player'].data ) {
         const data = this.props.data && this.props.data['data-player'];
         return (
-          <div className="program-detail-player-wrapper animated fadeInDown go">
-              <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref}/>
+          <div className="program-detail-player-wrapper">
+              <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} />
           </div>
         );
       }
@@ -595,71 +607,79 @@ class Index extends React.Component {
                   router={props.router} 
                   dataPlayer={props.data && props.data['description-player']}/>
         <div className="program-detail-container animated fadeInDown go">
-          { this.switchPanel() }
-          <div className="action__button--wrapper">
-            <ActionMenu
-              onRate={this.toggleRateModal.bind(this)} 
-              bookmark={props.data && props.data.bookmark}
-              like={props.data && props.data.like}
-              onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
-              isLogin={this.statusLogin(props.data && props.data.bookmark)}
-              data={ props.server && props.server['program-detail'] && props.server['program-detail'].data }
-              onBookmarkAdd={(id, type) => { this.props.dispatch(postBookmark(id,type, 'bookmark')); }}
-              onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
-              />
-            <ButtonPrimary className="button-20" icon={ <ShareIcon/> } text="Share" onclick={this.toggleActionSheet.bind(this, 'program')}/>
-            { this.props.router.query.content_id ? (
-              <>
-                <ButtonPrimary className="button-20" icon={ <GetApp/> } text="Download" onclick={() => alertDownload()} />
-                <ButtonPrimary className="button-20"
-                onclick={()=> this.setState({transform: this.state.transform === 'rotate(0deg)' ? 'rotate(180deg)' : 'rotate(0deg)', isOpen: this.state.transform === 'rotate(0deg)' ? true : false})}
-                icon={ <KeyboardArrowDown className="arrow-rotate" style={{ transform: this.state.transform }}/> }
-                text="Description"
-                />
-              </>) : '' }
-            </div>
-            <Collapse isOpen={this.state.isOpen}>
-              <div className="detail__content-description-wrapper">
-                <div className="content-description">
-                    <p>{ props.data &&
-                         props.data['description-player'] &&
-                         props.data['description-player'].data &&
-                         props.data['description-player'].data.summary
-                      || '' }</p>
+          <div ref={this.refMainContent} style={{minHeight: '10px'}}>
+            { this.switchPanel() }
+          </div>
+          <div style={ props.router.query.content_id && this.refMainContent !== null ? { 
+            height: `calc(100vh - 260px)`,
+            overflowX: 'hidden',
+            overflowY: 'scroll'} 
+            : {height: 'auto'} }>
+            <div className="action__button--wrapper">
+                <ActionMenu
+                  onRate={this.toggleRateModal.bind(this)} 
+                  bookmark={props.data && props.data.bookmark}
+                  like={props.data && props.data.like}
+                  onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
+                  isLogin={this.statusLogin(props.data && props.data.bookmark)}
+                  data={ props.server && props.server['program-detail'] && props.server['program-detail'].data }
+                  onBookmarkAdd={(id, type) => { this.props.dispatch(postBookmark(id,type, 'bookmark')); }}
+                  onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
+                  />
+              <ButtonPrimary className="button-20" icon={ <ShareIcon/> } text="Share" onclick={this.toggleActionSheet.bind(this, 'program')}/>
+              { this.props.router.query.content_id ? (
+                <>
+                  <ButtonPrimary className="button-20" icon={ <GetApp/> } text="Download" onclick={() => alertDownload()} />
+                  <ButtonPrimary className="button-20"
+                  onclick={()=> this.setState({transform: this.state.transform === 'rotate(0deg)' ? 'rotate(180deg)' : 'rotate(0deg)', isOpen: this.state.transform === 'rotate(0deg)' ? true : false})}
+                  icon={ <KeyboardArrowDown className="arrow-rotate" style={{ transform: this.state.transform }}/> }
+                  text="Description"
+                  />
+                </>) : '' }
+              </div>
+              <Collapse isOpen={this.state.isOpen}>
+                <div className="detail__content-description-wrapper">
+                  <div className="content-description">
+                      <p>{ props.data &&
+                          props.data['description-player'] &&
+                          props.data['description-player'].data &&
+                          props.data['description-player'].data.summary
+                        || '' }</p>
+                  </div>
+                </div>
+              </Collapse>
+              <div className="list__content-wrapper">
+                <div className="tab__content-wrapper">
+                  { this.tabContent() }
+                  <TabContent activeTab={this.state.toggle}>
+                    { this.panelEpisode(
+                        this.props.data &&
+                        this.props.data['program-episode'] &&
+                        this.props.data['program-episode']['season-' + this.props.data.seasonSelected],
+                        this.props.data && this.props.data.bookmark
+                        ) }
+                    { this.panelExtra(
+                      this.props.data &&
+                      this.props.data['program-extra'], 
+                      this.props.data && this.props.data.bookmark
+                    ) }
+                    { this.panelClip(
+                      this.props.data &&
+                      this.props.data['program-clip'],
+                      this.props.data && this.props.data.bookmark
+                    ) }
+                    { this.panelPhoto(
+                      this.props.data &&
+                      this.props.data['program-photo']
+                    ) }
+                  </TabContent>
                 </div>
               </div>
-            </Collapse>
-            <div className="list__content-wrapper">
-              <div className="tab__content-wrapper">
-                { this.tabContent() }
-                <TabContent activeTab={this.state.toggle}>
-                  { this.panelEpisode(
-                      this.props.data &&
-                      this.props.data['program-episode'] &&
-                      this.props.data['program-episode']['season-' + this.props.data.seasonSelected],
-                      this.props.data && this.props.data.bookmark
-                      ) }
-                  { this.panelExtra(
-                    this.props.data &&
-                    this.props.data['program-extra'], 
-                    this.props.data && this.props.data.bookmark
-                  ) }
-                  { this.panelClip(
-                    this.props.data &&
-                    this.props.data['program-clip'],
-                    this.props.data && this.props.data.bookmark
-                  ) }
-                  { this.panelPhoto(
-                    this.props.data &&
-                    this.props.data['program-photo']
-                  ) }
-                </TabContent>
-              </div>
-            </div>
-            {this.panelRelated(
-              this.props.data &&
-              this.props.data['program-related']
-            )}
+              {this.panelRelated(
+                this.props.data &&
+                this.props.data['program-related']
+              )}
+          </div>
             { this.state.action_sheet ? (
               <ActionSheet
               toggle={this.toggleActionSheet.bind(this)}

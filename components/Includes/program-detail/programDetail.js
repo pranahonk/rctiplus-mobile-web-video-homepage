@@ -15,13 +15,26 @@ import GetApp from '@material-ui/icons/GetApp';
 import { RESOLUTION_IMG } from '../../../config';
 import { showAlert, showSignInAlert } from '../../../utils/helpers';
 import { urlRegex } from '../../../utils/regex';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faThumbsDown } from '@fortawesome/free-regular-svg-icons';
-import { faThumbsUp as faThumbsUpSolid , faThumbsDown as faThumbsDownSolid} from '@fortawesome/free-solid-svg-icons';
 import CancelIcon from '@material-ui/icons/Cancel';
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import { Modal } from 'reactstrap';
 const TabPanelLoader = dynamic(() => import('../Shimmer/detailProgramLoader').then((mod) => mod.TabPanelLoader));
 import smoothscroll from 'smoothscroll-polyfill';
+
+import { 
+  programRateEvent, programShareEvent, programContentShareEvent, 
+  programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent,
+  programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, 
+  programSeasonListEvent, programTabEvent, programContentEvent, 
+  accountMylistContentClicked, accountMylistRemoveMylistClicked, 
+  accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, 
+  libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, 
+  libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, 
+  libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, 
+  libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, 
+  searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked,
+  searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, 
+  searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent } from '../../../utils/appier';
 
 export const PanelEpisode = forwardRef((props, ref) => {
   smoothscroll.polyfill();
@@ -62,7 +75,7 @@ export const PanelEpisode = forwardRef((props, ref) => {
                 </Link>
               </div>
               <div className="thumb-detail__content">
-                <h3>{ item.title }</h3>
+                <h3>{ `E${('0'+item.episode).slice(-2)}:S${('0'+item.season).slice(-2)} ${item.title}` }</h3>
                 <div className="action-button__content ">
                   { bookmark(props.bookmark && props.bookmark.data, item, 'episode', props) }
                   <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title)}/>
@@ -209,12 +222,13 @@ export const PanelPhoto = (props) => {
           <div className="panel-content tab__photo">
           { props.data.data.map((item,i) => {
           return (
-            <div key={i} className="thumb-img__content tab__photo-item">
+            <div key={i} className="thumb-img__content tab__photo-item" onClick={ () => Router.push(`/programs/${props.query.id}/${urlRegex(props.query.title)}/photo/${item.id}/${urlRegex(item.title)}`) }>
               <Img alt={item.title}
               title={item.title}
               className="tab__photo-item_img" src={[props.data.meta.image_path + RESOLUTION_IMG + item.photos[0].image, getPathImage(...pathImg,item.portrait_image, false, 'potrait')]}
               unloader={<img className="tab__photo-item_img" src={getPathImage(...pathImg,item.photos[0].image, false, 'potrait')}/>}
               loader={<img className="tab__photo-item_img" src={getPathImage(...pathImg,item.photos[0].image, false, 'potrait')}/>}/>
+              <PhotoLibraryIcon className="img-icon"/>
             </div>
             );
           }) }
@@ -259,7 +273,7 @@ export const PanelRelated = (props) => {
   return (
     <div className="related__program-wrapper">
       <h4>Related Program</h4>
-            <div ref={containerRef} className="related__program-list" onTouchStart={(e) => onTouchStart(e)}>
+            <div ref={containerRef} className="related__program-list" onTouchStart={(e) => onTouchStart(e)} onTouchEnd={(e) => onTouchEnd(e)}>
               { props.data.data.map((item, i) => {
                 return (
                   <Link key={i}
@@ -387,6 +401,32 @@ const bookmark = (data, item, type, props) => {
   onclick={() => { props.onBookmarkAdd(item.id, type); }}/>);
 };
 
+let  swipe = {}
+
 const onTouchStart = (e) => {
-  console.log('DATA: ', e)
+  let touch = e.touches[0];
+  swipe = { x: touch.clientX };
+}
+
+const onTouchEnd = (e, ref, id) => {
+  let touch = e.changedTouches[0];
+  const absX = Math.abs(touch.clientX - swipe.x);
+  console.log(absX)
+  // if (absX > 50) {
+  //         if (ref) {
+  //             switch (ref) {
+  //                 case 'homepage':
+  //                     programRelatedEvent(this.props.router.query.id, this.state.title, 'mweb_homepage_program_related_scroll_horizontal');
+  //                     break;
+
+  //                 case 'library':
+  //                     libraryGeneralEvent('mweb_library_program_related_scroll_horizontal');
+  //                     break;
+
+  //                 case 'search':
+  //                     searchProgramRelatedScrollHorizontalEvent(this.props.router.query.id, this.state.title, 'mweb_search_program_related_scroll_horizontal');
+  //                     break;
+  //             }
+  //         }
+  //     }
 }

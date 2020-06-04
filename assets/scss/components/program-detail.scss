@@ -85,6 +85,12 @@ h3, h4, p {
 .program-detail-player-wrapper {
   min-height: 180px;
   transition: max-height .4s ease;
+  // top: 0;
+  // bottom:0;
+  // position:fixed;
+  // width: 100%;
+  // overflow-y:scroll;
+  // overflow-x:hidden;
 }
 .list__content-wrapper{
   padding: 0 15px;
@@ -413,6 +419,7 @@ h3, h4, p {
   .tab__photo-item {
     width: 50%;
     padding: 5px;
+    position: relative;
     &:nth-child(2n+2) {
       padding-right: 0;
     }
@@ -423,6 +430,16 @@ h3, h4, p {
       width: 100%;
       border-radius: 6px;
       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12);
+    }
+    .img-icon {
+      color: white;
+      position: absolute;
+      top: 15%;
+      left: 85%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      font-size: 1rem !important;
     }
   }
 }
