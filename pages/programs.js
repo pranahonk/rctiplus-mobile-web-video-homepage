@@ -98,7 +98,7 @@ class Index extends React.Component {
     this.refPanelPhoto = React.createRef();
   }
   componentDidMount() {
-    console.log('MOUNTED: ',queryString.parse(location.search))
+    // console.log('MOUNTED: ',queryString.parse(location.search))
     this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] , 'tracking-program'));
     if (this.props.router.query.content_id) {
       const {content_id , content_type} = this.props.router.query;
