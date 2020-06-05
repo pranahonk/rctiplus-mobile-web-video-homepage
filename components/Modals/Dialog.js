@@ -4,6 +4,7 @@ import { Modal } from 'reactstrap';
 import { connect } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { fetchEpisode, seasonSelected } from '../../redux/actions/program-detail/programDetail';
+import { onTrackingClick } from '../Includes/program-detail/programDetail';
 
 class Dialog extends React.Component  {
   constructor(props) {
@@ -12,7 +13,15 @@ class Dialog extends React.Component  {
       modal : false,
     };
   }
-  toggle() {this.setState({ modal: !this.state.modal });}
+  toggle() {
+    const { props } = this
+    this.setState({ modal: !this.state.modal });
+    if(this.state.modal) {
+      onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, 'episode_season_close', null, null, props.selected)
+    } else {
+      onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, 'episode_season_click', null, null, props.selected)
+    }
+  }
 
   render() {
     const isStoreSeason = Object.keys(this.props.dialog && this.props.dialog['program-episode']);

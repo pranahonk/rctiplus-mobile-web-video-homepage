@@ -19,20 +19,6 @@ import {
   fetchBookmark, postBookmark, deleteBookmark,
   fetchLike, postLike, fetchDetailDesc, dataShareSeo,
 } from '../redux/actions/program-detail/programDetail';
-import { 
-        programRateEvent, programShareEvent, programContentShareEvent, 
-        programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent,
-        programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, 
-        programSeasonListEvent, programTabEvent, programContentEvent, 
-        accountMylistContentClicked, accountMylistRemoveMylistClicked, 
-        accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, 
-        libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, 
-        libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, 
-        libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, 
-        libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, 
-        searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked,
-        searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, 
-        searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent } from '../utils/appier';
 import Layout from '../components/Layouts/Default_v2';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Collapse } from 'reactstrap';
 import '../assets/scss/components/program-detail.scss';
@@ -391,6 +377,7 @@ class Index extends React.Component {
       this.props.dispatch(fetchPhoto(id, 'program-photo'));
     }
     Router.push(href, as, { shallow: true });
+    onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'], 'tab_click')
   }
   hasMore(props, page) {
     this.loadRelated(this.props.router.query.id, page);
@@ -439,7 +426,7 @@ class Index extends React.Component {
               onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
               bookmark={bookmark}
               isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
-              onShare={(title) => this.toggleActionSheet.bind(this, 'episode', title)}
+              onShare={(title, item) => this.toggleActionSheet.bind(this, 'episode', title, 'content_share', item )}
               dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
             />
           </>
@@ -474,7 +461,7 @@ class Index extends React.Component {
         onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
         bookmark={bookmark}
         isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
-        onShare={(title) => this.toggleActionSheet.bind(this, 'extra', title)}
+        onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
         dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
       />
         );
@@ -507,7 +494,7 @@ class Index extends React.Component {
         onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
         bookmark={bookmark}
         isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
-        onShare={(title) => this.toggleActionSheet.bind(this, 'extra', title)}
+        onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
         dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
       />
         );
@@ -596,7 +583,7 @@ class Index extends React.Component {
       const data = this.props.server && this.props.server[this.type] 
       return (
         <div className="program-detail-player-wrapper trailer">
-            <Player data={ data.data } ref={this.ref} />
+            <Player data={ data.data } ref={this.ref} isFullscreen={ true }/>
         </div>
       );
     }
@@ -606,7 +593,7 @@ class Index extends React.Component {
       </div>
     );
   }
-  toggleActionSheet(value, title = 'title-program') {
+  toggleActionSheet(value, title = 'title-program', trackingType, item ) {
     const { props, state } = this
     this.setState({
       action_sheet: !this.state.action_sheet,
@@ -623,6 +610,11 @@ class Index extends React.Component {
     if(value === 'clip') {
       this.setState({title: title, statusProgram: false});
     }
+    if (!this.state.action_sheet) {
+      if (this.props.server['program-detail']) {
+        onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'], trackingType, item, value)
+      }
+    } 
 
     return 'title-program'
   }
@@ -664,7 +656,7 @@ class Index extends React.Component {
                   onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
                   dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
                   />
-              <ButtonPrimary className="button-20" icon={ <ShareIcon/> } text="Share" onclick={this.toggleActionSheet.bind(this, 'program')}/>
+              <ButtonPrimary className="button-20" icon={ <ShareIcon/> } text="Share" onclick={this.toggleActionSheet.bind(this, 'program', null, 'program_share')}/>
               { this.props.router.query.content_id ? (
                 <>
                   <ButtonPrimary className="button-20" icon={ <GetApp/> } text="Download" onclick={() => alertDownload()} />

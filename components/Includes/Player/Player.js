@@ -186,14 +186,21 @@ const Player = forwardRef((props, ref) => {
         console.log('WITH TAG')
         // videoPlayer.ima.changeAdTag(ima);
         // videoPlayer.ima.setContentWithAdTag(props.data.url, null, true);
-        videoPlayer.on('ready', () => {
+        videoPlayer.src({
+          src: props.data.url,
+          type: 'application/x-mpegURL',
+        });
+        if(props.isFullscreen) {
+          // videoPlayer.on('ready', () => {
+          //   videoPlayer.src({
+          //     src: props.data.url,
+          //     type: 'application/x-mpegURL',
+          //   });
+          // })
+        } else {
           videoPlayer.ima.changeAdTag(props.data.vmap_ima);
           videoPlayer.ima.requestAds();
-          videoPlayer.src({
-            src: props.data.url,
-            type: 'application/x-mpegURL',
-          });
-        })
+        }
       } else {
         console.log('WITHOUT TAG')
       }

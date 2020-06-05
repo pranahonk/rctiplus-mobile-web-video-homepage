@@ -40,9 +40,9 @@ export const PanelEpisode = forwardRef((props, ref) => {
   smoothscroll.polyfill();
   const linkRef = useRef(null);
   const pathImg = [props.data.meta.image_path, RESOLUTION_IMG];
-  const link = (titleItem, idItem, typeItem) => {
+  const link = (titleItem, idItem, typeItem, item) => {
     const href = `/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=${typeItem}&content_id=${idItem}&content_title=${urlRegex(titleItem)}`;
-    const as = `/programs/${props.query.id}/${urlRegex(props.query.title)}/${typeItem}/${idItem}/${urlRegex(titleItem)}${props.ref ? '?ref='+props.ref : ''}`;
+    const as = `/programs/${props.query.id}/${urlRegex(props.query.title)}/${typeItem}/${idItem}/${urlRegex(titleItem)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`;
     props.link(idItem,'data-player',1, typeItem);
     Router.push(href,as, { shallow: true });
     window.scroll({
@@ -50,12 +50,13 @@ export const PanelEpisode = forwardRef((props, ref) => {
       left: 0,
       behavior: 'smooth',
     });
+    onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, 'content_click_link', item, 'episode')
   };
   return (
       <TabPane tabId="Episodes">
         <div className="episode-program">
           <div className="season__program">
-            <Dialog onclick={props.onSeason} selected={props.seasonSelected}/>
+            <Dialog onclick={props.onSeason} selected={props.seasonSelected} dataTracking={props.dataTracking}/>
           </div>
           { props.data.data.map((item,i) => {
             return (
@@ -63,9 +64,9 @@ export const PanelEpisode = forwardRef((props, ref) => {
             <div className="panel-content">
               <div className="thumb-img__content">
                 <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=episode&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
-                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/episode/${item.id}/${urlRegex(item.title)}${props.ref ? '?ref='+props.ref : ''}`}
+                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/episode/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}
                 >
-                  <a onClick={() => link(item.title, item.id, 'episode', item.summary)} ref={linkRef}>
+                  <a onClick={() => link(item.title, item.id, 'episode', item.summary, item)} ref={linkRef}>
                     <Img alt={item.title}
                       title={item.title}
                       className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
@@ -77,8 +78,8 @@ export const PanelEpisode = forwardRef((props, ref) => {
               <div className="thumb-detail__content">
                 <h3>{ `E${('0'+item.episode).slice(-2)}:S${('0'+item.season).slice(-2)} ${item.title}` }</h3>
                 <div className="action-button__content ">
-                  { bookmark(props.bookmark && props.bookmark.data, item, 'episode', props) }
-                  <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title)}/>
+                  { bookmark(props.bookmark && props.bookmark.data, item, 'episode', props, 'content_bookmark') }
+                  <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
                   <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'episode', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
                 </div>
               </div>
@@ -104,11 +105,17 @@ export const PanelEpisode = forwardRef((props, ref) => {
 export const PanelExtra = (props) => {
   const linkExtraRef = useRef();
   const pathImg = [props.data.meta.image_path, RESOLUTION_IMG];
-  const link = (titleItem, idItem, typeItem) => {
+  const link = (titleItem, idItem, typeItem, item) => {
     const href = `/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=${typeItem}&content_id=${idItem}&content_title=${urlRegex(titleItem)}`;
-    const as = `/programs/${props.query.id}/${urlRegex(props.query.title)}/${typeItem}/${idItem}/${urlRegex(titleItem)}${props.ref ? '?ref='+props.ref : ''}`;
+    const as = `/programs/${props.query.id}/${urlRegex(props.query.title)}/${typeItem}/${idItem}/${urlRegex(titleItem)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`;
     props.link(idItem,'data-player',1, typeItem);
     Router.push(href,as, { shallow: true });
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+    onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, 'content_click_link', item, 'extra')
   };
   return (
     <TabPane tabId="Extra">
@@ -119,9 +126,9 @@ export const PanelExtra = (props) => {
           <div className="panel-content">
             <div className="thumb-img__content">
               <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=extra&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
-                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/extra/${item.id}/${urlRegex(item.title)}${props.ref ? '?ref='+props.ref : ''}`}
+                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/extra/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}
                 >
-                  <a onClick={() => link(item.title, item.id, 'extra', item.summary)} ref={linkExtraRef}>
+                  <a onClick={() => link(item.title, item.id, 'extra', item.summary, item)} ref={linkExtraRef}>
                     <Img alt={item.title}
                       title={item.title}
                       className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
@@ -133,8 +140,8 @@ export const PanelExtra = (props) => {
             <div className="thumb-detail__content">
               <h3>{ item.title }</h3>
               <div className="action-button__content ">
-                  { bookmark(props.bookmark && props.bookmark.data, item, 'extra', props) }
-                  <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title)}/>
+                  { bookmark(props.bookmark && props.bookmark.data, item, 'extra', props, 'content_bookmark') }
+                  <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
                   <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'extra', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
               </div>
             </div>
@@ -160,11 +167,17 @@ export const PanelExtra = (props) => {
 export const PanelClip = (props) => {
   const linkClipRef = useRef();
   const pathImg = [props.data.meta.image_path, RESOLUTION_IMG];
-  const link = (titleItem, idItem, typeItem) => {
+  const link = (titleItem, idItem, typeItem, item) => {
     const href = `/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=${typeItem}&content_id=${idItem}&content_title=${urlRegex(titleItem)}`;
-    const as = `/programs/${props.query.id}/${urlRegex(props.query.title)}/${typeItem}/${idItem}/${urlRegex(titleItem)}${props.ref ? '?ref='+props.ref : ''}`;
+    const as = `/programs/${props.query.id}/${urlRegex(props.query.title)}/${typeItem}/${idItem}/${urlRegex(titleItem)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`;
     props.link(idItem,'data-player',1, typeItem);
     Router.push(href,as, { shallow: true });
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+    onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, 'content_click_link', item, 'clip')
   };
   return (
     <TabPane tabId="Clips">
@@ -175,9 +188,9 @@ export const PanelClip = (props) => {
           <div className="panel-content">
             <div className="thumb-img__content">
               <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=clip&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
-                        as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/clip/${item.id}/${urlRegex(item.title)}${props.ref ? '?ref='+props.ref : ''}`}
+                        as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/clip/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}
                   >
-                    <a onClick={() => link(item.title, item.id, 'clip', item.summary)} ref={linkClipRef}>
+                    <a onClick={() => link(item.title, item.id, 'clip', item.summary, item)} ref={linkClipRef}>
                       <Img alt={item.title}
                         title={item.title}
                         className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
@@ -189,8 +202,8 @@ export const PanelClip = (props) => {
             <div className="thumb-detail__content">
               <h3>{ item.title }</h3>
               <div className="action-button__content ">
-                { bookmark(props.bookmark && props.bookmark.data, item, 'clip', props) }
-                <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title)}/>
+                { bookmark(props.bookmark && props.bookmark.data, item, 'clip', props, 'content_bookmark') }
+                <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
                 <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'clip', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
               </div>
             </div>
@@ -355,11 +368,19 @@ export const ActionMenu = (props) => {
         return (<ButtonPrimary className="button-20" icon={ <ThumbUpIconSolid rotate="180" viewBox="-5 4 30 21" height="24" width="25" /> } text="Rated" onclick={() => {indifferent('INDIFFERENT', 'like', 'program');}}/>);
       } else {
 
-        return (<ButtonPrimary className="button-20" icon={ <ThumbUpIcon /> } text="Rated" onclick={() => props.onRate()}/>);
+        return (<ButtonPrimary className="button-20" icon={ <ThumbUpIcon /> } text="Rated" onclick={() => {
+          console.log('RATE1')
+          onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, 'program_rate')
+          return props.onRate()
+          }}/>);
       }
     }
     return (
-      <ButtonPrimary status={[isLogin, alertSignIn]}  className="button-20" icon={ <ThumbUpIcon /> } text="Rated" onclick={() => props.onRate()}/>
+      <ButtonPrimary status={[isLogin, alertSignIn]}  className="button-20" icon={ <ThumbUpIcon /> } text="Rated" onclick={() => { 
+        onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, 'program_rate')
+        console.log('RATE2')
+        return props.onRate();
+        }}/>
     );
   };
   return (
@@ -423,7 +444,6 @@ const bookmark = (data, item, type, props, typeTracking = null) => {
       text={type === 'program' ? 'My List' : ''}
       className={ type === 'program' ? 'button-20' : '' }
       onclick={() => { 
-        console.log('BOOKMARK1')
         props.onBookmarkDelete(item.id, type);
         }}/>);
     }
@@ -434,7 +454,7 @@ const bookmark = (data, item, type, props, typeTracking = null) => {
       text={type === 'program' ? 'My List' : ''}
       className={ type === 'program' ? 'button-20' : '' }
       onclick={() => { 
-        onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, typeTracking, null, type)
+        onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, typeTracking, item, type)
         props.onBookmarkAdd(item.id, type);
         }}/>);
     }
@@ -445,7 +465,7 @@ const bookmark = (data, item, type, props, typeTracking = null) => {
   text={type === 'program' ? 'My List' : ''}
   className={ type === 'program' ? 'button-20' : '' }
   onclick={() => { 
-    onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, typeTracking, null, type)
+    onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, typeTracking, item, type)
     props.onBookmarkAdd(item.id, type);
     }}/>);
 };
@@ -484,22 +504,22 @@ export const onTracking = (ref, id , title) => {
   if (ref) {
     switch (ref) {
         case 'homepage':
-            programRelatedEvent(id, title.data.title, 'mweb_homepage_program_related_scroll_horizontal');
+            programShowMoreEvent(id, title.data.title, 'mweb_homepage_program_showmore_clicked');
             break;
 
         case 'library':
-            libraryGeneralEvent('mweb_library_program_related_scroll_horizontal');
+            libraryGeneralEvent('mweb_library_program_showmore_clicked');
             break;
 
         case 'search':
-            searchProgramRelatedScrollHorizontalEvent(id, title.data.title, 'mweb_search_program_related_scroll_horizontal');
+            searchProgramShowmoreClicked(id, title.data.title, 'mweb_search_program_showmore_clicked');
             break;
     }
   }
 }
 
-export const onTrackingClick = (ref, id, title, typeClick = 'program', item = null, content_type=null) => {
-  console.log(typeClick)
+export const onTrackingClick = (ref, id, title, typeClick = 'program', item = null, content_type = null, selected_season = 1) => {
+  console.log(typeClick, title.data.title, item)
   if (ref && typeClick === 'program') {
     switch (ref) {
         case 'homepage':
@@ -538,6 +558,134 @@ export const onTrackingClick = (ref, id, title, typeClick = 'program', item = nu
 
       case 'search':
           searchProgramAddMyListClicked('N/A', title.data.title, id, content_type, 'mweb_search_program_add_mylist_clicked');
+          break;
+    }
+  }
+  if (ref && typeClick === 'content_bookmark') {
+    switch (ref) {
+      case 'homepage':
+        programContentAddMyListEvent(id, title.data.title, item.id, item.title, content_type, 'mweb_homepage_program_content_add_mylist_clicked');
+        break;
+
+      case 'library':
+        libraryProgramContentAddMylistClicked(id, title.data.title, item.title, content_type, item.id, 'mweb_library_program_content_add_mylist_clicked');
+        break;
+
+      case 'search':
+        searchProgramContentAddMyListClicked(id, title.data.title, item.title, content_type, item.id, 'mweb_search_program_content_add_mylist_clicked');
+        break;
+    }
+  }
+  if (ref && typeClick === 'program_rate') {
+    switch (ref) {
+      case 'homepage':
+        programRateEvent('INDIFFERENT', title.data.title, id, 'program', 'mweb_homepage_program_rate_clicked');
+        break;
+
+      case 'library':
+          libraryProgramRateClicked('INDIFFERENT', title.data.title, id, 'program', 'mweb_library_program_rate_clicked');
+          break;
+
+      case 'search':
+          searchProgramRateClicked('INDIFFERENT', title.data.title, id, 'program', 'mweb_search_program_rate_clicked');
+          break;
+    }
+  }
+  if (ref && typeClick === 'program_share') {
+    switch (ref) {
+      case 'homepage':
+        programShareEvent(title.data.title, id, 'program', 'mweb_homepage_program_share_clicked');
+        break;
+
+      case 'library':
+        libraryProgramShareClicked(title.data.title, id, 'program', 'mweb_library_program_share_clicked');
+        break;
+
+      case 'search':
+        searchProgramShareClicked('N/A', title.data.title, id, 'program', 'mweb_search_program_share_clicked');
+        break;
+    }
+  }
+  if (ref && typeClick === 'content_share') {
+    switch (ref) {
+      case 'homepage':
+        programContentShareEvent(id, title.data.title, item.title, content_type, item.id, 'mweb_homepage_program_content_share_clicked');
+        break;
+    
+      case 'mylist':
+          accountMylistShareClicked(id, title.data.title, item.title, content_type, item.id, 'mweb_account_mylist_share_clicked');
+          break;
+
+      case 'library':
+          libraryProgramContentShareClicked(id, title.data.title, item.title, content_type, item.id, 'mweb_library_program_content_share_clicked');
+          break;
+
+      case 'search':
+          searchProgramContentShareClicked(id, title.data.title, item.title, content_type, item.id, 'mweb_search_program_content_share_clicked');
+          break;
+    }
+  }
+  if (ref && typeClick === 'episode_season_close') {
+    switch (ref) {
+      case 'homepage':
+        programSeasonCloseEvent(id, title.data.title, selected_season, 'mweb_homepage_program_season_close_clicked');
+        break;
+
+      case 'library':
+          libraryProgramSeasonCloseClicked(id, title.data.title, selected_season, 'mweb_library_program_season_close_clicked');
+          break;
+
+      case 'search':
+          searchProgramSeasonCloseClicked(id, title.data.title, selected_season, 'mweb_search_program_season_close_clicked');
+          break;
+    }
+  }
+  if (ref && typeClick === 'episode_season_click') {
+    switch (ref) {
+      case 'homepage':
+        programSeasonListEvent(id, title.data.title, selected_season, 'mweb_homepage_program_season_list_clicked');
+        break;
+
+    case 'library':
+        libraryProgramSeasonListClicked(id, title.data.title, selected_season, 'mweb_library_program_season_list_clicked');
+        break;
+
+    case 'search':
+        searchProgramSeasonListClicked(id, title.data.title, selected_season, 'mweb_search_program_season_list_clicked');
+        break;
+    }
+  }
+  if (ref && typeClick === 'content_click_link') {
+    switch (ref) {
+      case 'homepage':
+        programContentEvent(id, title.data.title, content_type, item.id, item.title, 'mweb_homepage_program_content_clicked');
+        break;
+
+    case 'mylist':
+        accountMylistContentClicked(id, title.data.title, item.title, content_type, item.id, 'mweb_account_mylist_content_clicked');
+        break;
+
+    case 'library':
+        libraryProgramContentClicked(id, title.data.title, item.title, content_type, item.id, 'mweb_library_program_content_clicked')
+        break;
+
+    case 'search':
+        searchProgramContentClicked(id, title.data.title, item.title, content_type, item.id, 'mweb_search_program_content_clicked');
+        break;
+    }
+  }
+  if (ref && typeClick === 'tab_click') {
+    switch (ref) {
+      case 'homepage':
+          programTabEvent(id, title.data.title, content_type, 'mweb_homepage_program_tab_clicked');
+          break;
+
+      case 'library':
+          libraryProgramTabClicked(id, title.data.title, content_type, 'mweb_library_program_tab_clicked');
+          break;
+
+      case 'search':
+          searchProgramTabClicked(id, title.data.title, content_type, 'mweb_search_program_tab_clicked');
           break;
     }
   }
