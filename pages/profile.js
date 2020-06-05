@@ -213,13 +213,31 @@ class Profile extends React.Component {
 					</ListGroupItem>
 					<ListGroupItem id="action-mylist" onClick={() => {
 						accountGeneralEvent('mweb_account_mylist_clicked');
-						Router.push('/mylist');
+						if (!this.state.logged_in) {
+							showSignInAlert(`Please <b>Sign In</b><br/>
+							Woops! Gonna sign in first!<br/>
+							Only a click away and you<br/>
+							can continue to enjoy<br/>
+							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+						}
+						else {
+							Router.push('/mylist');
+						}
 					}}>
 						<PlaylistAddCheckIcon/> My List
 					</ListGroupItem>
 					<ListGroupItem id="action-continue-watching" onClick={() => {
 						accountGeneralEvent('mweb_account_continue_watching_clicked');
-						Router.push('/continue-watching');
+						if (!this.state.logged_in) {
+							showSignInAlert(`Please <b>Sign In</b><br/>
+							Woops! Gonna sign in first!<br/>
+							Only a click away and you<br/>
+							can continue to enjoy<br/>
+							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+						}
+						else {
+							Router.push('/continue-watching');
+						}
 					}}>
 						<QueryBuilderIcon/> Continue Watching <br/>
 						<div className="cw-container">
