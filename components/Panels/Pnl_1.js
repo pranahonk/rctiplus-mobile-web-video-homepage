@@ -9,10 +9,13 @@ import CountdownTimer from '../Includes/Common/CountdownTimer';
 import contentActions from '../../redux/actions/contentActions';
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../utils/appier';
 import { getCountdown } from '../../utils/helpers';
+import { showSignInAlert } from '../../utils/helpers';
 
 import '../../assets/scss/components/panel.scss';
 
 /* horizontal_landscape_large  */
+
+const jwtDecode = require('jwt-decode');
 
 class Pnl_1 extends React.Component {
 
@@ -57,7 +60,18 @@ class Pnl_1 extends React.Component {
 					url += this.props.token;
 				}
 
-				window.open(url, '_blank');
+				const payload = jwtDecode(this.props.token);
+				console.log(payload.vid);
+				if (payload && !payload.vid) {
+					showSignInAlert(`Please <b>Sign In</b><br/>
+						Woops! Gonna sign in first!<br/>
+						Only a click away and you<br/>
+						can continue to enjoy<br/>
+						<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+				}
+				else {
+					window.open(url, '_blank');
+				}
 				break;
 
 			case 'program':
