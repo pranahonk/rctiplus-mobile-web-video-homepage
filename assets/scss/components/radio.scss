@@ -1,0 +1,8 @@
+@media (hover) {
+    button {
+        display: none;
+    }
+    a:hover span {
+        display: inline-block;
+    }
+}
