@@ -51,7 +51,13 @@ class Pnl_1 extends React.Component {
 			case 'special':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
 
-				window.open(data.url ? data.url : data.link, '_blank');
+				let url = data.url ? url : data.link;
+				console.log('token:', this.props.token);
+				if (data.mandatory_login) {
+					url += this.props.token;
+				}
+
+				window.open(url, '_blank');
 				break;
 
 			case 'program':
