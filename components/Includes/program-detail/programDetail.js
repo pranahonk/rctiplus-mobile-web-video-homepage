@@ -222,7 +222,11 @@ export const PanelPhoto = (props) => {
           <div className="panel-content tab__photo">
           { props.data.data.map((item,i) => {
           return (
-            <div key={i} className="thumb-img__content tab__photo-item" onClick={ () => Router.push(`/programs/${props.query.id}/${urlRegex(props.query.title)}/photo/${item.id}/${urlRegex(item.title)}`) }>
+            <div key={i} className="thumb-img__content tab__photo-item" onClick={ () => { 
+              
+              Router.push(`/programs/${props.query.id}/${urlRegex(props.query.title)}/photo/${item.id}/${urlRegex(item.title)}`) 
+              onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, 'photo', item)
+              } }>
               <Img alt={item.title}
               title={item.title}
               className="tab__photo-item_img" src={[props.data.meta.image_path + RESOLUTION_IMG + item.photos[0].image, getPathImage(...pathImg,item.portrait_image, false, 'potrait')]}
@@ -361,7 +365,7 @@ export const ActionMenu = (props) => {
   return (
     <>
       { rate(props.like, 'program') }
-      { bookmark(props.bookmark && props.bookmark.data, props.data, 'program', props) }
+      { bookmark(props.bookmark && props.bookmark.data, props.data, 'program', props, 'program_bookmark') }
     </>
   );
 };
@@ -409,7 +413,7 @@ const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
   }
 };
 
-const bookmark = (data, item, type, props) => {
+const bookmark = (data, item, type, props, typeTracking = null) => {
   if (data && data[type]) {
     const isBookmark = data[type].find((list) => list.id === item.id);
     if (isBookmark) {
@@ -418,7 +422,10 @@ const bookmark = (data, item, type, props) => {
       status={[props.isLogin, alertSignIn]}
       text={type === 'program' ? 'My List' : ''}
       className={ type === 'program' ? 'button-20' : '' }
-      onclick={() => { props.onBookmarkDelete(item.id, type); }}/>);
+      onclick={() => { 
+        console.log('BOOKMARK1')
+        props.onBookmarkDelete(item.id, type);
+        }}/>);
     }
     else {
       return (<ButtonPrimary
@@ -426,7 +433,10 @@ const bookmark = (data, item, type, props) => {
       status={[props.isLogin, alertSignIn]}
       text={type === 'program' ? 'My List' : ''}
       className={ type === 'program' ? 'button-20' : '' }
-      onclick={() => { props.onBookmarkAdd(item.id, type); }}/>);
+      onclick={() => { 
+        onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, typeTracking, null, type)
+        props.onBookmarkAdd(item.id, type);
+        }}/>);
     }
   }
   return (<ButtonPrimary
@@ -434,7 +444,10 @@ const bookmark = (data, item, type, props) => {
   status={[props.isLogin, alertSignIn]}
   text={type === 'program' ? 'My List' : ''}
   className={ type === 'program' ? 'button-20' : '' }
-  onclick={() => { props.onBookmarkAdd(item.id, type); }}/>);
+  onclick={() => { 
+    onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, typeTracking, null, type)
+    props.onBookmarkAdd(item.id, type);
+    }}/>);
 };
 
 let  swipe = {}
@@ -485,8 +498,8 @@ export const onTracking = (ref, id , title) => {
   }
 }
 
-export const onTrackingClick = (ref, id, title, typeClick = 'program') => {
-  console.log('CLICK')
+export const onTrackingClick = (ref, id, title, typeClick = 'program', item = null, content_type=null) => {
+  console.log(typeClick)
   if (ref && typeClick === 'program') {
     switch (ref) {
         case 'homepage':
@@ -501,5 +514,31 @@ export const onTrackingClick = (ref, id, title, typeClick = 'program') => {
             searchProgramTrailerClicked('N/A', title.data.title, id, 'program', 'mweb_search_program_trailer_clicked');
             break;
     }
-}
+  }
+  if (ref && typeClick === 'photo') {
+    switch (ref) {
+        case 'homepage':
+            programContentEvent(id, title.data.title, 'photo', item.id, item.title, 'mweb_homepage_program_content_clicked');
+            break;
+
+        case 'mylist':
+            accountMylistContentClicked(id, title.data.title, item.title, 'photo', item.id, 'mweb_account_mylist_content_clicked');
+            break;
+    }
+  }
+  if (ref && typeClick === 'program_bookmark') {
+    switch (ref) {
+      case 'homepage':
+          programAddMyListEvent('bookmark', title.data.title, id, content_type, 'mweb_homepage_program_add_mylist_clicked');
+          break;
+
+      case 'library':
+          libraryProgramAddMylistClicked('bookmark', title.data.title, id, content_type, 'mweb_library_program_add_mylist_clicked');
+          break;
+
+      case 'search':
+          searchProgramAddMyListClicked('N/A', title.data.title, id, content_type, 'mweb_search_program_add_mylist_clicked');
+          break;
+    }
+  }
 }
