@@ -33,8 +33,8 @@ class GridMenu extends React.Component {
                         </div>
                     </Col>
                     <Col className="menu-item">
-                        <Link id="action-news" href="/trending">
-                            <a>
+                        <Link href="/trending">
+                            <a id="action-news" >
                                 <div onClick={() => {
                                     homeGeneralClicked('mweb_news_clicked');
                                     // Router.push('/trending');
