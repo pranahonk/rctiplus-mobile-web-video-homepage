@@ -25,7 +25,7 @@ import GridMenu from '../components/Includes/Common/GridMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
-import { setCookie, getCookie } from '../utils/cookie';
+import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -49,6 +49,7 @@ class Index_v2 extends React.Component {
 
         // this.props.setPageLoader();
         this.swipe = {};
+        this.token = '';
     }
 
     onTouchStart(e) {
@@ -61,10 +62,12 @@ class Index_v2 extends React.Component {
 		const absY = Math.abs(touch.clientY - this.swipe.y);
 		if (absY > 50) {
 			homeGeneralClicked('mweb_homepage_scroll_vertical');
-		}
+        }
 	}
 
     componentDidMount() {
+        const accessToken = getCookie('ACCESS_TOKEN');
+        this.token = accessToken == undefined ? getVisitorToken() : accessToken;
         window.onbeforeunload = e => {
             homeGeneralClicked('mweb_homepage_refresh');
         };
@@ -184,16 +187,16 @@ class Index_v2 extends React.Component {
                         {contents.map((content, i) => {
                             switch (content.display_type) {
                                 case 'horizontal_landscape_large':
-                                    return <Panel1 type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                    return <Panel1 token={this.token} type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
                                 case 'horizontal_landscape':
-                                    return <Panel2 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                    return <Panel2 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
                                 case 'horizontal':
-                                    return <Panel3 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                    return <Panel3 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
                                 case 'vertical':
-                                    return <Panel4 loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                    return <Panel4 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
                             }
                         })}
                     </div>
