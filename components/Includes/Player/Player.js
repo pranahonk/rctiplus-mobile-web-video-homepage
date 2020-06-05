@@ -183,14 +183,16 @@ const Player = forwardRef((props, ref) => {
       console.log('IMAAAA:', props.data.vmap)
       if(videoPlayer.ima && typeof videoPlayer.ima.setContentWithAdTag === 'function') {
         console.log('WITH TAG')
-        videoPlayer.ima.changeAdTag(props.data.vmap_ima);
         // videoPlayer.ima.changeAdTag(ima);
         // videoPlayer.ima.setContentWithAdTag(props.data.url, null, true);
-        videoPlayer.ima.requestAds();
-        videoPlayer.src({
-          src: props.data.url,
-          type: 'application/x-mpegURL',
-        });
+        videoPlayer.on('ready', () => {
+          videoPlayer.ima.changeAdTag(props.data.vmap_ima);
+          videoPlayer.ima.requestAds();
+          videoPlayer.src({
+            src: props.data.url,
+            type: 'application/x-mpegURL',
+          });
+        })
       } else {
         console.log('WITHOUT TAG')
       }

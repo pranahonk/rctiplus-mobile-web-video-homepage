@@ -42,7 +42,7 @@ export const PanelEpisode = forwardRef((props, ref) => {
   const pathImg = [props.data.meta.image_path, RESOLUTION_IMG];
   const link = (titleItem, idItem, typeItem) => {
     const href = `/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=${typeItem}&content_id=${idItem}&content_title=${urlRegex(titleItem)}`;
-    const as = `/programs/${props.query.id}/${urlRegex(props.query.title)}/${typeItem}/${idItem}/${urlRegex(titleItem)}`;
+    const as = `/programs/${props.query.id}/${urlRegex(props.query.title)}/${typeItem}/${idItem}/${urlRegex(titleItem)}${props.ref ? '?ref='+props.ref : ''}`;
     props.link(idItem,'data-player',1, typeItem);
     Router.push(href,as, { shallow: true });
     window.scroll({
@@ -63,7 +63,7 @@ export const PanelEpisode = forwardRef((props, ref) => {
             <div className="panel-content">
               <div className="thumb-img__content">
                 <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=episode&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
-                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/episode/${item.id}/${urlRegex(item.title)}`}
+                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/episode/${item.id}/${urlRegex(item.title)}${props.ref ? '?ref='+props.ref : ''}`}
                 >
                   <a onClick={() => link(item.title, item.id, 'episode', item.summary)} ref={linkRef}>
                     <Img alt={item.title}
@@ -79,7 +79,7 @@ export const PanelEpisode = forwardRef((props, ref) => {
                 <div className="action-button__content ">
                   { bookmark(props.bookmark && props.bookmark.data, item, 'episode', props) }
                   <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title)}/>
-                  <ButtonPrimary icon={ <GetApp/> } onclick={alertDownload}/>
+                  <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'episode', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
                 </div>
               </div>
             </div>
@@ -106,7 +106,7 @@ export const PanelExtra = (props) => {
   const pathImg = [props.data.meta.image_path, RESOLUTION_IMG];
   const link = (titleItem, idItem, typeItem) => {
     const href = `/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=${typeItem}&content_id=${idItem}&content_title=${urlRegex(titleItem)}`;
-    const as = `/programs/${props.query.id}/${urlRegex(props.query.title)}/${typeItem}/${idItem}/${urlRegex(titleItem)}`;
+    const as = `/programs/${props.query.id}/${urlRegex(props.query.title)}/${typeItem}/${idItem}/${urlRegex(titleItem)}${props.ref ? '?ref='+props.ref : ''}`;
     props.link(idItem,'data-player',1, typeItem);
     Router.push(href,as, { shallow: true });
   };
@@ -119,7 +119,7 @@ export const PanelExtra = (props) => {
           <div className="panel-content">
             <div className="thumb-img__content">
               <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=extra&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
-                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/extra/${item.id}/${urlRegex(item.title)}`}
+                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/extra/${item.id}/${urlRegex(item.title)}${props.ref ? '?ref='+props.ref : ''}`}
                 >
                   <a onClick={() => link(item.title, item.id, 'extra', item.summary)} ref={linkExtraRef}>
                     <Img alt={item.title}
@@ -135,7 +135,7 @@ export const PanelExtra = (props) => {
               <div className="action-button__content ">
                   { bookmark(props.bookmark && props.bookmark.data, item, 'extra', props) }
                   <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title)}/>
-                  <ButtonPrimary icon={ <GetApp/> } onclick={alertDownload}/>
+                  <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'extra', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
               </div>
             </div>
           </div>
@@ -162,7 +162,7 @@ export const PanelClip = (props) => {
   const pathImg = [props.data.meta.image_path, RESOLUTION_IMG];
   const link = (titleItem, idItem, typeItem) => {
     const href = `/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=${typeItem}&content_id=${idItem}&content_title=${urlRegex(titleItem)}`;
-    const as = `/programs/${props.query.id}/${urlRegex(props.query.title)}/${typeItem}/${idItem}/${urlRegex(titleItem)}`;
+    const as = `/programs/${props.query.id}/${urlRegex(props.query.title)}/${typeItem}/${idItem}/${urlRegex(titleItem)}${props.ref ? '?ref='+props.ref : ''}`;
     props.link(idItem,'data-player',1, typeItem);
     Router.push(href,as, { shallow: true });
   };
@@ -175,7 +175,7 @@ export const PanelClip = (props) => {
           <div className="panel-content">
             <div className="thumb-img__content">
               <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=clip&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
-                        as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/clip/${item.id}/${urlRegex(item.title)}`}
+                        as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/clip/${item.id}/${urlRegex(item.title)}${props.ref ? '?ref='+props.ref : ''}`}
                   >
                     <a onClick={() => link(item.title, item.id, 'clip', item.summary)} ref={linkClipRef}>
                       <Img alt={item.title}
@@ -191,7 +191,7 @@ export const PanelClip = (props) => {
               <div className="action-button__content ">
                 { bookmark(props.bookmark && props.bookmark.data, item, 'clip', props) }
                 <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title)}/>
-                <ButtonPrimary icon={ <GetApp/> } onclick={alertDownload}/>
+                <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'clip', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
               </div>
             </div>
           </div>
@@ -273,7 +273,7 @@ export const PanelRelated = (props) => {
   return (
     <div className="related__program-wrapper">
       <h4>Related Program</h4>
-            <div ref={containerRef} className="related__program-list" onTouchStart={(e) => onTouchStart(e)} onTouchEnd={(e) => onTouchEnd(e)}>
+            <div ref={containerRef} className="related__program-list" onTouchStart={(e) => onTouchStart(e)} onTouchEnd={(e) => onTouchEnd(e, props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title)}>
               { props.data.data.map((item, i) => {
                 return (
                   <Link key={i}
@@ -318,6 +318,22 @@ export const RatedModal = (props) => {
     </div>
   );
 };
+export const Trailer = (props) => {
+  return (
+    <div>
+      <Modal isOpen={props.open} toggle={props.toggle} className="modal-custom trailer-modal">
+        <div>{ props.player }</div>
+        <div className="close-modal">
+          <ButtonPrimary
+            className="button-20"
+            icon={ <CancelIcon /> }
+            onclick={props.toggle}
+             />
+        </div>
+      </Modal>
+    </div>
+  );
+};
 export const ActionMenu = (props) => {
   const indifferent = (status, filter, type) => {
     props.onLike(status, filter, type);
@@ -349,7 +365,27 @@ export const ActionMenu = (props) => {
     </>
   );
 };
-export const alertDownload = () => {
+export const alertDownload = (data = null, type = null, Programid, programTitle, ref) => {
+  console.log(data, type, ref)
+  if (data && type && ref) {
+      switch (ref) {
+          case 'homepage':
+              programContentDownloadEvent(Programid, programTitle.data.title, data.title, type, data.id, 'mweb_homepage_program_content_download_clicked');
+              break;
+
+          case 'mylist':
+              accountMylistDownloadClicked(Programid, programTitle.data.title, data.title, type, data.id, 'mweb_account_mylist_download_clicked');
+              break;
+
+          case 'library':
+              libraryProgramContentDownloadClicked(Programid, programTitle.data.title, data.title, type, data.id, 'mweb_library_program_content_download_clicked');
+              break;
+
+          case 'search':
+              searchProgramContentDownloadClicked(Programid, programTitle.data.title, data.title, type, data.id, 'mweb_search_program_content_download_clicked');
+              break;
+      }
+  }
   showAlert('To be able to watch this episode offline, please download RCTI+ application on Playstore',
              '',
              'Open Playstore',
@@ -408,25 +444,62 @@ const onTouchStart = (e) => {
   swipe = { x: touch.clientX };
 }
 
-const onTouchEnd = (e, ref, id) => {
+const onTouchEnd = (e, ref, id, title) => {
   let touch = e.changedTouches[0];
   const absX = Math.abs(touch.clientX - swipe.x);
   console.log(absX)
-  // if (absX > 50) {
-  //         if (ref) {
-  //             switch (ref) {
-  //                 case 'homepage':
-  //                     programRelatedEvent(this.props.router.query.id, this.state.title, 'mweb_homepage_program_related_scroll_horizontal');
-  //                     break;
+  if (absX > 50) {
+          if (ref) {
+              switch (ref) {
+                  case 'homepage':
+                      programRelatedEvent(id, title.data.title, 'mweb_homepage_program_related_scroll_horizontal');
+                      break;
 
-  //                 case 'library':
-  //                     libraryGeneralEvent('mweb_library_program_related_scroll_horizontal');
-  //                     break;
+                  case 'library':
+                      libraryGeneralEvent('mweb_library_program_related_scroll_horizontal');
+                      break;
 
-  //                 case 'search':
-  //                     searchProgramRelatedScrollHorizontalEvent(this.props.router.query.id, this.state.title, 'mweb_search_program_related_scroll_horizontal');
-  //                     break;
-  //             }
-  //         }
-  //     }
+                  case 'search':
+                      searchProgramRelatedScrollHorizontalEvent(id, title.data.title, 'mweb_search_program_related_scroll_horizontal');
+                      break;
+              }
+          }
+      }
+}
+
+export const onTracking = (ref, id , title) => {
+  if (ref) {
+    switch (ref) {
+        case 'homepage':
+            programRelatedEvent(id, title.data.title, 'mweb_homepage_program_related_scroll_horizontal');
+            break;
+
+        case 'library':
+            libraryGeneralEvent('mweb_library_program_related_scroll_horizontal');
+            break;
+
+        case 'search':
+            searchProgramRelatedScrollHorizontalEvent(id, title.data.title, 'mweb_search_program_related_scroll_horizontal');
+            break;
+    }
+  }
+}
+
+export const onTrackingClick = (ref, id, title, typeClick = 'program') => {
+  console.log('CLICK')
+  if (ref && typeClick === 'program') {
+    switch (ref) {
+        case 'homepage':
+            programTrailerEvent(title.data.title, id, 'program', 'mweb_homepage_program_trailer_clicked');
+            break;
+
+        case 'library':
+            libraryProgramTrailerClicked('N/A', title.data.title, id, 'program', 'mweb_library_program_trailer_clicked');
+            break;
+
+        case 'search':
+            searchProgramTrailerClicked('N/A', title.data.title, id, 'program', 'mweb_search_program_trailer_clicked');
+            break;
+    }
+}
 }
