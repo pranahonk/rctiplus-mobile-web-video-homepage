@@ -137,6 +137,8 @@ class Index extends React.Component {
     }
   }
   shouldComponentUpdate() {
+    console.log('COMPONENT UPDATE')
+    this.reference = queryString.parse(location.search).ref
     return true;
   }
   UNSAFE_componentWillMount() {
@@ -144,6 +146,7 @@ class Index extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
   }
   componentDidUpdate(prevProps) {
+    console.log('COMPONENT DID UPDATE')
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
       if (this.props.router.query.content_id) {
         const {content_id , content_type} = this.props.router.query;
@@ -218,7 +221,7 @@ class Index extends React.Component {
             >
             <a onClick={ () => { 
               this.setState({ trailer: !this.state.trailer }, () => {
-                this.props.dispatch(fetchPlayerUrl(mainData.id,'data-player','episode', true))
+                {/* this.props.dispatch(fetchPlayerUrl(mainData.id,'data-player','episode', true)) */}
                   }) 
                 }}>
               <ButtonOutline text="Trailer" />
@@ -362,6 +365,7 @@ class Index extends React.Component {
     return (<TabListLoader/>);
   }
   redirect(tab) {
+    console.log(this.reference)
     const { id, title, content_id, content_title, content_type } = this.props.router.query;
     let href, as;
     let convert = '';
@@ -533,6 +537,7 @@ class Index extends React.Component {
               onShowMore={() => { this.props.dispatch(fetchPhoto(this.props.router.query.id, 'program-photo',pagination.nextPage)); }}
               data={props}
               query={this.query()}
+              dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
             />
       );
         }
@@ -587,8 +592,8 @@ class Index extends React.Component {
     );
   }
   trailer() {
-    if (this.props.data && this.props.data['data-player'] && this.props.data['data-player'].data ) {
-      const data = this.props.data && this.props.data['data-player'];
+    if (this.props.server && this.props.server[this.type] && this.props.server[this.type]) {
+      const data = this.props.server && this.props.server[this.type] 
       return (
         <div className="program-detail-player-wrapper trailer">
             <Player data={ data.data } ref={this.ref} />
@@ -657,6 +662,7 @@ class Index extends React.Component {
                   data={ props.server && props.server['program-detail'] && props.server['program-detail'].data }
                   onBookmarkAdd={(id, type) => { this.props.dispatch(postBookmark(id,type, 'bookmark')); }}
                   onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
+                  dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
                   />
               <ButtonPrimary className="button-20" icon={ <ShareIcon/> } text="Share" onclick={this.toggleActionSheet.bind(this, 'program')}/>
               { this.props.router.query.content_id ? (
@@ -737,7 +743,6 @@ class Index extends React.Component {
             <Trailer
               open={state.trailer}
               toggle={() => { 
-                console.log('TESTTT')
                 this.setState({ trailer: !state.trailer }) 
                 onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'])
                 }}

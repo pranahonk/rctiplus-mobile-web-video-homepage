@@ -59,8 +59,9 @@ const Player = forwardRef((props, ref) => {
     const player = videojs(initRef.current,optionsPlayer, () => {
     if (props.isFullscreen) player.requestFullscreen();
     console.log('onPlayerReady',!videojs.browser.IS_SAFARI, player);
+    console.log('URL', props);
         player.src({
-          src: props.data.url,
+          src: props.data.url ? props.data.url : props.data.trailer_url,
           type: 'application/x-mpegURL',
       });
       player.on('playing', function() {
@@ -95,7 +96,7 @@ const Player = forwardRef((props, ref) => {
         console.log(setQuality);
       });
       player.removeChild('BigPlayButton');
-      player.addChild('TitleBar', { text: props.data.content_name });
+      player.addChild('TitleBar', { text: props.data.content_name ? props.data.content_name : props.data.title });
       player.addChild('PlayToggleCustom');
       player.addChild('ProgressControlCustom');
       player.addChild('ForwardCustom');
