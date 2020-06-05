@@ -122,6 +122,9 @@ h3, h4, p {
     } 
     &.photo {
       order: 4
+    }
+    &.active {
+      color: #ffffff !important;
     } 
     &.active:active{
       transition: transform .8s;
@@ -175,66 +178,46 @@ h3, h4, p {
     }
   }
   @for $i from 1 through 4 {
-    @if $i == 3{
-      @for $e from 1 through 4 {
-        @if $e == 1 {
-          .active.Clips:nth-child(#{$e}) ~ .tab-slider {
-            left: 0 !important;
-            width: calc(100%/2) !important;
-            text-overflow: $e;
+    @if $i == 2{
+      @for $z from 1 through 4 {
+        @if $z == 1 {
+          .active.Clips:nth-child(#{$z}) ~ .tab-slider {
+            left: 0;
+            width: calc(100%/3);
+            text-overflow: $i;
           }
-        } @else if $e == 2 {
-          .active.Clips:nth-last-child(#{$e}) ~ .tab-slider {
+        }
+        @else if $z == 2 {
+          .active.Clips:nth-last-child(#{$z}) ~ .tab-slider {
+            left: 50% ;
+            width: calc(100%/2);
+            text-overflow: $z;
+          }
+          .active.Clips:nth-child(3) ~ .tab-slider {
             left: 66.666%;
             width: calc(100%/3);
-            text-overflow: $e;
+            text-overflow: $i;
           }
-        } @else if $e == 3 {
-          .active.Clips:nth-last-child(#{$e}) ~ .tab-slider {
+        }
+        @else if $z == 3 {
+          .active.Clips:nth-last-child(#{$z}) ~ .tab-slider {
+            left: 33.333% ;
+            width: calc(100%/3);
+            text-overflow: $z;
+          }
+          .active.Clips:nth-child(3) ~ .tab-slider {
             left: 50%;
             width: calc(100%/4);
-            text-overflow: $e;
-          }
-        } @else if $e == 4 {
-          .active.Clips:nth-last-child(#{$e}) ~ .tab-slider {
-            left: 35%;
-            width: calc(100%/3);
-            text-overflow: $e;
+            text-overflow: $i;
           }
         }
-      }
-    } @else if $i == 2{
-      @for $y from 1 through 4 {
-        @if $y == 1 {
-          .active.Clips:nth-child(#{$y}) ~ .tab-slider {
-            left: 0 !important;
-            width: calc(100%/3) !important;
-            text-overflow: $y;
-          }
-        } @else if $y == 2 {
-          .active.Clips:nth-last-child(#{$y}) ~ .tab-slider {
-            left: 10%;
-            width: calc(100%/3);
-            text-overflow: $y;
-          }
-        } @else if $y == 3 {
-          .active.Clips:nth-last-child(#{$y}) ~ .tab-slider {
-            left: 20%;
-            width: calc(100%/3);
-            text-overflow: $y;
-          }
-        } @else if $y == 4 {
-          .active.Clips:nth-last-child(#{$y}) ~ .tab-slider {
-            left: 30%;
-            width: calc(100%/3);
-            text-overflow: $y;
+        @else if $z == 4 {
+          .active.Clips:nth-last-child(#{$z}) ~ .tab-slider {
+            left: 25%;
+            width: calc(100%/4);
+            text-overflow: $z;
           }
         }
-      }
-      .active.Clips:nth-child(#{$i}) ~ .tab-slider {
-        left: 50% !important;
-        width: calc(100%/2) !important;
-        text-overflow: $i;
       }
     } @else if $i == 1{
       .active.Clips:nth-child(#{$i}) ~ .tab-slider {
@@ -594,6 +577,13 @@ h3, h4, p {
 .fadeInDown.go { 
   -webkit-animation-name: fadeInDown; 
   animation-name: fadeInDown; 
+}
+
+.trailer {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 

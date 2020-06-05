@@ -38,7 +38,7 @@ import { Nav, NavItem, NavLink, TabContent, TabPane, Collapse } from 'reactstrap
 import '../assets/scss/components/program-detail.scss';
 import { RESOLUTION_IMG } from '../config';
 import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
-import { alertDownload } from '../components/Includes/program-detail/programDetail';
+import { alertDownload, onTracking, onTrackingClick } from '../components/Includes/program-detail/programDetail';
 const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const HeadMeta = dynamic(() => import('../components/Seo/HeadMeta'));
 const MainLoader = dynamic(() => import('../components/Includes/Shimmer/detailProgramLoader').then((mod) => mod.MainLoader));
@@ -55,6 +55,7 @@ const PanelRelated = dynamic(() => import('../components/Includes/program-detail
 const ActionSheet = dynamic(() => import('../components/Modals/ActionSheet'), { ssr: false });
 const ActionMenu = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.ActionMenu), { ssr: false });
 const RatedModal = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.RatedModal), { ssr: false });
+const Trailer = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.Trailer), { ssr: false });
 
 class Index extends React.Component {
   static getInitialProps({store, isServer, pathname, query, state}) {
@@ -84,6 +85,7 @@ class Index extends React.Component {
       titleProgram: '',
       action_sheet: false,
       rate_modal: false,
+      trailer: false,
       title: 'title-program',
       statusProgram: false,
     };
@@ -96,9 +98,11 @@ class Index extends React.Component {
     this.refPanelExtra = React.createRef();
     this.refPanelClip = React.createRef();
     this.refPanelPhoto = React.createRef();
+    this.reference = null;
   }
   componentDidMount() {
-    // console.log('MOUNTED: ',queryString.parse(location.search))
+    this.reference = queryString.parse(location.search).ref
+    console.log('MOUNTED: ', this.props,this.reference)
     this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] , 'tracking-program'));
     if (this.props.router.query.content_id) {
       const {content_id , content_type} = this.props.router.query;
@@ -113,7 +117,7 @@ class Index extends React.Component {
     }
     if (this.props.server && this.props.server[this.type].data) {
       if (this.isTabs(this.props.server[this.type].data).length > 0) {
-        if (this.props.router.query.content_type === 'extra') {
+        if (this.props.router.query.content_type === 'extras') {
           this.setState({toggle: 'Extra'});
           this.props.dispatch(fetchExtra(this.programId, 'program-extra'));
           return false;
@@ -212,7 +216,11 @@ class Index extends React.Component {
               as={`/programs/${mainData.id}/${urlRegex(mainData.title)}`}
               shallow
             >
-            <a onClick={ () => { this.props.dispatch(fetchPlayerUrl(mainData.id,'data-player','episode', true)); } }>
+            <a onClick={ () => { 
+              this.setState({ trailer: !this.state.trailer }, () => {
+                this.props.dispatch(fetchPlayerUrl(mainData.id,'data-player','episode', true))
+                  }) 
+                }}>
               <ButtonOutline text="Trailer" />
             </a>
             </Link>
@@ -363,11 +371,11 @@ class Index extends React.Component {
     if (tab === 'Photo') {convert = 'photos';}
     if (!content_id) {
       href = `/programs?id=${id}&title=${urlRegex(title)}&tab=${convert}`;
-      as = `/programs/${id}/${urlRegex(title)}/${convert}`;
+      as = `/programs/${id}/${urlRegex(title)}/${convert}${this.reference ? '?ref='+this.reference : ''}`;
     }
     if (content_id) {
       href = `/programs?id=${id}&title=${urlRegex(title)}&content_type=${content_type}&content_id=${content_id}&content_title=${urlRegex(content_title)}&tab=${tab}`;
-      as = `/programs/${id}/${urlRegex(title)}/${content_type}/${content_id}/${urlRegex(content_title)}?${convert}`;
+      as = `/programs/${id}/${urlRegex(title)}/${content_type}/${content_id}/${urlRegex(content_title)}?${convert + this.reference ? '&ref='+this.reference : ''}`;
     }
     if (!this.props.data['program-extra'] && convert === 'extras') {
       this.props.dispatch(fetchExtra(id, 'program-extra'));
@@ -417,13 +425,18 @@ class Index extends React.Component {
               query={this.query()}
               link={this.getLinkVideo.bind(this)}
               seasonSelected= { this.props.data.seasonSelected }
-              onShowMore={() => { this.props.dispatch(fetchEpisode(this.props.router.query.id, 'program-episode',props.data[0].season, pagination.nextPage)); }}
+              onShowMore={() => { 
+                console.log('show more')
+                this.props.dispatch(fetchEpisode(this.props.router.query.id, 'program-episode',props.data[0].season, pagination.nextPage)); 
+                onTracking(this.reference, this.props.router.query.id, this.props.server['program-detail'])
+                }}
               onSeason={() => {this.props.dispatch(fetchSeasonEpisode(this.props.router.query.id,'program-episode',1, pagination.nextPage));}}
               onBookmarkAdd={this.addBookmark.bind(this)}
               onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
               bookmark={bookmark}
               isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
               onShare={(title) => this.toggleActionSheet.bind(this, 'episode', title)}
+              dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
             />
           </>
           );
@@ -458,6 +471,7 @@ class Index extends React.Component {
         bookmark={bookmark}
         isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
         onShare={(title) => this.toggleActionSheet.bind(this, 'extra', title)}
+        dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
       />
         );
       }
@@ -490,6 +504,7 @@ class Index extends React.Component {
         bookmark={bookmark}
         isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
         onShare={(title) => this.toggleActionSheet.bind(this, 'extra', title)}
+        dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
       />
         );
     }
@@ -545,6 +560,8 @@ class Index extends React.Component {
           next={pagination.nextPage}
           hasMore={() => { this.loadRelated(this.props.router.query.id, pagination.nextPage); }}
           hasPlayer={this.setPlayerDispose.bind(this)}
+          // eslint-disable-next-line no-undef
+          dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
         />
       );
     }
@@ -567,6 +584,21 @@ class Index extends React.Component {
     }
     return (
       this.mainContent()
+    );
+  }
+  trailer() {
+    if (this.props.data && this.props.data['data-player'] && this.props.data['data-player'].data ) {
+      const data = this.props.data && this.props.data['data-player'];
+      return (
+        <div className="program-detail-player-wrapper trailer">
+            <Player data={ data.data } ref={this.ref} />
+        </div>
+      );
+    }
+    return (
+      <div className="program-detail-player-wrapper animated fadeInDown go">
+          <div>Loading...</div>
+      </div>
     );
   }
   toggleActionSheet(value, title = 'title-program') {
@@ -701,6 +733,15 @@ class Index extends React.Component {
               isLogin={this.statusLogin(props.data && props.data.like)}
               like={props.data && props.data.like}
               onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
+             />
+            <Trailer
+              open={state.trailer}
+              toggle={() => { 
+                console.log('TESTTT')
+                this.setState({ trailer: !state.trailer }) 
+                onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'])
+                }}
+              player={this.trailer()}
              />
         </div>
       </Layout>
