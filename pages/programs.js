@@ -10,7 +10,6 @@ import GetApp from '@material-ui/icons/GetApp';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import { urlRegex } from '../utils/regex';
 import queryString from 'query-string';
-import { StickyContainer, Sticky } from 'react-sticky';
 import {
   fetchDetailProgram, fetchEpisode, fetchSeasonEpisode,
   seasonSelected, fetchRelatedProgram, fetchExtra,
@@ -22,7 +21,9 @@ import {
 import Layout from '../components/Layouts/Default_v2';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Collapse } from 'reactstrap';
 import '../assets/scss/components/program-detail.scss';
-import { RESOLUTION_IMG } from '../config';
+import { RESOLUTION_IMG, VISITOR_TOKEN, DEV_API } from '../config';
+import fetch from 'isomorphic-unfetch';
+import { getCookie } from '../utils/cookie';
 import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
 import { alertDownload, onTracking, onTrackingClick } from '../components/Includes/program-detail/programDetail';
 const Player = dynamic(() => import('../components/Includes/Player/Player'));
@@ -44,21 +45,28 @@ const RatedModal = dynamic(() => import('../components/Includes/program-detail/p
 const Trailer = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.Trailer), { ssr: false });
 
 class Index extends React.Component {
-  static getInitialProps({store, isServer, pathname, query, state}) {
-      const action = fetcFromServer({id:query.id,filter:'program-detail'});
-      const type = {
-        programType: 'program-detail',
-      };
+  static async getInitialProps(ctx) {
+    const programId = ctx.query.id;
+    const accessToken = getCookie('ACCESS_TOKEN');
+    const res = await fetch(`${DEV_API}/api/v1/program/${programId}/detail`, {
+        method: 'GET',
+        headers: {
+            'Authorization': accessToken ? accessToken : VISITOR_TOKEN,
+        },
+    });
+    const error_code = res.statusCode > 200 ? res.statusCode : false;
+    
+    if (error_code) {
+        return { server: false };
+    }
 
-      return action.payload
-      .then(res => {
-        return {server: {[type.programType]:res.data}};
-      })
-      .catch((err) => {
-        console.log(err);
-        return {server: false};
-      });
-}
+    const data = await res.json();
+    if (data.status.code === 1) {
+        return { server: false };
+    }
+
+    return { server: {['program-detail']: data} };
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -87,8 +95,8 @@ class Index extends React.Component {
     this.reference = null;
   }
   componentDidMount() {
-    this.reference = queryString.parse(location.search).ref
-    console.log('MOUNTED: ', this.props,this.reference)
+    this.reference = queryString.parse(location.search).ref;
+    console.log('MOUNTED: ', this.props,this.reference);
     this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] , 'tracking-program'));
     if (this.props.router.query.content_id) {
       const {content_id , content_type} = this.props.router.query;
@@ -108,7 +116,7 @@ class Index extends React.Component {
           this.props.dispatch(fetchExtra(this.programId, 'program-extra'));
           return false;
         }
-        if (this.props.router.query.content_type === 'clip') {
+        if (this.props.router.query.content_type === 'clips') {
           this.setState({toggle: 'Clips'});
           this.props.dispatch(fetchClip(this.programId, 'program-clip'));
           return false;
@@ -123,8 +131,8 @@ class Index extends React.Component {
     }
   }
   shouldComponentUpdate() {
-    console.log('COMPONENT UPDATE')
-    this.reference = queryString.parse(location.search).ref
+    console.log('COMPONENT UPDATE');
+    this.reference = queryString.parse(location.search).ref;
     return true;
   }
   UNSAFE_componentWillMount() {
@@ -132,7 +140,7 @@ class Index extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
   }
   componentDidUpdate(prevProps) {
-    console.log('COMPONENT DID UPDATE')
+    console.log('COMPONENT DID UPDATE', this.props);
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
       if (this.props.router.query.content_id) {
         const {content_id , content_type} = this.props.router.query;
@@ -141,29 +149,50 @@ class Index extends React.Component {
       this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] && this.props.server[this.type], 'tracking-program'));
       this.loadRelated(this.props.router.query.id,1);
       this.setState({clipClearStore: true, transform: 'rotate(0deg)', isOpen: false}, () => {
-            this.loadFirstTab(this.props.router.query.id)
+            this.loadFirstTab(this.props.router.query.id);
         }
       );
       if (prevProps.router.query.id !== this.props.router.query.id) {
         this.props.dispatch(setClearClip('program-clip'));
         this.props.dispatch(setClearExtra('program-extra'));
+        this.props.dispatch(setClearExtra('program-photo'));
         if (this.props.router.query.content_type === 'extra') {
           this.setState({episodeClearStore: true});
         }
+        this.setState({toggle: this.isTabs(this.props.server[this.type].data)[0]});
       }
-      if (this.props.server && this.props.server[this.type].data) {
-        if (this.isTabs(this.props.server[this.type].data).length > 0) {
-          if (this.props.router.query.content_type === 'extra') {
-            this.setState({toggle: 'Extra'});
-            return false;
-          }
-          if (this.props.router.query.content_type === 'clip') {
-            this.setState({toggle: 'Clips'});
-            return false;
-          }
-          this.setState({toggle: this.isTabs(this.props.server[this.type].data)[0]});
-        }
-      }
+      // if (prevProps.router.query.content_type !== this.props.router.query.content_type || prevProps.router.query.tab !== this.props.router.query.tab) {
+      //   const id = this.props.router.query.id;
+      //   if (this.props.server && this.props.server[this.type].data) {
+      //     if (this.isTabs(this.props.server[this.type].data).length > 0) {
+      //       if (this.props.router.query.tab === 'extras' || this.props.router.query.content_type === 'extra' || this.props.router.query.content_type === 'extras') {
+      //         if (!this.props.data['program-extra']) {this.props.dispatch(fetchExtra(id, 'program-extra'));}
+      //         this.setState({toggle: 'Extra'});
+      //         return false;
+      //       }
+      //       if (this.props.router.query.tab === 'clips' || this.props.router.query.content_type === 'clip' || this.props.router.query.content_type === 'clips') {
+      //         if (!this.props.data['program-clip']) {this.props.dispatch(fetchClip(id, 'program-clip'));}
+      //         {this.setState({toggle: 'Clips'});}
+      //         return false;
+      //       }
+      //       if (this.props.router.query.tab === 'photos' || this.props.router.query.content_type === 'photo' || this.props.router.query.content_type === 'photos') {
+      //         if (!this.props.data['program-photo']) {this.props.dispatch(fetchPhoto(id, 'program-photo'));}
+      //         {this.setState({toggle: 'Photo'});}
+      //         return false;
+      //       }
+      //       if (this.props.router.query.tab === 'episodes' || this.props.router.query.content_type === 'episode' || this.props.router.query.content_type === 'episodes') {
+      //         if (!this.props.data['program-episode']) {
+      //           this.props.dispatch(fetchEpisode(id, 'program-episode'));
+      //           this.props.dispatch(fetchSeasonEpisode(id,'program-episode'));
+      //           this.props.dispatch(seasonSelected(1));
+      //         }
+      //         {this.setState({toggle: 'Episodes'});}
+      //         return false;
+      //       }
+      //       this.setState({toggle: this.isTabs(this.props.server[this.type].data)[0]});
+      //     }
+      //   }
+      // }
     }
   }
   getProgramDetail(id, type) {
@@ -205,10 +234,10 @@ class Index extends React.Component {
               as={`/programs/${mainData.id}/${urlRegex(mainData.title)}`}
               shallow
             >
-            <a onClick={ () => { 
+            <a onClick={ () => {
               this.setState({ trailer: !this.state.trailer }, () => {
                 {/* this.props.dispatch(fetchPlayerUrl(mainData.id,'data-player','episode', true)) */}
-                  }) 
+                  });
                 }}>
               <ButtonOutline text="Trailer" />
             </a>
@@ -339,7 +368,7 @@ class Index extends React.Component {
                 );
               })
             }
-              <div className="tab-slider" role="presentation"/>
+              {/* <div className="tab-slider" role="presentation"/> */}
             </Nav>
         );
       }
@@ -351,7 +380,6 @@ class Index extends React.Component {
     return (<TabListLoader/>);
   }
   redirect(tab) {
-    console.log(this.reference)
     const { id, title, content_id, content_title, content_type } = this.props.router.query;
     let href, as;
     let convert = '';
@@ -361,11 +389,11 @@ class Index extends React.Component {
     if (tab === 'Photo') {convert = 'photos';}
     if (!content_id) {
       href = `/programs?id=${id}&title=${urlRegex(title)}&tab=${convert}`;
-      as = `/programs/${id}/${urlRegex(title)}/${convert}${this.reference ? '?ref='+this.reference : ''}`;
+      as = `/programs/${id}/${urlRegex(title)}/${convert}${this.reference ? '?ref=' + this.reference : ''}`;
     }
     if (content_id) {
       href = `/programs?id=${id}&title=${urlRegex(title)}&content_type=${content_type}&content_id=${content_id}&content_title=${urlRegex(content_title)}&tab=${tab}`;
-      as = `/programs/${id}/${urlRegex(title)}/${content_type}/${content_id}/${urlRegex(content_title)}?${convert + this.reference ? '&ref='+this.reference : ''}`;
+      as = `/programs/${id}/${urlRegex(title)}/${content_type}/${content_id}/${urlRegex(content_title)}?${convert + this.reference ? '&ref=' + this.reference : ''}`;
     }
     if (!this.props.data['program-extra'] && convert === 'extras') {
       this.props.dispatch(fetchExtra(id, 'program-extra'));
@@ -377,7 +405,7 @@ class Index extends React.Component {
       this.props.dispatch(fetchPhoto(id, 'program-photo'));
     }
     Router.push(href, as, { shallow: true });
-    onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'], 'tab_click')
+    onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'], 'tab_click');
   }
   hasMore(props, page) {
     this.loadRelated(this.props.router.query.id, page);
@@ -416,17 +444,16 @@ class Index extends React.Component {
               query={this.query()}
               link={this.getLinkVideo.bind(this)}
               seasonSelected= { this.props.data.seasonSelected }
-              onShowMore={() => { 
-                console.log('show more')
-                this.props.dispatch(fetchEpisode(this.props.router.query.id, 'program-episode',props.data[0].season, pagination.nextPage)); 
-                onTracking(this.reference, this.props.router.query.id, this.props.server['program-detail'])
+              onShowMore={() => {
+                this.props.dispatch(fetchEpisode(this.props.router.query.id, 'program-episode',props.data[0].season, pagination.nextPage));
+                onTracking(this.reference, this.props.router.query.id, this.props.server['program-detail']);
                 }}
               onSeason={() => {this.props.dispatch(fetchSeasonEpisode(this.props.router.query.id,'program-episode',1, pagination.nextPage));}}
               onBookmarkAdd={this.addBookmark.bind(this)}
               onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
               bookmark={bookmark}
               isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
-              onShare={(title, item) => this.toggleActionSheet.bind(this, 'episode', title, 'content_share', item )}
+              onShare={(title, item) => this.toggleActionSheet.bind(this, 'episode', title, 'content_share', item)}
               dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
             />
           </>
@@ -508,10 +535,8 @@ class Index extends React.Component {
   }
   panelPhoto(props) {
     if (!this.props.data.loading_photo && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data) {
-      console.log('TRUEEEE PHOTO', props && props.data && props.data.length)
-      if ((props && props.data && props.data.length > 0) 
+      if ((props && props.data && props.data.length > 0)
         && (this.props.server['program-detail'].data.id === parseInt(this.props.router.query.id))) {
-          console.log('TRUEEEE PHOTO 2')
             const pagination = {
               page: props.meta.pagination.current_page,
               total_page: props.meta.pagination.total_page,
@@ -560,7 +585,7 @@ class Index extends React.Component {
   }
   switchPanel() {
     if (this.props.router.query.content_id) {
-      if(this.props.data && this.props.data['data-player'] && this.props.data['data-player'].data ) {
+      if (this.props.data && this.props.data['data-player'] && this.props.data['data-player'].data) {
         const data = this.props.data && this.props.data['data-player'];
         return (
           <div className="program-detail-player-wrapper">
@@ -580,7 +605,7 @@ class Index extends React.Component {
   }
   trailer() {
     if (this.props.server && this.props.server[this.type] && this.props.server[this.type]) {
-      const data = this.props.server && this.props.server[this.type] 
+      const data = this.props.server && this.props.server[this.type];
       return (
         <div className="program-detail-player-wrapper trailer">
             <Player data={ data.data } ref={this.ref} isFullscreen={ true }/>
@@ -593,60 +618,60 @@ class Index extends React.Component {
       </div>
     );
   }
-  toggleActionSheet(value, title = 'title-program', trackingType, item ) {
-    const { props, state } = this
+  toggleActionSheet(value, title = 'title-program', trackingType, item) {
+    const { props, state } = this;
     this.setState({
       action_sheet: !this.state.action_sheet,
     });
-    if(value === 'program') {
+    if (value === 'program') {
       this.setState({title: props.data && props.data['tracking-program'] && props.data['tracking-program'].data && props.data['tracking-program'].data.title, statusProgram: true});
     }
-    if(value === 'episode') {
+    if (value === 'episode') {
       this.setState({title: title, statusProgram: false});
     }
-    if(value === 'extra') {
+    if (value === 'extra') {
       this.setState({title: title, statusProgram: false});
     }
-    if(value === 'clip') {
+    if (value === 'clip') {
       this.setState({title: title, statusProgram: false});
     }
     if (!this.state.action_sheet) {
       if (this.props.server['program-detail']) {
-        onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'], trackingType, item, value)
+        onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'], trackingType, item, value);
       }
-    } 
+    }
 
-    return 'title-program'
+    return 'title-program';
   }
   toggleRateModal(test = '') {
     this.setState({ rate_modal: !this.state.rate_modal });
   }
   statusLogin(data) {
-    let isLogin = false
-    if(data && data.status) {
+    let isLogin = false;
+    if (data && data.status) {
       isLogin = data.status.code === 13 ? false : true;
       return isLogin;
     }
   }
   render() {
-    const { props, state } = this
+    const { props, state } = this;
     return (
       <Layout>
-        <HeadMeta data={props.data && props.data['tracking-program'] } 
-                  router={props.router} 
+        <HeadMeta data={props.data && props.data['tracking-program'] }
+                  router={props.router}
                   dataPlayer={props.data && props.data['description-player']}/>
         <div className="program-detail-container animated fadeInDown go">
           <div ref={this.refMainContent} style={{minHeight: '10px'}}>
             { this.switchPanel() }
           </div>
-          <div style={ props.router.query.content_id && this.refMainContent !== null ? { 
-            height: `calc(100vh - 260px)`,
+          <div style={ props.router.query.content_id && this.refMainContent !== null ? {
+            height: 'calc(100vh - 260px)',
             overflowX: 'hidden',
-            overflowY: 'scroll'} 
+            overflowY: 'scroll'}
             : {height: 'auto'} }>
             <div className="action__button--wrapper">
                 <ActionMenu
-                  onRate={this.toggleRateModal.bind(this)} 
+                  onRate={this.toggleRateModal.bind(this)}
                   bookmark={props.data && props.data.bookmark}
                   like={props.data && props.data.like}
                   onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
@@ -690,7 +715,7 @@ class Index extends React.Component {
                         ) }
                     { this.panelExtra(
                       this.props.data &&
-                      this.props.data['program-extra'], 
+                      this.props.data['program-extra'],
                       this.props.data && this.props.data.bookmark
                     ) }
                     { this.panelClip(
@@ -713,7 +738,7 @@ class Index extends React.Component {
             { this.state.action_sheet ? (
               <ActionSheet
               toggle={this.toggleActionSheet.bind(this)}
-              tabStatus={state.statusProgram ? 'program' : 
+              tabStatus={state.statusProgram ? 'program' :
                         props.router.query.tab ? props.router.query.tab :
                         props.router.query.content_type ? props.router.query.content_type :
                         props.router.pathname
@@ -734,9 +759,9 @@ class Index extends React.Component {
              />
             <Trailer
               open={state.trailer}
-              toggle={() => { 
-                this.setState({ trailer: !state.trailer }) 
-                onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'])
+              toggle={() => {
+                this.setState({ trailer: !state.trailer });
+                onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail']);
                 }}
               player={this.trailer()}
              />
