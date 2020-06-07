@@ -72,7 +72,8 @@ class Pnl_1 extends React.Component {
 							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
 					}
 					else {
-						window.open(url, '_blank');
+						// window.open(url, '_blank');
+						window.location.href = url;
 					}
 				}
 				catch (e) {
