@@ -8,6 +8,9 @@ import qualityLevels from 'videojs-contrib-quality-levels';
 import TitleOverlay, { PlayToggleCustom, MuteToggleCustom, ProgressControlCustom, ForwardCustom } from '../../../assets/js/videojs-plugin/videojs-custom';
 import 'video.js/dist/video-js.css';
 import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
+import { convivaVideoJs } from '../../../utils/conviva';
+import { getUserId } from '../../../utils/appier';
+
 
 
 const Player = forwardRef((props, ref) => {
@@ -166,6 +169,51 @@ const Player = forwardRef((props, ref) => {
       player.on('ads-loader', (response) => {
         console.log('ADS LOADER', response)
       })
+      const assetName = props.data && props.data.conten_name ? props.data.content_name : 'N/A';
+
+      let videoUrlData = null;
+      let genre = '';
+
+      let genreTags = 'N/A';
+      if (props.data.genre) {
+          if (Array.isArray(props.data.genre)) {
+              genreTags = '';
+              const genres = props.data.genre;
+              for (let i = 0; i < genres.length; i++) {
+                  genreTags += genres[i].name;
+                  if (i < genres.length - 1) {
+                      genreTags += ',';
+                  }
+              }
+          }
+          else {
+              genreTags = props.data.genre;
+          }
+      }
+
+      const customTags = {
+          app_version: process.env.APP_VERSION,
+          carrier: 'N/A',
+          connection_type: 'N/A',
+          content_type: (props.data.content_type ? props.data.content_type : 'N/A'),
+          content_id: (props.data.id ? props.data.id : 'N/A').toString(),
+          program_name: (props.data.program_title ? props.data.program_title : 'N/A'),
+          tv_id: 'N/A',
+          tv_name: 'N/A',
+          date_video: 'N/A',
+          page_title: 'N/A',
+          page_view: 'N/A',
+          program_id: (props.data.program_id ? props.data.program_id : 'N/A').toString(),
+          screen_mode: 'portrait',
+          time_video: 'N/A',
+          viewer_id: getUserId().toString(),
+          application_name: 'RCTI+ MWEB',
+          section_page: 'N/A',
+          genre: genreTags,
+      };
+
+      const convivaTracker = convivaVideoJs(assetName, player, player.duration(), props.data.url ? props.data.url : props.data.trailer_url, assetName, customTags);
+      convivaTracker.createSession();
     });
     setVideoPlayer(player);
     return () => {
@@ -186,14 +234,21 @@ const Player = forwardRef((props, ref) => {
         console.log('WITH TAG')
         // videoPlayer.ima.changeAdTag(ima);
         // videoPlayer.ima.setContentWithAdTag(props.data.url, null, true);
-        videoPlayer.on('ready', () => {
+        videoPlayer.src({
+          src: props.data.url,
+          type: 'application/x-mpegURL',
+        });
+        if(props.isFullscreen) {
+          // videoPlayer.on('ready', () => {
+          //   videoPlayer.src({
+          //     src: props.data.url,
+          //     type: 'application/x-mpegURL',
+          //   });
+          // })
+        } else {
           videoPlayer.ima.changeAdTag(props.data.vmap_ima);
           videoPlayer.ima.requestAds();
-          videoPlayer.src({
-            src: props.data.url,
-            type: 'application/x-mpegURL',
-          });
-        })
+        }
       } else {
         console.log('WITHOUT TAG')
       }

@@ -2,6 +2,7 @@ import { getUserId } from './appier';
 import { setCookie, getCookie } from './cookie';
 
 export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName, tags, cdn = '') => {
+    console.log('TAGS',tags)
     return {
         assetName: assetName,
         player: player,
