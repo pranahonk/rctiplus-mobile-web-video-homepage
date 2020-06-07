@@ -60,18 +60,31 @@ class Pnl_1 extends React.Component {
 					url += this.props.token;
 				}
 
-				const payload = jwtDecode(this.props.token);
-				console.log(payload.vid);
-				if (payload && !payload.vid) {
-					showSignInAlert(`Please <b>Sign In</b><br/>
-						Woops! Gonna sign in first!<br/>
-						Only a click away and you<br/>
-						can continue to enjoy<br/>
-						<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+				let payload = {};
+				try {
+					payload = jwtDecode(this.props.token);
+					console.log(payload.vid);
+					if (payload && !payload.vid) {
+						showSignInAlert(`Please <b>Sign In</b><br/>
+							Woops! Gonna sign in first!<br/>
+							Only a click away and you<br/>
+							can continue to enjoy<br/>
+							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+					}
+					else {
+						window.open(url, '_blank');
+					}
 				}
-				else {
-					window.open(url, '_blank');
+				catch (e) {
+					if (data.mandatory_login) {
+						showSignInAlert(`Please <b>Sign In</b><br/>
+							Woops! Gonna sign in first!<br/>
+							Only a click away and you<br/>
+							can continue to enjoy<br/>
+							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+					}
 				}
+				
 				break;
 
 			case 'program':
