@@ -222,7 +222,7 @@ class Index extends React.Component {
         <>
           <Link
             href={`/programs?id=${mainData.id}&title=${urlRegex(mainData.title)}&content_type=episode&content_id=${detailData.id}&content_title=${urlRegex(detailData.title)}`}
-            as={`/programs/${mainData.id}/${urlRegex(mainData.title)}/episode/${detailData.id}/${urlRegex(detailData.title)}`}
+            as={`/programs/${mainData.id}/${urlRegex(mainData.title)}/episode/${detailData.id}/${urlRegex(detailData.title)}${this.reference ? '?ref=' + this.reference : ''}`}
             shallow>
             <a onClick={ () => { 
               this.props.dispatch(fetchPlayerUrl(detailData.id,'data-player','episode'))
@@ -242,7 +242,7 @@ class Index extends React.Component {
           { mainData.trailer_url ? (
             <Link
               href={`/programs?id=${mainData.id}&title=${urlRegex(mainData.title)}`}
-              as={`/programs/${mainData.id}/${urlRegex(mainData.title)}`}
+              as={`/programs/${mainData.id}/${urlRegex(mainData.title)}${this.reference ? '?ref=' + this.reference : ''}`}
               shallow
             >
             <a onClick={ () => {
