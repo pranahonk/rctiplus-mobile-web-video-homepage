@@ -224,7 +224,18 @@ class Index extends React.Component {
             href={`/programs?id=${mainData.id}&title=${urlRegex(mainData.title)}&content_type=episode&content_id=${detailData.id}&content_title=${urlRegex(detailData.title)}`}
             as={`/programs/${mainData.id}/${urlRegex(mainData.title)}/episode/${detailData.id}/${urlRegex(detailData.title)}`}
             shallow>
-            <a onClick={ () => { this.props.dispatch(fetchPlayerUrl(detailData.id,'data-player','episode')); } }>
+            <a onClick={ () => { 
+              this.props.dispatch(fetchPlayerUrl(detailData.id,'data-player','episode'))
+                const dataPlayer = {
+                  program_id: this.props && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data && this.props.server['program-detail'].data.id,
+                  program_title: this.props && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data && this.props.server['program-detail'].data.title,
+                  content_name: this.props && this.props.data && this.props.data['program-episode'] && this.props.data['program-episode']['season-1'] && this.props.data['program-episode']['season-1'].data && this.props.data['program-episode']['season-1'].data.title,
+                  content_type: 'episode',
+                  id: this.props && this.props.data && this.props.data['program-episode'] && this.props.data['program-episode']['season-1'] && this.props.data['program-episode']['season-1'].data && this.props.data['program-episode']['season-1'].data.id,
+                  duration: this.props && this.props.data && this.props.data['program-episode'] && this.props.data['program-episode']['season-1'] && this.props.data['program-episode']['season-1'].data && this.props.data['program-episode']['season-1'].data.duration,
+                }
+                onTrackingClick(null, null, null, 'content_click', null, null, null, dataPlayer, 'mweb_homepage_program_button_play_clicked')
+               } }>
               <ButtonOutline icon={<PlayArrowIcon/>} text="Play" />
             </a>
           </Link>
@@ -686,7 +697,11 @@ class Index extends React.Component {
                 <>
                   <ButtonPrimary className="button-20" icon={ <GetApp/> } text="Download" onclick={() => alertDownload()} />
                   <ButtonPrimary className="button-20"
-                  onclick={()=> this.setState({transform: this.state.transform === 'rotate(0deg)' ? 'rotate(180deg)' : 'rotate(0deg)', isOpen: this.state.transform === 'rotate(0deg)' ? true : false})}
+                  onclick={()=> this.setState({transform: this.state.transform === 'rotate(0deg)' ? 'rotate(180deg)' : 'rotate(0deg)', isOpen: this.state.transform === 'rotate(0deg)' ? true : false}, () => {
+                    if(this.state.isOpen) {
+                      onTrackingClick(null, null, null, 'content_click', null, null, null, props && props.data && props.data['data-player'] && props.data['data-player'].data, 'mweb_homepage_program_description_clicked')
+                    }
+                  })}
                   icon={ <KeyboardArrowDown className="arrow-rotate" style={{ transform: this.state.transform }}/> }
                   text="Description"
                   />

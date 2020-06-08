@@ -34,7 +34,7 @@ import {
   libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, 
   searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked,
   searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, 
-  searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent } from '../../../utils/appier';
+  searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent, ProgramContentClick } from '../../../utils/appier';
 
 export const PanelEpisode = forwardRef((props, ref) => {
   smoothscroll.polyfill();
@@ -518,8 +518,8 @@ export const onTracking = (ref, id , title) => {
   }
 }
 
-export const onTrackingClick = (ref, id, title, typeClick = 'program', item = null, content_type = null, selected_season = 1) => {
-  console.log(typeClick, title.data.title, item)
+export const onTrackingClick = (ref, id, title, typeClick = 'program', item = null, content_type = null, selected_season = 1, data_player, event = 'mweb_error_event') => {
+  console.log(typeClick)
   if (ref && typeClick === 'program') {
     switch (ref) {
         case 'homepage':
@@ -688,5 +688,8 @@ export const onTrackingClick = (ref, id, title, typeClick = 'program', item = nu
           searchProgramTabClicked(id, title.data.title, content_type, 'mweb_search_program_tab_clicked');
           break;
     }
+  }
+  if (typeClick === 'content_click') {
+    ProgramContentClick(data_player && data_player.program_id, data_player && data_player.program_title, data_player && data_player.content_name, data_player && data_player.content_type, data_player && data_player.id, data_player && data_player.duration, data_player && data_player.duration, event)
   }
 }
