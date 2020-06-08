@@ -63,3 +63,20 @@ export const RPLUSAdsClicked = (value,eventType, eventName , clickType, platform
   .then((response) => console.log(response))
   .catch((error) => console.log(error));
 };
+
+export const RPLUSAppVisit = (eventType = 'views', eventName = 'visit_apps', platform = 'MWEB') => {
+  const data = {
+    'event-type': eventType,
+    'event-name': eventName,
+    'event-value': {
+      'platform': platform,
+      'carrier': 'N/A'
+    },
+    'device-id': new DeviceUUID().get(),
+    'user-id': getUserId(),
+    'content-id': 'N/A'
+  };
+  instance.post('', data)
+  .then((response) => console.log(response))
+  .catch((error) => console.log(error));
+};
