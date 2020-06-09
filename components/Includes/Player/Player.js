@@ -10,6 +10,7 @@ import 'video.js/dist/video-js.css';
 import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
 import { convivaVideoJs } from '../../../utils/conviva';
 import { getUserId } from '../../../utils/appier';
+import { onTrackingClick } from '../program-detail/programDetail';
 
 
 
@@ -70,6 +71,11 @@ const Player = forwardRef((props, ref) => {
       player.on('playing', function() {
         console.log('PLAYINGGGGGGGG');
       });
+      player.on('fullscreenchange', function() {
+        if(player.isFullscreen()) {
+          onTrackingClick(null, null, null, 'content_click', null, null, null, props, 'mweb_homepage_program_fullscreen_clicked')
+        }
+      })
       player.on('loadeddata', function() {
         console.log('LOADED CONTENT');
         // player.muted(false)
