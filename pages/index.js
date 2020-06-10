@@ -182,7 +182,7 @@ class Index_v2 extends React.Component {
                                     }
                                     return (<StickyAds sticky/>);
                                 }
-                                return (<StickyAds/>);
+                                return (<StickyAds id='div-gpt-ad-1584677577539-0'/>);
                             } }
                         </Sticky>
                     </StickyContainer>
