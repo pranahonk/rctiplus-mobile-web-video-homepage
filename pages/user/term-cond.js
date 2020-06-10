@@ -45,7 +45,10 @@ class TermCond extends React.Component {
 
 	componentDidMount() {
 		if (this.platform && (this.platform == 'android' || this.platform == 'ios')) {
-			document.getElementById('__next').style.height = '100%';
+			const nextWrapper = document.getElementById('__next');
+			if (nextWrapper) {
+				nextWrapper.style.height = '100%';
+			}
 		}
 
 		this.props.setPageLoader();
