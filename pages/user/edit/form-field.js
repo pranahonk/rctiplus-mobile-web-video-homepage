@@ -264,15 +264,15 @@ class FormField extends React.Component {
                 break;
         }
 
-        let saveButton = (<Button disabled={this.state.value == '' || this.state.value_invalid} className="btn-next block-btn">{this.props.others.need_otp ? 'Verify' : 'Save'}</Button>);
+        let saveButton = (<Button id="save-edit" disabled={this.state.value == '' || this.state.value_invalid} className="btn-next block-btn">{this.props.others.need_otp ? 'Verify' : 'Save'}</Button>);
         if (this.props.others.disabled_condition != null) {
             switch (this.props.others.disabled_condition.type) {
                 case 'min':
-                    saveButton = (<Button disabled={this.state.value == '' || this.state.value_invalid || this.state.value.length <= this.props.others.disabled_condition.length} className="btn-next block-btn">{this.props.others.need_otp ? 'Verify' : 'Save'}</Button>);
+                    saveButton = (<Button id="save-edit" disabled={this.state.value == '' || this.state.value_invalid || this.state.value.length <= this.props.others.disabled_condition.length} className="btn-next block-btn">{this.props.others.need_otp ? 'Verify' : 'Save'}</Button>);
                     break;
 
                 case 'max':
-                    saveButton = (<Button disabled={this.state.value == '' || this.state.value_invalid || this.state.value.length > this.props.others.disabled_condition.length} className="btn-next block-btn">{this.props.others.need_otp ? 'Verify' : 'Save'}</Button>);
+                    saveButton = (<Button id="save-edit" disabled={this.state.value == '' || this.state.value_invalid || this.state.value.length > this.props.others.disabled_condition.length} className="btn-next block-btn">{this.props.others.need_otp ? 'Verify' : 'Save'}</Button>);
                     break;
             }
             
