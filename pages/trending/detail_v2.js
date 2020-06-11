@@ -12,6 +12,7 @@ import { DEV_API, BASE_URL, NEWS_API_V2, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_
 import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 import NavBackIframe from '../../components/Includes/Navbar/NavIframe';
+import AdsBanner from '../../components/Includes/Banner/Ads';
 import '../../assets/scss/components/trending_detail.scss';
 
 import { FacebookShareButton, TwitterShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
@@ -440,6 +441,10 @@ class Detail extends React.Component {
                                             </div>
                                         {/* </a>
                                     </Link> */}
+                                </div>
+                                <div className="ads-banner__detail_news">
+                                    <AdsBanner />
+                                    <span>partner: { cdata.source }</span>
                                 </div>
                                 <div className="content-trending-detail-related">
                                     <p className="related-title"><strong>Related Articles</strong></p>
