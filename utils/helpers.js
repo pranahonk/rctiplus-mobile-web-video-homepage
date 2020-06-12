@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import Router from 'next/router';
 
-export const showAlert = (text, title, confirmText = 'OK', cancelText = '', confirmCallback = () => {}, styleInverse = false) => {
+export const showAlert = (text, title, confirmText = 'OK', cancelText = '', confirmCallback = () => {}, styleInverse = false, confirmButtonId = '', cancelButtonId = '') => {
     let options = {
         text: text,
         title: title,
@@ -9,17 +9,33 @@ export const showAlert = (text, title, confirmText = 'OK', cancelText = '', conf
         confirmButtonText: confirmText,
         buttonsStyling: false,
         customClass: {
-            confirmButton: 'btn-next block-btn btn-primary-edit btn-alert-c',
-            cancelButton: 'block-btn btn-link-edit btn-cancel btn-alert-c',
+            confirmButton: 'custom-swal-confirm-btn btn-next block-btn btn-primary-edit btn-alert-c',
+            cancelButton: 'custom-swal-cancel-btn block-btn btn-link-edit btn-cancel btn-alert-c',
             header: 'alert-header'
         },
-        width: '85%'
+        width: '85%',
+        onOpen: () => {
+            if (document) {
+                if (confirmButtonId) {
+                    const buttons = document.getElementsByClassName('custom-swal-confirm-btn');
+                    if (buttons.length > 0) {
+                        buttons[0].id = confirmButtonId;
+                    }
+                }
+                if (cancelButtonId) {
+                    const buttons = document.getElementsByClassName('custom-swal-cancel-btn');
+                    if (buttons.length > 0) {
+                        buttons[0].id = cancelButtonId;
+                    }
+                }
+            }
+        }
     };
 
     if (styleInverse) {
         options.customClass = {
-            confirmButton: 'block-btn btn-link-edit btn-cancel btn-alert-c btn-cancel-c',
-            cancelButton: 'btn-next block-btn btn-primary-edit btn-alert-c',
+            confirmButton: 'custom-swal-confirm-btn block-btn btn-link-edit btn-cancel btn-alert-c btn-cancel-c',
+            cancelButton: 'custom-swal-cancel-btn btn-next block-btn btn-primary-edit btn-alert-c',
             header: 'alert-header'
         };
     }
@@ -32,26 +48,42 @@ export const showAlert = (text, title, confirmText = 'OK', cancelText = '', conf
         });
 };
 
-export const showConfirmAlert = (text, title, callback, buttonInverse = false, confirmText = 'OK', cancelText = 'Cancel', html = false, styleInverse = false) => {
+export const showConfirmAlert = (text, title, callback, buttonInverse = false, confirmText = 'OK', cancelText = 'Cancel', html = false, styleInverse = false, confirmButtonId = '', cancelButtonId = '') => {
     let options = {
         showCancelButton: cancelText ? true : false,
         confirmButtonText: confirmText,
         cancelButtonText: cancelText,
         buttonsStyling: false,
         customClass: {
-            confirmButton: 'btn-next block-btn btn-primary-edit',
-            cancelButton: 'block-btn btn-link-edit btn-cancel',
+            confirmButton: 'custom-swal-confirm-btn btn-next block-btn btn-primary-edit',
+            cancelButton: 'custom-swal-cancel-btn block-btn btn-link-edit btn-cancel',
             header: 'alert-header'
         },
         width: '85%',
-        allowOutsideClick: false
+        allowOutsideClick: false,
+        onOpen: () => {
+            if (document) {
+                if (confirmButtonId) {
+                    const buttons = document.getElementsByClassName('custom-swal-confirm-btn');
+                    if (buttons.length > 0) {
+                        buttons[0].id = confirmButtonId;
+                    }
+                }
+                if (cancelButtonId) {
+                    const buttons = document.getElementsByClassName('custom-swal-cancel-btn');
+                    if (buttons.length > 0) {
+                        buttons[0].id = cancelButtonId;
+                    }
+                }
+            }
+        }
     };
 
     options[html ? 'html' : 'text'] = text;
     if (styleInverse) {
         options.customClass = {
-            confirmButton: 'block-btn btn-link-edit btn-cancel',
-            cancelButton: 'btn-next block-btn btn-primary-edit',
+            confirmButton: 'custom-swal-confirm-btn block-btn btn-link-edit btn-cancel',
+            cancelButton: 'custom-swal-cancel-btn btn-next block-btn btn-primary-edit',
             header: 'alert-header'
         };
     }
@@ -74,26 +106,42 @@ export const showConfirmAlert = (text, title, callback, buttonInverse = false, c
         });
 };
 
-export const showSignInAlert = (text, title, callback, buttonInverse = false, confirmText = 'OK', cancelText = 'Cancel', html = false, styleInverse = false) => {
+export const showSignInAlert = (text, title, callback, buttonInverse = false, confirmText = 'OK', cancelText = 'Cancel', html = false, styleInverse = false, confirmButtonId = '', cancelButtonId = '') => {
     let options = {
         showCancelButton: true,
         confirmButtonText: confirmText,
         cancelButtonText: cancelText,
         buttonsStyling: false,
         customClass: {
-            confirmButton: 'btn-next block-btn btn-primary-edit',
-            cancelButton: 'block-btn btn-link-edit btn-cancel',
+            confirmButton: 'custom-swal-confirm-btn btn-next block-btn btn-primary-edit',
+            cancelButton: 'custom-swal-cancel-btn block-btn btn-link-edit btn-cancel',
             header: 'alert-header'
         },
         width: '85%',
-        allowOutsideClick: false
+        allowOutsideClick: false,
+        onOpen: () => {
+            if (document) {
+                if (confirmButtonId) {
+                    const buttons = document.getElementsByClassName('custom-swal-confirm-btn');
+                    if (buttons.length > 0) {
+                        buttons[0].id = confirmButtonId;
+                    }
+                }
+                if (cancelButtonId) {
+                    const buttons = document.getElementsByClassName('custom-swal-cancel-btn');
+                    if (buttons.length > 0) {
+                        buttons[0].id = cancelButtonId;
+                    }
+                }
+            }
+        }
     };
 
     options[html ? 'html' : 'text'] = text;
     if (styleInverse) {
         options.customClass = {
-            confirmButton: 'block-btn btn-link-edit btn-cancel',
-            cancelButton: 'btn-next block-btn btn-primary-edit',
+            confirmButton: 'custom-swal-confirm-btn block-btn btn-link-edit btn-cancel',
+            cancelButton: 'custom-swal-cancel-btn btn-next block-btn btn-primary-edit',
             header: 'alert-header'
         };
     }

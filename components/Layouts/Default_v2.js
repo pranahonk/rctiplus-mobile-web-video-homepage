@@ -97,7 +97,7 @@ class Default_v2 extends React.Component {
                     <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
                     <link rel="canonical" href={`http://www.rctiplus.com${this.props.router.asPath}`}></link>
-                    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
+                    {/* <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" /> */}
 
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
@@ -123,7 +123,7 @@ class Default_v2 extends React.Component {
                     {/*<script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
                     <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>*/}
                     {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
-                    <script async src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
+                    <script src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
                     <script dangerouslySetInnerHTML={{ __html: `
                         AIQUA.init({
                             appId: 'c63c2960bf562e9ec2de',
@@ -187,6 +187,7 @@ class Default_v2 extends React.Component {
                 ) : <div></div>}
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
+                
                 {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script async src="/static/js/fontawesome.min.js" crossOrigin="anonymous"></script>) : (process.env.UI_VERSION == '2.0' ? (this.props.hideFooter || this.props.pages.hide_footer ? null : <Footer_v2 />) : (<Footer />))}
             </div>
         )

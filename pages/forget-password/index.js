@@ -113,7 +113,7 @@ class ForgetPassword extends React.Component {
                                     valid={false && !this.state.username_invalid && !!this.state.username}
                                     invalid={this.state.username_invalid}
                                     className="form-control-cp"/>
-                                <FormFeedback valid={false && !this.state.username_invalid && !!this.state.username}>{this.state.username_invalid_message}</FormFeedback>
+                                <FormFeedback id="invalid-feedback" valid={false && !this.state.username_invalid && !!this.state.username}>{this.state.username_invalid_message}</FormFeedback>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>

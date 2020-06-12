@@ -1163,6 +1163,22 @@ export const searchProgramContentPlayEvent = (programId, programTitle, contentTi
     });
 };
 
+export const ProgramContentClick = (programId, programTitle, contentTitle, contentType, contentId, duration, videoDuration, event = 'mweb_search_program_content_play') => {
+    console.log(event);
+    qg('event', event, 
+    {
+        program_id: programId,
+        program_name: programTitle,
+        content_name: contentTitle,
+        content_type: contentType,
+        content_id: contentId,
+        duration: duration,
+        video_duration: videoDuration,
+        users_id: getUserId(),
+        date_time: new Date().getTime() / 1000
+    });
+};
+
 export const searchProgramTabClicked = (programId, programName, tabName, event = 'mweb_search_program_tab_clicked') => {
     console.log(event);
     qg('event', event, 

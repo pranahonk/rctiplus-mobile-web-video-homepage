@@ -26,6 +26,7 @@ import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
+import { RPLUSAppVisit } from '../utils/internalTracking';
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -66,6 +67,8 @@ class Index_v2 extends React.Component {
 	}
 
     componentDidMount() {
+        RPLUSAppVisit();
+
         const accessToken = getCookie('ACCESS_TOKEN');
         this.token = accessToken == undefined ? getVisitorToken() : accessToken;
         window.onbeforeunload = e => {
@@ -179,7 +182,7 @@ class Index_v2 extends React.Component {
                                     }
                                     return (<StickyAds sticky/>);
                                 }
-                                return (<StickyAds/>);
+                                return (<StickyAds id='div-gpt-ad-1584677577539-0'/>);
                             } }
                         </Sticky>
                     </StickyContainer>

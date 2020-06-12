@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import initialize from '../../utils/initialize';
 import Router, { withRouter } from 'next/router';
-
+import queryString from 'query-string';
 
 import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavBack';
@@ -24,7 +24,33 @@ class PrivacyPolicy extends React.Component {
 		privacy_policy: ''
 	};
 
+	constructor(props) {
+		super(props);
+		this.platform = null;
+        this.header = null;
+        const segments = this.props.router.asPath.split(/\?/);
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.platform) {
+                this.platform = q.platform;
+            }
+
+            if (q.header) {
+                this.header = q.header;
+            }
+		}
+		
+		console.log(this.platform);
+	}
+
 	componentDidMount() {
+		if (this.platform && (this.platform == 'android' || this.platform == 'ios')) {
+			const nextWrapper = document.getElementById('__next');
+			if (nextWrapper) {
+				nextWrapper.style.height = '100%';
+			}
+		}
+		
 		this.props.setPageLoader();
 		this.props.getPrivacyPolicy()
 			.then(response => {
