@@ -27,6 +27,7 @@ class MyDocument extends Document {
 				<Head>
 					<script src="/static/js/device-uuid.min.js" type="text/javascript"></script>
 					<script src="/static/js/ConvivaLivePass_Videojs.min.js"></script>
+					<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet"></link>
 				</Head>
 				<body style={{ height: '100%' }}>
 					<Main style={{ height: '100%' }}/>
