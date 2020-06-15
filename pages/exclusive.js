@@ -284,6 +284,7 @@ class Exclusive extends React.Component {
 	}
 
 	toggleActionSheet(program = null, caption = '', url = '', hashtags = []) {
+		console.log('TOGGLE');
 		if (program) {
 			switch (program.type) {
 				case 'photo':
@@ -297,7 +298,7 @@ class Exclusive extends React.Component {
 		}
 
 		this.setState({
-			pathExlusive: program.title.replace(/\s+/g,''),
+			pathExlusive: program ? program.title.replace(/\s+/g,'') : '-',
 			action_sheet: !this.state.action_sheet,
 			caption: caption,
 			url: url,

@@ -20,6 +20,7 @@ import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import { Modal } from 'reactstrap';
 const TabPanelLoader = dynamic(() => import('../Shimmer/detailProgramLoader').then((mod) => mod.TabPanelLoader));
 import smoothscroll from 'smoothscroll-polyfill';
+import { isIOS } from 'react-device-detect';
 
 import { 
   programRateEvent, programShareEvent, programContentShareEvent, 
@@ -411,10 +412,10 @@ export const alertDownload = (data = null, type = null, Programid, programTitle,
               break;
       }
   }
-  showAlert('To be able to watch this episode offline, please download RCTI+ application on Playstore',
+  showAlert('To be able to watch this episode offline, please download RCTI+ application on ' + (isIOS ? 'App Store' : 'Playstore'),
              '',
-             'Open Playstore',
-             'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); });
+             'Open ' + (isIOS ? 'App Store' : 'Playstore'),
+             'Cancel', () => { window.open((isIOS ? 'https://apps.apple.com/us/app/rcti/id1472168599' : 'https://play.google.com/store/apps/details?id=com.fta.rctitv'), '_blank'); });
 };
 export const alertSignIn = () => {
   showSignInAlert(`Please <b>Sign In</b><br/>

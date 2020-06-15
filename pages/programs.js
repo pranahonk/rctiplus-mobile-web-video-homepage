@@ -26,6 +26,8 @@ import fetch from 'isomorphic-unfetch';
 import { getCookie } from '../utils/cookie';
 import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
 import { alertDownload, onTracking, onTrackingClick } from '../components/Includes/program-detail/programDetail';
+import { BASE_URL } from '../config';
+
 const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const HeadMeta = dynamic(() => import('../components/Seo/HeadMeta'));
 const MainLoader = dynamic(() => import('../components/Includes/Shimmer/detailProgramLoader').then((mod) => mod.MainLoader));
@@ -759,7 +761,7 @@ class Index extends React.Component {
                         props.router.pathname
                         }
               caption={state.title}
-              url={props.router.asPath}
+              url={BASE_URL + props.router.asPath}
               open={state.action_sheet}
               hashtags={props.data && props.data['tracking-program'] && props.data['tracking-program'].data && props.data['tracking-program'].data.tag}
                />
