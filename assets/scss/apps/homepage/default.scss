@@ -22,13 +22,13 @@ $primary-btn-border-color-login: #DB2828;
 $text-placeholder-color-login: #a8a8a8;
 
 @font-face {
-    font-family: 'OpenSans';
+    font-family: 'Open Sans';
     src: url('../../../fonts/Open_Sans/OpenSans-Regular.ttf');
     font-weight: normal;
     font-style: normal;
 }
 @font-face {
-    font-family: "OpenSans";
+    font-family: "Open Sans";
     src: url("../../../fonts/Open_Sans/OpenSans-Bold.ttf");
     font-weight: 600;
 }
@@ -41,7 +41,7 @@ html {
 body {
     background-color: $primary-bg-color;
     // font-family: $primary-font-family;
-    font-family: 'Open Sans' !important;
+    font-family: 'Open Sans';
 }
 
 // video js
