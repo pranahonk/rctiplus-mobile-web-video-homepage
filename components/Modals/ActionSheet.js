@@ -38,7 +38,6 @@ class ActionSheet extends React.Component {
         const path = this.props.router.asPath;
         const camppaignName = title.replace(/\s/g, '-');
         const { tabStatus } = this.props;
-        console.log(tabStatus)
         if (tabStatus === 'program' || tabStatus === '/programs') {
             if (path.includes('?ref=')) {
                 return '&utm_source=Rplusmweb&utm_medium=share_' + share + '&utm_campaign=programs' + camppaignName;
@@ -134,10 +133,12 @@ class ActionSheet extends React.Component {
 
             });
         }
-        const urlShare = SHARE_BASE_URL + `${this.props.url}`
+        // const urlShare = SHARE_BASE_URL + `${this.props.url}`;
+        const urlShare = this.props.url;
+
         return (
             <Modal className="modal-edit" isOpen={this.props.open} toggle={this.props.toggle}>
-                <CloseIcon className="close-icon-button" onClick={this.props.toggle}/>
+                <CloseIcon id="close-action-sheet" className="close-icon-button" onClick={this.props.toggle}/>
                 <ModalBody className="modal-body-edit">
                     
                     <p className="sheet-title">
