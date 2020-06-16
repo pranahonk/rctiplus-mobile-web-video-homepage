@@ -8,10 +8,12 @@ const HeadMeta = (props) => {
   const meta = props && props.data && props.data.meta;
   const seo = convert(data, data && data.tv_name, dataPlayer, props.router, meta);
   const keyword = [];
-  data && data.tag.map((item) => {
-    keyword.push(item.name);
-  });
-
+  if(data && data.tag) {
+    data && data.tag.map((item) => {
+      keyword.push(item.name);
+    });
+  }
+  console.log(dataPlayer)
   if (data || dataPlayer) {
     return (
       <Head>

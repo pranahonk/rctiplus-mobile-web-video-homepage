@@ -59,17 +59,30 @@ class Index extends React.Component {
     const error_code = res.statusCode > 200 ? res.statusCode : false;
     
     if (error_code) {
-        return { server: false, seo_content: false };
+        return { server: false, seo_content: false, seo_content_detail: false };
     }
-
     const data = await res.json();
     if (data.status.code === 1) {
-        return { server: false, seo_content: false };
+        return { server: false, seo_content: false, seo_content_detail: false };
     }
+
+    const res_2 = await fetch(`${DEV_API}/api/v1/${ctx.query.content_type}/${ctx.query.content_id}`, {
+      method: 'GET',
+      headers: {
+          'Authorization': accessToken ? accessToken : VISITOR_TOKEN,
+      }
+  });
+    const error_code_2 = res_2.statusCode > 200 ? res_2.statusCode : false;
+    const data_2 = await res_2.json();
+
+  //   if (error_code_2 || data_2.status.code !== 0) {
+  //     return { server: false, seo_content: false, seo_content_detail: false };
+  // }
 
     return { 
       server: {['program-detail']: data},
       seo_content: data, 
+      seo_content_detail: data_2,
     };
   }
   constructor(props) {
@@ -675,7 +688,7 @@ class Index extends React.Component {
       <Layout>
         <HeadMeta data={props.seo_content}
                   router={props.router}
-                  dataPlayer={props.data && props.data['description-player']}/>
+                  dataPlayer={(props.data && props.data['description-player']) || props.seo_content_detail}/>
         <div className="program-detail-container animated fadeInDown go">
           <div ref={this.refMainContent} style={{minHeight: '10px'}}>
             { this.switchPanel() }
