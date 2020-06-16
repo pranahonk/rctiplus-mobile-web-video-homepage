@@ -95,7 +95,7 @@ export default withRedux(initStore, { debug: false })(
             // console.log('conviva integrated');
             
             switch (process.env.MODE) {
-                case 'PRODUCTION':
+                case 'DEVELOPMENT':
                     // Conviva.LivePass.toggleTraces(true);
                     const settings = {  };
                     settings.gatewayUrl = 'https://rcti-test.testonly.conviva.com';
