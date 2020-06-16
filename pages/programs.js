@@ -65,7 +65,7 @@ class Index extends React.Component {
     if (data.status.code === 1) {
         return { server: false, seo_content: false, seo_content_detail: false };
     }
-    const data_2 = null;
+    let data_2 = null;
     if(ctx.query.content_id) {
       const res_2 = await fetch(`${DEV_API}/api/v1/${ctx.query.content_type}/${ctx.query.content_id}`, {
         method: 'GET',
