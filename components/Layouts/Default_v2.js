@@ -163,7 +163,7 @@ class Default_v2 extends React.Component {
                     {/* <!-- End Alexa Certify Javascript --> */}
                 </Head>
                 <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-                {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
+                <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script>
 
                 {/* <!-- DO NOT touch the following DIV --> */}
                 <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
