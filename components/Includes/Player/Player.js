@@ -175,7 +175,7 @@ const Player = forwardRef((props, ref) => {
       player.on('ads-loader', (response) => {
         console.log('ADS LOADER', response)
       })
-      const assetName = props.data && props.data.conten_name ? props.data.content_name : 'N/A';
+      const assetName = props.data && props.data.content_name ? props.data.content_name : 'N/A';
 
       let videoUrlData = null;
       let genre = '';
