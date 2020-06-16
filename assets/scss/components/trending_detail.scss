@@ -77,6 +77,12 @@
         padding: 15px;
         color: white;
         text-align: left;
+
+        p, span {
+            font-size: 14px !important;
+            font-family: 'Open Sans' !important;
+            line-height: 1.64 !important;
+        }
     }
     .box-social{
         padding:15px;
