@@ -59,15 +59,18 @@ class Index extends React.Component {
     const error_code = res.statusCode > 200 ? res.statusCode : false;
     
     if (error_code) {
-        return { server: false };
+        return { server: false, seo_content: false };
     }
 
     const data = await res.json();
     if (data.status.code === 1) {
-        return { server: false };
+        return { server: false, seo_content: false };
     }
 
-    return { server: {['program-detail']: data} };
+    return { 
+      server: {['program-detail']: data},
+      seo_content: data, 
+    };
   }
   constructor(props) {
     super(props);
@@ -670,7 +673,7 @@ class Index extends React.Component {
     const { props, state } = this;
     return (
       <Layout>
-        <HeadMeta data={props.data && props.data['tracking-program'] }
+        <HeadMeta data={props.seo_content}
                   router={props.router}
                   dataPlayer={props.data && props.data['description-player']}/>
         <div className="program-detail-container animated fadeInDown go">
