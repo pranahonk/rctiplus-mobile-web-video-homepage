@@ -65,15 +65,17 @@ class Index extends React.Component {
     if (data.status.code === 1) {
         return { server: false, seo_content: false, seo_content_detail: false };
     }
-
-    const res_2 = await fetch(`${DEV_API}/api/v1/${ctx.query.content_type}/${ctx.query.content_id}`, {
-      method: 'GET',
-      headers: {
-          'Authorization': accessToken ? accessToken : VISITOR_TOKEN,
-      }
-  });
-    const error_code_2 = res_2.statusCode > 200 ? res_2.statusCode : false;
-    const data_2 = await res_2.json();
+    const data_2 = null;
+    if(ctx.query.content_id) {
+      const res_2 = await fetch(`${DEV_API}/api/v1/${ctx.query.content_type}/${ctx.query.content_id}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': accessToken ? accessToken : VISITOR_TOKEN,
+        }
+      });
+      const error_code_2 = res_2.statusCode > 200 ? res_2.statusCode : false;
+      data_2 = await res_2.json();
+    }
 
   //   if (error_code_2 || data_2.status.code !== 0) {
   //     return { server: false, seo_content: false, seo_content_detail: false };
