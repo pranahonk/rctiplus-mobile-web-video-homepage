@@ -21,6 +21,7 @@ const Player = forwardRef((props, ref) => {
   const vmap2 = 'http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=xml_vmap1&unviewed_position_start=1&cust_params=sample_ar%3Dpremidpostpod%26deployment%3Dgmf-js&cmsid=496&vid=short_onecue&correlator=';
   const initRef = useRef(ref);
   const [videoPlayer, setVideoPlayer] = useState(null);
+  const [conviva, setConviva] = useState(null);
   const optionsPlayer = {
     autoplay: true,
     muted: false,
@@ -175,7 +176,7 @@ const Player = forwardRef((props, ref) => {
       player.on('ads-loader', (response) => {
         console.log('ADS LOADER', response)
       })
-      const assetName = props.data && props.data.conten_name ? props.data.content_name : 'N/A';
+      const assetName = props.data && props.data.content_name ? props.data.content_name : 'N/A';
 
       let videoUrlData = null;
       let genre = '';
@@ -261,6 +262,59 @@ const Player = forwardRef((props, ref) => {
       // videoPlayer.ima.initializeAdDisplayContainer();
     }
   },[props.data]);
+
+useEffect(() => {
+  console.log(props.data.id, videoPlayer)
+  if(videoPlayer !== null) {
+    console.log(convivaTracker)
+    console.log('TESTTTT')
+    videoPlayer.addChild('TitleBar', { text: props.data.content_name ? props.data.content_name : props.data.title });
+    const assetName = props.data && props.data.content_name ? props.data.content_name : 'N/A';
+
+    let videoUrlData = null;
+    let genre = '';
+
+    let genreTags = 'N/A';
+    if (props.data.genre) {
+        if (Array.isArray(props.data.genre)) {
+            genreTags = '';
+            const genres = props.data.genre;
+            for (let i = 0; i < genres.length; i++) {
+                genreTags += genres[i].name;
+                if (i < genres.length - 1) {
+                    genreTags += ',';
+                }
+            }
+        }
+        else {
+            genreTags = props.data.genre;
+        }
+    }
+    const customTags = {
+      app_version: process.env.APP_VERSION,
+      carrier: 'N/A',
+      connection_type: 'N/A',
+      content_type: (props.data.content_type ? props.data.content_type : 'N/A'),
+      content_id: (props.data.id ? props.data.id : 'N/A').toString(),
+      program_name: (props.data.program_title ? props.data.program_title : 'N/A'),
+      tv_id: 'N/A',
+      tv_name: 'N/A',
+      date_video: 'N/A',
+      page_title: 'N/A',
+      page_view: 'N/A',
+      program_id: (props.data.program_id ? props.data.program_id : 'N/A').toString(),
+      screen_mode: 'portrait',
+      time_video: 'N/A',
+      viewer_id: getUserId().toString(),
+      application_name: 'RCTI+ MWEB',
+      section_page: 'N/A',
+      genre: genreTags,
+  };
+  const convivaTracker = convivaVideoJs(assetName, videoPlayer, videoPlayer.duration(), props.data.url ? props.data.url : props.data.trailer_url, assetName, customTags);
+  convivaTracker.cleanUpSession()
+  convivaTracker.createSession();
+  }
+}, [props.data.id])
 
   return (
     <>
