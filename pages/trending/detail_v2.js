@@ -443,8 +443,8 @@ class Detail extends React.Component {
                                     </Link> */}
                                 </div>
                                 <div className="ads-banner__detail_news">
-                                    <AdsBanner />
-                                    <span>partner: { cdata.source }</span>
+                                    <AdsBanner partner={cdata.source}/>
+                                    {/* <span>partner: { cdata.source }</span> */}
                                 </div>
                                 <div className="content-trending-detail-related">
                                     <p className="related-title"><strong>Related Articles</strong></p>

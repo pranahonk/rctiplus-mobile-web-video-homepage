@@ -154,7 +154,6 @@ class Trending_v2 extends React.Component {
     }
 
     componentDidMount() {
-
         if (this.accessToken) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -400,7 +399,7 @@ class Trending_v2 extends React.Component {
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => (
                                                             (j > 6) && (j + 1) != 1 && (j + 1) % 5 === 0 ? (
                                                                 <div key={j}>
-                                                                    <iframe src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
+                                                                    <iframe src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%', display: this.props.ads.toggleAdsTrending ? 'block' : 'none' }} />
                                                                     {/* <AdsBanner /> */}
                                                                     <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
                                                                         <div className="article-description">
