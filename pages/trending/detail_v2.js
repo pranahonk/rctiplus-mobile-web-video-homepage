@@ -20,6 +20,7 @@ import { ListGroup, ListGroupItem } from 'reactstrap';
 
 import { formatDateWordID } from '../../utils/dateHelpers';
 import { setAccessToken, removeAccessToken } from '../../utils/cookie';
+import { urlRegex } from '../../utils/regex';
 import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
 import newsv2Actions from '../../redux/actions/newsv2Actions';
 
@@ -154,7 +155,7 @@ class Detail extends React.Component {
             window.open(article.link, '_blank');
         }
         else {
-            Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase() + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+            Router.push('/trending/detail/' + article.id + '/' + urlRegex(article.title) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
         }
 
     }

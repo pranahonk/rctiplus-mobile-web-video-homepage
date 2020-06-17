@@ -29,6 +29,7 @@ import '../assets/scss/components/trending_v2.scss';
 import newsv2Actions from '../redux/actions/newsv2Actions';
 import userActions from '../redux/actions/userActions';
 import { showSignInAlert } from '../utils/helpers';
+import { urlRegex } from '../utils/regex';
 import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
 
@@ -254,7 +255,7 @@ class Trending_v2 extends React.Component {
 
     goToDetail(article) {
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-        Router.push('/trending/detail/' + article.id + '/' + encodeURI(article.title.replace(/ +/g, "-").replace(/\\+/g, '-').replace(/\/+/g, '-').toLowerCase()) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        Router.push('/trending/detail/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     getMetadata() {
