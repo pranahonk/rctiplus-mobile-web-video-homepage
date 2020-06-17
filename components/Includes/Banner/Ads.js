@@ -11,17 +11,22 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
     const googletag = window.googletag || {};
     window.googletag = window.googletag || {cmd: []};
     googletag.cmd.push(function() {
-        const defineSlot = googletag.defineSlot(path, size, idGpt).setTargeting('partner_name', partner)
+        let  defineSlot;
+        if(partner) {
+          defineSlot = googletag.defineSlot(path, size, idGpt).setTargeting('partner_name', partner)
+        } else {
+          defineSlot = googletag.defineSlot(path, size, idGpt)
+        }
         defineSlot.addService(googletag.pubads());
         setAds(defineSlot)
         console.log(ads)
         console.log(defineSlot)
         googletag.pubads().enableSingleRequest();
         googletag.pubads().collapseEmptyDivs();
-        dispatch({type: 'TOGGLE_ADS' , toggle: true})
+        // dispatch({type: 'TOGGLE_ADS' , toggle: true})
         googletag.pubads().addEventListener('slotRenderEnded', function(event) {
             if (event.isEmpty) {
-                dispatch({type: 'TOGGLE_ADS', toggle: false})
+                // dispatch({type: 'TOGGLE_ADS', toggle: false})
                 console.log('EMPTY ADS');
                 
             }
@@ -70,5 +75,5 @@ AdsBanner.defaultProps = {
     height: 250,
   },
   idGpt: 'div-gpt-ad-1591240670591-0',
-  partner: 'sindo',
+  partner: null,
 }
