@@ -443,7 +443,12 @@ class Detail extends React.Component {
                                     </Link> */}
                                 </div>
                                 <div className="ads-banner__detail_news">
-                                    <AdsBanner partner={cdata.source}/>
+                                    <AdsBanner 
+                                        partner={cdata.source}
+                                        path="/21865661642/PRO_MOBILE_DETAIL-NEWS_DISPLAY_300x250"
+                                        size={[300, 250]}
+                                        idGpt="div-gpt-ad-1591241112683-0"
+                                        />
                                     {/* <span>partner: { cdata.source }</span> */}
                                 </div>
                                 <div className="content-trending-detail-related">
