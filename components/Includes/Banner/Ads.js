@@ -11,7 +11,7 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
     const googletag = window.googletag || {};
     window.googletag = window.googletag || {cmd: []};
     googletag.cmd.push(function() {
-        const defineSlot = googletag.defineSlot(path, size, idGpt).setTargeting('partner', [partner])
+        const defineSlot = googletag.defineSlot(path, size, idGpt).setTargeting('partner_name', partner)
         defineSlot.addService(googletag.pubads());
         setAds(defineSlot)
         console.log(ads)
