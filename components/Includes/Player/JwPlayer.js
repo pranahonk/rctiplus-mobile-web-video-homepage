@@ -88,23 +88,23 @@ const JwPlayer = (props) => {
       genre: genreTags,
     };
     if (player !== null) {
-      conviva.startMonitoring(player);
-      const assetMetadata = {
-        application_name: 'RCTI+ MWEB',
-        asset_cdn: 'Conversant',
-      };
-      console.log('FIRST FRAME CONVIVA', assetMetadata);
-      conviva.updatePlayerAssetMetadata(player, assetMetadata);
       // const convivaVideoAnalytics = Conviva.Analytics.buildVideoAnalytics();
       // convivaVideoAnalytics.setContentInfo(customTags)
       // const convivaTracker = convivaJwPlayer(props.data.content_name, player, player.getDuration(), props.data.url ? props.data.url : props.data.trailer_url, props.data.content_name, customTags);
       // convivaTracker.createSession();
-        player.on('ready', () => {
-        console.log('IS PLAYER DEVICE: ', player.getEnvironment().OS.android);
-      });
-      if (player.getEnvironment().OS.android) {
-        player.setMute(false);
-      }
+      // conviva.startMonitoring(player);
+      // const assetMetadata = {
+      //   application_name: 'RCTI+ MWEB',
+      //   asset_cdn: 'Conversant',
+      // };
+      // console.log('FIRST FRAME CONVIVA', assetMetadata);
+      // conviva.updatePlayerAssetMetadata(player, assetMetadata);
+      //   player.on('ready', () => {
+      //   console.log('IS PLAYER DEVICE: ', player.getEnvironment().OS.android);
+      // });
+      // if (player.getEnvironment().OS.android) {
+      //   player.setMute(false);
+      // }
     }
   });
 
