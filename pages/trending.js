@@ -35,6 +35,8 @@ import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../ut
 
 import queryString from 'query-string';
 
+import $ from 'jquery';
+
 const jwtDecode = require('jwt-decode');
 
 class Trending_v2 extends React.Component {
@@ -79,6 +81,7 @@ class Trending_v2 extends React.Component {
         else {
             removeAccessToken();
         }
+        this.iframeAds = React.createRef()
     }
 
     bottomScrollFetch() {
@@ -178,6 +181,12 @@ class Trending_v2 extends React.Component {
 
         
     }
+
+    // componentDidUpdate() {
+    //     // console.log(this.iframeAds && this.iframeAds.current && this.iframeAds.current.scrollHeight)
+    //     console.log(this.iframeAds && this.iframeAds.current && this.iframeAds.current.contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') && this.iframeAds.current.contentWindow.document.getElementById('div-gpt-ad-1591240670591-0').style.display)
+    //     console.log($('#iframe-ads-1').contents().find($('#div-gpt-ad-1591240670591-0')))
+    // }
 
     fetchData(isLoggedIn = false) {
         const savedCategoriesNews = getNewsChannels();
@@ -306,6 +315,9 @@ class Trending_v2 extends React.Component {
                         gtag('config', 'UA-145455301-9');
                     ` }}></script>
                 </Head>
+                {/* <div style={{ display: 'none' }}>
+                    <AdsBanner />
+                </div> */}
                 <NavTrending disableScrollListener />
                 <BottomScrollListener
                     offset={50}
@@ -400,7 +412,16 @@ class Trending_v2 extends React.Component {
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => (
                                                             (j > 6) && (j + 1) != 1 && (j + 1) % 5 === 0 ? (
                                                                 <div key={j}>
-                                                                    <iframe src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
+                                                                    {/* <iframe ref={this.iframeAds} id="iframe-ads-1" src="https://coma.rctiplus.com/gpt-rc/" frameBorder="0" style={{ height: '250px', width: '100%' }} /> */}
+                                                                    <iframe 
+                                                                        ref={this.iframeAds} 
+                                                                        id="iframe-ads-1" src="https://coma.rctiplus.com/gpt-rc/" 
+                                                                        frameBorder="0" 
+                                                                        style={{ 
+                                                                            height: '250px',
+                                                                            width: '100%' ,
+                                                                            display: (this.iframeAds && this.iframeAds.current && this.iframeAds.current.contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') && this.iframeAds.current.contentWindow.document.getElementById('div-gpt-ad-1591240670591-0').style.display) === 'none' ? 'none' : 'block',
+                                                                        }} />
                                                                     {/* <AdsBanner /> */}
                                                                     <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
                                                                         <div className="article-description">
