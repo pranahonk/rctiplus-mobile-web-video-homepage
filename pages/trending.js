@@ -29,6 +29,8 @@ import '../assets/scss/components/trending_v2.scss';
 import newsv2Actions from '../redux/actions/newsv2Actions';
 import userActions from '../redux/actions/userActions';
 import { showSignInAlert } from '../utils/helpers';
+import { urlRegex } from '../utils/regex';
+import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
 
 import queryString from 'query-string';
@@ -153,7 +155,6 @@ class Trending_v2 extends React.Component {
     }
 
     componentDidMount() {
-
         if (this.accessToken) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -254,7 +255,7 @@ class Trending_v2 extends React.Component {
 
     goToDetail(article) {
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-        Router.push('/trending/detail/' + article.id + '/' + encodeURI(article.title.replace(/ +/g, "-").replace(/\\+/g, '-').replace(/\/+/g, '-').toLowerCase()) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        Router.push('/trending/detail/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     getMetadata() {
@@ -267,6 +268,10 @@ class Trending_v2 extends React.Component {
 
         return SITEMAP['trending'];
     }
+
+    // getAds() {
+    //     console.log()
+    // }
 
     render() {
         const metadata = this.getMetadata();
@@ -394,26 +399,29 @@ class Trending_v2 extends React.Component {
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => (
                                                             (j > 6) && (j + 1) != 1 && (j + 1) % 5 === 0 ? (
-                                                                <ListGroupItem key={j} className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
-                                                                    <div className="article-description">
-                                                                        <div className="article-thumbnail-container-full-width">
-                                                                            <Img
-                                                                                alt={article.title}
-                                                                                loader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                unloader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                className="article-thumbnail-full-width"
-                                                                                src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
-                                                                        </div>
-                                                                        <div className="article-title-container">
-                                                                            <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
-                                                                            <div className="article-source">
-                                                                                <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
-                                                                                <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                <div key={j}>
+                                                                    <iframe src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
+                                                                    {/* <AdsBanner /> */}
+                                                                    <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
+                                                                        <div className="article-description">
+                                                                            <div className="article-thumbnail-container-full-width">
+                                                                                <Img
+                                                                                    alt={article.title}
+                                                                                    loader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                    unloader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                    className="article-thumbnail-full-width"
+                                                                                    src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
+                                                                            </div>
+                                                                            <div className="article-title-container">
+                                                                                <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
+                                                                                <div className="article-source">
+                                                                                    <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
+                                                                                    <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                    
-                                                                </ListGroupItem>
+                                                                    </ListGroupItem>
+                                                                </div>
                                                             ) : (j > 4) ? (
                                                                 <ListGroupItem key={j} className={`article ${(j > 4) && (j + 1) > 1 && ((j + 2) % 5) == 0 ? 'article-no-border' : ''}`} onClick={() => this.goToDetail(article)}>
                                                                     <div className="article-description">

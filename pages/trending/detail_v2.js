@@ -12,6 +12,7 @@ import { DEV_API, BASE_URL, NEWS_API_V2, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_
 import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 import NavBackIframe from '../../components/Includes/Navbar/NavIframe';
+import AdsBanner from '../../components/Includes/Banner/Ads';
 import '../../assets/scss/components/trending_detail.scss';
 
 import { FacebookShareButton, TwitterShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
@@ -19,6 +20,7 @@ import { ListGroup, ListGroupItem } from 'reactstrap';
 
 import { formatDateWordID } from '../../utils/dateHelpers';
 import { setAccessToken, removeAccessToken } from '../../utils/cookie';
+import { urlRegex } from '../../utils/regex';
 import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
 import newsv2Actions from '../../redux/actions/newsv2Actions';
 
@@ -153,7 +155,7 @@ class Detail extends React.Component {
             window.open(article.link, '_blank');
         }
         else {
-            Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase() + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+            Router.push('/trending/detail/' + article.id + '/' + urlRegex(article.title) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
         }
 
     }
@@ -440,6 +442,15 @@ class Detail extends React.Component {
                                             </div>
                                         {/* </a>
                                     </Link> */}
+                                </div>
+                                <div className="ads-banner__detail_news">
+                                    <AdsBanner 
+                                        partner={cdata.source}
+                                        path="/21865661642/PRO_MOBILE_DETAIL-NEWS_DISPLAY_300x250"
+                                        size={[300, 250]}
+                                        idGpt="div-gpt-ad-1591241112683-0"
+                                        />
+                                    {/* <span>partner: { cdata.source }</span> */}
                                 </div>
                                 <div className="content-trending-detail-related">
                                     <p className="related-title"><strong>Related Articles</strong></p>
