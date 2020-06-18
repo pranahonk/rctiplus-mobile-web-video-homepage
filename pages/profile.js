@@ -200,7 +200,7 @@ class Profile extends React.Component {
 							Woops! Gonna sign in first!<br/>
 							Only a click away and you<br/>
 							can continue to enjoy<br/>
-							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true, 'pop-up-action-sign-up', 'pop-up-action-sign-in');
 						}
 						else {
 							Router.push('/history');
@@ -218,7 +218,7 @@ class Profile extends React.Component {
 							Woops! Gonna sign in first!<br/>
 							Only a click away and you<br/>
 							can continue to enjoy<br/>
-							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true, 'pop-up-action-sign-up', 'pop-up-action-sign-in');
 						}
 						else {
 							Router.push('/mylist');
@@ -233,7 +233,7 @@ class Profile extends React.Component {
 							Woops! Gonna sign in first!<br/>
 							Only a click away and you<br/>
 							can continue to enjoy<br/>
-							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true, 'pop-up-action-sign-up', 'pop-up-action-sign-in');
 						}
 						else {
 							Router.push('/continue-watching');
