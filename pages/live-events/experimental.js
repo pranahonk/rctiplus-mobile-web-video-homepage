@@ -692,7 +692,7 @@ class LiveEvent extends React.Component {
 					genre: 'N/A'
                 };
 
-				this.convivaTracker = convivaVideoJs(assetName, player, self.props.router.asPath.match('/missed-event/') ? player.duration() : true, url, 'Live Event ' + assetName.toUpperCase(), customTags, asset_cdn);
+				this.convivaTracker = convivaVideoJs(assetName.toUpperCase(), player, self.props.router.asPath.match('/missed-event/') ? player.duration() : true, url, 'Live Event ' + assetName.toUpperCase(), customTags, asset_cdn);
 				this.convivaTracker.createSession();
 
 				if(self.props.router.asPath.match('/missed-event/')) {
