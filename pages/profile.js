@@ -114,7 +114,7 @@ class Profile extends React.Component {
 	}
 
 	showOpenPlaystoreAlert() {
-        showAlert('To be able to see and watching your downloaded file, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); });
+        showAlert('To be able to see and watching your downloaded file, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); }, false, 'popup-action-openstore', 'popup-action-cancel');
 	}
 	
 	link(cw) {
