@@ -1181,7 +1181,7 @@ class Tv extends React.Component {
 				Woops! Gonna sign in first!<br/>
 				Only a click away and you<br/>
 				can continue to enjoy<br/>
-				<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+				<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true, 'popup-action-signup', 'popup-action-signin');
 			return false;
 		}
 		return true;
