@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -156,8 +157,66 @@ class Trending_v2 extends React.Component {
             this.loadArticles(categoryId);
         });
     }
+    isInViewport(element) {
+        if(element) {
+            const distance = element.getBoundingClientRect();
+            return (
+                distance.top >= 0 &&
+                distance.left >= 0 &&
+                distance.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                distance.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+    }
+    adsDisplay(eventId) {
+        let id = false;
+        window.addEventListener('scroll', (event) => {
+            if(this.isInViewport(document.getElementById(eventId))) {
+                console.log('YESSS', eventId)
+                id = true
+                if(eventId) {
+                    document.getElementById(eventId).innerHTML = `
+                    <div id="div-gpt-ad-1591240670591-0">
+                    <script dangerouslySetInnerHTML={{ __html: `
+                    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1591240670591-0'); });
+                ` }}>
+                </script>
+                    </div>
+    
+                    `
+                }
+                // return (<AdsBanner />)
+            } else {
+                id = false
+                console.log('NOOOOO', eventId)
+                if(eventId) {
+                    document.getElementById(eventId).innerHTML = `
+                    <div></div>
+                    `
+                }
+                // return (<div/>)
+                // return (<AdsBanner />)
+                // element.innerHTML = `<div></div>`
+            }
+            console.log('scrolll')
+        })
 
+        // if(id) {
+        //     return (<div>bismillah</div>)
+        // } else {
+        //     return (<div>lalala</div>)
+        // }
+    }
     componentDidMount() {
+        // window.addEventListener('scroll', (event) => {
+        //     if(this.isInViewport(document.getElementById('9'))) {
+        //         console.log('YESSS')
+        //         return ReactDOM.createPortal(<div>dsada</div>, document.getElementById('9'))
+        //     } else {
+        //         console.log('NOOOOO')
+        //     }
+        //     console.log('scrolll')
+        // }, false)
         if (this.accessToken) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -182,11 +241,14 @@ class Trending_v2 extends React.Component {
         
     }
 
-    // componentDidUpdate() {
-    //     // console.log(this.iframeAds && this.iframeAds.current && this.iframeAds.current.scrollHeight)
-    //     console.log(this.iframeAds && this.iframeAds.current && this.iframeAds.current.contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') && this.iframeAds.current.contentWindow.document.getElementById('div-gpt-ad-1591240670591-0').style.display)
-    //     console.log($('#iframe-ads-1').contents().find($('#div-gpt-ad-1591240670591-0')))
-    // }
+    componentDidUpdate() {
+        // console.log(this.iframeAds && this.iframeAds.current && this.iframeAds.current.scrollHeight)
+        // console.log(document.getElementById('iframe-ads-1') && document.getElementById('iframe-ads-1').contentWindow && document.getElementById('iframe-ads-1').contentWindow.document.getElementById('div-gpt-ad-1591240670591-0').style.display)
+        // console.log(this.iframeAds && this.iframeAds.current && this.iframeAds.current.contentWindow.document.getElementById('__next'))
+        // let elemnt = $('#iframe-ads-1').contents().find($('div-gpt-ad-1591240670591-0'))
+        // console.log(elemnt.css('display'))
+        // console.log($('#iframe-ads-1').contents().find($('div-gpt-ad-1591240670591-0')).css('display'))
+    }
 
     fetchData(isLoggedIn = false) {
         const savedCategoriesNews = getNewsChannels();
@@ -307,6 +369,21 @@ class Trending_v2 extends React.Component {
                     <meta name="twitter:domain" content={encodeURI(this.props.router.asPath)}></meta>
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
+                    {/* <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+                <script dangerouslySetInnerHTML={{
+                        __html: `
+                        window.googletag = window.googletag || {cmd: []};
+                    googletag.cmd.push(function() {
+                        googletag.defineSlot('/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250', [300, 250], 'div-gpt-ad-1591240670591-0').addService(googletag.pubads());
+                        googletag.pubads().enableSingleRequest();
+                        googletag.pubads().collapseEmptyDivs();
+                        googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+                            if (event.isEmpty) {
+                                // document.getElementById('sticky-ads-container').style.display = 'none';
+                            }
+                        });
+                        googletag.enableServices();
+                    }); `}}></script> */}
                     <script dangerouslySetInnerHTML={{
                         __html: `
                         window.dataLayer = window.dataLayer || [];
@@ -317,7 +394,12 @@ class Trending_v2 extends React.Component {
                 </Head>
                 {/* <div style={{ display: 'none' }}>
                     <AdsBanner />
-                </div> */}
+                </div>
+                {/* <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
+                <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
+                <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
+                <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
+                <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} /> */}
                 <NavTrending disableScrollListener />
                 <BottomScrollListener
                     offset={50}
@@ -412,16 +494,45 @@ class Trending_v2 extends React.Component {
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => (
                                                             (j > 6) && (j + 1) != 1 && (j + 1) % 5 === 0 ? (
                                                                 <div key={j}>
-                                                                    {/* <iframe ref={this.iframeAds} id="iframe-ads-1" src="https://coma.rctiplus.com/gpt-rc/" frameBorder="0" style={{ height: '250px', width: '100%' }} /> */}
+                                                                    {/* <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} /> */}
                                                                     <iframe 
-                                                                        ref={this.iframeAds} 
-                                                                        id="iframe-ads-1" src="https://coma.rctiplus.com/gpt-rc/" 
+                                                                        onLoad={() => {
+                                                                            window.addEventListener('scroll', () => {
+                                                                                console.log('SCROLLLLL', article.id)
+                                                                                const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
+                                                                                document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
+                                                                                const element_3 = document.getElementById(article.id)
+                                                                                if(element && element.style.display === 'none') {
+                                                                                    element_3.style.display = 'none'
+                                                                                } else {
+                                                                                    element_3.style.display = 'block'
+                                                                                }
+                                                                                })
+                                                                        }}
+                                                                        id={article.id} src="https://coma.rctiplus.com/" 
                                                                         frameBorder="0" 
                                                                         style={{ 
                                                                             height: '250px',
-                                                                            width: '100%' ,
-                                                                            display: (this.iframeAds && this.iframeAds.current && this.iframeAds.current.contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') && this.iframeAds.current.contentWindow.document.getElementById('div-gpt-ad-1591240670591-0').style.display) === 'none' ? 'none' : 'block',
+                                                                            width: '100%',
+                                                                            display: 'none',
                                                                         }} />
+                                                                    {/* <iframe 
+                                                                        ref={this.iframeAds} 
+                                                                        id="iframe-ads-1" src="/dfp" 
+                                                                        frameBorder="0" 
+                                                                        style={{ 
+                                                                            height: '250px',
+                                                                            width: '100%',
+                                                                            display: this.iframeAds && this.iframeAds.current 
+                                                                                        && this.iframeAds.current.contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
+                                                                                        && this.iframeAds.current.contentWindow.document.getElementById('div-gpt-ad-1591240670591-0').style.display === 'none' || 
+                                                                                        this.iframeAds && this.iframeAds.current && this.iframeAds.current.contentWindow.document.getElementById('__next') === null
+                                                                                         ? 'none' : 'block', 
+                                                                        }} /> */}
+                                                                    {/* <div id={j}>
+                                                                        { this.adsDisplay(j) }
+                                                                    </div> */}
+                                                                    {/* <iframe src="" frameborder="0"></iframe> */}
                                                                     {/* <AdsBanner /> */}
                                                                     <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
                                                                         <div className="article-description">
