@@ -501,8 +501,10 @@ class Trending_v2 extends React.Component {
                                                                                 console.log('SCROLLLLL', article.id)
                                                                                 const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
                                                                                 document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
+                                                                                const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
+                                                                                document.getElementById(article.id).contentWindow.document.getElementById('error__page') 
                                                                                 const element_3 = document.getElementById(article.id)
-                                                                                if(element && element.style.display === 'none') {
+                                                                                if(element && element.style.display === 'none' || element_2) {
                                                                                     element_3.style.display = 'none'
                                                                                 } else {
                                                                                     element_3.style.display = 'block'
