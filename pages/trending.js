@@ -509,7 +509,7 @@ class Trending_v2 extends React.Component {
                                                                                 }
                                                                                 })
                                                                         }}
-                                                                        id={article.id} src="https://coma.rctiplus.com/" 
+                                                                        id={article.id} src="/dfp" 
                                                                         frameBorder="0" 
                                                                         style={{ 
                                                                             height: '250px',
