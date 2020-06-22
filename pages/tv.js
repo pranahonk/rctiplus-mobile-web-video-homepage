@@ -1610,7 +1610,7 @@ class Tv extends React.Component {
 						{ height: this.setHeightChatBox() }
 						: null}>
 						<div className="btn-chat">
-							<Button onClick={this.toggleChat.bind(this)} color="link">
+							<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
 								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
 							</Button>
 							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
