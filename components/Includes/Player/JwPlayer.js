@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { convivaJwPlayer } from '../../../utils/conviva';
+import { convivaJwPlayer} from '../../../utils/conviva';
 import { getUserId } from '../../../utils/appier';
 import { onTrackingClick } from '../program-detail/programDetail';
 import '../../../assets/scss/jwplayer.scss';
@@ -28,7 +28,7 @@ const JwPlayer = (props) => {
       hide: true,
     },
   };
-
+  // Initial Setup
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
     jwplayer.setup(options);
@@ -42,6 +42,7 @@ const JwPlayer = (props) => {
     };
   }, []);
 
+  // Update Setup
   useEffect(() => {
     if (player !== null) {
       console.log('PLYARE', props.data.url);
@@ -50,6 +51,28 @@ const JwPlayer = (props) => {
     }
   }, [props.data.url, props.data.vmap]);
 
+  // Costum Setup
+  useEffect(() => {
+    if (player !== null) {
+      player.on('ready', (event) => {
+        console.log('READY EVENT PLAYER: ', event)
+      })
+      player.on('play', () =>{
+        console.log('PLAYING');
+        convivaJwPlayer().playing();
+      });
+      player.on('pause', () =>{
+        console.log('PAUSE');
+        convivaJwPlayer().pause();
+      });
+      player.on('buffer', (event) =>{
+        console.log('BUFFER', event);
+        convivaJwPlayer().buffer();
+      });
+    }
+  });
+
+  // Conviva Tracker
   useEffect(() => {
     let genreTags = 'N/A';
     if (props.data.genre) {
@@ -67,6 +90,7 @@ const JwPlayer = (props) => {
             genreTags = props.data.genre;
         }
     }
+    const assetName = props.data && props.data.content_name ? props.data.content_name : 'N/A';
     const customTags = {
       app_version: process.env.APP_VERSION,
       carrier: 'N/A',
@@ -78,7 +102,7 @@ const JwPlayer = (props) => {
       tv_name: 'N/A',
       date_video: 'N/A',
       page_title: 'N/A',
-    page_view: 'N/A',
+      page_view: 'N/A',
       program_id: (props.data.program_id ? props.data.program_id : 'N/A').toString(),
       screen_mode: 'portrait',
       time_video: 'N/A',
@@ -88,24 +112,14 @@ const JwPlayer = (props) => {
       genre: genreTags,
     };
     if (player !== null) {
-      // const convivaVideoAnalytics = Conviva.Analytics.buildVideoAnalytics();
-      // convivaVideoAnalytics.setContentInfo(customTags)
-      // const convivaTracker = convivaJwPlayer(props.data.content_name, player, player.getDuration(), props.data.url ? props.data.url : props.data.trailer_url, props.data.content_name, customTags);
-      // convivaTracker.createSession();
-      // conviva.startMonitoring(player);
-      // const assetMetadata = {
-      //   application_name: 'RCTI+ MWEB',
-      //   asset_cdn: 'Conversant',
-      // };
-      // console.log('FIRST FRAME CONVIVA', assetMetadata);
-      // conviva.updatePlayerAssetMetadata(player, assetMetadata);
-      //   player.on('ready', () => {
-      //   console.log('IS PLAYER DEVICE: ', player.getEnvironment().OS.android);
-      // });
-      // if (player.getEnvironment().OS.android) {
-      //   player.setMute(false);
-      // }
+      const convivaTracker = convivaJwPlayer(assetName, player, player.getDuration(), props.data.url ? props.data.url : props.data.trailer_url, customTags);
+      if (window.convivaVideoAnalytics) {
+        console.log('LOG CONVIVA');
+        convivaTracker.cleanUpSession();
+      }
+      convivaTracker.createSession();
     }
+    console.log('CONVIVA PLAYER', window.convivaVideoAnalytics);
   });
 
 
@@ -120,7 +134,7 @@ export default JwPlayer;
 
 JwPlayer.propTypes = {
   data: PropTypes.object,
-}
+};
 
 JwPlayer.defaultProps = {
   data: {
@@ -130,4 +144,4 @@ JwPlayer.defaultProps = {
     program_id: 'N/A',
     content_name: 'N/A',
   },
-}
+};

@@ -27,7 +27,9 @@ class TestPlayer extends React.Component {
             { 
               data: {
                 url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-                vmap: 'https://rc-static.rctiplus.id/vmap/vmap_ima_vod_episode_45_0_web_defaultvod.xml'
+                vmap: 'https://rc-static.rctiplus.id/vmap/vmap_ima_vod_episode_45_0_web_defaultvod.xml',
+                content_type: 'VOD',
+                content_name: 'Aku Ganteng',
               },
             }) 
             }>KLIK</button>
