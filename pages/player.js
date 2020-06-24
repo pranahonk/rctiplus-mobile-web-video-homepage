@@ -1,7 +1,7 @@
 import React from 'react';
 import JwPlayer from '../components/Includes/Player/JwPlayer';
-import Layout from '../components/Layouts/Default';
-
+import Layout from '../components/Layouts/Default_v2';
+// url: 'https://linier3.rctiplus.id/live/eds/rcti_fta/live_fta/rcti_fta.m3u8?auth_key=1595523706-0-0-dd24dd0e1056870bafdd6b937c51e216',
 class TestPlayer extends React.Component {
   constructor(props) {
     super(props)
@@ -9,6 +9,7 @@ class TestPlayer extends React.Component {
     this.state = {
       data: {
         url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+        // url: 'https://linier3.rctiplus.id/live/eds/rcti_fta/live_fta/rcti_fta.m3u8?auth_key=1595523706-0-0-dd24dd0e1056870bafdd6b937c51e216',
         vmap: 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator='
       },
     };
@@ -22,7 +23,7 @@ class TestPlayer extends React.Component {
     return(
       <Layout>
         <div>
-          <JwPlayer data={this.state.data}/>
+          <JwPlayer data={this.state.data} isLive={false}/>
           <button onClick={ () => this.setState(
             { 
               data: {

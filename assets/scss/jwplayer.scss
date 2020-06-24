@@ -1,10 +1,43 @@
-.jw-icon-rewind {
-  opacity: 0 !important;
-}
+// .jw-icon-rewind {
+//   opacity: 0 !important;
+// }
 
 .rplus-jw-container {
   min-height: 180px;
   background-color: #000000;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+.jwplayer {
+  &.jw-skin-rplus_player {
+    text-align: left;
+    .jw-display-icon-next {
+      visibility: visible !important;
+    }
+    .jw-controlbar {
+      .jw-buffer {
+        background: #c50000;
+        opacity: 0.5;
+      }
+      .jw-progress {
+        background-color: #c50000;
+        position: relative;
+        &::after {
+          content: '';
+          position: absolute;
+          width: 15px;
+          height: 15px;
+          background-color: #c50000;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          border-radius: 100%;
+        }
+      }
+      .jw-icon-tooltip {
+        position: relative;
+      }
+    }
+  }
 }

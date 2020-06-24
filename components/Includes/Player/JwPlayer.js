@@ -20,9 +20,13 @@ const JwPlayer = (props) => {
     displaytitle: true,
     setFullscreen: true,
     stretching: 'exactfit',
-    advertising: {
-      client: process.env.ADVERTISING_CLIENT,
-      schedule: props.data.vmap,
+    // advertising: {
+    //   client: process.env.ADVERTISING_CLIENT,
+    //   schedule: props.data.vmap,
+    // },
+    skin: {
+      name: 'rplus_player',
+      url: '../../../assets/scss/jwplayer.scss',
     },
     logo: {
       hide: true,
@@ -55,8 +59,25 @@ const JwPlayer = (props) => {
   useEffect(() => {
     if (player !== null) {
       player.on('ready', (event) => {
-        console.log('READY EVENT PLAYER: ', event)
-      })
+        const playerContainer = player.getContainer();
+        const fowardContainer = playerContainer.querySelector('.jw-icon-next');
+        const backwardContainer = playerContainer.querySelector('.jw-icon-rewind');
+        const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
+        console.log('LIVEEE', isLiveContainer)
+        if(!props.isLive) {
+          fowardContainer.innerHTML = foward10;
+          backwardContainer.innerHTML = backward10;
+          fowardContainer.addEventListener('touchstart', () => {
+            player.seek(player.getPosition() + 10);
+          });
+        }
+        if(props.isLive) {
+          console.log('testtt')
+          console.log(fowardContainer)
+          fowardContainer.innerHTML = '';
+          backwardContainer.innerHTML = '';
+        }
+      });
       player.on('play', () =>{
         console.log('PLAYING');
         convivaJwPlayer().playing();
@@ -134,6 +155,7 @@ export default JwPlayer;
 
 JwPlayer.propTypes = {
   data: PropTypes.object,
+  isLive: PropTypes.bool,
 };
 
 JwPlayer.defaultProps = {
@@ -144,4 +166,36 @@ JwPlayer.defaultProps = {
     program_id: 'N/A',
     content_name: 'N/A',
   },
+  isLive: false,
 };
+
+const foward10 = `
+<svg xmlns="http://www.w3.org/2000/svg" width="46" height="15" viewBox="0 0 46 15">
+<g fill="none" fill-rule="evenodd">
+    <path fill="#FFF" fill-rule="nonzero" d="M6 21l11.171-7.5L6 6v15zM17.829 6v15L29 13.5 17.829 6z" transform="translate(-6 -6)"/>
+    <path d="M0 0L31 0 31 29 0 29z" transform="translate(-6 -6)"/>
+    <path d="M0 0L31 0 31 29 0 29z" transform="translate(-6 -6)"/>
+    <g>
+        <path fill="#FFF" fill-rule="nonzero" d="M6 21l11.171-7.5L6 6v15zM17.829 6v15L29 13.5 17.829 6z" transform="translate(-6 -6) translate(23)"/>
+        <path d="M0 0L31 0 31 29 0 29z" transform="translate(-6 -6) translate(23)"/>
+        <path d="M0 0L31 0 31 29 0 29z" transform="translate(-6 -6) translate(23)"/>
+    </g>
+</g>
+</svg>`;
+
+const backward10 = `
+<svg xmlns="http://www.w3.org/2000/svg" width="46" height="15" viewBox="0 0 46 15">
+<g fill="none" fill-rule="evenodd">
+    <g>
+        <path fill="#FFF" fill-rule="nonzero" d="M6 21l11.171-7.5L6 6v15zM17.829 6v15L29 13.5 17.829 6z" transform="translate(-2 -6) matrix(-1 0 0 1 31 0)"/>
+        <path d="M0 0L31 0 31 29 0 29z" transform="translate(-2 -6) matrix(-1 0 0 1 31 0)"/>
+        <path d="M0 0L31 0 31 29 0 29z" transform="translate(-2 -6) matrix(-1 0 0 1 31 0)"/>
+    </g>
+    <g>
+        <path fill="#FFF" fill-rule="nonzero" d="M6 21l11.171-7.5L6 6v15zM17.829 6v15L29 13.5 17.829 6z" transform="translate(-2 -6) matrix(-1 0 0 1 54 0)"/>
+        <path d="M0 0L31 0 31 29 0 29z" transform="translate(-2 -6) matrix(-1 0 0 1 54 0)"/>
+        <path d="M0 0L31 0 31 29 0 29z" transform="translate(-2 -6) matrix(-1 0 0 1 54 0)"/>
+    </g>
+</g>
+</svg>
+`;
