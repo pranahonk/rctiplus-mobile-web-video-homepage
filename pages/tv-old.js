@@ -14,7 +14,7 @@ import pageActions from '../redux/actions/pageActions';
 import chatsActions from '../redux/actions/chats';
 import userActions from '../redux/actions/userActions';
 
-import Layout from '../components/Layouts/Default';
+import Layout from '../components/Layouts/Default_v2';
 import SelectDateModal from '../components/Modals/SelectDateModal';
 import ActionSheet from '../components/Modals/ActionSheet';
 import Wrench from '../components/Includes/Common/Wrench';

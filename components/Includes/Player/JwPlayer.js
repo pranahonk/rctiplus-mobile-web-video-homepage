@@ -16,6 +16,7 @@ const JwPlayer = (props) => {
     file: props.data.url,
     primary: 'html5',
     width: '100%',
+    hlsjsdefault: true,
     aspectratio: '16:9',
     displaytitle: true,
     setFullscreen: true,
@@ -34,12 +35,17 @@ const JwPlayer = (props) => {
   };
   // Initial Setup
   useEffect(() => {
+    console.log('PLAYER GET DATA: ',jwDefaults)
+    // console.log(window.jwplayer);
     const jwplayer = window.jwplayer(idPlayer);
     jwplayer.setup(options);
     setPlayer(jwplayer);
+    jwplayer.on('setupError', (event) => {
+      console.log('SETUP ERROR', event)
+    });
     return () => {
       console.log('PLAYER FILE :', props.file);
-      if (player !== null) {
+      if (player !== null) {  
         console.log('DISPOSEEEEEE');
         jwplayer.remove();
       }
@@ -59,6 +65,7 @@ const JwPlayer = (props) => {
   useEffect(() => {
     if (player !== null) {
       player.on('ready', (event) => {
+        if (props.isFullscreen) player.setFullscreen(true);
         const playerContainer = player.getContainer();
         const fowardContainer = playerContainer.querySelector('.jw-icon-next');
         const backwardContainer = playerContainer.querySelector('.jw-icon-rewind');

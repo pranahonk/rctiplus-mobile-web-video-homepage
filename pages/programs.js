@@ -26,7 +26,8 @@ import fetch from 'isomorphic-unfetch';
 import { getCookie } from '../utils/cookie';
 import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
 import { alertDownload, onTracking, onTrackingClick } from '../components/Includes/program-detail/programDetail';
-const Player = dynamic(() => import('../components/Includes/Player/Player'));
+// const Player = dynamic(() => import('../components/Includes/Player/Player'));
+const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
 const HeadMeta = dynamic(() => import('../components/Seo/HeadMeta'));
 const MainLoader = dynamic(() => import('../components/Includes/Shimmer/detailProgramLoader').then((mod) => mod.MainLoader));
 const TabListLoader = dynamic(() => import('../components/Includes/Shimmer/detailProgramLoader').then((mod) => mod.TabListLoader));
@@ -600,7 +601,8 @@ class Index extends React.Component {
         const data = this.props.data && this.props.data['data-player'];
         return (
           <div className="program-detail-player-wrapper">
-              <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} />
+              <JwPlayer data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} />
+              {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
           </div>
         );
       }
@@ -619,7 +621,8 @@ class Index extends React.Component {
       const data = this.props.server && this.props.server[this.type];
       return (
         <div className="program-detail-player-wrapper trailer">
-            <Player data={ data.data } ref={this.ref} isFullscreen={ true }/>
+            <JwPlayer data={ data.data } ref={this.ref} isFullscreen={ true }/>
+            {/* <Player data={ data.data } ref={this.ref} isFullscreen={ true }/> */}
         </div>
       );
     }
