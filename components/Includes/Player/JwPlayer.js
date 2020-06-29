@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { convivaJwPlayer} from '../../../utils/conviva';
 import { getUserId } from '../../../utils/appier';
 import { onTrackingClick } from '../program-detail/programDetail';
-import { useDoubleTap} from 'use-double-tap';
 import '../../../assets/scss/jwplayer.scss';
 
 const JwPlayer = (props) => {
