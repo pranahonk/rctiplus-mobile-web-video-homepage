@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import $ from 'jquery';
-import { useSelector, useDispatch } from 'react-redux';
+// import { useSelector, useDispatch } from 'react-redux';
 
 const AdsBanner = ({path, size, idGpt, style, partner}) => {
   const [ads, setAds] = useState(null);
   const toggleAds = useSelector(state => state.ads)
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   useEffect(() => {
     const googletag = window.googletag || {};
     window.googletag = window.googletag || {cmd: []};
