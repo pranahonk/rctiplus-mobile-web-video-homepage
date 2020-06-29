@@ -25,10 +25,10 @@ const JwPlayer = (props) => {
     displaytitle: true,
     setFullscreen: true,
     stretching: 'uniform',
-    // advertising: {
-    //   client: process.env.ADVERTISING_CLIENT,
-    //   schedule: props.data.vmap,
-    // },
+    advertising: {
+      client: process.env.ADVERTISING_CLIENT,
+      schedule: props.data.vmap,
+    },
     skin: {
       name: 'rplus_player',
     },
