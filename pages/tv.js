@@ -6,9 +6,11 @@ import { withRouter } from 'next/router';
 import { Picker } from 'emoji-mart';
 import Img from 'react-image';
 import TimeAgo from 'react-timeago';
+import dynamic from 'next/dynamic';
 
 import initialize from '../utils/initialize';
 import { getCountdown } from '../utils/helpers';
+import { convivaJwPlayer } from '../utils/conviva';
 
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 import pageActions from '../redux/actions/pageActions';
@@ -59,7 +61,7 @@ import qualityLevels from 'videojs-contrib-quality-levels';
 
 import 'videojs-seek-buttons';
 import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
-
+const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
 const innerHeight = require('ios-inner-height');
 
 class Tv extends React.Component {
@@ -77,6 +79,8 @@ class Tv extends React.Component {
 		this.inputChatBoxRef = React.createRef();
 		const now = new Date();
 		this.state = {
+			data_player: {},
+			data_player_type: 'live tv',
 			live_events: [],
 			selected_live_event: {},
 			selected_live_event_url: {},
@@ -139,6 +143,10 @@ class Tv extends React.Component {
 		if (this.convivaTracker) {
 			this.convivaTracker.cleanUpSession();
 		}
+		if (window.convivaVideoAnalytics) {
+			const convivaTracker = convivaJwPlayer();
+			convivaTracker.cleanUpSession();
+		}
 	}
 	componentDidUpdate() {
 		// this.sample();
@@ -200,618 +208,6 @@ class Tv extends React.Component {
 		return null;
 	}
 
-	initVOD() {
-		if (this.player) {
-			this.player.remove();
-		}
-		const playerId = 'live-tv-player';
-
-		this.player = window.jwplayer(playerId);
-		this.player.setup({
-			autostart: true,
-			floating: false,
-			file: this.state.player_url,
-			primary: 'html5',
-			width: '100%',
-			aspectratio: '16:9',
-			displaytitle: true,
-			setFullscreen: true,
-			stretching: 'exactfit',
-			advertising: {
-				client: process.env.ADVERTISING_CLIENT,
-				schedule: this.state.player_vmap
-			},
-			logo: {
-				hide: true
-			}
-		});
-
-		// this.player.on('adImpression', () => {
-		// 	this.setState({ ad_closed: true });
-		// });
-
-		// this.player.on('adComplete', () => {
-		// 	this.setState({ ad_closed: false }, () => {
-		// 		window.googletag = window.googletag || { cmd: [] };
-		// 		googletag.cmd.push(function () {
-		// 			googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60], [320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
-		// 			googletag.pubads().enableSingleRequest();
-		// 			googletag.pubads().collapseEmptyDivs();
-		// 			googletag.enableServices();
-		// 		});
-		// 	});
-		// });
-
-		const self = this;
-		this.player.on('ready', function () {
-			const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
-			switch (self.state.selected_tab) {
-				case 'live':
-					const currentEpg = self.getCurrentLiveEpg();
-					if (currentEpg != null) {
-						conviva.startMonitoring(this);
-						const assetMetadata = {
-							viewer_id: getUserId().toString(),
-							application_name: 'RCTI+ MWEB',
-							asset_cdn: 'Conversant',
-							version: process.env.VERSION,
-							start_session: 0,
-							playerVersion: process.env.PLAYER_VERSION,
-							tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id : self.state.selected_live_event.content_id,
-							tv_name: assetName.toUpperCase(),
-							content_id: currentEpg.id,
-							asset_name: assetName.toUpperCase()
-						};
-						console.log('FIRST FRAME CONVIVA', assetMetadata);
-						conviva.updatePlayerAssetMetadata(this, assetMetadata);
-					}
-					break;
-
-				case 'catch_up_tv':
-					conviva.startMonitoring(this);
-					const assetMetadata = {
-						viewer_id: getUserId().toString(),
-						application_name: 'RCTI+ MWEB',
-						asset_cdn: 'Conversant',
-						version: process.env.VERSION,
-						start_session: 0,
-						playerVersion: process.env.PLAYER_VERSION,
-						tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id : self.state.selected_live_event.content_id,
-						tv_name: assetName.toUpperCase(),
-						content_id: currentEpg.id,
-						asset_name: assetName.toUpperCase()
-					};
-					console.log('FIRST FRAME CONVIVA', assetMetadata);
-					conviva.updatePlayerAssetMetadata(this, assetMetadata);
-					break;
-			}
-
-			if (isIOS) {
-				let elementJwplayerInit = document.querySelector(`#${playerId} > .jw-wrapper`);
-				let elementCreateWrapper = document.createElement('btn');
-				let elementMuteIcon = document.createElement('span');
-				elementCreateWrapper.classList.add('jwplayer-vol-off');
-				elementCreateWrapper.innerText = 'Tap to unmute ';
-
-				jwplayer().setMute(true);
-				elementJwplayerInit.appendChild(elementCreateWrapper);
-				elementCreateWrapper.appendChild(elementMuteIcon);
-				elementCreateWrapper.addEventListener('click', () => {
-					if (elementCreateWrapper === null) {
-						jwplayer().setMute(true);
-						elementJwplayer[0].classList.add('jwplayer-mute');
-						elementJwplayer[0].classList.remove('jwplayer-full');
-					}
-					else {
-						jwplayer().setMute(false);
-						elementCreateWrapper.classList.add('jwplayer-full');
-						elementCreateWrapper.classList.remove('jwplayer-mute');
-					}
-				});
-			}
-		});
-
-		this.player.on('mute', function () {
-			let elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
-			if (elementJwplayer[0] !== undefined) {
-				if (jwplayer().getMute()) {
-					elementJwplayer[0].classList.add('jwplayer-mute');
-					elementJwplayer[0].classList.remove('jwplayer-full');
-				} else {
-					elementJwplayer[0].classList.add('jwplayer-full');
-					elementJwplayer[0].classList.remove('jwplayer-mute');
-				}
-			}
-		});
-
-		this.player.on('setupError', error => {
-			console.log(error);
-			this.player.remove();
-			this.setState({
-				error: true,
-				error_data: error
-			});
-		});
-
-		this.player.on('error', error => {
-			console.log(error);
-			this.player.remove();
-			this.setState({
-				error: true,
-				error_data: error
-			});
-		});
-		this.player.on('fullscreen', () => {
-			if (screen.orientation.type === 'portrait-primary') {
-				document.querySelector("#live-tv-player").requestFullscreen();
-				screen.orientation.lock("landscape-primary");
-			}
-			if (screen.orientation.type === 'landscape-primary') {
-				document.querySelector("#live-tv-player").requestFullscreen();
-				screen.orientation.lock("portrait-primary");
-			}
-		});
-
-		this.player.on('play', function () {
-			if (self.state.selected_tab === 'catch_up_tv') {
-				if (self.state.selected_catchup) {
-					liveTvCatchupSchedulePlay(self.state.selected_date, self.state.live_events[self.state.selected_index].id ? self.state.live_events[self.state.selected_index].id : self.state.live_events[self.state.selected_index].id, self.state.live_events[self.state.selected_index].name, self.state.selected_catchup.title, 'mweb_livetv_catchup_schedule_play');
-				}
-			}
-		});
-	}
-
-	removeSkipButton() {
-		if (this.player) {
-			const playerChildNodes = this.player.el().childNodes;
-			for (let i = 0; i < playerChildNodes.length; i++) {
-				if (playerChildNodes[i].className == 'vjs-control-bar') {
-					let vjsControlBarChilds = playerChildNodes[i].childNodes;
-					for (let j = 0; j < vjsControlBarChilds.length; j++) {
-						if (vjsControlBarChilds[j].className == 'vjs-seek-button skip-back skip-10 vjs-control vjs-button' || vjsControlBarChilds[j].className == 'vjs-seek-button skip-forward skip-10 vjs-control vjs-button') {
-							vjsControlBarChilds[j].parentNode.removeChild(vjsControlBarChilds[j]);
-						}
-					}
-
-					vjsControlBarChilds = playerChildNodes[i].childNodes;
-					for (let j = 0; j < vjsControlBarChilds.length; j++) {
-						if (vjsControlBarChilds[j].className == 'vjs-seek-button skip-back skip-10 vjs-control vjs-button' || vjsControlBarChilds[j].className == 'vjs-seek-button skip-forward skip-10 vjs-control vjs-button') {
-							vjsControlBarChilds[j].parentNode.removeChild(vjsControlBarChilds[j]);
-						}
-					}
-					break;
-				}
-			}
-		}
-	}
-
-	setupPlayerBehavior() {
-		if (this.player) {
-			this.player.on('useractive', () => {
-				if (!this.player.paused()) {
-					const seekButtons = document.getElementsByClassName('vjs-seek-button');
-					for (let i = 0; i < seekButtons.length; i++) {
-						seekButtons[i].style.display = 'block';
-					}
-					
-					this.setState({ user_active: true });
-				}
-			});
-
-			this.player.on('userinactive', () => {
-				if (!this.player.paused()) {
-					const seekButtons = document.getElementsByClassName('vjs-seek-button');
-					for (let i = 0; i < seekButtons.length; i++) {
-						seekButtons[i].style.display = 'none';
-					}
-
-					this.setState({ user_active: false });
-				}
-
-				if (this.state.quality_selector_shown) {
-                    this.triggerQualityButtonClick('inactive');
-				}
-				this.setState({ quality_selector_shown: false });
-			});
-
-			this.player.on('play', () => {
-				const seekButtons = document.getElementsByClassName('vjs-seek-button');
-				for (let i = 0; i < seekButtons.length; i++) {
-					seekButtons[i].style.display = 'none';
-				}
-
-				const playButton = document.getElementsByClassName('vjs-big-play-button');
-				if (playButton.length > 0) {
-					playButton[0].style.display = 'none';
-				}
-
-				this.setState({ playing: true });
-			});
-
-			this.player.on('pause', () => {
-				const seekButtons = document.getElementsByClassName('vjs-seek-button');
-				for (let i = 0; i < seekButtons.length; i++) {
-					seekButtons[i].style.display = 'none';
-				}
-
-				const playButton = document.getElementsByClassName('vjs-big-play-button');
-				if (playButton.length > 0) {
-					playButton[0].style.display = 'block';
-				}
-
-				this.setState({ playing: false });
-			});
-
-			this.player.on('playing', () => {
-				this.setState({ playing: true });
-			});
-		}
-	}
-
-	setSkipButtonCentered(orientation = 'portrait') {
-		if (this.player) {
-			const player = document.getElementById(this.player.id());
-			if (player) {
-				const playerHeight = player.clientHeight;
-				const seekButtons = document.getElementsByClassName('vjs-seek-button');
-				for (let i = 0; i < seekButtons.length; i++) {
-					seekButtons[i].style.bottom = (Math.floor(playerHeight / 2) - 5) + 'px';
-
-					if (i == 0) {
-						seekButtons[i].style.left = (this.state.screen_width - ((this.state.screen_width / 3) * (orientation == 'portrait' ? 2.35 : 2.20))) + 'px';
-					}
-					else if (i == 1) {
-						seekButtons[i].style.left = (this.state.screen_width - (this.state.screen_width / 3)) + 'px';
-					}
-				}
-			}
-
-		}
-	}
-
-	changeQualityIconButton() {
-        const self = this;
-        setTimeout(() => {
-			const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
-            if (qualitySelectorElement.length > 0) {
-				const childs = qualitySelectorElement[0].childNodes;
-                for (let i = 0; i < childs.length; i++) {
-                    if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
-                        childs[i].addEventListener('touchstart', function() {
-                            console.log('touch');
-                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
-                        });
-                        const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
-                        for (let j = 0; j < qualityItems.length; j++) {
-                            qualityItems[j].addEventListener('touchstart', function() {
-                                console.log('touch');
-                                self.setState({ quality_selector_shown: false });
-                            });
-                        }
-                        childs[i].addEventListener('click', function() {
-                            console.log('click');
-                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
-                        });
-                        
-						const grandChilds = childs[i].childNodes;
-                        for (let j = 0; j < grandChilds.length; j++) {
-                            if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
-                                grandChilds[j].classList.remove('vjs-icon-hd');
-                                grandChilds[j].innerHTML = '<i style="transform: scale(1.5)" class="fas fa-cog"></i>';
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-        }, 1000);
-    }
-
-    triggerQualityButtonClick(type = '') {
-        const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
-        if (qualitySelectorElement.length > 0) {
-            const childs = qualitySelectorElement[0].childNodes;
-            for (let i = 0; i < childs.length; i++) {
-                if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button' && type == 'inactive') {
-                    childs[i].click();
-                    break;
-                }
-            }
-        }
-    }
-
-	initPlayer() {
-
-		// status code 12 means the video is geoblock-ed
-		if (this.state.status && this.state.status.code === 12) {
-			return;
-		}
-
-		if (this.disconnectHandler) {
-			clearTimeout(this.disconnectHandler);
-			this.disconnectHandler = null;
-		}
-
-		if (this.videoNode) {
-			const assetName = this.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : this.state.selected_live_event.channel_code;
-			if (this.state.first_init_player) {
-				this.setState({ first_init_player: false, screen_width: window.outerWidth }, () => {
-					const self = this;
-					videojs.registerPlugin('hlsQualitySelector', qualitySelector);
-					this.player = videojs(this.videoNode, {
-						id: 'tv-player',
-						autoplay: true,
-						controls: true,
-						muted: isIOS,
-						// muted: true,
-						fluid: true,
-						aspectratio: '16:9',
-						fill: true,
-						html5: {
-							hls: {
-								overrideNative: true,
-							},
-						},
-						sources: [{
-							src: this.state.player_url,
-							type: 'application/x-mpegURL'
-						}]
-					}, function onPlayerReady() {
-						console.log('onPlayerReady', this);
-						const player = this;
-						switch (self.state.selected_tab) {
-							case 'live':
-								self.removeSkipButton();
-								const currentEpg = self.getCurrentLiveEpg();
-								if (currentEpg != null) {
-									const customTags = {
-										app_version: process.env.APP_VERSION,
-										carrier: 'N/A',
-										connection_type: 'N/A',
-										content_type: 'live tv',
-										content_id: 'N/A',
-										program_name: 'N/A',
-										tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id.toString() : self.state.selected_live_event.content_id.toString(),
-										tv_name: assetName.toUpperCase(),
-										date_video: 'N/A',
-										genre: 'N/A',
-										page_title: 'N/A',
-										page_view: 'N/A',
-										program_id: 'N/A',
-										screen_mode: 'portrait',
-										time_video: 'N/A',
-										viewer_id: getUserId().toString(),
-										application_name: 'RCTI+ MWEB',
-										section_page: 'N/A',
-										genre: 'N/A'
-									};
-
-									self.convivaTracker = convivaVideoJs(assetName.toUpperCase(), player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), customTags);
-									self.convivaTracker.createSession();
-								}
-								break;
-
-							case 'catch_up_tv':
-								player.seekButtons({
-									forward: 10,
-									back: 10
-								});
-								setTimeout(() => {
-									self.setSkipButtonCentered();
-								}, 2000);
-								window.onresize = () => {
-									self.setSkipButtonCentered();
-								};
-
-								const customTags = {
-									app_version: process.env.APP_VERSION,
-									carrier: 'N/A',
-									connection_type: 'N/A',
-									content_type: 'catch up tv',
-									content_id: self.state.selected_catchup.id.toString(),
-									program_name: 'N/A',
-									tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id.toString() : self.state.selected_live_event.content_id.toString(),
-									tv_name: assetName.toUpperCase(),
-									date_video: 'N/A',
-									genre: 'N/A',
-									page_title: 'N/A',
-									page_view: 'N/A',
-									program_id: 'N/A',
-									screen_mode: 'portrait',
-									time_video: 'N/A',
-									viewer_id: getUserId().toString(),
-									application_name: 'RCTI+ MWEB',
-									section_page: 'N/A',
-									genre: 'N/A'
-								};
-
-								self.convivaTracker = convivaVideoJs(self.state.selected_catchup.title.toUpperCase(), player, player.duration(), self.state.player_url, 'RCTI+ MWEB', customTags);
-								self.convivaTracker.createSession();
-								break;
-						}
-
-						self.setupPlayerBehavior();
-						setTimeout(() => {
-							self.changeQualityIconButton();
-						}, 100);
-						
-						const vm = this;
-						if(isIOS) {
-							vm.muted(true)
-							const wrapElement = document.getElementsByClassName('video-js');
-							const elementCreateWrapper = document.createElement('btn');
-							const elementMuteIcon = document.createElement('span');
-							elementCreateWrapper.classList.add('jwplayer-vol-off');
-							elementCreateWrapper.innerText = 'Tap to unmute ';
-							wrapElement[0].appendChild(elementCreateWrapper);
-							elementCreateWrapper.appendChild(elementMuteIcon);
-							elementCreateWrapper.addEventListener('click', function() {
-								console.log('mute video');
-								vm.muted(false);
-								elementCreateWrapper.classList.remove('jwplayer-mute');
-								elementCreateWrapper.classList.add('jwplayer-full');
-							});
-						}
-						const promise = vm.play();
-						if(promise !== undefined) {
-							promise.then(() => {
-								vm.play()
-								console.log('autoplay');
-							})
-							.catch((err) => console.log(err))
-						}
-					});
-
-					this.player.on('fullscreenchange', () => {
-						if (screen.orientation.type === 'portrait-primary') {
-							screen.orientation.lock("landscape-primary");
-						}
-						if (screen.orientation.type === 'landscape-primary') {
-							screen.orientation.lock("portrait-primary");
-						}
-					});
-					this.player.on('error', () => {
-						this.setState({
-							error: true,
-							first_init_player: true
-						});
-					});
-
-					this.player.hlsQualitySelector({
-						displayCurrentQuality: true
-					});
-
-					this.disconnectHandler = null;
-					this.player.on('waiting', (e) => {
-						if (this.disconnectHandler) {
-							console.log('CLEAR TIMEOUT');
-							clearTimeout(this.disconnectHandler);
-						}
-
-						this.disconnectHandler = setTimeout(() => {
-							console.log('ERROR');
-							this.setState({
-								error: true,
-							});
-						}, 40000);
-					})
-
-					this.player.on('playing', () => {
-						if (this.disconnectHandler) {
-							console.log('CLEAR TIMEOUT');
-							clearTimeout(this.disconnectHandler);
-						}
-					});
-
-					window.onorientationchange = () => {
-						if (!isIOS) {
-							this.player.userActive(false);
-							setTimeout(() => {
-								this.setState({ screen_width: window.outerWidth }, () => {
-									let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
-									this.setSkipButtonCentered(orientation);
-								});
-							}, 1000);
-						}
-					};
-
-					this.player.ima({
-						adTagUrl: this.state.player_vmap,
-						preventLateAdStart: true,
-						adsManagerLoadedCallback: () => {
-							this.player.ima.addEventListener(google.ima.AdEvent.Type.STARTED, () => {
-								console.log('google.ima.AdEvent.Type.STARTED');
-							});
-						}
-					});
-
-					this.player.ima.initializeAdDisplayContainer();
-				});
-			}
-			else {
-				this.player.src(this.state.player_url);
-				this.player.ima.changeAdTag(this.state.player_vmap);
-				this.player.ima.initializeAdDisplayContainer();
-				this.player.ima.requestAds();
-
-				this.setupPlayerBehavior();
-
-				switch (this.state.selected_tab) {
-					case 'live':
-						this.removeSkipButton();
-						const currentEpg = this.getCurrentLiveEpg();
-						if (currentEpg != null) {
-							const customTags = {
-								app_version: process.env.APP_VERSION,
-								carrier: 'N/A',
-								connection_type: 'N/A',
-								content_type: 'live tv',
-								content_id: 'N/A',
-								program_name: 'N/A',
-								tv_id: this.state.selected_live_event.id ? this.state.selected_live_event.id.toString() : this.state.selected_live_event.content_id.toString(),
-								tv_name: assetName.toUpperCase(),
-								date_video: 'N/A',
-								genre: 'N/A',
-								page_title: 'N/A',
-								page_view: 'N/A',
-								program_id: 'N/A',
-								screen_mode: 'portrait',
-								time_video: 'N/A',
-								viewer_id: getUserId().toString(),
-								application_name: 'RCTI+ MWEB',
-								section_page: 'N/A',
-								genre: 'N/A'
-							};
-
-							this.convivaTracker = convivaVideoJs(assetName.toUpperCase(), this.player, true, this.state.player_url, 'Live TV ' + assetName.toUpperCase(), customTags);
-							this.convivaTracker.createSession();
-						}
-
-						break;
-
-					case 'catch_up_tv':
-						this.player.seekButtons({
-							forward: 10,
-							back: 10
-						});
-						setTimeout(() => {
-							this.setSkipButtonCentered();
-						}, 2000);
-						window.onresize = () => {
-							this.setSkipButtonCentered();
-						};
-
-						const customTags = {
-							app_version: process.env.APP_VERSION,
-							carrier: 'N/A',
-							connection_type: 'N/A',
-							content_type: 'catch up tv',
-							content_id: this.state.selected_catchup.id.toString(),
-							program_name: 'N/A',
-							tv_id: this.state.selected_live_event.id ? this.state.selected_live_event.id.toString() : this.state.selected_live_event.content_id.toString(),
-							tv_name: assetName.toUpperCase(),
-							date_video: 'N/A',
-							genre: 'N/A',
-							page_title: 'N/A',
-							page_view: 'N/A',
-							program_id: 'N/A',
-							screen_mode: 'portrait',
-							time_video: 'N/A',
-							viewer_id: getUserId().toString(),
-							application_name: 'RCTI+ MWEB',
-							section_page: 'N/A',
-							genre: 'N/A'
-						};
-
-						this.convivaTracker = convivaVideoJs(this.state.selected_catchup.title, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), customTags);
-						this.convivaTracker.createSession();
-						break;
-				}
-			}
-		}
-	}
-
 	loadChatMessages(id) {
 		// this.props.setPageLoader();
 		this.setState({ chats: [] }, () => {
@@ -865,6 +261,619 @@ class Tv extends React.Component {
 							firstLoadChat = false;
 						});
 					});
+
+	// initVOD() {
+	// 	if (this.player) {
+	// 		this.player.remove();
+	// 	}
+	// 	const playerId = 'live-tv-player';
+
+	// 	this.player = window.jwplayer(playerId);
+	// 	this.player.setup({
+	// 		autostart: true,
+	// 		floating: false,
+	// 		file: this.state.player_url,
+	// 		primary: 'html5',
+	// 		width: '100%',
+	// 		aspectratio: '16:9',
+	// 		displaytitle: true,
+	// 		setFullscreen: true,
+	// 		stretching: 'exactfit',
+	// 		advertising: {
+	// 			client: process.env.ADVERTISING_CLIENT,
+	// 			schedule: this.state.player_vmap
+	// 		},
+	// 		logo: {
+	// 			hide: true
+	// 		}
+	// 	});
+
+	// 	// this.player.on('adImpression', () => {
+	// 	// 	this.setState({ ad_closed: true });
+	// 	// });
+
+	// 	// this.player.on('adComplete', () => {
+	// 	// 	this.setState({ ad_closed: false }, () => {
+	// 	// 		window.googletag = window.googletag || { cmd: [] };
+	// 	// 		googletag.cmd.push(function () {
+	// 	// 			googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60], [320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
+	// 	// 			googletag.pubads().enableSingleRequest();
+	// 	// 			googletag.pubads().collapseEmptyDivs();
+	// 	// 			googletag.enableServices();
+	// 	// 		});
+	// 	// 	});
+	// 	// });
+
+	// 	const self = this;
+	// 	this.player.on('ready', function () {
+	// 		const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
+	// 		switch (self.state.selected_tab) {
+	// 			case 'live':
+	// 				const currentEpg = self.getCurrentLiveEpg();
+	// 				if (currentEpg != null) {
+	// 					conviva.startMonitoring(this);
+	// 					const assetMetadata = {
+	// 						viewer_id: getUserId().toString(),
+	// 						application_name: 'RCTI+ MWEB',
+	// 						asset_cdn: 'Conversant',
+	// 						version: process.env.VERSION,
+	// 						start_session: 0,
+	// 						playerVersion: process.env.PLAYER_VERSION,
+	// 						tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id : self.state.selected_live_event.content_id,
+	// 						tv_name: assetName.toUpperCase(),
+	// 						content_id: currentEpg.id,
+	// 						asset_name: assetName.toUpperCase()
+	// 					};
+	// 					console.log('FIRST FRAME CONVIVA', assetMetadata);
+	// 					conviva.updatePlayerAssetMetadata(this, assetMetadata);
+	// 				}
+	// 				break;
+
+	// 			case 'catch_up_tv':
+	// 				conviva.startMonitoring(this);
+	// 				const assetMetadata = {
+	// 					viewer_id: getUserId().toString(),
+	// 					application_name: 'RCTI+ MWEB',
+	// 					asset_cdn: 'Conversant',
+	// 					version: process.env.VERSION,
+	// 					start_session: 0,
+	// 					playerVersion: process.env.PLAYER_VERSION,
+	// 					tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id : self.state.selected_live_event.content_id,
+	// 					tv_name: assetName.toUpperCase(),
+	// 					content_id: currentEpg.id,
+	// 					asset_name: assetName.toUpperCase()
+	// 				};
+	// 				console.log('FIRST FRAME CONVIVA', assetMetadata);
+	// 				conviva.updatePlayerAssetMetadata(this, assetMetadata);
+	// 				break;
+	// 		}
+
+	// 		if (isIOS) {
+	// 			let elementJwplayerInit = document.querySelector(`#${playerId} > .jw-wrapper`);
+	// 			let elementCreateWrapper = document.createElement('btn');
+	// 			let elementMuteIcon = document.createElement('span');
+	// 			elementCreateWrapper.classList.add('jwplayer-vol-off');
+	// 			elementCreateWrapper.innerText = 'Tap to unmute ';
+
+	// 			jwplayer().setMute(true);
+	// 			elementJwplayerInit.appendChild(elementCreateWrapper);
+	// 			elementCreateWrapper.appendChild(elementMuteIcon);
+	// 			elementCreateWrapper.addEventListener('click', () => {
+	// 				if (elementCreateWrapper === null) {
+	// 					jwplayer().setMute(true);
+	// 					elementJwplayer[0].classList.add('jwplayer-mute');
+	// 					elementJwplayer[0].classList.remove('jwplayer-full');
+	// 				}
+	// 				else {
+	// 					jwplayer().setMute(false);
+	// 					elementCreateWrapper.classList.add('jwplayer-full');
+	// 					elementCreateWrapper.classList.remove('jwplayer-mute');
+	// 				}
+	// 			});
+	// 		}
+	// 	});
+
+	// 	this.player.on('mute', function () {
+	// 		let elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
+	// 		if (elementJwplayer[0] !== undefined) {
+	// 			if (jwplayer().getMute()) {
+	// 				elementJwplayer[0].classList.add('jwplayer-mute');
+	// 				elementJwplayer[0].classList.remove('jwplayer-full');
+	// 			} else {
+	// 				elementJwplayer[0].classList.add('jwplayer-full');
+	// 				elementJwplayer[0].classList.remove('jwplayer-mute');
+	// 			}
+	// 		}
+	// 	});
+
+	// 	this.player.on('setupError', error => {
+	// 		console.log(error);
+	// 		this.player.remove();
+	// 		this.setState({
+	// 			error: true,
+	// 			error_data: error
+	// 		});
+	// 	});
+
+	// 	this.player.on('error', error => {
+	// 		console.log(error);
+	// 		this.player.remove();
+	// 		this.setState({
+	// 			error: true,
+	// 			error_data: error
+	// 		});
+	// 	});
+	// 	this.player.on('fullscreen', () => {
+	// 		if (screen.orientation.type === 'portrait-primary') {
+	// 			document.querySelector("#live-tv-player").requestFullscreen();
+	// 			screen.orientation.lock("landscape-primary");
+	// 		}
+	// 		if (screen.orientation.type === 'landscape-primary') {
+	// 			document.querySelector("#live-tv-player").requestFullscreen();
+	// 			screen.orientation.lock("portrait-primary");
+	// 		}
+	// 	});
+
+	// 	this.player.on('play', function () {
+	// 		if (self.state.selected_tab === 'catch_up_tv') {
+	// 			if (self.state.selected_catchup) {
+	// 				liveTvCatchupSchedulePlay(self.state.selected_date, self.state.live_events[self.state.selected_index].id ? self.state.live_events[self.state.selected_index].id : self.state.live_events[self.state.selected_index].id, self.state.live_events[self.state.selected_index].name, self.state.selected_catchup.title, 'mweb_livetv_catchup_schedule_play');
+	// 			}
+	// 		}
+	// 	});
+	// }
+
+	// removeSkipButton() {
+	// 	if (this.player) {
+	// 		const playerChildNodes = this.player.el().childNodes;
+	// 		for (let i = 0; i < playerChildNodes.length; i++) {
+	// 			if (playerChildNodes[i].className == 'vjs-control-bar') {
+	// 				let vjsControlBarChilds = playerChildNodes[i].childNodes;
+	// 				for (let j = 0; j < vjsControlBarChilds.length; j++) {
+	// 					if (vjsControlBarChilds[j].className == 'vjs-seek-button skip-back skip-10 vjs-control vjs-button' || vjsControlBarChilds[j].className == 'vjs-seek-button skip-forward skip-10 vjs-control vjs-button') {
+	// 						vjsControlBarChilds[j].parentNode.removeChild(vjsControlBarChilds[j]);
+	// 					}
+	// 				}
+
+	// 				vjsControlBarChilds = playerChildNodes[i].childNodes;
+	// 				for (let j = 0; j < vjsControlBarChilds.length; j++) {
+	// 					if (vjsControlBarChilds[j].className == 'vjs-seek-button skip-back skip-10 vjs-control vjs-button' || vjsControlBarChilds[j].className == 'vjs-seek-button skip-forward skip-10 vjs-control vjs-button') {
+	// 						vjsControlBarChilds[j].parentNode.removeChild(vjsControlBarChilds[j]);
+	// 					}
+	// 				}
+	// 				break;
+	// 			}
+	// 		}
+	// 	}
+	// }
+
+	// setupPlayerBehavior() {
+	// 	if (this.player) {
+	// 		this.player.on('useractive', () => {
+	// 			if (!this.player.paused()) {
+	// 				const seekButtons = document.getElementsByClassName('vjs-seek-button');
+	// 				for (let i = 0; i < seekButtons.length; i++) {
+	// 					seekButtons[i].style.display = 'block';
+	// 				}
+					
+	// 				this.setState({ user_active: true });
+	// 			}
+	// 		});
+
+	// 		this.player.on('userinactive', () => {
+	// 			if (!this.player.paused()) {
+	// 				const seekButtons = document.getElementsByClassName('vjs-seek-button');
+	// 				for (let i = 0; i < seekButtons.length; i++) {
+	// 					seekButtons[i].style.display = 'none';
+	// 				}
+
+	// 				this.setState({ user_active: false });
+	// 			}
+
+	// 			if (this.state.quality_selector_shown) {
+  //                   this.triggerQualityButtonClick('inactive');
+	// 			}
+	// 			this.setState({ quality_selector_shown: false });
+	// 		});
+
+	// 		this.player.on('play', () => {
+	// 			const seekButtons = document.getElementsByClassName('vjs-seek-button');
+	// 			for (let i = 0; i < seekButtons.length; i++) {
+	// 				seekButtons[i].style.display = 'none';
+	// 			}
+
+	// 			const playButton = document.getElementsByClassName('vjs-big-play-button');
+	// 			if (playButton.length > 0) {
+	// 				playButton[0].style.display = 'none';
+	// 			}
+
+	// 			this.setState({ playing: true });
+	// 		});
+
+	// 		this.player.on('pause', () => {
+	// 			const seekButtons = document.getElementsByClassName('vjs-seek-button');
+	// 			for (let i = 0; i < seekButtons.length; i++) {
+	// 				seekButtons[i].style.display = 'none';
+	// 			}
+
+	// 			const playButton = document.getElementsByClassName('vjs-big-play-button');
+	// 			if (playButton.length > 0) {
+	// 				playButton[0].style.display = 'block';
+	// 			}
+
+	// 			this.setState({ playing: false });
+	// 		});
+
+	// 		this.player.on('playing', () => {
+	// 			this.setState({ playing: true });
+	// 		});
+	// 	}
+	// }
+
+	// setSkipButtonCentered(orientation = 'portrait') {
+	// 	if (this.player) {
+	// 		const player = document.getElementById(this.player.id());
+	// 		if (player) {
+	// 			const playerHeight = player.clientHeight;
+	// 			const seekButtons = document.getElementsByClassName('vjs-seek-button');
+	// 			for (let i = 0; i < seekButtons.length; i++) {
+	// 				seekButtons[i].style.bottom = (Math.floor(playerHeight / 2) - 5) + 'px';
+
+	// 				if (i == 0) {
+	// 					seekButtons[i].style.left = (this.state.screen_width - ((this.state.screen_width / 3) * (orientation == 'portrait' ? 2.35 : 2.20))) + 'px';
+	// 				}
+	// 				else if (i == 1) {
+	// 					seekButtons[i].style.left = (this.state.screen_width - (this.state.screen_width / 3)) + 'px';
+	// 				}
+	// 			}
+	// 		}
+
+	// 	}
+	// }
+
+	// changeQualityIconButton() {
+  //       const self = this;
+  //       setTimeout(() => {
+	// 		const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+  //           if (qualitySelectorElement.length > 0) {
+	// 			const childs = qualitySelectorElement[0].childNodes;
+  //               for (let i = 0; i < childs.length; i++) {
+  //                   if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
+  //                       childs[i].addEventListener('touchstart', function() {
+  //                           console.log('touch');
+  //                           self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+  //                       });
+  //                       const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
+  //                       for (let j = 0; j < qualityItems.length; j++) {
+  //                           qualityItems[j].addEventListener('touchstart', function() {
+  //                               console.log('touch');
+  //                               self.setState({ quality_selector_shown: false });
+  //                           });
+  //                       }
+  //                       childs[i].addEventListener('click', function() {
+  //                           console.log('click');
+  //                           self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
+  //                       });
+                        
+	// 					const grandChilds = childs[i].childNodes;
+  //                       for (let j = 0; j < grandChilds.length; j++) {
+  //                           if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
+  //                               grandChilds[j].classList.remove('vjs-icon-hd');
+  //                               grandChilds[j].innerHTML = '<i style="transform: scale(1.5)" class="fas fa-cog"></i>';
+  //                               break;
+  //                           }
+  //                       }
+  //                       break;
+  //                   }
+  //               }
+  //           }
+  //       }, 1000);
+  //   }
+
+    // triggerQualityButtonClick(type = '') {
+    //     const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
+    //     if (qualitySelectorElement.length > 0) {
+    //         const childs = qualitySelectorElement[0].childNodes;
+    //         for (let i = 0; i < childs.length; i++) {
+    //             if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button' && type == 'inactive') {
+    //                 childs[i].click();
+    //                 break;
+    //             }
+    //         }
+    //     }
+    // }
+
+	// initPlayer() {
+
+	// 	// status code 12 means the video is geoblock-ed
+	// 	if (this.state.status && this.state.status.code === 12) {
+	// 		return;
+	// 	}
+
+	// 	if (this.disconnectHandler) {
+	// 		clearTimeout(this.disconnectHandler);
+	// 		this.disconnectHandler = null;
+	// 	}
+
+	// 	if (this.videoNode) {
+	// 		const assetName = this.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : this.state.selected_live_event.channel_code;
+	// 		if (this.state.first_init_player) {
+	// 			this.setState({ first_init_player: false, screen_width: window.outerWidth }, () => {
+	// 				const self = this;
+	// 				videojs.registerPlugin('hlsQualitySelector', qualitySelector);
+	// 				this.player = videojs(this.videoNode, {
+	// 					id: 'tv-player',
+	// 					autoplay: true,
+	// 					controls: true,
+	// 					muted: isIOS,
+	// 					// muted: true,
+	// 					fluid: true,
+	// 					aspectratio: '16:9',
+	// 					fill: true,
+	// 					html5: {
+	// 						hls: {
+	// 							overrideNative: true,
+	// 						},
+	// 					},
+	// 					sources: [{
+	// 						src: this.state.player_url,
+	// 						type: 'application/x-mpegURL'
+	// 					}]
+	// 				}, function onPlayerReady() {
+	// 					console.log('onPlayerReady', this);
+	// 					const player = this;
+	// 					switch (self.state.selected_tab) {
+	// 						case 'live':
+	// 							self.removeSkipButton();
+	// 							const currentEpg = self.getCurrentLiveEpg();
+	// 							if (currentEpg != null) {
+	// 								const customTags = {
+	// 									app_version: process.env.APP_VERSION,
+	// 									carrier: 'N/A',
+	// 									connection_type: 'N/A',
+	// 									content_type: 'live tv',
+	// 									content_id: 'N/A',
+	// 									program_name: 'N/A',
+	// 									tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id.toString() : self.state.selected_live_event.content_id.toString(),
+	// 									tv_name: assetName.toUpperCase(),
+	// 									date_video: 'N/A',
+	// 									genre: 'N/A',
+	// 									page_title: 'N/A',
+	// 									page_view: 'N/A',
+	// 									program_id: 'N/A',
+	// 									screen_mode: 'portrait',
+	// 									time_video: 'N/A',
+	// 									viewer_id: getUserId().toString(),
+	// 									application_name: 'RCTI+ MWEB',
+	// 									section_page: 'N/A',
+	// 									genre: 'N/A'
+	// 								};
+
+	// 								self.convivaTracker = convivaVideoJs(assetName.toUpperCase(), player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), customTags);
+	// 								self.convivaTracker.createSession();
+	// 							}
+	// 							break;
+
+	// 						case 'catch_up_tv':
+	// 							player.seekButtons({
+	// 								forward: 10,
+	// 								back: 10
+	// 							});
+	// 							setTimeout(() => {
+	// 								self.setSkipButtonCentered();
+	// 							}, 2000);
+	// 							window.onresize = () => {
+	// 								self.setSkipButtonCentered();
+	// 							};
+
+	// 							const customTags = {
+	// 								app_version: process.env.APP_VERSION,
+	// 								carrier: 'N/A',
+	// 								connection_type: 'N/A',
+	// 								content_type: 'catch up tv',
+	// 								content_id: self.state.selected_catchup.id.toString(),
+	// 								program_name: 'N/A',
+	// 								tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id.toString() : self.state.selected_live_event.content_id.toString(),
+	// 								tv_name: assetName.toUpperCase(),
+	// 								date_video: 'N/A',
+	// 								genre: 'N/A',
+	// 								page_title: 'N/A',
+	// 								page_view: 'N/A',
+	// 								program_id: 'N/A',
+	// 								screen_mode: 'portrait',
+	// 								time_video: 'N/A',
+	// 								viewer_id: getUserId().toString(),
+	// 								application_name: 'RCTI+ MWEB',
+	// 								section_page: 'N/A',
+	// 								genre: 'N/A'
+	// 							};
+
+	// 							self.convivaTracker = convivaVideoJs(self.state.selected_catchup.title.toUpperCase(), player, player.duration(), self.state.player_url, 'RCTI+ MWEB', customTags);
+	// 							self.convivaTracker.createSession();
+	// 							break;
+	// 					}
+
+	// 					self.setupPlayerBehavior();
+	// 					setTimeout(() => {
+	// 						self.changeQualityIconButton();
+	// 					}, 100);
+						
+	// 					const vm = this;
+	// 					if(isIOS) {
+	// 						vm.muted(true)
+	// 						const wrapElement = document.getElementsByClassName('video-js');
+	// 						const elementCreateWrapper = document.createElement('btn');
+	// 						const elementMuteIcon = document.createElement('span');
+	// 						elementCreateWrapper.classList.add('jwplayer-vol-off');
+	// 						elementCreateWrapper.innerText = 'Tap to unmute ';
+	// 						wrapElement[0].appendChild(elementCreateWrapper);
+	// 						elementCreateWrapper.appendChild(elementMuteIcon);
+	// 						elementCreateWrapper.addEventListener('click', function() {
+	// 							console.log('mute video');
+	// 							vm.muted(false);
+	// 							elementCreateWrapper.classList.remove('jwplayer-mute');
+	// 							elementCreateWrapper.classList.add('jwplayer-full');
+	// 						});
+	// 					}
+	// 					const promise = vm.play();
+	// 					if(promise !== undefined) {
+	// 						promise.then(() => {
+	// 							vm.play()
+	// 							console.log('autoplay');
+	// 						})
+	// 						.catch((err) => console.log(err))
+	// 					}
+	// 				});
+
+	// 				this.player.on('fullscreenchange', () => {
+	// 					if (screen.orientation.type === 'portrait-primary') {
+	// 						screen.orientation.lock("landscape-primary");
+	// 					}
+	// 					if (screen.orientation.type === 'landscape-primary') {
+	// 						screen.orientation.lock("portrait-primary");
+	// 					}
+	// 				});
+	// 				this.player.on('error', () => {
+	// 					this.setState({
+	// 						error: true,
+	// 						first_init_player: true
+	// 					});
+	// 				});
+
+	// 				this.player.hlsQualitySelector({
+	// 					displayCurrentQuality: true
+	// 				});
+
+	// 				this.disconnectHandler = null;
+	// 				this.player.on('waiting', (e) => {
+	// 					if (this.disconnectHandler) {
+	// 						console.log('CLEAR TIMEOUT');
+	// 						clearTimeout(this.disconnectHandler);
+	// 					}
+
+	// 					this.disconnectHandler = setTimeout(() => {
+	// 						console.log('ERROR');
+	// 						this.setState({
+	// 							error: true,
+	// 						});
+	// 					}, 40000);
+	// 				})
+
+	// 				this.player.on('playing', () => {
+	// 					if (this.disconnectHandler) {
+	// 						console.log('CLEAR TIMEOUT');
+	// 						clearTimeout(this.disconnectHandler);
+	// 					}
+	// 				});
+
+	// 				window.onorientationchange = () => {
+	// 					if (!isIOS) {
+	// 						this.player.userActive(false);
+	// 						setTimeout(() => {
+	// 							this.setState({ screen_width: window.outerWidth }, () => {
+	// 								let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
+	// 								this.setSkipButtonCentered(orientation);
+	// 							});
+	// 						}, 1000);
+	// 					}
+	// 				};
+
+	// 				this.player.ima({
+	// 					adTagUrl: this.state.player_vmap,
+	// 					preventLateAdStart: true,
+	// 					adsManagerLoadedCallback: () => {
+	// 						this.player.ima.addEventListener(google.ima.AdEvent.Type.STARTED, () => {
+	// 							console.log('google.ima.AdEvent.Type.STARTED');
+	// 						});
+	// 					}
+	// 				});
+
+	// 				this.player.ima.initializeAdDisplayContainer();
+	// 			});
+	// 		}
+	// 		else {
+	// 			this.player.src(this.state.player_url);
+	// 			this.player.ima.changeAdTag(this.state.player_vmap);
+	// 			this.player.ima.initializeAdDisplayContainer();
+	// 			this.player.ima.requestAds();
+
+	// 			this.setupPlayerBehavior();
+
+	// 			switch (this.state.selected_tab) {
+	// 				case 'live':
+	// 					this.removeSkipButton();
+	// 					const currentEpg = this.getCurrentLiveEpg();
+	// 					if (currentEpg != null) {
+	// 						const customTags = {
+	// 							app_version: process.env.APP_VERSION,
+	// 							carrier: 'N/A',
+	// 							connection_type: 'N/A',
+	// 							content_type: 'live tv',
+	// 							content_id: 'N/A',
+	// 							program_name: 'N/A',
+	// 							tv_id: this.state.selected_live_event.id ? this.state.selected_live_event.id.toString() : this.state.selected_live_event.content_id.toString(),
+	// 							tv_name: assetName.toUpperCase(),
+	// 							date_video: 'N/A',
+	// 							genre: 'N/A',
+	// 							page_title: 'N/A',
+	// 							page_view: 'N/A',
+	// 							program_id: 'N/A',
+	// 							screen_mode: 'portrait',
+	// 							time_video: 'N/A',
+	// 							viewer_id: getUserId().toString(),
+	// 							application_name: 'RCTI+ MWEB',
+	// 							section_page: 'N/A',
+	// 							genre: 'N/A'
+	// 						};
+
+	// 						this.convivaTracker = convivaVideoJs(assetName.toUpperCase(), this.player, true, this.state.player_url, 'Live TV ' + assetName.toUpperCase(), customTags);
+	// 						this.convivaTracker.createSession();
+	// 					}
+
+	// 					break;
+
+	// 				case 'catch_up_tv':
+	// 					this.player.seekButtons({
+	// 						forward: 10,
+	// 						back: 10
+	// 					});
+	// 					setTimeout(() => {
+	// 						this.setSkipButtonCentered();
+	// 					}, 2000);
+	// 					window.onresize = () => {
+	// 						this.setSkipButtonCentered();
+	// 					};
+
+	// 					const customTags = {
+	// 						app_version: process.env.APP_VERSION,
+	// 						carrier: 'N/A',
+	// 						connection_type: 'N/A',
+	// 						content_type: 'catch up tv',
+	// 						content_id: this.state.selected_catchup.id.toString(),
+	// 						program_name: 'N/A',
+	// 						tv_id: this.state.selected_live_event.id ? this.state.selected_live_event.id.toString() : this.state.selected_live_event.content_id.toString(),
+	// 						tv_name: assetName.toUpperCase(),
+	// 						date_video: 'N/A',
+	// 						genre: 'N/A',
+	// 						page_title: 'N/A',
+	// 						page_view: 'N/A',
+	// 						program_id: 'N/A',
+	// 						screen_mode: 'portrait',
+	// 						time_video: 'N/A',
+	// 						viewer_id: getUserId().toString(),
+	// 						application_name: 'RCTI+ MWEB',
+	// 						section_page: 'N/A',
+	// 						genre: 'N/A'
+	// 					};
+
+	// 					this.convivaTracker = convivaVideoJs(this.state.selected_catchup.title, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), customTags);
+	// 					this.convivaTracker.createSession();
+	// 					break;
+	// 			}
+	// 		}
+	// 	}
+	// }
+
 
 				// this.props.getChatSocket(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id)
 				// .then(data => {
@@ -959,6 +968,8 @@ class Tv extends React.Component {
 			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id)
 				.then(res => {
 					this.setState({
+						data_player: res.data.data,
+						data_player_type: 'live tv',
 						selected_live_event: this.state.live_events[this.state.selected_index],
 						selected_live_event_url: res.data.data,
 						player_url: res.data.data.url,
@@ -980,7 +991,7 @@ class Tv extends React.Component {
 									}
 
 									if (!this.props.context_data.epg_id) {
-										this.initPlayer();
+										// this.initPlayer();
 									}
 									else if (first === true && this.props.context_data.epg_id) {
 										this.selectCatchup(this.props.context_data.epg_id, 'url');
@@ -1000,7 +1011,7 @@ class Tv extends React.Component {
 								}
 
 								if (!this.props.context_data.epg_id) {
-									this.initPlayer();
+									// this.initPlayer();
 								}
 								else if (first === true && this.props.context_data.epg_id) {
 									this.selectCatchup(this.props.context_data.epg_id, 'url');
@@ -1068,12 +1079,15 @@ class Tv extends React.Component {
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {
 					this.setState({
+						data_player: response.data.data,
+						data_player_type: 'catch up tv',
 						player_url: response.data.data.url,
 						player_vmap: response.data.data[process.env.VMAP_KEY],
 						selected_catchup: response.data.data,
 						error: false
 						// }, () => this.initVOD());
-					}, () => this.initPlayer());
+					// }, () => this.initPlayer());
+					});
 				}
 				else {
 					showAlert(response.data.status.message_server, `
@@ -1151,7 +1165,7 @@ class Tv extends React.Component {
 	tryAgain() {
 		this.setState({ error: false }, () => {
 			// this.initVOD();
-			this.initPlayer();
+			// this.initPlayer();
 		});
 	}
 
@@ -1379,6 +1393,7 @@ class Tv extends React.Component {
 		}, () => { console.log(this.state.isAds)})
 	}
 	render() {
+		const { props, state } = this
 		let playerRef = (<div></div>);
 		if (this.state.error) {
 			playerRef = (
@@ -1511,7 +1526,8 @@ class Tv extends React.Component {
 					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])} />
 
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
-					{playerRef}
+					{/* {playerRef} */}
+					<JwPlayer data={ state.data_player } type={ state.data_player_type }/>
 					<div ref= {this.tvTabRef} className="tv-wrap">
 						<Row>
 							<Col xs={3} className="text-center">

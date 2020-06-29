@@ -9,6 +9,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import GetApp from '@material-ui/icons/GetApp';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import { urlRegex } from '../utils/regex';
+import { convivaJwPlayer } from '../utils/conviva';
 import queryString from 'query-string';
 import {
   fetchDetailProgram, fetchEpisode, fetchSeasonEpisode,
@@ -18,6 +19,7 @@ import {
   fetchBookmark, postBookmark, deleteBookmark,
   fetchLike, postLike, fetchDetailDesc, dataShareSeo,
 } from '../redux/actions/program-detail/programDetail';
+import { postContinueWatching } from '../redux/actions/historyActions';
 import Layout from '../components/Layouts/Default_v2';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Collapse } from 'reactstrap';
 import '../assets/scss/components/program-detail.scss';
@@ -136,8 +138,12 @@ class Index extends React.Component {
     this.reference = queryString.parse(location.search).ref;
     return true;
   }
-  UNSAFE_componentWillMount() {
-  }
+	// componentWillUnmount() {
+	// 	if (window.convivaVideoAnalytics) {
+	// 		const convivaTracker = convivaJwPlayer();
+	// 		convivaTracker.cleanUpSession();
+	// 	}
+	// }
   UNSAFE_componentWillReceiveProps(nextProps) {
   }
   componentDidUpdate(prevProps) {
@@ -601,7 +607,7 @@ class Index extends React.Component {
         const data = this.props.data && this.props.data['data-player'];
         return (
           <div className="program-detail-player-wrapper">
-              <JwPlayer data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} />
+              <JwPlayer data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} isResume={true} />
               {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
           </div>
         );

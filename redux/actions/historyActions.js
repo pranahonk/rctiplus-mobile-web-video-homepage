@@ -64,6 +64,14 @@ const postHistory = (id, type, lastDuration) => {
     });
 };
 
+export const postContinueWatching = (id, type, lastDuration) => {
+    axios.post(`/v1/history`, {
+        id: id,
+        type: type,
+        last_duration: lastDuration,
+    });
+}
+
 const deleteHistory = () => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {

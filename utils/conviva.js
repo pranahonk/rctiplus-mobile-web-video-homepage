@@ -44,6 +44,7 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
 
 export const convivaJwPlayer = (assetName = null, player = null, duration = null, playerUrl = null, tags = {}, cdn = 'Anevia') => {
     console.log('TAGS',tags)
+    console.log('TAGS 2',assetName)
     return {
         assetName: assetName,
         player: player,

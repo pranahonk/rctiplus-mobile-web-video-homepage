@@ -7,7 +7,7 @@ const axios = ax.create({ baseURL: DEV_API + '/api' });
 axios.interceptors.request.use(async (request) => {
   await checkToken();
   const accessToken = getCookie('ACCESS_TOKEN');
-  request.headers.Authorization = accessToken ? accessToken : VISITOR_TOKEN;
+  request.headers['Authorization'] = accessToken === undefined ? getVisitorToken() : accessToken;
   return request;
 });
 
