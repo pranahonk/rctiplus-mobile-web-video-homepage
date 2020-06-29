@@ -30,6 +30,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 
 import '../assets/scss/components/exclusive.scss';
+import { urlRegex } from '../utils/regex';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 
@@ -234,6 +235,7 @@ class Exclusive extends React.Component {
 	}
 
 	async toggle(program = null, video_url = '') {
+		console.log('TESTTTT TOGGLEEE')
 		if (program) {
 			exclusiveContentEvent(program.type, program.id, program.title, program.program_title, program.genre, this.state.meta.image_path + this.state.resolution + program.portrait_image, this.state.meta.image_path + this.state.resolution + program.landscape_image, 'mweb_exclusive_content_clicked');
 
@@ -316,7 +318,8 @@ class Exclusive extends React.Component {
 				exclusiveTitleProgramEvent(program.id, program.title, this.state.active_tab_name, 'mweb_exclusive_title_program_clicked');
 				break;
 		}
-		Router.push(`/programs/${program.program_id}/${program.title.replace(/ +/g, '-').toLowerCase()}?ref=exclusive`);
+		// console.log(program)
+		Router.push(`/programs/${program.program_id}/${urlRegex(program.program_title)}/${program.type}/${program.id}/${urlRegex(program.title)}?ref=exclusive`);
 	}
 
 	getImageFileName(url) {
@@ -366,7 +369,7 @@ class Exclusive extends React.Component {
 					offset={20}
 					onBottom={this.bottomScrollFetch.bind(this, this.state.categories[this.state.active_tab - 1])} />
 
-				<PlayerModal
+				{/* <PlayerModal
 					open={this.state.modal}
 					program={this.state.selected_program}
 					toggle={this.toggle.bind(this)}
@@ -377,7 +380,7 @@ class Exclusive extends React.Component {
 					meta={this.state.meta}
 					status={this.state.status}
 					data={this.state.data}
-					videoUrl={this.state.trailer_url} />
+					videoUrl={this.state.trailer_url} /> */}
 
 				<ActionSheet
 					caption={this.state.caption}
@@ -485,7 +488,7 @@ class Exclusive extends React.Component {
 															</Carousel>)
 															:
 															(
-																<div onClick={this.toggle.bind(this, feed, feed.link_video)}>
+																<div onClick={this.goToDetail.bind(this, feed)}>
 																	<Img 
 																		alt={feed.title} 
 																		className="program-thumbnail" 
