@@ -5,7 +5,7 @@ import $ from 'jquery';
 
 const AdsBanner = ({path, size, idGpt, style, partner}) => {
   const [ads, setAds] = useState(null);
-  const toggleAds = useSelector(state => state.ads)
+  // const toggleAds = useSelector(state => state.ads)
   // const dispatch = useDispatch();
   useEffect(() => {
     const googletag = window.googletag || {};

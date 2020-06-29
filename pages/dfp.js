@@ -1,17 +1,35 @@
 import React from 'react';
 import AdsBanner from '../components/Includes/Banner/Ads';
+import isWebview from 'is-ua-webview';
+import { isIOS, isAndroid } from "react-device-detect";
 
 class Dfp extends React.Component {
   render() {
     return(
       <div>
-        <AdsBanner />
+        <AdsBanner path={getPlatformGpt()} />
       </div>
     )
   }
 }
 
 export default Dfp;
+
+const getPlatformGpt = () => {
+  // webview
+  if(isWebview('Mozilla/5.0 (Linux; Android 4.4.4; One Build/KTU84L.H4) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/28.0.0.20.16;]')) {
+    if(isIOS) {
+      return '/21865661642/PRO_IOS-APP_LIST-NEWS_DISPLAY_300x250'
+    } else {
+      return '/21865661642/PRO_ANDROID-APP_LIST-NEWS_DISPLAY_300x250'
+    }
+  }
+  // native browser
+  if(!isWebview('Mozilla/5.0 (Linux; Android 4.4.4; One Build/KTU84L.H4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.135 Mobile Safari/537.36')) {
+    console.log('NATIVE')
+    return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
+  }
+}
 
 // import React, { useEffect, useState } from 'react';
 // import PropTypes from 'prop-types';
