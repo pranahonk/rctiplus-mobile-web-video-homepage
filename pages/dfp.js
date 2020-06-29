@@ -19,8 +19,10 @@ const getPlatformGpt = () => {
   // webview
   if(isWebview('Mozilla/5.0 (Linux; Android 4.4.4; One Build/KTU84L.H4) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/28.0.0.20.16;]')) {
     if(isIOS) {
+      console.log('ISO')
       return '/21865661642/PRO_IOS-APP_LIST-NEWS_DISPLAY_300x250'
     } else {
+      console.log('ANDROID')
       return '/21865661642/PRO_ANDROID-APP_LIST-NEWS_DISPLAY_300x250'
     }
   }
