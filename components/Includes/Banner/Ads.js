@@ -25,6 +25,9 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
         googletag.pubads().collapseEmptyDivs();
         // dispatch({type: 'TOGGLE_ADS' , toggle: true})
         googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+          const elmnt = document.getElementById('google_ads_iframe_/21865661642/PRO_ANDROID-APP_LIST-NEWS_DISPLAY_300x250_0').contentWindow.document.getElementsByTagName('a')
+          // console.log(googletag.pubads().getAttributeKeys())
+          console.log(elmnt)
             if (event.isEmpty) {
                 // dispatch({type: 'TOGGLE_ADS', toggle: false})
                 console.log('EMPTY ADS');
