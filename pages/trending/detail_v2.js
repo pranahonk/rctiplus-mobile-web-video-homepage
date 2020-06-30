@@ -446,7 +446,7 @@ class Detail extends React.Component {
                                 <div className="ads-banner__detail_news">
                                     <AdsBanner 
                                         partner={cdata.source}
-                                        path="/21865661642/PRO_MOBILE_DETAIL-NEWS_DISPLAY_300x250"
+                                        path={getPlatformGpt(this.platform)}
                                         size={[300, 250]}
                                         idGpt="div-gpt-ad-1591241112683-0"
                                         />
@@ -488,3 +488,18 @@ class Detail extends React.Component {
 }
 
 export default connect(state => state, newsv2Actions)(withRouter(Detail));
+
+const getPlatformGpt = (platform) => {
+    // webview
+      if(platform === 'ios') {
+        // console.log('ISO')
+        return '/21865661642/PRO_IOS-APP_DETAIL-NEWS_DISPLAY_300x250';
+        // return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
+      } 
+      if(platform === 'android') {
+        // console.log('ANDROID')
+        return '/21865661642/PRO_ANDROID-APP_DETAIL-NEWS_DISPLAY_300x250';
+        // return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
+      }
+      return '/21865661642/PRO_MOBILE_DETAIL-NEWS_DISPLAY_300x250';
+  }
