@@ -443,7 +443,8 @@ class Detail extends React.Component {
                                         {/* </a>
                                     </Link> */}
                                 </div>
-                                { cdata.exclusive === 'yes' ? (
+                                { cdata.exclusive === 'yes' ? (<div /> 
+                                ) : (
                                     <div className="ads-banner__detail_news">
                                         <AdsBanner 
                                             partner={cdata.source}
@@ -453,7 +454,7 @@ class Detail extends React.Component {
                                             />
                                         {/* <span>partner: { cdata.source }</span> */}
                                     </div>
-                                ) : (<div />) }
+                                ) }
                                 <div className="content-trending-detail-related">
                                     <p className="related-title"><strong>Related Articles</strong></p>
                                     <ListGroup>
