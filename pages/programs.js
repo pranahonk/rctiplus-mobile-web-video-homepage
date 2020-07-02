@@ -633,7 +633,8 @@ class Index extends React.Component {
                 ref={this.ref} 
                 onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
                 isResume={true} 
-                geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }/>
+                geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
+                />
               {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
           </div>
         );
@@ -653,7 +654,12 @@ class Index extends React.Component {
       const data = this.props.server && this.props.server[this.type];
       return (
         <div className="program-detail-player-wrapper trailer">
-            <JwPlayer data={ data.data } ref={this.ref} isFullscreen={ true }/>
+            <JwPlayer 
+              data={ data.data } 
+              ref={this.ref} isFullscreen={ true }
+              isResume={true} 
+              geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
+              />
             {/* <Player data={ data.data } ref={this.ref} isFullscreen={ true }/> */}
         </div>
       );

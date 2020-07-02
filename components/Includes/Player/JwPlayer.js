@@ -53,7 +53,7 @@ const JwPlayer = (props) => {
   // Initial Setup
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
-    console.log('EFFECT INIT 1', props);
+    // console.log('EFFECT INIT 1', props);
     if (props.geoblockStatus) {
       setStatus({
         isPlayer: false,
@@ -68,7 +68,7 @@ const JwPlayer = (props) => {
     }
     return () => {
       if (player !== null) {
-        console.log('DISPOSEEEEEE');
+        // console.log('DISPOSEEEEEE');
         jwplayer.remove();
       }
     };
@@ -77,7 +77,7 @@ const JwPlayer = (props) => {
   // Update Setup
   useEffect(() => {
 
-    console.log('EFFECT INIT 2');
+    // console.log('EFFECT INIT 2');
     if (player !== null) {
       setIsConviva(Math.random());
       setIsCustomSetup(Math.random());
@@ -87,8 +87,8 @@ const JwPlayer = (props) => {
 
   // Costum Setup
   useEffect(() => {
-    console.log('EFFECT INIT 3');
-    console.log('PLAYER GET DATA: ',props, player);
+    // console.log('EFFECT INIT 3');
+    // console.log('PLAYER GET DATA: ',props, player);
     if (player !== null) {
       player.on('ready', (event) => {
         if (props.isFullscreen) {player.setFullscreen(true);}
@@ -102,7 +102,7 @@ const JwPlayer = (props) => {
         forwardElement.innerHTML = foward10;
         // const iconForward = document.querySelector('.icon-forward');
         forwardElement.addEventListener('dblclick', (ev) => {
-          console.log('TOUCH:', ev);
+          // console.log('TOUCH:', ev);
           // iconForward.classList.add('animated', 'fadeInRight', 'go');
           setTimeout(() => {
             // iconForward.classList.remove('animated', 'fadeInRight', 'go');
@@ -110,7 +110,7 @@ const JwPlayer = (props) => {
           }, 900);
         });
         playerContainer.append(forwardElement);
-        console.log('LIVEEE', isLiveContainer);
+        // console.log('LIVEEE', isLiveContainer);
         if (props.type !== 'live tv' || props.type !== 'live event') {
           fowardContainer.innerHTML = foward10;
           backwardContainer.innerHTML = backward10;
@@ -119,7 +119,7 @@ const JwPlayer = (props) => {
           });
         }
         if (props.type === 'live tv' || props.type === 'live event') {
-          console.log(fowardContainer);
+          // console.log(fowardContainer);
           fowardContainer.innerHTML = '';
           backwardContainer.innerHTML = '';
         }
@@ -161,19 +161,19 @@ const JwPlayer = (props) => {
         }
       });
       player.on('play', () =>{
-        console.log('PLAYING');
+        // console.log('PLAYING');
         convivaJwPlayer().playing();
       });
       player.on('pause', () =>{
-        console.log('PAUSE');
+        // console.log('PAUSE');
         convivaJwPlayer().pause();
       });
       player.on('buffer', (event) =>{
-        console.log('BUFFER', event);
+        // console.log('BUFFER', event);
         convivaJwPlayer().buffer();
       });
       player.on('adError', (event) => {
-        console.log('ERRRRRORRR', event);
+        // console.log('ERRRRRORRR', event);
       });
       player.on('time', (event) => {
         // console.log('duration:', event.currentTime);
@@ -206,7 +206,7 @@ const JwPlayer = (props) => {
         });
       });
       player.on('setupError', (event) => {
-        console.log('PLAYER SETUP ERROR', event);
+        // console.log('PLAYER SETUP ERROR', event);
         const convivaTracker = convivaJwPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
@@ -230,17 +230,17 @@ const JwPlayer = (props) => {
   // Continue Watching
 
   useEffect(() => {
-    console.log('EFFECT INIT 4', duration);
+    // console.log('EFFECT INIT 4', duration);
     // val.current = props;
     return () => {
       if (window.convivaVideoAnalytics) {
         const convivaTracker = convivaJwPlayer();
         convivaTracker.cleanUpSession();
-        console.log('RELESE FROM');
+        // console.log('RELESE FROM');
       }
 
       if (props.isResume && (props.data && props.data.id)) {
-        console.log('DURATION :', duration);
+        // console.log('DURATION :', duration);
         props.onResume(props.data.id, props.data.content_type, duration);
       }
     };
@@ -257,7 +257,7 @@ const JwPlayer = (props) => {
   // Conviva Tracker
   useEffect(() => {
     if (props.data) {
-      console.log('EFFECT INIT 5');
+      // console.log('EFFECT INIT 5');
       let genreTags = 'N/A';
       if (props.data && props.data.genre) {
           if (Array.isArray(props.data.genre)) {
@@ -326,14 +326,14 @@ const JwPlayer = (props) => {
         genre: genreTags,
       };
       if (player !== null) {
-        console.log('CONVIVA TAGS: ',optionsConviva);
+        // console.log('CONVIVA TAGS: ',optionsConviva);
         const convivaTracker = convivaJwPlayer(optionsConviva.assetName, player, player.getDuration(), props.data.url ? props.data.url : props.data.trailer_url, customTags);
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
         convivaTracker.createSession();
       }
-      console.log('CONVIVA PLAYER', window.convivaVideoAnalytics);
+      // console.log('CONVIVA PLAYER', window.convivaVideoAnalytics);
     }
   }, [isConviva]);
 
