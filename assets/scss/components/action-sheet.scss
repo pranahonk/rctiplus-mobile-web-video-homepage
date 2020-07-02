@@ -3,6 +3,16 @@
     overflow-y: hidden;
 }
 
+.modal-geo {
+    transform: translate(0, 80%) !important;
+    overflow-y: hidden;
+    .modal-body-geo {
+        padding: 10px 30px;
+        font-size: 12px;
+        text-align: center;
+    }
+}
+
 .modal-body-edit {
     padding: 0px;
     text-align: center;

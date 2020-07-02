@@ -19,6 +19,7 @@ import userActions from '../redux/actions/userActions';
 
 import Layout from '../components/Layouts/Default_v2';
 import SelectDateModal from '../components/Modals/SelectDateModal';
+import { GeoblockModal } from '../components/Modals/Geoblock';
 import ActionSheet from '../components/Modals/ActionSheet';
 import Wrench from '../components/Includes/Common/Wrench';
 import MuteChat from '../components/Includes/Common/MuteChat';
@@ -143,10 +144,10 @@ class Tv extends React.Component {
 		if (this.convivaTracker) {
 			this.convivaTracker.cleanUpSession();
 		}
-		if (window.convivaVideoAnalytics) {
-			const convivaTracker = convivaJwPlayer();
-			convivaTracker.cleanUpSession();
-		}
+		// if (window.convivaVideoAnalytics) {
+		// 	const convivaTracker = convivaJwPlayer();
+		// 	convivaTracker.cleanUpSession();
+		// }
 	}
 	componentDidUpdate() {
 		// this.sample();
@@ -976,7 +977,7 @@ class Tv extends React.Component {
 						player_vmap: res.data.data[process.env.VMAP_KEY],
 						selected_tab: 'live',
 						error: false,
-						status: res.data.status
+						status: res.data.status && res.data.status.code === 12 ? true : false
 					}, () => {
 						// this.initVOD();
 
@@ -1031,7 +1032,7 @@ class Tv extends React.Component {
 						error: true,
 						first_init_player: true,
 						error_data: error.status === 200 ? error.data.status.message_client : '',
-						status: error.data ? error.data.status : ''
+						status: error.data && error.data.status.code  === 12 ? true : false,
 					});
 					this.props.unsetPageLoader();
 				});
@@ -1527,7 +1528,8 @@ class Tv extends React.Component {
 
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{/* {playerRef} */}
-					<JwPlayer data={ state.data_player } type={ state.data_player_type }/>
+					{/* <GeoblockModal open={state.status} toggle={() => { this.setState({ status: !state.status }); }} text="Whoops, Your Location doesnt support us to live stream this content"/> */}
+					<JwPlayer data={ state.data_player } type={ state.data_player_type } geoblockStatus={state.status}/>
 					<div ref= {this.tvTabRef} className="tv-wrap">
 						<Row>
 							<Col xs={3} className="text-center">

@@ -105,6 +105,7 @@ class Index extends React.Component {
       trailer: false,
       title: 'title-program',
       statusProgram: false,
+      statusError: 0,
     };
     this.type = 'program-detail';
     this.typeEpisode = 'program-episode';
@@ -154,7 +155,7 @@ class Index extends React.Component {
     }
   }
   shouldComponentUpdate() {
-    console.log('COMPONENT UPDATE');
+    // console.log('COMPONENT UPDATE');
     this.reference = queryString.parse(location.search).ref;
     return true;
   }
@@ -167,7 +168,7 @@ class Index extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
   }
   componentDidUpdate(prevProps) {
-    console.log('COMPONENT DID UPDATE', this.props);
+    // console.log('COMPONENT DID UPDATE', this.props);
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
       if (this.props.router.query.content_id) {
         const {content_id , content_type} = this.props.router.query;
@@ -623,11 +624,16 @@ class Index extends React.Component {
   }
   switchPanel() {
     if (this.props.router.query.content_id) {
-      if (this.props.data && this.props.data['data-player'] && this.props.data['data-player'].data) {
+      if (this.props.data && this.props.data['data-player']) {
         const data = this.props.data && this.props.data['data-player'];
         return (
           <div className="program-detail-player-wrapper">
-              <JwPlayer data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} isResume={true} />
+              <JwPlayer data={data && data.data } 
+                isFullscreen={ data && data.isFullscreen } 
+                ref={this.ref} 
+                onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
+                isResume={true} 
+                geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }/>
               {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
           </div>
         );
