@@ -443,15 +443,17 @@ class Detail extends React.Component {
                                         {/* </a>
                                     </Link> */}
                                 </div>
-                                <div className="ads-banner__detail_news">
-                                    <AdsBanner 
-                                        partner={cdata.source}
-                                        path={getPlatformGpt(this.platform)}
-                                        size={[300, 250]}
-                                        idGpt="div-gpt-ad-1591241112683-0"
-                                        />
-                                    {/* <span>partner: { cdata.source }</span> */}
-                                </div>
+                                { cdata.exclusive === 'yes' ? (
+                                    <div className="ads-banner__detail_news">
+                                        <AdsBanner 
+                                            partner={cdata.source}
+                                            path={getPlatformGpt(this.platform)}
+                                            size={[300, 250]}
+                                            idGpt="div-gpt-ad-1591241112683-0"
+                                            />
+                                        {/* <span>partner: { cdata.source }</span> */}
+                                    </div>
+                                ) : (<div />) }
                                 <div className="content-trending-detail-related">
                                     <p className="related-title"><strong>Related Articles</strong></p>
                                     <ListGroup>
