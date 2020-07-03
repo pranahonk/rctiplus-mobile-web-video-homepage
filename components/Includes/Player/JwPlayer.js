@@ -191,7 +191,7 @@ const JwPlayer = (props) => {
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
-        player.remove();
+        console.log('ERRORR',props.data.url)
         if (props.data.url === 'error') {
           setStatus({
             isPlayer: false,
@@ -204,6 +204,7 @@ const JwPlayer = (props) => {
           isError01: false,
           isError02: true,
         });
+        player.remove();
       });
       player.on('setupError', (event) => {
         // console.log('PLAYER SETUP ERROR', event);
@@ -211,7 +212,6 @@ const JwPlayer = (props) => {
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
-        player.remove();
         if (props.data.url === 'error') {
           setStatus({
             isPlayer: false,
@@ -224,6 +224,7 @@ const JwPlayer = (props) => {
           isError01: false,
           isError02: true,
         });
+        player.remove();
       });
     }
   });
@@ -340,18 +341,25 @@ const JwPlayer = (props) => {
 
   return (
     <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
-      {
-        status.isPlayer ? (<div id="jwplayer-rctiplus" ref={ playerRef } />) :
-        status.isError01 ?  error(msgError01) : 
-        status.isError02 ?  error() :
-        (<div/>)
-      }
+      { getPlayer(status.isError01 , status.isError02 ) }
       {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
     </div>
   );
 };
 
 export default JwPlayer;
+
+const getPlayer = (error1, error2) => {
+  if (error1) {
+    console.log('GEO')
+    return error(msgError01)
+  } 
+  if (error2) {
+    console.log('ERRORRRRR P')
+    return error()
+  }
+  return (<div id="jwplayer-rctiplus" />)
+}
 
 JwPlayer.propTypes = {
   data: PropTypes.object,

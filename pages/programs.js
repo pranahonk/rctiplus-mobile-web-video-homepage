@@ -25,7 +25,7 @@ import { Nav, NavItem, NavLink, TabContent, TabPane, Collapse } from 'reactstrap
 import '../assets/scss/components/program-detail.scss';
 import { RESOLUTION_IMG, VISITOR_TOKEN, DEV_API } from '../config';
 import fetch from 'isomorphic-unfetch';
-import { getCookie } from '../utils/cookie';
+import { getCookie, getVisitorToken } from '../utils/cookie';
 import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
 import { alertDownload, onTracking, onTrackingClick } from '../components/Includes/program-detail/programDetail';
 import { BASE_URL } from '../config';
@@ -381,11 +381,11 @@ class Index extends React.Component {
   }
   isTabs(data) {
     const tabs = [];
-    if (data.episode > 0 && this.props && this.props.server['program-detail'] && this.props.server['program-detail'].data.category === 'series') {tabs.push('Episodes');}
-    if (data.extra > 0) {tabs.push('Extra');}
-    if (data.clip > 0) {tabs.push('Clips');}
+    if (data && data.episode > 0 && this.props && this.props.server['program-detail'] && this.props.server['program-detail'].data.category === 'series') {tabs.push('Episodes');}
+    if (data && data.extra > 0) {tabs.push('Extra');}
+    if (data && data.clip > 0) {tabs.push('Clips');}
     if (!this.props.router.query.content_id) {
-      if (data.photo > 0) {tabs.push('Photo');}
+      if (data && data.photo > 0) {tabs.push('Photo');}
     }
     return tabs;
   }
