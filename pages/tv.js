@@ -1533,7 +1533,10 @@ class Tv extends React.Component {
 						data={ state.data_player } 
 						type={ state.data_player_type } 
 						geoblockStatus={state.status}
-						customData={ {isLogin: this.props.user.isAuth} }
+						customData={ {
+							isLogin: this.props.user.isAuth,
+							sectionPage: state.data_player_type === 'live tv' ? 'live tv' : 'catchup',
+							} }
 						/>
 					<div ref= {this.tvTabRef} className="tv-wrap">
 						<Row>

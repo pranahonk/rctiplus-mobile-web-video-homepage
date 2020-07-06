@@ -636,7 +636,11 @@ class Index extends React.Component {
                 onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
                 isResume={true} 
                 geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
-                customData= {{isLogin: this.props.auth.isAuth, programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name}}
+                customData= {{
+                    isLogin: this.props.auth.isAuth, 
+                    programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
+                    sectionPage: 'vod',
+                    }}
                 />
               {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
           </div>
@@ -662,7 +666,11 @@ class Index extends React.Component {
               ref={this.ref} isFullscreen={ true }
               isResume={true} 
               geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
-              customData= {{isLogin: this.props.auth.isAuth, programType: data.program_type_name}}
+              customData= {{
+                isLogin: this.props.auth.isAuth, 
+                programType: data.program_type_name,
+                sectionPage: 'vod',
+                }}
               />
             {/* <Player data={ data.data } ref={this.ref} isFullscreen={ true }/> */}
         </div>

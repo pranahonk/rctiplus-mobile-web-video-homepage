@@ -303,7 +303,7 @@ const JwPlayer = (props) => {
                     props.data && props.data.assets_name :
                     props.type === 'catch up tv' ?
                     tempId(props.data.channel)[0] :
-                    'N/A',
+                    (props.data.tv_name ? props.data.tv_name : 'N/A'),
       };
       // const assetName = props.data && props.data.content_name ? props.data.content_name : 'N/A';
       const customTags = {
@@ -321,9 +321,8 @@ const JwPlayer = (props) => {
         program_id: optionsConviva.program_id,
         screen_mode: 'portrait',
         time_video: 'N/A',
-        viewer_id: getUserId().toString(),
+        section_page: props.customData.sectionPage,
         application_name: 'RCTI+ MWEB',
-        section_page: 'N/A',
         genre: genreTags,
         is_login: props.customData && props.customData.isLogin ? 'login' : 'not login',
         program_type: props.customData && props.customData.programType ? props.customData.programType : 'N/A',
