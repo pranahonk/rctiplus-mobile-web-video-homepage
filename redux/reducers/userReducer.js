@@ -13,7 +13,8 @@ const initialState = {
     location: '',
     profile_photo_src: '',
     change_password: {},
-    orientation: -1
+    orientation: -1,
+    isAuth: false,
 };
 
 export default (state = initialState, action) => {
@@ -22,7 +23,7 @@ export default (state = initialState, action) => {
         case 'CHECK_USER':
             return Object.assign({}, state, { status: action.status });
         case 'USER_DATA':
-            return Object.assign({}, state, { data: action.data, meta: action.meta });
+            return Object.assign({}, state, { data: action.data, meta: action.meta, isAuth: action.data !== null ? true : false });
         case 'INTERESTS':
             return Object.assign({}, state, { data: action.data, meta: action.meta, status: action.status });
         case 'SET_PROFILE':

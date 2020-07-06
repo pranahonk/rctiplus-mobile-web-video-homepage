@@ -46,6 +46,12 @@ const UIVersion = '2.0';
     server.get('/profile', (req, res) => {
       return app.render(req, res, '/profile');
     });
+    server.get('/dfp', (req, res) => {
+      return app.render(req, res, '/dfp');
+    });
+    server.get('/player', (req, res) => {
+      return app.render(req, res, '/player');
+    });
 
     server.get('/programs/:id/:title/photo/:content_id/:content_title', (req, res) => {
       return app.render(req, res, '/detail/photo', {
@@ -213,13 +219,13 @@ const UIVersion = '2.0';
     });
 
     server.get('/live-event/:id/:title', (req, res) => {
-      return app.render(req, res, '/live-events/experimental', {
+      return app.render(req, res, '/live-events/live-event', {
         id: req.params.id,
         title: req.params.title
       });
     });
     server.get('/missed-event/:id/:title', (req, res) => {
-      return app.render(req, res, '/live-events/experimental', {
+      return app.render(req, res, '/live-events/live-event', {
         id: req.params.id,
         title: req.params.title
       });

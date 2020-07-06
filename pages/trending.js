@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -29,9 +30,13 @@ import '../assets/scss/components/trending_v2.scss';
 import newsv2Actions from '../redux/actions/newsv2Actions';
 import userActions from '../redux/actions/userActions';
 import { showSignInAlert } from '../utils/helpers';
+import { urlRegex } from '../utils/regex';
+import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
 
 import queryString from 'query-string';
+
+import $ from 'jquery';
 
 const jwtDecode = require('jwt-decode');
 
@@ -77,6 +82,7 @@ class Trending_v2 extends React.Component {
         else {
             removeAccessToken();
         }
+        this.iframeAds = React.createRef()
     }
 
     bottomScrollFetch() {
@@ -151,9 +157,66 @@ class Trending_v2 extends React.Component {
             this.loadArticles(categoryId);
         });
     }
+    isInViewport(element) {
+        if(element) {
+            const distance = element.getBoundingClientRect();
+            return (
+                distance.top >= 0 &&
+                distance.left >= 0 &&
+                distance.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                distance.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+    }
+    adsDisplay(eventId) {
+        let id = false;
+        window.addEventListener('scroll', (event) => {
+            if(this.isInViewport(document.getElementById(eventId))) {
+                console.log('YESSS', eventId)
+                id = true
+                if(eventId) {
+                    document.getElementById(eventId).innerHTML = `
+                    <div id="div-gpt-ad-1591240670591-0">
+                    <script dangerouslySetInnerHTML={{ __html: `
+                    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1591240670591-0'); });
+                ` }}>
+                </script>
+                    </div>
+    
+                    `
+                }
+                // return (<AdsBanner />)
+            } else {
+                id = false
+                console.log('NOOOOO', eventId)
+                if(eventId) {
+                    document.getElementById(eventId).innerHTML = `
+                    <div></div>
+                    `
+                }
+                // return (<div/>)
+                // return (<AdsBanner />)
+                // element.innerHTML = `<div></div>`
+            }
+            console.log('scrolll')
+        })
 
+        // if(id) {
+        //     return (<div>bismillah</div>)
+        // } else {
+        //     return (<div>lalala</div>)
+        // }
+    }
     componentDidMount() {
-
+        // window.addEventListener('scroll', (event) => {
+        //     if(this.isInViewport(document.getElementById('9'))) {
+        //         console.log('YESSS')
+        //         return ReactDOM.createPortal(<div>dsada</div>, document.getElementById('9'))
+        //     } else {
+        //         console.log('NOOOOO')
+        //     }
+        //     console.log('scrolll')
+        // }, false)
         if (this.accessToken) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -176,6 +239,15 @@ class Trending_v2 extends React.Component {
         }
 
         
+    }
+
+    componentDidUpdate() {
+        // console.log(this.iframeAds && this.iframeAds.current && this.iframeAds.current.scrollHeight)
+        // console.log(document.getElementById('iframe-ads-1') && document.getElementById('iframe-ads-1').contentWindow && document.getElementById('iframe-ads-1').contentWindow.document.getElementById('div-gpt-ad-1591240670591-0').style.display)
+        // console.log(this.iframeAds && this.iframeAds.current && this.iframeAds.current.contentWindow.document.getElementById('__next'))
+        // let elemnt = $('#iframe-ads-1').contents().find($('div-gpt-ad-1591240670591-0'))
+        // console.log(elemnt.css('display'))
+        // console.log($('#iframe-ads-1').contents().find($('div-gpt-ad-1591240670591-0')).css('display'))
     }
 
     fetchData(isLoggedIn = false) {
@@ -254,7 +326,7 @@ class Trending_v2 extends React.Component {
 
     goToDetail(article) {
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-        Router.push('/trending/detail/' + article.id + '/' + encodeURI(article.title.replace(/ +/g, "-").replace(/\\+/g, '-').replace(/\/+/g, '-').toLowerCase()) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        Router.push('/trending/detail/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     getMetadata() {
@@ -267,6 +339,10 @@ class Trending_v2 extends React.Component {
 
         return SITEMAP['trending'];
     }
+
+    // getAds() {
+    //     console.log()
+    // }
 
     render() {
         const metadata = this.getMetadata();
@@ -293,6 +369,21 @@ class Trending_v2 extends React.Component {
                     <meta name="twitter:domain" content={encodeURI(this.props.router.asPath)}></meta>
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
+                    {/* <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+                <script dangerouslySetInnerHTML={{
+                        __html: `
+                        window.googletag = window.googletag || {cmd: []};
+                    googletag.cmd.push(function() {
+                        googletag.defineSlot('/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250', [300, 250], 'div-gpt-ad-1591240670591-0').addService(googletag.pubads());
+                        googletag.pubads().enableSingleRequest();
+                        googletag.pubads().collapseEmptyDivs();
+                        googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+                            if (event.isEmpty) {
+                                // document.getElementById('sticky-ads-container').style.display = 'none';
+                            }
+                        });
+                        googletag.enableServices();
+                    }); `}}></script> */}
                     <script dangerouslySetInnerHTML={{
                         __html: `
                         window.dataLayer = window.dataLayer || [];
@@ -301,6 +392,14 @@ class Trending_v2 extends React.Component {
                         gtag('config', 'UA-145455301-9');
                     ` }}></script>
                 </Head>
+                {/* <div style={{ display: 'none' }}>
+                    <AdsBanner />
+                </div>
+                {/* <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
+                <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
+                <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
+                <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
+                <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} /> */}
                 <NavTrending disableScrollListener />
                 <BottomScrollListener
                     offset={50}
@@ -394,26 +493,68 @@ class Trending_v2 extends React.Component {
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => (
                                                             (j > 6) && (j + 1) != 1 && (j + 1) % 5 === 0 ? (
-                                                                <ListGroupItem key={j} className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
-                                                                    <div className="article-description">
-                                                                        <div className="article-thumbnail-container-full-width">
-                                                                            <Img
-                                                                                alt={article.title}
-                                                                                loader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                unloader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                className="article-thumbnail-full-width"
-                                                                                src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
-                                                                        </div>
-                                                                        <div className="article-title-container">
-                                                                            <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
-                                                                            <div className="article-source">
-                                                                                <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
-                                                                                <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                <div key={j}>
+                                                                    {/* <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} /> */}
+                                                                    <iframe 
+                                                                        onLoad={() => {
+                                                                            window.addEventListener('scroll', () => {
+                                                                                const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
+                                                                                document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
+                                                                                const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
+                                                                                document.getElementById(article.id).contentWindow.document.getElementById('error__page') 
+                                                                                const element_3 = document.getElementById(article.id)
+                                                                                if(element && element.style.display === 'none' || element_2) {
+                                                                                    element_3.style.display = 'none'
+                                                                                } else {
+                                                                                    element_3.style.display = 'block'
+                                                                                }
+                                                                                })
+                                                                        }}
+                                                                        id={article.id} src={`/dfp?platform=${this.platform}`} 
+                                                                        frameBorder="0" 
+                                                                        style={{ 
+                                                                            height: '250px',
+                                                                            width: '100%',
+                                                                            display: 'none',
+                                                                        }} />
+                                                                    {/* <iframe 
+                                                                        ref={this.iframeAds} 
+                                                                        id="iframe-ads-1" src="/dfp" 
+                                                                        frameBorder="0" 
+                                                                        style={{ 
+                                                                            height: '250px',
+                                                                            width: '100%',
+                                                                            display: this.iframeAds && this.iframeAds.current 
+                                                                                        && this.iframeAds.current.contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
+                                                                                        && this.iframeAds.current.contentWindow.document.getElementById('div-gpt-ad-1591240670591-0').style.display === 'none' || 
+                                                                                        this.iframeAds && this.iframeAds.current && this.iframeAds.current.contentWindow.document.getElementById('__next') === null
+                                                                                         ? 'none' : 'block', 
+                                                                        }} /> */}
+                                                                    {/* <div id={j}>
+                                                                        { this.adsDisplay(j) }
+                                                                    </div> */}
+                                                                    {/* <iframe src="" frameborder="0"></iframe> */}
+                                                                    {/* <AdsBanner /> */}
+                                                                    <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
+                                                                        <div className="article-description">
+                                                                            <div className="article-thumbnail-container-full-width">
+                                                                                <Img
+                                                                                    alt={article.title}
+                                                                                    loader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                    unloader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                    className="article-thumbnail-full-width"
+                                                                                    src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
+                                                                            </div>
+                                                                            <div className="article-title-container">
+                                                                                <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
+                                                                                <div className="article-source">
+                                                                                    <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
+                                                                                    <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                    
-                                                                </ListGroupItem>
+                                                                    </ListGroupItem>
+                                                                </div>
                                                             ) : (j > 4) ? (
                                                                 <ListGroupItem key={j} className={`article ${(j > 4) && (j + 1) > 1 && ((j + 2) % 5) == 0 ? 'article-no-border' : ''}`} onClick={() => this.goToDetail(article)}>
                                                                     <div className="article-description">

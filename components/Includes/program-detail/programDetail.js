@@ -437,7 +437,7 @@ const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
 
 const bookmark = (data, item, type, props, typeTracking = null) => {
   if (data && data[type]) {
-    const isBookmark = data[type].find((list) => list.id === item.id);
+    const isBookmark = data && data[type].find((list) => list.id === item.id);
     if (isBookmark) {
       return (<ButtonPrimary
       icon={ <PlaylistAddCheckIcon/> }

@@ -64,6 +64,7 @@ class Profile extends React.Component {
 	}
 
 	componentDidMount() {
+		console.log(this.props)
 		this.props.getUserData()
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {
@@ -114,7 +115,7 @@ class Profile extends React.Component {
 	}
 
 	showOpenPlaystoreAlert() {
-        showAlert('To be able to see and watching your downloaded file, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); });
+        showAlert('To be able to see and watching your downloaded file, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); }, false, 'popup-action-openstore', 'popup-action-cancel');
 	}
 	
 	link(cw) {
@@ -200,7 +201,7 @@ class Profile extends React.Component {
 							Woops! Gonna sign in first!<br/>
 							Only a click away and you<br/>
 							can continue to enjoy<br/>
-							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true, 'pop-up-action-sign-up', 'pop-up-action-sign-in');
 						}
 						else {
 							Router.push('/history');
@@ -218,7 +219,7 @@ class Profile extends React.Component {
 							Woops! Gonna sign in first!<br/>
 							Only a click away and you<br/>
 							can continue to enjoy<br/>
-							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true, 'pop-up-action-sign-up', 'pop-up-action-sign-in');
 						}
 						else {
 							Router.push('/mylist');
@@ -233,7 +234,7 @@ class Profile extends React.Component {
 							Woops! Gonna sign in first!<br/>
 							Only a click away and you<br/>
 							can continue to enjoy<br/>
-							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true);
+							<b>RCTI+</b>`, '', () => {}, true, 'Sign Up', 'Sign In', true, true, 'pop-up-action-sign-up', 'pop-up-action-sign-in');
 						}
 						else {
 							Router.push('/continue-watching');

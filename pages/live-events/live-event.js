@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import Router, { withRouter } from 'next/router';
 import Link from 'next/link';
 import { connect } from 'react-redux';
@@ -63,16 +64,16 @@ import { getCountdown } from '../../utils/helpers';
 import { convivaVideoJs } from '../../utils/conviva';
 import { triggerQualityButtonClick } from '../../utils/player';
 
-import videojs from 'video.js';
-import 'videojs-contrib-ads';
-import 'videojs-ima';
-import 'video.js/src/css/video-js.scss';
+// import videojs from 'video.js';
+// import 'videojs-contrib-ads';
+// import 'videojs-ima';
+// import 'video.js/src/css/video-js.scss';
 // import 'videojs-hls-quality-selector';
-import qualitySelector from '../../assets/js/videojs-hls-quality-selector';
-import qualityLevels from 'videojs-contrib-quality-levels';
-import 'videojs-seek-buttons';
-import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
-
+// import qualitySelector from '../../assets/js/videojs-hls-quality-selector/dist/videojs-hls-quality-selector.cjs';
+// import qualityLevels from 'videojs-contrib-quality-levels';
+// import 'videojs-seek-buttons';
+// import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
+const JwPlayer = dynamic(() => import('../../components/Includes/Player/JwPlayer'));
 const innerHeight = require('ios-inner-height');
 
 class LiveEvent extends React.Component {
@@ -175,7 +176,8 @@ class LiveEvent extends React.Component {
 			url: '',
 			hashtags: [],
 			tab_status: '',
-			refreshUrl: null
+			refreshUrl: null,
+			statusError: this.props.selected_event_url && this.props.selected_event_url.status && this.props.selected_event_url.status.code === 12 ? 2 : 0,
 		};
 
 		const segments = this.props.router.asPath.split(/\?/);
@@ -243,14 +245,14 @@ class LiveEvent extends React.Component {
 				meta: response.data.meta.image_path,
 			}, () => {
 				// this.initVOD();
-				this.initPlayer();
+				// this.initPlayer();
 				this.props.setSeamlessLoad(false);
 				this.props.unsetPageLoader();
 			});
 		})
 		.catch(error => {
 			console.log(error);
-			this.initPlayer();
+			// this.initPlayer();
 			this.props.setSeamlessLoad(false);
 			this.props.unsetPageLoader();
 		});
@@ -580,320 +582,320 @@ class LiveEvent extends React.Component {
     }
 
 
-	initPlayer() {
-		if (this.videoNode) {
-			let url = '';
-			let vmap = '';
-			let id = '';
-			let name = '';
-			let type = '';
-			let portrait_image = '';
-			let asset_name = '';
-			let asset_cdn = '';
-			if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
-				url = this.props.selected_event_url.data.url;
-				vmap = this.props.selected_event_url.data[process.env.VMAP_KEY];
-				asset_name = this.props.selected_event_url.data.assets_name;
-				id = this.props.selected_event.data.id;
-				name = this.props.selected_event.data.name;
-				type = this.props.selected_event.data.type;
-				portrait_image = this.props.selected_event.data.portrait_image;
-				if(this.props.router.asPath.match('/live-event/')) this.loadChatMessages(id);
-				this.statusChatBlock(id);
-				asset_cdn = this.props.selected_event_url.data.asset_cdn;
-			}
-			const self = this;
+	// initPlayer() {
+	// 	if (this.videoNode) {
+	// 		let url = '';
+	// 		let vmap = '';
+	// 		let id = '';
+	// 		let name = '';
+	// 		let type = '';
+	// 		let portrait_image = '';
+	// 		let asset_name = '';
+	// 		let asset_cdn = '';
+	// 		if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
+	// 			url = this.props.selected_event_url.data.url;
+	// 			vmap = this.props.selected_event_url.data[process.env.VMAP_KEY];
+	// 			asset_name = this.props.selected_event_url.data.assets_name;
+	// 			id = this.props.selected_event.data.id;
+	// 			name = this.props.selected_event.data.name; 
+	// 			type = this.props.selected_event.data.type;
+	// 			portrait_image = this.props.selected_event.data.portrait_image;
+	// 			if(this.props.router.asPath.match('/live-event/')) this.loadChatMessages(id);
+	// 			this.statusChatBlock(id);
+	// 			asset_cdn = this.props.selected_event_url.data.asset_cdn;
+	// 		}
+	// 		const self = this;
 
-			// console.log(vmap);
-			// this.props.getVmapResponse(vmap)
-			// 	.then(response => {
-			// 		console.log(response);
-			// 	})
-			// 	.catch(error => {
-			// 		console.log(error.message);
-			// 	});
+	// 		// console.log(vmap);
+	// 		// this.props.getVmapResponse(vmap)
+	// 		// 	.then(response => {
+	// 		// 		console.log(response);
+	// 		// 	})
+	// 		// 	.catch(error => {
+	// 		// 		console.log(error.message);
+	// 		// 	});
 
-			videojs.registerPlugin('hlsQualitySelector', qualitySelector);
-			this.player = videojs(this.videoNode, {
-				autoplay: true,
-				controls: true,
-				fluid: true,
-				muted: isIOS,
-				aspectratio: '16:9',
-				fill: true,
-				errorDisplay: false,
-				html5: {
-					hls: {
-						overrideNative: true,
-					},
-					nativeAudioTracks: false,
-					nativeVideoTracks: false,
-				},
-				sources: [{
-					src: url,
-					type: url.match(/.mp4$/) ? 'video/mp4' : 'application/x-mpegURL',
-				}]
-			}, function onPlayerReady() {
-				console.log('onPlayerReady', this);
-				const vm = this;
-				const reloadOptions = {
-					errorInterval: 50,
-				};
-				vm.reloadSourceOnError(reloadOptions);
-				if(isIOS) {
-                    vm.muted(true)
-					const wrapElement = document.getElementsByClassName('video-js');
-					console.log(wrapElement)
-                    if(wrapElement[0] !== undefined) {
-						const elementCreateWrapper = document.createElement('btn');
-						const elementMuteIcon = document.createElement('span');
-						elementCreateWrapper.classList.add('jwplayer-vol-off');
-						elementCreateWrapper.innerText = 'Tap to unmute ';
-						wrapElement[0].appendChild(elementCreateWrapper);
-						elementCreateWrapper.appendChild(elementMuteIcon);
-						elementCreateWrapper.addEventListener('click', function() {
-							console.log('mute video');
-							if (elementCreateWrapper === null) {
-								vm.muted(false);
-								elementCreateWrapper.classList.add('jwplayer-mute');
-								elementCreateWrapper.classList.remove('jwplayer-full');
-							} 
-							else {
-								vm.muted(false);
-								elementCreateWrapper.classList.add('jwplayer-full');
-								elementCreateWrapper.classList.remove('jwplayer-mute');
-							}
-						});
-					}
-				}
+	// 		videojs.registerPlugin('hlsQualitySelector', qualitySelector);
+	// 		this.player = videojs(this.videoNode, {
+	// 			autoplay: true,
+	// 			controls: true,
+	// 			fluid: true,
+	// 			muted: isIOS,
+	// 			aspectratio: '16:9',
+	// 			fill: true,
+	// 			errorDisplay: false,
+	// 			html5: {
+	// 				hls: {
+	// 					overrideNative: true,
+	// 				},
+	// 				nativeAudioTracks: false,
+	// 				nativeVideoTracks: false,
+	// 			},
+	// 			sources: [{
+	// 				src: url,
+	// 				type: url.match(/.mp4$/) ? 'video/mp4' : 'application/x-mpegURL',
+	// 			}]
+	// 		}, function onPlayerReady() {
+	// 			console.log('onPlayerReady', this);
+	// 			const vm = this;
+	// 			const reloadOptions = {
+	// 				errorInterval: 50,
+	// 			};
+	// 			vm.reloadSourceOnError(reloadOptions);
+	// 			if(isIOS) {
+  //                   vm.muted(true)
+	// 				const wrapElement = document.getElementsByClassName('video-js');
+	// 				console.log(wrapElement)
+  //                   if(wrapElement[0] !== undefined) {
+	// 					const elementCreateWrapper = document.createElement('btn');
+	// 					const elementMuteIcon = document.createElement('span');
+	// 					elementCreateWrapper.classList.add('jwplayer-vol-off');
+	// 					elementCreateWrapper.innerText = 'Tap to unmute ';
+	// 					wrapElement[0].appendChild(elementCreateWrapper);
+	// 					elementCreateWrapper.appendChild(elementMuteIcon);
+	// 					elementCreateWrapper.addEventListener('click', function() {
+	// 						console.log('mute video');
+	// 						if (elementCreateWrapper === null) {
+	// 							vm.muted(false);
+	// 							elementCreateWrapper.classList.add('jwplayer-mute');
+	// 							elementCreateWrapper.classList.remove('jwplayer-full');
+	// 						} 
+	// 						else {
+	// 							vm.muted(false);
+	// 							elementCreateWrapper.classList.add('jwplayer-full');
+	// 							elementCreateWrapper.classList.remove('jwplayer-mute');
+	// 						}
+	// 					});
+	// 				}
+	// 			}
 				
-				const player = this;
-				const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
+	// 			const player = this;
+	// 			const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
 
-				const customTags = {
-                    app_version: process.env.APP_VERSION,
-                    carrier: 'N/A',
-                    connection_type: 'N/A',
-					content_type: self.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event',
-					section_page: self.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event',
-                    content_id: id.toString(),
-					program_name: name,
-                    tv_id: 'N/A',
-                    tv_name: 'N/A',
-                    date_video: 'N/A',
-                    genre: 'N/A',
-                    page_title: 'N/A',
-                    page_view: 'N/A',
-                    program_id: 'N/A',
-                    screen_mode: 'portrait',
-                    time_video: 'N/A',
-                    viewer_id: getUserId().toString(),
-					application_name: 'RCTI+ MWEB',
-					genre: 'N/A'
-                };
+	// 			const customTags = {
+  //                   app_version: process.env.APP_VERSION,
+  //                   carrier: 'N/A',
+  //                   connection_type: 'N/A',
+	// 				content_type: self.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event',
+	// 				section_page: self.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event',
+  //                   content_id: id.toString(),
+	// 				program_name: name,
+  //                   tv_id: 'N/A',
+  //                   tv_name: 'N/A',
+  //                   date_video: 'N/A',
+  //                   genre: 'N/A',
+  //                   page_title: 'N/A',
+  //                   page_view: 'N/A',
+  //                   program_id: 'N/A',
+  //                   screen_mode: 'portrait',
+  //                   time_video: 'N/A',
+  //                   viewer_id: getUserId().toString(),
+	// 				application_name: 'RCTI+ MWEB',
+	// 				genre: 'N/A'
+  //               };
 
-				this.convivaTracker = convivaVideoJs(assetName, player, self.props.router.asPath.match('/missed-event/') ? player.duration() : true, url, 'Live Event ' + assetName.toUpperCase(), customTags, asset_cdn);
-				this.convivaTracker.createSession();
+	// 			this.convivaTracker = convivaVideoJs(asset_name, player, self.props.router.asPath.match('/missed-event/') ? player.duration() : true, url, 'Live Event ' + assetName.toUpperCase(), customTags, asset_cdn);
+	// 			this.convivaTracker.createSession();
 
-				if(self.props.router.asPath.match('/missed-event/')) {
-					player.seekButtons({
-						forward: 10,
-						back: 10
-					});
-					setTimeout(() => {
-						self.setSkipButtonCentered();
-					}, 2000);
-					window.onresize = () => {
-						self.setSkipButtonCentered();
-					};
-				}
+	// 			if(self.props.router.asPath.match('/missed-event/')) {
+	// 				player.seekButtons({
+	// 					forward: 10,
+	// 					back: 10
+	// 				});
+	// 				setTimeout(() => {
+	// 					self.setSkipButtonCentered();
+	// 				}, 2000);
+	// 				window.onresize = () => {
+	// 					self.setSkipButtonCentered();
+	// 				};
+	// 			}
 
-			});
-			videojs.registerPlugin('hlsQualitySelector', qualitySelector);
-			this.player.ready(function () {
-				const vm = this
-				const promise = vm.play();
-				if (promise !== undefined) {
-					promise.then(() => console.log('play'))
-						.catch((err) => console.log('err'))
-				}
+	// 		});
+	// 		videojs.registerPlugin('hlsQualitySelector', qualitySelector);
+	// 		this.player.ready(function () {
+	// 			const vm = this
+	// 			const promise = vm.play();
+	// 			if (promise !== undefined) {
+	// 				promise.then(() => console.log('play'))
+	// 					.catch((err) => console.log('err'))
+	// 			}
 
-				setTimeout(() => {
-					self.setupPlayerBehavior();
-                    self.changeQualityIconButton();
-                }, 100);
-			});
+	// 			setTimeout(() => {
+	// 				self.setupPlayerBehavior();
+  //                   self.changeQualityIconButton();
+  //               }, 100);
+	// 		});
 
-			window.onorientationchange = () => {
-                if (!isIOS) {
-					this.player.userActive(false);
-					if (self.props.router.asPath.match('/missed-event/')) {
-						setTimeout(() => {
-							this.setState({ screen_width: window.outerWidth }, () => {
-								let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
-								this.setSkipButtonCentered(orientation);
-							});
-						}, 1000);
-					}
-                }
-            };
+	// 		window.onorientationchange = () => {
+  //               if (!isIOS) {
+	// 				this.player.userActive(false);
+	// 				if (self.props.router.asPath.match('/missed-event/')) {
+	// 					setTimeout(() => {
+	// 						this.setState({ screen_width: window.outerWidth }, () => {
+	// 							let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
+	// 							this.setSkipButtonCentered(orientation);
+	// 						});
+	// 					}, 1000);
+	// 				}
+  //               }
+  //           };
 
-			this.player.on('useractive', () => {
-                if (!this.player.paused()) {
-                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
-                    for (let i = 0; i < seekButtons.length; i++) {
-                        seekButtons[i].style.display = 'block';
-                    }
+	// 		this.player.on('useractive', () => {
+  //               if (!this.player.paused()) {
+  //                   const seekButtons = document.getElementsByClassName('vjs-seek-button');
+  //                   for (let i = 0; i < seekButtons.length; i++) {
+  //                       seekButtons[i].style.display = 'block';
+  //                   }
 
-                    this.setState({ user_active: true });
-                }
-            });
+  //                   this.setState({ user_active: true });
+  //               }
+  //           });
 
-            this.player.on('userinactive', () => {
-                if (!this.player.paused()) {
-                    const seekButtons = document.getElementsByClassName('vjs-seek-button');
-                    for (let i = 0; i < seekButtons.length; i++) {
-                        seekButtons[i].style.display = 'none';
-                    }
+  //           this.player.on('userinactive', () => {
+  //               if (!this.player.paused()) {
+  //                   const seekButtons = document.getElementsByClassName('vjs-seek-button');
+  //                   for (let i = 0; i < seekButtons.length; i++) {
+  //                       seekButtons[i].style.display = 'none';
+  //                   }
                     
-                    this.setState({ user_active: false });
-                }
+  //                   this.setState({ user_active: false });
+  //               }
 
-                if (this.state.quality_selector_shown) {
-                    triggerQualityButtonClick('inactive');
-                }
-            });
+  //               if (this.state.quality_selector_shown) {
+  //                   triggerQualityButtonClick('inactive');
+  //               }
+  //           });
 
-			this.player.on('fullscreenchange', () => {
-				if (screen.orientation.type === 'portrait-primary') {
-					screen.orientation.lock("landscape-primary");
-				}
-				if (screen.orientation.type === 'landscape-primary') {
-					screen.orientation.lock("portrait-primary");
-				}
-			});
+	// 		this.player.on('fullscreenchange', () => {
+	// 			if (screen.orientation.type === 'portrait-primary') {
+	// 				screen.orientation.lock("landscape-primary");
+	// 			}
+	// 			if (screen.orientation.type === 'landscape-primary') {
+	// 				screen.orientation.lock("portrait-primary");
+	// 			}
+	// 		});
 
-			let errorCount = 0;
-			let isExecuting = false;
-			this.player.on('error', (e) => {
-				if (isIOS) {
-					console.log(e);
-					if (!isExecuting) {
-						isExecuting = true;
-						if (errorCount <= 1) {
-							this.player.error(null);
-						}
-						setTimeout(() => {
-							this.player.ready(() => {
-								console.log('READY');
-								if (errorCount++ <= 1) {
-									this.player.src([{
-										src: url,
-										type: url.match(/.mp4$/) ? 'video/mp4' : 'application/x-mpegURL',
-									}]);
-								}
-							});
-							isExecuting = false;
-						}, 1000);
-					}
+	// 		let errorCount = 0;
+	// 		let isExecuting = false;
+	// 		this.player.on('error', (e) => {
+	// 			if (isIOS) {
+	// 				console.log(e);
+	// 				if (!isExecuting) {
+	// 					isExecuting = true;
+	// 					if (errorCount <= 1) {
+	// 						this.player.error(null);
+	// 					}
+	// 					setTimeout(() => {
+	// 						this.player.ready(() => {
+	// 							console.log('READY');
+	// 							if (errorCount++ <= 1) {
+	// 								this.player.src([{
+	// 									src: url,
+	// 									type: url.match(/.mp4$/) ? 'video/mp4' : 'application/x-mpegURL',
+	// 								}]);
+	// 							}
+	// 						});
+	// 						isExecuting = false;
+	// 					}, 1000);
+	// 				}
 					
-				}
-				else {
-					console.log('err');
-					this.setState({
-						error: true,
-					});
-				}
+	// 			}
+	// 			else {
+	// 				console.log('err');
+	// 				this.setState({
+	// 					error: true,
+	// 				});
+	// 			}
 				
-			});
-			this.player.on('ended', () => {
-				if (!isIOS) {
-					if(!this.state.is_live) {
-						this.setState({
-							errorEnd: true,
-						});
-					}
-				}
-			});
-			this.player.hlsQualitySelector({
-				displayCurrentQuality: true,
-				identifyBy: 'bitrate'
-			});
+	// 		});
+	// 		this.player.on('ended', () => {
+	// 			if (!isIOS) {
+	// 				if(!this.state.is_live) {
+	// 					this.setState({
+	// 						errorEnd: true,
+	// 					});
+	// 				}
+	// 			}
+	// 		});
+	// 		this.player.hlsQualitySelector({
+	// 			displayCurrentQuality: true,
+	// 			identifyBy: 'bitrate'
+	// 		});
 
-			this.disconnectHandler = null;
-			this.player.on('waiting', (e) => {
-				const playButton = document.getElementsByClassName('vjs-big-play-button');
-                if (playButton.length > 0) {
-                    playButton[0].style.display = 'none';
-				}
-				if (this.disconnectHandler) {
-                    clearTimeout(this.disconnectHandler);
-                    this.disconnectHandler = null;
-                }
+	// 		this.disconnectHandler = null;
+	// 		this.player.on('waiting', (e) => {
+	// 			const playButton = document.getElementsByClassName('vjs-big-play-button');
+  //               if (playButton.length > 0) {
+  //                   playButton[0].style.display = 'none';
+	// 			}
+	// 			if (this.disconnectHandler) {
+  //                   clearTimeout(this.disconnectHandler);
+  //                   this.disconnectHandler = null;
+  //               }
 				
-				this.disconnectHandler = setTimeout(() => {
-					this.setState({
-						error: true,
-					});
-				}, 40000);
-			})
+	// 			this.disconnectHandler = setTimeout(() => {
+	// 				this.setState({
+	// 					error: true,
+	// 				});
+	// 			}, 40000);
+	// 		})
 
-			this.player.on('playing', () => {
-				if (this.disconnectHandler) {
-					clearTimeout(this.disconnectHandler);
-				}
+	// 		this.player.on('playing', () => {
+	// 			if (this.disconnectHandler) {
+	// 				clearTimeout(this.disconnectHandler);
+	// 			}
 
-				this.setState({ playing: true });
-			});
+	// 			this.setState({ playing: true });
+	// 		});
 
-			this.player.on('ads-ad-started', () => {
-				console.log('ADS STARTED');
-                const playButton = document.getElementsByClassName('vjs-big-play-button');
-                if (playButton.length > 0) {
-                    playButton[0].style.display = 'none';
-                }
-            });
+	// 		this.player.on('ads-ad-started', () => {
+	// 			console.log('ADS STARTED');
+  //               const playButton = document.getElementsByClassName('vjs-big-play-button');
+  //               if (playButton.length > 0) {
+  //                   playButton[0].style.display = 'none';
+  //               }
+  //           });
 
-            this.player.on('play', () => {
-                const seekButtons = document.getElementsByClassName('vjs-seek-button');
-                for (let i = 0; i < seekButtons.length; i++) {
-                    seekButtons[i].style.display = 'none';
-                }
+  //           this.player.on('play', () => {
+  //               const seekButtons = document.getElementsByClassName('vjs-seek-button');
+  //               for (let i = 0; i < seekButtons.length; i++) {
+  //                   seekButtons[i].style.display = 'none';
+  //               }
 
-                const playButton = document.getElementsByClassName('vjs-big-play-button');
-                if (playButton.length > 0) {
-                    playButton[0].style.display = 'none';
-                }
+  //               const playButton = document.getElementsByClassName('vjs-big-play-button');
+  //               if (playButton.length > 0) {
+  //                   playButton[0].style.display = 'none';
+  //               }
 
-                this.setState({ playing: true });
-            });
+  //               this.setState({ playing: true });
+  //           });
 
-			let pauseCounter = 0; // avoid trigger first pause
-            this.player.on('pause', () => {
-                const seekButtons = document.getElementsByClassName('vjs-seek-button');
-                for (let i = 0; i < seekButtons.length; i++) {
-                    seekButtons[i].style.display = 'none';
-                }
+	// 		let pauseCounter = 0; // avoid trigger first pause
+  //           this.player.on('pause', () => {
+  //               const seekButtons = document.getElementsByClassName('vjs-seek-button');
+  //               for (let i = 0; i < seekButtons.length; i++) {
+  //                   seekButtons[i].style.display = 'none';
+  //               }
 
-                if (pauseCounter++ > 0) {
-                    const playButton = document.getElementsByClassName('vjs-big-play-button');
-                    if (playButton.length > 0) {
-                        playButton[0].style.display = 'block';
-                    }
-                }
+  //               if (pauseCounter++ > 0) {
+  //                   const playButton = document.getElementsByClassName('vjs-big-play-button');
+  //                   if (playButton.length > 0) {
+  //                       playButton[0].style.display = 'block';
+  //                   }
+  //               }
 
-                this.setState({ playing: false });
-            });
+  //               this.setState({ playing: false });
+  //           });
 
-			this.player.ima({
-				adTagUrl: vmap,
-				preventLateAdStart: true
-			});
-			this.player.ima.initializeAdDisplayContainer();
+	// 		this.player.ima({
+	// 			adTagUrl: vmap,
+	// 			preventLateAdStart: true
+	// 		});
+	// 		this.player.ima.initializeAdDisplayContainer();
 
-			this.setState({ screen_width: window.outerWidth });
-		}
-	}
+	// 		this.setState({ screen_width: window.outerWidth });
+	// 	}
+	// }
 
 
 	loadMore() {
@@ -1247,7 +1249,8 @@ class LiveEvent extends React.Component {
 	}
 
 	render() {
-		let { selected_event } = this.props;
+		const { state } = this;
+		const  { selected_event, selected_event_url } = this.props;
 		let errorEvent = (<Col xs="12" key="1" className="le-error">
 				<LiveIcon />
 				<p>Ups! No Data Found</p>
@@ -1278,7 +1281,7 @@ class LiveEvent extends React.Component {
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
-				<Offline onChange={(status) => {
+				{/* <Offline onChange={(status) => {
 					if (!status) {
 							this.setState({
 								errorCon: true,
@@ -1293,7 +1296,7 @@ class LiveEvent extends React.Component {
 									this.initPlayer();
 								}, 500);
 							});
-					}} />
+					}} /> */}
 				<ActionSheet
 					tabStatus= {this.state.tabStatus}
 					caption={this.state.caption}
@@ -1304,7 +1307,17 @@ class LiveEvent extends React.Component {
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					<div ref={ this.playerContainerRef }  className="rplus-player-container">
 					<NavBack navPlayer={true} stylePos="absolute"/>
-						{this.renderPlayer()}
+						{/* {this.renderPlayer()} */}
+						<JwPlayer 
+							data={ selected_event_url && selected_event_url.data }  
+							type={ this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' }
+							customData={ {
+								program_name: this.props.selected_event && this.props.selected_event.data && this.props.selected_event.data.name, 
+								isLogin: this.props.user.isAuth,
+								sectionPage: this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' ,
+								} }
+							geoblockStatus={ this.state.statusError === 2 ? true : false }
+							/>
 					</div>
 					<div ref= { this.titleRef } className="title-wrap">
 						<div style={{

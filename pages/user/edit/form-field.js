@@ -44,11 +44,11 @@ class FormField extends React.Component {
     onChange(e) {
         if (this.props.others.label === 'Full Name' && e.target.value.length > 25) {
             this.props.showNotification('full name: max length is 25', false);
-            setTimeout(() => this.props.hideNotification(), 3000);
+            setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
         }
         else if (this.props.others.label === 'Phone Number' && e.target.value.length > 15) {
             this.props.showNotification('phone number: max length is 15', false);
-            setTimeout(() => this.props.hideNotification(), 3000);
+            setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
         }
         else {
             this.setState({ value: this.props.user.data_key[this.props.others.index] == 'dob' ? e : e.target.value, value_invalid: false }, () => {
@@ -61,7 +61,7 @@ class FormField extends React.Component {
                     case 'Full Name':
                         if (this.state.value.length < 4) {
                             this.props.showNotification('full name: min length is 4', false);
-                            setTimeout(() => this.props.hideNotification(), 3000);
+                            setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
                             this.setState({ value_invalid: true });
                         }
                         break;
@@ -69,7 +69,7 @@ class FormField extends React.Component {
                     case 'Phone Number':
                         if (this.state.value.length < 9) {
                             this.props.showNotification('phone number: min length is 9', false);
-                            setTimeout(() => this.props.hideNotification(), 3000);
+                            setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
                             this.setState({ value_invalid: true });
                         }
                         break;
@@ -113,13 +113,13 @@ class FormField extends React.Component {
                             }
                             Router.push('/user/edit/verify-otp');
                         }
-                        setTimeout(() => this.props.hideNotification(), 3000);
+                        setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
                     })
                     .catch(error => {
                         if (error.status == 200) {
                             this.props.showNotification(error.data.status.message_server, false);
                         }
-                        setTimeout(() => this.props.hideNotification(), 3000);
+                        setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
                         console.log(error);
                     });
                 return;
@@ -130,14 +130,14 @@ class FormField extends React.Component {
             .then(response => {
                 accountGeneralEvent('mweb_account_edit_profile_form');
                 this.props.showNotification('*Your data is saved');
-                setTimeout(() => this.props.hideNotification(), 3000);
+                setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
                 Router.back();
             })
             .catch(error => {
                 if (error.status == 200) {
                     this.props.showNotification(error.data.status.message_server, false);
                 }
-                setTimeout(() => this.props.hideNotification(), 3000);
+                setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
                 console.log(error);
             });
     }
@@ -165,7 +165,7 @@ class FormField extends React.Component {
                                 .catch(error => {
                                     if (error.status === 200) {
                                         this.props.showNotification(error.data.status.message_server, false);
-                                        setTimeout(() => this.props.hideNotification(), 3000);
+                                        setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
                                         this.setState({ value_invalid: true });
                                     }
                                 });

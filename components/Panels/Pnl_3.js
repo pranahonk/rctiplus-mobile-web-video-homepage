@@ -6,6 +6,7 @@ import BottomScrollListener from 'react-bottom-scroll-listener';
 
 import contentActions from '../../redux/actions/contentActions';
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../utils/appier';
+import { urlRegex } from '../../utils/regex';
 
 class Pnl_3 extends React.Component {
 
@@ -48,24 +49,24 @@ class Pnl_3 extends React.Component {
 			case 'live':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_live_event_clicked');
 
-				Router.push(`/live-event/${data.content_id}/${data.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
+				Router.push(`/live-event/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 
 			case 'program':
 				homeProgramClicked(this.props.title, data.program_id, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A',  this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_program_clicked');
 
 				if (data.program_id) {
-					Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
+					Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}?ref=homepage&homepage_title=${this.props.title}`);
 				}
 				else if (data.content_id) {
-					Router.push(`/programs/${data.content_id}/${data.program_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
+					Router.push(`/programs/${data.content_id}/${urlRegex(data.program_title)}?ref=homepage&homepage_title=${this.props.title}`);
 				}
 				break;
 
 			default:
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_content_clicked');
 
-				Router.push(`/programs/${data.program_id}/${data.program_title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}/${data.content_type}/${data.content_id}/${data.content_title.replace(/ +/g, '-').toLowerCase()}?ref=homepage&homepage_title=${this.props.title}`);
+				Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}/${data.content_type}/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 		}
 	}
