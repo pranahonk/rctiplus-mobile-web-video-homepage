@@ -73,7 +73,7 @@ export const convivaJwPlayer = (assetName = null, player = null, duration = null
                 contentInfo[Conviva.Constants.PLAYER_NAME] = "JWPLAYER";
                 contentInfo[Conviva.Constants.DURATION] = 30;
                 contentInfo[Conviva.Constants.STREAM_URL] = playerUrl;
-                contentInfo["CDN"] = cdn;
+                // contentInfo["CDN"] = cdn;
                 contentInfo[Conviva.Constants.IS_LIVE] = Conviva.Constants.StreamType.VOD;
                 contentInfo[Conviva.Constants.VIEWER_ID] = getUserId().toString();
                 const playerInfo = {};

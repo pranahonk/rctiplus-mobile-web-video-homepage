@@ -498,7 +498,6 @@ class Trending_v2 extends React.Component {
                                                                     <iframe 
                                                                         onLoad={() => {
                                                                             window.addEventListener('scroll', () => {
-                                                                                console.log('SCROLLLLL', article.id)
                                                                                 const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
                                                                                 document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
                                                                                 const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
@@ -511,7 +510,7 @@ class Trending_v2 extends React.Component {
                                                                                 }
                                                                                 })
                                                                         }}
-                                                                        id={article.id} src="/dfp" 
+                                                                        id={article.id} src={`/dfp?platform=${this.platform}`} 
                                                                         frameBorder="0" 
                                                                         style={{ 
                                                                             height: '250px',

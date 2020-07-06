@@ -176,7 +176,8 @@ class LiveEvent extends React.Component {
 			url: '',
 			hashtags: [],
 			tab_status: '',
-			refreshUrl: null
+			refreshUrl: null,
+			statusError: this.props.selected_event_url && this.props.selected_event_url.status && this.props.selected_event_url.status.code === 12 ? 2 : 0,
 		};
 
 		const segments = this.props.router.asPath.split(/\?/);
@@ -1310,7 +1311,12 @@ class LiveEvent extends React.Component {
 						<JwPlayer 
 							data={ selected_event_url && selected_event_url.data }  
 							type={ this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' }
-							customData={ {program_name: this.props.selected_event && this.props.selected_event.data && this.props.selected_event.data.name} }
+							customData={ {
+								program_name: this.props.selected_event && this.props.selected_event.data && this.props.selected_event.data.name, 
+								isLogin: this.props.user.isAuth,
+								sectionPage: this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' ,
+								} }
+							geoblockStatus={ this.state.statusError === 2 ? true : false }
 							/>
 					</div>
 					<div ref= { this.titleRef } className="title-wrap">

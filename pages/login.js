@@ -40,6 +40,7 @@ class Signin extends React.Component {
 	}
 
 	componentDidMount() {
+		console.log(this.props)
 		setTimeout(() => {
 			const token = getCookie('ACCESS_TOKEN');
 			if (token) {

@@ -5,36 +5,48 @@ import $ from 'jquery';
 
 const AdsBanner = ({path, size, idGpt, style, partner}) => {
   const [ads, setAds] = useState(null);
-  const toggleAds = useSelector(state => state.ads)
+  const [url, setUrl] = useState(null);
+  // const toggleAds = useSelector(state => state.ads)
   // const dispatch = useDispatch();
   useEffect(() => {
     const googletag = window.googletag || {};
     window.googletag = window.googletag || {cmd: []};
     googletag.cmd.push(function() {
         let  defineSlot;
-        if(partner) {
-          defineSlot = googletag.defineSlot(path, size, idGpt).setTargeting('partner_name', partner)
+        if (partner) {
+          defineSlot = googletag.defineSlot(path, size, idGpt).setTargeting('partner_name', partner);
         } else {
-          defineSlot = googletag.defineSlot(path, size, idGpt)
+          defineSlot = googletag.defineSlot(path, size, idGpt);
         }
         defineSlot.addService(googletag.pubads());
-        setAds(defineSlot)
-        console.log(ads)
-        console.log(defineSlot)
+        setAds(defineSlot);
+        console.log(ads);
+        console.log(defineSlot);
         googletag.pubads().enableSingleRequest();
         googletag.pubads().collapseEmptyDivs();
         // dispatch({type: 'TOGGLE_ADS' , toggle: true})
         googletag.pubads().addEventListener('slotRenderEnded', function(event) {
-            if (event.isEmpty) {
-                // dispatch({type: 'TOGGLE_ADS', toggle: false})
-                console.log('EMPTY ADS');
-                
-            }
+          console.log(event);
+          const elmnt = document.getElementById('google_ads_iframe_/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250_0');
+          const elmntDetail = document.getElementById('google_ads_iframe_/21865661642/PRO_MOBILE_DETAIL-NEWS_DISPLAY_300x250_0');
+          if (typeof (elmnt) !== 'undefined' && elmnt !== null) {
+            // console.log(elmnt);
+            setUrl(elmnt.contentWindow.document.getElementsByTagName('a')[0].href);
+          }
+          else if (elmntDetail) {
+            // console.log(elmntDetail.contentWindow.document.getElementsByTagName('a')[0].href);
+            setUrl(elmntDetail.contentWindow.document.getElementsByTagName('a')[0].href);
+          }
+            // if (event.isEmpty) {
+            //     // dispatch({type: 'TOGGLE_ADS', toggle: false})
+            //     console.log('EMPTY ADS');
+
+            // }
         });
         googletag.enableServices();
     });
     googletag.cmd.push(function() { googletag.display(idGpt); });
-  },[path, size, idGpt]);
+  },[]);
 
   // useEffect(() => {
   //   if(ads !== null) {
@@ -42,15 +54,22 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
 
   //   }
   // })
-  
+
 
   return (
     <div>
-      <div id="ads-banner">
-        <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+      <div id="ads-banner" style={{ position: 'relative' }}>
+        <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" />
         <center>
           <div id={idGpt} />
         </center>
+        { url ? (
+          <div style={{ position: 'absolute',
+          width: '100%',
+          height: '100%',
+          top: '0' }}
+          onClick={() => window.open(url, '_blank')} />
+        ) : (<div />) }
       </div>
     </div>
   );
@@ -76,4 +95,4 @@ AdsBanner.defaultProps = {
   },
   idGpt: 'div-gpt-ad-1591240670591-0',
   partner: null,
-}
+};

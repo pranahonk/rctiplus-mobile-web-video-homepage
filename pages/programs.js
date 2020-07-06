@@ -25,10 +25,11 @@ import { Nav, NavItem, NavLink, TabContent, TabPane, Collapse } from 'reactstrap
 import '../assets/scss/components/program-detail.scss';
 import { RESOLUTION_IMG, VISITOR_TOKEN, DEV_API } from '../config';
 import fetch from 'isomorphic-unfetch';
-import { getCookie } from '../utils/cookie';
+import { getCookie, getVisitorToken } from '../utils/cookie';
 import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
 import { alertDownload, onTracking, onTrackingClick } from '../components/Includes/program-detail/programDetail';
 import { BASE_URL } from '../config';
+import userActions from '../redux/actions/userActions';
 
 // const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
@@ -105,6 +106,7 @@ class Index extends React.Component {
       trailer: false,
       title: 'title-program',
       statusProgram: false,
+      statusError: 0,
     };
     this.type = 'program-detail';
     this.typeEpisode = 'program-episode';
@@ -119,7 +121,8 @@ class Index extends React.Component {
   }
   componentDidMount() {
     this.reference = queryString.parse(location.search).ref;
-    console.log('MOUNTED: ', this.props,this.reference);
+    console.log('MOUNTED: ', this.props);
+    this.props.dispatch(userActions.getUserData());
     this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] , 'tracking-program'));
     if (this.props.router.query.content_id) {
       const {content_id , content_type} = this.props.router.query;
@@ -154,7 +157,7 @@ class Index extends React.Component {
     }
   }
   shouldComponentUpdate() {
-    console.log('COMPONENT UPDATE');
+    // console.log('COMPONENT UPDATE');
     this.reference = queryString.parse(location.search).ref;
     return true;
   }
@@ -167,7 +170,7 @@ class Index extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
   }
   componentDidUpdate(prevProps) {
-    console.log('COMPONENT DID UPDATE', this.props);
+    // console.log('COMPONENT DID UPDATE', this.props);
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
       if (this.props.router.query.content_id) {
         const {content_id , content_type} = this.props.router.query;
@@ -380,11 +383,11 @@ class Index extends React.Component {
   }
   isTabs(data) {
     const tabs = [];
-    if (data.episode > 0 && this.props && this.props.server['program-detail'] && this.props.server['program-detail'].data.category === 'series') {tabs.push('Episodes');}
-    if (data.extra > 0) {tabs.push('Extra');}
-    if (data.clip > 0) {tabs.push('Clips');}
+    if (data && data.episode > 0 && this.props && this.props.server['program-detail'] && this.props.server['program-detail'].data.category === 'series') {tabs.push('Episodes');}
+    if (data && data.extra > 0) {tabs.push('Extra');}
+    if (data && data.clip > 0) {tabs.push('Clips');}
     if (!this.props.router.query.content_id) {
-      if (data.photo > 0) {tabs.push('Photo');}
+      if (data && data.photo > 0) {tabs.push('Photo');}
     }
     return tabs;
   }
@@ -490,7 +493,7 @@ class Index extends React.Component {
               onBookmarkAdd={this.addBookmark.bind(this)}
               onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
               bookmark={bookmark}
-              isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
+              isLogin={this.props.auth.isAuth}
               onShare={(title, item) => this.toggleActionSheet.bind(this, 'episode', title, 'content_share', item)}
               dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
             />
@@ -525,7 +528,7 @@ class Index extends React.Component {
         onBookmarkAdd={this.addBookmark.bind(this)}
         onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
         bookmark={bookmark}
-        isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
+        isLogin={this.props.auth.isAuth}
         onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
         dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
       />
@@ -558,7 +561,7 @@ class Index extends React.Component {
         onBookmarkAdd={this.addBookmark.bind(this)}
         onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
         bookmark={bookmark}
-        isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
+        isLogin={this.props.auth.isAuth}
         onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
         dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
       />
@@ -623,11 +626,22 @@ class Index extends React.Component {
   }
   switchPanel() {
     if (this.props.router.query.content_id) {
-      if (this.props.data && this.props.data['data-player'] && this.props.data['data-player'].data) {
+      if (this.props.data && this.props.data['data-player']) {
         const data = this.props.data && this.props.data['data-player'];
         return (
           <div className="program-detail-player-wrapper">
-              <JwPlayer data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} isResume={true} />
+              <JwPlayer data={data && data.data } 
+                isFullscreen={ data && data.isFullscreen } 
+                ref={this.ref} 
+                onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
+                isResume={true} 
+                geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
+                customData= {{
+                    isLogin: this.props.auth.isAuth, 
+                    programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
+                    sectionPage: 'VOD',
+                    }}
+                />
               {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
           </div>
         );
@@ -647,7 +661,17 @@ class Index extends React.Component {
       const data = this.props.server && this.props.server[this.type];
       return (
         <div className="program-detail-player-wrapper trailer">
-            <JwPlayer data={ data.data } ref={this.ref} isFullscreen={ true }/>
+            <JwPlayer 
+              data={ data.data } 
+              ref={this.ref} isFullscreen={ true }
+              isResume={true} 
+              geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
+              customData= {{
+                isLogin: this.props.auth.isAuth, 
+                programType: data.program_type_name,
+                sectionPage: 'VOD',
+                }}
+              />
             {/* <Player data={ data.data } ref={this.ref} isFullscreen={ true }/> */}
         </div>
       );
@@ -686,13 +710,13 @@ class Index extends React.Component {
   toggleRateModal(test = '') {
     this.setState({ rate_modal: !this.state.rate_modal });
   }
-  statusLogin(data) {
-    let isLogin = false;
-    if (data && data.status) {
-      isLogin = data.status.code === 13 ? false : true;
-      return isLogin;
-    }
-  }
+  // statusLogin(data) {
+  //   let isLogin = false;
+  //   if (data && data.status) {
+  //     isLogin = data.status.code === 13 ? false : true;
+  //     return isLogin;
+  //   }
+  // }
   render() {
     const { props, state } = this;
     return (
@@ -715,7 +739,7 @@ class Index extends React.Component {
                   bookmark={props.data && props.data.bookmark}
                   like={props.data && props.data.like}
                   onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
-                  isLogin={this.statusLogin(props.data && props.data.bookmark)}
+                  isLogin={this.props.auth.isAuth}
                   data={ props.server && props.server['program-detail'] && props.server['program-detail'].data }
                   onBookmarkAdd={(id, type) => { this.props.dispatch(postBookmark(id,type, 'bookmark')); }}
                   onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
@@ -797,7 +821,7 @@ class Index extends React.Component {
             <RatedModal
               open={this.state.rate_modal}
               toggle={this.toggleRateModal.bind(this)}
-              isLogin={this.statusLogin(props.data && props.data.like)}
+              isLogin={this.props.auth.isAuth}
               like={props.data && props.data.like}
               onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
              />
@@ -816,8 +840,8 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { Program } = state;
-  return { data: Program };
+  const { Program, user } = state;
+  return { data: Program, auth: user };
 };
 
 const mapDispatchToProps = (dispatch) => {

@@ -2,7 +2,7 @@ import { Provider } from 'react-redux';
 import App from 'next/app';
 import withRedux from 'next-redux-wrapper';
 import { register, unregister } from 'next-offline/runtime';
-import { initStore } from '../redux';
+import initStore  from '../redux';
 import { setVisitorTokenNews, setNewsTokenV2, setNewsToken, setVisitorToken, getVisitorToken, getVisitorTokenNews, getNewsToken, getNewsTokenV2 } from '../utils/cookie';
 
 import 'sweetalert2/src/sweetalert2.scss';
@@ -10,7 +10,6 @@ import '../assets/scss/apps/homepage/default.scss';
 
 import '../assets/scss/components/alert.scss';
 
-export default withRedux(initStore, { debug: false })(
     class MyApp extends App {
         static async getInitialProps({ Component, ctx }) {
             return {
@@ -145,4 +144,7 @@ export default withRedux(initStore, { debug: false })(
             );
         }
     }
-);
+
+const makeStore = () => initStore;
+
+export default withRedux(makeStore, { debug: false })(MyApp);
