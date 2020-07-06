@@ -639,7 +639,7 @@ class Index extends React.Component {
                 customData= {{
                     isLogin: this.props.auth.isAuth, 
                     programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
-                    sectionPage: 'vod',
+                    sectionPage: 'VOD',
                     }}
                 />
               {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
@@ -669,7 +669,7 @@ class Index extends React.Component {
               customData= {{
                 isLogin: this.props.auth.isAuth, 
                 programType: data.program_type_name,
-                sectionPage: 'vod',
+                sectionPage: 'VOD',
                 }}
               />
             {/* <Player data={ data.data } ref={this.ref} isFullscreen={ true }/> */}
