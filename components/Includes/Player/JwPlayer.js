@@ -63,7 +63,7 @@ const JwPlayer = (props) => {
     setPlayer(jwplayer);
     if (props.data && props.data.url) {
       setIsConviva(Math.random());
-      setIsCustomSetup(Math.random());
+      // setIsCustomSetup(Math.random());
       jwplayer.setup(options);
     }
     return () => {
@@ -180,7 +180,7 @@ const JwPlayer = (props) => {
         setDuration(player.getPosition());
       });
     }
-  }, [isCustomSetup]);
+  },);
 
 
   useEffect(() => {

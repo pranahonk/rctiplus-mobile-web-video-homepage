@@ -6,30 +6,27 @@ import throttle from 'lodash/throttle';
 
 import { loadState, saveState } from '../utils/localStorage';
 
-const persistedState = loadState();
+// const persistedState = loadState();
 
 export const initStore = createStore(
     reducer, 
-    persistedState,
-    applyMiddleware(thunk, logger),
+    // persistedState,
+    applyMiddleware(thunk, /* logger */),
     )
-initStore.subscribe(throttle(
-() => {
-    saveState({
-        user: initStore.getState().user,
-    });
-}
-), 1000)
+// initStore.subscribe(throttle(
+// () => {
+//     saveState({
+//         user: initStore.getState().user,
+//     });
+// }
+// ), 1000)
 
 
-export default initStore;
-
-// export const initStore = (initialState = {}) => {
+// const initStore = (initialState = {}) => {
 //     const store = createStore(
 //             reducer, 
 //             initialState, 
 //             applyMiddleware(thunk, logger),
-//             persistedState
 //             )
 //     store.subscribe(throttle(
 //         () => {
@@ -40,3 +37,5 @@ export default initStore;
 //     ), 1000)
 //     return store;
 // };
+
+export default initStore;
