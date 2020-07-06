@@ -84,6 +84,7 @@
     "lib-jitsi-meet": "^1.0.6",
     "lighthouse": "^5.6.0",
     "localforage": "^1.7.3",
+    "lodash": "^4.17.15",
     "modernizr": "^3.6.0",
     "morgan": "^1.9.1",
     "next": "^9.1.7",

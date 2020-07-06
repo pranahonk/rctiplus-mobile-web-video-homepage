@@ -112,8 +112,8 @@ const JwPlayer = (props) => {
         playerContainer.append(forwardElement);
         // console.log('LIVEEE', isLiveContainer);
         if (props.type !== 'live tv' || props.type !== 'live event') {
-          fowardContainer.innerHTML = foward10;
-          backwardContainer.innerHTML = backward10;
+          fowardContainer.innerHTML = foward10Icon;
+          backwardContainer.innerHTML = backward10Icon;
           fowardContainer.addEventListener('touchstart', () => {
             player.seek(player.getPosition() + 10);
           });
@@ -325,6 +325,8 @@ const JwPlayer = (props) => {
         application_name: 'RCTI+ MWEB',
         section_page: 'N/A',
         genre: genreTags,
+        is_login: props.customData && props.customData.isLogin ? 'login' : 'not login',
+        program_type: props.customData && props.customData.programType ? props.customData.programType : 'N/A',
       };
       if (player !== null) {
         // console.log('CONVIVA TAGS: ',optionsConviva);
@@ -422,6 +424,48 @@ const backward10 = `
         <path d="M0 0L31 0 31 29 0 29z" transform="translate(-2 -6) matrix(-1 0 0 1 54 0)"/>
     </g>
 </g>
+</svg>
+`;
+const foward10Icon = `
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>fastforward</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="48 48 0 48 0 0 48 0"></polygon>
+    </defs>
+    <g id="fastforward" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="baseline-forward_10-24px-(1)">
+            <g id="Clipped">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="a"></g>
+                <path d="M8,26 C8,34.8 15.2,42 24,42 C32.8,42 40,34.8 40,26 L36,26 C36,32.6 30.6,38 24,38 C17.4,38 12,32.6 12,26 C12,19.4 17.4,14 24,14 L24,22 L34,12 L24,2 L24,10 C15.2,10 8,17.2 8,26 L8,26 Z M21.6,32 L20,32 L20,25.4 L18,26 L18,24.6 L21.6,23.4 L21.8,23.4 L21.8,32 L21.6,32 Z M30.2,28.4 C30.2,29 30.2,29.6 30,30 L29.4,31.2 C29.4,31.2 28.8,31.8 28.4,31.8 C28,31.8 27.6,32 27.2,32 C26.8,32 26.4,32 26,31.8 C25.6,31.6 25.4,31.4 25,31.2 C24.6,31 24.6,30.6 24.4,30 C24.2,29.4 24.2,29 24.2,28.4 L24.2,27 C24.2,26.4 24.2,25.8 24.4,25.4 L25,24.2 C25,24.2 25.6,23.6 26,23.6 C26.4,23.6 26.8,23.4 27.2,23.4 C27.6,23.4 28,23.4 28.4,23.6 C28.8,23.8 29,24 29.4,24.2 C29.8,24.4 29.8,24.8 30,25.4 C30.2,26 30.2,26.4 30.2,27 L30.2,28.4 L30.2,28.4 Z M28.6,26.8 L28.6,25.8 C28.6,25.8 28.4,25.4 28.4,25.2 C28.4,25 28.2,25 28,24.8 C27.8,24.6 27.6,24.6 27.4,24.6 C27.2,24.6 27,24.6 26.8,24.8 L26.4,25.2 C26.4,25.2 26.2,25.6 26.2,25.8 L26.2,29.8 C26.2,29.8 26.4,30.2 26.4,30.4 C26.4,30.6 26.6,30.6 26.8,30.8 C27,31 27.2,31 27.4,31 C27.6,31 27.8,31 28,30.8 L28.4,30.4 C28.4,30.4 28.6,30 28.6,29.8 L28.6,26.8 L28.6,26.8 Z" id="Shape" fill="#FFFFFF" mask="url(#mask-2)"></path>
+            </g>
+        </g>
+    </g>
+</svg>`;
+
+const backward10Icon = `
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>previous</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="48 48 0 48 0 0 48 0"></polygon>
+    </defs>
+    <g id="previous" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="baseline-forward_10-24px-(1)">
+            <g id="Clipped">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="a"></g>
+                <path d="M40,26 C40,34.8 32.8,42 24,42 C15.2,42 8,34.8 8,26 L12,26 C12,32.6 17.4,38 24,38 C30.6,38 36,32.6 36,26 C36,19.4 30.6,14 24,14 L24,22 L14,12 L24,2 L24,10 C32.8,10 40,17.2 40,26 L40,26 Z M21.6,32 L20,32 L20,25.4 L18,26 L18,24.6 L21.6,23.4 L21.8,23.4 L21.8,32 L21.6,32 Z M30.2,28.4 C30.2,29 30.2,29.6 30,30 L29.4,31.2 C29.4,31.2 28.8,31.8 28.4,31.8 C28,31.8 27.6,32 27.2,32 C26.8,32 26.4,32 26,31.8 C25.6,31.6 25.4,31.4 25,31.2 C24.6,31 24.6,30.6 24.4,30 C24.2,29.4 24.2,29 24.2,28.4 L24.2,27 C24.2,26.4 24.2,25.8 24.4,25.4 L25,24.2 C25,24.2 25.6,23.6 26,23.6 C26.4,23.6 26.8,23.4 27.2,23.4 C27.6,23.4 28,23.4 28.4,23.6 C28.8,23.8 29,24 29.4,24.2 C29.8,24.4 29.8,24.8 30,25.4 C30.2,26 30.2,26.4 30.2,27 L30.2,28.4 L30.2,28.4 Z M28.6,26.8 L28.6,25.8 C28.6,25.8 28.4,25.4 28.4,25.2 C28.4,25 28.2,25 28,24.8 C27.8,24.6 27.6,24.6 27.4,24.6 C27.2,24.6 27,24.6 26.8,24.8 L26.4,25.2 C26.4,25.2 26.2,25.6 26.2,25.8 L26.2,29.8 C26.2,29.8 26.4,30.2 26.4,30.4 C26.4,30.6 26.6,30.6 26.8,30.8 C27,31 27.2,31 27.4,31 C27.6,31 27.8,31 28,30.8 L28.4,30.4 C28.4,30.4 28.6,30 28.6,29.8 L28.6,26.8 L28.6,26.8 Z" id="Shape" fill="#FFFFFF" mask="url(#mask-2)"></path>
+            </g>
+        </g>
+    </g>
 </svg>
 `;
 

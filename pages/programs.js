@@ -29,6 +29,7 @@ import { getCookie, getVisitorToken } from '../utils/cookie';
 import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
 import { alertDownload, onTracking, onTrackingClick } from '../components/Includes/program-detail/programDetail';
 import { BASE_URL } from '../config';
+import userActions from '../redux/actions/userActions';
 
 // const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
@@ -120,7 +121,8 @@ class Index extends React.Component {
   }
   componentDidMount() {
     this.reference = queryString.parse(location.search).ref;
-    console.log('MOUNTED: ', this.props,this.reference);
+    console.log('MOUNTED: ', this.props);
+    this.props.dispatch(userActions.getUserData());
     this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] , 'tracking-program'));
     if (this.props.router.query.content_id) {
       const {content_id , content_type} = this.props.router.query;
@@ -491,7 +493,7 @@ class Index extends React.Component {
               onBookmarkAdd={this.addBookmark.bind(this)}
               onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
               bookmark={bookmark}
-              isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
+              isLogin={this.props.auth.isAuth}
               onShare={(title, item) => this.toggleActionSheet.bind(this, 'episode', title, 'content_share', item)}
               dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
             />
@@ -526,7 +528,7 @@ class Index extends React.Component {
         onBookmarkAdd={this.addBookmark.bind(this)}
         onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
         bookmark={bookmark}
-        isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
+        isLogin={this.props.auth.isAuth}
         onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
         dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
       />
@@ -559,7 +561,7 @@ class Index extends React.Component {
         onBookmarkAdd={this.addBookmark.bind(this)}
         onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
         bookmark={bookmark}
-        isLogin={this.statusLogin(this.props.data && this.props.data.bookmark)}
+        isLogin={this.props.auth.isAuth}
         onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
         dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
       />
@@ -634,6 +636,7 @@ class Index extends React.Component {
                 onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
                 isResume={true} 
                 geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
+                customData= {{isLogin: this.props.auth.isAuth, programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name}}
                 />
               {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
           </div>
@@ -659,6 +662,7 @@ class Index extends React.Component {
               ref={this.ref} isFullscreen={ true }
               isResume={true} 
               geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
+              customData= {{isLogin: this.props.auth.isAuth, programType: data.program_type_name}}
               />
             {/* <Player data={ data.data } ref={this.ref} isFullscreen={ true }/> */}
         </div>
@@ -698,13 +702,13 @@ class Index extends React.Component {
   toggleRateModal(test = '') {
     this.setState({ rate_modal: !this.state.rate_modal });
   }
-  statusLogin(data) {
-    let isLogin = false;
-    if (data && data.status) {
-      isLogin = data.status.code === 13 ? false : true;
-      return isLogin;
-    }
-  }
+  // statusLogin(data) {
+  //   let isLogin = false;
+  //   if (data && data.status) {
+  //     isLogin = data.status.code === 13 ? false : true;
+  //     return isLogin;
+  //   }
+  // }
   render() {
     const { props, state } = this;
     return (
@@ -727,7 +731,7 @@ class Index extends React.Component {
                   bookmark={props.data && props.data.bookmark}
                   like={props.data && props.data.like}
                   onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
-                  isLogin={this.statusLogin(props.data && props.data.bookmark)}
+                  isLogin={this.props.auth.isAuth}
                   data={ props.server && props.server['program-detail'] && props.server['program-detail'].data }
                   onBookmarkAdd={(id, type) => { this.props.dispatch(postBookmark(id,type, 'bookmark')); }}
                   onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
@@ -809,7 +813,7 @@ class Index extends React.Component {
             <RatedModal
               open={this.state.rate_modal}
               toggle={this.toggleRateModal.bind(this)}
-              isLogin={this.statusLogin(props.data && props.data.like)}
+              isLogin={this.props.auth.isAuth}
               like={props.data && props.data.like}
               onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
              />
@@ -828,8 +832,8 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { Program } = state;
-  return { data: Program };
+  const { Program, user } = state;
+  return { data: Program, auth: user };
 };
 
 const mapDispatchToProps = (dispatch) => {

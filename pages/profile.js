@@ -64,6 +64,7 @@ class Profile extends React.Component {
 	}
 
 	componentDidMount() {
+		console.log(this.props)
 		this.props.getUserData()
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {

@@ -36,10 +36,10 @@ class FooterNav_v2 extends Component {
             .then(response => console.log(response))
             .catch(error => console.log(error));
         Router.events.on("routeChangeStart", () => {
-            const convivaSessionId = getCookie('CONVIVA_SESSION_ID');
-            if (convivaSessionId != null) {
-                Conviva.LivePass.cleanupSession(convivaSessionId);
-            }
+            // const convivaSessionId = getCookie('CONVIVA_SESSION_ID');
+            // if (convivaSessionId != null) {
+            //     Conviva.LivePass.cleanupSession(convivaSessionId);
+            // }
         });
     }
 
