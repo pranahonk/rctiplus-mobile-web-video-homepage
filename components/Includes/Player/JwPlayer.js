@@ -39,6 +39,7 @@ const JwPlayer = (props) => {
     displaytitle: true,
     setFullscreen: true,
     stretching: 'uniform',
+    height: 180,
     advertising: {
       client: process.env.ADVERTISING_CLIENT,
       tag: props.data && props.data.vmap_ima,
@@ -96,20 +97,22 @@ const JwPlayer = (props) => {
         const fowardContainer = playerContainer.querySelector('.jw-icon-next');
         const backwardContainer = playerContainer.querySelector('.jw-icon-rewind');
         const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
-
-        const forwardElement = document.createElement('div');
-        forwardElement.classList.add('jw-rplus-forward');
-        forwardElement.innerHTML = foward10;
-        // const iconForward = document.querySelector('.icon-forward');
-        forwardElement.addEventListener('dblclick', (ev) => {
-          // console.log('TOUCH:', ev);
-          // iconForward.classList.add('animated', 'fadeInRight', 'go');
-          setTimeout(() => {
-            // iconForward.classList.remove('animated', 'fadeInRight', 'go');
-            forwardElement.style.opacity = 0;
-          }, 900);
-        });
-        playerContainer.append(forwardElement);
+        const isForward = playerContainer.querySelector('.jw-rplus-forward');
+        if(isForward) {
+          const forwardElement = document.createElement('div');
+          forwardElement.classList.add('jw-rplus-forward');
+          forwardElement.innerHTML = foward10;
+          // const iconForward = document.querySelector('.icon-forward');
+          forwardElement.addEventListener('dblclick', (ev) => {
+            // console.log('TOUCH:', ev);
+            // iconForward.classList.add('animated', 'fadeInRight', 'go');
+            setTimeout(() => {
+              // iconForward.classList.remove('animated', 'fadeInRight', 'go');
+              forwardElement.style.opacity = 0;
+            }, 900);
+          });
+          playerContainer.append(forwardElement);
+        }
         // console.log('LIVEEE', isLiveContainer);
         if (props.type !== 'live tv' || props.type !== 'live event') {
           fowardContainer.innerHTML = foward10Icon;
