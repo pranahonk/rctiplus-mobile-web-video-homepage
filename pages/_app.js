@@ -10,6 +10,7 @@ import '../assets/scss/apps/homepage/default.scss';
 
 import '../assets/scss/components/alert.scss';
 
+export default withRedux(initStore, { debug: false })(
     class MyApp extends App {
         static async getInitialProps({ Component, ctx }) {
             return {
@@ -130,11 +131,11 @@ import '../assets/scss/components/alert.scss';
         render() {
             const { Component, pageProps, store } = this.props;
             // return (
-            // 	<Container>
-            // 		<Provider store={store}>
-            // 			<Component {...pageProps} />
-            // 		</Provider>
-            // 	</Container>
+            //  <Container>
+            //      <Provider store={store}>
+            //          <Component {...pageProps} />
+            //      </Provider>
+            //  </Container>
             // );
 
             return (
@@ -144,7 +145,4 @@ import '../assets/scss/components/alert.scss';
             );
         }
     }
-
-const makeStore = () => initStore;
-
-export default withRedux(makeStore, { debug: false })(MyApp);
+);
