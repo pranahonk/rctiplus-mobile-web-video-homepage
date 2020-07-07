@@ -8,18 +8,9 @@ import { loadState, saveState } from '../utils/localStorage';
 
 // const persistedState = loadState();
 
-export const initStore = createStore(
-    reducer, 
-    // persistedState,
-    applyMiddleware(thunk, /* logger */),
-    )
-// initStore.subscribe(throttle(
-// () => {
-//     saveState({
-//         user: initStore.getState().user,
-//     });
-// }
-// ), 1000)
+const initStore = (initialState = {}) => {
+    return createStore(reducer, initialState, applyMiddleware(thunk/*, logger*/));
+};
 
 
 // const initStore = (initialState = {}) => {
