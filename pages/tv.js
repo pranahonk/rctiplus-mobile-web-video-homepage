@@ -1529,15 +1529,17 @@ class Tv extends React.Component {
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					{/* {playerRef} */}
 					{/* <GeoblockModal open={state.status} toggle={() => { this.setState({ status: !state.status }); }} text="Whoops, Your Location doesnt support us to live stream this content"/> */}
-					<JwPlayer 
-						data={ state.data_player } 
-						type={ state.data_player_type } 
-						geoblockStatus={state.status}
-						customData={ {
-							isLogin: this.props.user.isAuth,
-							sectionPage: state.data_player_type === 'live tv' ? 'live tv' : 'catchup',
-							} }
-						/>
+					<div ref={this.playerContainerRef}>
+						<JwPlayer 
+							data={ state.data_player } 
+							type={ state.data_player_type } 
+							geoblockStatus={state.status}
+							customData={ {
+								isLogin: this.props.user.isAuth,
+								sectionPage: state.data_player_type === 'live tv' ? 'live tv' : 'catchup',
+								} }
+							/>
+					</div>
 					<div ref= {this.tvTabRef} className="tv-wrap">
 						<Row>
 							<Col xs={3} className="text-center">
