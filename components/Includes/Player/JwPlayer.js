@@ -197,6 +197,7 @@ const JwPlayer = (props) => {
             isPlayer: false,
             isError01: true,
           });
+          player.remove();
           return false;
         }
         setStatus({
@@ -217,6 +218,7 @@ const JwPlayer = (props) => {
             isPlayer: false,
             isError01: true,
           });
+          player.remove();
           return false;
         }
         setStatus({
