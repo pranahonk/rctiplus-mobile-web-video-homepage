@@ -495,14 +495,10 @@ export default connect(state => state, newsv2Actions)(withRouter(Detail));
 const getPlatformGpt = (platform) => {
     // webview
       if(platform === 'ios') {
-        // console.log('ISO')
-        return '/21865661642/PRO_IOS-APP_DETAIL-NEWS_DISPLAY_300x250';
-        // return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
+        return process.env.GPT_NEWS_IOS_DETAIL;
       } 
       if(platform === 'android') {
-        // console.log('ANDROID')
-        return '/21865661642/PRO_ANDROID-APP_DETAIL-NEWS_DISPLAY_300x250';
-        // return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
+        return process.env.GPT_NEWS_ANDROID_DETAIL;
       }
-      return '/21865661642/PRO_MOBILE_DETAIL-NEWS_DISPLAY_300x250';
+      return process.env.GPT_NEWS_MWEB_DETAIL;
   }
