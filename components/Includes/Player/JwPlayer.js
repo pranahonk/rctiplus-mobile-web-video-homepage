@@ -308,7 +308,7 @@ const JwPlayer = (props) => {
                     tempId(props.data.channel)[0] : 
                     (props.data.tv_id ? props.data.tv_id : 'N/A'),
         tv_name: props.type === 'live tv' ?
-                    props.data && props.data.assets_name :
+                    tempId(props.data && props.data.id)[1] :
                     props.type === 'catch up tv' ?
                     tempId(props.data.channel)[0] :
                     (props.data.tv_name ? props.data.tv_name : 'N/A'),
