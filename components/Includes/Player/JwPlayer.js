@@ -281,7 +281,9 @@ const JwPlayer = (props) => {
           }
       }
       const optionsConviva = {
-        assetName : props.type === 'live tv' || props.type === 'live event' || props.type === 'missed event' ?
+        assetName : props.type === 'live tv' ?
+                    tempId(props.data && props.data.id)[1] :
+                    props.type === 'live event' || props.type === 'missed event' ?
                     props.data && props.data.assets_name :
                     props.type === 'catch up tv' ?
                     props.data.title :
@@ -475,16 +477,16 @@ const backward10Icon = `
 `;
 
 const tempId = (value) => {
-  if (value === 'rcti') {
+  if (value === 'rcti' || value === 1) {
     return ['1', 'RCTI'];
   }
-  if (value === 'mnctv') {
+  if (value === 'mnctv' || value === 2) {
     return ['2', 'MNCTV'];
   }
-  if (value === 'gtv') {
+  if (value === 'gtv' || value === 3) {
     return ['3', 'GTV'];
   }
-  if (value === 'inews') {
+  if (value === 'inews' || value === 4) {
     return ['4', 'INEWS'];
   }
   return ['N/A', 'N/A'];
