@@ -42,7 +42,7 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
     };
 };
 
-export const convivaJwPlayer = (assetName = null, player = null, duration = null, playerUrl = null, tags = {}, cdn = 'Anevia') => {
+export const convivaJwPlayer = (assetName = null, player = null, duration = null, playerUrl = null, tags = {}, cdn = 'Anevia', isLive = false) => {
     console.log('TAGS',tags)
     console.log('TAGS 2',assetName)
     return {
@@ -68,13 +68,13 @@ export const convivaJwPlayer = (assetName = null, player = null, duration = null
                 convivaVideoAnalytics = Conviva.Analytics.buildVideoAnalytics();
                 window.convivaVideoAnalytics = convivaVideoAnalytics;
                 const contentInfo = {};
-                console.log('CONVIVA: ', Conviva)
+                console.log('CONVIVA: ', isLive)
                 contentInfo[Conviva.Constants.ASSET_NAME] = assetName;
-                contentInfo[Conviva.Constants.PLAYER_NAME] = "JWPLAYER";
+                contentInfo[Conviva.Constants.PLAYER_NAME] = "RCTI+ MWEB";
                 contentInfo[Conviva.Constants.DURATION] = 30;
                 contentInfo[Conviva.Constants.STREAM_URL] = playerUrl;
                 // contentInfo["CDN"] = cdn;
-                contentInfo[Conviva.Constants.IS_LIVE] = Conviva.Constants.StreamType.VOD;
+                contentInfo[Conviva.Constants.IS_LIVE] = isLive;
                 contentInfo[Conviva.Constants.VIEWER_ID] = getUserId().toString();
                 const playerInfo = {};
                 playerInfo[Conviva.Constants.FRAMEWORK_NAME] = "HTML5";

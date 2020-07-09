@@ -337,7 +337,7 @@ const JwPlayer = (props) => {
       };
       if (player !== null) {
         // console.log('CONVIVA TAGS: ',optionsConviva);
-        const convivaTracker = convivaJwPlayer(optionsConviva.assetName, player, player.getDuration(), props.data.url ? props.data.url : props.data.trailer_url, customTags);
+        const convivaTracker = convivaJwPlayer(optionsConviva.assetName, player, player.getDuration(), props.data.url ? props.data.url : props.data.trailer_url, customTags, 'Anevia', getLive(props.type));
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
@@ -491,6 +491,13 @@ const tempId = (value) => {
   }
   return ['N/A', 'N/A'];
 };
+
+const getLive = (value) => {
+  if(value === 'live tv' || value === 'live event') {
+    return true;
+  } 
+  return false;
+}
 
 const error = (msg = msgError02, icon = (<Wrench />)) => {
   return (
