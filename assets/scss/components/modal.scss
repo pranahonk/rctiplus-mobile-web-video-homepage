@@ -54,3 +54,35 @@
         // }
     }
 }
+
+.country-list-modal {
+    margin: 0;
+    .modal-content {
+        border: none;
+        border-radius: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #282828;
+        color: #ffffff;
+        .navbar-header {
+            background: #3a3a3a;
+            display: flex;
+            height: 46px;
+            align-items: center;
+            .back-icon {
+                width: 15%;
+                padding: 10px;
+            }
+            .search-text {
+                width: 70%;
+            }
+            .search-action {
+                width: 15%;
+                text-align: center;
+            }
+        }
+        .body-list {
+            padding: 0;
+        }
+    }
+}

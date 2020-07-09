@@ -1,8 +1,12 @@
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { connect } from 'react-redux';
 import registerActions from '../../../redux/actions/registerActions';
 import userActions from '../../../redux/actions/userActions';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import '../../../assets/scss/components/signup.scss';
+
+const CountryList = dynamic(() => import('../../Modals/CountryList'));
 
 import {
 	TabContent,
@@ -34,7 +38,8 @@ class TabSignup extends React.Component {
 			phone_number_invalid: false,
 			phone_invalid_message: '',
 			email_invalid: false,
-			email_invalid_message: ''
+			email_invalid_message: '',
+			status: false,
 		};
 
 		this.subject = new Subject();
@@ -130,6 +135,7 @@ class TabSignup extends React.Component {
 	}
 
 	render() {
+		const { state, props } = this;
 		return (
 			<div className="nav-tab-wrapper">
 				<Nav tabs>
@@ -161,18 +167,20 @@ class TabSignup extends React.Component {
 						<FormGroup className="frmInput1">
 							<Label for="email">Phone Number</Label>
 							<InputGroup>
-								<InputGroupAddon addonType="prepend">
+								{/* <InputGroupAddon addonType="prepend">
 									<InputGroupText className={'inpt-form addon-left ' + (!this.state.phone_number_invalid && !!this.props.registration.username ? 'valid-border-color..' : (this.state.phone_number_invalid ? 'invalid-border-color' : ''))}>+62</InputGroupText>
-								</InputGroupAddon>
+								</InputGroupAddon> */}
 								<Input
-									className="inpt-form addon-left-input"
+									className="inpt-form right-none"
 									type="number"
 									name="text"
 									id="phone_number"
 									placeholder="insert phone number"
-									// valid={!this.state.phone_number_invalid && !!this.props.registration.username}
 									invalid={this.state.phone_number_invalid}
 									onChange={this.onChangeUsername.bind(this)} />
+									<InputGroupAddon onClick={ () => this.setState({ status: !state.status }) } addonType="append">
+										<InputGroupText className={'append-input right-border-radius  ' + (!this.state.phone_number_invalid && !!this.props.registration.username ? 'valid-border-color..' : (this.state.phone_number_invalid ? 'invalid-border-color' : ''))}>ID <KeyboardArrowDownIcon/></InputGroupText>
+									</InputGroupAddon>
 								<FormFeedback
 								id="invalid-phone-number"
 								// valid={!this.state.phone_number_invalid && !!this.props.registration.username}
@@ -185,7 +193,7 @@ class TabSignup extends React.Component {
 							<Label for="email">Email</Label>
 							<InputGroup>
 								<Input
-									className="inpt-form"
+									className="inpt-form right-border-radius "
 									type="email"
 									name="email"
 									id="email"
@@ -197,6 +205,7 @@ class TabSignup extends React.Component {
 						</FormGroup>
 					</TabPane>
 				</TabContent>
+				<CountryList modal={state.status} toggle={() => this.setState({ status: !state.status })} className="country-list-modal"/>
 			</div>
 		);
 	}

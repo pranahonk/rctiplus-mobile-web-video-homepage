@@ -9,7 +9,8 @@ const initialState = {
     placeholder: '',
     option_data: [],
     index: -1,
-    disabled_condition: null
+    disabled_condition: null,
+    list_country: null, 
 };
 
 export default (state = initialState, action) => {
@@ -25,6 +26,10 @@ export default (state = initialState, action) => {
                 index: action.index,
                 disabled_condition: action.disabled_condition
             });
+        case 'GET_LIST_COUNTRY':
+            return Object.assign({}, state, { 
+                list_country: action.data,
+             })
         default:
             return state;
     }

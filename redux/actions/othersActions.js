@@ -28,6 +28,29 @@ const getLocations = () => {
     });
 };
 
+const getListCountry = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/country_code`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+                dispatch({
+                    type: 'GET_LIST_COUNTRY',
+                    data: response.data,
+                });
+            } else {
+                dispatch({
+                    type: 'GET_LIST_COUNTRY',
+                    data: null,
+                });
+            }
+        }
+        catch (error) {
+            reject(error)
+        }
+    })
+}
+
 const scanQRCode = qrcode => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -62,5 +85,6 @@ const setField = (index, label, fieldType, notes, placeholder, needOtp = false, 
 export default {
     getLocations,
     setField,
-    scanQRCode
+    scanQRCode,
+    getListCountry,
 };
