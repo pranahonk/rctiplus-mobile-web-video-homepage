@@ -102,7 +102,7 @@ class Default extends React.Component {
                     <script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
                     <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>
                     {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
-                    <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script>
+                    {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
                     <script src="https://cdn.qgraph.io/dist/aiqua-wp.js"></script>
                     <script dangerouslySetInnerHTML={{ __html: `
                         AIQUA.init({
