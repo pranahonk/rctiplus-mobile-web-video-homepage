@@ -330,7 +330,7 @@ const JwPlayer = (props) => {
         screen_mode: 'portrait',
         time_video: 'N/A',
         section_page: props.customData.sectionPage,
-        application_name: 'RCTI+ MWEB',
+        application_name: process.env.MODE === 'DEVELOPMENT' ? 'RCTI+ MWEB RC' : 'RCTI+ MWEB',
         genre: genreTags,
         is_login: props.customData && props.customData.isLogin ? 'login' : 'not login',
         program_type: props.customData && props.customData.programType ? props.customData.programType : 'N/A',
