@@ -205,7 +205,7 @@ class TabSignup extends React.Component {
 						</FormGroup>
 					</TabPane>
 				</TabContent>
-				<CountryList modal={state.status} toggle={() => this.setState({ status: !state.status })} className="country-list-modal"/>
+					<CountryList data={this.props.others.list_country} modal={state.status} toggle={() => this.setState({ status: !state.status })} className="country-list-modal"/>
 			</div>
 		);
 	}

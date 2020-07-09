@@ -4,6 +4,7 @@ import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 
 import registerActions from '../redux/actions/registerActions';
+import countryList from '../redux/actions/othersActions';
 import userActions from '../redux/actions/userActions';
 
 import initialize from '../utils/initialize';
@@ -34,7 +35,9 @@ class Signup extends React.Component {
 		};
 	}
 
-	
+	componentDidMount() {
+		this.props.getListCountry();
+	}
 
 	handleSubmit(e) {
 		e.preventDefault();
@@ -171,5 +174,6 @@ class Signup extends React.Component {
 
 export default connect(state => state, {
 	...registerActions,
-	...userActions
+	...userActions,
+	...countryList,
 })(withRouter(Signup));
