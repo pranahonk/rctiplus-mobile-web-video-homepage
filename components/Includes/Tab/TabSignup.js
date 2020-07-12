@@ -22,7 +22,7 @@ import {
 	FormFeedback,
 	InputGroup,
 	InputGroupAddon,
-	InputGroupText
+	InputGroupText,
 } from 'reactstrap';
 import classnames from 'classnames';
 
@@ -40,6 +40,8 @@ class TabSignup extends React.Component {
 			email_invalid: false,
 			email_invalid_message: '',
 			status: false,
+			codeCountry: 'ID',
+			phone_code: '62',
 		};
 
 		this.subject = new Subject();
@@ -60,7 +62,16 @@ class TabSignup extends React.Component {
 	}
 
 	onChangeUsername(e) {
-		this.props.setUsername(e.target.value);
+		let value = e.target.value;
+		if (this.state.activeTab === '1') {
+			if (value) {
+				if (value.charAt(0) === '0') {
+					value = value.slice(1);
+				}
+				this.props.setPhoneCode(this.state.phone_code);
+			}
+		}
+		this.props.setUsername(value);
 		this.subject.next();
 	}
 
@@ -70,7 +81,7 @@ class TabSignup extends React.Component {
 			if (this.state.activeTab == '1') {
 				this.setState({
 					phone_number_invalid: message != 'Your phone is Available',
-					phone_invalid_message: message
+					phone_invalid_message: message,
 				}, () => {
 					this.props.setPhoneInvalid(message != 'Your phone is Available');
 				});
@@ -78,7 +89,7 @@ class TabSignup extends React.Component {
 			else if (this.state.activeTab == '2') {
 				this.setState({
 					email_invalid: message != 'Your email is Available',
-					email_invalid_message: message
+					email_invalid_message: message,
 				}, () => {
 					this.props.setEmailInvalid(message != 'Your email is Available');
 				});
@@ -88,7 +99,7 @@ class TabSignup extends React.Component {
 			if (this.state.activeTab == '1') {
 				this.setState({
 					phone_number_invalid: true,
-					phone_invalid_message: message
+					phone_invalid_message: message,
 				}, () => {
 					this.props.setPhoneInvalid(true);
 				});
@@ -96,7 +107,7 @@ class TabSignup extends React.Component {
 			else if (this.state.activeTab == '2') {
 				this.setState({
 					email_invalid: true,
-					email_invalid_message: message
+					email_invalid_message: message,
 				}, () => {
 					this.props.setEmailInvalid(true);
 				});
@@ -117,7 +128,7 @@ class TabSignup extends React.Component {
 			.subscribe(() => {
 				let username = this.props.registration.username;
 				if (this.state.activeTab == '1') {
-					username = '62' + username;
+					username = this.props.registration.phone_code + username;
 				}
 
 				if (this.props.registration.username) {
@@ -133,6 +144,10 @@ class TabSignup extends React.Component {
 				}
 			});
 	}
+
+	// componentDidUpdate() {
+	// 	console.log(this.props.registration);
+	// }
 
 	render() {
 		const { state, props } = this;
@@ -179,7 +194,7 @@ class TabSignup extends React.Component {
 									invalid={this.state.phone_number_invalid}
 									onChange={this.onChangeUsername.bind(this)} />
 									<InputGroupAddon onClick={ () => this.setState({ status: !state.status }) } addonType="append">
-										<InputGroupText className={'append-input right-border-radius  ' + (!this.state.phone_number_invalid && !!this.props.registration.username ? 'valid-border-color..' : (this.state.phone_number_invalid ? 'invalid-border-color' : ''))}>ID <KeyboardArrowDownIcon/></InputGroupText>
+										<InputGroupText className={'append-input right-border-radius  ' + (!this.state.phone_number_invalid && !!this.props.registration.username ? 'valid-border-color..' : (this.state.phone_number_invalid ? 'invalid-border-color' : ''))}>{this.state.codeCountry}<KeyboardArrowDownIcon/></InputGroupText>
 									</InputGroupAddon>
 								<FormFeedback
 								id="invalid-phone-number"
@@ -205,7 +220,17 @@ class TabSignup extends React.Component {
 						</FormGroup>
 					</TabPane>
 				</TabContent>
-					<CountryList data={this.props.others.list_country} modal={state.status} toggle={() => this.setState({ status: !state.status })} className="country-list-modal"/>
+				{this.state.status ? (
+					<CountryList
+						data={this.props.others.list_country}
+						modal={state.status}
+						toggle={() => this.setState({ status: !state.status })}
+						getCountryCode={(e) => {
+								this.props.setPhoneCode(e.phone_code);
+								this.subject.next();
+								this.setState({ codeCountry: e.code, phone_code: e.phone_code });}
+							}
+						className="country-list-modal"/>) : ''}
 			</div>
 		);
 	}
@@ -213,5 +238,5 @@ class TabSignup extends React.Component {
 
 export default connect(state => state, {
 	...registerActions,
-	...userActions
+	...userActions,
 })(TabSignup);

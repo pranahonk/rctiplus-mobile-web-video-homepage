@@ -41,6 +41,13 @@ const setUsername = username => {
     });
 };
 
+const setPhoneCode = phone_code => {
+    return dispatch => dispatch({
+        type: 'PHONE_CODE',
+        phone_code: phone_code
+    });
+};
+
 const setPassword = password => {
     return dispatch => dispatch({
         type: 'PASSWORD',
@@ -86,7 +93,7 @@ const setOtp = otp => {
 const getOtp = (username, type = 'registration') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v2/otp`, { 
+            const response = await axios.post(`/v3/otp`, { 
                 username: username,
                 type: type
             });
@@ -103,17 +110,18 @@ const getOtp = (username, type = 'registration') => {
     });
 };
 
-const register = ({ username, password, fullname, gender, dob, otp, device_id }) => {
+const register = ({ username, password, fullname, gender, dob, otp, device_id, phone_code= '' }) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v2/register`, {
+            const response = await axios.post(`/v3/register`, {
                 password: password,
+                phone_code: phone_code,
                 username: username,
                 fullname: fullname,
                 gender: gender,
                 dob: dob,
                 otp: otp,
-                device_id: device_id
+                device_id: device_id,
             });
 
             if (response.data.status.code === 0) {
@@ -289,5 +297,6 @@ export default {
     setOtp,
     setEmailInvalid,
     setPhoneInvalid,
-    setActiveTab
+    setActiveTab,
+    setPhoneCode,
 };
