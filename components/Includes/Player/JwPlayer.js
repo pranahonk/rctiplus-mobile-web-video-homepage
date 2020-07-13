@@ -182,6 +182,12 @@ const JwPlayer = (props) => {
         // console.log('duration:', event.currentTime);
         setDuration(player.getPosition());
       });
+      player.on('complete', (event) => {
+        const convivaTracker = convivaJwPlayer();
+        if (window.convivaVideoAnalytics) {
+          convivaTracker.cleanUpSession();
+        }
+      })
     }
   },);
 

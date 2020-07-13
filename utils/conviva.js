@@ -43,7 +43,7 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
 };
 
 export const convivaJwPlayer = (assetName = null, player = null, duration = null, playerUrl = null, tags = {}, cdn = 'Anevia', isLive = false) => {
-    console.log('TAGS',tags)
+    console.log('TAGS',isLive)
     console.log('TAGS 2',assetName)
     return {
         assetName: assetName,
@@ -73,12 +73,18 @@ export const convivaJwPlayer = (assetName = null, player = null, duration = null
                 contentInfo[Conviva.Constants.PLAYER_NAME] = "RCTI+ MWEB";
                 contentInfo[Conviva.Constants.DURATION] = 30;
                 contentInfo[Conviva.Constants.STREAM_URL] = playerUrl;
+                contentInfo[Conviva.Constants.ENCODED_FRAMERATE] = 'N/A';
                 // contentInfo["CDN"] = cdn;
-                contentInfo[Conviva.Constants.IS_LIVE] = isLive;
+                contentInfo[Conviva.Constants.IS_LIVE] = isLive ? Conviva.Constants.StreamType.LIVE : Conviva.Constants.StreamType.VOD;
                 contentInfo[Conviva.Constants.VIEWER_ID] = getUserId().toString();
                 const playerInfo = {};
-                playerInfo[Conviva.Constants.FRAMEWORK_NAME] = "HTML5";
-                playerInfo[Conviva.Constants.FRAMEWORK_VERSION] = "NaForHTML5";
+                playerInfo[Conviva.Constants.FRAMEWORK_NAME] = "JWPlayer";
+                playerInfo[Conviva.Constants.FRAMEWORK_VERSION] = "8.7.6";
+                playerInfo[Conviva.Constants.DEFAULT_RESOURCE] = "ALIBABA";
+                const deviceMetadata = {};
+                deviceMetadata[Conviva.Constants.DeviceMetadata.TYPE] = Conviva.Constants.DeviceType.MOBILE;
+                deviceMetadata[Conviva.Constants.DeviceMetadata.CATEGORY] = Conviva.Constants.DeviceCategory.WEB;
+                Conviva.Analytics.setDeviceMetadata(deviceMetadata);
                 convivaVideoAnalytics.setPlayerInfo(playerInfo);
                 convivaVideoAnalytics.reportPlaybackRequested({...contentInfo, ...tags});
                 convivaVideoAnalytics.setCallback(function () {
