@@ -127,7 +127,7 @@ const updateUserData = (key, value, otp = null) => {
             if (otp) {
                 data['otp'] = otp;
             }
-            const response = await axios.post(`/v2/user`, data);
+            const response = await axios.post(`/v3/user`, data);
             
             if (response.status === 200 && response.data.status.code === 0) {
                 resolve(response);
@@ -169,7 +169,7 @@ const updateUserProfile = (username, dob, gender, location) => {
 const getUserData = () => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v2/user`);
+            const response = await axios.get(`/v3/user`);
 
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({

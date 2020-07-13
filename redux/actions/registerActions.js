@@ -41,7 +41,7 @@ const setUsername = username => {
     });
 };
 
-const setPhoneCode = phone_code => {
+const setPhoneCode = (phone_code = '') => {
     return dispatch => dispatch({
         type: 'PHONE_CODE',
         phone_code: phone_code
@@ -256,13 +256,14 @@ const createNewPassword = (token, otp, device_id, newPassword, platform = 'mweb'
     });
 };
 
-const createForgotPassword = (username, new_password, otp) => {
+const createForgotPassword = (username, new_password, otp, phone_code = '') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v2/forgot-password`, {
+            const response = await axios.post(`/v3/forgot-password`, {
+                phone_code: phone_code,
                 username: username,
                 new_password: new_password,
-                otp: otp
+                otp: otp,
             });
 
             if (response.data.status.code === 0) {

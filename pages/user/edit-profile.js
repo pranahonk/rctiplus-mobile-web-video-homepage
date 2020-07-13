@@ -9,6 +9,7 @@ import actions from '../../redux/actions';
 import userActions from '../../redux/actions/userActions';
 import othersActions from '../../redux/actions/othersActions';
 import pageActions from '../../redux/actions/pageActions';
+import notificationActions from '../../redux/actions/notificationActions';
 
 import { removeCookie } from '../../utils/cookie';
 import { accountGeneralEvent } from '../../utils/appier';
@@ -20,7 +21,7 @@ import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 
 //load reactstrap components
-import { Form, FormGroup, Label, Input, InputGroup, FormFeedback } from 'reactstrap';
+import { Form, FormGroup, Label, Input, InputGroup, FormFeedback, InputGroupAddon, InputGroupText } from 'reactstrap';
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 
 import '../../assets/scss/components/edit-profile.scss';
@@ -73,7 +74,8 @@ class EditProfile extends React.Component {
             show_action_sheet: false,
             input_photo_accept: 'image/*',
             profile_photo_src: 'https://cdn.zeplin.io/5c7fab96082323628629989f/assets/DDD7D5C6-7114-402B-A0C4-4EC7DE7707BC.svg',
-            capture: ''
+            capture: '',
+            codeCountry: 'ID',
         };
 
         this.inputPhotoElement = null;
@@ -81,6 +83,7 @@ class EditProfile extends React.Component {
     }
 
     componentDidMount() {
+        // console.log(this.props)
         this.props.getUserData()
             .then(response => {
                 if (response.status === 200) {
@@ -100,7 +103,8 @@ class EditProfile extends React.Component {
                         location: data.location,
                         profile_photo_src: data.photo_url ? data.photo_url : this.state.profile_photo_src,
                         interest_data: data.interest,
-                        interests: interests.join(',')
+                        interests: interests.join(','),
+                        codeCountry: data.phone_code,
                     }, () => {
                         this.props.setUserProfile(this.state.nickname, this.state.fullname, this.state.birthdate, this.state.gender, this.state.phone_number, this.state.email, this.state.otp, this.state.location);
                     });
@@ -165,8 +169,9 @@ class EditProfile extends React.Component {
     }
 
     goToFormField(index, label, fieldType, notes, placeholder, needOtp = false, selectData = [], disabledCondition = null) {
+        // console.log(label, fieldType, notes, placeholder, needOtp, selectData, disabledCondition)
         this.props.setField(index, label, fieldType, notes, placeholder, needOtp, selectData, disabledCondition);
-        Router.push('/user/edit/form-field');
+        Router.push('/user/edit/form-field?ref=' + label.replace(' ', '-').toLowerCase());
     }
 
     handleCameraTakePhoto(e, index) {
@@ -398,6 +403,11 @@ class EditProfile extends React.Component {
                                     onChange={this.onChangePhoneNumber.bind(this)}
                                     invalid={this.state.phone_number_invalid}
                                     className="form-control-ep" />
+                                    <InputGroupAddon className="append-country">
+                                        <InputGroupText className="none-style">
+                                            {this.state.codeCountry}
+                                        </InputGroupText>
+                                    </InputGroupAddon>
                                 <FormFeedback valid={!this.state.phone_number_invalid && !!this.state.phone_number}>{this.state.phone_number_invalid_message}</FormFeedback>
                             </InputGroup>
                         </FormGroup>
@@ -443,4 +453,5 @@ export default connect(state => state, {
     ...othersActions,
     ...actions,
     ...pageActions,
+    ...notificationActions
 })(withRouter(EditProfile));

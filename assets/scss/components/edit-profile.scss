@@ -96,3 +96,12 @@ $default-text-color-login: #eee;
     bottom: 0;
     right: 0;
 }
+
+.append-country {
+    border: 0;
+    border-bottom: 0.5px solid #495057 !important;
+    .none-style {
+        background: none;
+        border: 0;
+    }
+}

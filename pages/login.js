@@ -1,11 +1,15 @@
 import React from 'react';
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import actions from '../redux/actions';
 import initialize from '../utils/initialize';
 import { getCookie } from '../utils/cookie';
 import LoadingBar from 'react-top-loading-bar';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import countryList from '../redux/actions/othersActions';
+import registerActions from '../redux/actions/registerActions';
 
 import { showAlert } from '../utils/helpers';
 
@@ -14,9 +18,11 @@ import NavBack from '../components/Includes/Navbar/NavBack';
 
 import '../assets/scss/components/signin.scss';
 
-import { Button, Form, FormGroup, Label, Input, FormFeedback, InputGroup } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, FormFeedback, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
+
+const CountryList = dynamic(() => import('../components/Modals/CountryList'));
 
 class Signin extends React.Component {
 	static getInitialProps(ctx) {
@@ -33,14 +39,19 @@ class Signin extends React.Component {
 			is_username_invalid: false,
 			username_invalid_message: '',
 			view_raw: false,
-			progress_bar: 30
+			progress_bar: 30,
+			status: false,
+			codeCountry: 'ID',
+			phone_code: '62',
+			isPhoneNumber: false,
 		};
 
-		
+
 	}
 
 	componentDidMount() {
-		console.log(this.props)
+		// console.log(this.props);
+		this.props.getListCountry();
 		setTimeout(() => {
 			const token = getCookie('ACCESS_TOKEN');
 			if (token) {
@@ -49,45 +60,66 @@ class Signin extends React.Component {
 		}, 500);
 		this.LoadingBar.complete();
 	}
-
-	onChangeUsername(e) {
-		this.setState({ emailphone: e.target.value });
+	componentDidUpdate() {
+		console.log(this.state)
 	}
+	onChangeUsername(e) {
+		const regex = /^[0-9]+$/;
+		let value = e.target.value;
+			this.setState({ is_username_invalid: false });
+		if (regex.test(value) && value.length >= 3) {
+			if (value) {
+				if (value.charAt(0) === '0') {
+					value = value.slice(1);
+				}
+			this.setState({ isPhoneNumber: true, emailphone: value});
+			this.props.setPhoneCode(this.state.phone_code);
+			// console.log('PHONE');
+		}
+	 } else {
+			this.setState({ isPhoneNumber: false, emailphone: value });
+			this.props.setPhoneCode();
+			// console.log('EMAIL');
+		}
+}
+	
 
 	handleSubmit(e) {
 		e.preventDefault();
 		const data = {
 			emailphone: this.state.emailphone,
 			password: this.state.password,
+			phone_code: this.state.isPhoneNumber ? this.state.phone_code : '',
 		};
+		console.log(data)
 		this.props.login(data).then(response => {
 			console.log(this.props.authentication);
 			if (this.props.authentication.data != null && this.props.authentication.data.status.code === 0) {
 				Router.push('/');
 			}
 			else {
-				
+
 				switch (this.props.authentication.code) {
 					case 7: // code = 7 (Please Try Again Password Is Incorrect)
 						this.setState({
 							is_username_invalid: false,
 							is_password_invalid: true,
-							password_invalid_message: this.props.authentication.message
+							password_invalid_message: this.props.authentication.message,
 						});
 						break;
-					
+
 					case 1: // code = 1 (Please try again, username is incorrect)
 						this.setState({
 							is_password_invalid: false,
 							is_username_invalid: true,
-							username_invalid_message: this.props.authentication.message
+							username_invalid_message: this.props.authentication.message,
 						});
 						break;
 					case 9: // code = 9 (Invalid, User Has Not Been Registered)
 						this.setState({
 							is_password_invalid: false,
 							is_username_invalid: false,
-							username_invalid_message: this.props.authentication.message
+							username_invalid_message: this.props.authentication.message,
 						}, () => {
 							showAlert('User has not been registered', 'Invalid', 'OK', '', () => {}, true, 'not-registered');
 						});
@@ -103,7 +135,14 @@ class Signin extends React.Component {
 		this.setState({ view_raw: !this.state.view_raw });
 	}
 
+	removeCountryCode(value, phone_code) {
+		let result = value;
+				result = value.slice(phone_code.length)
+		return result;
+}
+
 	render() {
+		const { state, props } = this;
 		return (
 			<Layout title={SITEMAP.login.title}>
 				<Head>
@@ -131,7 +170,7 @@ class Signin extends React.Component {
 				<LoadingBar
 					progress={this.state.progress_bar}
 					height={3}
-					color='#fff'
+					color="#fff"
 					onRef={ref => (this.LoadingBar = ref)}/>
 				<NavBack title="Login"/>
 				<div className="wrapper-content" style={{ marginTop: 40 }}>
@@ -141,7 +180,7 @@ class Signin extends React.Component {
 								<Label for="email">Email or Phone Number</Label>
 								<InputGroup>
 									<Input
-										className="inpt-form"
+										className={'inpt-form ' + (!state.isPhoneNumber ? 'right-border-radius ' : 'none-border-right') }
 										type="text"
 										name="email"
 										id="email"
@@ -149,23 +188,34 @@ class Signin extends React.Component {
 										defaultValue={this.state.emailphone}
 										invalid={this.state.is_username_invalid}
 										onChange={this.onChangeUsername.bind(this)}/>
+										{ state.isPhoneNumber ? (
+											<InputGroupAddon onClick={ () => this.setState({ status: !state.status }) } addonType="append" id="action-country-code">
+											<InputGroupText className={'append-input right-border-radius ' + (state.is_username_invalid ? 'invalid-border-color' : '')}>
+												{this.state.codeCountry}<KeyboardArrowDownIcon/>
+											</InputGroupText>
+											</InputGroupAddon>
+										) : '' }
 									<FormFeedback id="invalid-username">{this.state.username_invalid_message}</FormFeedback>
 								</InputGroup>
-								
 							</FormGroup>
 							<FormGroup>
 								<Label for="password">Password</Label>
 								<InputGroup>
 									<Input
-										className="inpt-form"
+										className="inpt-form none-border-right"
 										type={this.state.view_raw ? 'text' : 'password'}
 										name="password"
 										id="password"
 										placeholder="insert password"
 										defaultValue={this.state.password}
-										onChange={e => this.setState({ password: e.target.value })}
+										onChange={e => this.setState({ password: e.target.value, is_password_invalid: false })}
 										invalid={this.state.is_password_invalid}/>
-									<div onClick={this.togglePassword.bind(this)} className={'view-raw ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye')}></div>
+									<div
+										onClick={this.togglePassword.bind(this)}
+										className={'view-raw right-border-radius none-border-left ' +
+												(this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye ') +
+												(this.state.is_password_invalid ? 'invalid-border-color' : '')
+												} />
 									<FormFeedback id="invalid-password">{this.state.password_invalid_message}</FormFeedback>
 								</InputGroup>
 							</FormGroup>
@@ -193,10 +243,28 @@ class Signin extends React.Component {
 							</p>
 						</Form>
 					</div>
+					{this.state.status ? (
+					<CountryList
+						data={this.props.others.list_country}
+						modal={state.status}
+						toggle={() => this.setState({ status: !state.status })}
+						getCountryCode={(e) => {
+								this.props.setPhoneCode(e.phone_code);
+								this.setState({ 
+									codeCountry: e.code, 
+									phone_code: e.phone_code,
+									emailphone: e.phone_code + this.removeCountryCode(state.emailphone, state.phone_code),
+									});}
+							}
+						className="country-list-modal"/>) : ''}
 				</div>
 			</Layout>
 		);
 	}
 }
 
-export default connect(state => state, actions)(withRouter(Signin));
+export default connect(state => state, {
+	...actions, 
+	...countryList,
+	...registerActions,
+})(withRouter(Signin));

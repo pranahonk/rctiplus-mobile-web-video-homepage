@@ -193,7 +193,7 @@ class TabSignup extends React.Component {
 									placeholder="insert phone number"
 									invalid={this.state.phone_number_invalid}
 									onChange={this.onChangeUsername.bind(this)} />
-									<InputGroupAddon onClick={ () => this.setState({ status: !state.status }) } addonType="append">
+									<InputGroupAddon onClick={ () => this.setState({ status: !state.status }) } addonType="append" id="action-country-code">
 										<InputGroupText className={'append-input right-border-radius  ' + (!this.state.phone_number_invalid && !!this.props.registration.username ? 'valid-border-color..' : (this.state.phone_number_invalid ? 'invalid-border-color' : ''))}>{this.state.codeCountry}<KeyboardArrowDownIcon/></InputGroupText>
 									</InputGroupAddon>
 								<FormFeedback

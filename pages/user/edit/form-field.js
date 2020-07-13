@@ -3,6 +3,8 @@ import Router from 'next/router';
 import { connect } from 'react-redux';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import dynamic from 'next/dynamic';
+import queryString from 'query-string';
 
 import registerActions from '../../../redux/actions/registerActions';
 import userActions from '../../../redux/actions/userActions';
@@ -11,6 +13,7 @@ import othersActions from '../../../redux/actions/othersActions';
 
 import Layout from '../../../components/Layouts/Default';
 import NavBack from '../../../components/Includes/Navbar/NavBack';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
 import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback, InputGroupAddon, InputGroupText } from 'reactstrap';
 
@@ -21,6 +24,8 @@ import '../../../assets/scss/components/form-field.scss';
 
 import { accountGeneralEvent } from '../../../utils/appier';
 
+const CountryList = dynamic(() => import('../../../components/Modals/CountryList'));
+
 class FormField extends React.Component {
 
     constructor(props) {
@@ -28,10 +33,14 @@ class FormField extends React.Component {
         this.state = {
             value: this.props.user[this.props.user.data_key[this.props.others.index]],
             value_invalid: false,
-            value_invalid_message: ''
+            value_invalid_message: '',
+            status: false,
+			codeCountry: 'ID',
+			phone_code: '62',
         };
 
         this.subject = new Subject();
+        this.ref = null;
     }
 
     formatDate(date) {
@@ -81,7 +90,7 @@ class FormField extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        this.props.showNotification('*Checking nickname availability...');
+        // this.props.showNotification('*Checking nickname availability...');
         let value = this.state.value;
         
         switch (this.props.user.data_key[this.props.others.index]) {
@@ -94,7 +103,7 @@ class FormField extends React.Component {
                 break;
 
             case 'phone_number':
-                value = '62' + value;
+                value = this.state.phone_code + value;
             case 'email':
                 this.props.checkUser(value)
                     .then(response => {
@@ -130,8 +139,10 @@ class FormField extends React.Component {
             .then(response => {
                 accountGeneralEvent('mweb_account_edit_profile_form');
                 this.props.showNotification('*Your data is saved');
-                setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
-                Router.back();
+                setTimeout(() => { 
+                    this.props.hideNotification() 
+                    Router.back();
+                }, 1500);
             })
             .catch(error => {
                 if (error.status == 200) {
@@ -143,6 +154,8 @@ class FormField extends React.Component {
     }
 
     componentDidMount() {
+        this.ref = queryString.parse(location.search).ref
+        this.props.getListCountry();
         let value = this.state.value;
         if (this.props.user.data_key[this.props.others.index] == 'gender') {
             value = value.charAt(0).toUpperCase() + value.substring(1);
@@ -175,9 +188,13 @@ class FormField extends React.Component {
             }
         });
     }
-
+    componentWillUnmount() {
+        this.props.hideNotification()
+    }
     render() {
+        const { state, props } = this;
         let formField = null;
+        // console.log(this.props.others)
         switch (this.props.others.field_type) {
             case 'text':
             case 'email':
@@ -224,11 +241,11 @@ class FormField extends React.Component {
                     <FormGroup className="frmInput1">
                         <Label for={this.props.others.label}>{this.props.others.label}</Label>
                         <InputGroup>
-                            <InputGroupAddon addonType="prepend">
+                            {/* <InputGroupAddon addonType="prepend">
                                 <InputGroupText className={'form-control-ff addon-left'}>+62</InputGroupText>
-                            </InputGroupAddon>
+                            </InputGroupAddon> */}
                             <Input
-                                className="form-control-ff"
+                                className="form-control-ff none-border-radius"
                                 type="number"
                                 name="text"
                                 id="phone_number"
@@ -237,6 +254,11 @@ class FormField extends React.Component {
                                 onChange={this.onChange.bind(this)}
                                 invalid={this.state.value_invalid} 
                                 />
+                                <InputGroupAddon onClick={ () => this.setState({ status: !state.status }) } addonType="append" id="action-country-code">
+                                    <InputGroupText className={'append-input rplus-border-bottom ' + (state.is_username_invalid ? 'invalid-border-color' : '')}>
+                                        {this.state.codeCountry}<KeyboardArrowDownIcon/>
+                                    </InputGroupText>
+                                </InputGroupAddon>
                             <FormFeedback>{this.state.value_invalid_message}</FormFeedback>
                         </InputGroup>
                         <div id="notes" dangerouslySetInnerHTML={{ __html: this.props.others.notes }}></div>
@@ -280,7 +302,7 @@ class FormField extends React.Component {
 
         return (
             <Layout title={this.props.others.label}>
-                <NavBack title={this.props.others.label} />
+                <NavBack title="Edit Profile" />
                 <div className="container-box-ff">
                     <Form onSubmit={this.onSubmit.bind(this)}>
                         {formField}                        
@@ -288,6 +310,19 @@ class FormField extends React.Component {
                             {saveButton}
                         </FormGroup>
                     </Form>
+                    {this.state.status ? (
+					<CountryList
+						data={this.props.others.list_country}
+						modal={state.status}
+						toggle={() => this.setState({ status: !state.status })}
+						getCountryCode={(e) => {
+								this.props.setPhoneCode(e.phone_code);
+								this.setState({ 
+									codeCountry: e.code, 
+									phone_code: e.phone_code,
+									});}
+							}
+						className="country-list-modal"/>) : ''}
                 </div>
             </Layout>
         );
