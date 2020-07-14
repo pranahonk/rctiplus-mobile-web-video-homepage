@@ -84,7 +84,7 @@ class Step2 extends Component {
 					}
 					else {
 						this.props.register({
-							username: username,
+							username: this.props.registration.username,
 							phone_code: this.props.registration.phone_code,
 							password: this.props.registration.password,
 							fullname: this.props.registration.fullname,
