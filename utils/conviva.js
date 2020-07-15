@@ -68,7 +68,7 @@ export const convivaJwPlayer = (assetName = null, player = null, duration = null
                 convivaVideoAnalytics = Conviva.Analytics.buildVideoAnalytics();
                 window.convivaVideoAnalytics = convivaVideoAnalytics;
                 const contentInfo = {};
-                console.log('CONVIVA: ', isLive)
+                // console.log('CONVIVA: ', isLive)
                 contentInfo[Conviva.Constants.ASSET_NAME] = assetName;
                 contentInfo[Conviva.Constants.PLAYER_NAME] = "RCTI+ MWEB";
                 contentInfo[Conviva.Constants.DURATION] = 30;
@@ -98,32 +98,32 @@ export const convivaJwPlayer = (assetName = null, player = null, duration = null
             }
         },
         updateMetaData: function(value) {
-            console.log('UPDATE METADATA CONVIVA')
+            // console.log('UPDATE METADATA CONVIVA')
             const convivaVideoAnalytics = Conviva.Analytics.buildVideoAnalytics();
             if(convivaVideoAnalytics != null) {
                 convivaVideoAnalytics.setContentInfo(value);
             }
         },
         cleanUpSession: function() {
-            console.log('CLEANUP CONVIVA')
+            // console.log('CLEANUP CONVIVA')
             window.convivaVideoAnalytics.release();
             Conviva.Analytics.release();
         },
         playing: function() {
             if(window.convivaVideoAnalytics) {
-            console.log('CONVIVA PLAYING')
+            // console.log('CONVIVA PLAYING')
                 window.convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.PLAYER_STATE, Conviva.Constants.PlayerState.PLAYING);
             }
         },
         pause: function() {
             if(window.convivaVideoAnalytics) {
-            console.log('CONVIVA PLAYING')
+            // console.log('CONVIVA PLAYING')
                 window.convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.PLAYER_STATE, Conviva.Constants.PlayerState.PAUSED);
             }
         },
         buffer: function() {
             if(window.convivaVideoAnalytics) {
-            console.log('CONVIVA PLAYING')
+            // console.log('CONVIVA PLAYING')
                 window.convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.PLAYER_STATE, Conviva.Constants.PlayerState.BUFFERING);
             }
         },

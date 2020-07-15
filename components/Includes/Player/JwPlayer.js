@@ -168,6 +168,7 @@ const JwPlayer = (props) => {
         convivaJwPlayer().playing();
       });
       player.on('pause', () =>{
+        // console.log('EFFECT INIT 4 CONTINUE WATCHING PAUSE', test)
         // console.log('PAUSE');
         convivaJwPlayer().pause();
       });
@@ -242,9 +243,36 @@ const JwPlayer = (props) => {
   // Continue Watching
 
   useEffect(() => {
-    // console.log('EFFECT INIT 4', duration);
+    // console.log('EFFECT INIT 4 CONTINUE WATCHING', duration, props.customData && props.customData.isLogin);
     // val.current = props;
+    if(props.customData && props.customData.isLogin && props.isResume && (props.data && props.data.id)) {
+      props.onResume(props.data.id, props.data.content_type, duration);
+    }
+    // return () => {
+    //   if (window.convivaVideoAnalytics) {
+    //     const convivaTracker = convivaJwPlayer();
+    //     convivaTracker.cleanUpSession();
+    //     // console.log('RELESE FROM');
+    //   }
+
+    //   if (props.isResume && (props.data && props.data.id)) {
+    //     console.log('EFFECT INIT 4 CONTINUE WATCHING CLEANUP :', player);
+    //     props.onResume(props.data.id, props.data.content_type, duration);
+    //   }
+    // };
+  }, [isCustomSetup]);
+
+  useEffect(() => {
+    let ab = 0
+    if(player !== null) {
+      player.on('time', (event) => {
+        // setDuration(player.getPosition());
+        ab = event.currentTime
+        // console.log('EFFECT INIT 4 CONTINUE WATCHING CLEANUP', ab)
+      });
+    }
     return () => {
+      // console.log('EFFECT INIT 4 CONTINUE WATCHING CLEANUP', ab)
       if (window.convivaVideoAnalytics) {
         const convivaTracker = convivaJwPlayer();
         convivaTracker.cleanUpSession();
@@ -252,11 +280,11 @@ const JwPlayer = (props) => {
       }
 
       if (props.isResume && (props.data && props.data.id)) {
-        // console.log('DURATION :', duration);
-        props.onResume(props.data.id, props.data.content_type, duration);
+        // console.log('EFFECT INIT 4 CONTINUE WATCHING CLEANUP :', ab);
+        props.onResume(props.data.id, props.data.content_type, ab);
       }
     };
-  }, [props.data && props.data.url]);
+  }, [player])
 
   // geoblock
   useEffect(() => {

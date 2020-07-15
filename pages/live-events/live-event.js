@@ -342,7 +342,7 @@ class LiveEvent extends React.Component {
 				Woops! Gonna sign in first!<br/>
 				Only a click away and you<br/>
 				can continue to enjoy<br/>
-				<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+				<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true, 'popup-action-signup', 'popup-action-signin');
 			return false;
 		}
 		return true;
@@ -1400,12 +1400,12 @@ class LiveEvent extends React.Component {
 						{height: `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
 						: null}>
 						<div className="btn-chat">
-							<Button onClick={this.toggleChat.bind(this)} color="link">
+							<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
 								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
 							</Button>
 							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
 						</div>
-						<div className="box-chat">
+						<div className="box-chat" id="chat-input">
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
 								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
 									<div>
