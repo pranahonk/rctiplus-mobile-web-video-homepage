@@ -41,9 +41,9 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import PauseIcon from '../components/Includes/Common/PauseIcon';
 import { isIOS } from 'react-device-detect';
 import socketIOClient from 'socket.io-client';
-import axios from 'axios';
+import ax from 'axios';
 
-import { BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
+import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 
 import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
@@ -62,8 +62,23 @@ import qualityLevels from 'videojs-contrib-quality-levels';
 
 import 'videojs-seek-buttons';
 import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
+
+import { getCookie, getVisitorToken, checkToken } from '../utils/cookie';
+
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
 const innerHeight = require('ios-inner-height');
+
+const axios = ax.create({
+  // baseURL: API + '/api',
+  baseURL: DEV_API + '/api'
+});
+
+axios.interceptors.request.use(async (request) => {
+  await checkToken();
+  const accessToken = getCookie('ACCESS_TOKEN');
+  request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : accessToken;
+  return request;
+});
 
 class Tv extends React.Component {
 
@@ -124,7 +139,11 @@ class Tv extends React.Component {
 			screen_width: 320,
 			quality_selector_shown: false,
 			playing: false,
-            user_active: false
+      user_active: false,
+      adsOverlayDuration: {
+        refreshDuration: 0,
+        reloadDuration: 0
+      },
 		};
 
 		this.player = null;
@@ -185,7 +204,23 @@ class Tv extends React.Component {
 				console.log(error);
 			});
 
-		// this.refreshPubAds();
+    // this.refreshPubAds();
+
+    axios.get('/v1/get-ads-duration')
+    .then(response => {
+      //console.log('ads duration res', response.data);
+      if (response.data.data) {
+        this.setState({
+          adsOverlayDuration: {
+            refreshDuration: response.data.data[0].duration,
+            reloadDuration: response.data.data[1].duration
+          }
+        })
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
 	}
 	setHeightChatBox() {
 		let heightPlayer = this.playerContainerRef.current.clientHeight + this.tvTabRef.current.clientHeight;
@@ -456,7 +491,7 @@ class Tv extends React.Component {
 	// 				for (let i = 0; i < seekButtons.length; i++) {
 	// 					seekButtons[i].style.display = 'block';
 	// 				}
-					
+
 	// 				this.setState({ user_active: true });
 	// 			}
 	// 		});
@@ -555,7 +590,7 @@ class Tv extends React.Component {
   //                           console.log('click');
   //                           self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
   //                       });
-                        
+
 	// 					const grandChilds = childs[i].childNodes;
   //                       for (let j = 0; j < grandChilds.length; j++) {
   //                           if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
@@ -698,7 +733,7 @@ class Tv extends React.Component {
 	// 					setTimeout(() => {
 	// 						self.changeQualityIconButton();
 	// 					}, 100);
-						
+
 	// 					const vm = this;
 	// 					if(isIOS) {
 	// 						vm.muted(true)
@@ -915,11 +950,11 @@ class Tv extends React.Component {
 				// 			else {
 				// 				chats.push(newChat);
 				// 			}
-	
+
 				// 			this.setState({ chats: chats }, () => {
 				// 				const chatBox = document.getElementById('chat-messages');
 				// 				chatBox.scrollTop = chatBox.scrollHeight;
-	
+
 				// 				const chatInput = document.getElementById('chat-input');
 				// 				chatInput.style.height = `24px`;
 				// 			});
@@ -954,10 +989,10 @@ class Tv extends React.Component {
 	selectChannel(index, first = false) {
 		this.props.setPageLoader();
 		this.setState({ selected_index: index, error: false, chats: [], ads_data: null, isAds: false }, () => {
-			setTimeout(() => { 
+			setTimeout(() => {
 				if (this.state.chat_open) {
 					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
-						this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id); 
+						this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
 					}
 				}
 			}, 100);
@@ -1037,7 +1072,7 @@ class Tv extends React.Component {
 					this.props.unsetPageLoader();
 				});
 
-			
+
 
 			this.props.getEPG(formatDate(new Date(this.state.selected_date)), this.state.live_events[this.state.selected_index].channel_code)
 				.then(response => {
@@ -1349,9 +1384,9 @@ class Tv extends React.Component {
 		this.setState({
 			ads_data: null,
 		}, () => {
-			setTimeout(() => { 
+			setTimeout(() => {
 				if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
-					this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id); 
+					this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
 				}
 			}, 100);
 		});
@@ -1370,9 +1405,9 @@ class Tv extends React.Component {
 						isAds: false,
 					}, () => {
 						if(this.state.chat_open) {
-							setTimeout(() => { 
+							setTimeout(() => {
 								if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
-									this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id); 
+									this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
 								}
 							}, 100);
 						}
@@ -1493,7 +1528,7 @@ class Tv extends React.Component {
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 
 					<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-					<script dangerouslySetInnerHTML={{
+					{/* <script dangerouslySetInnerHTML={{
 						__html: `
 						window.googletag = window.googletag || {cmd: []};
 						var i=2;
@@ -1511,7 +1546,7 @@ class Tv extends React.Component {
 							googletag.pubads().collapseEmptyDivs();
 							googletag.enableServices();
 						});
-					` }}></script>
+					` }}></script> */}
 				</Head>
 				<SelectDateModal
 					open={this.state.select_modal}
@@ -1530,14 +1565,15 @@ class Tv extends React.Component {
 					{/* {playerRef} */}
 					{/* <GeoblockModal open={state.status} toggle={() => { this.setState({ status: !state.status }); }} text="Whoops, Your Location doesnt support us to live stream this content"/> */}
 					<div ref={this.playerContainerRef}>
-						<JwPlayer 
-							data={ state.data_player } 
-							type={ state.data_player_type } 
+						<JwPlayer
+							data={ state.data_player }
+							type={ state.data_player_type }
 							geoblockStatus={state.status}
 							customData={ {
 								isLogin: this.props.user.isAuth,
 								sectionPage: state.data_player_type === 'live tv' ? 'live tv' : 'catchup',
 								} }
+              adsOverlayData={ state.adsOverlayDuration }
 							/>
 					</div>
 					<div ref= {this.tvTabRef} className="tv-wrap">
