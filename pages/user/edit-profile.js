@@ -82,9 +82,10 @@ class EditProfile extends React.Component {
         this.inputPhotoElement = null;
         this.props.setPageLoader();
     }
-
+    componentDidUpdate() {
+        console.log(this.props)
+    }
     componentDidMount() {
-        // console.log(this.props)
         this.props.setPhoneCode('');
         this.props.getUserData()
             .then(response => {
