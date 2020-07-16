@@ -7,6 +7,11 @@ import { isIOS } from 'react-device-detect';
 import Wrench from '../Common/Wrench';
 import '../../../assets/scss/jwplayer.scss';
 
+const pubAdsRefreshInterval = {
+  timeObject: null,
+  timeStart: 0,
+};
+
 const JwPlayer = (props) => {
   const [player, setPlayer] = useState(null);
   const [duration, setDuration] = useState(0);
@@ -130,6 +135,30 @@ const JwPlayer = (props) => {
           // console.log(fowardContainer);
           fowardContainer.innerHTML = '';
           backwardContainer.innerHTML = '';
+
+          if (document.querySelector('.ads_wrapper') == undefined) {
+            //test
+            const playerContainer = player.getContainer();
+            const adsOverlayElement = document.createElement('div');
+            adsOverlayElement.classList.add('ads_wrapper');
+            const adsOverlayBox = document.createElement('div');
+            adsOverlayBox.classList.add('adsStyling');
+            const adsOverlayCloseButton = document.createElement('div');
+            adsOverlayCloseButton.classList.add('close_button');
+            adsOverlayCloseButton.innerText = 'X';
+            const adsOverlayContainer = document.createElement('div');
+            adsOverlayContainer.classList.add('adsContainer');
+            adsOverlayContainer.id = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+            adsOverlayContainer.innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV}'); });</script>`;
+            playerContainer.appendChild(adsOverlayElement);
+            adsOverlayElement.appendChild(adsOverlayBox);
+            adsOverlayBox.appendChild(adsOverlayCloseButton);
+            adsOverlayBox.appendChild(adsOverlayContainer);
+
+            adsOverlayCloseButton.addEventListener('click', () => {
+              setAdStatus('close');
+            })
+          }
         }
         if (isIOS) {
           const elementCreateMute = document.createElement('btn');
@@ -171,8 +200,10 @@ const JwPlayer = (props) => {
       player.on('play', () =>{
         // console.log('PLAYING');
         convivaJwPlayer().playing();
-        if (props.type === 'live tv' || props.type === 'live event') {
-          if (adsStatus === 'none') {
+        if (document.querySelector('.ads_wrapper')) {
+          if (adsStatus === 'prestart') {
+            setAdStatus('start');
+          } else if (adsStatus === 'none') {
             setAdStatus('start');
           }
         }
@@ -212,21 +243,21 @@ const JwPlayer = (props) => {
       });
       // ads event
       player.on('adImpression', (event) => {
-        if (props.type === 'live tv' || props.type === 'live event') {
+        if (document.querySelector('.ads_wrapper')) {
           setAdStatus('none');
         }
       });
       player.on('adSkipped', (event) => {
-        if (props.type === 'live tv' || props.type === 'live event') {
+        if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
-            setAdStatus('start');
+            setAdStatus('prestart');
           }
         }
       });
       player.on('adComplete', (event) => {
-        if (props.type === 'live tv' || props.type === 'live event') {
+        if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
-            setAdStatus('start');
+            setAdStatus('prestart');
           }
         }
       });
@@ -434,29 +465,19 @@ const JwPlayer = (props) => {
 
   // ads overlay
   useEffect(() => {
-    let pubAdsRefreshInterval = null;
     if (player !== null) {
       if (adsStatus === 'start') {
-        clearTimeout(pubAdsRefreshInterval);
+        clearTimeout(pubAdsRefreshInterval.timeObject);
 
-        let slotName = "";
-        let slotDiv = "";
-        if (props.type === 'live tv') {
-          slotName = process.env.GPT_MOBILE_OVERLAY_LIVE_TV;
-          slotDiv = process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV;
-        } else if (props.type === 'live event') {
-          slotName = process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
-          slotDiv = process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-        }
+        let slotName = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
+        let slotDiv = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
 
         googletag.destroySlots();
         window.googletag = window.googletag || { cmd: [] };
         googletag.cmd.push(function () {
           if (playerFullscreen) {
-            document.querySelector('.ads_wrapper').classList.toggle('fullscreen-player', true);
             googletag.defineSlot(slotName, [468, 60], slotDiv).addService(googletag.pubads());
           } else {
-            document.querySelector('.ads_wrapper').classList.toggle('fullscreen-player', false);
             googletag.defineSlot(slotName, [320, 50], slotDiv).addService(googletag.pubads());
           }
         	googletag.pubads().enableSingleRequest();
@@ -470,25 +491,15 @@ const JwPlayer = (props) => {
         document.querySelector('.ads_wrapper').style.display = 'block'; */
         setAdStatus('close');
       } else if (adsStatus === 'restart') {
-        clearTimeout(pubAdsRefreshInterval);
-        let slotName = "";
-        let slotDiv = "";
-        if (props.type === 'live tv') {
-          slotName = process.env.GPT_MOBILE_OVERLAY_LIVE_TV;
-          slotDiv = process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV;
-        } else if (props.type === 'live event') {
-          slotName = process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
-          slotDiv = process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-        }
+        let slotName = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
+        let slotDiv = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
 
         googletag.destroySlots();
         window.googletag = window.googletag || { cmd: [] };
         googletag.cmd.push(function () {
           if (playerFullscreen) {
-            document.querySelector('.ads_wrapper').classList.toggle('fullscreen-player', true);
             googletag.defineSlot(slotName, [468, 60], slotDiv).addService(googletag.pubads());
           } else {
-            document.querySelector('.ads_wrapper').classList.toggle('fullscreen-player', false);
             googletag.defineSlot(slotName, [320, 50], slotDiv).addService(googletag.pubads());
           }
         	googletag.pubads().enableSingleRequest();
@@ -498,7 +509,6 @@ const JwPlayer = (props) => {
         googletag.cmd.push(function () {
           googletag.display(slotDiv);
         });
-
         googletag.pubads().refresh();
         if (document.querySelector('.ads_wrapper').style.display === 'block') {
           setAdStatus('idle');
@@ -506,39 +516,54 @@ const JwPlayer = (props) => {
           setAdStatus('close');
         }
       } else if (adsStatus === 'idle') {
-        clearTimeout(pubAdsRefreshInterval);
-        pubAdsRefreshInterval = setTimeout(() => {
-          setAdStatus('close');
-        }, 15000);
-      } else if (adsStatus === 'close') {
-        clearTimeout(pubAdsRefreshInterval);
-        document.querySelector('.ads_wrapper').style.display = 'none';
+        clearTimeout(pubAdsRefreshInterval.timeObject);
+        let delay = 15000;
+        if (pubAdsRefreshInterval.timeStart > 0) {
+          delay = delay - (new Date().getTime() - pubAdsRefreshInterval.timeStart);
+        } else {
+          pubAdsRefreshInterval.timeStart = new Date().getTime();
+        }
 
-        pubAdsRefreshInterval = setTimeout(() => {
+        pubAdsRefreshInterval.timeObject = setTimeout(() => {
+          pubAdsRefreshInterval.timeStart = 0;
+          setAdStatus('close');
+        }, delay);
+      } else if (adsStatus === 'close') {
+        clearTimeout(pubAdsRefreshInterval.timeObject);
+        let delay = props.adsOverlayData.reloadDuration;
+        if (pubAdsRefreshInterval.timeStart > 0) {
+          delay = delay - (new Date().getTime() - pubAdsRefreshInterval.timeStart);
+        } else {
+          pubAdsRefreshInterval.timeStart = new Date().getTime();
+        }
+
+        if (document.querySelector('.ads_wrapper')) {
+          document.querySelector('.ads_wrapper').style.display = 'none';
+        }
+
+        pubAdsRefreshInterval.timeObject = setTimeout(() => {
           googletag.pubads().refresh();
 
-          clearTimeout(pubAdsRefreshInterval);
-          pubAdsRefreshInterval = setTimeout(() => {
-            if (document.querySelector('.adsContainer').style.display != 'none') {
-              document.querySelector('.ads_wrapper').style.display = 'block';
+          setTimeout(() => {
+            if (document.querySelector('.ads_wrapper')) {
+              if (document.querySelector('.adsContainer').style.display != 'none') {
+                document.querySelector('.ads_wrapper').style.display = 'block';
+              }
             }
+            pubAdsRefreshInterval.timeStart = 0;
             setAdStatus('idle');
           }, 1000);
-        }, props.adsOverlayData.reloadDuration - 1000);
+        }, delay - 1000);
       }
     }
-    return () => clearTimeout(pubAdsRefreshInterval);
+    return () => clearTimeout(pubAdsRefreshInterval.timeObject);
   }, [adsStatus]);
 
   // fullscreen
   useEffect(() => {
     if (player !== null) {
-      if (props.type === 'live tv') {
-        document.querySelector('.adsContainer').innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV}'); });</script>`;
-      } else if (props.type === 'live event') {
-        document.querySelector('.adsContainer').innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV}'); });</script>`;
-      }
-      if (adsStatus != 'none') {
+      if (props.type === 'live tv' || props.type === 'live event') {
+        document.querySelector('.ads_wrapper').classList.toggle('fullscreen-player', playerFullscreen);
         setAdStatus('restart');
       }
     }
@@ -548,24 +573,6 @@ const JwPlayer = (props) => {
     <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
       { getPlayer(status.isError01 , status.isError02 ) }
       {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
-      {
-        (props.type === 'live tv' || props.type === 'live event') &&
-        <div className='ads_wrapper'>
-          <div className='adsStyling'>
-            <div className='close_button' onClick={() => { setAdStatus('close') }}>X</div>
-            { props.type === 'live tv' ? (
-                <div id={ process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV } className='adsContainer'>
-                  <script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('${process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV}'); });` }}></script>
-                </div>
-              ) : (
-                <div id={ process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV } className='adsContainer'>
-                  <script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('${process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV}'); });` }}></script>
-                </div>
-              )
-            }
-          </div>
-        </div>
-      }
     </div>
   );
 };
