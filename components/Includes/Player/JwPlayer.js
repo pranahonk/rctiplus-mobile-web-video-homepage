@@ -156,6 +156,7 @@ const JwPlayer = (props) => {
             adsOverlayBox.appendChild(adsOverlayContainer);
 
             adsOverlayCloseButton.addEventListener('click', () => {
+              pubAdsRefreshInterval.timeStart = 0;
               setAdStatus('close');
             })
           }
