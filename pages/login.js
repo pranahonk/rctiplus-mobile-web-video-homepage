@@ -61,7 +61,7 @@ class Signin extends React.Component {
 		this.LoadingBar.complete();
 	}
 	componentDidUpdate() {
-		console.log(this.state)
+		// console.log(this.state)
 	}
 	onChangeUsername(e) {
 		const regex = /^[0-9]+$/;
@@ -72,6 +72,7 @@ class Signin extends React.Component {
 				if (value.charAt(0) === '0') {
 					value = value.slice(1);
 				}
+				// console.log('VALUE', value)
 			this.setState({ isPhoneNumber: true, emailphone: value});
 			this.props.setPhoneCode(this.state.phone_code);
 			// console.log('PHONE');
@@ -91,9 +92,9 @@ class Signin extends React.Component {
 			password: this.state.password,
 			phone_code: this.state.isPhoneNumber ? this.state.phone_code : '',
 		};
-		console.log(data)
+		// console.log(data)
 		this.props.login(data).then(response => {
-			console.log(this.props.authentication);
+			// console.log(this.props.authentication);
 			if (this.props.authentication.data != null && this.props.authentication.data.status.code === 0) {
 				Router.push('/');
 			}
@@ -137,7 +138,8 @@ class Signin extends React.Component {
 
 	removeCountryCode(value, phone_code) {
 		let result = value;
-				result = value.slice(phone_code.length)
+				result = value.slice(phone_code.length - 1)
+				// console.log('RESULT: ',result, phone_code)
 		return result;
 }
 
@@ -190,7 +192,7 @@ class Signin extends React.Component {
 										onChange={this.onChangeUsername.bind(this)}/>
 										{ state.isPhoneNumber ? (
 											<InputGroupAddon onClick={ () => this.setState({ status: !state.status }) } addonType="append" id="action-country-code">
-											<InputGroupText className={'append-input right-border-radius ' + (state.is_username_invalid ? 'invalid-border-color' : '')}>
+											<InputGroupText className={'append-input right-border-radius ' + (state.is_username_invalid ? ' invalid-border-color' : '')}>
 												{this.state.codeCountry}<KeyboardArrowDownIcon/>
 											</InputGroupText>
 											</InputGroupAddon>
@@ -214,7 +216,7 @@ class Signin extends React.Component {
 										onClick={this.togglePassword.bind(this)}
 										className={'view-raw right-border-radius none-border-left ' +
 												(this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye ') +
-												(this.state.is_password_invalid ? 'invalid-border-color' : '')
+												(this.state.is_password_invalid ? ' invalid-border-color' : '')
 												} />
 									<FormFeedback id="invalid-password">{this.state.password_invalid_message}</FormFeedback>
 								</InputGroup>
@@ -253,7 +255,7 @@ class Signin extends React.Component {
 								this.setState({ 
 									codeCountry: e.code, 
 									phone_code: e.phone_code,
-									emailphone: e.phone_code + this.removeCountryCode(state.emailphone, state.phone_code),
+									emailphone: state.emailphone,
 									});}
 							}
 						className="country-list-modal"/>) : ''}

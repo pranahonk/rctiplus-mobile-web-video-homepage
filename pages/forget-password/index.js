@@ -44,9 +44,7 @@ class ForgetPassword extends React.Component {
 		if (regex.test(value) && value.length >= 3) {
 			if (value) {
 				if (value.charAt(0) === '0') {
-					value = this.state.phone_code + value.slice(1);
-                } else {
-                    value = this.state.phone_code + value;
+					value = value.slice(1);
                 }
             this.setState({ isPhoneNumber: true });
             this.props.setPhoneCode(this.state.phone_code);
@@ -55,12 +53,12 @@ class ForgetPassword extends React.Component {
         } 
         if(!(regex.test(value) && value.length >= 3)) {
             this.setState({ isPhoneNumber: false });
-            this.props.setPhoneCode();
+            this.props.setPhoneCode(null);
 			// console.log('EMAIL');
         }
         // console.log(value)
         this.setState({ username: value }, () => {
-            this.props.setUsername(this.state.username);
+            this.props.setUsername(value);
             if (this.state.username.length < 6) {
                 this.setState({
                     username_invalid: true,
@@ -86,7 +84,7 @@ class ForgetPassword extends React.Component {
             .pipe(debounceTime(500))
             .subscribe(() => {
                 if (this.state.username && this.state.username.length >= 6) {
-                    this.props.checkUser(this.state.username)
+                    this.props.checkUser(this.state.username, this.props.registration.phone_code)
                         .then(response => {
                             if (response.status === 200) {
                                 const message = response.data.status.message_client;
@@ -179,7 +177,9 @@ class ForgetPassword extends React.Component {
 								this.setState({ 
                                     codeCountry: e.code, 
                                     phone_code: e.phone_code, 
-                                    username: e.phone_code + this.removeCountryCode(state.username, state.phone_code) });}
+                                    username: e.phone_code + this.removeCountryCode(state.username, state.phone_code) }, () => {
+                                        this.subject.next()
+                                    });}
 							}
 						className="country-list-modal"/>) : ''}
             </Layout>

@@ -103,9 +103,9 @@ class FormField extends React.Component {
                 break;
 
             case 'phone_number':
-                value = this.state.phone_code + value;
+                value = value;
             case 'email':
-                this.props.checkUser(value)
+                this.props.checkUser(value, this.state.phone_code )
                     .then(response => {
                         console.log(response);
                         if (response.status === 200 && response.data.status.code !== 0) {
@@ -116,9 +116,11 @@ class FormField extends React.Component {
                             this.props.setUsername(value);
                             if (this.props.user.data_key[this.props.others.index] === 'phone_number') {
                                 this.props.setUsernameType('PHONE_NUMBER');
+                                this.props.setPhoneCode(this.state.phone_code);
                             }
                             else {
                                 this.props.setUsernameType('EMAIL');
+                                this.props.setPhoneCode('');
                             }
                             Router.push('/user/edit/verify-otp');
                         }
@@ -161,7 +163,8 @@ class FormField extends React.Component {
             value = value.charAt(0).toUpperCase() + value.substring(1);
         }
         else if (this.props.user.data_key[this.props.others.index] == 'phone_number' && value && value.length > 2) {
-            value = value.substring(2);
+            // value = value.substring(2);
+            value = value;
         }
 
         this.setState({ value: value }, () => {
@@ -172,7 +175,7 @@ class FormField extends React.Component {
                         
                             this.props.verify({ nickname: this.state.value })
                                 .then(response => {
-                                    console.log(response);
+                                    // console.log(response);
                                     this.setState({ value_invalid: false });
                                 })
                                 .catch(error => {

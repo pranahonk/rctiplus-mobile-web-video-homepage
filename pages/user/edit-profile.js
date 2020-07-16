@@ -10,6 +10,7 @@ import userActions from '../../redux/actions/userActions';
 import othersActions from '../../redux/actions/othersActions';
 import pageActions from '../../redux/actions/pageActions';
 import notificationActions from '../../redux/actions/notificationActions';
+import registerActions from '../../redux/actions/registerActions';
 
 import { removeCookie } from '../../utils/cookie';
 import { accountGeneralEvent } from '../../utils/appier';
@@ -84,6 +85,7 @@ class EditProfile extends React.Component {
 
     componentDidMount() {
         // console.log(this.props)
+        this.props.setPhoneCode('');
         this.props.getUserData()
             .then(response => {
                 if (response.status === 200) {
@@ -104,7 +106,7 @@ class EditProfile extends React.Component {
                         profile_photo_src: data.photo_url ? data.photo_url : this.state.profile_photo_src,
                         interest_data: data.interest,
                         interests: interests.join(','),
-                        codeCountry: data.phone_code,
+                        codeCountry: data.country_code,
                     }, () => {
                         this.props.setUserProfile(this.state.nickname, this.state.fullname, this.state.birthdate, this.state.gender, this.state.phone_number, this.state.email, this.state.otp, this.state.location);
                     });
@@ -403,7 +405,7 @@ class EditProfile extends React.Component {
                                     onChange={this.onChangePhoneNumber.bind(this)}
                                     invalid={this.state.phone_number_invalid}
                                     className="form-control-ep" />
-                                    <InputGroupAddon className="append-country">
+                                    <InputGroupAddon className="append-country" addonType="append">
                                         <InputGroupText className="none-style">
                                             {this.state.codeCountry}
                                         </InputGroupText>
@@ -453,5 +455,6 @@ export default connect(state => state, {
     ...othersActions,
     ...actions,
     ...pageActions,
-    ...notificationActions
+    ...notificationActions,
+    ...registerActions,
 })(withRouter(EditProfile));

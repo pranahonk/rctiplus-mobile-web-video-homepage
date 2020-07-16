@@ -90,11 +90,12 @@ const setOtp = otp => {
     });
 };
 
-const getOtp = (username, type = 'registration') => {
+const getOtp = (username, type = 'registration', phone_code = null) => {
+    console.log(phone_code)
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.post(`/v3/otp`, { 
-                username: username,
+                username: phone_code ? phone_code + username : username,
                 type: type
             });
 
@@ -186,11 +187,12 @@ const getPhoneOtp = phonenumber => {
     });
 };
 
-const verifyOtp = (username, otp) => {
+const verifyOtp = (username, otp, phone_code = null) => {
+    // console.log('TEST',username, otp, phone_code)
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v2/verify-otp`, {
-                username: username,
+            const response = await axios.post(`/v3/verify-otp`, {
+                username: phone_code ? phone_code + username : username,
                 otp: otp
             });
 
