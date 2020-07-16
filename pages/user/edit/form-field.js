@@ -51,6 +51,7 @@ class FormField extends React.Component {
     }
 
     onChange(e) {
+        this.props.hideNotification()
         if (this.props.others.label === 'Full Name' && e.target.value.length > 25) {
             this.props.showNotification('full name: max length is 25', false);
             setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
@@ -103,11 +104,19 @@ class FormField extends React.Component {
                 break;
 
             case 'phone_number':
-                value = value;
+                if(value) {
+                    if (value.charAt(0) === '0') {
+                        value = value.slice(1);
+                    } else {
+                        value = value;
+                    }
+                } else {
+                    value = value;
+                }
             case 'email':
                 this.props.checkUser(value, this.state.phone_code )
                     .then(response => {
-                        console.log(response);
+                        // console.log(response);
                         if (response.status === 200 && response.data.status.code !== 0) {
                             this.props.showNotification(response.data.status.message_server, false);
                         }
@@ -154,8 +163,11 @@ class FormField extends React.Component {
                 console.log(error);
             });
     }
-
+    componentDidUpdate() {
+        // console.log(this.state.value_invalid)
+    }
     componentDidMount() {
+        // console.log(this.props)
         this.ref = queryString.parse(location.search).ref
         this.props.getListCountry();
         let value = this.state.value;
@@ -175,10 +187,20 @@ class FormField extends React.Component {
                         
                             this.props.verify({ nickname: this.state.value })
                                 .then(response => {
-                                    // console.log(response);
+                                    // console.log('test', response);
+                                    if (response.data.status.code !== 0) {
+                                        // console.log('nickname false')
+                                        this.setState({ value_invalid: true });
+                                        this.props.showNotification(response.data.status.message_server, false);
+                                        return false;
+                                    }
+                                    // console.log('nickname true')
                                     this.setState({ value_invalid: false });
+                                    this.props.hideNotification()
+                                    // this.props.showNotification(response.data.status.message_server, true);
                                 })
                                 .catch(error => {
+                                    // console.log('test2', error);
                                     if (error.status === 200) {
                                         this.props.showNotification(error.data.status.message_server, false);
                                         setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);

@@ -323,7 +323,7 @@ class EditProfile extends React.Component {
                                             <li>You may change your username back after 14 days</li>
                                             <li>Username has never been used with another user</li>
                                         </ul>
-                                    `, 'insert nickname', false, [], { length: 4, type: 'min' })}
+                                    `, 'insert nickname', false, [], { length: 3, type: 'min' })}
                                     value={this.state.nickname}
                                     onChange={this.onChangeNickname.bind(this)}
                                     invalid={this.state.nickname_invalid}

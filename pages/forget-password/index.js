@@ -53,7 +53,7 @@ class ForgetPassword extends React.Component {
         } 
         if(!(regex.test(value) && value.length >= 3)) {
             this.setState({ isPhoneNumber: false });
-            this.props.setPhoneCode(null);
+            this.props.setPhoneCode('');
 			// console.log('EMAIL');
         }
         // console.log(value)
@@ -131,6 +131,7 @@ class ForgetPassword extends React.Component {
     // }
 
     removeCountryCode(value, phone_code) {
+        // console.log(value, phone_code)
         let result = value;
             result = value.slice(phone_code.length)
         return result;
@@ -177,7 +178,7 @@ class ForgetPassword extends React.Component {
 								this.setState({ 
                                     codeCountry: e.code, 
                                     phone_code: e.phone_code, 
-                                    username: e.phone_code + this.removeCountryCode(state.username, state.phone_code) }, () => {
+                                    username: e.phone_code + this.removeCountryCode(state.username, e.phone_code) }, () => {
                                         this.subject.next()
                                     });}
 							}

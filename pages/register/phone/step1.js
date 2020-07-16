@@ -58,7 +58,7 @@ class Step1 extends Component {
 			date: {
 				format: 'DD',
 				caption: 'Day',
-				step: 4
+				step: 1
 			}
 		};
 
@@ -70,7 +70,7 @@ class Step1 extends Component {
 			}
 		};
 
-		console.log(this.genderConfig);
+		// console.log(this.genderConfig);
 	}
 
 	handleSelectBirthdate(date) {
