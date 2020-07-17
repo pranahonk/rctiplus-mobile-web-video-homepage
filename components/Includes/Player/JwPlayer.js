@@ -139,17 +139,22 @@ const JwPlayer = (props) => {
           if (document.querySelector('.ads_wrapper') == undefined) {
             //test
             const playerContainer = player.getContainer();
+
             const adsOverlayElement = document.createElement('div');
             adsOverlayElement.classList.add('ads_wrapper');
+
             const adsOverlayBox = document.createElement('div');
             adsOverlayBox.classList.add('adsStyling');
+
             const adsOverlayCloseButton = document.createElement('div');
             adsOverlayCloseButton.classList.add('close_button');
             adsOverlayCloseButton.innerText = 'X';
+
             const adsOverlayContainer = document.createElement('div');
             adsOverlayContainer.classList.add('adsContainer');
             adsOverlayContainer.id = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
             adsOverlayContainer.innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV}'); });</script>`;
+
             playerContainer.appendChild(adsOverlayElement);
             adsOverlayElement.appendChild(adsOverlayBox);
             adsOverlayBox.appendChild(adsOverlayCloseButton);
@@ -467,11 +472,11 @@ const JwPlayer = (props) => {
   // ads overlay
   useEffect(() => {
     if (player !== null) {
+      let slotName = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
+      let slotDiv = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+
       if (adsStatus === 'start') {
         clearTimeout(pubAdsRefreshInterval.timeObject);
-
-        let slotName = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
-        let slotDiv = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
 
         googletag.destroySlots();
         window.googletag = window.googletag || { cmd: [] };
@@ -492,9 +497,6 @@ const JwPlayer = (props) => {
         document.querySelector('.ads_wrapper').style.display = 'block'; */
         setAdStatus('close');
       } else if (adsStatus === 'restart') {
-        let slotName = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
-        let slotDiv = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-
         googletag.destroySlots();
         window.googletag = window.googletag || { cmd: [] };
         googletag.cmd.push(function () {
