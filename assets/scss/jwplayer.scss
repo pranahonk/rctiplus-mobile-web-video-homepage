@@ -158,12 +158,14 @@
         }
     }
 
-    &.fullscreen-player{
-        position: fixed;
-
+    &.adsBigBox {
         .adsStyling {
             width: 468px;
             height: 60px;
         }
+    }
+
+    &.fullscreen-player{
+        position: fixed;
     }
 }

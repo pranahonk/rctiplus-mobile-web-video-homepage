@@ -277,6 +277,13 @@ const JwPlayer = (props) => {
           document.querySelector('.ads_wrapper').style.bottom = '5px';
         }
       });
+      window.addEventListener('resize', (event) => {
+        if (document.querySelector('.ads_wrapper')) {
+          if (adsStatus === 'idle' || adsStatus === 'close') {
+            setAdStatus('restart');
+          }
+        }
+      });
     }
   },);
 
@@ -472,6 +479,7 @@ const JwPlayer = (props) => {
   // ads overlay
   useEffect(() => {
     if (player !== null) {
+      let windowWidth = document.documentElement.clientWidth;
       let slotName = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
       let slotDiv = props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
 
@@ -481,11 +489,9 @@ const JwPlayer = (props) => {
         googletag.destroySlots();
         window.googletag = window.googletag || { cmd: [] };
         googletag.cmd.push(function () {
-          if (playerFullscreen) {
-            googletag.defineSlot(slotName, [468, 60], slotDiv).addService(googletag.pubads());
-          } else {
-            googletag.defineSlot(slotName, [320, 50], slotDiv).addService(googletag.pubads());
-          }
+          const mappingSlot = googletag.sizeMapping().addSize([480, 60], [468, 60]).addSize([0, 0], [320, 50]).build();
+
+          googletag.defineSlot(slotName, [[468, 60], [320, 50]], slotDiv).defineSizeMapping(mappingSlot).addService(googletag.pubads());
         	googletag.pubads().enableSingleRequest();
         	googletag.pubads().collapseEmptyDivs();
         	googletag.enableServices();
@@ -493,26 +499,31 @@ const JwPlayer = (props) => {
         googletag.cmd.push(function () {
           googletag.display(slotDiv);
         });
-        /* googletag.pubads().refresh();
-        document.querySelector('.ads_wrapper').style.display = 'block'; */
         setAdStatus('close');
       } else if (adsStatus === 'restart') {
-        googletag.destroySlots();
-        window.googletag = window.googletag || { cmd: [] };
-        googletag.cmd.push(function () {
-          if (playerFullscreen) {
-            googletag.defineSlot(slotName, [468, 60], slotDiv).addService(googletag.pubads());
-          } else {
-            googletag.defineSlot(slotName, [320, 50], slotDiv).addService(googletag.pubads());
+        if (document.querySelector('.ads_wrapper')) {
+          if (document.querySelector('.adsContainer').style.display != 'none') {
+            const adsIFrame = document.getElementById(slotDiv).children[0].children[0];
+            const adsImage = adsIFrame.contentWindow.document.querySelector('amp-img');
+            if (windowWidth >= 480) {
+              adsIFrame.width = 468;
+              adsIFrame.height = 60;
+
+              adsImage.style.width = '468px';
+              adsImage.style.height = '60px';
+
+              document.querySelector('.ads_wrapper').classList.add('adsBigBox');
+            } else {
+              adsIFrame.width = 320;
+              adsIFrame.height = 50;
+
+              adsImage.style.width = '320px';
+              adsImage.style.height = '50px';
+
+              document.querySelector('.ads_wrapper').classList.remove('adsBigBox');
+            }
           }
-        	googletag.pubads().enableSingleRequest();
-        	googletag.pubads().collapseEmptyDivs();
-        	googletag.enableServices();
-        });
-        googletag.cmd.push(function () {
-          googletag.display(slotDiv);
-        });
-        googletag.pubads().refresh();
+        }
         if (document.querySelector('.ads_wrapper').style.display === 'block') {
           setAdStatus('idle');
         } else {
@@ -550,6 +561,26 @@ const JwPlayer = (props) => {
           setTimeout(() => {
             if (document.querySelector('.ads_wrapper')) {
               if (document.querySelector('.adsContainer').style.display != 'none') {
+                const adsIFrame = document.getElementById(slotDiv).children[0].children[0];
+                const adsImage = adsIFrame.contentWindow.document.querySelector('amp-img');
+                if (windowWidth >= 480) {
+                  adsIFrame.width = 468;
+                  adsIFrame.height = 60;
+
+                  adsImage.style.width = '468px';
+                  adsImage.style.height = '60px';
+
+                  document.querySelector('.ads_wrapper').classList.add('adsBigBox');
+                } else {
+                  adsIFrame.width = 320;
+                  adsIFrame.height = 50;
+
+                  adsImage.style.width = '320px';
+                  adsImage.style.height = '50px';
+
+                  document.querySelector('.ads_wrapper').classList.remove('adsBigBox');
+                }
+
                 document.querySelector('.ads_wrapper').style.display = 'block';
               }
             }
