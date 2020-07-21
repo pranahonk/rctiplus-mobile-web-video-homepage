@@ -167,5 +167,6 @@
 
     &.fullscreen-player{
         position: fixed;
+        z-index: 2147483647;
     }
 }

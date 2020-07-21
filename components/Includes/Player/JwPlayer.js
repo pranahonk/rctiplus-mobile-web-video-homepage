@@ -493,7 +493,7 @@ const JwPlayer = (props) => {
 
           googletag.defineSlot(slotName, [[468, 60], [320, 50]], slotDiv).defineSizeMapping(mappingSlot).addService(googletag.pubads());
         	googletag.pubads().enableSingleRequest();
-        	googletag.pubads().collapseEmptyDivs();
+          googletag.pubads().collapseEmptyDivs();
         	googletag.enableServices();
         });
         googletag.cmd.push(function () {
@@ -544,6 +544,10 @@ const JwPlayer = (props) => {
         }, delay);
       } else if (adsStatus === 'close') {
         clearTimeout(pubAdsRefreshInterval.timeObject);
+        while(document.querySelector('.adsURLLink')) {
+          document.querySelector('.adsURLLink')?.remove();
+        }
+
         let delay = props.adsOverlayData.reloadDuration;
         if (pubAdsRefreshInterval.timeStart > 0) {
           delay = delay - (new Date().getTime() - pubAdsRefreshInterval.timeStart);
@@ -563,6 +567,22 @@ const JwPlayer = (props) => {
               if (document.querySelector('.adsContainer').style.display != 'none') {
                 const adsIFrame = document.getElementById(slotDiv).children[0].children[0];
                 const adsImage = adsIFrame.contentWindow.document.querySelector('amp-img');
+
+                if (document.querySelector('.adsURLLink') == null || document.querySelector('.adsURLLink') == undefined) {
+                  const adsLink = adsIFrame.contentWindow.document.querySelector('a').href;
+                  const adsOverlayBoxLink = document.createElement('div');
+                  adsOverlayBoxLink.classList.add('adsURLLink');
+                  adsOverlayBoxLink.style.width = '100%';
+                  adsOverlayBoxLink.style.height = '100%';
+                  adsOverlayBoxLink.style.top = '0';
+                  adsOverlayBoxLink.style.position = 'absolute';
+
+                  document.querySelector('.adsStyling')?.appendChild(adsOverlayBoxLink);
+                  adsOverlayBoxLink.addEventListener('click', function() {
+                    window.open(adsLink, '_blank');
+                  });
+                }
+
                 if (windowWidth >= 480) {
                   adsIFrame.width = 468;
                   adsIFrame.height = 60;
