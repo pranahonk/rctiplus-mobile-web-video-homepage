@@ -18,6 +18,7 @@ const JwPlayer = (props) => {
   const [isCustomSetup, setIsCustomSetup] = useState(0);
   const [isConviva, setIsConviva] = useState(0);
   const [geoblock, setGeoblock] = useState();
+  const [random1, setrandom1] = useState(0);
   const [status, setStatus] = useState({
     isPlayer: true,
     isError01: false,
@@ -173,8 +174,10 @@ const JwPlayer = (props) => {
           elementCreateMute.innerText = 'Tap to unmute ';
 
           player.setMute(true);
-          playerContainer.appendChild(elementCreateMute);
-          elementCreateMute.appendChild(elementMuteIcon);
+          if(document.getElementsByClassName('jwplayer-vol-off').length === 0) {
+            playerContainer.appendChild(elementCreateMute);
+            elementCreateMute.appendChild(elementMuteIcon);
+          }
           const elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
           elementCreateMute.addEventListener('click', () => {
             if (elementCreateMute === null) {
