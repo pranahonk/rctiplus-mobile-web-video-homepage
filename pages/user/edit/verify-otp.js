@@ -38,8 +38,9 @@ class VerifyOtp extends React.Component {
     }
 
     componentDidMount() {
+        // console.log(this.props)
         this.setState({ username: this.props.registration.username }, () => {
-            this.props.getOtp(this.state.username, 'edit-profile')
+            this.props.getOtp(this.state.username, 'edit-profile', this.props.registration.phone_code)
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
@@ -53,7 +54,8 @@ class VerifyOtp extends React.Component {
     }
 
     submitOtp() {
-        this.props.updateUserData(this.props.user.data_key[this.props.others.index], this.state.username, this.state.otp)
+        // console.log('PHONE CODE: ',this.props.registration.phone_code)
+        this.props.updateUserData(this.props.user.data_key[this.props.others.index], this.state.username, this.state.otp, this.props.registration.phone_code)
             .then(response => {
                 this.props.showNotification('*Your data is saved');
                 setTimeout(() => this.props.hideNotification(), 3000);
@@ -73,7 +75,8 @@ class VerifyOtp extends React.Component {
         this.setState({ otp: otp, is_submitting: otp && otp.length >= 4 }, () => {
             this.props.setOtp(this.state.otp);
             if (this.state.is_submitting) {
-                this.props.verifyOtp(this.state.username, this.state.otp)
+                console.log(this.props)
+                this.props.verifyOtp(this.state.username, this.state.otp, this.props.registration.phone_code)
                     .then(response => {
                         if (response.status === 200) {
                             switch (response.data.status.code) {
@@ -102,7 +105,7 @@ class VerifyOtp extends React.Component {
     showAlert() {
         let username = this.state.username;
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
-            this.props.getOtp(username, 'edit-profile')
+            this.props.getOtp(username, 'edit-profile', this.props.registration.phone_code)
                 .then(response => {
                     let newState = {};
                     if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {

@@ -54,3 +54,93 @@
         // }
     }
 }
+
+.country-list-modal {
+    margin: 0;
+    position: fixed;
+    font-size: 12px;
+    .modal-content {
+        border: none;
+        border-radius: 0;
+        width: 100vw;
+        height: 100%;
+        background: #282828;
+        color: #ffffff;
+        .navbar-header {
+            background: #3a3a3a;
+            display: flex;
+            height: 46px;
+            align-items: center;
+            // position: fixed;
+            width: 100vw;
+            z-index: 1;
+            .back-icon {
+                width: 15%;
+                padding: 10px;
+            }
+            .input-search {
+                border: 0;
+                background: none;
+                border-radius: 0;
+                padding: 0;
+                background-color: #3a3a3a !important;
+            }
+            .flex-display {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                .search-text {
+                    width: 85%;
+                }
+                .search-action {
+                    width: 15%;
+                    text-align: center;
+                }
+            }
+        }
+        .body-list {
+            // display: flex;
+            // height: 100%;
+            height: 100vh;
+            // margin-top: 46px;
+            padding: 0;
+            .list-country {
+                padding: 10px;
+                width: 90%;
+                height: 100%;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                overflow-y:scroll;
+                overflow-x:hidden;
+                overflow: -moz-scrollbars-none;
+                &::-webkit-scrollbar { 
+                  display: none; /* Chrome Safari */
+                  width: 0;
+                  height: 0;
+                }
+                .country-item {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px 0;
+                }
+            }
+            .select-alphabet {
+                position: fixed;
+                right: 0;
+                top: 0;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding-top: 46px;
+                margin: 0 10px;
+                span {
+                    font-weight: bold;
+                    padding: 2px 0;
+
+                }
+            }
+        }
+    }
+}

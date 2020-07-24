@@ -15,7 +15,8 @@ import { Button, FormGroup } from 'reactstrap';
 export default class VerificationSuccess extends Component {
 
 	goToChangePassword() {
-		Router.push('/forget-password/change-password');
+		// Router.push('/forget-password/change-password');
+		Router.push('/login');
 	}
 
 	render() {

@@ -29,20 +29,22 @@ class ChangePassword extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.registration);
+        // console.log(this.props.registration);
     }
 
     handleSubmit(e) {
         e.preventDefault();
-        this.props.createForgotPassword(this.props.registration.username, this.state.password, this.props.registration.otp)
+        this.props.createForgotPassword(this.props.registration.username, this.state.password, this.props.registration.otp, this.props.registration.phone_code)
             .then(response => {
                 const hideNotification = this.props.hideNotification;
                 if (response.data.status.code === 0) {
                     this.props.showNotification('Your new password successfully created. Please login.');
                     setTimeout(function() {
 						hideNotification();
-					}, 3000);
-                    Router.push('/login');
+                    }, 3000);
+                    Router.push('/forget-password/verification-success');
+                    // Router.push('/login');
+                    // Router.push('/forget-password/change-password');
                 }
                 else {
                     this.props.showNotification(response.data.status.message_client + '. Please try again! (Response code = ' + response.data.status.code + ')', false);
@@ -87,7 +89,7 @@ class ChangePassword extends React.Component {
     render() {
         return (
             <Layout title="Change Password">
-                <NavBack title="Forget Password"/>
+                <NavBack title="New Password"/>
                 <div className="container-box-c">
                     <p>Enter password</p>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -95,14 +97,14 @@ class ChangePassword extends React.Component {
                             <Label className="label-c" for="password">New Password</Label>
                             <InputGroup>
                                 <Input
-                                    className="form-control-cp"
+                                    className="form-control-cp none-border-right"
                                     type={this.state.view_raw ? 'text' : 'password'}
                                     name="password"
                                     id="password"
                                     placeholder="insert password"
                                     invalid={this.state.at_least_eight_invalid}
                                     onChange={this.onPasswordChange.bind(this)} />
-                                <div onClick={this.togglePassword.bind(this)} className={'view-raw-c ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.at_least_eight_invalid ? 'invalid-border-color' : '')}></div>
+                                <div onClick={this.togglePassword.bind(this)} className={'view-raw-c right-border-radius none-border-left ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.at_least_eight_invalid ? 'invalid-border-color' : '')}></div>
                                 <FormFeedback id="invalid-password-num-chars">Password must at least 8 characters</FormFeedback>
                             </InputGroup>
                         </FormGroup>
@@ -110,18 +112,19 @@ class ChangePassword extends React.Component {
                             <Label className="label-c" for="password">Re-type New Password</Label>
                             <InputGroup>
                                 <Input
-                                    className="form-control-cp"
+                                    className="form-control-cp none-border-right"
                                     type={this.state.view_raw_re ? 'text' : 'password'}
                                     name="password2"
                                     id="password2"
                                     placeholder="insert password"
                                     invalid={this.state.password_match_invalid}
                                     onChange={this.onConfirmPasswordChange.bind(this)} />
-                                <div onClick={this.togglePassword.bind(this, 're')} className={'view-raw-c ' + (this.state.view_raw_re ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.password_match_invalid ? 'invalid-border-color' : '')}></div>
+                                <div onClick={this.togglePassword.bind(this, 're')} className={'view-raw-c right-border-radius none-border-left ' + (this.state.view_raw_re ? ' fas_fa-eye-slash ' : ' fas_fa-eye ') + ' ' + (this.state.password_match_invalid ? ' invalid-border-color ' : '')}></div>
                                 <FormFeedback id="invalid-password-not-match">Password must match</FormFeedback>
                             </InputGroup>
                         </FormGroup>
-                        <FormGroup>
+                            <span className="warning-text">* password must atleast be 8 characters</span>
+                        <FormGroup style={{ marginTop: '2rem' }}>
                             <Button disabled={this.state.password == '' || this.state.confirm_password == '' || (this.state.password != this.state.confirm_password) || this.state.password_match_invalid || this.state.at_least_eight_invalid} className="btn-next block-btn">Save</Button>
                         </FormGroup>
                     </Form>

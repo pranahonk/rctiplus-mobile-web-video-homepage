@@ -75,3 +75,11 @@ $default-text-color-login: #eee;
 .react-datepicker__input-container > input:hover {
     background: transparent;
 }
+
+.none-border-radius {
+    border-radius: 0 !important;
+}
+.rplus-border-bottom {
+    border-right: 0 !important;
+    border-top: 0 !important;
+}

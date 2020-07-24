@@ -4,6 +4,7 @@ import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 
 import registerActions from '../redux/actions/registerActions';
+import countryList from '../redux/actions/othersActions';
 import userActions from '../redux/actions/userActions';
 
 import initialize from '../utils/initialize';
@@ -34,7 +35,9 @@ class Signup extends React.Component {
 		};
 	}
 
-	
+	componentDidMount() {
+		this.props.getListCountry();
+	}
 
 	handleSubmit(e) {
 		e.preventDefault();
@@ -124,7 +127,7 @@ class Signup extends React.Component {
 										placeholder="insert password"
 										invalid={this.state.at_least_eight_invalid}
 										onChange={this.onPasswordChange.bind(this)} />
-									<div onClick={this.togglePassword.bind(this)} className={'view-raw ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.at_least_eight_invalid ? 'invalid-border-color' : '')}></div>
+									<div onClick={this.togglePassword.bind(this)} className={'view-raw right-border-radius ' + (this.state.view_raw ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.at_least_eight_invalid ? 'invalid-border-color' : '')}></div>
 									<FormFeedback id="invalid-password-num-chars">Password must at least 8 characters</FormFeedback>
 								</InputGroup>
 							</FormGroup>
@@ -139,7 +142,7 @@ class Signup extends React.Component {
 										placeholder="insert password"
 										invalid={this.state.password_match_invalid}
 										onChange={this.onConfirmPasswordChange.bind(this)} />
-									<div onClick={this.togglePassword.bind(this, 're')} className={'view-raw ' + (this.state.view_raw_re ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.password_match_invalid ? 'invalid-border-color' : '')}></div>
+									<div onClick={this.togglePassword.bind(this, 're')} className={'view-raw right-border-radius ' + (this.state.view_raw_re ? 'fas_fa-eye-slash' : 'fas_fa-eye') + ' ' + (this.state.password_match_invalid ? 'invalid-border-color' : '')}></div>
 									<FormFeedback id="invalid-password-not-match">Password must match</FormFeedback>
 								</InputGroup>
 							</FormGroup>
@@ -171,5 +174,6 @@ class Signup extends React.Component {
 
 export default connect(state => state, {
 	...registerActions,
-	...userActions
+	...userActions,
+	...countryList,
 })(withRouter(Signup));

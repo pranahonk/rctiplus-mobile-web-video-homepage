@@ -119,7 +119,8 @@ const uploadProfilePhoto = file => {
     });
 };
 
-const updateUserData = (key, value, otp = null) => {
+const updateUserData = (key, value, otp = null, phone_code = '') => {
+    // console.log('OTP',otp)
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const data = {};
@@ -127,7 +128,7 @@ const updateUserData = (key, value, otp = null) => {
             if (otp) {
                 data['otp'] = otp;
             }
-            const response = await axios.post(`/v2/user`, data);
+            const response = await axios.post(`/v3/user`, { ...data, phone_code: phone_code} );
             
             if (response.status === 200 && response.data.status.code === 0) {
                 resolve(response);
@@ -169,7 +170,7 @@ const updateUserProfile = (username, dob, gender, location) => {
 const getUserData = () => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v2/user`);
+            const response = await axios.get(`/v3/user`);
 
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
@@ -243,10 +244,10 @@ const getUserInterest = () => {
     });
 };
 
-const checkUser = username => {
+const checkUser = (username, phone_code = null) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v2/user/exist?username=${username}`);
+            const response = await axios.get(`/v3/user/exist?username=${phone_code ? (phone_code + username) : username}`);
             dispatch({ type: 'CHECK_USER', status: response.data.status });
             resolve(response);
         }

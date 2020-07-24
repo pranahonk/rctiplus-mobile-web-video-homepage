@@ -21,10 +21,11 @@ const setDeviceId = deviceId => {
     });
 };
 
-const login = ({ emailphone, password, deviceId = '1' }) => {
+const login = ({ emailphone, password, deviceId = '1', phone_code }) => {
     return dispatch => new Promise((resolve, reject) => {
-        axios.post('/v2/login', {
-                username: emailphone,
+        axios.post('/v3/login', {
+                phone_code: phone_code,
+                username: phone_code + emailphone,
                 password: password,
                 device_id: deviceId,
                 platform: 'mweb'

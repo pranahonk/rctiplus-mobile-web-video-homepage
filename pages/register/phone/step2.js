@@ -42,10 +42,11 @@ class Step2 extends Component {
 
 	componentDidMount() {
 		console.log(this.otpInput.__clearvalues__());
+		console.log(this.props.registration);
 		this.setState({ username: this.props.registration.username }, () => {
 			let username = this.state.username;
 			if (this.props.registration.username_type === 'PHONE_NUMBER') {
-				username = '62' + username;
+				username = this.props.registration.phone_code + username;
 			}
 			this.props.getOtp(username)
 				.then(response => {
@@ -72,7 +73,7 @@ class Step2 extends Component {
 		this.setState({ is_submitting: true }, () => {
 			let username = this.state.username;
 			if (this.props.registration.username_type === 'PHONE_NUMBER') {
-				username = '62' + username;
+				username = this.props.registration.phone_code + username;
 			}
 
 			this.props.verifyOtp(username, this.state.otp)
@@ -83,7 +84,8 @@ class Step2 extends Component {
 					}
 					else {
 						this.props.register({
-							username: username,
+							username: this.props.registration.username,
+							phone_code: this.props.registration.phone_code,
 							password: this.props.registration.password,
 							fullname: this.props.registration.fullname,
 							gender: this.props.registration.gender,
@@ -148,7 +150,7 @@ class Step2 extends Component {
 	showAlert() {
 		let username = this.state.username;
 		if (this.props.registration.username_type === 'PHONE_NUMBER') {
-			username = '62' + username;
+			username = this.props.registration.phone_code + username;
 		}
 
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {

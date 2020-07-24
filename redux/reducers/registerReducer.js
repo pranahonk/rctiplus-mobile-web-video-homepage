@@ -12,7 +12,8 @@ const initialState = {
     username_type: null,
     email_invalid: false,
     phone_invalid: false,
-    active_tab: '2'
+    active_tab: '2',
+    phone_code: '',
 };
 
 export default (state = initialState, action) => {
@@ -31,6 +32,8 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { fullname: action.fullname });
         case 'GENDER':
             return Object.assign({}, state, { gender: action.gender });
+        case 'PHONE_CODE':
+            return Object.assign({}, state, { phone_code: action.phone_code });
         case 'DOB':
             return Object.assign({}, state, { dob: action.dob });
         case 'USERNAME_TYPE':

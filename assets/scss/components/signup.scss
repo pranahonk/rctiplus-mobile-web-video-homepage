@@ -93,6 +93,9 @@ Input::placeholder {
 }
 .inpt-form {
     background: transparent;
+    &.right-none {
+        border-right: none;
+    }
 }
 
 
@@ -139,10 +142,23 @@ Input::placeholder {
     width: 100%;
 }
 
+
+.append-input {
+    background: none;
+    border: 0.5px solid #495057;
+    border-left: none;
+    color: #ffffff;
+}
+
 .valid-border-color {
     border-color: #28a745;
 }
 
 .invalid-border-color {
     border-color: #dc3545;
+}
+
+.right-border-radius {
+    border-top-right-radius: 0.25rem !important;
+    border-bottom-right-radius: 0.25rem !important;
 }

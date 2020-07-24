@@ -80,3 +80,38 @@ Input::placeholder {
 .block-btn {
     width: 100%;
 }
+
+.invalid-border-color {
+    border-color: #dc3545 !important;
+}
+
+.append-input {
+    background: none;
+    border: 0.5px solid #495057;
+    border-left: none;
+    color: #ffffff;
+}
+
+.inpt-form {
+    background: transparent;
+    &.right-none {
+        border-right: none;
+    }
+}
+
+.right-border-radius {
+    border-top-right-radius: 0.25rem !important;
+    border-bottom-right-radius: 0.25rem !important;
+}
+
+.none-border-left {
+    border-left: 0;
+}
+.none-border-right {
+    border-right: 0;
+}
+
+.input-phone {
+    border-top-right-radius: 0.25rem !important;
+    border-bottom-right-radius: 0.25rem !important;
+}

@@ -41,6 +41,13 @@ const setUsername = username => {
     });
 };
 
+const setPhoneCode = (phone_code = '') => {
+    return dispatch => dispatch({
+        type: 'PHONE_CODE',
+        phone_code: phone_code
+    });
+};
+
 const setPassword = password => {
     return dispatch => dispatch({
         type: 'PASSWORD',
@@ -83,11 +90,12 @@ const setOtp = otp => {
     });
 };
 
-const getOtp = (username, type = 'registration') => {
+const getOtp = (username, type = 'registration', phone_code = null) => {
+    console.log(phone_code)
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v2/otp`, { 
-                username: username,
+            const response = await axios.post(`/v3/otp`, { 
+                username: phone_code ? phone_code + username : username,
                 type: type
             });
 
@@ -103,17 +111,18 @@ const getOtp = (username, type = 'registration') => {
     });
 };
 
-const register = ({ username, password, fullname, gender, dob, otp, device_id }) => {
+const register = ({ username, password, fullname, gender, dob, otp, device_id, phone_code= '' }) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v2/register`, {
+            const response = await axios.post(`/v3/register`, {
                 password: password,
+                phone_code: phone_code,
                 username: username,
                 fullname: fullname,
                 gender: gender,
                 dob: dob,
                 otp: otp,
-                device_id: device_id
+                device_id: device_id,
             });
 
             if (response.data.status.code === 0) {
@@ -178,11 +187,12 @@ const getPhoneOtp = phonenumber => {
     });
 };
 
-const verifyOtp = (username, otp) => {
+const verifyOtp = (username, otp, phone_code = null) => {
+    // console.log('TEST',username, otp, phone_code)
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v2/verify-otp`, {
-                username: username,
+            const response = await axios.post(`/v3/verify-otp`, {
+                username: phone_code ? phone_code + username : username,
                 otp: otp
             });
 
@@ -248,13 +258,14 @@ const createNewPassword = (token, otp, device_id, newPassword, platform = 'mweb'
     });
 };
 
-const createForgotPassword = (username, new_password, otp) => {
+const createForgotPassword = (username, new_password, otp, phone_code = '') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v2/forgot-password`, {
+            const response = await axios.post(`/v3/forgot-password`, {
+                phone_code: phone_code,
                 username: username,
                 new_password: new_password,
-                otp: otp
+                otp: otp,
             });
 
             if (response.data.status.code === 0) {
@@ -289,5 +300,6 @@ export default {
     setOtp,
     setEmailInvalid,
     setPhoneInvalid,
-    setActiveTab
+    setActiveTab,
+    setPhoneCode,
 };

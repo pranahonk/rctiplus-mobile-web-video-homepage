@@ -3,18 +3,23 @@ import Router from 'next/router';
 import { connect } from 'react-redux';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import dynamic from 'next/dynamic';
 
 import registerActions from '../../redux/actions/registerActions';
 import userActions from '../../redux/actions/userActions';
 import notificationActions from '../../redux/actions/notificationActions';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import countryList from '../../redux/actions/othersActions';
 
 import Layout from '../../components/Layouts/Default';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 
 //load reactstrap components
-import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback, InputGroupAddon, InputGroupText } from 'reactstrap';
 
 import '../../assets/scss/components/forget-password.scss';
+
+const CountryList = dynamic(() => import('../../components/Modals/CountryList'));
 
 class ForgetPassword extends React.Component {
 
@@ -23,15 +28,37 @@ class ForgetPassword extends React.Component {
         this.state = {
             username: '',
             username_invalid: false,
-            username_invalid_message: ''
+            username_invalid_message: '',
+            status: false,
+			codeCountry: 'ID',
+			phone_code: '62',
+			isPhoneNumber: false,
         };
 
         this.subject = new Subject();
     }
 
     onChangeUsername(e) {
-        this.setState({ username: e.target.value }, () => {
-            this.props.setUsername(this.state.username);
+        const regex = /^[0-9]+$/;
+        let value = e.target.value;
+		if (regex.test(value) && value.length >= 3) {
+			if (value) {
+				if (value.charAt(0) === '0') {
+					value = value.slice(1);
+                }
+            this.setState({ isPhoneNumber: true });
+            this.props.setPhoneCode(this.state.phone_code);
+            // console.log('PHONE');
+            }
+        } 
+        if(!(regex.test(value) && value.length >= 3)) {
+            this.setState({ isPhoneNumber: false });
+            this.props.setPhoneCode('');
+			// console.log('EMAIL');
+        }
+        // console.log(value)
+        this.setState({ username: value }, () => {
+            this.props.setUsername(value);
             if (this.state.username.length < 6) {
                 this.setState({
                     username_invalid: true,
@@ -52,11 +79,12 @@ class ForgetPassword extends React.Component {
     }
 
     componentDidMount() {
+        this.props.getListCountry();
         this.subject
             .pipe(debounceTime(500))
             .subscribe(() => {
                 if (this.state.username && this.state.username.length >= 6) {
-                    this.props.checkUser(this.state.username)
+                    this.props.checkUser(this.state.username, this.props.registration.phone_code)
                         .then(response => {
                             if (response.status === 200) {
                                 const message = response.data.status.message_client;
@@ -98,7 +126,19 @@ class ForgetPassword extends React.Component {
             });
     }
 
+    // componentDidUpdate() {
+    //     console.log(this.state.username)
+    // }
+
+    removeCountryCode(value, phone_code) {
+        // console.log(value, phone_code)
+        let result = value;
+            result = value.slice(phone_code.length)
+        return result;
+    }
+
     render() {
+        const { state, props } = this;
         return (
             <Layout title="Forget Password">
                 <NavBack title="Forget Password"/>
@@ -112,7 +152,14 @@ class ForgetPassword extends React.Component {
                                     onChange={this.onChangeUsername.bind(this)}
                                     valid={false && !this.state.username_invalid && !!this.state.username}
                                     invalid={this.state.username_invalid}
-                                    className="form-control-cp"/>
+                                    className={'form-control-cp ' + (state.isPhoneNumber ? 'none-border-right' : 'right-border-radius')}/>
+                                    { state.isPhoneNumber ? (
+                                        <InputGroupAddon onClick={ () => this.setState({ status: !state.status }) } addonType="append" id="action-country-code">
+                                            <InputGroupText className={'append-input right-border-radius ' + (state.username_invalid ? 'invalid-border-color' : '')}>
+                                                {this.state.codeCountry}<KeyboardArrowDownIcon/>
+                                            </InputGroupText>
+                                        </InputGroupAddon>
+										) : '' }
                                 <FormFeedback id="invalid-feedback" valid={false && !this.state.username_invalid && !!this.state.username}>{this.state.username_invalid_message}</FormFeedback>
                             </InputGroup>
                         </FormGroup>
@@ -121,6 +168,21 @@ class ForgetPassword extends React.Component {
                         </FormGroup>
                     </Form>
                 </div>
+                {this.state.status ? (
+					<CountryList
+						data={this.props.others.list_country}
+						modal={state.status}
+						toggle={() => this.setState({ status: !state.status })}
+						getCountryCode={(e) => {
+								this.props.setPhoneCode(e.phone_code);
+								this.setState({ 
+                                    codeCountry: e.code, 
+                                    phone_code: e.phone_code, 
+                                    username: e.phone_code + this.removeCountryCode(state.username, e.phone_code) }, () => {
+                                        this.subject.next()
+                                    });}
+							}
+						className="country-list-modal"/>) : ''}
             </Layout>
         );
     }
@@ -130,5 +192,6 @@ class ForgetPassword extends React.Component {
 export default connect(state => state, {
     ...registerActions,
     ...userActions,
-    ...notificationActions
+    ...notificationActions,
+    ...countryList,
 })(ForgetPassword);

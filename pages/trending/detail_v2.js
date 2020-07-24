@@ -151,6 +151,10 @@ class Detail extends React.Component {
 
     goToDetail(article, index) {
         newsRelatedArticleClicked(article.id, article.title, article.category_source, 'mweb_news_related_article_clicked');
+        if(this.platform === 'ios') {
+            Router.push('/trending/detail/' + article.id + '/' + urlRegex(article.title) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+            return false;
+        }
         if (this.redirectToPublisherIndex.indexOf(index) != -1) {
             window.open(article.link, '_blank');
         }
@@ -495,14 +499,10 @@ export default connect(state => state, newsv2Actions)(withRouter(Detail));
 const getPlatformGpt = (platform) => {
     // webview
       if(platform === 'ios') {
-        // console.log('ISO')
-        return '/21865661642/PRO_IOS-APP_DETAIL-NEWS_DISPLAY_300x250';
-        // return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
+        return process.env.GPT_NEWS_IOS_DETAIL;
       } 
       if(platform === 'android') {
-        // console.log('ANDROID')
-        return '/21865661642/PRO_ANDROID-APP_DETAIL-NEWS_DISPLAY_300x250';
-        // return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
+        return process.env.GPT_NEWS_ANDROID_DETAIL;
       }
-      return '/21865661642/PRO_MOBILE_DETAIL-NEWS_DISPLAY_300x250';
+      return process.env.GPT_NEWS_MWEB_DETAIL;
   }
