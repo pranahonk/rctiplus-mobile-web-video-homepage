@@ -61,18 +61,18 @@ export const GRAPH_SITEMAP = {
     twitterSite: '@OfficialRCTI',
 };
 export const SITE_NAME = 'RCTI+';
-export const UTM_NAME = (utm, utmCampaign, utmMedium) => {
+export const UTM_NAME = (utm, utmCampaign, utmMedium, platform = 'mweb') => {
     switch (utm) {
         case utm === 'trending':
-            if (isIOS) {
-                return '?utm_source=RplusiOsApp&utm_medium=share_' + utmCampaign + '&utm_campaign=news' + utmMedium;
+            if (platform === 'ios') {
+                return '?platform=' + platform + 'utm_source=RplusiOsApp&utm_medium=share_' + utmCampaign + '&utm_campaign=news' + utmMedium;
             }
-            if (isAndroid) {
-                return '?utm_source=RplusaOsApp&utm_medium=sharenews&utm_campaign=trending';
+            if (platform === 'android') {
+                return '?platform=' + platform + 'utm_source=RplusaOsApp&utm_medium=sharenews&utm_campaign=trending';
             }
-            return '?utm_source=Rplusmweb&utm_medium=sharenews&utm_campaign=trending';
+            return '?platform=' + platform + 'utm_source=Rplusmweb&utm_medium=sharenews&utm_campaign=trending';
         default:
-            return '?utm_source=Rplusmweb&utm_medium=share_' + utmMedium + '&utm_campaign=news' + utmCampaign;
+            return '?platform=' + platform + 'utm_source=Rplusmweb&utm_medium=share_' + utmMedium + '&utm_campaign=news' + utmCampaign;
     }
 };
 export const SITEMAP = {
