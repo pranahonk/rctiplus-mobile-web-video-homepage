@@ -4,6 +4,11 @@ import { formatDateTime } from '../utils/dateHelpers';
 const jwtDecode = require('jwt-decode');
 const TOKEN_KEY = 'ACCESS_TOKEN';
 
+export const getUidAppier = () => {
+    const _auid = getCookie('_auid') || getUserId();
+    return _auid;
+} 
+
 export const getUserId = () => {
     const accessToken = getCookie(TOKEN_KEY);
     let userId = new DeviceUUID().get();
@@ -23,7 +28,7 @@ export const homeGeneralClicked = (event = 'mweb_homepage_logo_clicked') => {
     console.log(event);
     qg('event', event,
     {
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -31,7 +36,7 @@ export const liveEventTabClicked = (event = 'mweb_liveevent_clicked', tabName) =
     console.log(event);
     qg('event', event,
     {
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         tab_name: tabName,
         date_time: new Date().getTime() / 1000
     });
@@ -47,7 +52,7 @@ export const homeProgramClicked = (homepageTitle, programId, programTitle, genre
         genre: genre,
         portrait_image: portraitImage,
         landscape_image: landscapeImage,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -71,7 +76,7 @@ export const homeBannerEvent = (bannerId, bannerType, bannerTitle, portraitImage
         banner_title: bannerTitle,
         portrait_image: portraitImage,
         landscape_image: landscapeImage,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -93,7 +98,7 @@ export const homeStoryEvent = (storyProgramId, storyProgramName, storyType, even
         story_program_id: storyProgramId,
         story_program_name: storyProgramName,
         story_type: storyType,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     };
 
@@ -127,7 +132,7 @@ export const contentGeneralEvent = (homepageTitle, contentType, contentId, conte
         genre: genre,
         portrait_image: portraitImage,
         landscape_image: landscapeImage,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -152,7 +157,7 @@ export const programContentEvent = (programId, programTitle, contentType, conten
         content_name: contentTitle,
         program_name: programTitle,
         program_id: programId,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -176,7 +181,7 @@ export const programRateEvent = (status, programTitle, programId, programType, e
         program_name: programTitle,
         program_id: programId,
         program_type: programType,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -188,7 +193,7 @@ export const liveShareEvent = (contentId = 'error', contentName = 'error' , even
     {
         content_id: contentId,
         content_name: contentName,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -210,7 +215,7 @@ export const programShareEvent = (programTitle, programId, programType, event = 
         program_name: programTitle,
         program_id: programId,
         program_type: programType,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -243,7 +248,7 @@ export const programTrailerPlayEvent = (programId, programTitle, programType, du
         program_type: programType,
         duration: duration,
         video_duration: videoDuration,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -268,7 +273,7 @@ export const programContentDownloadEvent = (programId, programTitle, contentTitl
         content_name: contentTitle,
         content_type: contentType,
         content_id: contentId,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -293,7 +298,7 @@ export const programContentShareEvent = (programId, programTitle, contentTitle, 
         content_name: contentTitle,
         content_type: contentType,
         content_id: contentId,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -318,7 +323,7 @@ export const programContentAddMyListEvent = (programId, programTitle, contentId,
         content_id: contentId,
         content_name: contentTitle,
         content_type: contentType,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -340,7 +345,7 @@ export const programShowMoreEvent = (programId, programTitle, event = 'mweb_home
     {
         program_name: programTitle,
         program_id: programId,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -367,7 +372,7 @@ export const programSeasonCloseEvent = (programId, programName, season, event = 
         program_name: programName,
         program_id: programId,
         season: season,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -398,7 +403,7 @@ export const programTabEvent = (programId, programName, tabName, event = 'mweb_h
         program_name: programName,
         program_id: programId,
         tab_name: tabName,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -425,7 +430,7 @@ export const programContentPlayEvent = (programId, programTitle, contentId, cont
         content_type: contentType,
         duration: duration,
         video_duration: videoDuration,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -455,7 +460,7 @@ export const homepageContentPlayEvent = (homepageTitle, contentType, contentId, 
         genre: genre,
         portrait_image: portraitImage,
         landscape_image: landscapeImage,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -480,7 +485,7 @@ export const exclusiveTabEvent = (tabName, event = 'mweb_exclusive_tab_clicked')
     qg('event', event,
     {
         tab_name: tabName,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -507,7 +512,7 @@ export const exclusiveContentEvent = (contentType, contentId, contentTitle, prog
         genre: genre,
         portrait_image: portraitImage,
         landscape_image: landscapeImage,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -536,7 +541,7 @@ export const exclusiveContentPlayEvent = (contentType, contentId, contentTitle, 
         landscape_image: landscapeImage,
         duration: duration,
         video_duration: videoDuration,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -565,7 +570,7 @@ export const exclusiveShareEvent = (programId, programTitle, contentTitle, conte
         photo_id: photoId,
         photo_image: photoImage,
         photo_url: photoUrl,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -588,7 +593,7 @@ export const exclusiveProfileProgramEvent = (programId, programName, tabName, ev
         program_id: programId,
         program_name: programName,
         tab_name: tabName,
-        users_id: userId,
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 }; 
@@ -612,7 +617,7 @@ export const liveTvChannelClicked = (channelId, channelName, programTitleLive, e
         channel_id: channelId,
         channel_name: channelName,
         program_name_live: programTitleLive,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -623,7 +628,7 @@ export const liveTvShareClicked = (channelId, channelName, event = 'mweb_livetv_
     {
         channel_id: channelId,
         channel_name: channelName,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -639,7 +644,7 @@ export const liveTvShareCatchupClicked = (channelId, channelName, identity, even
         channel_id: channelId,
         channel_name: channelName,
         identity: identity,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -651,7 +656,7 @@ export const liveTvTabClicked = (channelId, channelName, tabName, event = 'mweb_
         channel_id: channelId,
         channel_name: channelName,
         tab_name: tabName,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -664,7 +669,7 @@ export const liveTvCatchupSchedulePlay = (catchupScheduleDate, channelId, channe
         channel_id: channelId,
         channel_name: channelName,
         catchup_name: catchupName,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -675,7 +680,7 @@ export const liveTvLiveChatClicked = (channelId, channelName, event = 'mweb_live
     {
         channel_id: channelId,
         channel_name: channelName,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -689,7 +694,7 @@ export const accountScanQrCode = (status, event = 'mweb_account_scan_qrcode') =>
     qg('event', event,
     {
         status: status,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -702,7 +707,7 @@ export const accountHistoryClearHistoryClicked = (programId, programName, conten
         program_name: programName,
         content_id: contentId,
         content_name: contentName,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -716,7 +721,7 @@ export const accountHistoryContentClicked = (programId, programTitle, contentTit
         content_id: contentId,
         content_name: contentTitle,
         content_type: contentType,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -734,7 +739,7 @@ export const accountHistoryContentPlayEvent = (contentType, contentId, contentTi
         landscape_image: landscapeImage,
         duration: duration,
         video_duration: videoDuration,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -756,7 +761,7 @@ export const accountHistoryAddMyListClicked = (programId, programTitle, contentT
         content_name: contentTitle,
         content_type: contentType,
         content_id: contentId,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -810,7 +815,7 @@ export const accountContactUsFormEvent = (message, event = 'mweb_account_contact
     qg('event', event,
     {
         message: message,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -826,7 +831,7 @@ export const libraryProgramBackClicked = (programTitle, programId, programType, 
         program_name: programTitle,
         program_id: programId,
         program_type: programType,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -843,7 +848,7 @@ export const libraryProgramRateClicked = (status, programTitle, programId, progr
         program_name: programTitle,
         program_id: programId,
         program_type: programType,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -869,7 +874,7 @@ export const libraryProgramTrailerPlayEvent = (programTitle, programId, programT
         program_name: programTitle,
         program_id: programId,
         program_type: programType,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -883,7 +888,7 @@ export const libraryProgramContentDownloadClicked = (programId, programTitle, co
         content_name: contentTitle,
         content_type: contentType,
         content_id: contentId,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -911,7 +916,7 @@ export const libraryProgramContentPlayEvent = (programTitle, programId, contentT
         content_type: contentType,
         content_name: contentTitle,
         content_id: contentId,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -923,7 +928,7 @@ export const libraryProgramTabClicked = (programId, programName, tabName, event 
         program_name: programName,
         program_id: programId,
         tab_name: tabName,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -935,7 +940,7 @@ export const libraryProgramSeasonClicked = (programId, programName, season, even
         program_name: programName,
         program_id: programId,
         season: season,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -957,7 +962,7 @@ export const newsTabClicked = (tabName, event = 'mweb_news_tab_clicked') => {
     qg('event', event, 
     {
         tab_name: tabName,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -969,7 +974,7 @@ export const newsArticleClicked = (articleId, articleName, category, event = 'mw
         article_id: articleId,
         article_name: articleName,
         category: category,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -979,7 +984,7 @@ export const newsSearchClicked = (searchKeyword, event = 'mweb_news_search_click
     qg('event', event, 
     {
         search_keyword: searchKeyword,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -996,7 +1001,7 @@ export const newsRateArticleClicked = (articleId, articleName, status, tabName, 
         article_name: articleName,
         status: status,
         tab_name: tabName,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1026,7 +1031,7 @@ export const newsAddCategoryChannelClicked = (channelName, event = 'mweb_news_ad
     qg('event', event, 
     {
         kanal_name: channelName,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1040,7 +1045,7 @@ export const searchKeywordEvent = (search, event = 'mweb_search_keyword') => {
     qg('event', event, 
     {
         search_keyword: search,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1053,7 +1058,7 @@ export const searchTabClicked = (programId, programName, contentName, tabName, e
         program_name: programName,
         content_name: contentName,
         tab_name: tabName,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1077,7 +1082,7 @@ export const searchProgramClicked = (programTitle, programId, programType, event
         program_name: programTitle,
         program_id: programId,
         program_type: programType,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1090,7 +1095,7 @@ export const searchProgramRateClicked = (status, programTitle, programId, progra
         program_name: programTitle,
         program_id: programId,
         program_type: programType,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1116,7 +1121,7 @@ export const searchProgramTrailerPlayEvent = (programId, programTitle, programTy
         program_type: programType,
         duration: duration,
         video_duration: videoDuration,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1142,7 +1147,7 @@ export const searchProgramContentClicked = (programId, programTitle, contentTitl
         content_name: contentTitle,
         content_type: contentType,
         content_id: contentId,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1158,7 +1163,7 @@ export const searchProgramContentPlayEvent = (programId, programTitle, contentTi
         content_id: contentId,
         duration: duration,
         video_duration: videoDuration,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1174,7 +1179,7 @@ export const ProgramContentClick = (programId, programTitle, contentTitle, conte
         content_id: contentId,
         duration: duration,
         video_duration: videoDuration,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1186,7 +1191,7 @@ export const searchProgramTabClicked = (programId, programName, tabName, event =
         program_id: programId,
         program_name: programName,
         tab_name: tabName,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1198,7 +1203,7 @@ export const searchProgramSeasonClicked = (programId, programName, season, event
         program_id: programId,
         program_name: programName,
         season: season,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1210,7 +1215,7 @@ export const appierAdsShow = (data, event = 'gtag-event-rctiplus', channel_type 
       channel_id: data.channel_id,
       channel_type: channel_type,
       type: data.type,
-      users_id: getUserId(),
+      users_id: getUidAppier(),
       date_time: new Date().getTime() / 1000,
     });
 };
@@ -1222,7 +1227,7 @@ export const appierAdsClicked = (data, event = 'gtag-event-rctiplus', status = '
       channel_id: data.channel_id,
       channel_type: status,
       type: data.type,
-      users_id: getUserId(),
+      users_id: getUidAppier(),
       date_time: new Date().getTime() / 1000,
     });
 };
@@ -1241,7 +1246,7 @@ export const searchProgramRelatedScrollHorizontalEvent = (programId, programTitl
     {
         program_id: programId,
         program_name: programTitle,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
@@ -1276,7 +1281,7 @@ export const accountVideoProgress = (contentType, contentId, contentTitle, progr
         start_duration: startDuration,
         end_duration: endDuration,
         video_duration: videoDuration,
-        users_id: getUserId(),
+        users_id: getUidAppier(),
         date_time: new Date().getTime() / 1000
     });
 };
