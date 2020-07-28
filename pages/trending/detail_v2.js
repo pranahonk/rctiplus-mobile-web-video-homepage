@@ -170,8 +170,8 @@ class Detail extends React.Component {
     }
 
     renderActionButton(scrolledDown) {
-        // const URL_SHARE = REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1));
-        const URL_SHARE = REDIRECT_WEB_DESKTOP + this.props.router.asPath;
+        const URL_SHARE = REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?')));
+        // const URL_SHARE = REDIRECT_WEB_DESKTOP + this.props.router.asPath;
         const cdata = this.state.trending_detail_data;
         let hashtags = ['rcti', 'rctinews'];
         return (
