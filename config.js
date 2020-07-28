@@ -65,10 +65,10 @@ export const UTM_NAME = (utm, utmCampaign, utmMedium, platform = 'mweb') => {
     switch (utm) {
         case utm === 'trending':
             if (platform === 'ios') {
-                return '?platform=' + platform + 'utm_source=RplusiOsApp&utm_medium=share_' + utmCampaign + '&utm_campaign=news' + utmMedium;
+                return 'platform=' + platform + '&utm_source=RplusiOsApp&utm_medium=share_' + utmCampaign + '&utm_campaign=news' + utmMedium;
             }
             if (platform === 'android') {
-                return '?platform=' + platform + 'utm_source=RplusaOsApp&utm_medium=sharenews&utm_campaign=trending';
+                return 'platform=' + platform + '&utm_source=RplusaOsApp&utm_medium=sharenews&utm_campaign=trending';
             }
             return '?platform=' + platform + 'utm_source=Rplusmweb&utm_medium=sharenews&utm_campaign=trending';
         default:
