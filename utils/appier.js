@@ -5,7 +5,8 @@ const jwtDecode = require('jwt-decode');
 const TOKEN_KEY = 'ACCESS_TOKEN';
 
 export const getUidAppier = () => {
-    const _auid = getCookie('_auid') || getUserId();
+    // const _auid = getCookie('_auid') || getUserId();
+    const _auid = getCookie('_auid');
     return _auid;
 } 
 
