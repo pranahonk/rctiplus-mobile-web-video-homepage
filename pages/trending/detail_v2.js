@@ -170,7 +170,8 @@ class Detail extends React.Component {
     }
 
     renderActionButton(scrolledDown) {
-        const URL_SHARE = REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?') + 1));
+        const URL_SHARE = REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?')));
+        // const URL_SHARE = REDIRECT_WEB_DESKTOP + this.props.router.asPath;
         const cdata = this.state.trending_detail_data;
         let hashtags = ['rcti', 'rctinews'];
         return (
@@ -181,7 +182,7 @@ class Detail extends React.Component {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
-                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'fb'),
+                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'fb', 'ios'),
                                 })
                                 .then(() => console.log('Successful share'))
                                 .catch(error => console.log('Error sharing:', error));
@@ -190,7 +191,7 @@ class Detail extends React.Component {
                     </div>
                     ) : this.platform && (this.platform == 'android') ?
                     (
-                        <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath) + UTM_NAME('trending', this.props.router.query.id, 'wa')}`} url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'fb')}>
+                        <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath) + UTM_NAME('trending', this.props.router.query.id, 'wa', 'android')}`} url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'fb', 'android')}>
                             <i className="fab fa-facebook-f"></i>
                         </FacebookShareButton>
                     )
@@ -206,13 +207,13 @@ class Detail extends React.Component {
                     {(this.platform) ? (
                         <div onClick={() => {
                             if (this.platform == 'android') {
-                                window.open(`https://api.whatsapp.com/send?text=${cdata.title + ' - ' + URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'wa')}`);
+                                window.open(`https://api.whatsapp.com/send?text=${cdata.title + ' - ' + URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'wa', 'android')}`);
                             }
                             else if (this.platform == 'ios') {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
-                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'wa'),
+                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'wa', 'ios'),
                                 })
                                 .then(() => console.log('Successful share'))
                                 .catch(error => console.log('Error sharing:', error));
@@ -233,7 +234,7 @@ class Detail extends React.Component {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
-                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'twit'),
+                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'twit', 'ios'),
                                 })
                                 .then(() => console.log('Successful share'))
                                 .catch(error => console.log('Error sharing:', error));
@@ -242,7 +243,7 @@ class Detail extends React.Component {
                         </div>
                     ) : this.platform && this.platform == 'android' ?
                     (
-                        <TwitterShareButton title={cdata.title} url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'twit')} hashtags={hashtags}>
+                        <TwitterShareButton title={cdata.title} url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'twit', 'android')} hashtags={hashtags}>
                             <i className="fab fa-twitter"></i>
                         </TwitterShareButton>
                     )
@@ -260,7 +261,7 @@ class Detail extends React.Component {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
-                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'line'),
+                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'line', 'ios'),
                                 })
                                 .then(() => console.log('Successful share'))
                                 .catch(error => console.log('Error sharing:', error));
@@ -268,7 +269,7 @@ class Detail extends React.Component {
                             <i className="fab fa-line"></i>
                     </div>
                     ) : this.platform && (this.platform == 'android') ?
-                        <LineShareButton url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'line')} title={cdata.title}>
+                        <LineShareButton url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'line', 'android')} title={cdata.title}>
                             <i className="fab fa-line"></i>
                         </LineShareButton>
                     : (
@@ -282,7 +283,7 @@ class Detail extends React.Component {
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
                         const cdata = this.state.trending_detail_data;
                         if (this.platform && (this.platform == 'android')) {
-                            window.AndroidShareHandler.action(URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'all'), cdata.title);
+                            window.AndroidShareHandler.action(URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'all', 'android'), cdata.title);
                         }
                         else {
                             navigator.share({

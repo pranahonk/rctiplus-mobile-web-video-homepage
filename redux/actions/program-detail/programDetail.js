@@ -1,6 +1,7 @@
 import ax from 'axios';
 import { DEV_API, VISITOR_TOKEN } from '../../../config';
 import { getCookie, getVisitorToken, checkToken, setCookie } from '../../../utils/cookie';
+import { getUidAppier } from '../../../utils/appier';
 
 const axios = ax.create({ baseURL: DEV_API + '/api' });
 
@@ -312,7 +313,7 @@ export const fetchPhoto = (programId, filter, page = 1, length = 5) => {
 export const fetchPlayerUrl = (episodeId, filter, type, isFullscreen = false) => {
   return function(dispatch) {
     dispatch(fetchDetailProgramRequest());
-    axios.get(`/v1/${type}/${episodeId}/url`)
+    axios.get(`/v1/${type}/${episodeId}/url?appierid=${getUidAppier()}`)
       .then(response => {
         const data = response.data;
         dispatch(fetchPlayerUrlSuccess(data, [filter, type], isFullscreen));

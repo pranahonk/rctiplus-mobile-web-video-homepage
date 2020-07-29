@@ -59,7 +59,7 @@ import '../../assets/scss/components/live-event.scss';
 import '../../assets/scss/videojs.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
-import { getUserId } from '../../utils/appier';
+import { getUserId, getUidAppier } from '../../utils/appier';
 import { getCountdown } from '../../utils/helpers';
 import { convivaVideoJs } from '../../utils/conviva';
 import { triggerQualityButtonClick } from '../../utils/player';
@@ -107,13 +107,13 @@ class LiveEvent extends React.Component {
 		if (ctx.asPath.match('/missed-event/')) {
 			res = await Promise.all([
 				fetch(`${DEV_API}/api/v1/missed-event/${id}`, options),
-				fetch(`${DEV_API}/api/v2/missed-event/${id}/url`, options)
+				fetch(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${getUidAppier()}`, options)
 			]);
 		}
 		else {
 			res = await Promise.all([
 				fetch(`${DEV_API}/api/v1/live-event/${id}`, options),
-				fetch(`${DEV_API}/api/v1/live-event/${id}/url`, options)
+				fetch(`${DEV_API}/api/v1/live-event/${id}/url?appierid=${getUidAppier()}`, options)
 			]);
 		}
 
