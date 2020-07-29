@@ -32,7 +32,8 @@ class ForgetPassword extends React.Component {
             status: false,
 			codeCountry: 'ID',
 			phone_code: '62',
-			isPhoneNumber: false,
+            isPhoneNumber: false,
+            changeCode: 0,
         };
 
         this.subject = new Subject();
@@ -78,51 +79,54 @@ class ForgetPassword extends React.Component {
         Router.push('/forget-password/verify-otp');
     }
 
+    checkUser () {
+        if (this.state.username && this.state.username.length >= 6) {
+            this.props.checkUser(this.state.username)
+                .then(response => {
+                    if (response.status === 200) {
+                        const message = response.data.status.message_client;
+                        if (message == 'please try again, phone has been taken' || message == 'please try again, email has been taken') {
+                            this.setState({
+                                username_invalid: false,
+                                username_invalid_message: 'Username exist'
+                            });
+                            this.props.setUsernameType(message == 'please try again, email has been taken' ? 'EMAIL' : 'PHONE_NUMBER');
+                        }
+                        else if (message == 'Your phone is Available' || message == 'Your email is Available') {
+                            this.setState({
+                                username_invalid: true,
+                                username_invalid_message: 'User has not been registered'
+                            });
+                        }
+                        else {
+                            if (response.data.status.code != 0) {
+                                this.setState({
+                                    username_invalid: true,
+                                    username_invalid_message: message
+                                });
+                            }
+                            else {
+                                this.setState({
+                                    username_invalid: true,
+                                    username_invalid_message: ''
+                                    // username_invalid_message: 'Username does not exist'
+                                });
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                })
+                .catch(error => console.log(error));
+        }
+    }
     componentDidMount() {
         this.props.getListCountry();
         this.subject
             .pipe(debounceTime(500))
             .subscribe(() => {
-                if (this.state.username && this.state.username.length >= 6) {
-                    this.props.checkUser(this.state.username, this.props.registration.phone_code)
-                        .then(response => {
-                            if (response.status === 200) {
-                                const message = response.data.status.message_client;
-                                if (message == 'please try again, phone has been taken' || message == 'please try again, email has been taken') {
-                                    this.setState({
-                                        username_invalid: false,
-                                        username_invalid_message: 'Username exist'
-                                    });
-                                    this.props.setUsernameType(message == 'please try again, email has been taken' ? 'EMAIL' : 'PHONE_NUMBER');
-                                }
-                                else if (message == 'Your phone is Available' || message == 'Your email is Available') {
-                                    this.setState({
-                                        username_invalid: true,
-                                        username_invalid_message: 'User has not been registered'
-                                    });
-                                }
-                                else {
-                                    if (response.data.status.code != 0) {
-                                        this.setState({
-                                            username_invalid: true,
-                                            username_invalid_message: message
-                                        });
-                                    }
-                                    else {
-                                        this.setState({
-                                            username_invalid: true,
-                                            username_invalid_message: ''
-                                            // username_invalid_message: 'Username does not exist'
-                                        });
-                                        
-                                    }
-                                    
-                                }
-                                
-                            }
-                        })
-                        .catch(error => console.log(error));
-                }
+                this.checkUser()
             });
     }
 
@@ -131,9 +135,13 @@ class ForgetPassword extends React.Component {
     // }
 
     removeCountryCode(value, phone_code) {
-        // console.log(value, phone_code)
+        if (this.state.changeCode === 0 ) {
+            return value;
+        }
+        console.log('REMOVE NUMBER: ', value, phone_code)
         let result = value;
             result = value.slice(phone_code.length)
+        console.log('RESULT: ', result)
         return result;
     }
 
@@ -176,10 +184,12 @@ class ForgetPassword extends React.Component {
 						getCountryCode={(e) => {
 								this.props.setPhoneCode(e.phone_code);
 								this.setState({ 
+                                    changeCode: state.changeCode + 1,
                                     codeCountry: e.code, 
                                     phone_code: e.phone_code, 
-                                    username: e.phone_code + this.removeCountryCode(state.username, e.phone_code) }, () => {
-                                        this.subject.next()
+                                    username: e.phone_code + this.removeCountryCode(state.username, state.phone_code) }, () => {
+                                        {/* this.subject.next() */}
+                                        this.checkUser()
                                     });}
 							}
 						className="country-list-modal"/>) : ''}
