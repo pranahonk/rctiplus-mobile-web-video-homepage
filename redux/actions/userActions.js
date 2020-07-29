@@ -245,6 +245,7 @@ const getUserInterest = () => {
 };
 
 const checkUser = (username, phone_code = null) => {
+    console.log(username, phone_code)
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v3/user/exist?username=${phone_code ? (phone_code + username) : username}`);
