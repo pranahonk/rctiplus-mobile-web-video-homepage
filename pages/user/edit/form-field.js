@@ -88,6 +88,36 @@ class FormField extends React.Component {
         }
         
     }
+    isUser(value, phone_code = null) {
+        this.props.checkUser(value, phone_code )
+        .then(response => {
+            // console.log(response);
+            if (response.status === 200 && response.data.status.code !== 0) {
+                this.props.showNotification(response.data.status.message_server, false);
+            }
+            else {
+                accountGeneralEvent('mweb_account_edit_profile_form');
+                this.props.setUsername(value);
+                if (this.props.user.data_key[this.props.others.index] === 'phone_number') {
+                    this.props.setUsernameType('PHONE_NUMBER');
+                    this.props.setPhoneCode(this.state.phone_code);
+                }
+                else {
+                    this.props.setUsernameType('EMAIL');
+                    this.props.setPhoneCode('');
+                }
+                Router.push('/user/edit/verify-otp');
+            }
+            setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
+        })
+        .catch(error => {
+            if (error.status == 200) {
+                this.props.showNotification(error.data.status.message_server, false);
+            }
+            setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
+            console.log(error);
+        });
+    }
 
     onSubmit(e) {
         e.preventDefault();
@@ -113,35 +143,10 @@ class FormField extends React.Component {
                 } else {
                     value = value;
                 }
+                this.isUser(value, this.state.phone_code)
+                return;
             case 'email':
-                this.props.checkUser(value, this.state.phone_code )
-                    .then(response => {
-                        // console.log(response);
-                        if (response.status === 200 && response.data.status.code !== 0) {
-                            this.props.showNotification(response.data.status.message_server, false);
-                        }
-                        else {
-                            accountGeneralEvent('mweb_account_edit_profile_form');
-                            this.props.setUsername(value);
-                            if (this.props.user.data_key[this.props.others.index] === 'phone_number') {
-                                this.props.setUsernameType('PHONE_NUMBER');
-                                this.props.setPhoneCode(this.state.phone_code);
-                            }
-                            else {
-                                this.props.setUsernameType('EMAIL');
-                                this.props.setPhoneCode('');
-                            }
-                            Router.push('/user/edit/verify-otp');
-                        }
-                        setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
-                    })
-                    .catch(error => {
-                        if (error.status == 200) {
-                            this.props.showNotification(error.data.status.message_server, false);
-                        }
-                        setTimeout(() => this.props.hideNotification(), 2 * 60 * 1000);
-                        console.log(error);
-                    });
+                this.isUser(value)
                 return;
         }
 
