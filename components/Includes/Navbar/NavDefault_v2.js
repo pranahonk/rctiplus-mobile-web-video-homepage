@@ -8,6 +8,7 @@ import pageActions from '../../../redux/actions/pageActions';
 import { getCookie, removeCookie } from '../../../utils/cookie';
 import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent, newsGeneralEvent } from '../../../utils/appier';
 import '../../../assets/scss/components/navbar-v2.scss';
+import ActiveLink from '../Navbar/ActiveLink';
 
 import { Navbar, NavbarBrand, Button, Row, Col } from 'reactstrap';
 
@@ -49,7 +50,7 @@ class NavbarDef_v2 extends Component {
         Router.push('/');
     }
 
-    goToExplore() {
+    goToExplore(e) {
         switch (this.props.router.asPath) {
             case '/exclusive':
                 exclusiveGeneralEvent('mweb_exclusive_library_clicked');
@@ -72,8 +73,19 @@ class NavbarDef_v2 extends Component {
                 }
                 break;
         }
-        
-        Router.push('/explores')
+        switch (e) {
+            case '/' || '/explores' || '/live-event' || '/exclusive' :
+                Router.push('/explores/search');
+            break;
+            case '/trending' :
+                Router.push('/trending/search');
+            break;
+            case '/radio' :
+                Router.push('/radio/search');
+            break;
+            default:
+                Router.push('/explores/search');
+        }
     }
 
     signOut() {
@@ -133,7 +145,7 @@ class NavbarDef_v2 extends Component {
                         </Col>
                     </Row>
                 </div>
-                <Navbar expand="md" className={'nav-container nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
+                <Navbar expand="md" className={'nav-container nav-shadow'}>
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
                             <NavbarBrand onClick={this.goToHome.bind(this)}>
@@ -142,9 +154,41 @@ class NavbarDef_v2 extends Component {
                         </div>
                     </div>
                     <div className="middle-top">
-                        <div className="search-input" onClick={this.goToExplore.bind(this)}>
+                        <div className="search-input" onClick={this.goToExplore.bind(this, this.props.router.asPath)}>
                             <div className="search-input-placeholder">rctiplus.com</div> <SearchIcon style={{ fontSize: '1.5rem' }} />
                         </div>
+                    </div>
+                    <div className="nav-menu-container">
+                        <ActiveLink activeClassName="active" href="/" activeMenu={'home' + this.props.router.asPath}>
+                            <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
+                                <img style={{ width: '10px', marginRight: 3 }} src={'/videos.svg'}/>
+                                Videos
+                            </Button>
+                        </ActiveLink>
+                        <ActiveLink activeClassName="active" href="/trending" activeMenu={'trending' + this.props.router.asPath}>
+                            <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
+                                <img style={{ width: '10px', marginRight: 3 }} src={'/news.svg'}/>
+                                News
+                            </Button>
+                        </ActiveLink>
+                        <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
+                            <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
+                                <img style={{ width: '10px', marginRight: 3 }} src={'/radio.png'}/>
+                                Radio +
+                            </Button>
+                        </ActiveLink>
+                        <ActiveLink activeClassName="active" href="/talent-search" activeMenu={'talent-search' + this.props.router.asPath}>
+                            <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
+                                <img style={{ width: '10px', marginRight: 3 }} src={'/videos.svg'}/>
+                                Talent
+                            </Button>
+                        </ActiveLink>
+                        <ActiveLink activeClassName="active" href="/games" activeMenu={'games' + this.props.router.asPath}>
+                            <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
+                                <img style={{ width: '10px', marginRight: 3 }} src={'/games.svg'}/>
+                                Games
+                            </Button>
+                        </ActiveLink>
                     </div>
                 </Navbar>
                 <StatusNotification />
