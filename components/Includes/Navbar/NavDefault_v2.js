@@ -196,6 +196,7 @@ class NavbarDef_v2 extends Component {
         );
     }
 }
+
 export default connect(state => state, {
     ...actions,
     ...pageActions
