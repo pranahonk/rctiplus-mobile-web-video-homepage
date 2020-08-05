@@ -161,31 +161,31 @@ class NavbarDef_v2 extends Component {
                     <div className="nav-menu-container">
                         <ActiveLink activeClassName="active" href="/" activeMenu={'home' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
-                                <img style={{ maxWidth: 10, marginRight: 3, minWidth: 10 }} src={'/videos.svg'}/>
+                                <img className="img-menu-icon" src={'/videos.svg'}/>
                                 Videos
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/trending" activeMenu={'trending' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
-                                <img style={{ maxWidth: 10, marginRight: 3, minWidth: 10 }} src={'/news.svg'}/>
+                                <img className="img-menu-icon" src={'/news.svg'}/>
                                 News
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
-                                <img style={{ maxWidth: 10, marginRight: 3, minWidth: 10 }} src={'/radio.png'}/>
+                                <img className="img-menu-icon" src={'/radio.png'}/>
                                 Radio +
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/talent-search" activeMenu={'talent-search' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
-                                <img style={{ maxWidth: 10, marginRight: 3, minWidth: 10 }} src={'/videos.svg'}/>
+                                <img className="img-menu-icon" src={'/videos.svg'}/>
                                 Talent
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/games" activeMenu={'games' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
-                                <img style={{ maxWidth: 10, marginRight: 3, minWidth: 10 }} src={'/games.svg'}/>
+                                <img className="img-menu-icon" src={'/games.svg'}/>
                                 Games
                             </Button>
                         </ActiveLink>
