@@ -233,6 +233,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 	componentDidMount() {
+		if(this.props.router.asPath.match('/live-event/')) this.loadChatMessages(this.props.router.query.id);
 		initGA();
 		this.getAvailable();
 		if (this.props.router.asPath.match('/missed-event/')) {
@@ -397,6 +398,7 @@ class LiveEvent extends React.Component {
 							querySnapshot.docChanges()
 								.map(change => {
 									let chats = this.state.chats;
+									console.log(chats)
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
@@ -962,8 +964,8 @@ class LiveEvent extends React.Component {
 
 	handleChatEnter(e) {
 		const chatInput = document.getElementById('chat-input');
-		const scrollHeight = chatInput.scrollHeight - 30;
-		chatInput.style.height = `${24 + (24 * (scrollHeight / 24))}px`;
+		// const scrollHeight = chatInput.scrollHeight - 30;
+		// chatInput.style.height = `${24 + (24 * (scrollHeight / 24))}px`;
 
 		if (e.key === 'Enter' && !e.shiftKey && this.state.chat && this.state.chat != '\n') {
 			this.sendChat();
@@ -986,35 +988,35 @@ class LiveEvent extends React.Component {
 	}
 
 	resendChat(index) {
-		let chats = this.state.chats;
-		let lastChat = chats[index];
-		lastChat.sent = false;
-		lastChat.failed = false;
-		chats[index] = lastChat;
-		this.setState({ chats: chats, sending_chat: true }, () => {
-			const { id } = this.props.selected_event.data;
-			const userData = this.state.user_data;
-			let user = userData.nickname ? userData.nickname :
-				userData.display_name ? userData.display_name :
-					userData.email ? userData.email.replace(/\d{4}$/, '****') :
-						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
+		// let chats = this.state.chats;
+		// let lastChat = chats[index];
+		// lastChat.sent = false;
+		// lastChat.failed = false;
+		// chats[index] = lastChat;
+		// this.setState({ chats: chats, sending_chat: true }, () => {
+		// 	const { id } = this.props.selected_event.data;
+		// 	const userData = this.state.user_data;
+		// 	let user = userData.nickname ? userData.nickname :
+		// 		userData.display_name ? userData.display_name :
+		// 			userData.email ? userData.email.replace(/\d{4}$/, '****') :
+		// 				userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
 
-			this.props.setChat(id, lastChat.m, user, this.state.user_data.photo_url)
-				.then(response => {
-					lastChat.sent = true;
-					if (response.status !== 200 || response.data.status.code !== 0) {
-						lastChat.failed = true;
-					}
-					chats[index] = lastChat;
-					this.setState({ chats: chats, sending_chat: false });
-				})
-				.catch(() => {
-					lastChat.sent = true;
-					lastChat.failed = true;
-					chats[index] = lastChat;
-					this.setState({ chats: chats, sending_chat: false });
-				});
-		});
+		// 	this.props.setChat(id, lastChat.m, user, this.state.user_data.photo_url)
+		// 		.then(response => {
+		// 			lastChat.sent = true;
+		// 			if (response.status !== 200 || response.data.status.code !== 0) {
+		// 				lastChat.failed = true;
+		// 			}
+		// 			chats[index] = lastChat;
+		// 			this.setState({ chats: chats, sending_chat: false });
+		// 		})
+		// 		.catch(() => {
+		// 			lastChat.sent = true;
+		// 			lastChat.failed = true;
+		// 			chats[index] = lastChat;
+		// 			this.setState({ chats: chats, sending_chat: false });
+		// 		});
+		// });
 	}
 
 	sendChat() {
@@ -1049,14 +1051,15 @@ class LiveEvent extends React.Component {
 							if (response.status !== 200 || response.data.status.code !== 0) {
 								newChat.failed = true;
 							}
-							chats[chats.length - 1] = newChat;
+							// chats[chats.length - 1] = newChat;
+							console.log('CHATS', chats)
 							this.setState({ chats: chats, sending_chat: false });
 						})
 						.catch(() => {
-							newChat.sent = true;
-							newChat.failed = true;
-							chats[chats.length - 1] = newChat;
-							this.setState({ chats: chats, sending_chat: false });
+							// newChat.sent = true;
+							// newChat.failed = true;
+							// chats[chats.length - 1] = newChat;
+							// this.setState({ chats: chats, sending_chat: false });
 						});
 				});
 
@@ -1462,7 +1465,14 @@ class LiveEvent extends React.Component {
 												className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
 										</Col>
 										<Col className="chat-message" xs={10}>
-											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
+											{/* {chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span> */}
+											<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />{' '}
+												<span className="username">
+													{chat.u}
+												</span> 
+												<span className="message">
+													{chat.m}
+												</span>
 										</Col>
 									</Row>
 								))}
