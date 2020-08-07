@@ -49,8 +49,9 @@ class GridMenu extends React.Component {
                         <div id="action-radio" onClick={() => {
                             homeGeneralClicked('mweb_radio_clicked');
                             {/* setTimeout(() => Router.push('https://radio.rctiplus.com/'), 500); */}
+                            window.location.assign('https://radio.rctiplus.com/');
                         }}>
-                            <a href="https://radio.rctiplus.com/">
+                            <a>
                                 <Img className="menu-icon" src={['/radio.png']}/>
                                 <p className="menu-label">Radio+</p>
                             </a>
