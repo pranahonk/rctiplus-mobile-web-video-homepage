@@ -425,7 +425,7 @@ class LiveEvent extends React.Component {
 												chatBox.scrollTop = chatBox.scrollHeight;
 
 												const chatInput = document.getElementById('chat-input');
-												chatInput.style.height = `24px`;
+												chatInput.style.height = `100%`;
 											});
 										}
 									}
@@ -1041,7 +1041,7 @@ class LiveEvent extends React.Component {
 					chatBox.scrollTop = chatBox.scrollHeight;
 
 					const chatInput = document.getElementById('chat-input');
-					chatInput.style.height = `24px`;
+					chatInput.style.height = `100%`;
 
 					this.props.setChat(this.props.selected_event.data.id ? this.props.selected_event.data.id : this.props.selected_event.data.content_id, newChat.m, user, this.state.user_data.photo_url)
 						.then(response => {
