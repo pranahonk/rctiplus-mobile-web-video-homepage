@@ -77,7 +77,7 @@ class Signin extends React.Component {
 			this.props.setPhoneCode(this.state.phone_code);
 			// console.log('PHONE');
 		}
-	 } else {
+	} else {
 			this.setState({ isPhoneNumber: false, emailphone: value });
 			this.props.setPhoneCode();
 			// console.log('EMAIL');
@@ -94,9 +94,14 @@ class Signin extends React.Component {
 		};
 		// console.log(data)
 		this.props.login(data).then(response => {
-			// console.log(this.props.authentication);
 			if (this.props.authentication.data != null && this.props.authentication.data.status.code === 0) {
-				Router.push('/');
+				const query = this.props.router.query;
+				if (query && Object.keys(query).length > 0 && query.referrer) {
+					window.location.href = query.referrer + '?token=' + this.props.authentication.token;
+				}
+				else {
+					Router.push('/');
+				}
 			}
 			else {
 
