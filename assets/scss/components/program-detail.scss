@@ -93,7 +93,7 @@ h3, h4, p {
   // overflow-x:hidden;
 }
 .list__content-wrapper{
-  padding: 0 15px;
+  // padding: 0 15px;
   background-color: #282828;
 }
 
@@ -302,9 +302,12 @@ h3, h4, p {
 }
 .tab__content-wrapper {
     padding-bottom: 10px;
+    .tab-content {
+      // padding: 0 15px;
+    }
     .episode-program, .clip-program, .extra-program {
       .season__program {
-
+        padding: 0 15px;
       }
       .panel-content {
         display: flex;

@@ -120,6 +120,7 @@ class Index extends React.Component {
     this.reference = null;
   }
   componentDidMount() {
+    console.log(this.props.router.query)
     this.reference = queryString.parse(location.search).ref;
     console.log('MOUNTED: ', this.props);
     this.props.dispatch(userActions.getUserData());
@@ -496,6 +497,7 @@ class Index extends React.Component {
               isLogin={this.props.auth.isAuth}
               onShare={(title, item) => this.toggleActionSheet.bind(this, 'episode', title, 'content_share', item)}
               dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
+              isActive={this.props.router &&  this.props.router.query.content_id}
             />
           </>
           );
@@ -531,6 +533,7 @@ class Index extends React.Component {
         isLogin={this.props.auth.isAuth}
         onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
         dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
+        isActive={this.props.router &&  this.props.router.query.content_id}
       />
         );
       }
@@ -564,6 +567,7 @@ class Index extends React.Component {
         isLogin={this.props.auth.isAuth}
         onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
         dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
+        isActive={this.props.router &&  this.props.router.query.content_id}
       />
         );
     }
