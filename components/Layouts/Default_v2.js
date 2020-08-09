@@ -99,7 +99,7 @@ class Default_v2 extends React.Component {
                     <link rel="canonical" href={`http://www.rctiplus.com${this.props.router.asPath}`}></link>
                     {/* <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" /> */}
 
-                    <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
@@ -112,7 +112,7 @@ class Default_v2 extends React.Component {
                     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                     <script dangerouslySetInnerHTML={{ __html: `
                         (adsbygoogle = window.adsbygoogle || []).push({
-                            google_ad_client: "ca-pub-8248966892082355",
+                            google_ad_client: "ca-pub-7595624984434758",
                             enable_page_level_ads: true
                         });
                     ` }}></script>
