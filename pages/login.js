@@ -55,7 +55,13 @@ class Signin extends React.Component {
 		setTimeout(() => {
 			const token = getCookie('ACCESS_TOKEN');
 			if (token) {
-				Router.push('/');
+				const query = this.props.router.query;
+				if (query && Object.keys(query).length > 0 && query.referrer) {
+					window.location.href = query.referrer + '?token=' + token;
+				}
+				else {
+					Router.push('/');
+				}
 			}
 		}, 500);
 		this.LoadingBar.complete();
