@@ -32,7 +32,7 @@
         border-bottom-left-radius: 20px !important;
         border-bottom-right-radius: 20px !important;
     }
-    
+
     .nav-signup-item .nav-item {
         margin-bottom: -1px;
         width: 50%;
@@ -56,7 +56,7 @@
         background: linear-gradient(to top, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0.2) 25%, rgba(0, 0, 0, 0.92)) !important;
         box-shadow: none;
     }
-    
+
     .back-arrow-transparent {
         background-color: rgba(0, 0, 0, 0.5);
         border-radius: 100%;
@@ -101,17 +101,25 @@
 }
 .nav-menu-container {
     display: flex;
-    padding: 15px 0 5px 0;
+    padding: 13px 0 2px 0;
     width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    align-items: center;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     .btn-nav-menu {
         display: flex;
-        margin: 0 2px !important;
+        margin: 0 .25rem !important;
         border-radius: 20px;
         font-size: 10px;
-        padding: 5px 2px !important;
+        padding: .25rem .5rem !important;
         justify-content: center;
         align-items: center;
         border-color: #3a3a3a !important;
+        width: unset;
+        letter-spacing: .025rem;
         &:focus, &:active {
             border: none !important;
             box-shadow: none !important;
@@ -127,6 +135,11 @@
         }
         &.active {
             background-color: #3a3a3a !important;
+        }
+
+        p {
+          margin: 0 !important;
+          white-space: nowrap;
         }
     }
     .img-menu-icon {

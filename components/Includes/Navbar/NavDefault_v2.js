@@ -48,7 +48,7 @@ class NavbarDef_v2 extends Component {
                 }
                 break;
         }
-        
+
         Router.push('/');
     }
 
@@ -65,7 +65,7 @@ class NavbarDef_v2 extends Component {
             case '/':
                 homeGeneralClicked('mweb_search_clicked');
                 break;
-            
+
             default:
                 if (this.props.router.asPath.indexOf('/trending') === 0) {
                     // newsGeneralEvent('mweb_news_search_clicked');
@@ -128,7 +128,7 @@ class NavbarDef_v2 extends Component {
     }
 
     getToken() {
-        
+
         const accessToken = cookie.getJSON('ACCESS_TOKEN') && cookie.getJSON('ACCESS_TOKEN').VALUE
         const visitorToken = cookie.getJSON('VISITOR_TOKEN') && cookie.getJSON('VISITOR_TOKEN').VALUE
         return accessToken ? accessToken : visitorToken;
@@ -172,37 +172,31 @@ class NavbarDef_v2 extends Component {
                     </div>
                     <div className="nav-menu-container">
                         <ActiveLink activeClassName="active" href="/" activeMenu={'home' + this.props.router.asPath}>
-                            <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
+                            <Button outline className="btn-nav-menu">
                                 <img className="img-menu-icon" src={'/videos.svg'}/>
-                                Videos
+                                <p>Videos</p>
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/trending" activeMenu={'trending' + this.props.router.asPath}>
-                            <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
+                            <Button outline className="btn-nav-menu">
                                 <img className="img-menu-icon" src={'/news.svg'}/>
-                                News
+                                <p>News</p>
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
-                            <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
+                            <Button outline className="btn-nav-menu">
                                 <img className="img-menu-icon" src={'/radio.png'}/>
-                                Radio +
+                                <p>Radio +</p>
                             </Button>
                         </ActiveLink>
-                        {/* <a href={`https://rc-ugctalent.rctiplus.com/?token=${this.state.token}`}> */}
-                            <ActiveLink activeClassName="active" href={`https://rc-ugctalent.rctiplus.com/?token=${this.state.token}`} activeMenu={'talent-search' + this.props.router.asPath}>
-                                <a outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
-                                    <img className="img-menu-icon" src={'/videos.svg'}/>
-                                    Talent
-                                </a>
-                            </ActiveLink>
-                        {/* </a> */}
-                        <ActiveLink activeClassName="active" href="/games" activeMenu={'games' + this.props.router.asPath}>
-                            <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
-                                <img className="img-menu-icon" src={'/games.svg'}/>
-                                Games
-                            </Button>
-                        </ActiveLink>
+                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `https://rc-ugctalent.rctiplus.com/?token=${this.state.token}`}>
+                            <img className="img-menu-icon" src={'/videos.svg'}/>
+                            <p>Home of Talent</p>
+                        </Button>
+                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `https://gamehub-dev.agate.id/?token=${this.state.token}`}>
+                            <img className="img-menu-icon" src={'/games.svg'}/>
+                            <p>Games</p>
+                        </Button>
                     </div>
                 </Navbar>
                 <StatusNotification />
