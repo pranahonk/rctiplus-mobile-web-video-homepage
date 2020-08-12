@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import actions from '../../../redux/actions';
 import pageActions from '../../../redux/actions/pageActions';
+import cookie from 'js-cookie';
 
 import { getCookie, removeCookie } from '../../../utils/cookie';
 import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent, newsGeneralEvent } from '../../../utils/appier';
@@ -15,6 +16,7 @@ import { Navbar, NavbarBrand, Button, Row, Col } from 'reactstrap';
 import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
+import { json } from 'body-parser';
 
 
 class NavbarDef_v2 extends Component {
@@ -110,6 +112,9 @@ class NavbarDef_v2 extends Component {
     }
 
     componentDidMount() {
+        console.log(cookie.getJSON('ACCESS_TOKEN'))
+        console.log(cookie.getJSON('VISITOR_TOKEN').VALUE)
+        this.setState({token: this.getToken()});
         if (!this.props.disableScrollListener) {
             document.addEventListener('scroll', () => {
                 const isTop = window.scrollY < 150;
@@ -120,6 +125,13 @@ class NavbarDef_v2 extends Component {
         } else {
             this.setState({is_top: false});
         }
+    }
+
+    getToken() {
+        
+        const accessToken = cookie.getJSON('ACCESS_TOKEN') && cookie.getJSON('ACCESS_TOKEN').VALUE
+        const visitorToken = cookie.getJSON('VISITOR_TOKEN') && cookie.getJSON('VISITOR_TOKEN').VALUE
+        return accessToken ? accessToken : visitorToken;
     }
 
     render() {
@@ -177,12 +189,14 @@ class NavbarDef_v2 extends Component {
                                 Radio +
                             </Button>
                         </ActiveLink>
-                        <ActiveLink activeClassName="active" href="/talent-search" activeMenu={'talent-search' + this.props.router.asPath}>
-                            <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
-                                <img className="img-menu-icon" src={'/videos.svg'}/>
-                                Talent
-                            </Button>
-                        </ActiveLink>
+                        {/* <a href={`https://rc-ugctalent.rctiplus.com/?token=${this.state.token}`}> */}
+                            <ActiveLink activeClassName="active" href={`https://rc-ugctalent.rctiplus.com/?token=${this.state.token}`} activeMenu={'talent-search' + this.props.router.asPath}>
+                                <a outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
+                                    <img className="img-menu-icon" src={'/videos.svg'}/>
+                                    Talent
+                                </a>
+                            </ActiveLink>
+                        {/* </a> */}
                         <ActiveLink activeClassName="active" href="/games" activeMenu={'games' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu" style={{ width: 'calc(100% / 4)' }}>
                                 <img className="img-menu-icon" src={'/games.svg'}/>
