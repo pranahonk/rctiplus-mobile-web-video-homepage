@@ -12,6 +12,7 @@ import countryList from '../redux/actions/othersActions';
 import registerActions from '../redux/actions/registerActions';
 
 import { showAlert } from '../utils/helpers';
+import q from 'query-string';
 
 import Layout from '../components/Layouts/Default_v2';
 import NavBack from '../components/Includes/Navbar/NavBack';
@@ -50,14 +51,13 @@ class Signin extends React.Component {
 	}
 
 	componentDidMount() {
-		// console.log(this.props);
 		this.props.getListCountry();
 		setTimeout(() => {
 			const token = getCookie('ACCESS_TOKEN');
 			if (token) {
 				const query = this.props.router.query;
 				if (query && Object.keys(query).length > 0 && query.referrer) {
-					window.location.href = query.referrer + '?token=' + token;
+					window.location.href = this.constructReferrerUrl(token);
 				}
 				else {
 					Router.push('/');
@@ -66,9 +66,20 @@ class Signin extends React.Component {
 		}, 500);
 		this.LoadingBar.complete();
 	}
-	componentDidUpdate() {
-		// console.log(this.state)
+
+	constructReferrerUrl(token) {
+		const query = this.props.router.query;
+		if (query && query.referrer) {
+			const referrerToken = query.referrer.split('?');
+			if (referrerToken.length > 1) {
+				const qs = q.parse(referrerToken[1]);
+				qs['token'] = token;
+				return referrerToken[0] + '?' + q.stringify(qs);
+			}
+		}
+		return '';
 	}
+
 	onChangeUsername(e) {
 		const regex = /^[0-9]+$/;
 		let value = e.target.value;
@@ -103,7 +114,7 @@ class Signin extends React.Component {
 			if (this.props.authentication.data != null && this.props.authentication.data.status.code === 0) {
 				const query = this.props.router.query;
 				if (query && Object.keys(query).length > 0 && query.referrer) {
-					window.location.href = query.referrer + '?token=' + this.props.authentication.token;
+					window.location.href = this.constructReferrerUrl(this.props.authentication.token);
 				}
 				else {
 					Router.push('/');
