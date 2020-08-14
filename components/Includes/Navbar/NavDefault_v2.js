@@ -174,28 +174,28 @@ class NavbarDef_v2 extends Component {
                         <ActiveLink activeClassName="active" href="/" activeMenu={'home' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
                                 <img className="img-menu-icon" src={'/videos.svg'}/>
-                                <p>Videos</p>
+                                Videos
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/trending" activeMenu={'trending' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
                                 <img className="img-menu-icon" src={'/news.svg'}/>
-                                <p>News</p>
+                                News
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
                                 <img className="img-menu-icon" src={'/radio.png'}/>
-                                <p>Radio +</p>
+                                Radio +
                             </Button>
                         </ActiveLink>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `https://rc-ugctalent.rctiplus.com/?token=${this.state.token}`}>
                             <img className="img-menu-icon" src={'/videos.svg'}/>
-                            <p>Home of Talent</p>
+                            HOT
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `https://gamehub-dev.agate.id/?token=${this.state.token}`}>
                             <img className="img-menu-icon" src={'/games.svg'}/>
-                            <p>Games</p>
+                            Games
                         </Button>
                     </div>
                 </Navbar>

@@ -101,7 +101,7 @@
 }
 .nav-menu-container {
     display: flex;
-    padding: 13px 0 2px 0;
+    padding: 15px 0 5px 0;
     width: 100%;
     flex-direction: row;
     overflow-x: auto;
@@ -111,15 +111,14 @@
     }
     .btn-nav-menu {
         display: flex;
-        margin: 0 .25rem !important;
+        margin: 0 2px !important;
         border-radius: 20px;
         font-size: 10px;
-        padding: 5px .5rem !important;
+        padding: 5px 2px !important;
         justify-content: center;
         align-items: center;
         border-color: #3a3a3a !important;
-        width: unset;
-        letter-spacing: .025rem;
+        width: 25%;
         &:focus, &:active {
             border: none !important;
             box-shadow: none !important;
@@ -140,7 +139,7 @@
         p {
           margin: 0 !important;
           white-space: nowrap;
-          font-size: .625rem !important;
+          font-size: 10px !important;
         }
     }
     .img-menu-icon {
