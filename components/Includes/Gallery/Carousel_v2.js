@@ -63,7 +63,7 @@ class Crs_v2 extends Component {
         return (
                 <div style={{ 
                     position: 'relative', 
-                    paddingTop: this.props.showStickyInstall ? 60 : 0 
+                    paddingTop: this.props.showStickyInstall ? 135 : 70,
                 }}>
                     <Carousel 
                         className="banner-carousel"

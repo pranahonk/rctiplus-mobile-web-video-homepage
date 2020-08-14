@@ -13,6 +13,7 @@ import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
 import { getCountdown } from '../../utils/helpers';
 import { RESOLUTION_IMG } from '../../config';
+import NavDefault_v2 from '../../components/Includes/Navbar/NavDefault_v2';
 
 import { Container, Row, Col } from 'reactstrap';
 import '../../assets/scss/components/live-event.scss';
@@ -112,7 +113,8 @@ class Index extends React.Component {
         <Head>
           <meta name="description" content={this.props.router.asPath.match('missed-event') ? 'Missed event' : 'Live event'}/>
         </Head>
-        <NavBack title="Live Event"/>
+        {/* <NavBack title="Live Event"/> */}
+        {process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)}
         <div id="live-event" className="le-container">
           {this.state.live_event.length > 0 || this.state.missed_event.length > 0 ?
             (<div>

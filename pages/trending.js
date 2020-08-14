@@ -11,6 +11,7 @@ import Img from 'react-image';
 import Layout from '../components/Layouts/Default_v2';
 import NavTrending from '../components/Includes/Navbar/NavTrending_v2';
 import HeadlineCarousel from '../components/Includes/Gallery/HeadlineCarousel';
+import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
 
 import TabLoader from '../components/Includes/Shimmer/TabLoader';
 import HeadlineLoader from '../components/Includes/Shimmer/HeadlineLoader';
@@ -400,12 +401,13 @@ class Trending_v2 extends React.Component {
                 <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
                 <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} />
                 <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} /> */}
-                <NavTrending disableScrollListener />
+                {/* <NavTrending disableScrollListener /> */}
+                {this.platform === 'ios' || this.platform === 'android' ? '' : (<NavDefault_v2 disableScrollListener />)}
                 <BottomScrollListener
                     offset={50}
                     onBottom={this.bottomScrollFetch.bind(this)} />
 
-                <div className="main-content">
+                <div className="main-content" style={{ marginTop: this.platform === 'ios' || this.platform === 'android' ? 25 : '' }}>
                     {this.state.load_error ? (
                         <div style={{
                             display: 'flex',
