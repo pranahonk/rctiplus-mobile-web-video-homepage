@@ -183,12 +183,16 @@ class NavbarDef_v2 extends Component {
                                 News
                             </Button>
                         </ActiveLink>
-                        <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
+                        {/* <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
                                 <img className="img-menu-icon" src={'/radio.png'}/>
                                 Radio +
                             </Button>
-                        </ActiveLink>
+                        </ActiveLink> */}
+                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `https://stag-rctiplus-roov.herokuapp.com`}>
+                            <img className="img-menu-icon" src={'/videos.svg'}/>
+                            Radio +
+                        </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `https://rc-ugctalent.rctiplus.com/?token=${this.state.token}`}>
                             <img className="img-menu-icon" src={'/videos.svg'}/>
                             HOT
