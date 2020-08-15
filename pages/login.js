@@ -76,6 +76,9 @@ class Signin extends React.Component {
 				qs['token'] = token;
 				return referrerToken[0] + '?' + q.stringify(qs);
 			}
+			else {
+				return referrerToken[0] + '?token=' + token;
+			}
 		}
 		return '';
 	}
