@@ -197,7 +197,7 @@ class NavbarDef_v2 extends Component {
                             <img className="img-menu-icon" src={'/videos.svg'}/>
                             HOT
                         </Button>
-                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `https://gamehub-dev.agate.id/?token=${this.state.token}`}>
+                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `https://games-dev.rctiplus.com/?token=${this.state.token}`}>
                             <img className="img-menu-icon" src={'/games.svg'}/>
                             Games
                         </Button>
