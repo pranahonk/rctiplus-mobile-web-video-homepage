@@ -123,6 +123,11 @@
             border: none !important;
             box-shadow: none !important;
         }
+        &:focus {
+            // background-color: inherit !important;
+            border: solid 1px #3a3a3a !important;
+            // color: #6c757d !important;
+        }
         &:active {
             background-color: #000000 !important;
         }
@@ -146,5 +151,12 @@
         width: 10px;
         max-width: 10px;
         margin-right: 3px;
+    }
+}
+.btn-outline-secondary {
+    &:hover {
+        background-color: inherit !important;
+        border: solid 1px #3a3a3a !important;
+        color: #6c757d !important;
     }
 }
