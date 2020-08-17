@@ -128,8 +128,8 @@ class NavbarDef_v2 extends Component {
     }
 
     getToken() {
-
-        const accessToken = cookie.getJSON('ACCESS_TOKEN') && cookie.getJSON('ACCESS_TOKEN').VALUE
+        const accessToken = cookie.getJSON('ACCESS_TOKEN');
+        // const accessToken = cookie.getJSON('ACCESS_TOKEN') && cookie.getJSON('ACCESS_TOKEN').VALUE
         const visitorToken = cookie.getJSON('VISITOR_TOKEN') && cookie.getJSON('VISITOR_TOKEN').VALUE
         return accessToken ? accessToken : visitorToken;
     }
