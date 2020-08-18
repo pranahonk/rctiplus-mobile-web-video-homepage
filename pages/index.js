@@ -85,7 +85,7 @@ class Index_v2 extends React.Component {
                 this.props.unsetPageLoader();
                 this.setState({ isShimmer: false });
             });
-        
+
         if (getCookie('STICKY_INSTALL_CLOSED')) {
             this.setState({ show_sticky_install: !getCookie('STICKY_INSTALL_CLOSED') });
         }
@@ -165,11 +165,15 @@ class Index_v2 extends React.Component {
                     </Carousel>
                     <Stories/>
                     <StickyContainer>
-                        <Sticky>
-                            { ({ distanceFromTop }) => {
+                        <Sticky disableHardwareAcceleration>
+                            { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
                                 if (distanceFromTop < 0) {
                                     if (!this.props.ads.ads_displayed) {
-                                        return (<StickyAds/>);
+                                        return (
+                                            <div {...rest}>
+                                                <StickyAds/>
+                                            </div>
+                                        );
                                     }
                                     const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
                                     if (adsContents.length > 0) {
@@ -180,9 +184,17 @@ class Index_v2 extends React.Component {
                                             }
                                         }
                                     }
-                                    return (<StickyAds sticky/>);
+                                    return (
+                                        <div {...rest}>
+                                            <StickyAds sticky/>
+                                        </div>
+                                    );
                                 }
-                                return (<StickyAds id='div-gpt-ad-1584677577539-0'/>);
+                                return (
+                                    <div {...rest}>
+                                        <StickyAds id='div-gpt-ad-1584677577539-0'/>
+                                    </div>
+                                );
                             } }
                         </Sticky>
                     </StickyContainer>
