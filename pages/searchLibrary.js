@@ -85,46 +85,48 @@ class Explores extends React.Component {
 			selected_genre_name: selectedGenreName,
 			selected_genre_id: this.props.query.id ? this.props.query.id : -1
 		};
-		this.props.setPageLoader();
+		// this.props.setPageLoader();
 	}
 
-	componentDidMount() { 
-		if (this.state.selected_genre_id != -1) {
-			this.selectGenre(this.state.selected_genre, 'program', true);
-		}
-		else {
-			this.LoadingBar.continuousStart();
-			this.props.getRecommendation(1, this.state.length)
-				.then(response => {
-					if (response.status === 200 && response.data.status.code === 0) {
-						let recommendations = this.state.recommendations;
-						recommendations[`genre-${this.state.selected_genre_id}`] = response.data.data;
+	// componentDidMount() { 
+	// 	if (this.state.selected_genre_id != -1) {
+	// 		this.selectGenre(this.state.selected_genre, 'program', true);
+	// 	}
+	// 	else {
+	// 		this.LoadingBar.continuousStart();
+	// 		this.props.getRecommendation(1, this.state.length)
+	// 			.then(response => {
+	// 				if (response.status === 200 && response.data.status.code === 0) {
+	// 					let recommendations = this.state.recommendations;
+	// 					recommendations[`genre-${this.state.selected_genre_id}`] = response.data.data;
 						
-						let pages = {};
-						pages[`genre-${this.state.selected_genre_id}`] = 1;
+	// 					let pages = {};
+	// 					pages[`genre-${this.state.selected_genre_id}`] = 1;
 
-						let showMoreAllowed = this.state.show_more_allowed;
-						showMoreAllowed[`genre-${this.state.selected_genre_id}`] = response.data.data.length >= this.state.length;
+	// 					let showMoreAllowed = this.state.show_more_allowed;
+	// 					showMoreAllowed[`genre-${this.state.selected_genre_id}`] = response.data.data.length >= this.state.length;
 
-						this.setState({
-							recommendations: recommendations,
-							page: pages,
-							show_more_allowed: showMoreAllowed
-						});
-					}
+	// 					this.setState({
+	// 						recommendations: recommendations,
+	// 						page: pages,
+	// 						show_more_allowed: showMoreAllowed
+	// 					});
+	// 				}
 
-					this.props.unsetPageLoader();
-					this.LoadingBar.complete();
-				})
-				.catch(error => {
-					console.log(error);
-					this.LoadingBar.complete();
-				});
-		}
+	// 				this.props.unsetPageLoader();
+	// 				this.LoadingBar.complete();
+	// 			})
+	// 			.catch(error => {
+	// 				console.log(error);
+	// 				this.LoadingBar.complete();
+	// 			});
+	// 	}
 
 		
+	// }
+	componentWillUnmount() {
+		this.props.searches.setStatusSearch();
 	}
-
 	selectGenre(genre, category = 'program', first = false) {
 		if (first == false) {
 			libraryGeneralEvent('mweb_library_category_clicked');

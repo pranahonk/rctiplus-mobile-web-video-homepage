@@ -84,7 +84,8 @@ class Result extends React.Component {
                                 <div className="content-list">
                                     
                                     <Row>
-                                        {!this.props.searches.search_results[i] || this.props.searches.search_results[i].status !== 200 || this.props.searches.search_results[i].data.status.code !== 0 || this.props.searches.search_results[i].data.data.length <= 0 ? (<div style={{ 
+
+                                        {!this.props.searches.search_status ? '' : !this.props.searches.search_results[i] || this.props.searches.search_results[i].status !== 200 || this.props.searches.search_results[i].data.status.code !== 0 || this.props.searches.search_results[i].data.data.length <= 0 ? (<div style={{ 
                                             textAlign: 'center',
                                             margin: 30
                                             }}>
