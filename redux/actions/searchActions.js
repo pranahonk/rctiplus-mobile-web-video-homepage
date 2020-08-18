@@ -25,6 +25,12 @@ const setActiveTab = tab => {
     });
 };
 
+const setStatusSearch = () => {
+    return dispatch => dispatch({
+        type: 'SET_SEARCH_STATUS',
+    });
+};
+
 const search = index => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
