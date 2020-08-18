@@ -190,11 +190,11 @@ class NavbarDef_v2 extends Component {
                             </Button>
                         </ActiveLink> */}
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `https://stag-rctiplus-roov.herokuapp.com`}>
-                            <img className="img-menu-icon" src={'/videos.svg'}/>
+                            <img className="img-menu-icon" src={'/radio.png'}/>
                             Radio +
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `https://rc-ugctalent.rctiplus.com/?token=${this.state.token}`}>
-                            <img className="img-menu-icon" src={'/videos.svg'}/>
+                            <img className="img-menu-icon" src={'/hot-icon.png'}/>
                             HOT
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `https://games-dev.rctiplus.com/?token=${this.state.token}`}>
