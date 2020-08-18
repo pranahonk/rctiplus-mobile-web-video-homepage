@@ -167,7 +167,8 @@ class Index_v2 extends React.Component {
                     <StickyContainer>
                         <Sticky disableHardwareAcceleration>
                             { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
-                                if (distanceFromTop < 0) {
+                                const topDistance = this.state.show_sticky_install ? 100 : 40;
+                                if (distanceFromTop < topDistance) {
                                     if (!this.props.ads.ads_displayed) {
                                         return (
                                             <div {...rest}>
