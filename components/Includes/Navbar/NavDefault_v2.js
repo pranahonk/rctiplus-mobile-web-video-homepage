@@ -160,7 +160,7 @@ class NavbarDef_v2 extends Component {
                 <Navbar expand="md" className={'nav-container nav-shadow'}>
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
-                            <NavbarBrand onClick={this.goToHome.bind(this)}>
+                            <NavbarBrand>
                                 <img className="logo-top" src="/static/logo/rcti-sm.png" />
                             </NavbarBrand>
                         </div>
