@@ -407,7 +407,7 @@ class Trending_v2 extends React.Component {
                     offset={50}
                     onBottom={this.bottomScrollFetch.bind(this)} />
 
-                <div className="main-content" style={{ marginTop: this.platform === 'ios' || this.platform === 'android' ? 25 : '' }}>
+                <div className="main-content" style={{ marginTop: this.platform === 'ios' || this.platform === 'android' ? '' : '' }}>
                     {this.state.load_error ? (
                         <div style={{
                             display: 'flex',
