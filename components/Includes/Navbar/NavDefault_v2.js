@@ -17,6 +17,7 @@ import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import { json } from 'body-parser';
+import { LINK_RADIO, LINK_GAMES, LINK_HOT } from '../../../config';
 
 
 class NavbarDef_v2 extends Component {
@@ -189,15 +190,15 @@ class NavbarDef_v2 extends Component {
                                 Radio +
                             </Button>
                         </ActiveLink> */}
-                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${process.env.LINK_RADIO}`}>
+                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_RADIO}`}>
                             <img className="img-menu-icon" src={'/radio.png'}/>
                             Radio +
                         </Button>
-                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${process.env.LINK_HOT}?token=${this.state.token}`}>
+                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_HOT}?token=${this.state.token}`}>
                             <img className="img-menu-icon" src={'/hot-icon.png'}/>
                             HOT
                         </Button>
-                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${process.env.LINK_GAMES}?token=${this.state.token}`}>
+                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_GAMES}?token=${this.state.token}`}>
                             <img className="img-menu-icon" src={'/games.svg'}/>
                             Games
                         </Button>

@@ -10,6 +10,9 @@ export const API = process.env.API;
 export const DEV_API = process.env.DEV_API;
 
 export const CHAT_API = process.env.CHAT_API;
+export const LINK_RADIO = process.env.LINK_RADIO;
+export const LINK_GAMES = process.env.LINK_GAMES;
+export const LINK_HOT = process.env.LINK_HOT;
 
 export const REDIRECT_WEB_DESKTOP = process.env.REDIRECT_WEB_DESKTOP;
 export const SHARE_BASE_URL = process.env.SHARE_BASE_URL;
