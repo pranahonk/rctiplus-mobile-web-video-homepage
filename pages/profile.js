@@ -13,7 +13,7 @@ import { showAlert, showSignInAlert } from '../utils/helpers';
 import { accountGeneralEvent } from '../utils/appier';
 
 import Layout from '../components/Layouts/Default_v2';
-import NavDefault from '../components/Includes/Navbar/NavDefault_v2';
+// import NavDefault from '../components/Includes/Navbar/NavDefault_v2';
 import Bar from '../components/Includes/Common/Bar';
 
 import { ListGroup, ListGroupItem, Button, Badge } from 'reactstrap';
@@ -182,7 +182,7 @@ class Profile extends React.Component {
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
-				<NavDefault disableScrollListener/>
+				{/* <NavDefault disableScrollListener/> */}
 				<LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
 				<ListGroup className="list-menu-container">
 					<ListGroupItem>

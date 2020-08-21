@@ -33,33 +33,46 @@ class NavbarSearch extends Component {
     }
 
     componentDidMount() {
-        this.subject
-            .pipe(debounceTime(1000))
-            .subscribe(() => {
-                if (this.state.q) {
-                    searchKeywordEvent(this.state.q, 'mweb_search_keyword');
-                }
+        // this.subject
+        //     .pipe(debounceTime(1000))
+        //     .subscribe(() => {
+        //         if (this.state.q) {
+        //             searchKeywordEvent(this.state.q, 'mweb_search_keyword');
+        //         }
                 
-                this.props.searchAllCategory(this.state.q, 1, this.state.length)
-                    .then(responses => {
-                        console.log(responses);
-                        this.props.unsetPageLoader();
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        this.props.unsetPageLoader();
-                    });
-            });
+        //         this.props.searchAllCategory(this.state.q, 1, this.state.length)
+        //             .then(responses => {
+        //                 console.log(responses);
+        //                 this.props.unsetPageLoader();
+        //             })
+        //             .catch(error => {
+        //                 console.log(error);
+        //                 this.props.unsetPageLoader();
+        //             });
+        //     });
     }
 
     onChangeQuery(e) {
         this.changeQuery(e.target.value);
+        if (e.target.value) {
+            searchKeywordEvent(e.target.value, 'mweb_search_keyword');
+        }
+        
+        this.props.searchAllCategory(e.target.value, 1, this.state.length)
+            .then(responses => {
+                console.log(responses);
+                this.props.unsetPageLoader();
+            })
+            .catch(error => {
+                console.log(error);
+                this.props.unsetPageLoader();
+        });
     }
 
     changeQuery(q) {
         this.setState({ q: q }, () => {
             this.props.setPageLoader();
-            this.subject.next();
+            // this.subject.next();
         });
     }
 

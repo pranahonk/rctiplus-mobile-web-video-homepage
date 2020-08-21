@@ -72,7 +72,7 @@ class Default_v2 extends React.Component {
         if (this.header && this.header == 0) {
             const navbar = document.getElementsByClassName('nav-fixed-top');
             if (navbar && navbar.length > 0) {
-                navbar[0].style.display = 'none'; 
+                navbar[0].style.display = 'none';
             }
         }
     }
@@ -99,6 +99,7 @@ class Default_v2 extends React.Component {
                     <link rel="canonical" href={`http://www.rctiplus.com${this.props.router.asPath}`}></link>
                     {/* <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" /> */}
 
+                    {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
@@ -111,7 +112,7 @@ class Default_v2 extends React.Component {
                     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                     <script dangerouslySetInnerHTML={{ __html: `
                         (adsbygoogle = window.adsbygoogle || []).push({
-                            google_ad_client: "ca-pub-8248966892082355",
+                            google_ad_client: "ca-pub-7595624984434758",
                             enable_page_level_ads: true
                         });
                     ` }}></script>
@@ -141,7 +142,7 @@ class Default_v2 extends React.Component {
                         // googletag.enableServices();
                         });
                     ` }}></script>
-                    
+
                     {/* Comscore */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         var _comscore=_comscore||[];_comscore.push({c1:"2",c2:"9013027"}),function(){var c=document.createElement("script"),e=document.getElementsByTagName("script")[0];c.async=!0,c.src=("https:"==document.location.protocol?"https://sb":"http://b")+".scorecardresearch.com/beacon.js",e.parentNode.insertBefore(c,e)}();
@@ -176,7 +177,7 @@ class Default_v2 extends React.Component {
                         p=g.createElement(r);p.async=!0;p.src=a;h=g.getElementsByTagName(r)[0];
                         h.parentNode.insertBefore(p,h);
                     } (window,document,'script','//cdn.qgr.ph/qgraph.c63c2960bf562e9ec2de.js');
-                ` }}></script>  
+                ` }}></script>
 
                 {this.props.pages.loading ? (
                     <div className={'default-loader ' + (this.props.pages.fade ? 'loader-fade' : '')}>
@@ -187,7 +188,7 @@ class Default_v2 extends React.Component {
                 ) : <div></div>}
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
-                
+
                 {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script async src="/static/js/fontawesome.min.js" crossOrigin="anonymous"></script>) : (process.env.UI_VERSION == '2.0' ? (this.props.hideFooter || this.props.pages.hide_footer ? null : <Footer_v2 />) : (<Footer />))}
             </div>
         )

@@ -120,8 +120,10 @@ const UIVersion = '2.0';
       return app.render(req, res, '/user/qrcode');
     });
 
-    server.get('/radio', (req, res) => {
-      return app.render(req, res, '/roov');
+    server.get('/radio/:search?', (req, res) => {
+      return app.render(req, res, '/roov', {
+        search: req.params.search,
+      });
     });
 
     server.get('/tv/:channel', (req, res) => {
@@ -202,7 +204,7 @@ const UIVersion = '2.0';
     });
 
     server.get('/explores/search', (req, res) => {
-      return app.render(req, res, '/explores', {
+      return app.render(req, res, '/searchLibrary', {
         id: req.params.id
       })
     })

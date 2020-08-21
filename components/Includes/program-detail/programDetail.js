@@ -61,7 +61,8 @@ export const PanelEpisode = forwardRef((props, ref) => {
           </div>
           { props.data.data.map((item,i) => {
             return (
-              <div style={{ padding: '10px 0' }} key={i}>
+              <div style={{ padding: '10px 15px', background: props.isActive === item.id.toString() ? '#000000' :  'inherit'}} key={i}>
+                {console.log(props.isActive, item.id.toString())}
             <div className="panel-content">
               <div className="thumb-img__content">
                 <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=episode&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
@@ -123,7 +124,7 @@ export const PanelExtra = (props) => {
       <div className="extra-program">
         { props.data.data.map((item,i) => {
           return (
-            <div style={{ padding: '10px 0' }} key={i}>
+            <div style={{ padding: '10px 15px', background: props.isActive === item.id.toString() ? '#000000' :  'inherit'}} key={i}>
           <div className="panel-content">
             <div className="thumb-img__content">
               <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=extra&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
@@ -185,7 +186,7 @@ export const PanelClip = (props) => {
       <div className="clip-program">
         { props.data.data.map((item,i) => {
           return (
-            <div style={{ padding: '10px 0' }} key={i}>
+            <div style={{ padding: '10px 15px', background: props.isActive === item.id.toString() ? '#000000' :  'inherit'}} key={i}>
           <div className="panel-content">
             <div className="thumb-img__content">
               <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=clip&content_id=${item.id}&content_title=${urlRegex(item.title)}`}

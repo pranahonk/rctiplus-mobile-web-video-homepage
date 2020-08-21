@@ -19,7 +19,8 @@ const initialState = {
         extra: false,
         clip: false,
         photo: false
-    }
+    },
+    search_status: false,
 };
 
 export default (state = initialState, action) => {
@@ -39,6 +40,7 @@ export default (state = initialState, action) => {
             const more_allowed = action.search_show_more_allowed;
             return Object.assign({}, state, { 
                 search_results: action.results, 
+                search_status: true,
                 meta: action.meta,
                 query: action.query,
                 search_show_more_allowed: action.search_show_more_allowed,
@@ -79,11 +81,14 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { 
                 search_results: results,
                 search_page: page,
-                search_show_more_allowed: more
+                search_show_more_allowed: more,
+                search_status: true,
             });
 
         case 'SET_ACTIVE_TAB':
             return Object.assign({}, state, { active_tab: action.tab });
+        case 'SET_SEARCH_STATUS':
+            return Object.assign({}, state, { search_status: false });
         default:
             return state;
     }

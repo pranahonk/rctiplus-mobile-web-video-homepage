@@ -5,6 +5,7 @@ import Head from 'next/head';
 import initialize from '../utils/initialize';
 import Layout from '../components/Layouts/Default_v2';
 import Footer_v2 from '../components/Includes/Footer/Default_v2';
+import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
 
 import { SITEMAP, AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH } from '../config';
 
@@ -18,7 +19,19 @@ class Roov extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            src: 'https://rctiplus.roov.id/',
+            status: 'home',
+        };
+    }
+    componentDidMount() {
+        console.log('TESTT', this.iframe.src)
+        if(this.props.router.query.search === 'search') {
+            this.setState({ src: 'https://rctiplus.roov.id/search', status: 'search' })
+        }
+    }
+    componentDidUpdate() {
+        console.log(this.props)
     }
 
     render() {
@@ -111,8 +124,13 @@ class Roov extends React.Component {
                         } (window,document,'script','//cdn.qgr.ph/qgraph.c63c2960bf562e9ec2de.js');
                     ` }}></script>
                 </Head>
-                
-                <iframe ref={ref => this.iframe = ref} src="https://rctiplus.roov.id/" frameBorder="0" style={{ width: '100%', minHeight: 'calc(100vh - 47px)' }}></iframe>
+                {this.state.status !== 'search' ? (<NavDefault_v2 disableScrollListener />) : '' }
+                <iframe 
+                    ref={ref => this.iframe = ref} 
+                    src={this.state.src} 
+                    frameBorder="0" 
+                    style={{ width: '100%', minHeight: 'calc(100vh - 47px)', marginTop: this.state.status !== 'search' ? 43 : 0}}
+                    onLoad={console.log(this.iframe)}></iframe>
                 <Footer_v2 />
             </div>
             // </Layout>
@@ -121,4 +139,4 @@ class Roov extends React.Component {
 
 }
 
-export default connect(state => state, {})(Roov);
+export default connect(state => state, {})(withRouter(Roov));

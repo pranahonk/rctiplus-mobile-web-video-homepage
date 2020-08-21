@@ -12,6 +12,7 @@ import countryList from '../redux/actions/othersActions';
 import registerActions from '../redux/actions/registerActions';
 
 import { showAlert } from '../utils/helpers';
+import q from 'query-string';
 
 import Layout from '../components/Layouts/Default_v2';
 import NavBack from '../components/Includes/Navbar/NavBack';
@@ -50,19 +51,38 @@ class Signin extends React.Component {
 	}
 
 	componentDidMount() {
-		// console.log(this.props);
 		this.props.getListCountry();
 		setTimeout(() => {
 			const token = getCookie('ACCESS_TOKEN');
 			if (token) {
-				Router.push('/');
+				const query = this.props.router.query;
+				if (query && Object.keys(query).length > 0 && query.referrer) {
+					window.location.href = this.constructReferrerUrl(token);
+				}
+				else {
+					Router.push('/');
+				}
 			}
 		}, 500);
 		this.LoadingBar.complete();
 	}
-	componentDidUpdate() {
-		// console.log(this.state)
+
+	constructReferrerUrl(token) {
+		const query = this.props.router.query;
+		if (query && query.referrer) {
+			const referrerToken = query.referrer.split('?');
+			if (referrerToken.length > 1) {
+				const qs = q.parse(referrerToken[1]);
+				qs['token'] = token;
+				return referrerToken[0] + '?' + q.stringify(qs);
+			}
+			else {
+				return referrerToken[0] + '?token=' + token;
+			}
+		}
+		return '';
 	}
+
 	onChangeUsername(e) {
 		const regex = /^[0-9]+$/;
 		let value = e.target.value;
@@ -77,7 +97,7 @@ class Signin extends React.Component {
 			this.props.setPhoneCode(this.state.phone_code);
 			// console.log('PHONE');
 		}
-	 } else {
+	} else {
 			this.setState({ isPhoneNumber: false, emailphone: value });
 			this.props.setPhoneCode();
 			// console.log('EMAIL');
@@ -94,9 +114,14 @@ class Signin extends React.Component {
 		};
 		// console.log(data)
 		this.props.login(data).then(response => {
-			// console.log(this.props.authentication);
 			if (this.props.authentication.data != null && this.props.authentication.data.status.code === 0) {
-				Router.push('/');
+				const query = this.props.router.query;
+				if (query && Object.keys(query).length > 0 && query.referrer) {
+					window.location.href = this.constructReferrerUrl(this.props.authentication.token);
+				}
+				else {
+					Router.push('/');
+				}
 			}
 			else {
 

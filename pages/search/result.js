@@ -70,9 +70,7 @@ class Result extends React.Component {
                 <Nav tabs id="search-results">
                     {this.tabs.map((t, i) => (
                         <NavItem key={i} className="nav-tab-item">
-                            <Link href={`/explores`} as={`/explores`} scroll={false}>
-                                <NavLink onClick={this.toggleTab.bind(this, t)} className={classnames({ active: this.state.active_tab === t })}>{t[0].toUpperCase() + t.substring(1)}</NavLink>
-                            </Link>
+                            <NavLink onClick={this.toggleTab.bind(this, t)} className={classnames({ active: this.state.active_tab === t })}>{t[0].toUpperCase() + t.substring(1)}</NavLink>
                         </NavItem>
                     ))}
                 </Nav>
@@ -86,7 +84,8 @@ class Result extends React.Component {
                                 <div className="content-list">
                                     
                                     <Row>
-                                        {!this.props.searches.search_results[i] || this.props.searches.search_results[i].status !== 200 || this.props.searches.search_results[i].data.status.code !== 0 || this.props.searches.search_results[i].data.data.length <= 0 ? (<div style={{ 
+
+                                        {!this.props.searches.search_status ? '' : !this.props.searches.search_results[i] || this.props.searches.search_results[i].status !== 200 || this.props.searches.search_results[i].data.status.code !== 0 || this.props.searches.search_results[i].data.data.length <= 0 ? (<div style={{ 
                                             textAlign: 'center',
                                             margin: 30
                                             }}>

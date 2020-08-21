@@ -85,46 +85,48 @@ class Explores extends React.Component {
 			selected_genre_name: selectedGenreName,
 			selected_genre_id: this.props.query.id ? this.props.query.id : -1
 		};
-		this.props.setPageLoader();
+		// this.props.setPageLoader();
 	}
 
-	componentDidMount() { 
-		if (this.state.selected_genre_id != -1) {
-			this.selectGenre(this.state.selected_genre, 'program', true);
-		}
-		else {
-			this.LoadingBar.continuousStart();
-			this.props.getRecommendation(1, this.state.length)
-				.then(response => {
-					if (response.status === 200 && response.data.status.code === 0) {
-						let recommendations = this.state.recommendations;
-						recommendations[`genre-${this.state.selected_genre_id}`] = response.data.data;
+	// componentDidMount() { 
+	// 	if (this.state.selected_genre_id != -1) {
+	// 		this.selectGenre(this.state.selected_genre, 'program', true);
+	// 	}
+	// 	else {
+	// 		this.LoadingBar.continuousStart();
+	// 		this.props.getRecommendation(1, this.state.length)
+	// 			.then(response => {
+	// 				if (response.status === 200 && response.data.status.code === 0) {
+	// 					let recommendations = this.state.recommendations;
+	// 					recommendations[`genre-${this.state.selected_genre_id}`] = response.data.data;
 						
-						let pages = {};
-						pages[`genre-${this.state.selected_genre_id}`] = 1;
+	// 					let pages = {};
+	// 					pages[`genre-${this.state.selected_genre_id}`] = 1;
 
-						let showMoreAllowed = this.state.show_more_allowed;
-						showMoreAllowed[`genre-${this.state.selected_genre_id}`] = response.data.data.length >= this.state.length;
+	// 					let showMoreAllowed = this.state.show_more_allowed;
+	// 					showMoreAllowed[`genre-${this.state.selected_genre_id}`] = response.data.data.length >= this.state.length;
 
-						this.setState({
-							recommendations: recommendations,
-							page: pages,
-							show_more_allowed: showMoreAllowed
-						});
-					}
+	// 					this.setState({
+	// 						recommendations: recommendations,
+	// 						page: pages,
+	// 						show_more_allowed: showMoreAllowed
+	// 					});
+	// 				}
 
-					this.props.unsetPageLoader();
-					this.LoadingBar.complete();
-				})
-				.catch(error => {
-					console.log(error);
-					this.LoadingBar.complete();
-				});
-		}
+	// 				this.props.unsetPageLoader();
+	// 				this.LoadingBar.complete();
+	// 			})
+	// 			.catch(error => {
+	// 				console.log(error);
+	// 				this.LoadingBar.complete();
+	// 			});
+	// 	}
 
 		
+	// }
+	componentWillUnmount() {
+		this.props.searches.setStatusSearch();
 	}
-
 	selectGenre(genre, category = 'program', first = false) {
 		if (first == false) {
 			libraryGeneralEvent('mweb_library_category_clicked');
@@ -329,59 +331,9 @@ class Explores extends React.Component {
 				</Head>
 				<BottomScrollListener offset={8} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
-				{/* <NavSearch /> */}
-				{process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)}
-				<div className="container-box-e" style={{ marginTop: 83 }}>
-						<div>
-							<div className="interest-swiper-container">
-								<Link href={`/explores`} scroll={false}>
-									<div className="swiper-slide" onClick={() => this.selectGenre({ id: -1, name: 'For You' })}>
-										<Img 
-											alt={'For You'} 
-											className="content-image"
-											unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-											loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-											src={['/static/placeholders/placeholder_landscape.png']} />
-										<p className={`slide-title ${this.state.selected_genre_id == -1 ? 'selected-slide-title' : ''}`}>For You</p>
-									</div>
-								</Link>
-								{this.state.interests.map((interest, i) => (
-									<Link href={`/explores?id=${interest.id}`} as={`/explores/search?id=${interest.id}`} scroll={false} key={i}>
-										<div className="swiper-slide" onClick={() => this.selectGenre(interest)}>
-											<Img 
-												alt={interest.name} 
-												className="content-image"
-												unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-												loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-												src={[this.state.meta.image_path + RESOLUTION_IMG + interest.image, '/static/placeholders/placeholder_landscape.png']} />
-											<div className="bg-black"></div>
-											<p className={`slide-title ${this.state.selected_genre_id == interest.id ? 'selected-slide-title' : ''}`}>{interest.name}</p>
-										</div>
-									</Link>
-								))}
-								
-							</div>
-							<div className="content-search">
-								<div className="header-list">
-									<h2 className="title">{this.state.selected_genre_name}</h2>
-								</div>
-								<div className="content-list">
-									<Row>
-										{this.state.recommendations[`genre-${this.state.selected_genre_id}`] && this.state.recommendations[`genre-${this.state.selected_genre_id}`].map((r, i) => (
-											<Col xs={4} key={i} onClick={this.link.bind(this, r)}>
-											<div className="new-label" style={r.label === undefined || r.label === '' ? { display: 'none' } : { display: 'block' }}>{ r.label }</div>
-												<Img 
-													alt={this.getImageFileName(r.portrait_image)} 
-													className="content-image"
-													unloader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
-													loader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
-													src={[this.state.meta.image_path + this.state.resolution + r.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
-											</Col>
-										))}
-									</Row>
-								</div>
-							</div>
-						</div>
+				<NavSearch />
+				<div className="container-box-e">
+          <SearchResults resolution={this.state.resolution}/>
 				</div>
 			</Layout>
 		);

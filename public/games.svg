@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6">
+    <defs>
+        <linearGradient id="nmv9ldn1ba" x1="50%" x2="50%" y1="0%" y2="100%">
+            <stop offset="0%" stop-color="#37A8DA"/>
+            <stop offset="100%" stop-color="#00628B"/>
+        </linearGradient>
+        <linearGradient id="fb6rzcvthb" x1="50%" x2="50%" y1="0%" y2="100%">
+            <stop offset="0%" stop-color="#37A8DA"/>
+            <stop offset="100%" stop-color="#00628B"/>
+        </linearGradient>
+        <linearGradient id="agmhmu8ntc" x1="50%" x2="50%" y1="0%" y2="100%">
+            <stop offset="0%" stop-color="#37A8DA"/>
+            <stop offset="100%" stop-color="#00628B"/>
+        </linearGradient>
+    </defs>
+    <g fill="none">
+        <path fill="url(#nmv9ldn1ba)" d="M5.874 1.69L3.355 1.69 3.202 3.783 6.027 3.783z" transform="translate(0 .212)"/>
+        <path fill="url(#fb6rzcvthb)" d="M8.385.923L7.208.711C5.425.389 3.616.389 1.832.711L.655.923.377 3.73l1.854 1.1H6.81l1.855-1.1L8.385.923zm-6.558 2.58h-.414v-.569h.414v.569zm.207-1.245H1.71v.297h-.595v-.297H.791v-.544h.324v-.296h.595v.296h.324v.544zm.622 2.003l.222-3.223H6.37l.223 3.223H2.656zm4.35-2.464h.415v.568h-.415v-.568zm.622 1.706h-.415v-.569h.415v.569zm.414-1.327h-.414v-.569h.414v.569z" transform="translate(0 .212)"/>
+        <path fill="url(#agmhmu8ntc)" d="M8.708.625L7.192.357C5.42.043 3.622.043 1.848.357L.332.625 0 3.911l2.176 1.267h4.689L9.04 3.911 8.708.625zM6.71 4.697H2.331L.558 3.664l.266-2.635 1.126-.2C3.655.527 5.385.527 7.09.83l1.126.2.267 2.634-1.774 1.034z" transform="translate(0 .212)"/>
+    </g>
+</svg>
