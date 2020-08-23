@@ -190,7 +190,7 @@ class NavbarDef_v2 extends Component {
                                 Radio +
                             </Button>
                         </ActiveLink> */}
-                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_RADIO}`}>
+                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_RADIO}?token=${this.state.token}`}>
                             <img className="img-menu-icon" src={'/radio.png'}/>
                             Radio +
                         </Button>
