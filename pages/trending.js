@@ -474,7 +474,6 @@ class Trending_v2 extends React.Component {
                                                             if (true) {
                                                                 if (this.platform && this.platform === 'android') {
                                                                     if (typeof window.NewsInterface !== 'undefined') {
-                                                                        alert('hide header');
                                                                         window.NewsInterface.hideHeader();
                                                                     }
 
