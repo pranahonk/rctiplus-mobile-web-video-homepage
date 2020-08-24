@@ -346,7 +346,7 @@ class Explores extends React.Component {
 									</div>
 								</Link>
 								{this.state.interests.map((interest, i) => (
-									<Link href={`/explores?id=${interest.id}`} as={`/explores/search?id=${interest.id}`} scroll={false} key={i}>
+									<Link href={`/explores?id=${interest.id}`} as={`/explores?id=${interest.id}`} scroll={false} key={i}>
 										<div className="swiper-slide" onClick={() => this.selectGenre(interest)}>
 											<Img 
 												alt={interest.name} 

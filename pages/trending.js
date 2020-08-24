@@ -218,6 +218,7 @@ class Trending_v2 extends React.Component {
         //     }
         //     console.log('scrolll')
         // }, false)
+        console.log(this.props.router.query);
         if (this.accessToken) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -471,7 +472,17 @@ class Trending_v2 extends React.Component {
                                                             newsAddChannelClicked('mweb_news_add_kanal_clicked');
                                                             // if (this.state.user_data) {
                                                             if (true) {
-                                                                Router.push('/trending/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+                                                                if (this.platform && this.platform === 'android') {
+                                                                    if (typeof window.NewsInterface !== 'undefined') {
+                                                                        window.NewsInterface.hideHeader();
+                                                                    }
+
+                                                                    Router.push('/trending/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+                                                                }
+                                                                else {
+                                                                    Router.push('/trending/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+                                                                }
+                                                                
                                                             }
                                                             else {
                                                                 showSignInAlert(`Please <b>Sign In</b><br/>

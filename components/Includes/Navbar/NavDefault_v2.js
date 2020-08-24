@@ -76,12 +76,14 @@ class NavbarDef_v2 extends Component {
                 }
                 break;
         }
+        console.log(e.includes('/trending/'))
+        if (e.includes('/trending/')) {
+            Router.push('/trending/search');
+            return;
+        }
         switch (e) {
             case '/' || '/explores' || '/live-event' || '/exclusive' :
                 Router.push('/explores/search');
-            break;
-            case '/trending' :
-                Router.push('/trending/search');
             break;
             case '/radio' :
                 Router.push('/radio/search');

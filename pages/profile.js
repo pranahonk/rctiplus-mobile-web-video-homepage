@@ -126,7 +126,7 @@ class Profile extends React.Component {
 		let actionProfile = (
 			<div className="profile-action">
 				<p><AccountCircleIcon/> Hi</p>
-				<p className="subtitle">To enjoy all the features, please login now</p>
+				<p className="subtitle" style={{color: '#ffffff'}}>To enjoy all the features, please login now</p>
 				<p className="sub-btn"><Button id="button-login" onClick={() => {
 					accountGeneralEvent('mweb_account_signin_clicked');
 					Router.push('/login');
@@ -183,9 +183,12 @@ class Profile extends React.Component {
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
 				{/* <NavDefault disableScrollListener/> */}
+				<div style={{padding: 10}}>
+					<img src="/static/logo/rcti-sm.png" alt="logo" style={{width: 30}}/>
+				</div>
 				<LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
 				<ListGroup className="list-menu-container">
-					<ListGroupItem>
+					<ListGroupItem className="navbar-profile">
 						{actionProfile}
 					</ListGroupItem>
 					<ListGroupItem id="action-qrcode" onClick={() => {
