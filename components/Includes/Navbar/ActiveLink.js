@@ -16,7 +16,7 @@ const ActiveLink = ({ children, activeClassName, ...props }) => {
     (props.href === '/trending' && asPath.includes(props.href))
     ? `${childClassName} ${activeClassName}`.trim()
     : childClassName;
-    console.log({...props})
+    // console.log({...props})
     return (
       <Link href={props.href}>
       {React.cloneElement(child, {
