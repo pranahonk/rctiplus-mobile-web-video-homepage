@@ -139,10 +139,10 @@ const JwPlayer = (props) => {
           backwardContainer.innerHTML = '';
 
           // check if gpt data exist
-          if (props.data.gpt.path != null && props.data.gpt.path != undefined) {
+          if ((props.data && props.data.gpt && props.data.gpt.path != null) && (props.data && props.data.gpt && props.data.gpt.path != undefined)) {
             // check if ads_wrapper element not exist
             if (document.querySelector('.ads_wrapper') == undefined) {
-              console.log('data gpt', props.data.gpt);
+              // console.log('data gpt', props.data.gpt);
               const playerContainer = player.getContainer();
 
               const adsOverlayElement = document.createElement('div');
@@ -156,7 +156,7 @@ const JwPlayer = (props) => {
               adsOverlayCloseButton.innerText = 'X';
 
               const adsOverlayContainer = document.createElement('div');
-              const divGPTString = props.data.gpt.div_gpt != null && props.data.gpt.div_gpt != undefined ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+              const divGPTString = (props.data && props.data.gpt && props.data.gpt.div_gpt != null) && (props.data && props.data.gpt && props.data.gpt.div_gpt != undefined) ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
               adsOverlayContainer.classList.add('adsContainer');
               adsOverlayContainer.id = divGPTString;
               adsOverlayContainer.innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${divGPTString}'); });</script>`;
@@ -646,7 +646,7 @@ const JwPlayer = (props) => {
   // fullscreen
   useEffect(() => {
     if (player !== null) {
-      if ((props.type === 'live tv' || props.type === 'live event') && (props.data.gpt.path != null && props.data.gpt.path != undefined)) {
+      if ((props.type === 'live tv' || props.type === 'live event') && ((props.data && props.data.gpt && props.data.gpt.path != null) &&  (props.data && props.data.gpt && props.data.gpt.path != undefined))) {
         document.querySelector('.ads_wrapper').classList.toggle('fullscreen-player', playerFullscreen);
         setAdStatus('restart');
       }
