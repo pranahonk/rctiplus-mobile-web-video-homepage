@@ -27,7 +27,7 @@ class GridMenu extends React.Component {
                             Router.push('/exclusive');
                         }}>
                             <a>
-                                <img className="menu-icon" src={'/icons/exclusive.svg'}/>
+                                <img className="menu-icon" src={'/icons-menu/exclusive.svg'}/>
                                 <p className="menu-label">Exclusive</p>
                             </a>
                         </div>
@@ -38,7 +38,7 @@ class GridMenu extends React.Component {
                                 <div onClick={() => {
                                     homeGeneralClicked('mweb_drama_clicked');
                                 }}>
-                                    <img className="menu-icon" src={'/icons/drama.svg'} style={{ width: 35 }}/>
+                                    <img className="menu-icon" src={'/icons-menu/drama.svg'} style={{ width: 35 }}/>
                                     <p className="menu-label">Drama</p>
                                 </div>
                             </a>
@@ -50,7 +50,7 @@ class GridMenu extends React.Component {
                                 <div onClick={() => {
                                     homeGeneralClicked('mweb_comedy_clicked');
                                 }}>
-                                    <img className="menu-icon" src={'/icons/comedy.svg'}/>
+                                    <img className="menu-icon" src={'/icons-menu/comedy.svg'}/>
                                     <p className="menu-label">Comedy</p>
                                 </div>
                             </a>
