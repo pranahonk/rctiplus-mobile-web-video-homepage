@@ -27,35 +27,46 @@ class GridMenu extends React.Component {
                             Router.push('/exclusive');
                         }}>
                             <a>
-                                <img className="menu-icon" src={'/exclusive.svg'}/>
+                                <img className="menu-icon" src={'/icons-menu/exclusive.svg'}/>
                                 <p className="menu-label">Exclusive</p>
                             </a>
                         </div>
                     </Col>
                     <Col className="menu-item">
-                        <Link href="/trending">
-                            <a id="action-news" >
+                        <Link href="/explores?id=1&genre=Drama">
+                            <a id="action-drama" >
                                 <div onClick={() => {
-                                    homeGeneralClicked('mweb_news_clicked');
-                                    // Router.push('/trending');
+                                    homeGeneralClicked('mweb_drama_clicked');
                                 }}>
-                                    <img className="menu-icon" src={'/news.svg'}/>
-                                    <p className="menu-label">News</p>
+                                    <img className="menu-icon" src={'/icons-menu/drama.svg'} style={{ width: 35 }}/>
+                                    <p className="menu-label">Drama</p>
                                 </div>
                             </a>
                         </Link>
                     </Col>
                     <Col className="menu-item">
+                        <Link href="/explores?id=6&genre=Comedy">
+                            <a id="action-comedy" >
+                                <div onClick={() => {
+                                    homeGeneralClicked('mweb_comedy_clicked');
+                                }}>
+                                    <img className="menu-icon" src={'/icons-menu/comedy.svg'}/>
+                                    <p className="menu-label">Comedy</p>
+                                </div>
+                            </a>
+                        </Link>
+                    </Col>
+                    {/* <Col className="menu-item">
                         <div id="action-radio" onClick={() => {
-                            homeGeneralClicked('mweb_radio_clicked');
-                            {/* setTimeout(() => Router.push('https://radio.rctiplus.com/'), 500); */}
+                            homeGeneralClicked('mweb_comedy_clicked');
+                            window.location.assign('https://radio.rctiplus.com/');
                         }}>
-                            <a href="https://radio.rctiplus.com/">
-                                <Img className="menu-icon" src={['/radio.png']}/>
-                                <p className="menu-label">Radio+</p>
+                            <a>
+                                <Img className="menu-icon" src={'/icons/comedy.svg'}/>
+                                <p className="menu-label">Comedy</p>
                             </a>
                         </div>
-                    </Col>
+                    </Col> */}
                     {/* <Col className="menu-item">
                         <Img className="menu-icon" src={['/trivia_quiz.svg']}/>
                         <p className="menu-label">TriviaQuiz</p>

@@ -49,15 +49,19 @@ class Explores extends React.Component {
 		}
 		
 		const segments = ctx.asPath.split(/\?/);
-        let genreId = null;
+				let genreId = null;
+				let genreName = null;
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.id) {
                 genreId = q.id;
-            }
+						}
+						if (q.genre) {
+							genreName = q.genre;
+						}
 		}
 		ctx.query.id = genreId ? Number(genreId) : genreId;
-		return { query: ctx.query, interests: data };
+		return { query: ctx.query, interests: data, genre_name: genreName };
 	}
 
 	constructor(props) {
@@ -89,6 +93,11 @@ class Explores extends React.Component {
 	}
 
 	componentDidMount() { 
+		if(this.props.genre_name) {
+			const parentElement = document.getElementById('parent-swiper')
+			const childElement = document.getElementById(this.props.genre_name)
+			parentElement.scrollLeft = childElement.offsetLeft - 10
+		}
 		if (this.state.selected_genre_id != -1) {
 			this.selectGenre(this.state.selected_genre, 'program', true);
 		}
@@ -333,7 +342,7 @@ class Explores extends React.Component {
 				{process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)}
 				<div className="container-box-e" style={{ marginTop: 83 }}>
 						<div>
-							<div className="interest-swiper-container">
+							<div className="interest-swiper-container" id="parent-swiper">
 								<Link href={`/explores`} scroll={false}>
 									<div className="swiper-slide" onClick={() => this.selectGenre({ id: -1, name: 'For You' })}>
 										<Img 
@@ -346,8 +355,8 @@ class Explores extends React.Component {
 									</div>
 								</Link>
 								{this.state.interests.map((interest, i) => (
-									<Link href={`/explores?id=${interest.id}`} as={`/explores?id=${interest.id}`} scroll={false} key={i}>
-										<div className="swiper-slide" onClick={() => this.selectGenre(interest)}>
+									<Link href={`/explores?id=${interest.id}&genre=${interest.name}`} as={`/explores?id=${interest.id}&genre=${interest.name}`} scroll={false} key={i}>
+										<div className="swiper-slide" id={interest.name} onClick={() => this.selectGenre(interest)}>
 											<Img 
 												alt={interest.name} 
 												className="content-image"
