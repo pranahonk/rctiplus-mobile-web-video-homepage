@@ -40,7 +40,7 @@ export const REDIRECT_SSR = process.env.REDIRECT_SSR;
 export const CONVIVA_TRACKING_KEY = process.env.CONVIVA_TRACKING_KEY;
 export const CONVIVA_TRACKING_HOST = process.env.CONVIVA_TRACKING_HOST;
 
-export const VISITOR_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjAsInRva2VuIjoiZmUyZWMwM2E5ZTliYTUxYiIsInBsIjoid2ViIn0.5bAp_UT0o8DfAxx5UAQDG5U-mc0ZjxxdKivuA7Y3v_g';
+export const VISITOR_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjAsInRva2VuIjoiNWRhNmE2ODY2ZTg5N2Q0MSIsInBsIjoibXdlYiIsImRldmljZV9pZCI6IjY5NDIwIn0.rOdLG9s4KFcKcQT8n58RaD8MgnAclnS13z4GOcJaJ5I';
 export const NEWS_TOKEN = '';
 export const IS_SHOWN = true;
 

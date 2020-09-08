@@ -91,8 +91,8 @@ const JwPlayer = (props) => {
       setIsConviva(Math.random());
       setIsCustomSetup(Math.random());
       player.setup(options);
-      console.log('PLAYERRRR : ',props.data)
-      console.log('ISLOGIN : ', props.customData && props.customData.isLogin)
+      // console.log('PLAYERRRR : ',props.data)
+      // console.log('ISLOGIN : ', props.customData && props.customData.isLogin)
     }
   }, [props.data && props.data.url, props.data && props.data.vmap]);
 
@@ -511,7 +511,7 @@ const JwPlayer = (props) => {
             googletag.defineSlot(slotName, [[maxWidth, maxHeight], [minWidth, minHeight]], slotDiv)
             .defineSizeMapping(mappingSlot)
             .addService(googletag.pubads())
-            .setTargeting('logged_in', props.customData && props.customData.isLogin)
+            .setTargeting('logged_in', props.customData && props.customData.isLogin.toString())
             .setTargeting('channel_id', props.data && props.data.id)
             .setTargeting('program_title', props.type === 'live tv' ?
             tempId(props.data && props.data.id)[1] :
