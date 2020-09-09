@@ -87,6 +87,7 @@ class Detail extends React.Component {
         this.redirectToPublisherIndex = [0, 1];
         this.accessToken = null;
         this.platform = null;
+        this.pushNotif = null;
         const segments = this.props.router.asPath.split(/\?/);
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
@@ -97,6 +98,9 @@ class Detail extends React.Component {
 
             if (q.platform) {
                 this.platform = q.platform;
+            }
+            if(q.push_notif === 'true') {
+                this.pushNotif = '/trending';
             }
         }
         else {
@@ -351,7 +355,7 @@ class Detail extends React.Component {
                 {this.state.iframe_opened ? (<NavBackIframe closeFunction={() => {
                     this.setState({ iframe_opened: false });
                 }} data={cdata} disableScrollListener />) : (
-                    <NavBack data={cdata} disableScrollListener />
+                    <NavBack src={this.pushNotif} data={cdata} disableScrollListener />
                 )}
 
                 <StickyContainer>
