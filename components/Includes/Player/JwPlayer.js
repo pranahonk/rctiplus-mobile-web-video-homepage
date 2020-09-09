@@ -616,10 +616,14 @@ const JwPlayer = (props) => {
                     adsOverlayBoxLink.style.top = '0';
                     adsOverlayBoxLink.style.position = 'absolute';
 
+
                     document.querySelector('.adsStyling')?.appendChild(adsOverlayBoxLink);
-                    adsOverlayBoxLink.addEventListener('click', function() {
-                      window.open(adsLink, '_blank');
-                    });
+                    const elementAds = document.querySelector('.adsURLLink')
+                    if (elementAds) {
+                      elementAds.addEventListener('click', function() {
+                        window.open(adsLink, '_blank');
+                      });
+                    }
                   }
 
                   if (windowWidth >= (maxWidth + 12)) {
