@@ -137,6 +137,8 @@ const JwPlayer = (props) => {
 
         if (props.type === 'live tv' || props.type === 'live event') {
           // console.log(fowardContainer);
+          fowardContainer.style.display = 'none'
+          backwardContainer.style.display = 'none'
           fowardContainer.innerHTML = '';
           backwardContainer.innerHTML = '';
 
