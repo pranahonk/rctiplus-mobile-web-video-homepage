@@ -354,7 +354,7 @@ class Detail extends React.Component {
                 </Head>
                 {this.state.iframe_opened ? (<NavBackIframe closeFunction={() => {
                     this.setState({ iframe_opened: false });
-                }} data={cdata} disableScrollListener />) : (
+                }} data={cdata} disableScrollListener />) : this.platform === 'ios' ? '' : (
                     <NavBack src={this.pushNotif} data={cdata} disableScrollListener />
                 )}
 
