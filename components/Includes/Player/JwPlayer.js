@@ -521,6 +521,7 @@ const JwPlayer = (props) => {
             props.data && props.data.assets_name : 'NOT_SET');
             googletag.pubads().enableSingleRequest();
             googletag.pubads().collapseEmptyDivs();
+            googletag.pubads().disableInitialLoad();
             googletag.enableServices();
           });
           googletag.cmd.push(function () {
@@ -594,7 +595,7 @@ const JwPlayer = (props) => {
 
           pubAdsRefreshInterval.timeObject = setTimeout(() => {
             googletag.pubads().refresh();
-
+            console.log('CALL CALL')
             setTimeout(() => {
               if (document.querySelector('.ads_wrapper')) {
                 if (document.querySelector('.adsContainer').style.display != 'none') {
