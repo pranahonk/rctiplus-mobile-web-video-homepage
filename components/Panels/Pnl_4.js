@@ -7,7 +7,8 @@ import BottomScrollListener from 'react-bottom-scroll-listener';
 import contentActions from '../../redux/actions/contentActions';
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../utils/appier';
 import { urlRegex } from '../../utils/regex';
-
+import { showSignInAlert } from '../../utils/helpers';
+const jwtDecode = require('jwt-decode');
 import '../../assets/scss/components/panel.scss';
 
 /* vertical  */
@@ -47,7 +48,38 @@ class Pnl_4 extends React.Component {
 			case 'special':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
 
-				window.open(data.link, '_blank');
+				// window.open(data.link, '_blank');
+				let url = data.url ? url : data.link;
+				// console.log('token:', this.props.token);
+				if (data.mandatory_login) {
+					url += this.props.token;
+				}
+
+				let payload = {};
+				try {
+					payload = jwtDecode(this.props.token);
+					// console.log(payload.vid);
+					if (payload && !payload.vid) {
+						showSignInAlert(`Please <b>Sign In</b><br/>
+							Woops! Gonna sign in first!<br/>
+							Only a click away and you<br/>
+							can continue to enjoy<br/>
+							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+					}
+					else {
+						// window.open(url, '_blank');
+						window.location.href = url;
+					}
+				}
+				catch (e) {
+					if (data.mandatory_login) {
+						showSignInAlert(`Please <b>Sign In</b><br/>
+							Woops! Gonna sign in first!<br/>
+							Only a click away and you<br/>
+							can continue to enjoy<br/>
+							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+					}
+				}
 				break;
 
 			case 'live':
