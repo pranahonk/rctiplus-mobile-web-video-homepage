@@ -12,6 +12,8 @@ const pubAdsRefreshInterval = {
   timeStart: 0,
 };
 
+let refreshCounter = 0;
+
 const JwPlayer = (props) => {
   const [player, setPlayer] = useState(null);
   const [duration, setDuration] = useState(0);
@@ -594,7 +596,12 @@ const JwPlayer = (props) => {
           }
 
           pubAdsRefreshInterval.timeObject = setTimeout(() => {
-            googletag.pubads().refresh();
+            if (refreshCounter === 0) {
+              googletag.pubads().refresh();
+              refreshCounter = 1
+            } else {
+              refreshCounter = 0
+            }
             console.log('CALL CALL')
             setTimeout(() => {
               if (document.querySelector('.ads_wrapper')) {
