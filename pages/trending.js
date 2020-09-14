@@ -333,7 +333,7 @@ class Trending_v2 extends React.Component {
 
     getMetadata() {
         if (Object.keys(this.props.query).length > 0) {
-            const name = this.props.query.subcategory_title.toLowerCase().replace(/-/g, '_');
+            const name = this.props && this.props.query && this.props.query.subcategory_title && this.props.query.subcategory_title.toLowerCase().replace(/-/g, '_');
             if (SITEMAP[`trending_${name}`]) {
                 return SITEMAP[`trending_${name}`];
             }

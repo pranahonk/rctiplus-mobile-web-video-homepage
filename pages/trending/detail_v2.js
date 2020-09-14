@@ -91,6 +91,7 @@ class Detail extends React.Component {
         const segments = this.props.router.asPath.split(/\?/);
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
+            console.log('TOKEN:', q.token)
             if (q.token) {
                 this.accessToken = q.token;
                 setAccessToken(q.token);
@@ -355,7 +356,7 @@ class Detail extends React.Component {
                 {this.state.iframe_opened ? (<NavBackIframe closeFunction={() => {
                     this.setState({ iframe_opened: false });
                 }} data={cdata} disableScrollListener />) : this.platform === 'ios' ? '' : (
-                    <NavBack pushNotif={this.pushNotif} src={`${this.pushNotif}?token=${this.pushNotif}&platform=${this.platform}`} data={cdata} disableScrollListener />
+                    <NavBack pushNotif={this.pushNotif} src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`} data={cdata} disableScrollListener />
                 )}
 
                 <StickyContainer>
