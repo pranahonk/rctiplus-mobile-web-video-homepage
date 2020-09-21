@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { withRouter } from 'next/router';
 import { connect } from 'react-redux';
+import dynamic from 'next/dynamic';
 
 import actions from '../../redux/actions';
 import pageActions from '../../redux/actions/pageActions';
@@ -13,6 +14,7 @@ import Footer_v2 from '../../components/Includes/Footer/Default_v2';
 
 import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, FIREBASE_apiKey,  FIREBASE_authDomain,  FIREBASE_databaseURL, FIREBASE_projectId, FIREBASE_storageBucket, FIREBASE_appId, FIREBASE_measurementId, FIREBASE_messagingSenderId } from '../../config';
 import { Spinner } from 'reactstrap';
+const PaidVideo = dynamic(() => import('../Includes/program-detail/PaidVideo'), { ssr: false });
 
 import queryString from 'query-string';
 import { isIOS, isAndroid } from "react-device-detect";
@@ -21,6 +23,8 @@ import '../../node_modules/video.js/dist/video-js.min.css';
 import '../../node_modules/videojs-contrib-ads/dist/videojs.ads.css';
 import '../../node_modules/videojs-ima/dist/videojs.ima.css';
 import '../../assets/scss/videojs.scss';
+
+import '../../assets/scss/apps/homepage/default.scss';
 
 class Default_v2 extends React.Component {
 
@@ -217,7 +221,8 @@ class Default_v2 extends React.Component {
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
 
-                {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script async src="/static/js/fontawesome.min.js" crossOrigin="anonymous"></script>) : (process.env.UI_VERSION == '2.0' ? (this.props.hideFooter || this.props.pages.hide_footer ? null : <Footer_v2 />) : (<Footer />))}
+                {/* {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script async src="/static/js/fontawesome.min.js" crossOrigin="anonymous"></script>) : (process.env.UI_VERSION == '2.0' ? (this.props.hideFooter || this.props.pages.hide_footer ? null : <Footer_v2 />) : (<Footer />))} */}
+                <PaidVideo />
             </div>
         )
     }
