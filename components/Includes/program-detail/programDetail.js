@@ -301,6 +301,14 @@ export const PanelRelated = (props) => {
                   >
                     <a onClick={() => { link(item.id, item.title); }} ref={linkRef}>
                     <div className="related-item">
+                      <div className="paid-label">
+                          <div style={{ position: 'relative', display: 'flex' }}>
+                            <span className="title-paid-video">Special</span>
+                            <span className="icon-paid-video">
+                              <img src="/icons-menu/crown_icon@3x.png" alt="icon-video"/>
+                            </span>
+                          </div>
+                        </div>
                     <Img alt={item.title}
                       src={[props.data.meta.image_path + RESOLUTION_IMG + item.portrait_image, getPathImage(...pathImg,item.portrait_image, false, 'potrait')]}
                       unloader={<img className="background__program-detail" src={getPathImage(...pathImg,item.portrait_image, false, 'potrait')}/>}

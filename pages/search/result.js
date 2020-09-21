@@ -98,7 +98,19 @@ class Result extends React.Component {
                                         
                                         {this.props.searches.search_results[i] && this.props.searches.search_results[i].status === 200 && this.props.searches.search_results[i].data.status.code === 0 && this.props.searches.search_results[i].data.data.map((c, i) => (
                                             <Col xs={4} key={i} onClick={this.link.bind(this, c, t)}>
-                                                <div className="new-label" style={c.label !== undefined || c.label !== '' ? { display: 'none' } : { display: 'block' }}>{ c.label }</div>
+                                                { true ? (
+													<div className="paid-label">
+														<div style={{ position: 'relative', display: 'flex' }}>
+															<span className="title-paid-video">Special</span>
+															<span className="icon-paid-video">
+																<img src="/icons-menu/crown_icon@3x.png" alt="icon-video"/>
+															</span>
+														</div>
+													</div>
+                                                    ) : r.label !== undefined || r.label !== '' ? (
+                                                        <div className="new-label" style={r.label === undefined || r.label === '' ? { display: 'none' } : { display: 'block' }}>{ r.label }</div>
+                                                    ) : ''
+											    }
                                                 <Img 
                                                     alt={c.title} 
                                                     className="content-image"
