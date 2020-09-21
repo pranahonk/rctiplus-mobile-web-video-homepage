@@ -121,7 +121,7 @@ class Default_v2 extends React.Component {
 
                     <script src="/static/js/fontawesome.min.js" crossOrigin="anonymous" defer></script>
 
-                    <script src="https://cdn.jwplayer.com/libraries/Vp85L1U1.js"></script>
+                    {/* <script src="/static/js/jwplayer.js"></script> */}
                     <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>
                     {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
                     <script src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
