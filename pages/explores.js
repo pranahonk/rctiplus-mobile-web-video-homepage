@@ -378,7 +378,20 @@ class Explores extends React.Component {
 									<Row>
 										{this.state.recommendations[`genre-${this.state.selected_genre_id}`] && this.state.recommendations[`genre-${this.state.selected_genre_id}`].map((r, i) => (
 											<Col xs={4} key={i} onClick={this.link.bind(this, r)}>
-											<div className="new-label" style={r.label === undefined || r.label === '' ? { display: 'none' } : { display: 'block' }}>{ r.label }</div>
+											{	true ? (
+													<div className="paid-label">
+														<div style={{ position: 'relative', display: 'flex' }}>
+															<span className="title-paid-video">Special</span>
+															<span className="icon-paid-video">
+																<img src="/icons-menu/crown_icon@3x.png" alt="icon-video"/>
+															</span>
+														</div>
+													</div>
+												) : r.label !== undefined || r.label !== '' ? (
+													<div className="new-label" style={r.label === undefined || r.label === '' ? { display: 'none' } : { display: 'block' }}>{ r.label }</div>
+												) : ''
+											}
+											{/* <div className="new-label" style="">label</div> */}
 												<Img 
 													alt={this.getImageFileName(r.portrait_image)} 
 													className="content-image"
