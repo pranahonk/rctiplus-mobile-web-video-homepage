@@ -122,6 +122,7 @@
     "react-ripples": "^2.2.1",
     "react-scroll-percentage": "^4.2.0",
     "react-share": "^3.0.1",
+    "react-spring": "^8.0.27",
     "react-sticky": "^6.0.3",
     "react-timeago": "^4.4.0",
     "react-top-loading-bar": "^1.2.0",
