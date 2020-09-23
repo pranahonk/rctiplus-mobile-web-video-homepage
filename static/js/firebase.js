@@ -10,3 +10,4 @@ const firebaseConfig = JSON.stringify({
 }
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
+alert(process.env.FIREBASE_apiKey)
