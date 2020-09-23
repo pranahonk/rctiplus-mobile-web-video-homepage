@@ -34,7 +34,22 @@ class MyDocument extends Document {
 
 					<script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
 
-					<script src="/static/js/firebase.js"></script>
+					{/* <script src="/static/js/firebase.js"></script> */}
+					<script dangerouslySetInnerHTML={{ __html: `
+						var firebaseConfig = { 
+								apiKey: "AIzaSyCFY5ljEzA9bz1jHZ4RTnay1KKE7ysa5Zk",
+								authDomain: "rcti-766db.firebaseapp.com",
+								databaseURL: "https://rcti-766db.firebaseio.com",
+								projectId: "rcti-766db",
+								storageBucket: "rcti-766db.appspot.com",
+								messagingSenderId: "102225357690",
+								appId: "1:102225357690:web:e90f10ab54a010c2",
+								measurementId: "G-JR2L0ZYPG7"
+							};
+							firebase.initializeApp(firebaseConfig);
+							firebase.analytics();
+                    `}}>
+					</script>
 				</Head>
 				<body style={{ height: '100%' }}>
 					<Main style={{ height: '100%' }}/>
