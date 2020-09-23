@@ -38,14 +38,14 @@ class MyDocument extends Document {
 					{/* <script src="/static/js/firebase.js"></script> */}
 					<script dangerouslySetInnerHTML={{ __html: `
 						var firebaseConfig = { 
-								apiKey: ${FIREBASE_apiKey},
-								authDomain: ${FIREBASE_authDomain},
-								databaseURL: ${FIREBASE_databaseURL},
-								projectId: ${FIREBASE_projectId},
-								storageBucket: ${FIREBASE_storageBucket},
-								messagingSenderId: ${FIREBASE_messagingSenderId},
-								appId: ${FIREBASE_appId},
-								measurementId: ${FIREBASE_measurementId}
+								apiKey: "${FIREBASE_apiKey}",
+								authDomain: "${FIREBASE_authDomain}",
+								databaseURL: "${FIREBASE_databaseURL}",
+								projectId: "${FIREBASE_projectId}",
+								storageBucket: "${FIREBASE_storageBucket}",
+								messagingSenderId: "${FIREBASE_messagingSenderId}",
+								appId: "${FIREBASE_appId}",
+								measurementId: "${FIREBASE_measurementId}"
 							};
 							firebase.initializeApp(firebaseConfig);
 							firebase.analytics();
