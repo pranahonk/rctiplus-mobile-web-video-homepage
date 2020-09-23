@@ -30,6 +30,11 @@ class MyDocument extends Document {
 					<script src="/static/js/jwplayer.js"></script>
 					<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet"></link>
 					<script src="/static/js/conviva-core-sdk.js"></script>
+					<script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+
+					<script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
+
+					<script src="/static/js/firebase.js"></script>
 				</Head>
 				<body style={{ height: '100%' }}>
 					<Main style={{ height: '100%' }}/>

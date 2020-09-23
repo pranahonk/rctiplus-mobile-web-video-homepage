@@ -42,7 +42,7 @@ class Default_v2 extends React.Component {
     }
 
     componentDidMount() {
-        this.props.initializeFirebase();
+        // this.props.initializeFirebase();
         console.log('User added to home screen');
         if (typeof window !== 'undefined') {
             window.addEventListener('beforeinstallprompt', async e => {
