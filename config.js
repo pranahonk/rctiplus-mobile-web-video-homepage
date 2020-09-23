@@ -34,6 +34,8 @@ export const FIREBASE_databaseURL = process.env.FIREBASE_databaseURL;
 export const FIREBASE_projectId = process.env.FIREBASE_projectId;
 export const FIREBASE_storageBucket = process.env.FIREBASE_storageBucket;
 export const FIREBASE_messagingSenderId = process.env.FIREBASE_messagingSenderId;
+export const FIREBASE_appId = process.env.FIREBASE_appId;
+export const FIREBASE_measurementId = process.env.FIREBASE_measurementId;
 
 export const REDIRECT_SSR = process.env.REDIRECT_SSR;
 
