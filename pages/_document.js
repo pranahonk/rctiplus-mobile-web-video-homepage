@@ -3,6 +3,7 @@
 
 // ./pages/_document.js
 import Document, { Html, Head, Main, NextScript } from 'next/document';
+import { FIREBASE_apiKey,  FIREBASE_authDomain,  FIREBASE_databaseURL, FIREBASE_projectId, FIREBASE_storageBucket, FIREBASE_appId, FIREBASE_measurementId, FIREBASE_messagingSenderId } from '../config'
 // import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 class MyDocument extends Document {
@@ -37,14 +38,14 @@ class MyDocument extends Document {
 					{/* <script src="/static/js/firebase.js"></script> */}
 					<script dangerouslySetInnerHTML={{ __html: `
 						var firebaseConfig = { 
-								apiKey: "AIzaSyCFY5ljEzA9bz1jHZ4RTnay1KKE7ysa5Zk",
-								authDomain: "rcti-766db.firebaseapp.com",
-								databaseURL: "https://rcti-766db.firebaseio.com",
-								projectId: "rcti-766db",
-								storageBucket: "rcti-766db.appspot.com",
-								messagingSenderId: "102225357690",
-								appId: "1:102225357690:web:e90f10ab54a010c2",
-								measurementId: "G-JR2L0ZYPG7"
+								apiKey: ${FIREBASE_apiKey},
+								authDomain: ${FIREBASE_authDomain},
+								databaseURL: ${FIREBASE_databaseURL},
+								projectId: ${FIREBASE_projectId},
+								storageBucket: ${FIREBASE_storageBucket},
+								messagingSenderId: ${FIREBASE_messagingSenderId},
+								appId: ${FIREBASE_appId},
+								measurementId: ${FIREBASE_measurementId}
 							};
 							firebase.initializeApp(firebaseConfig);
 							firebase.analytics();
