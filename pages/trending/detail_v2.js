@@ -73,7 +73,6 @@ class Detail extends React.Component {
 
     constructor(props) {
         super(props);
-        const subcategoryName = this.props.initial.subcategory_name || '-';
         this.state = {
             trending_detail_id: this.props.props_id,
             trending_detail_data: this.props.initial,
@@ -82,7 +81,7 @@ class Detail extends React.Component {
             scrolled_down: false,
             sticky_share_shown: false,
             count: false,
-            infographic: subcategoryName.toLowerCase().indexOf('infografis') != -1
+            infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID
         };
 
         // this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
@@ -91,9 +90,22 @@ class Detail extends React.Component {
         this.platform = null;
         this.pushNotif = null;
         const segments = this.props.router.asPath.split(/\?/);
+        const segments2 = this.props.router.asPath.split(/\#/);
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
-            console.log('TOKEN:', q.token)
+            if (q.token) {
+                this.accessToken = q.token;
+                setAccessToken(q.token);
+            }
+
+            if (q.platform) {
+                this.platform = q.platform;
+            }
+            if(q.push_notif === 'true') {
+                this.pushNotif = '/trending';
+            }
+        } else if (segments2.length > 1) {
+            const q = queryString.parse(segments2[1]);
             if (q.token) {
                 this.accessToken = q.token;
                 setAccessToken(q.token);

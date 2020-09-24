@@ -122,6 +122,7 @@ class Trending_v2 extends React.Component {
                         articles[categoryId.toString()] = res.data.data;
                         pages[categoryId.toString()] = 2;
                     }
+                    console.log(this.state.tabs, articles['20']);
                     this.setState({
                         is_articles_loading: false,
                         articles: articles,
@@ -350,6 +351,7 @@ class Trending_v2 extends React.Component {
 
     render() {
         const metadata = this.getMetadata();
+        console.log(this.state.articles['20']);
         return (
             <Layout title={metadata.title}>
                 <Head>
@@ -590,7 +592,25 @@ class Trending_v2 extends React.Component {
                                                                         <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
                                                                     </div>
                                                                 </ListGroupItem>
-                                                            ) : ''
+                                                            ) : <ListGroupItem key={j} className={`article`} onClick={() => this.goToDetail(article)}>
+                                                            <div className="article-description">
+                                                                <div className="article-thumbnail-container">
+                                                                    <Img
+                                                                        alt={article.title}
+                                                                        loader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                        unloader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                        className="article-thumbnail"
+                                                                        src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
+                                                                </div>
+                                                                <div className="article-title-container">
+                                                                    <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
+                                                                </div>
+                                                            </div>
+                                                            <div className="article-source">
+                                                                <p><strong>{article.source}</strong>&nbsp;&nbsp;</p>
+                                                                <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                            </div>
+                                                        </ListGroupItem>
                                                         ))}
                                                     </ListGroup>
                                                     {this.state.is_articles_loading ? (<ArticleLoader />) : null}
