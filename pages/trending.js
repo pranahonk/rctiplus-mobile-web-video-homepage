@@ -218,8 +218,7 @@ class Trending_v2 extends React.Component {
         //     }
         //     console.log('scrolll')
         // }, false)
-        console.log(this.props.router.query);
-        if (this.accessToken) {
+        if (this.accessToken !== null ||  this.accessToken !== undefined) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
                 this.fetchData(true);
@@ -293,9 +292,12 @@ class Trending_v2 extends React.Component {
                     }
 
                     if (sortedCategories.length > 0) {
+                        console.log(this.props.query)
                         this.setState({
                             tabs: sortedCategories,
-                            active_tab: Object.keys(this.props.query).length > 0 ? (sortedCategories.findIndex(s => s.id == this.props.query.subcategory_id.toString()) != -1 ? this.props.query.subcategory_id.toString() : sortedCategories[0].id.toString()) : sortedCategories[0].id.toString(),
+                            active_tab: Object.keys(this.props.query).length > 0 ? 
+                                (sortedCategories.findIndex(s => s.id == this.props.query && this.props.query.subcategory_id && this.props.query.subcategory_id.toString()) != -1 ? 
+                                this.props.query && this.props.query.subcategory_id && this.props.query.subcategory_id.toString() : sortedCategories[0].id.toString()) : sortedCategories[0].id.toString(),
                             is_tabs_loading: false
                         }, () => {
                             this.loadContents(this.state.active_tab);
@@ -333,7 +335,7 @@ class Trending_v2 extends React.Component {
 
     getMetadata() {
         if (Object.keys(this.props.query).length > 0) {
-            const name = this.props.query.subcategory_title.toLowerCase().replace(/-/g, '_');
+            const name = this.props && this.props.query && this.props.query.subcategory_title && this.props.query.subcategory_title.toLowerCase().replace(/-/g, '_');
             if (SITEMAP[`trending_${name}`]) {
                 return SITEMAP[`trending_${name}`];
             }

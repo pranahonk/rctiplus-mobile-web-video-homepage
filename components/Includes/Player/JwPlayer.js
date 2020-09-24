@@ -12,6 +12,8 @@ const pubAdsRefreshInterval = {
   timeStart: 0,
 };
 
+let refreshCounter = 0;
+
 const JwPlayer = (props) => {
   const [player, setPlayer] = useState(null);
   const [duration, setDuration] = useState(0);
@@ -91,6 +93,8 @@ const JwPlayer = (props) => {
       setIsConviva(Math.random());
       setIsCustomSetup(Math.random());
       player.setup(options);
+      // console.log('PLAYERRRR : ',props.data)
+      // console.log('ISLOGIN : ', props.customData && props.customData.isLogin)
     }
   }, [props.data && props.data.url, props.data && props.data.vmap]);
 
@@ -135,6 +139,8 @@ const JwPlayer = (props) => {
 
         if (props.type === 'live tv' || props.type === 'live event') {
           // console.log(fowardContainer);
+          fowardContainer.style.display = 'none'
+          backwardContainer.style.display = 'none'
           fowardContainer.innerHTML = '';
           backwardContainer.innerHTML = '';
 
@@ -153,7 +159,7 @@ const JwPlayer = (props) => {
 
               const adsOverlayCloseButton = document.createElement('div');
               adsOverlayCloseButton.classList.add('close_button');
-              adsOverlayCloseButton.innerText = 'X';
+              adsOverlayCloseButton.innerHTML = closeIcon;
 
               const adsOverlayContainer = document.createElement('div');
               const divGPTString = (props.data && props.data.gpt && props.data.gpt.div_gpt != null) && (props.data && props.data.gpt && props.data.gpt.div_gpt != undefined) ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
@@ -506,9 +512,18 @@ const JwPlayer = (props) => {
           googletag.cmd.push(function () {
             const mappingSlot = googletag.sizeMapping().addSize([(maxWidth + 15), maxHeight], [maxWidth, maxHeight]).addSize([0, 0], [minWidth, minHeight]).build();
 
-            googletag.defineSlot(slotName, [[maxWidth, maxHeight], [minWidth, minHeight]], slotDiv).defineSizeMapping(mappingSlot).addService(googletag.pubads());
+            googletag.defineSlot(slotName, [[maxWidth, maxHeight], [minWidth, minHeight]], slotDiv)
+            .defineSizeMapping(mappingSlot)
+            .addService(googletag.pubads())
+            .setTargeting('logged_in', props.customData && props.customData.isLogin.toString())
+            .setTargeting('channel_id', props.data && props.data.id)
+            .setTargeting('program_title', props.type === 'live tv' ?
+            tempId(props.data && props.data.id)[1] :
+            props.type === 'live event' || props.type === 'missed event' ?
+            props.data && props.data.assets_name : 'NOT_SET');
             googletag.pubads().enableSingleRequest();
             googletag.pubads().collapseEmptyDivs();
+            googletag.pubads().disableInitialLoad();
             googletag.enableServices();
           });
           googletag.cmd.push(function () {
@@ -581,8 +596,13 @@ const JwPlayer = (props) => {
           }
 
           pubAdsRefreshInterval.timeObject = setTimeout(() => {
-            googletag.pubads().refresh();
-
+            if (refreshCounter === 0) {
+              googletag.pubads().refresh();
+              refreshCounter = 1
+            } else {
+              refreshCounter = 0
+            }
+            console.log('CALL CALL')
             setTimeout(() => {
               if (document.querySelector('.ads_wrapper')) {
                 if (document.querySelector('.adsContainer').style.display != 'none') {
@@ -606,10 +626,14 @@ const JwPlayer = (props) => {
                     adsOverlayBoxLink.style.top = '0';
                     adsOverlayBoxLink.style.position = 'absolute';
 
+
                     document.querySelector('.adsStyling')?.appendChild(adsOverlayBoxLink);
-                    adsOverlayBoxLink.addEventListener('click', function() {
-                      window.open(adsLink, '_blank');
-                    });
+                    const elementAds = document.querySelector('.adsURLLink')
+                    if (elementAds) {
+                      elementAds.addEventListener('click', function() {
+                        window.open(adsLink, '_blank');
+                      });
+                    }
                   }
 
                   if (windowWidth >= (maxWidth + 12)) {
@@ -780,6 +804,15 @@ const backward10Icon = `
     </g>
 </svg>
 `;
+
+const closeIcon = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+      <g fill="none" fill-rule="evenodd">
+          <circle cx="10" cy="10" r="10" fill="#000" fill-opacity=".8"/>
+          <path fill="#FFF" fill-rule="nonzero" d="M15 6.007L13.993 5 10 8.993 6.007 5 5 6.007 8.993 10 5 13.993 6.007 15 10 11.007 13.993 15 15 13.993 11.007 10z"/>
+      </g>
+  </svg>
+`
 
 const tempId = (value) => {
   if (value === 'rcti' || value === 1) {
