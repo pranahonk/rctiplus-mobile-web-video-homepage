@@ -91,9 +91,22 @@ class Detail extends React.Component {
         this.platform = null;
         this.pushNotif = null;
         const segments = this.props.router.asPath.split(/\?/);
+        const segments2 = this.props.router.asPath.split(/\#/);
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
-            console.log('TOKEN:', q.token)
+            if (q.token) {
+                this.accessToken = q.token;
+                setAccessToken(q.token);
+            }
+
+            if (q.platform) {
+                this.platform = q.platform;
+            }
+            if(q.push_notif === 'true') {
+                this.pushNotif = '/trending';
+            }
+        } else if (segments2.length > 1) {
+            const q = queryString.parse(segments2[1]);
             if (q.token) {
                 this.accessToken = q.token;
                 setAccessToken(q.token);
