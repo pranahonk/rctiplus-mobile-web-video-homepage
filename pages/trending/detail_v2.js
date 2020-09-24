@@ -73,6 +73,7 @@ class Detail extends React.Component {
 
     constructor(props) {
         super(props);
+        const subcategoryName = this.props.initial.subcategory_name || '-';
         this.state = {
             trending_detail_id: this.props.props_id,
             trending_detail_data: this.props.initial,
@@ -80,7 +81,8 @@ class Detail extends React.Component {
             iframe_opened: false,
             scrolled_down: false,
             sticky_share_shown: false,
-            count: false
+            count: false,
+            infographic: subcategoryName.toLowerCase().indexOf('infografis') != -1
         };
 
         // this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
@@ -307,6 +309,7 @@ class Detail extends React.Component {
 
     render() {
         const cdata = this.state.trending_detail_data;
+        const isInfographic = this.state.infographic;
         // cdata.link = 'https://m.rctiplus.com';
 
         return (
@@ -441,8 +444,13 @@ class Detail extends React.Component {
                                 </StickyContainer>
 
                                 <div className="content-trending-detail-wrapper">
-                                    <div className="content-trending-detail-cover-container">
-                                        <img alt={cdata.title} className="content-trending-detail-cover" src={cdata.cover} />
+                                    <div className="content-trending-detail-cover-container" style={isInfographic ? null : { paddingBottom: '56.25%' }}>
+                                        <img alt={cdata.title} 
+                                        style={isInfographic ? null : {
+                                            height: '100%',
+                                            position: 'absolute'
+                                        }}
+                                        className="content-trending-detail-cover" src={cdata.cover} />
                                     </div>
                                     <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>
                                     {/* <Link href="#" as={"#"}>
