@@ -73,7 +73,6 @@ class Detail extends React.Component {
 
     constructor(props) {
         super(props);
-        const subcategoryName = this.props.initial.subcategory_name || '-';
         this.state = {
             trending_detail_id: this.props.props_id,
             trending_detail_data: this.props.initial,
@@ -82,7 +81,7 @@ class Detail extends React.Component {
             scrolled_down: false,
             sticky_share_shown: false,
             count: false,
-            infographic: subcategoryName.toLowerCase().indexOf('infografis') != -1
+            infographic: this.props.initial.subcategory_id == 20
         };
 
         // this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
