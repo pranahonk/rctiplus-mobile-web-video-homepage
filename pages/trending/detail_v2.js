@@ -81,7 +81,7 @@ class Detail extends React.Component {
             scrolled_down: false,
             sticky_share_shown: false,
             count: false,
-            infographic: this.props.initial.subcategory_id == 20
+            infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID
         };
 
         // this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
