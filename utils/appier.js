@@ -8,8 +8,8 @@ const TOKEN_KEY = 'ACCESS_TOKEN';
 const uuidRandom = '23984824_' + Math.floor(Math.random() * 100000000000) 
 
 export const getUidAppier = () => {
-    // const _auid = getCookie('_auid') || getUserId();
-    const _auid = Cookie.get('QGUserId') || uuidRandom;
+    const _auid = getCookie('_auid') || uuidRandom;
+    //const _auid = Cookie.get('QGUserId') || uuidRandom;
     return _auid;
 } 
 
