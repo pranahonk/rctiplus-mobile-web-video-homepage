@@ -11,7 +11,7 @@ import chatsActions from '../../redux/actions/chats';
 import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, FIREBASE_apiKey,  FIREBASE_authDomain,  FIREBASE_databaseURL, FIREBASE_projectId, FIREBASE_storageBucket, FIREBASE_appId, FIREBASE_measurementId, FIREBASE_messagingSenderId } from '../../config';
 import { Spinner } from 'reactstrap';
 
 import queryString from 'query-string';
@@ -162,6 +162,27 @@ class Default_v2 extends React.Component {
                     ` }}></script>
                     <noscript><img src="https://certify.alexametrics.com/atrk.gif?account=8oNJt1FYxz20cv" style={{ display: 'none' }} height="1" width="1" alt="" /></noscript>
                     {/* <!-- End Alexa Certify Javascript --> */}
+
+                    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+
+                    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
+
+                    {/* <script src="/static/js/firebase.js"></script> */}
+                    <script dangerouslySetInnerHTML={{ __html: `
+                        var firebaseConfig = { 
+                                apiKey: "${FIREBASE_apiKey}",
+                                authDomain: "${FIREBASE_authDomain}",
+                                databaseURL: "${FIREBASE_databaseURL}",
+                                projectId: "${FIREBASE_projectId}",
+                                storageBucket: "${FIREBASE_storageBucket}",
+                                messagingSenderId: "${FIREBASE_messagingSenderId}",
+                                appId: "${FIREBASE_appId}",
+                                measurementId: "${FIREBASE_measurementId}"
+                            };
+                            firebase.initializeApp(firebaseConfig);
+                            firebase.analytics();
+                    `}}>
+                    </script>
                 </Head>
                 <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
