@@ -115,8 +115,8 @@ class NavbarDef_v2 extends Component {
     }
 
     componentDidMount() {
-        console.log(cookie.getJSON('ACCESS_TOKEN'))
-        console.log(cookie.getJSON('VISITOR_TOKEN').VALUE)
+        // console.log(cookie.getJSON('ACCESS_TOKEN'))
+        // console.log(cookie.getJSON('VISITOR_TOKEN').VALUE)
         this.setState({token: this.getToken()});
         if (!this.props.disableScrollListener) {
             document.addEventListener('scroll', () => {
