@@ -66,6 +66,10 @@ class NavbarDef_v2 extends Component {
             case '/':
                 homeGeneralClicked('mweb_search_clicked');
                 break;
+            case '/trending':
+                Router.push('/trending/search');
+                // homeGeneralClicked('mweb_search_clicked');
+                break;
 
             default:
                 if (this.props.router.asPath.indexOf('/trending') === 0) {
@@ -76,7 +80,6 @@ class NavbarDef_v2 extends Component {
                 }
                 break;
         }
-        console.log(e.includes('/trending/'))
         if (e.includes('/trending/')) {
             Router.push('/trending/search');
             return;
@@ -89,7 +92,7 @@ class NavbarDef_v2 extends Component {
                 Router.push('/radio/search');
             break;
             default:
-                Router.push('/explores/search');
+                Router.push('/trending/search');
         }
     }
 
