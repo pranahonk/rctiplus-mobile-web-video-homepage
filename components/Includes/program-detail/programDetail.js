@@ -62,7 +62,7 @@ export const PanelEpisode = forwardRef((props, ref) => {
           { props.data.data.map((item,i) => {
             return (
               <div style={{ padding: '10px 15px', background: props.isActive === item.id.toString() ? '#000000' :  'inherit'}} key={i}>
-                {console.log(props.isActive, item.id.toString())}
+                {/* {console.log(props.isActive, item.id.toString())} */}
             <div className="panel-content">
               <div className="thumb-img__content">
                 <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=episode&content_id=${item.id}&content_title=${urlRegex(item.title)}`}

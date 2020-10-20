@@ -515,11 +515,13 @@ h5 {
     }   
 }
 .paid__video-wrapper {
+    z-index: 100;
     position: fixed;
-    bottom: 0;
+    // height: calc(100vh + 100px);
+    height: calc(100vh + 255px);
+    touch-action: none;
     color: #ffffff;
     padding: 17px 20px;
-    /* border-radius: 25px; */
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
     background-color: #1a1a1a;
     width: 100%;
@@ -553,12 +555,131 @@ h5 {
                 font-size: 14px;
             }
         }
-        .btn-paid__video {
-            background-color: #fa262f !important;
-            border-color: #fa262f !important;
-            border-radius: 7px !important;
-            font-size: 14px !important;
-            padding: 8px 20px !important;
-        }
+    }
+    .btn-paid__video {
+        background-color: #fa262f !important;
+        border-color: #fa262f !important;
+        border-radius: 7px !important;
+        font-size: 14px !important;
+        padding: 8px 20px !important;
+    }
+    .paid__video-disclamer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+            h1 {
+                font-size: 18px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: normal;
+                letter-spacing: normal;
+                text-align: center;
+                color: #ffffff;
+                padding: 10px;
+            }
+            .paid__disclamer-list {
+                font-size: 12px;
+                font-weight: normal;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: normal;
+                letter-spacing: normal;
+                text-align: justify;
+                color: #ffffff;
+            }
+            .paid__video-tnc {
+                padding: 15px 0;
+                font-size: 12px;
+                font-weight: normal;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: normal;
+                letter-spacing: normal;
+                text-align: justify;
+                color: #ffffff;
+                .paid_action-tnc {
+                    text-align: center;
+                    color: #fa262f;
+                }
+            }
+            .paid__video-info {
+                h2 {
+                    font-size: 12px;
+                    font-weight: normal;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: normal;
+                    letter-spacing: normal;
+                    color: #ffffff;
+                }
+                h1 {
+                    font-size: 18px;
+                    font-weight: 600;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: normal;
+                    letter-spacing: normal;
+                    text-align: center;
+                    color: #ffffff;
+                }
+            }
+            .action {
+                button {
+                    padding: 8px 85px !important;
+                }
+            }
     }
 }
+
+.action-btn {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    right: 40px;
+    height: 48px;
+    width: 48px;
+    border-radius: 24px;
+    background: #fa262f;
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .action-btn:after {
+    content: ' ';
+    display: block;
+    background: #fff;
+    height: 20%;
+    width: 20%;
+    border-radius: 50%;
+  }
+  
+  .bg > img {
+    width: 100%;
+    margin: 0;
+    display: block;
+  }
+  
+  .sheet {
+    z-index: 100;
+    position: fixed;
+    left: 2vw;
+    height: calc(100vh + 100px);
+    width: 96vw;
+    border-radius: 12px 12px 0px;
+    background: #fff;
+    touch-action: none;
+  }
+  
+  .sheet > div {
+    height: 60px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    text-transform: capitalize;
+  }
+  
