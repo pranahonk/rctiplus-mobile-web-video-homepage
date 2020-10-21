@@ -48,7 +48,7 @@ class FooterNav extends Component {
                 </div>
 
                 <div className="footer-wrapper-list">
-                    <a href="/trending">
+                    <a href="/news">
                         <img
                             className="nav-footer-icon"
                             src="/static/btn/trending_2.svg"

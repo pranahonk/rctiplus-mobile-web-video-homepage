@@ -102,7 +102,7 @@ class Detail extends React.Component {
                 this.platform = q.platform;
             }
             if(q.push_notif === 'true') {
-                this.pushNotif = '/trending';
+                this.pushNotif = '/news';
             }
         } else if (segments2.length > 1) {
             const q = queryString.parse(segments2[1]);
@@ -115,7 +115,7 @@ class Detail extends React.Component {
                 this.platform = q.platform;
             }
             if(q.push_notif === 'true') {
-                this.pushNotif = '/trending';
+                this.pushNotif = '/news';
             }
         }
         else {
@@ -169,16 +169,23 @@ class Detail extends React.Component {
     }
 
     goToDetail(article, index) {
+        let category = ''
+        if (article.subcategory_name.length < 1) {
+          category = 'berita-utama';
+        } else {
+          category = urlRegex(article.subcategory_name)
+        }
+        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
         newsRelatedArticleClicked(article.id, article.title, article.category_source, 'mweb_news_related_article_clicked');
         if(this.platform === 'ios') {
-            Router.push('/trending/detail/' + article.id + '/' + urlRegex(article.title) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+            Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
             return false;
         }
         if (this.redirectToPublisherIndex.indexOf(index) != -1) {
             window.open(article.link, '_blank');
         }
         else {
-            Router.push('/trending/detail/' + article.id + '/' + urlRegex(article.title) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+            Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
         }
 
     }

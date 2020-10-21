@@ -11,6 +11,7 @@ import { setAccessToken, removeAccessToken } from '../../../utils/cookie';
 import { newsArticleClicked } from '../../../utils/appier';
 
 import '../../../assets/scss/plugins/carousel/headline-carousel.scss';
+import { urlRegex } from '../../../utils/regex';
 
 import queryString from 'query-string';
 
@@ -47,8 +48,14 @@ class HeadlineCarousel extends React.Component {
     }
 
     goToDetail(article) {
+        let category = ''
+        if (article.subcategory_name.length < 1) {
+          category = 'berita-utama';
+        } else {
+          category = urlRegex(article.subcategory_name)
+        }
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-        Router.push('/trending/detail/' + article.id + '/' + encodeURI(article.title.replace(/ +/g, "-").replace(/\\+/g, '-').replace(/\/+/g, '-').toLowerCase()) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     render() {
