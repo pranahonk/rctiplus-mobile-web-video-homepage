@@ -79,13 +79,13 @@ class NavTrending extends Component {
                         <div className="right-top-link">
                             {this.state.token ? (
                                 <div className="btn-link-top-nav">
-                                    <Link href="/trending/search">
+                                    <Link href="/news/search">
                                         <SearchIcon style={{fontSize: 20, marginRight: 10}}/>
                                     </Link>
                                 </div>
                             ) : (
                                 <div className="btn-link-top-nav">
-                                    <NavbarBrand style={{color: 'white'}} href="/trending/search">
+                                    <NavbarBrand style={{color: 'white'}} href="/news/search">
                                         <SearchIcon style={{fontSize: 20}}/>
                                     </NavbarBrand>
                                 </div>

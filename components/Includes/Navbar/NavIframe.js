@@ -70,7 +70,7 @@ class NavTrendingSearch extends Component {
                         <Col xs="12">
                             <NavbarBrand style={{color: 'white'}}>
                                 <ArrowBackIosIcon onClick={() => {
-                                    if (this.props.data && this.props.router.asPath.indexOf('/trending/detail') === 0) {
+                                    if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0) {
                                         newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
                                     }
                                     this.props.closeFunction();
