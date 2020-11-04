@@ -169,25 +169,18 @@ class Detail extends React.Component {
     }
 
     goToDetail(article, index) {
-        let category = ''
-        if (article.subcategory_name.length < 1) {
-          category = 'berita-utama';
-        } else {
-          category = urlRegex(article.subcategory_name)
-        }
         newsRelatedArticleClicked(article.id, article.title, article.category_source, 'mweb_news_related_article_clicked');
 	let caption = article.title.replace(/[^\w\s]/gi, '').replace(/ +/g, '-').toLowerCase();
         if(this.platform === 'ios') {
-            Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(caption)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+            Router.push('/trending/detail/' + article.id + '/' + urlRegex(encodeURI(caption)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
             return false;
         }
         if (this.redirectToPublisherIndex.indexOf(index) != -1) {
             window.open(article.link, '_blank');
         }
         else {
-            Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(caption)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+            Router.push('/trending/detail/' + article.id + '/' + urlRegex(encodeURI(caption)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
         }
-
     }
 
     newsArticleShareClicked() {

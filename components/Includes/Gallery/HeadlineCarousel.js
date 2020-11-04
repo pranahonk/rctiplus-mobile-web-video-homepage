@@ -48,14 +48,9 @@ class HeadlineCarousel extends React.Component {
     }
 
     goToDetail(article) {
-        let category = ''
-        if (article.subcategory_name.length < 1) {
-          category = 'berita-utama';
-        } else {
-          category = urlRegex(article.subcategory_name)
-        }
+        let caption = article.title.replace(/[^\w\s]/gi, '').replace(/ +/g, '-').toLowerCase();
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        Router.push('/trending/detail/' + article.id + '/' + encodeURI(urlRegex(caption)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     render() {
