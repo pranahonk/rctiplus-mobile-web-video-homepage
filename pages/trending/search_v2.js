@@ -57,7 +57,8 @@ class Search extends React.Component {
     }
 
     link(article) {
-        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase() + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        let caption = article.title.replace(/[^\w\s]/gi, '').replace(/ +/g, '-').toLowerCase();
+        Router.push('/trending/detail/' + article.id + '/' + encodeURI(caption) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     bottomScrollFetch() {

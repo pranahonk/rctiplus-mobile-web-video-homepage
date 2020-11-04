@@ -48,7 +48,8 @@ class HeadlineCarousel extends React.Component {
 
     goToDetail(article) {
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-        Router.push('/trending/detail/' + article.id + '/' + encodeURI(article.title.replace(/ +/g, "-").replace(/\\+/g, '-').replace(/\/+/g, '-').toLowerCase()) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        let caption = article.title.replace(/[^\w\s]/gi, '').replace(/ +/g, '-').toLowerCase();
+        Router.push('/trending/detail/' + article.id + '/' + encodeURI(caption) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     render() {

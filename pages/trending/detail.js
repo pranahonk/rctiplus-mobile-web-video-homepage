@@ -102,7 +102,8 @@ class Detail extends React.Component {
 
     goToDetail(article) {
         newsRelatedArticleClicked(article.id, article.title, article.category_source, 'mweb_news_related_article_clicked');
-        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase());
+    	let caption = article.title.replace(/[^\w\s]/gi, '').replace(/ +/g, '-').toLowerCase();
+	Router.push('/trending/detail/' + article.id + '/' + encodeURI(caption));
     }
 
     setNewsFavorite() {

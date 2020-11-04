@@ -170,15 +170,16 @@ class Detail extends React.Component {
 
     goToDetail(article, index) {
         newsRelatedArticleClicked(article.id, article.title, article.category_source, 'mweb_news_related_article_clicked');
+	let caption = article.title.replace(/[^\w\s]/gi, '').replace(/ +/g, '-').toLowerCase();
         if(this.platform === 'ios') {
-            Router.push('/trending/detail/' + article.id + '/' + urlRegex(article.title) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+            Router.push('/trending/detail/' + article.id + '/' + urlRegex(encodeURI(caption)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
             return false;
         }
         if (this.redirectToPublisherIndex.indexOf(index) != -1) {
             window.open(article.link, '_blank');
         }
         else {
-            Router.push('/trending/detail/' + article.id + '/' + urlRegex(article.title) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+            Router.push('/trending/detail/' + article.id + '/' + urlRegex(encodeURI(caption)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
         }
 
     }

@@ -40,7 +40,8 @@ class Search extends React.Component {
     }
 
     link(article) {
-        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase());
+	let caption = article.title.replace(/[^\w\s]/gi, '').replace(/ +/g, '-').toLowerCase();
+	Router.push('/trending/detail/' + article.id + '/' + encodeURI(caption));
     }
 
     bottomScrollFetch() {
