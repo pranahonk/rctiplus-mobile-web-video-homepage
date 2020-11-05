@@ -15,11 +15,11 @@ import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, FIREBASE_apiKey,  FIREB
 import { Spinner } from 'reactstrap';
 
 import queryString from 'query-string';
+import { isIOS, isAndroid } from "react-device-detect";
 
 import '../../node_modules/video.js/dist/video-js.min.css';
 import '../../node_modules/videojs-contrib-ads/dist/videojs.ads.css';
 import '../../node_modules/videojs-ima/dist/videojs.ima.css';
-
 import '../../assets/scss/videojs.scss';
 
 class Default_v2 extends React.Component {
@@ -28,7 +28,9 @@ class Default_v2 extends React.Component {
         super(props);
         this.platform = null;
         this.header = null;
-        const segments = this.props.router.asPath.split(/\?/);
+        const asPath = this.props.router.asPath;
+        const segments = asPath.split(/\?/);
+
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.platform) {
@@ -38,6 +40,9 @@ class Default_v2 extends React.Component {
             if (q.header) {
                 this.header = q.header;
             }
+        } else if (asPath.indexOf('/news/detail') > -1 || asPath.indexOf('/trending/detail') > -1) {
+            let platform = isIOS ? 'ios' : isAndroid ? 'android' : null;
+            this.platform = platform
         }
     }
 
