@@ -301,7 +301,8 @@ export const PanelRelated = (props) => {
                   >
                     <a onClick={() => { link(item.id, item.title); }} ref={linkRef}>
                     <div className="related-item">
-                      <div className="paid-label">
+                      {item.premium ? (
+                        <div className="paid-label">
                           <div style={{ position: 'relative', display: 'flex' }}>
                             <span className="title-paid-video">Special</span>
                             <span className="icon-paid-video">
@@ -309,6 +310,7 @@ export const PanelRelated = (props) => {
                             </span>
                           </div>
                         </div>
+                      ) : ''}
                     <Img alt={item.title}
                       src={[props.data.meta.image_path + RESOLUTION_IMG + item.portrait_image, getPathImage(...pathImg,item.portrait_image, false, 'potrait')]}
                       unloader={<img className="background__program-detail" src={getPathImage(...pathImg,item.portrait_image, false, 'potrait')}/>}
@@ -379,7 +381,7 @@ export const ActionMenu = (props) => {
       } else {
 
         return (<ButtonPrimary className="button-20" icon={ <ThumbUpIcon /> } text="Rated" onclick={() => {
-          console.log('RATE1')
+          // console.log('RATE1')
           onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, 'program_rate')
           return props.onRate()
           }}/>);
@@ -388,7 +390,7 @@ export const ActionMenu = (props) => {
     return (
       <ButtonPrimary status={[isLogin, alertSignIn]}  className="button-20" icon={ <ThumbUpIcon /> } text="Rated" onclick={() => { 
         onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, 'program_rate')
-        console.log('RATE2')
+        // console.log('RATE2')
         return props.onRate();
         }}/>
     );
@@ -401,7 +403,7 @@ export const ActionMenu = (props) => {
   );
 };
 export const alertDownload = (data = null, type = null, Programid, programTitle, ref) => {
-  console.log(data, type, ref)
+  // console.log(data, type, ref)
   if (data && type && ref) {
       switch (ref) {
           case 'homepage':
@@ -490,7 +492,7 @@ const onTouchStart = (e) => {
 const onTouchEnd = (e, ref, id, title) => {
   let touch = e.changedTouches[0];
   const absX = Math.abs(touch.clientX - swipe.x);
-  console.log(absX)
+  // console.log(absX)
   if (absX > 50) {
           if (ref) {
               switch (ref) {
@@ -529,7 +531,7 @@ export const onTracking = (ref, id , title) => {
 }
 
 export const onTrackingClick = (ref, id, title, typeClick = 'program', item = null, content_type = null, selected_season = 1, data_player, event = 'mweb_error_event') => {
-  console.log(typeClick)
+  // console.log(typeClick)
   if (ref && typeClick === 'program') {
     switch (ref) {
         case 'homepage':

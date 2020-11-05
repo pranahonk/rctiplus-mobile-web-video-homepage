@@ -53,7 +53,7 @@ class Default_v2 extends React.Component {
 
     componentDidMount() {
         // this.props.initializeFirebase();
-        console.log('User added to home screen');
+        // console.log('User added to home screen');
         if (typeof window !== 'undefined') {
             window.addEventListener('beforeinstallprompt', async e => {
                 // beforeinstallprompt Event fired
@@ -62,7 +62,7 @@ class Default_v2 extends React.Component {
                     const choiceResult = await e.userChoice;
                     if (choiceResult.outcome === 'dismissed') {
                         /* eslint-disable no-console */
-                        console.log('User cancelled home screen install');
+                        // console.log('User cancelled home screen install');
                         /* eslint-enable no-console */
                     } else {
                         /* eslint-disable no-console */
@@ -220,9 +220,13 @@ class Default_v2 extends React.Component {
                 ) : <div></div>}
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
-
-                {/* {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script async src="/static/js/fontawesome.min.js" crossOrigin="anonymous"></script>) : (process.env.UI_VERSION == '2.0' ? (this.props.hideFooter || this.props.pages.hide_footer ? null : <Footer_v2 />) : (<Footer />))} */}
-                <PaidVideo />
+                {
+                    !(this.platform && (this.platform == 'android' || this.platform == 'ios')) &&
+                    ((this.props?.Program?.paid_video?.data?.is_paid === 0 || this.props?.Program['tracking-program']?.data?.premium === 0) && 
+                    (this.props.router.pathname === '/programs'))
+                    ? (<PaidVideo />) : ''
+                }
+                {this.platform && (this.platform == 'android' || this.platform == 'ios') ? (<script async src="/static/js/fontawesome.min.js" crossOrigin="anonymous"></script>) : (process.env.UI_VERSION == '2.0' ? (this.props.hideFooter || this.props.pages.hide_footer ? null : <Footer_v2 />) : (<Footer />))}
             </div>
         )
     }

@@ -27,6 +27,7 @@ import {
   FETCH_DETAIL_DESCRIPTION_SUCCESS,
   TEMP_POST_LIKE_SUCCESS,
   DATA_SHARE_SEO,
+  FETCH_PAID_VIDEO,
 } from '../../actions/program-detail/programDetail';
 const initialState = {
   loading: true,
@@ -35,6 +36,7 @@ const initialState = {
   loading_clip: true,
   loading_photo: true,
   loading_more: false,
+  paid_video: null,
   error: '',
   filter: '',
 };
@@ -87,6 +89,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         [action.filter]: action.payload,
+        loading: false,
+      };
+    case FETCH_PAID_VIDEO:
+      return {
+        ...state,
+        paid_video: action.payload,
         loading: false,
       };
     case FETCH_SEASON_SUCCESS:
