@@ -156,6 +156,29 @@ const UIVersion = '2.0';
         epg_title: req.params.epg_title
       })
     });
+    server.get('/news/:subcategory_id/:subcategory_title', (req, res) => {
+      return app.render(req, res, '/news', {
+        subcategory_id: req.params.subcategory_id,
+        subcategory_title: req.params.subcategory_title
+      });
+    });
+    server.get('/news/detail/:category/:id/:title', (req, res) => {
+      return app.render(req, res, '/trending/detail_v2', {
+        id: req.params.id,
+        title: req.params.title,
+        category: req.params.category,
+      })
+    });
+
+    server.get('/news/search', (req, res) => {
+      return app.render(req, res, '/trending/search_v2');
+    });
+    server.get('/news', (req, res) => {
+      return app.render(req, res, '/news');
+    });
+    server.get('/news/channels', (req, res) => {
+      return app.render(req, res, '/trending/channels');
+    });
 
     // server.get('/trending/:subcategory_id/:subcategory_title', (req, res) => {
     //   return app.render(req, res, '/trending_old', {
@@ -217,29 +240,6 @@ const UIVersion = '2.0';
     });
     server.get('/trending', (req, res) => {
       return app.render(req, res, '/trending');
-    });
-    server.get('/news/:subcategory_id/:subcategory_title', (req, res) => {
-      return app.render(req, res, '/trending', {
-        subcategory_id: req.params.subcategory_id,
-        subcategory_title: req.params.subcategory_title
-      });
-    });
-    server.get('/news/detail/:category/:id/:title', (req, res) => {
-      return app.render(req, res, '/trending/detail_v2', {
-        id: req.params.id,
-        title: req.params.title,
-        category: req.params.category,
-      })
-    });
-
-    server.get('/news/search', (req, res) => {
-      return app.render(req, res, '/trending/search_v2');
-    });
-    server.get('/news', (req, res) => {
-      return app.render(req, res, '/news');
-    });
-    server.get('/news/channels', (req, res) => {
-      return app.render(req, res, '/trending/channels');
     });
 
     server.get('/live-event/:id/:title', (req, res) => {
