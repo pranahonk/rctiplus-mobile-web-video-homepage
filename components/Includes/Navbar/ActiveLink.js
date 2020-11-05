@@ -13,7 +13,7 @@ const ActiveLink = ({ children, activeClassName, ...props }) => {
     props.activeMenu === 'home/explores' || props.activeMenu.includes('home/explores') ||
     props.activeMenu === 'home/live-event' ||
     props.activeMenu === 'home/exclusive' || props.activeMenu.includes('home/exclusive') ||
-    (props.href === '/trending' && asPath.includes(props.href))
+    (props.href === '/news' && asPath.includes(props.href))
     ? `${childClassName} ${activeClassName}`.trim()
     : childClassName;
     // console.log({...props})

@@ -15,11 +15,11 @@ import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, FIREBASE_apiKey,  FIREB
 import { Spinner } from 'reactstrap';
 
 import queryString from 'query-string';
+import { isIOS, isAndroid } from "react-device-detect";
 
 import '../../node_modules/video.js/dist/video-js.min.css';
 import '../../node_modules/videojs-contrib-ads/dist/videojs.ads.css';
 import '../../node_modules/videojs-ima/dist/videojs.ima.css';
-
 import '../../assets/scss/videojs.scss';
 
 class Default_v2 extends React.Component {
@@ -28,7 +28,9 @@ class Default_v2 extends React.Component {
         super(props);
         this.platform = null;
         this.header = null;
-        const segments = this.props.router.asPath.split(/\?/);
+        const asPath = this.props.router.asPath;
+        const segments = asPath.split(/\?/);
+
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.platform) {
@@ -38,6 +40,9 @@ class Default_v2 extends React.Component {
             if (q.header) {
                 this.header = q.header;
             }
+        } else if (asPath.indexOf('/news/detail') > -1 || asPath.indexOf('/trending/detail') > -1) {
+            let platform = isIOS ? 'ios' : isAndroid ? 'android' : null;
+            this.platform = platform
         }
     }
 
@@ -102,10 +107,11 @@ class Default_v2 extends React.Component {
                     <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
-                        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-                        var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
-                        j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);}
-                        )(window,document,'script','dataLayer','GTM-WJNRTJP');
+                        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                        'https://www.googletagmanager.com/gtm.js?id='+i+dl+ '&gtm_auth=ogx0OihVjJdMhvsmTnEFyA&gtm_preview=env-41&gtm_cookies_win=x';f.parentNode.insertBefore(j,f);
+                        })(window,document,'script','dataLayer','GTM-WJNRTJP');
                     ` }}></script>
                     {/* End Google Tag Manager */}
 
@@ -151,7 +157,7 @@ class Default_v2 extends React.Component {
                     {/* End Comscore */}
 
                     {/* <!-- Google Tag Manager (noscript) --> */}
-                    <noscript key="gtm-noscript"><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5F9P7H3"
+                    <noscript key="gtm-noscript"><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WJNRTJP&gtm_auth=ogx0OihVjJdMhvsmTnEFyA&gtm_preview=env-41&gtm_cookies_win=x"
                     height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript>
                     {/* <!-- End Google Tag Manager (noscript) --> */}
 
