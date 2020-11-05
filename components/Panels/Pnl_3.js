@@ -39,7 +39,7 @@ class Pnl_3 extends React.Component {
 	}
 
 	link(data) {
-		console.log('PANEL 3', data);
+		// console.log('PANEL 3', data);
 		switch (data.content_type) {
 			case 'special':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
@@ -138,14 +138,16 @@ class Pnl_3 extends React.Component {
 						<div ref={scrollRef} className="swiper-container">
 							{this.props.content.map(c => (
 								<div onClick={() => this.link(c)}  key={`${this.props.contentId}-${c.content_id}`} className="swiper-slide">
-								<div className="paid-label">
-									<div style={{ position: 'relative', display: 'flex' }}>
-										<span className="title-paid-video">Special</span>
-										<span className="icon-paid-video">
-											<img src="/icons-menu/crown_icon@3x.png" alt="icon-video"/>
-										</span>
+								{c?.premium ? (
+									<div className="paid-label">
+										<div style={{ position: 'relative', display: 'flex' }}>
+											<span className="title-paid-video">Special</span>
+											<span className="icon-paid-video">
+												<img src="/icons-menu/crown_icon@3x.png" alt="icon-video"/>
+											</span>
+										</div>
 									</div>
-								</div>
+								) : ''}
 									<div>
 										<Img 
 											alt={c.program_title} 

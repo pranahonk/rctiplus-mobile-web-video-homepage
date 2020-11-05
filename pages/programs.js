@@ -118,11 +118,12 @@ class Index extends React.Component {
     this.refPanelClip = React.createRef();
     this.refPanelPhoto = React.createRef();
     this.reference = null;
+    this.premium = 0;
   }
   componentDidMount() {
-    console.log(this.props.router.query)
+    this.premium = this.props?.server?.[this.type]?.data?.premium
     this.reference = queryString.parse(location.search).ref;
-    console.log('MOUNTED: ', this.props);
+    // console.log('MOUNTED: ', this.props);
     this.props.dispatch(userActions.getUserData());
     this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] , 'tracking-program'));
     if (this.props.router.query.content_id) {
@@ -251,25 +252,27 @@ class Index extends React.Component {
       const detailData = this.props && this.props.data[this.typeEpisode] && this.props.data[this.typeEpisode]['season-1'].data[0];
       return (
         <>
-          <Link
-            href={`/programs?id=${mainData.id}&title=${urlRegex(mainData.title)}&content_type=episode&content_id=${detailData.id}&content_title=${urlRegex(detailData.title)}`}
-            as={`/programs/${mainData.id}/${urlRegex(mainData.title)}/episode/${detailData.id}/${urlRegex(detailData.title)}${this.reference ? '?ref=' + this.reference : ''}`}
-            shallow>
-            <a onClick={ () => { 
-              this.props.dispatch(fetchPlayerUrl(detailData.id,'data-player','episode'))
-                const dataPlayer = {
-                  program_id: this.props && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data && this.props.server['program-detail'].data.id,
-                  program_title: this.props && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data && this.props.server['program-detail'].data.title,
-                  content_name: this.props && this.props.data && this.props.data['program-episode'] && this.props.data['program-episode']['season-1'] && this.props.data['program-episode']['season-1'].data && this.props.data['program-episode']['season-1'].data.title,
-                  content_type: 'episode',
-                  id: this.props && this.props.data && this.props.data['program-episode'] && this.props.data['program-episode']['season-1'] && this.props.data['program-episode']['season-1'].data && this.props.data['program-episode']['season-1'].data.id,
-                  duration: this.props && this.props.data && this.props.data['program-episode'] && this.props.data['program-episode']['season-1'] && this.props.data['program-episode']['season-1'].data && this.props.data['program-episode']['season-1'].data.duration,
-                }
-                onTrackingClick(null, null, null, 'content_click', null, null, null, dataPlayer, 'mweb_homepage_program_button_play_clicked')
-               } }>
-              <ButtonOutline icon={<PlayArrowIcon/>} text="Play" />
-            </a>
-          </Link>
+          {this.props?.data?.paid_video?.data?.is_paid ? (
+            <Link
+              href={`/programs?id=${mainData.id}&title=${urlRegex(mainData.title)}&content_type=episode&content_id=${detailData.id}&content_title=${urlRegex(detailData.title)}`}
+              as={`/programs/${mainData.id}/${urlRegex(mainData.title)}/episode/${detailData.id}/${urlRegex(detailData.title)}${this.reference ? '?ref=' + this.reference : ''}`}
+              shallow>
+              <a onClick={ () => { 
+                this.props.dispatch(fetchPlayerUrl(detailData.id,'data-player','episode'))
+                  const dataPlayer = {
+                    program_id: this.props && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data && this.props.server['program-detail'].data.id,
+                    program_title: this.props && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data && this.props.server['program-detail'].data.title,
+                    content_name: this.props && this.props.data && this.props.data['program-episode'] && this.props.data['program-episode']['season-1'] && this.props.data['program-episode']['season-1'].data && this.props.data['program-episode']['season-1'].data.title,
+                    content_type: 'episode',
+                    id: this.props && this.props.data && this.props.data['program-episode'] && this.props.data['program-episode']['season-1'] && this.props.data['program-episode']['season-1'].data && this.props.data['program-episode']['season-1'].data.id,
+                    duration: this.props && this.props.data && this.props.data['program-episode'] && this.props.data['program-episode']['season-1'] && this.props.data['program-episode']['season-1'].data && this.props.data['program-episode']['season-1'].data.duration,
+                  }
+                  onTrackingClick(null, null, null, 'content_click', null, null, null, dataPlayer, 'mweb_homepage_program_button_play_clicked')
+                } }>
+                <ButtonOutline icon={<PlayArrowIcon/>} text="Play" />
+              </a>
+            </Link>
+          ) : ''}
           { mainData.trailer_url ? (
             <Link
               href={`/programs?id=${mainData.id}&title=${urlRegex(mainData.title)}`}
@@ -763,6 +766,13 @@ class Index extends React.Component {
                   text="Description"
                   />
                 </>) : '' }
+                {!(props.router.query.content_id) && (props?.data?.paid_video?.data?.is_paid) ? 
+                (
+                  <span style={{ width: '100% !important', textAlign: 'right', display: 'inline-block' }}>
+                    <div style={{fontSize: 10}}>Expired in <strong>{ props?.data?.paid_video?.data?.order_detail?.expired_in }</strong></div>
+                    <div style={{fontSize: 10}}>(counted after first watch)</div>
+                  </span>
+                ) : ''}
               </div>
               <Collapse isOpen={this.state.isOpen}>
                 <div className="detail__content-description-wrapper">
