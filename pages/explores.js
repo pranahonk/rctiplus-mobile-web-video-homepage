@@ -378,7 +378,7 @@ class Explores extends React.Component {
 									<Row>
 										{this.state.recommendations[`genre-${this.state.selected_genre_id}`] && this.state.recommendations[`genre-${this.state.selected_genre_id}`].map((r, i) => (
 											<Col xs={4} key={i} onClick={this.link.bind(this, r)}>
-											{	true ? (
+											{	r.premium  ? (
 													<div className="paid-label">
 														<div style={{ position: 'relative', display: 'flex' }}>
 															<span className="title-paid-video">Special</span>

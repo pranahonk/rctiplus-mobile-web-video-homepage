@@ -98,7 +98,7 @@ class Result extends React.Component {
                                         
                                         {this.props.searches.search_results[i] && this.props.searches.search_results[i].status === 200 && this.props.searches.search_results[i].data.status.code === 0 && this.props.searches.search_results[i].data.data.map((c, i) => (
                                             <Col xs={4} key={i} onClick={this.link.bind(this, c, t)}>
-                                                { true ? (
+                                                { r.premium ? (
 													<div className="paid-label">
 														<div style={{ position: 'relative', display: 'flex' }}>
 															<span className="title-paid-video">Special</span>
