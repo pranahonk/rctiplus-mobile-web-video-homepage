@@ -331,8 +331,7 @@ class Trending_v2 extends React.Component {
 
     goToDetail(article) {
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-	let caption = article.title.replace(/[^\w\s]/gi, '').replace(/ +/g, '-').toLowerCase();
-        Router.push('/trending/detail/' + article.id + '/' + encodeURI(caption) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        Router.push('/trending/detail/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     getMetadata() {
