@@ -148,6 +148,12 @@ const fetchDetailEpisodeSuccess = (episode, filter) => {
     payload: episode,
   };
 };
+const fetchPaidVideo = (data) => {
+  return {
+    type: FETCH_PAID_VIDEO,
+    payload: data,
+  };
+};
 const fetchExtraSuccess = (extra, filter) => {
   return {
     type: FETCH_EXTRA_SUCCESS,
@@ -249,6 +255,13 @@ export const fetchEpisode = (programId, filter, season = 1, page = 1, length = 5
       .then(response => {
         const data = response.data;
         dispatch(fetchDetailEpisodeSuccess(data, [filter, season]));
+        if(data?.meta?.pagination?.total === 1) {
+          return axios.get(`v1/episode/${data?.data[0]?.id}/payment-detail`)
+        }
+      })
+      .then((response) => {
+        const data = response?.data || null;
+        dispatch(fetchPaidVideo(data))
       })
       .catch(error => {
         console.log(error);
@@ -453,3 +466,4 @@ export const FETCH_POST_LIKE_SUCCESS = 'FETCH_POST_LIKE_SUCCESS';
 export const TEMP_POST_LIKE_SUCCESS = 'TEMP_POST_LIKE_SUCCESS';
 export const FETCH_DETAIL_DESCRIPTION_SUCCESS = 'FETCH_DETAIL_DESCRIPTION_SUCCESS';
 export const DATA_SHARE_SEO = 'DATA_SHARE_SEO';
+export const FETCH_PAID_VIDEO = 'FETCH_PAID_VIDEO';
