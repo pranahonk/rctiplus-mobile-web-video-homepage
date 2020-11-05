@@ -14,7 +14,7 @@ const getStories = (page = 1, length = 20) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             await checkToken();
-            const response = await axios.get(`/v1/stories?page=${page}&length=${length}`);
+            const response = await axios.get(`/v1/stories?page=${page}`);
             if (response.data.status.code === 0) {
                 const data = response.data.data;
                 dispatch({ 
