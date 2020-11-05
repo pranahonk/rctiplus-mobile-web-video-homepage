@@ -41,7 +41,7 @@ class NavbarDef_v2 extends Component {
                 break;
 
             default:
-                if (this.props.router.asPath.indexOf('/trending') === 0) {
+                if (this.props.router.asPath.indexOf('/news') === 0) {
                     newsGeneralEvent('mweb_news_logo_clicked');
                 }
                 else {
@@ -66,13 +66,13 @@ class NavbarDef_v2 extends Component {
             case '/':
                 homeGeneralClicked('mweb_search_clicked');
                 break;
-            case '/trending':
-                Router.push('/trending/search');
+            case '/news':
+                Router.push('/news/search');
                 // homeGeneralClicked('mweb_search_clicked');
                 break;
 
             default:
-                if (this.props.router.asPath.indexOf('/trending') === 0) {
+                if (this.props.router.asPath.indexOf('/news') === 0) {
                     // newsGeneralEvent('mweb_news_search_clicked');
                 }
                 else {
@@ -80,8 +80,8 @@ class NavbarDef_v2 extends Component {
                 }
                 break;
         }
-        if (e.includes('/trending/')) {
-            Router.push('/trending/search');
+        if (e.includes('/news/')) {
+            Router.push('/news/search');
             return;
         }
         switch (e) {
@@ -92,7 +92,7 @@ class NavbarDef_v2 extends Component {
                 Router.push('/radio/search');
             break;
             default:
-                Router.push('/trending/search');
+                Router.push('/news/search');
         }
     }
 
@@ -183,7 +183,7 @@ class NavbarDef_v2 extends Component {
                                 Videos
                             </Button>
                         </ActiveLink>
-                        <ActiveLink activeClassName="active" href="/trending" activeMenu={'trending' + this.props.router.asPath}>
+                        <ActiveLink activeClassName="active" href="/news" activeMenu={'news' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
                                 <img className="img-menu-icon" src={'/news.svg'}/>
                                 News

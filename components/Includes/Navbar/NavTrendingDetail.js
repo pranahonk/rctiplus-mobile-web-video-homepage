@@ -66,7 +66,7 @@ class NavTrendingSearch extends Component {
                         <Row className="wr-col-trn-search">
                             <Col xs="12">
                                 <NavbarBrand onClick={() => {
-                                    if (this.props.data && this.props.router.asPath.indexOf('/trending/detail') === 0) {
+                                    if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0) {
                                         newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
                                     }
                                     this.props.pushNotif ? Router.push(this.props.src) : Router.back()

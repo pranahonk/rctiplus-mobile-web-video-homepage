@@ -14,6 +14,7 @@ import NavBack from '../../components/Includes/Navbar/NavTrendingSearch_v2';
 import { Row, Col } from 'reactstrap';
 import CloseIcon from '@material-ui/icons/Close';
 import '../../assets/scss/components/trending_search.scss';
+import { urlRegex } from '../../utils/regex';
 
 import { getCookie, setCookie, removeCookie, removeAccessToken, setAccessToken } from '../../utils/cookie';
 import { Subject } from 'rxjs';
@@ -57,7 +58,13 @@ class Search extends React.Component {
     }
 
     link(article) {
-        Router.push('/trending/detail/' + article.id + '/' + article.title.replace(/ +/g, "-").toLowerCase() + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        let category = ''
+        if (article.subcategory_name.length < 1) {
+          category = 'berita-utama';
+        } else {
+          category = urlRegex(article.subcategory_name)
+        }
+        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
     bottomScrollFetch() {
