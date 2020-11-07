@@ -40,7 +40,8 @@ class Default_v2 extends React.Component {
             if (q.header) {
                 this.header = q.header;
             }
-        } else if (asPath.indexOf('/news/detail') > -1 || asPath.indexOf('/trending/detail') > -1) {
+        }
+        if (asPath.indexOf('/news/detail') > -1 || asPath.indexOf('/trending/detail') > -1) {
             let platform = isIOS ? 'ios' : isAndroid ? 'android' : null;
             this.platform = platform
         }
