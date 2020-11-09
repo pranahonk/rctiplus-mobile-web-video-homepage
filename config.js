@@ -68,14 +68,15 @@ export const GRAPH_SITEMAP = {
 export const SITE_NAME = 'RCTI+';
 export const UTM_NAME = (utm, utmCampaign, utmMedium, platform = 'mweb') => {
     switch (utm) {
-        case utm === 'trending':
+        case 'trending':
+        case 'news':
             if (platform === 'ios') {
-                return '?utm_source=RplusiOsApp&utm_medium=share_' + utmCampaign + '&utm_campaign=news' + utmMedium;
+                return '?utm_source=RplusiOsApp&utm_medium=share_' + utmCampaign + '&utm_campaign=' + utm + utmMedium;
             }
             if (platform === 'android') {
-                return '?utm_source=RplusaOsApp&utm_medium=sharenews&utm_campaign=trending';
+                return '?utm_source=RplusaOsApp&utm_medium=sharenews&utm_campaign=' + utm;
             }
-            return '?utm_source=Rplusmweb&utm_medium=sharenews&utm_campaign=trending';
+            return '?utm_source=Rplusmweb&utm_medium=sharenews&utm_campaign=' + utm;
         default:
             return '?utm_source=Rplusmweb&utm_medium=share_' + utmMedium + '&utm_campaign=news' + utmCampaign;
     }
