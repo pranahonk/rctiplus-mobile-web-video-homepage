@@ -252,8 +252,7 @@ class Index extends React.Component {
       const detailData = this.props && this.props.data[this.typeEpisode] && this.props.data[this.typeEpisode]['season-1'].data[0];
       return (
         <>
-          {this.props?.data?.paid_video?.data?.is_paid ? (
-            <Link
+          {(this.props?.data?.paid_video?.data?.is_paid && this.props?.server['program-detail'].data?.premium === 1) || this.props?.server['program-detail'].data?.premium === 0 ? (<Link
               href={`/programs?id=${mainData.id}&title=${urlRegex(mainData.title)}&content_type=episode&content_id=${detailData.id}&content_title=${urlRegex(detailData.title)}`}
               as={`/programs/${mainData.id}/${urlRegex(mainData.title)}/episode/${detailData.id}/${urlRegex(detailData.title)}${this.reference ? '?ref=' + this.reference : ''}`}
               shallow>
@@ -271,8 +270,7 @@ class Index extends React.Component {
                 } }>
                 <ButtonOutline icon={<PlayArrowIcon/>} text="Play" />
               </a>
-            </Link>
-          ) : ''}
+            </Link>) : ''}
           { mainData.trailer_url ? (
             <Link
               href={`/programs?id=${mainData.id}&title=${urlRegex(mainData.title)}`}
