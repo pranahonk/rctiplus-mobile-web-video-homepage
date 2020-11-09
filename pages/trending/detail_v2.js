@@ -196,8 +196,10 @@ class Detail extends React.Component {
     }
 
     renderActionButton(scrolledDown) {
-        const URL_SHARE = REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath.substring(0 , this.props.router.asPath.indexOf('?')));
-        // const URL_SHARE = REDIRECT_WEB_DESKTOP + this.props.router.asPath;
+        const asPath = this.props.router.asPath;
+        const getQryParams = asPath.indexOf('?') > -1 ? asPath.substring(0 , asPath.indexOf('?')) : asPath;
+        const URL_SHARE = REDIRECT_WEB_DESKTOP + encodeURI(getQryParams);
+        // const URL_SHARE = REDIRECT_WEB_DESKTOP + asPath;
         const cdata = this.state.trending_detail_data;
         let hashtags = ['rcti', 'rctinews'];
         return (
@@ -217,13 +219,13 @@ class Detail extends React.Component {
                     </div>
                     ) : this.platform && (this.platform == 'android') ?
                     (
-                        <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath) + UTM_NAME('trending', this.props.router.query.id, 'wa', 'android')}`} url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'fb', 'android')}>
+                        <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${REDIRECT_WEB_DESKTOP + encodeURI(asPath) + UTM_NAME('news', this.props.router.query.id, 'wa', 'android')}`} url={URL_SHARE + UTM_NAME('news', this.props.router.query.id, 'fb', 'android')}>
                             <i className="fab fa-facebook-f"></i>
                         </FacebookShareButton>
                     )
                     :
                     (
-                        <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'fb')}`} url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'fb')}>
+                        <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${URL_SHARE + UTM_NAME('news', this.props.router.query.id, 'fb')}`} url={URL_SHARE + UTM_NAME('news', this.props.router.query.id, 'fb')}>
                             <i className="fab fa-facebook-f"></i>
                         </FacebookShareButton>
                     )}
@@ -248,7 +250,7 @@ class Detail extends React.Component {
                             <i className="fab fa-whatsapp"></i>
                         </div>
                     ) : (
-                        <WhatsappShareButton title={cdata.title} url={REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath) + UTM_NAME('trending', this.props.router.query.id, 'wa')} separator=" - ">
+                        <WhatsappShareButton title={cdata.title} url={REDIRECT_WEB_DESKTOP + encodeURI(asPath) + UTM_NAME('trending', this.props.router.query.id, 'wa')} separator=" - ">
                             <i className="fab fa-whatsapp"></i>
                         </WhatsappShareButton>
                     )}
@@ -275,7 +277,7 @@ class Detail extends React.Component {
                     )
                     :
                     (
-                        <TwitterShareButton title={cdata.title} url={REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath) + UTM_NAME('trending', this.props.router.query.id, 'twit')} hashtags={hashtags}>
+                        <TwitterShareButton title={cdata.title} url={REDIRECT_WEB_DESKTOP + encodeURI(asPath) + UTM_NAME('trending', this.props.router.query.id, 'twit')} hashtags={hashtags}>
                             <i className="fab fa-twitter"></i>
                         </TwitterShareButton>
                     )}
@@ -299,7 +301,7 @@ class Detail extends React.Component {
                             <i className="fab fa-line"></i>
                         </LineShareButton>
                     : (
-                        <LineShareButton url={REDIRECT_WEB_DESKTOP + encodeURI(this.props.router.asPath) + UTM_NAME('trending', this.props.router.query.id, 'line')} title={cdata.title}>
+                        <LineShareButton url={REDIRECT_WEB_DESKTOP + encodeURI(asPath) + UTM_NAME('trending', this.props.router.query.id, 'line')} title={cdata.title}>
                             <i className="fab fa-line"></i>
                         </LineShareButton>
                     )}
