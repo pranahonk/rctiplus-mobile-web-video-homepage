@@ -76,7 +76,7 @@ class NavTrendingSearch extends Component {
                                         if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0) {
                                             newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
                                         }
-                                        this.props.pushNotif ? Router.push(this.props.src) : Router.back()
+                                        document.referrer.length === 0 || document.referrer.indexOf(Router.router.query.id) > -1 ? Router.push('/news'): Router.back()
                                     }
                                 }} style={{color: 'white'}}>
                                 <ArrowBackIcon/> <span className="trendingHeader"></span>
