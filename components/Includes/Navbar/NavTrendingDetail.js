@@ -66,10 +66,18 @@ class NavTrendingSearch extends Component {
                         <Row className="wr-col-trn-search">
                             <Col xs="12">
                                 <NavbarBrand onClick={() => {
-                                    if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0) {
-                                        newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
+                                    if (
+                                        this.props.router.asPath.indexOf('utm_source') > -1 ||
+                                        this.props.router.asPath.indexOf('utm_medium') > -1 ||
+                                        this.props.router.asPath.indexOf('platform') > -1
+                                    ) {
+                                        Router.push('/news');
+                                    } else {
+                                        if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0) {
+                                            newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
+                                        }
+                                        this.props.pushNotif ? Router.push(this.props.src) : Router.back()
                                     }
-                                    this.props.pushNotif ? Router.push(this.props.src) : Router.back()
                                 }} style={{color: 'white'}}>
                                 <ArrowBackIcon/> <span className="trendingHeader"></span>
                             </NavbarBrand>
