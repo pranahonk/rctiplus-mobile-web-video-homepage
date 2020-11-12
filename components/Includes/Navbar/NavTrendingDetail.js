@@ -57,8 +57,6 @@ class NavTrendingSearch extends Component {
         } else {
             this.setState({is_top: false});
         }
-
-        console.log('props >>', this.props);
     }
 
     render() {
