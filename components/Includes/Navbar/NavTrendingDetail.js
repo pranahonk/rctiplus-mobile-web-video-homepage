@@ -14,7 +14,7 @@ import { Navbar, NavbarBrand, Col, Row } from 'reactstrap';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import StatusNotification from './StatusNotification';
-
+import { isIOS, isAndroid } from "react-device-detect";
 
 class NavTrendingSearch extends Component {
     constructor(props) {
@@ -66,16 +66,17 @@ class NavTrendingSearch extends Component {
                         <Row className="wr-col-trn-search">
                             <Col xs="12">
                                 <NavbarBrand onClick={() => {
+                                    if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0) {
+                                        newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
+                                    }
                                     if (
-                                        this.props.router.asPath.indexOf('utm_source') > -1 ||
-                                        this.props.router.asPath.indexOf('utm_medium') > -1 ||
-                                        this.props.router.asPath.indexOf('platform') > -1
+                                        this.props.router.asPath.indexOf('utm_source') > -1 &&
+                                        this.props.router.asPath.indexOf('platform') > -1 &&
+                                        this.props.router.asPath.indexOf('utm_medium') > -1
                                     ) {
-                                        Router.push('/news');
+                                        let platform = isIOS ? 'ios' : isAndroid ? 'android' : 'mweb';
+                                        Router.push(`/news?platform=${platform}`);
                                     } else {
-                                        if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0) {
-                                            newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
-                                        }
                                         document.referrer.length === 0 || document.referrer.indexOf(Router.router.query.id) > -1 ? Router.push('/news'): Router.back()
                                     }
                                 }} style={{color: 'white'}}>
