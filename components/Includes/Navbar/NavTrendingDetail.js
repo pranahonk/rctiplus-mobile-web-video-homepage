@@ -14,7 +14,7 @@ import { Navbar, NavbarBrand, Col, Row } from 'reactstrap';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import StatusNotification from './StatusNotification';
-
+import { isIOS, isAndroid } from 'react-device-detect';
 
 class NavTrendingSearch extends Component {
     constructor(props) {
@@ -66,17 +66,15 @@ class NavTrendingSearch extends Component {
                         <Row className="wr-col-trn-search">
                             <Col xs="12">
                                 <NavbarBrand onClick={() => {
-                                    if (
-                                        this.props.router.asPath.indexOf('utm_source') > -1 ||
-                                        this.props.router.asPath.indexOf('utm_medium') > -1 ||
-                                        this.props.router.asPath.indexOf('platform') > -1
-                                    ) {
-                                        Router.push('/news');
+                                    if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0) {
+                                        newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
+                                    }
+                                    if (this.props.router.asPath.indexOf('utm_source') > -1) {
+                                        let platform = isIOS ? 'ios' : isAndroid ? 'android' : 'mweb';
+                                        let Isplatform = this.props.router.asPath.indexOf('RplusaOsApp') > -1 ? `?platform=${platform}` : '';
+                                        Router.push(`/news${Isplatform}`);
                                     } else {
-                                        if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0) {
-                                            newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
-                                        }
-                                        this.props.pushNotif ? Router.push(this.props.src) : Router.back()
+                                        document.referrer.length === 0 || document.referrer.indexOf(Router.router.query.id) > -1 ? Router.push('/news'): Router.back()
                                     }
                                 }} style={{color: 'white'}}>
                                 <ArrowBackIcon/> <span className="trendingHeader"></span>
