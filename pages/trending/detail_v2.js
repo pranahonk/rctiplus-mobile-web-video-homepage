@@ -380,7 +380,7 @@ class Detail extends React.Component {
                 {this.state.iframe_opened ? (<NavBackIframe closeFunction={() => {
                     this.setState({ iframe_opened: false });
                 }} data={cdata} disableScrollListener />) : (
-                    <NavBack pushNotif={this.pushNotif} src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`} data={cdata} disableScrollListener />
+                    <NavBack pushNotif={this.pushNotif} params={`?token=${this.accessToken}&platform=${this.platform}`} src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`} data={cdata} disableScrollListener />
                 )}
 
                 <StickyContainer>

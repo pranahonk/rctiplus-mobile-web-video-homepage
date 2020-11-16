@@ -72,9 +72,10 @@ class NavTrendingSearch extends Component {
                                     }
                                     if (this.props.router.asPath.indexOf('utm_source') > -1) {
                                         let Isplatform = this.props.router.asPath.indexOf('RplusaOsApp') > -1 ? `?platform=${platform}` : '';
-                                        Router.push(`/news${Isplatform}`);
+                                        // Router.push(`/news${Isplatform}`);
+                                        Router.push(`/news?${this.props.params}`)
                                     } else {
-                                        document.referrer.length === 0 || document.referrer.indexOf(Router.router.query.id) > -1 ? Router.push(`/news?platform=${platform}`): Router.back()
+                                        document.referrer.length === 0 || document.referrer.indexOf(Router.router.query.id) > -1 ? Router.push(`/news?${this.props.params}`): Router.back()
                                     }
                                 }} style={{color: 'white'}}>
                                 <ArrowBackIcon/> <span className="trendingHeader"></span>
