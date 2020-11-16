@@ -46,9 +46,9 @@ const UIVersion = '2.0';
     server.get('/profile', (req, res) => {
       return app.render(req, res, '/profile');
     });
-    server.get('/dfp', (req, res) => {
-      return app.render(req, res, '/dfp');
-    });
+    // server.get('/dfp', (req, res) => {
+    //   return app.render(req, res, '/dfp');
+    // });
     server.get('/player', (req, res) => {
       return app.render(req, res, '/player');
     });
