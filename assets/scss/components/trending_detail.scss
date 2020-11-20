@@ -83,6 +83,12 @@
             font-family: 'Open Sans' !important;
             line-height: 1.64 !important;
         }
+        p + p {
+            margin-bottom: 1rem;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
     }
     .box-social{
         padding:15px;
