@@ -260,28 +260,57 @@ class Trending_v2 extends React.Component {
         const subcategoryId = this.props.query.subcategory_id;
     }
 
+    setChannelTabs(isLoggedIn, sortedCategories, savedCategoriesNews) {
+        let params = {is_tabs_loading: false};
+        params['active_tab'] = Object.keys(this.props.query).length > 0 ? 
+        (
+            sortedCategories.findIndex(
+                s => s.id == ((this.props.query) && this.props.query.subcategory_id) && parseInt(this.props.query.subcategory_id)
+            ) != -1 ? ((this.props.query && this.props.query.subcategory_id) && this.props.query.subcategory_id.toString()) : sortedCategories[0].id.toString()
+        ) : sortedCategories[0].id.toString();
+
+        this.props.getChannels()
+        .then(response => {
+            let channels = response.data.data;
+            console.log('chans >>', response.data.data, 'response >>', response);
+            if (!isLoggedIn) {
+                let savedChannels = savedCategoriesNews;
+                for (let i = 0; i < channels.length; i++) {
+                    if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
+                        channels.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+            let chan = channels.filter((c) => c.name === humanizeStr(this.props.query.subcategory_title));
+            if (chan.length > 0) {
+                let filterNewChannel = savedCategoriesNews.filter((cn) => cn.id === chan[0].id);
+                params['active_tab'] = chan[0].id.toString();
+                params['saved_tabs'] = (this.state.saved_tabs).concat(chan);
+                params['tabs'] = (this.state.tabs).concat(chan);
+                console.log('sortedCategories >>', sortedCategories)
+                sortedCategories = sortedCategories.concat(chan);
+                let getListChannels = getNewsChannels();
+                setNewsChannels(getListChannels.concat(chan))
+            }
+
+            params['tabs'] = sortedCategories;
+            this.setState(params, () => {
+                console.log('this.state >>', this.state);
+                this.loadContents(this.state.active_tab);
+            });
+        })
+        .catch(error => {
+            console.log(error);
+            this.loadContents(this.state.active_tab);
+        });
+    }
+
     fetchData(isLoggedIn = false) {
         let params = {};
-        // const newsChannels = JSON.parse(cookie.get('NEWS_CHANNELS'));
-        // const subcategoryTitle = humanizeStr(this.props.query.subcategory_title);
-        // const subcategoryId = this.props.query.subcategory_id;
-
-        // let activeChannel = newsChannels.filter((tab) => tab.id === 1 && tab.name === subcategoryTitle);
-        // console.log('this props >>', this.props);
-        // if (activeChannel.length === 0) {
-        //     const savedTabs = this.state.saved_tabs;
-        //     (
-        //         savedTabs.filter((tab) => tab.id === subcategoryId && tab.name === subcategoryTitle) === 0
-        //     ) && (this.setSavedTabs)
-        // } else {
-        //     // console.log('activeChannel >>', activeChannel);
-        //     params['active_tab'] = activeChannel[0].id;
-        // }
-
         const savedCategoriesNews = getNewsChannels();
         params['saved_tabs'] = savedCategoriesNews;
-        const me = this;
-        me.setState(params, () => {
+        this.setState(params, () => {
             this.props.getCategory()
                 .then(response => {
                     let categories = response.data.data;
@@ -320,51 +349,7 @@ class Trending_v2 extends React.Component {
                     }
 
                     if (sortedCategories.length > 0) {
-                        let params = {is_tabs_loading: false};
-                        console.log('props >>', this.props, 'sortedCategories >>', sortedCategories);
-                        params['active_tab'] = Object.keys(this.props.query).length > 0 ? 
-                        (
-                            sortedCategories.findIndex(
-                                s => s.id == ((this.props.query) && this.props.query.subcategory_id) && parseInt(this.props.query.subcategory_id)
-                            ) != -1 ? ((this.props.query && this.props.query.subcategory_id) && this.props.query.subcategory_id.toString()) : sortedCategories[0].id.toString()
-                        ) : sortedCategories[0].id.toString();
-
-                        this.props.getChannels()
-                        .then(response => {
-                            let channels = response.data.data;
-                            if (!isLoggedIn) {
-                                let savedChannels = savedCategoriesNews;
-                                for (let i = 0; i < channels.length; i++) {
-                                    if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
-                                        channels.splice(i, 1);
-                                        i--;
-                                    }
-                                }
-                            }
-                            console.log('subcategory_title >>', humanizeStr(this.props.query.subcategory_title));
-                            let chan = channels.filter((c) => c.name === humanizeStr(this.props.query.subcategory_title));
-                            if (chan.length > 0) {
-                                let filterNewChannel = savedCategoriesNews.filter((cn) => cn.id === chan[0].id);
-                                console.log('filterNewChannel >>', filterNewChannel, 'savedCategoriesNews >>', savedCategoriesNews);
-                                params['active_tab'] = chan[0].id.toString();
-                                params['saved_tabs'] = (this.state.saved_tabs).concat(chan);
-                                params['tabs'] = (this.state.tabs).concat(chan);
-                                // if (filterNewChannel.length === 0) {
-                                // } else {
-
-                                // }
-                            }
-                            console.log('channels >>', chan);
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        });
-                        params['tabs'] = sortedCategories;
-                        console.log('params >>', params);
-                        me.setState(params, () => {
-                            console.log('state >>>', this.state, 'props >>', this.props)
-                            // this.loadContents(this.state.active_tab);
-                        });
+                        this.setChannelTabs(isLoggedIn, sortedCategories, savedCategoriesNews);
                     }
                 })
                 .catch(error => {
@@ -419,7 +404,6 @@ class Trending_v2 extends React.Component {
 
     render() {
         const metadata = this.getMetadata();
-        // console.log(this.state.articles['20']);
         return (
             <Layout title={metadata.title}>
                 <Head>
