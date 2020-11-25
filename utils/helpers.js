@@ -195,3 +195,12 @@ export const getTruncate = (text = '', clamp = '...', length = 100) => {
 
     return tcText + clamp;
 }
+
+export const humanizeStr = (str) => {
+    var i, frags = str.split('-');
+    for (i=0; i<frags.length; i++) {
+        frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
+    }
+ 
+    return frags.join(' ');
+}
