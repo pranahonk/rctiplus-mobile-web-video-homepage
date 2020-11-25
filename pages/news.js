@@ -255,11 +255,6 @@ class Trending_v2 extends React.Component {
         // console.log($('#iframe-ads-1').contents().find($('div-gpt-ad-1591240670591-0')).css('display'))
     }
 
-    setSavedTabs() {
-        const subcategoryTitle = humanizeStr(this.props.query.subcategory_title);
-        const subcategoryId = this.props.query.subcategory_id;
-    }
-
     setChannelTabs(isLoggedIn, sortedCategories, savedCategoriesNews) {
         let params = {is_tabs_loading: false};
         params['active_tab'] = Object.keys(this.props.query).length > 0 ? 
