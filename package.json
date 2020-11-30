@@ -86,6 +86,7 @@
     "localforage": "^1.7.3",
     "lodash": "^4.17.15",
     "modernizr": "^3.6.0",
+    "moment": "^2.29.1",
     "morgan": "^1.9.1",
     "next": "^9.1.7",
     "next-offline": "^4.0.2",

@@ -15,24 +15,23 @@ axios.interceptors.request.use(async (request) => {
     return request;
 });
 
-// const initializeFirebase = () => {
-//     return () => {
-//         if (!firebaseApp.apps.length) {
-//             const configFirebase = JSON.stringify({
-//                 apiKey: process.env.FIREBASE_apiKey,
-//                 authDomain: process.env.FIREBASE_authDomain,
-//                 databaseURL: process.env.FIREBASE_databaseURL,
-//                 projectId: process.env.FIREBASE_projectId,
-//                 storageBucket: process.env.FIREBASE_storageBucket,
-//                 messagingSenderId: process.env.FIREBASE_messagingSenderId,
-//                 appId: process.env.FIREBASE_appId,
-//                 measurementId: process.env.FIREBASE_measurementId
-//             });
-//             firebaseApp.initializeApp(JSON.parse(configFirebase));
-//             firebaseApp.analytics();
-//         }
-//     };
-// };
+const initializeFirebase = () => {
+    return () => {
+        if (!firebaseApp.apps.length) {
+            const configFirebase = JSON.stringify({
+                apiKey: process.env.FIREBASE_apiKey,
+                authDomain: process.env.FIREBASE_authDomain,
+                databaseURL: process.env.FIREBASE_databaseURL,
+                projectId: process.env.FIREBASE_projectId,
+                storageBucket: process.env.FIREBASE_storageBucket,
+                messagingSenderId: process.env.FIREBASE_messagingSenderId,
+                appId: process.env.FIREBASE_appId,
+                measurementId: process.env.FIREBASE_measurementId
+            });
+            firebaseApp.initializeApp(JSON.parse(configFirebase));
+        }
+    };
+};
 
 const listenChat = id => {
     let db = firebaseApp.firestore();
@@ -89,7 +88,7 @@ const getChatMessages = id => {
 };
 
 export default {
-    // initializeFirebase,
+    initializeFirebase,
     listenChat,
     setChat,
     getChatMessages,

@@ -13,6 +13,8 @@ import queryString from 'query-string';
 import { Offline } from 'react-detect-offline';
 import { isIOS } from 'react-device-detect';
 import MuteChat from '../../components/Includes/Common/MuteChat';
+import moment from 'moment'
+const ShareIcon = dynamic(() => import('../../components/Includes/IconCustom/ShareIcon'));
 
 
 import initialize from '../../utils/initialize';
@@ -47,7 +49,7 @@ import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import ShareIcon from '@material-ui/icons/Share';
+// import ShareIcon from '@material-ui/icons/Share';
 import PauseIcon from '../../components/Includes/Common/PauseIcon';
 import Wrench from '../../components/Includes/Common/Wrench';
 import MissedIcon from '../../components/Includes/Common/Missed';
@@ -104,7 +106,7 @@ class LiveEvent extends React.Component {
 			}
 		};
 		let res = null;
-		if (ctx.asPath.match('/missed-event/')) {
+		if (ctx.asPath.match('/missed-event/') || ctx.asPath.match('/past-event/')) {
 			res = await Promise.all([
 				fetch(`${DEV_API}/api/v1/missed-event/${id}`, options),
 				fetch(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${getUidAppier()}`, options)
@@ -183,7 +185,7 @@ class LiveEvent extends React.Component {
 			quality_selector_shown: false,
 			playing: false,
             user_active: false,
-			selected_tab: 'live-event',
+			selected_tab: 'now-playing',
 			is_live: this.isLive(),
 			action_sheet: false,
 			caption: '',
@@ -233,16 +235,19 @@ class LiveEvent extends React.Component {
 		}
 	}
 	componentDidMount() {
+		this.getAllLiveEvent();
 		if(this.props.router.asPath.match('/live-event/')) this.loadChatMessages(this.props.router.query.id);
 		initGA();
+		console.log('live-event')
+		this.props.initializeFirebase();
 		this.getAvailable();
-		if (this.props.router.asPath.match('/missed-event/')) {
+		if (this.props.router.asPath.match('/past-event/')) {
 			this.setState({
-				selected_tab: 'missed-event',
+				selected_tab: 'past-events',
 			});
 		}
-		this.getMissedEvent();
-		this.getLiveEvent();
+		// this.getMissedEvent();
+		// this.getLiveEvent();
 		this.props.getUserData()
 			.then(response => {
 				console.log(response);
@@ -270,6 +275,28 @@ class LiveEvent extends React.Component {
         console.log(error);
       });
 	}
+	getAllLiveEvent() {
+    this.props.setPageLoader();
+    this.props.getAllLiveEvent().then((res) => {
+			this.props.unsetPageLoader();
+			console.log('resresrrserserser', res.data.data)
+			if(res.data.data.now_playing_event.data.length > 0) {
+				this.setState({ selected_tab: 'now-playing' })
+				return false
+			}
+			if(res.data.data.upcoming_event.data.length > 0) {
+				this.setState({ selected_tab: 'upcoming-events' })
+				return false
+			}
+			if(res.data.data.past_event.data.length > 0) {
+				this.setState({ selected_tab: 'past-events' })
+				return false
+			}
+    })
+    .catch((err) => {
+      this.props.unsetPageLoader();
+    })
+  }
 	getLiveEvent() {
 		this.props.setPageLoader();
 		this.props.setSeamlessLoad(true);
@@ -340,7 +367,7 @@ class LiveEvent extends React.Component {
 			}
 			return false;
 		}
-		if(this.props.router.asPath.match('/missed-event/')) {
+		if(this.props.router.asPath.match('/past-event/')) {
 			// console.log("testt2")
 			this.setState({ isAvailable: true })
 			return false
@@ -578,360 +605,6 @@ class LiveEvent extends React.Component {
 
 		}
 	}
-	changeQualityIconButton() {
-        const self = this;
-        setTimeout(() => {
-            const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
-            if (qualitySelectorElement.length > 0) {
-                const childs = qualitySelectorElement[0].childNodes;
-                for (let i = 0; i < childs.length; i++) {
-                    if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
-                        childs[i].addEventListener('touchstart', function() {
-                            console.log('touch');
-                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
-                        });
-                        const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
-                        for (let j = 0; j < qualityItems.length; j++) {
-                            qualityItems[j].addEventListener('touchstart', function() {
-                                console.log('touch');
-                                self.setState({ quality_selector_shown: false });
-                            });
-                        }
-                        childs[i].addEventListener('click', function() {
-                            console.log('click');
-                            self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
-                        });
-
-                        const grandChilds = childs[i].childNodes;
-                        for (let j = 0; j < grandChilds.length; j++) {
-                            if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
-                                grandChilds[j].classList.remove('vjs-icon-hd');
-                                grandChilds[j].innerHTML = '<i style="transform: scale(1.5)" class="fas fa-cog"></i>';
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-        }, 1000);
-    }
-
-
-	// initPlayer() {
-	// 	if (this.videoNode) {
-	// 		let url = '';
-	// 		let vmap = '';
-	// 		let id = '';
-	// 		let name = '';
-	// 		let type = '';
-	// 		let portrait_image = '';
-	// 		let asset_name = '';
-	// 		let asset_cdn = '';
-	// 		if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
-	// 			url = this.props.selected_event_url.data.url;
-	// 			vmap = this.props.selected_event_url.data[process.env.VMAP_KEY];
-	// 			asset_name = this.props.selected_event_url.data.assets_name;
-	// 			id = this.props.selected_event.data.id;
-	// 			name = this.props.selected_event.data.name;
-	// 			type = this.props.selected_event.data.type;
-	// 			portrait_image = this.props.selected_event.data.portrait_image;
-	// 			if(this.props.router.asPath.match('/live-event/')) this.loadChatMessages(id);
-	// 			this.statusChatBlock(id);
-	// 			asset_cdn = this.props.selected_event_url.data.asset_cdn;
-	// 		}
-	// 		const self = this;
-
-	// 		// console.log(vmap);
-	// 		// this.props.getVmapResponse(vmap)
-	// 		// 	.then(response => {
-	// 		// 		console.log(response);
-	// 		// 	})
-	// 		// 	.catch(error => {
-	// 		// 		console.log(error.message);
-	// 		// 	});
-
-	// 		videojs.registerPlugin('hlsQualitySelector', qualitySelector);
-	// 		this.player = videojs(this.videoNode, {
-	// 			autoplay: true,
-	// 			controls: true,
-	// 			fluid: true,
-	// 			muted: isIOS,
-	// 			aspectratio: '16:9',
-	// 			fill: true,
-	// 			errorDisplay: false,
-	// 			html5: {
-	// 				hls: {
-	// 					overrideNative: true,
-	// 				},
-	// 				nativeAudioTracks: false,
-	// 				nativeVideoTracks: false,
-	// 			},
-	// 			sources: [{
-	// 				src: url,
-	// 				type: url.match(/.mp4$/) ? 'video/mp4' : 'application/x-mpegURL',
-	// 			}]
-	// 		}, function onPlayerReady() {
-	// 			console.log('onPlayerReady', this);
-	// 			const vm = this;
-	// 			const reloadOptions = {
-	// 				errorInterval: 50,
-	// 			};
-	// 			vm.reloadSourceOnError(reloadOptions);
-	// 			if(isIOS) {
-  //                   vm.muted(true)
-	// 				const wrapElement = document.getElementsByClassName('video-js');
-	// 				console.log(wrapElement)
-  //                   if(wrapElement[0] !== undefined) {
-	// 					const elementCreateWrapper = document.createElement('btn');
-	// 					const elementMuteIcon = document.createElement('span');
-	// 					elementCreateWrapper.classList.add('jwplayer-vol-off');
-	// 					elementCreateWrapper.innerText = 'Tap to unmute ';
-	// 					wrapElement[0].appendChild(elementCreateWrapper);
-	// 					elementCreateWrapper.appendChild(elementMuteIcon);
-	// 					elementCreateWrapper.addEventListener('click', function() {
-	// 						console.log('mute video');
-	// 						if (elementCreateWrapper === null) {
-	// 							vm.muted(false);
-	// 							elementCreateWrapper.classList.add('jwplayer-mute');
-	// 							elementCreateWrapper.classList.remove('jwplayer-full');
-	// 						}
-	// 						else {
-	// 							vm.muted(false);
-	// 							elementCreateWrapper.classList.add('jwplayer-full');
-	// 							elementCreateWrapper.classList.remove('jwplayer-mute');
-	// 						}
-	// 					});
-	// 				}
-	// 			}
-
-	// 			const player = this;
-	// 			const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
-
-	// 			const customTags = {
-  //                   app_version: process.env.APP_VERSION,
-  //                   carrier: 'N/A',
-  //                   connection_type: 'N/A',
-	// 				content_type: self.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event',
-	// 				section_page: self.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event',
-  //                   content_id: id.toString(),
-	// 				program_name: name,
-  //                   tv_id: 'N/A',
-  //                   tv_name: 'N/A',
-  //                   date_video: 'N/A',
-  //                   genre: 'N/A',
-  //                   page_title: 'N/A',
-  //                   page_view: 'N/A',
-  //                   program_id: 'N/A',
-  //                   screen_mode: 'portrait',
-  //                   time_video: 'N/A',
-  //                   viewer_id: getUserId().toString(),
-	// 				application_name: 'RCTI+ MWEB',
-	// 				genre: 'N/A'
-  //               };
-
-	// 			this.convivaTracker = convivaVideoJs(asset_name, player, self.props.router.asPath.match('/missed-event/') ? player.duration() : true, url, 'Live Event ' + assetName.toUpperCase(), customTags, asset_cdn);
-	// 			this.convivaTracker.createSession();
-
-	// 			if(self.props.router.asPath.match('/missed-event/')) {
-	// 				player.seekButtons({
-	// 					forward: 10,
-	// 					back: 10
-	// 				});
-	// 				setTimeout(() => {
-	// 					self.setSkipButtonCentered();
-	// 				}, 2000);
-	// 				window.onresize = () => {
-	// 					self.setSkipButtonCentered();
-	// 				};
-	// 			}
-
-	// 		});
-	// 		videojs.registerPlugin('hlsQualitySelector', qualitySelector);
-	// 		this.player.ready(function () {
-	// 			const vm = this
-	// 			const promise = vm.play();
-	// 			if (promise !== undefined) {
-	// 				promise.then(() => console.log('play'))
-	// 					.catch((err) => console.log('err'))
-	// 			}
-
-	// 			setTimeout(() => {
-	// 				self.setupPlayerBehavior();
-  //                   self.changeQualityIconButton();
-  //               }, 100);
-	// 		});
-
-	// 		window.onorientationchange = () => {
-  //               if (!isIOS) {
-	// 				this.player.userActive(false);
-	// 				if (self.props.router.asPath.match('/missed-event/')) {
-	// 					setTimeout(() => {
-	// 						this.setState({ screen_width: window.outerWidth }, () => {
-	// 							let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
-	// 							this.setSkipButtonCentered(orientation);
-	// 						});
-	// 					}, 1000);
-	// 				}
-  //               }
-  //           };
-
-	// 		this.player.on('useractive', () => {
-  //               if (!this.player.paused()) {
-  //                   const seekButtons = document.getElementsByClassName('vjs-seek-button');
-  //                   for (let i = 0; i < seekButtons.length; i++) {
-  //                       seekButtons[i].style.display = 'block';
-  //                   }
-
-  //                   this.setState({ user_active: true });
-  //               }
-  //           });
-
-  //           this.player.on('userinactive', () => {
-  //               if (!this.player.paused()) {
-  //                   const seekButtons = document.getElementsByClassName('vjs-seek-button');
-  //                   for (let i = 0; i < seekButtons.length; i++) {
-  //                       seekButtons[i].style.display = 'none';
-  //                   }
-
-  //                   this.setState({ user_active: false });
-  //               }
-
-  //               if (this.state.quality_selector_shown) {
-  //                   triggerQualityButtonClick('inactive');
-  //               }
-  //           });
-
-	// 		this.player.on('fullscreenchange', () => {
-	// 			if (screen.orientation.type === 'portrait-primary') {
-	// 				screen.orientation.lock("landscape-primary");
-	// 			}
-	// 			if (screen.orientation.type === 'landscape-primary') {
-	// 				screen.orientation.lock("portrait-primary");
-	// 			}
-	// 		});
-
-	// 		let errorCount = 0;
-	// 		let isExecuting = false;
-	// 		this.player.on('error', (e) => {
-	// 			if (isIOS) {
-	// 				console.log(e);
-	// 				if (!isExecuting) {
-	// 					isExecuting = true;
-	// 					if (errorCount <= 1) {
-	// 						this.player.error(null);
-	// 					}
-	// 					setTimeout(() => {
-	// 						this.player.ready(() => {
-	// 							console.log('READY');
-	// 							if (errorCount++ <= 1) {
-	// 								this.player.src([{
-	// 									src: url,
-	// 									type: url.match(/.mp4$/) ? 'video/mp4' : 'application/x-mpegURL',
-	// 								}]);
-	// 							}
-	// 						});
-	// 						isExecuting = false;
-	// 					}, 1000);
-	// 				}
-
-	// 			}
-	// 			else {
-	// 				console.log('err');
-	// 				this.setState({
-	// 					error: true,
-	// 				});
-	// 			}
-
-	// 		});
-	// 		this.player.on('ended', () => {
-	// 			if (!isIOS) {
-	// 				if(!this.state.is_live) {
-	// 					this.setState({
-	// 						errorEnd: true,
-	// 					});
-	// 				}
-	// 			}
-	// 		});
-	// 		this.player.hlsQualitySelector({
-	// 			displayCurrentQuality: true,
-	// 			identifyBy: 'bitrate'
-	// 		});
-
-	// 		this.disconnectHandler = null;
-	// 		this.player.on('waiting', (e) => {
-	// 			const playButton = document.getElementsByClassName('vjs-big-play-button');
-  //               if (playButton.length > 0) {
-  //                   playButton[0].style.display = 'none';
-	// 			}
-	// 			if (this.disconnectHandler) {
-  //                   clearTimeout(this.disconnectHandler);
-  //                   this.disconnectHandler = null;
-  //               }
-
-	// 			this.disconnectHandler = setTimeout(() => {
-	// 				this.setState({
-	// 					error: true,
-	// 				});
-	// 			}, 40000);
-	// 		})
-
-	// 		this.player.on('playing', () => {
-	// 			if (this.disconnectHandler) {
-	// 				clearTimeout(this.disconnectHandler);
-	// 			}
-
-	// 			this.setState({ playing: true });
-	// 		});
-
-	// 		this.player.on('ads-ad-started', () => {
-	// 			console.log('ADS STARTED');
-  //               const playButton = document.getElementsByClassName('vjs-big-play-button');
-  //               if (playButton.length > 0) {
-  //                   playButton[0].style.display = 'none';
-  //               }
-  //           });
-
-  //           this.player.on('play', () => {
-  //               const seekButtons = document.getElementsByClassName('vjs-seek-button');
-  //               for (let i = 0; i < seekButtons.length; i++) {
-  //                   seekButtons[i].style.display = 'none';
-  //               }
-
-  //               const playButton = document.getElementsByClassName('vjs-big-play-button');
-  //               if (playButton.length > 0) {
-  //                   playButton[0].style.display = 'none';
-  //               }
-
-  //               this.setState({ playing: true });
-  //           });
-
-	// 		let pauseCounter = 0; // avoid trigger first pause
-  //           this.player.on('pause', () => {
-  //               const seekButtons = document.getElementsByClassName('vjs-seek-button');
-  //               for (let i = 0; i < seekButtons.length; i++) {
-  //                   seekButtons[i].style.display = 'none';
-  //               }
-
-  //               if (pauseCounter++ > 0) {
-  //                   const playButton = document.getElementsByClassName('vjs-big-play-button');
-  //                   if (playButton.length > 0) {
-  //                       playButton[0].style.display = 'block';
-  //                   }
-  //               }
-
-  //               this.setState({ playing: false });
-  //           });
-
-	// 		this.player.ima({
-	// 			adTagUrl: vmap,
-	// 			preventLateAdStart: true
-	// 		});
-	// 		this.player.ima.initializeAdDisplayContainer();
-
-	// 		this.setState({ screen_width: window.outerWidth });
-	// 	}
-	// }
 
 
 	loadMore() {
@@ -1284,8 +957,77 @@ class LiveEvent extends React.Component {
 			isAds: e,
 		}, () => { console.log(this.state.isAds)})
 	}
-
+	liveEventNow() {
+		return (
+			this.props.chats?.data?.now_playing_event?.data?.map((list, i) => {
+				return (
+					<Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
+						<Thumbnail
+						 dateEvent={list.live_at}
+						key={list.content_id + list.content_title}
+						label="Live"
+						backgroundColor="#fa262f"
+						statusPlay={false}
+						statusLabel="1"
+						statusTimer="1"
+						src={`${this.props.chats?.data?.now_playing_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+					</Col>
+				)
+			})
+		)
+  }
+  upcomingEvent() {
+    return (
+      this.props.chats?.data?.upcoming_event?.data?.map((list, i) => {
+        return (
+          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
+            <Thumbnail
+      			dateEvent={list.live_at}
+            key={list.content_id + list.content_title}
+            label="Live"
+            timer={getCountdown(list.live_at, list.current_date)[0]}
+            timerCurrent={list.current_date}
+            statusPlay={getCountdown(list.live_at, list.current_date)[1]}
+            backgroundColor="#fa262f"
+            statusLabel="1"
+            statusTimer="1"
+            src={`${this.props.chats?.data?.upcoming_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+          </Col>
+        );
+      })
+    );
+  }
+  missedEvent() {
+    return (
+      this.props.chats?.data?.past_event?.data?.map((list, i) => {
+        return (
+          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'past-event')}>
+            <Thumbnail
+						dateEvent={list.live_at}
+            key={list.content_id + list.content_title}
+            label="Live"
+            backgroundColor="#fa262f"
+            statusLabel="0"
+            statusTimer="0"
+            src={`${this.props.chats?.data?.past_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+          </Col>
+        );
+      })
+    );
+  }
+	errorEvent() {
+    return (<Col xs="12" key="1" className="live-event_error">
+    <img className="le-error-img" src="/live-event-error.svg" alt="error-live-event" />
+     <p>Ups! No Data Found</p>
+     <Button className="le-error-button">Try Again</Button>
+		</Col>)
+		}
+	getLink(data, params = 'live-event') {
+		Router.push(`/${params}/${data.id}/${data.content_name.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`);
+	}
 	render() {
+		const liveEvent = this.props.chats
+		// console.log("LOG", this.props.selected_event, liveEvent)
 		const { state } = this;
 		const  { selected_event, selected_event_url } = this.props;
 		let errorEvent = (<Col xs="12" key="1" className="le-error">
@@ -1320,22 +1062,6 @@ class LiveEvent extends React.Component {
 
           <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 				</Head>
-				{/* <Offline onChange={(status) => {
-					if (!status) {
-							this.setState({
-								errorCon: true,
-							});
-							return false
-						}
-						this.setState({
-								errorCon: false,
-							}, () => {
-								this.player.dispose();
-								setTimeout(() => {
-									this.initPlayer();
-								}, 500);
-							});
-					}} /> */}
 				<ActionSheet
 					tabStatus= {this.state.tabStatus}
 					caption={this.state.caption}
@@ -1349,93 +1075,100 @@ class LiveEvent extends React.Component {
 						{/* {this.renderPlayer()} */}
 						<JwPlayer
 							data={ selected_event_url && selected_event_url.data }
-							type={ this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' }
+							type={ this.props.router.asPath.match('/past-event/') ? 'missed event' : 'live event' }
 							customData={ {
 								program_name: this.props.selected_event && this.props.selected_event.data && this.props.selected_event.data.name,
 								isLogin: this.props.user.isAuth,
-								sectionPage: this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' ,
+								sectionPage: this.props.router.asPath.match('/past-event/') ? 'missed event' : 'live event' ,
 								} }
 							geoblockStatus={ this.state.statusError === 2 ? true : false }
               adsOverlayData={ state.adsOverlayDuration }
 							/>
 					</div>
 					<div ref= { this.titleRef } className="title-wrap">
-						<div style={{
-							display: 'flex',
-							alignItems: 'center'
-						}}>
-						{this.state.is_live[0] ? (
-								<CountdownTimer
-									id= {selected_event.data.id}
-									onUrl={this.getPlayNow}
-									statusPlay={this.state.is_live[1]}
-									key={this.state.is_live[0]}
-									position="relative"
-									timer={this.state.is_live[0]}
-									timerCurrent={ selected_event.data && selected_event.data.current_date }
-									statusTimer="1"/>
-							) : null}
-
+						<div>
+						<h1 className="label-title__live-event">
 							{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
+						</h1>
+						<h2 className="label-title__live-event_date">
+							{`${moment.unix(this.props.selected_event.data.release_date_quiz).format('dddd, DD MMM YYYY - h:mm:ss')} WIB`}
+						</h2>
+						<div className="flex-countdown_live-event">
+							{this.isLive()[0] ? (
+									<CountdownTimer
+										id= {selected_event.data.id}
+										onUrl={this.getPlayNow}
+										statusPlay={this.isLive()[1]}
+										key={this.isLive()[0]}
+										position="relative"
+										timer={this.isLive()[0]}
+										timerCurrent={ selected_event.data && selected_event.data.current_date }
+										statusTimer="1"/>
+								) : this.props.router.asPath.match('/live-event/') && !this.isLive()[0] ?
+								<CountdownTimer
+										id= {selected_event.data.id}
+										onUrl={this.getPlayNow}
+										statusPlay={false}
+										key={this.isLive()[0]}
+										position="relative"
+										timer={this.isLive()[0]}
+										timerCurrent={ selected_event.data && selected_event.data.current_date }
+										statusTimer="1"/>
+								: null}
+						</div>
 						</div>
 
-						<ShareIcon onClick={() => {
+			
+						<div onClick={() => {
 							liveShareEvent(selected_event.data && selected_event.data.id || 'error', selected_event.data && selected_event.data.name || 'error');
 							this.toggleActionSheet((this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'), BASE_URL + this.props.router.asPath, ['rctiplus'], 'livetv')
-						}}/>
+						}}>
+							<ShareIcon />
+						</div>
 					</div>
 					<div className="live-event-content-wrap">
+						{/* {this.errorEvent()} */}
                         <Nav tabs className="tab-wrap">
-                            <NavItem
-                                onClick={() => this.setState({ selected_tab: 'live-event' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Live Event');})}
-                                className={this.state.selected_tab === 'live-event' ? 'selected' : ''}>
-                                <NavLink>Live Event</NavLink>
-                            </NavItem>
-                            <NavItem
-                                onClick={() => this.setState({ selected_tab: 'missed-event' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Missed Event');})}
-                                className={this.state.selected_tab === 'missed-event' ? 'selected' : ''}>
-                                <NavLink>Missed Event</NavLink>
-                            </NavItem>
+														{liveEvent?.data?.now_playing_event?.data.length > 0 ? 
+														(<NavItem
+                                onClick={() => this.setState({ selected_tab: 'now-playing' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Now Playing');})}
+                                className={this.state.selected_tab === 'now-playing' ? 'selected' : ''}>
+                                <NavLink>Now Playing</NavLink>
+                            </NavItem>): (<div />)}
+														{liveEvent?.data?.upcoming_event?.data.length > 0 ? 
+														(<NavItem
+                                onClick={() => this.setState({ selected_tab: 'upcoming-events' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Upcoming Events');})}
+                                className={this.state.selected_tab === 'upcoming-events' ? 'selected' : ''}>
+                                <NavLink>Upcoming Events</NavLink>
+                            </NavItem>): (<div />)}
+														{liveEvent?.data?.past_event?.data.length > 0 ? 
+														(<NavItem
+                                onClick={() => this.setState({ selected_tab: 'past-events' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Past Events');})}
+                                className={this.state.selected_tab === 'past-events' ? 'selected' : ''}>
+                                <NavLink>Past Events</NavLink>
+                            </NavItem>): (<div />)}
                         </Nav>
 						<div className="live-event-menu" id="live-event">
 							<TabContent activeTab={this.state.selected_tab}>
-								<TabPane tabId={'live-event'}>
+								<TabPane tabId={'now-playing'}>
 									<Row style={{marginLeft: '0 !important'}}>
-										{this.state.live_events.length > 0 ? this.state.live_events.map((le, i) => (
-											<Col xs={6} key={i} onClick={() => Router.push(`/live-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`, undefined, { shallow: true })}>
-												<Thumbnail
-												label="Live"
-												timer={getCountdown(le.release_date_quiz, le.current_date)[0]}
-												timerCurrent={ le.current_date }
-												statusPlay={getCountdown(le.release_date_quiz, le.current_date)[1]}
-												backgroundColor="#fa262f"
-												statusLabel="1"
-												statusTimer="1"
-												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.name}/>
-											</Col>
-										)) : this.props.pages.status ? (<div/>)
-										 : errorEvent}
+										{this.liveEventNow()}
 									</Row>
 								</TabPane>
-								<TabPane tabId={'missed-event'}>
+								<TabPane tabId={'upcoming-events'}>
 									<Row style={{marginLeft: '0 !important'}}>
-									{this.state.missed_event.length > 0 ? this.state.missed_event.map((le, i) => (
-											<Col xs={6} key={i} onClick={() => Router.push(`/missed-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`)}>
-												<Thumbnail
-												label="Live"
-												backgroundColor="#fa262f"
-												statusLabel="0"
-												statusTimer="0"
-												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.name}/>
-											</Col>
-										)) : this.props.pages.status ? (<div/>)
-										: errorEvent}
+										{this.upcomingEvent()}
+									</Row>
+								</TabPane>
+								<TabPane tabId={'past-events'}>
+									<Row style={{marginLeft: '0 !important'}}>
+									{this.missedEvent()}
 									</Row>
 								</TabPane>
 							</TabContent>
 						</div>
 					</div>
-					{ this.props.router.asPath.match('/missed-event/') || this.state.selected_tab === 'missed-event'  ? (<div />) :
+					{ this.props.router.asPath.match('/past-event/') || this.state.selected_tab === 'past-events'  ? (<div />) :
 					 (<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
 						{height: `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
 						: null}>

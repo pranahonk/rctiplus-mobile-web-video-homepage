@@ -7,7 +7,6 @@ const ActiveLink = ({ children, activeClassName, ...props }) => {
   const { asPath } = useRouter();
   const child = Children.only(children);
   const childClassName = child.props.className || '';
-  console.log(props)
   const className =
     asPath === props.href  ||
     props.activeMenu === 'home/explores' || props.activeMenu.includes('home/explores') ||
@@ -16,7 +15,6 @@ const ActiveLink = ({ children, activeClassName, ...props }) => {
     (props.href === '/news' && asPath.includes(props.href))
     ? `${childClassName} ${activeClassName}`.trim()
     : childClassName;
-    // console.log({...props})
     return (
       <Link href={props.href}>
       {React.cloneElement(child, {
