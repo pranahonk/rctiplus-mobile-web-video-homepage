@@ -11,7 +11,7 @@ class CountdownTimer extends React.Component {
     return (
       <div>
       {!this.props.statusPlay ?
-        <div className="thumb-timer" style={{opacity: this.props.statusTimer, position: this.props.position ? this.props.position + ' !important' : 'absolute', ...{ bottom: this.props.position ? 0 : 10 }}}><span>PLAYING NOW</span></div>
+        <div className="thumb-timer" style={{ opacity: this.props.statusTimer }}><span>PLAYING NOW</span></div>
          : this.props.statusTimer === '1' ?
           (<Countdown
             key={this.props.key}
@@ -23,10 +23,10 @@ class CountdownTimer extends React.Component {
               if (completed) {
                 if (this.props.onUrl !== undefined) this.props.onUrl(true);
                 {/* this.props.onUrl(true); */}
-                console.log('completed');
+                // console.log('completed');
                 return '';
               }
-              return (<div className="thumb-timer" style={{opacity: this.props.statusTimer, position: this.props.position ? this.props.position + ' !important' : 'absolute', ...{ bottom: this.props.position ? 0 : 10 }}}>Coming soon <span>{zeroPad(hours + (days * 24)) + ':' + zeroPad(minutes) + ':' + zeroPad(seconds)}</span></div>);
+              return (<div className="thumb-timer" style={{opacity: this.props.statusTimer }}>Coming soon <span>{zeroPad(hours + (days * 24)) + ':' + zeroPad(minutes) + ':' + zeroPad(seconds)}</span></div>);
             }}
             />) : (<div />)
         }

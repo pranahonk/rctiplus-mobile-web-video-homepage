@@ -6,7 +6,6 @@ import Router, { withRouter } from 'next/router';
 import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 import Thumbnail from '../../components/Includes/Common/Thumbnail';
-import LiveIcon from '../../components/Includes/Common/LiveIcon';
 
 // redux
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
@@ -15,7 +14,7 @@ import { getCountdown } from '../../utils/helpers';
 import { RESOLUTION_IMG } from '../../config';
 import NavDefault_v2 from '../../components/Includes/Navbar/NavDefault_v2';
 
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col, Button } from 'reactstrap';
 import '../../assets/scss/components/live-event.scss';
 
 class Index extends React.Component {
@@ -28,130 +27,152 @@ class Index extends React.Component {
     };
   }
   componentDidMount() {
-    this.getLiveEvent();
-    this.getMissedEvent();
+    this.getAllLiveEvent();
   }
-  getLiveEvent() {
-    this.props.setSeamlessLoad(true);
+  getAllLiveEvent() {
     this.props.setPageLoader();
-    this.props.getLiveEvent('non on air')
-    .then(({data: lists}) => {
-      this.props.setSeamlessLoad(false);
+    this.props.getAllLiveEvent().then((res) => {
       this.props.unsetPageLoader();
-      this.setState({
-        live_event: lists.data,
-        meta: lists.meta,
-      });
-      console.log(lists)
     })
-    .catch((error) => {
-      this.props.setSeamlessLoad(false);
+    .catch((err) => {
       this.props.unsetPageLoader();
-      console.log(error);
-    });
-  }
-  getMissedEvent() {
-    this.props.setSeamlessLoad(true);
-    this.props.setPageLoader();
-    this.props.getMissedEvent()
-    .then(({data: lists}) => {
-      this.props.setSeamlessLoad(false);
-      this.props.unsetPageLoader();
-      this.setState({
-        missed_event: lists.data,
-        meta: lists.meta,
-      });
     })
-    .catch((error) => {
-      this.props.setSeamlessLoad(false);
-      this.props.unsetPageLoader();
-      console.log(error);
-    });
   }
   getLink(data, params = 'live-event') {
-    Router.push(`/${params}/${data.content_id}/${data.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`);
+    Router.push(`/${params}/${data.id}/${data.content_name.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`);
   }
 
-  render() {
-    let liveEvent = this.state.live_event.map((list, i) => {
-      return (
-        <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
-          <Thumbnail
-          key={list.content_id + list.content_title}
-          label="Live"
-          timer={getCountdown(list.release_date_quiz, list.current_date)[0]}
-          timerCurrent={list.current_date}
-          statusPlay={getCountdown(list.release_date_quiz, list.current_date)[1]}
-          backgroundColor="#fa262f"
-          statusLabel="1"
-          statusTimer="1"
-          src={`${this.state.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
-        </Col>
-      );
-    });
-    let missedEvent = this.state.missed_event.map((list, i) => {
-      return (
-        <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'missed-event')}>
-          <Thumbnail
-          key={list.content_id + list.content_title}
-          label="Live"
-          backgroundColor="#fa262f"
-          statusLabel="0"
-          statusTimer="0"
-          src={`${this.state.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
-        </Col>
-      );
-    });
-    let errorEvent = (<Col xs="12" key="1" className="le-error">
-          <LiveIcon />
-          <p>Ups! No Data Found</p>
-          <p>content isn't available right now</p>
-        </Col>
-      );
+  errorEvent() {
+    return (<Col xs="12" key="1" className="le-error">
+    <img className="le-error-img" src="/live-event-error.svg" alt="error-live-event" />
+     <p>Ups! No Data Found</p>
+     <Button className="le-error-button">Try Again</Button>
+  </Col>)
+  }
+  liveEventNow() {
     return (
-      <Layout title={this.props.router.asPath.match('missed-event') ? 'Missed event - RCTI+' : 'Live event - RCTI+'}>
+      this.props.liveEvent?.data?.now_playing_event?.data?.map((list, i) => {
+        return (
+          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
+            <Thumbnail
+            dateEvent={list.live_at}
+            key={list.content_id + list.content_title}
+            label="Live"
+            backgroundColor="#fa262f"
+            statusPlay={false}
+            statusLabel="1"
+            statusTimer="1"
+            src={`${this.props.liveEvent?.data?.now_playing_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+          </Col>
+        )
+      })
+    )
+  }
+  upcomingEvent() {
+    return (
+      this.props.liveEvent?.data?.upcoming_event?.data?.map((list, i) => {
+        return (
+          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
+            <Thumbnail
+            dateEvent={list.live_at}
+            key={list.content_id + list.content_title}
+            label="Live"
+            timer={getCountdown(list.live_at, list.current_date)[0]}
+            timerCurrent={list.current_date}
+            statusPlay={getCountdown(list.live_at, list.current_date)[1]}
+            backgroundColor="#fa262f"
+            statusLabel="1"
+            statusTimer="1"
+            src={`${this.props.liveEvent?.data?.upcoming_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+          </Col>
+        );
+      })
+    );
+  }
+  missedEvent() {
+    return (
+      this.props.liveEvent?.data?.past_event?.data?.map((list, i) => {
+        return (
+          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'past-event')}>
+            <Thumbnail
+            dateEvent={list.live_at}
+            key={list.content_id + list.content_title}
+            label="Live"
+            backgroundColor="#fa262f"
+            statusLabel="0"
+            statusTimer="0"
+            src={`${this.props.liveEvent?.data?.past_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+          </Col>
+        );
+      })
+    );
+  }
+  // getDataLiveEvent() {
+  //   return()
+  // }
+
+  render() {
+    // console.log(this.props.liveEvent)
+    return (
+      <Layout title={this.props.router.asPath.match('past-event') ? 'Past events - RCTI+' : 'Live event - RCTI+'}>
         <Head>
-          <meta name="description" content={this.props.router.asPath.match('missed-event') ? 'Missed event' : 'Live event'}/>
+          <meta name="description" content={this.props.router.asPath.match('past-event') ? 'Past events' : 'Live event'}/>
         </Head>
         {/* <NavBack title="Live Event"/> */}
         {process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)}
         <div id="live-event" className="le-container">
-          {this.state.live_event.length > 0 || this.state.missed_event.length > 0 ?
-            (<div>
-              <section className="le-live">
-                <div className="le-title">
-                  <h1>Live Event</h1>
-                </div>
-                <Container>
-                  <Row>
-                    { this.state.live_event.length > 0 ? liveEvent : errorEvent }
-                  </Row>
-                </Container>
-              </section>
-              <section className="le-missed_event">
-                <div className="le-title">
-                  <h1>Missed Event</h1>
-                </div>
-                <Container>
-                  <Row>
-                    { this.state.missed_event.length > 0 ? missedEvent : errorEvent }
-                  </Row>
-                </Container>
-              </section>
-              </div>)
-              : this.props.pages.status
-              ? (<div />)
-              : (<div className="le-full__error">
-                  { errorEvent }
-                </div>)
+          {
+            this.props.liveEvent?.loading_live_event ? (<div />) : 
+            this.props.liveEvent?.error_live_event ? (<div className="le-full__error">{ this.errorEvent() }</div>) : (<div />)
           }
+          { this.props.liveEvent?.data?.now_playing_event?.data?.length > 0 ? (
+            <section className="le-live">
+              <div className="le-title">
+                <h1>Now Playing</h1>
+              </div>
+              <Container>
+                <Row>
+                  { this.liveEventNow()}
+                </Row>
+              </Container>
+            </section>
+          ) : (<div />)}
+          { this.props.liveEvent?.data?.upcoming_event?.data?.length > 0 ? (
+            <section className="le-live">
+              <div className="le-title">
+                <h1>Upcoming Events</h1>
+              </div>
+              <Container>
+                <Row>
+                  {this.upcomingEvent()}
+                </Row>
+              </Container>
+            </section>
+          ) : (<div />)}
+          { this.props.liveEvent?.data?.past_event?.data?.length > 0 ? (
+            <section className="le-missed_event">
+              <div className="le-title">
+                <h1>Past Events</h1>
+              </div>
+              <Container>
+                <Row>
+                  { this.missedEvent() }
+                </Row>
+              </Container>
+            </section>
+          ) : (<div />)}
         </div>
       </Layout>
     );
   }
 }
 
-export default connect(state => state, {
+const mapStateToProps = (state) => {
+  return {
+    liveEvent: state.chats
+  }
+}
+export default connect(mapStateToProps, {
   ...liveAndChatActions,
   ...pageActions,
 })(withRouter(Index));

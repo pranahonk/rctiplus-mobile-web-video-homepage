@@ -2,6 +2,7 @@ import React from 'react';
 
 import Img from 'react-image';
 import CountdownTimer from '../Common/CountdownTimer';
+import moment from 'moment'
 
 import '../../../assets/scss/components/thumbnail.scss';
 
@@ -11,18 +12,23 @@ class Thumbnail extends React.Component {
   }
   render() {
     return (
-      <div className="thumb-container">
-        <div className={'thumb-label'} style={{backgroudColor: this.props.backgroudColor, opacity: this.props.statusLabel }}>
-          {this.props.label}
+      <>
+        <div className="thumb-container">
+          <div className={'thumb-label'} style={{backgroudColor: this.props.backgroudColor, opacity: this.props.statusLabel }}>
+            {this.props.label}
+          </div>
+            <Img
+                alt={this.props.src}
+                className="thumb-img"
+                unloader={<img className="thumb-img" src="/static/placeholders/placeholder_landscape.png"/>}
+                loader={<img className="thumb-img" src="/static/placeholders/placeholder_landscape.png"/>}
+                src={[this.props.src]} />
         </div>
-            <CountdownTimer timer={this.props.timer} timerCurrent={this.props.timerCurrent} statusTimer={this.props.statusTimer} statusPlay={this.props.statusPlay}/>
-           <Img
-              alt={this.props.src}
-              className="thumb-img"
-              unloader={<img className="thumb-img" src="/static/placeholders/placeholder_landscape.png"/>}
-              loader={<img className="thumb-img" src="/static/placeholders/placeholder_landscape.png"/>}
-              src={[this.props.src]} />
-      </div>
+        <h2 className="thumb-text_date">{`${moment.unix(this.props.dateEvent ).format('dddd, DD MMM YYYY - h:mm')} WIB`}</h2>
+        <div className="thumb-status_play">
+          <CountdownTimer timer={this.props.timer} timerCurrent={this.props.timerCurrent} statusTimer={this.props.statusTimer} statusPlay={this.props.statusPlay}/>
+        </div>
+      </>
     );
   }
 }
