@@ -34,6 +34,7 @@ const JwPlayer = (props) => {
   });
   const [adsStatus, setAdStatus] = useState('none');
   const [playerFullscreen, setPlayerFullscreen] = useState(false);
+  const [prevWidth, setPrevWidth] = useState(0);
   const playerRef = useRef();
   const val = useRef();
   const idPlayer = 'jwplayer-rctiplus';
@@ -503,6 +504,7 @@ const JwPlayer = (props) => {
       let minHeight = props.data.gpt.size_height_1 != null && props.data.gpt.size_height_1 != undefined ? props.data.gpt.size_height_1 : 50;
       let maxHeight = props.data.gpt.size_height_2 != null && props.data.gpt.size_height_2 != undefined ? props.data.gpt.size_height_2 : 60;
 
+      //console.log('debug me', adsStatus, props.data.gpt, document.querySelector('.ads_wrapper'));
       if (adsStatus === 'start') {
         clearTimeout(pubAdsRefreshInterval.timeObject);
 
@@ -534,24 +536,32 @@ const JwPlayer = (props) => {
       } else if (adsStatus === 'restart') {
         if (document.querySelector('.ads_wrapper')) {
           if (document.querySelector('.adsContainer').style.display != 'none') {
-            const adsIFrame = document.getElementById(slotDiv).children[0].children[0];
-            const adsImage = adsIFrame.contentWindow.document.querySelector('amp-img');
+            //const adsIFrame = document.getElementById(slotDiv).children[0].children[0];
+            //const adsImage = adsIFrame.contentWindow.document.querySelector('amp-img');
             if (windowWidth >= (maxWidth + 12)) {
-              adsIFrame.width = maxWidth;
+              /* adsIFrame.width = maxWidth;
               adsIFrame.height = maxHeight;
 
               adsImage.style.width = maxWidth + 'px';
-              adsImage.style.height = maxHeight + 'px';
+              adsImage.style.height = maxHeight + 'px'; */
 
-              document.querySelector('.ads_wrapper').classList.add('adsBigBox');
+              if (prevWidth != windowWidth) {
+                setPrevWidth(windowWidth);
+                googletag.pubads().refresh();
+                document.querySelector('.ads_wrapper').classList.add('adsBigBox');
+              }
             } else {
-              adsIFrame.width = minWidth;
+              /* adsIFrame.width = minWidth;
               adsIFrame.height = minHeight;
 
               adsImage.style.width = minWidth + 'px';
-              adsImage.style.height = minHeight + 'px';
-
-              document.querySelector('.ads_wrapper').classList.remove('adsBigBox');
+              adsImage.style.height = minHeight + 'px'; */
+              
+              if (prevWidth != windowWidth) {
+                setPrevWidth(windowWidth);
+                googletag.pubads().refresh();
+                document.querySelector('.ads_wrapper').classList.remove('adsBigBox');
+              }
             }
           }
         }
@@ -595,6 +605,8 @@ const JwPlayer = (props) => {
             document.querySelector('.ads_wrapper').style.display = 'none';
           }
 
+          console.log('delay value', delay)
+
           pubAdsRefreshInterval.timeObject = setTimeout(() => {
             if (refreshCounter === 0) {
               googletag.pubads().refresh();
@@ -615,7 +627,7 @@ const JwPlayer = (props) => {
                     return;
                   }
 
-                  const adsImage = adsIFrame.contentWindow.document.querySelector('amp-img');
+                  //const adsImage = adsIFrame.contentWindow.document.querySelector('amp-img');
 
                   if (document.querySelector('.adsURLLink') == null || document.querySelector('.adsURLLink') == undefined) {
                     const adsLink = adsIFrame.contentWindow.document.querySelector('a').href;
@@ -637,19 +649,19 @@ const JwPlayer = (props) => {
                   }
 
                   if (windowWidth >= (maxWidth + 12)) {
-                    adsIFrame.width = maxWidth;
+                    /* adsIFrame.width = maxWidth;
                     adsIFrame.height = maxHeight;
 
                     adsImage.style.width = maxWidth + 'px';
-                    adsImage.style.height = maxHeight + 'px';
+                    adsImage.style.height = maxHeight + 'px'; */
 
                     document.querySelector('.ads_wrapper').classList.add('adsBigBox');
                   } else {
-                    adsIFrame.width = minWidth;
+                    /* adsIFrame.width = minWidth;
                     adsIFrame.height = minHeight;
 
                     adsImage.style.width = minWidth + 'px';
-                    adsImage.style.height = minHeight + 'px';
+                    adsImage.style.height = minHeight + 'px'; */
 
                     document.querySelector('.ads_wrapper').classList.remove('adsBigBox');
                   }
