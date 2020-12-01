@@ -605,8 +605,6 @@ const JwPlayer = (props) => {
             document.querySelector('.ads_wrapper').style.display = 'none';
           }
 
-          console.log('delay value', delay)
-
           pubAdsRefreshInterval.timeObject = setTimeout(() => {
             if (refreshCounter === 0) {
               googletag.pubads().refresh();
