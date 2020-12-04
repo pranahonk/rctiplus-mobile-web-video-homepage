@@ -62,6 +62,7 @@ const JwPlayer = (props) => {
       hide: true,
     },
   };
+
   // Initial Setup
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
@@ -154,6 +155,7 @@ const JwPlayer = (props) => {
 
               const adsOverlayElement = document.createElement('div');
               adsOverlayElement.classList.add('ads_wrapper');
+              adsOverlayElement.style.display = 'none';
 
               const adsOverlayBox = document.createElement('div');
               adsOverlayBox.classList.add('adsStyling');
@@ -173,7 +175,10 @@ const JwPlayer = (props) => {
               adsOverlayBox.appendChild(adsOverlayCloseButton);
               adsOverlayBox.appendChild(adsOverlayContainer);
 
-              adsOverlayCloseButton.addEventListener('click', () => {
+              adsOverlayCloseButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
                 pubAdsRefreshInterval.timeStart = 0;
                 setAdStatus('close');
               });
@@ -223,10 +228,12 @@ const JwPlayer = (props) => {
         // console.log('PLAYING');
         convivaJwPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
-          if (adsStatus === 'prestart') {
-            setAdStatus('start');
-          } else if (adsStatus === 'none') {
-            setAdStatus('start');
+          if (document.querySelector('.ads_wrapper').style.display == 'none') {
+            if (adsStatus === 'prestart') {
+              setAdStatus('start');
+            } else if (adsStatus === 'none') {
+              setAdStatus('start');
+            }
           }
         }
       });
@@ -504,7 +511,6 @@ const JwPlayer = (props) => {
       let minHeight = props.data.gpt.size_height_1 != null && props.data.gpt.size_height_1 != undefined ? props.data.gpt.size_height_1 : 50;
       let maxHeight = props.data.gpt.size_height_2 != null && props.data.gpt.size_height_2 != undefined ? props.data.gpt.size_height_2 : 60;
 
-      //console.log('debug me', adsStatus, props.data.gpt, document.querySelector('.ads_wrapper'));
       if (adsStatus === 'start') {
         clearTimeout(pubAdsRefreshInterval.timeObject);
 
@@ -616,59 +622,62 @@ const JwPlayer = (props) => {
             setTimeout(() => {
               if (document.querySelector('.ads_wrapper')) {
                 if (document.querySelector('.adsContainer').style.display != 'none') {
-                  const adsIFrame = document.getElementById(slotDiv).children[0].children[0];
+                  const adsIFrame = document.getElementById(slotDiv)?.children[0]?.children[0];
 
                   if (adsIFrame == null || adsIFrame == undefined) {
-                    document.querySelector('.adsContainer').style.display = 'none';
+                    //document.querySelector('.adsContainer').style.display = 'none';
+                    pubAdsRefreshInterval.timeStart = 0;
                     setAdStatus('close');
-
-                    return;
-                  }
-
-                  //const adsImage = adsIFrame.contentWindow.document.querySelector('amp-img');
-
-                  if (document.querySelector('.adsURLLink') == null || document.querySelector('.adsURLLink') == undefined) {
-                    const adsLink = adsIFrame.contentWindow.document.querySelector('a').href;
-                    const adsOverlayBoxLink = document.createElement('div');
-                    adsOverlayBoxLink.classList.add('adsURLLink');
-                    adsOverlayBoxLink.style.width = '100%';
-                    adsOverlayBoxLink.style.height = '100%';
-                    adsOverlayBoxLink.style.top = '0';
-                    adsOverlayBoxLink.style.position = 'absolute';
-
-
-                    document.querySelector('.adsStyling')?.appendChild(adsOverlayBoxLink);
-                    const elementAds = document.querySelector('.adsURLLink')
-                    if (elementAds) {
-                      elementAds.addEventListener('click', function() {
-                        window.open(adsLink, '_blank');
-                      });
-                    }
-                  }
-
-                  if (windowWidth >= (maxWidth + 12)) {
-                    /* adsIFrame.width = maxWidth;
-                    adsIFrame.height = maxHeight;
-
-                    adsImage.style.width = maxWidth + 'px';
-                    adsImage.style.height = maxHeight + 'px'; */
-
-                    document.querySelector('.ads_wrapper').classList.add('adsBigBox');
                   } else {
-                    /* adsIFrame.width = minWidth;
-                    adsIFrame.height = minHeight;
+                    //const adsImage = adsIFrame.contentWindow.document.querySelector('amp-img');
 
-                    adsImage.style.width = minWidth + 'px';
-                    adsImage.style.height = minHeight + 'px'; */
+                    if (document.querySelector('.adsURLLink') == null || document.querySelector('.adsURLLink') == undefined) {
+                      const adsLink = adsIFrame.contentWindow.document.querySelector('a')?.href;
+                      const adsOverlayBoxLink = document.createElement('div');
+                      adsOverlayBoxLink.classList.add('adsURLLink');
+                      adsOverlayBoxLink.style.width = '100%';
+                      adsOverlayBoxLink.style.height = '100%';
+                      adsOverlayBoxLink.style.top = '0';
+                      adsOverlayBoxLink.style.position = 'absolute';
 
-                    document.querySelector('.ads_wrapper').classList.remove('adsBigBox');
+
+                      document.querySelector('.adsStyling')?.appendChild(adsOverlayBoxLink);
+                      const elementAds = document.querySelector('.adsURLLink')
+                      if (elementAds) {
+                        elementAds.addEventListener('click', function(e) {
+                          e.preventDefault();
+                          e.stopPropagation();
+
+                          window.open(adsLink, '_blank');
+                        });
+                      }
+                    }
+
+                    if (windowWidth >= (maxWidth + 12)) {
+                      /* adsIFrame.width = maxWidth;
+                      adsIFrame.height = maxHeight;
+
+                      adsImage.style.width = maxWidth + 'px';
+                      adsImage.style.height = maxHeight + 'px'; */
+
+                      document.querySelector('.ads_wrapper').classList.add('adsBigBox');
+                    } else {
+                      /* adsIFrame.width = minWidth;
+                      adsIFrame.height = minHeight;
+
+                      adsImage.style.width = minWidth + 'px';
+                      adsImage.style.height = minHeight + 'px'; */
+
+                      document.querySelector('.ads_wrapper').classList.remove('adsBigBox');
+                    }
+
+                    document.querySelector('.ads_wrapper').style.display = 'block';
+
+                    pubAdsRefreshInterval.timeStart = 0;
+                    setAdStatus('idle');
                   }
-
-                  document.querySelector('.ads_wrapper').style.display = 'block';
                 }
               }
-              pubAdsRefreshInterval.timeStart = 0;
-              setAdStatus('idle');
             }, 1000);
           }, delay - 1000);
         }
