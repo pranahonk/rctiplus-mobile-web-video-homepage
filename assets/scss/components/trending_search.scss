@@ -31,11 +31,16 @@
     
         .item-title {
             font-size: 15px;
-            line-height: 1.1;
+            line-height: 1.2rem;
+            margin: 0;
+            display: block;
+            padding-bottom: 0.5rem;
+            min-height: 2rem;
+            height: auto;
         }
     
         .item-subtitle {
-            line-height: 0.1;
+            line-height: 1rem;
             margin-bottom: 0.5rem;
             font-weight: bold;
             font-size: 15px;
