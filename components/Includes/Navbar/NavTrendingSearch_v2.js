@@ -105,6 +105,12 @@ class NavbarTrendingSearch extends Component {
         });
     }
 
+    handleKeyPress = (event) => {
+        if(event.key === 'Enter'){
+            this.search()
+        }
+    }
+
     render() {
         return (
             <div className="nav-home-container nav-fixed-top">
@@ -129,6 +135,7 @@ class NavbarTrendingSearch extends Component {
                             placeholder="Search"
                             onChange={this.onChangeQuery.bind(this)}
                             value={this.props.newsv2.query}
+                            onKeyPress={this.handleKeyPress}
                             id="search-news-input"
                             className="search-input" />
                     </div>
