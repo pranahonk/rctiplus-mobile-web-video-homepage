@@ -10,6 +10,7 @@ import LoadingBar from 'react-top-loading-bar';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import countryList from '../redux/actions/othersActions';
 import registerActions from '../redux/actions/registerActions';
+import queryString from 'query-string';
 
 import { showAlert } from '../utils/helpers';
 import q from 'query-string';
@@ -120,7 +121,12 @@ class Signin extends React.Component {
 					window.location.href = this.constructReferrerUrl(this.props.authentication.token);
 				}
 				else {
-					Router.push('/');
+					const redirect = queryString.parse(location?.search)
+					if(redirect.redirectTo) {
+						Router.push(redirect.redirectTo)
+					} else {
+						Router.push('/');
+					}
 				}
 			}
 			else {

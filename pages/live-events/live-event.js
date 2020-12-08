@@ -10,7 +10,7 @@ import { Picker } from 'emoji-mart';
 import TimeAgo from 'react-timeago';
 import fetch from 'isomorphic-unfetch';
 import queryString from 'query-string';
-import { Offline } from 'react-detect-offline';
+import { Offline, Online } from 'react-detect-offline';
 import { isIOS } from 'react-device-detect';
 import MuteChat from '../../components/Includes/Common/MuteChat';
 import moment from 'moment'
@@ -39,6 +39,7 @@ import StreamVideoIcon from '../../components/Includes/Common/StreamVideoIcon';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 import ErrorPlayer from '../../components/Includes/Player/ErrorPlayer';
 import Toast from '../../components/Includes/Common/Toast';
+import ErrorIcon from '../../components/Includes/Common/ErrorLiveEvent';
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -203,6 +204,7 @@ class LiveEvent extends React.Component {
 		const segments = this.props.router.asPath.split(/\?/);
 		this.reference = null;
 		this.homepageTitle = null;
+		this.tabName = null;
 		if (segments.length > 1) {
 			const q = queryString.parse(segments[1]);
 			if (q.ref) {
@@ -210,6 +212,9 @@ class LiveEvent extends React.Component {
 			}
 			if (q.homepage_title) {
 				this.homepageTitle = q.homepage_title;
+			}
+			if (q.tab_name) {
+				this.tabName = q.tab_name;
 			}
 		}
 
@@ -220,9 +225,9 @@ class LiveEvent extends React.Component {
 		this.currentTime = new Date().getTime();
 		this.props.setPageLoader();
 
-		console.log(this.props.selected_event);
+		// console.log(this.props.selected_event);
 	}
-	componentDidUpdate() {
+	componentDidUpdate(prevProps, prevState) {
 		// console.log(this.playerContainerRef.current.clientHeight, this.titleRef.current.clientHeight)
 	}
 	componentWillUnmount() {
@@ -235,17 +240,23 @@ class LiveEvent extends React.Component {
 		}
 	}
 	componentDidMount() {
+		// console.log(this.tabName)
 		this.getAllLiveEvent();
 		if(this.props.router.asPath.match('/live-event/')) this.loadChatMessages(this.props.router.query.id);
 		initGA();
-		console.log('live-event')
 		this.props.initializeFirebase();
 		this.getAvailable();
+		if (this.tabName) {
+			this.setState({
+				selected_tab: ['now-playing', 'upcoming-events', 'past-events'].includes(this.tabName) ? this.tabName : 'now-playing',
+			});
+		}
 		if (this.props.router.asPath.match('/past-event/')) {
 			this.setState({
 				selected_tab: 'past-events',
 			});
 		}
+		// console.log(this.state.selected_tab)
 		// this.getMissedEvent();
 		// this.getLiveEvent();
 		this.props.getUserData()
@@ -281,15 +292,15 @@ class LiveEvent extends React.Component {
 			this.props.unsetPageLoader();
 			console.log('resresrrserserser', res.data.data)
 			if(res.data.data.now_playing_event.data.length > 0) {
-				this.setState({ selected_tab: 'now-playing' })
+				// this.setState({ selected_tab: 'now-playing' })
 				return false
 			}
 			if(res.data.data.upcoming_event.data.length > 0) {
-				this.setState({ selected_tab: 'upcoming-events' })
+				// this.setState({ selected_tab: 'upcoming-events' })
 				return false
 			}
 			if(res.data.data.past_event.data.length > 0) {
-				this.setState({ selected_tab: 'past-events' })
+				// this.setState({ selected_tab: 'past-events' })
 				return false
 			}
     })
@@ -399,12 +410,15 @@ class LiveEvent extends React.Component {
 	}
 
 	checkLogin() {
+		console.log(this.props.router.asPath)
 		if (!this.state.user_data) {
 			showSignInAlert(`Please <b>Sign In</b><br/>
 				Woops! Gonna sign in first!<br/>
 				Only a click away and you<br/>
 				can continue to enjoy<br/>
-				<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true, 'popup-action-signup', 'popup-action-signin');
+				<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true, 'popup-action-signup', 'popup-action-signin',
+				`/login?redirectTo=${this.props.router.asPath}`
+				);
 			return false;
 		}
 		return true;
@@ -414,111 +428,57 @@ class LiveEvent extends React.Component {
 		this.props.setPageLoader();
 		this.setState({ chats: [] }, () => {
 			const chatBox = document.getElementById('chat-messages');
-			chatBox.scrollTop = chatBox.scrollHeight;
-			this.props.unsetPageLoader();
-			if (true) {
-				let firstLoadChat = true;
-				this.props.listenChatMessages(id)
-					.then(collection => {
-						let snapshots = this.state.snapshots;
-						let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
-							querySnapshot.docChanges()
-								.map(change => {
-									let chats = this.state.chats;
-									console.log(chats)
-									if (change.type === 'added') {
-										if (!this.state.sending_chat) {
-											if (chats.length > 0) {
-												let lastChat = chats[chats.length - 1];
-												let newChat = change.doc.data();
-												if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-													if (firstLoadChat) {
-														chats.unshift(newChat);
+			if(chatBox) {
+				chatBox.scrollTop = chatBox?.scrollHeight;
+				this.props.unsetPageLoader();
+				if (true) {
+					let firstLoadChat = true;
+					this.props.listenChatMessages(id)
+						.then(collection => {
+							let snapshots = this.state.snapshots;
+							let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
+								querySnapshot.docChanges()
+									.map(change => {
+										let chats = this.state.chats;
+										console.log(chats)
+										if (change.type === 'added') {
+											if (!this.state.sending_chat) {
+												if (chats.length > 0) {
+													let lastChat = chats[chats.length - 1];
+													let newChat = change.doc.data();
+													if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+														if (firstLoadChat) {
+															chats.unshift(newChat);
+														}
+														else {
+															chats.push(newChat);
+														}
 													}
-													else {
-														chats.push(newChat);
-													}
-												}
-											}
-											else {
-												if (firstLoadChat) {
-													chats.unshift(change.doc.data());
 												}
 												else {
-													chats.push(change.doc.data());
+													if (firstLoadChat) {
+														chats.unshift(change.doc.data());
+													}
+													else {
+														chats.push(change.doc.data());
+													}
 												}
+	
+												this.setState({ chats: chats }, () => {
+													const chatBox = document.getElementById('chat-messages');
+													chatBox.scrollTop = chatBox?.scrollHeight;
+	
+													const chatInput = document.getElementById('chat-input');
+													chatInput.style.height = `100%`;
+												});
 											}
-
-											this.setState({ chats: chats }, () => {
-												const chatBox = document.getElementById('chat-messages');
-												chatBox.scrollTop = chatBox.scrollHeight;
-
-												const chatInput = document.getElementById('chat-input');
-												chatInput.style.height = `100%`;
-											});
 										}
-									}
-								});
-
-							firstLoadChat = false;
+									});
+	
+								firstLoadChat = false;
+							});
 						});
-					});
-
-
-				// websocket
-				// this.props.getChatSocket(id)
-				// .then(data => {
-				// 	let chats = this.state.chats;
-				// 	if (!this.state.sending_chat) {
-				// 		if (chats.length > 0) {
-				// 			let lastChat = chats[chats.length - 1];
-				// 			let newChat = data.data;
-				// 			if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-				// 				chats = newChat;
-				// 			}
-				// 			}
-				// 			else {
-				// 				chats = data.data;
-				// 			}
-
-				// 		this.setState({ chats: chats }, () => {
-				// 			const chatBox = document.getElementById('chat-messages');
-				// 			chatBox.scrollTop = chatBox.scrollHeight;
-
-				// 			const chatInput = document.getElementById('chat-input');
-				// 			chatInput.style.height = `24px`;
-				// 		});
-				// 	}
-				// })
-				// .then(() => {
-				// 	this.props.listenSocketIo(id)
-				// 	.then((socket) => {
-				// 		socket.on('message', (data) => {
-				// 		let chats = this.state.chats;
-				// 		let newChat = data;
-				// 			if (chats.length > 0) {
-				// 				let lastChat = chats[chats.length - 1];
-				// 				if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-				// 					chats.push(newChat);
-				// 				}
-				// 			}
-				// 			else {
-				// 				chats.push(newChat);
-				// 			}
-
-				// 			this.setState({ chats: chats }, () => {
-				// 				const chatBox = document.getElementById('chat-messages');
-				// 				chatBox.scrollTop = chatBox.scrollHeight;
-
-				// 				const chatInput = document.getElementById('chat-input');
-				// 				chatInput.style.height = `24px`;
-				// 			});
-				// 		})
-				// 	})
-				// })
-				// .catch((err) => {
-				// 	console.log(err);
-				// });
+				}
 			}
 
 		});
@@ -767,7 +727,9 @@ class LiveEvent extends React.Component {
 			Woops! Gonna sign in first!<br/>
 			Only a click away and you<br/>
 			can continue to enjoy<br/>
-			<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+			<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true,
+			'popup-action-signup', 'popup-action-signin',
+			`/login?redirectTo=${this.props.router.asPath}`);
 		}
 	}
 
@@ -961,7 +923,7 @@ class LiveEvent extends React.Component {
 		return (
 			this.props.chats?.data?.now_playing_event?.data?.map((list, i) => {
 				return (
-					<Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
+					<Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event', 'now-playing')}>
 						<Thumbnail
 						 dateEvent={list.live_at}
 						key={list.content_id + list.content_title}
@@ -980,7 +942,7 @@ class LiveEvent extends React.Component {
     return (
       this.props.chats?.data?.upcoming_event?.data?.map((list, i) => {
         return (
-          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
+          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event', 'upcoming-events')}>
             <Thumbnail
       			dateEvent={list.live_at}
             key={list.content_id + list.content_title}
@@ -1001,7 +963,7 @@ class LiveEvent extends React.Component {
     return (
       this.props.chats?.data?.past_event?.data?.map((list, i) => {
         return (
-          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'past-event')}>
+          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'past-event', 'past-events')}>
             <Thumbnail
 						dateEvent={list.live_at}
             key={list.content_id + list.content_title}
@@ -1017,13 +979,13 @@ class LiveEvent extends React.Component {
   }
 	errorEvent() {
     return (<Col xs="12" key="1" className="live-event_error">
-    <img className="le-error-img" src="/live-event-error.svg" alt="error-live-event" />
-     <p>Ups! No Data Found</p>
-     <Button className="le-error-button">Try Again</Button>
+			<ErrorIcon />
+			<p>Ups! No Data Found</p>
+			<Button className="le-error-button">Try Again</Button>
 		</Col>)
 		}
-	getLink(data, params = 'live-event') {
-		Router.push(`/${params}/${data.id}/${data.content_name.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`);
+	getLink(data, params = 'live-event', tabName) {
+		Router.push(`/${params}/${data.id}/${data.content_name.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}?tab_name=${tabName}`);
 	}
 	render() {
 		const liveEvent = this.props.chats
@@ -1091,7 +1053,7 @@ class LiveEvent extends React.Component {
 							{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
 						</h1>
 						<h2 className="label-title__live-event_date">
-							{`${moment.unix(this.props.selected_event.data.release_date_quiz).format('dddd, DD MMM YYYY - h:mm:ss')} WIB`}
+							{	!this.props.router.asPath.match('/past-event/') && `${moment.unix(this.props.selected_event.data.release_date_quiz).format('dddd, DD MMM YYYY - h:mm:ss')} WIB` }
 						</h2>
 						<div className="flex-countdown_live-event">
 							{this.isLive()[0] ? (
@@ -1126,28 +1088,28 @@ class LiveEvent extends React.Component {
 							<ShareIcon />
 						</div>
 					</div>
+					<Online>
 					<div className="live-event-content-wrap">
-						{/* {this.errorEvent()} */}
-                        <Nav tabs className="tab-wrap">
-														{liveEvent?.data?.now_playing_event?.data.length > 0 ? 
-														(<NavItem
-                                onClick={() => this.setState({ selected_tab: 'now-playing' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Now Playing');})}
-                                className={this.state.selected_tab === 'now-playing' ? 'selected' : ''}>
-                                <NavLink>Now Playing</NavLink>
-                            </NavItem>): (<div />)}
-														{liveEvent?.data?.upcoming_event?.data.length > 0 ? 
-														(<NavItem
-                                onClick={() => this.setState({ selected_tab: 'upcoming-events' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Upcoming Events');})}
-                                className={this.state.selected_tab === 'upcoming-events' ? 'selected' : ''}>
-                                <NavLink>Upcoming Events</NavLink>
-                            </NavItem>): (<div />)}
-														{liveEvent?.data?.past_event?.data.length > 0 ? 
-														(<NavItem
-                                onClick={() => this.setState({ selected_tab: 'past-events' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Past Events');})}
-                                className={this.state.selected_tab === 'past-events' ? 'selected' : ''}>
-                                <NavLink>Past Events</NavLink>
-                            </NavItem>): (<div />)}
-                        </Nav>
+						<Nav tabs className="tab-wrap">
+								{liveEvent?.data?.now_playing_event?.data.length > 0 ? 
+								(<NavItem
+										onClick={() => this.setState({ selected_tab: 'now-playing' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Now Playing');})}
+										className={this.state.selected_tab === 'now-playing' ? 'selected' : ''}>
+										<NavLink>Now Playing</NavLink>
+								</NavItem>) : (<div />)}
+								{liveEvent?.data?.upcoming_event?.data.length > 0 ? 
+								(<NavItem
+										onClick={() => this.setState({ selected_tab: 'upcoming-events' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Upcoming Events');})}
+										className={this.state.selected_tab === 'upcoming-events' ? 'selected' : ''}>
+										<NavLink>Upcoming Events</NavLink>
+								</NavItem>): (<div />)}
+								{liveEvent?.data?.past_event?.data.length > 0 ? 
+								(<NavItem
+										onClick={() => this.setState({ selected_tab: 'past-events' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Past Events');})}
+										className={this.state.selected_tab === 'past-events' ? 'selected' : ''}>
+										<NavLink>Past Events</NavLink>
+								</NavItem>): (<div />)}
+						</Nav>
 						<div className="live-event-menu" id="live-event">
 							<TabContent activeTab={this.state.selected_tab}>
 								<TabPane tabId={'now-playing'}>
@@ -1167,9 +1129,9 @@ class LiveEvent extends React.Component {
 								</TabPane>
 							</TabContent>
 						</div>
-					</div>
-					{ this.props.router.asPath.match('/past-event/') || this.state.selected_tab === 'past-events'  ? (<div />) :
-					 (<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
+						</div>
+						{ this.props.router.asPath.match('/past-event/') || this.state.selected_tab === 'past-events'  ? (<div />) :
+						(<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
 						{height: `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
 						: null}>
 						<div className="btn-chat">
@@ -1247,7 +1209,15 @@ class LiveEvent extends React.Component {
 									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
 							</div>
 						</div>
-					</div>)}
+						</div>)}
+        	</Online>
+					<Offline>
+						<div className="live-event-content-wrap" style={{height: `calc(100vh - ${this.playerContainerRef?.current?.clientHeight + this.titleRef?.current?.clientHeight}px - 50px)`}}>
+							<div className="le-absolute-center">
+								{ this.errorEvent() }
+							</div>
+						</div>
+        	</Offline>
 				</div>
 			</Layout>
 		);

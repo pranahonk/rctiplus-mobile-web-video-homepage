@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
+import { Offline, Online } from "react-detect-offline";
 
 import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavBack';
@@ -13,6 +14,7 @@ import pageActions from '../../redux/actions/pageActions';
 import { getCountdown } from '../../utils/helpers';
 import { RESOLUTION_IMG } from '../../config';
 import NavDefault_v2 from '../../components/Includes/Navbar/NavDefault_v2';
+import ErrorIcon from '../../components/Includes/Common/ErrorLiveEvent';
 
 import { Container, Row, Col, Button } from 'reactstrap';
 import '../../assets/scss/components/live-event.scss';
@@ -36,24 +38,27 @@ class Index extends React.Component {
     })
     .catch((err) => {
       this.props.unsetPageLoader();
-    })
+    });
   }
-  getLink(data, params = 'live-event') {
-    Router.push(`/${params}/${data.id}/${data.content_name.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`);
+  getLink(data, params = 'live-event', tabName) {
+    Router.push(`/${params}/${data.id}/${data.content_name.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}?tab_name=${tabName}`);
   }
 
   errorEvent() {
     return (<Col xs="12" key="1" className="le-error">
-    <img className="le-error-img" src="/live-event-error.svg" alt="error-live-event" />
+    {/* <img className="le-error-img" src={errorIcon()} alt="error-live-event" /> */}
+      <div className="le-error-img">
+        <ErrorIcon />
+      </div>
      <p>Ups! No Data Found</p>
-     <Button className="le-error-button">Try Again</Button>
-  </Col>)
+     <Button className="le-error-button" onClick={() => this.props.router.push('/live-event')}>Try Again</Button>
+  </Col>);
   }
   liveEventNow() {
     return (
       this.props.liveEvent?.data?.now_playing_event?.data?.map((list, i) => {
         return (
-          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
+          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event', 'now-playing')}>
             <Thumbnail
             dateEvent={list.live_at}
             key={list.content_id + list.content_title}
@@ -64,15 +69,15 @@ class Index extends React.Component {
             statusTimer="1"
             src={`${this.props.liveEvent?.data?.now_playing_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
           </Col>
-        )
+        );
       })
-    )
+    );
   }
   upcomingEvent() {
     return (
       this.props.liveEvent?.data?.upcoming_event?.data?.map((list, i) => {
         return (
-          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event')}>
+          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event', 'upcoming-events')}>
             <Thumbnail
             dateEvent={list.live_at}
             key={list.content_id + list.content_title}
@@ -93,7 +98,7 @@ class Index extends React.Component {
     return (
       this.props.liveEvent?.data?.past_event?.data?.map((list, i) => {
         return (
-          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'past-event')}>
+          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'past-event', 'past-events')}>
             <Thumbnail
             dateEvent={list.live_at}
             key={list.content_id + list.content_title}
@@ -107,12 +112,8 @@ class Index extends React.Component {
       })
     );
   }
-  // getDataLiveEvent() {
-  //   return()
-  // }
 
   render() {
-    // console.log(this.props.liveEvent)
     return (
       <Layout title={this.props.router.asPath.match('past-event') ? 'Past events - RCTI+' : 'Live event - RCTI+'}>
         <Head>
@@ -121,46 +122,56 @@ class Index extends React.Component {
         {/* <NavBack title="Live Event"/> */}
         {process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)}
         <div id="live-event" className="le-container">
-          {
-            this.props.liveEvent?.loading_live_event ? (<div />) : 
-            this.props.liveEvent?.error_live_event ? (<div className="le-full__error">{ this.errorEvent() }</div>) : (<div />)
-          }
-          { this.props.liveEvent?.data?.now_playing_event?.data?.length > 0 ? (
-            <section className="le-live">
-              <div className="le-title">
-                <h1>Now Playing</h1>
-              </div>
-              <Container>
-                <Row>
-                  { this.liveEventNow()}
-                </Row>
-              </Container>
-            </section>
-          ) : (<div />)}
-          { this.props.liveEvent?.data?.upcoming_event?.data?.length > 0 ? (
-            <section className="le-live">
-              <div className="le-title">
-                <h1>Upcoming Events</h1>
-              </div>
-              <Container>
-                <Row>
-                  {this.upcomingEvent()}
-                </Row>
-              </Container>
-            </section>
-          ) : (<div />)}
-          { this.props.liveEvent?.data?.past_event?.data?.length > 0 ? (
-            <section className="le-missed_event">
-              <div className="le-title">
-                <h1>Past Events</h1>
-              </div>
-              <Container>
-                <Row>
-                  { this.missedEvent() }
-                </Row>
-              </Container>
-            </section>
-          ) : (<div />)}
+        {/* <div className="le-absolute-center">
+            <ErrorIcon />
+        </div> */}
+        <Online>
+        {
+          this.props.liveEvent?.loading_live_event ? (<div />) :
+          this.props.liveEvent?.error_live_event ? (<div className="le-full__error">{ this.errorEvent() }</div>) : (<div />)
+        }
+        { this.props.liveEvent?.data?.now_playing_event?.data?.length > 0 ? (
+          <section className="le-live">
+            <div className="le-title">
+              <h1>Now Playing</h1>
+            </div>
+            <Container>
+              <Row>
+                { this.liveEventNow()}
+              </Row>
+            </Container>
+          </section>
+        ) : (<div />)}
+        { this.props.liveEvent?.data?.upcoming_event?.data?.length > 0 ? (
+          <section className="le-live">
+            <div className="le-title">
+              <h1>Upcoming Events</h1>
+            </div>
+            <Container>
+              <Row>
+                {this.upcomingEvent()}
+              </Row>
+            </Container>
+          </section>
+        ) : (<div />)}
+        { this.props.liveEvent?.data?.past_event?.data?.length > 0 ? (
+          <section className="le-missed_event">
+            <div className="le-title">
+              <h1>Past Events</h1>
+            </div>
+            <Container>
+              <Row>
+                { this.missedEvent() }
+              </Row>
+            </Container>
+          </section>
+        ) : (<div />)}
+        </Online>
+        <Offline>
+          <div className="le-absolute-center">
+            { this.errorEvent() }
+          </div>
+        </Offline>
         </div>
       </Layout>
     );
@@ -169,9 +180,9 @@ class Index extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    liveEvent: state.chats
-  }
-}
+    liveEvent: state.chats,
+  };
+};
 export default connect(mapStateToProps, {
   ...liveAndChatActions,
   ...pageActions,
