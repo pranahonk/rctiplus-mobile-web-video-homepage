@@ -106,7 +106,7 @@ export const showConfirmAlert = (text, title, callback, buttonInverse = false, c
         });
 };
 
-export const showSignInAlert = (text, title, callback, buttonInverse = false, confirmText = 'OK', cancelText = 'Cancel', html = false, styleInverse = false, confirmButtonId = '', cancelButtonId = '') => {
+export const showSignInAlert = (text, title, callback, buttonInverse = false, confirmText = 'OK', cancelText = 'Cancel', html = false, styleInverse = false, confirmButtonId = '', cancelButtonId = '', redirectTo = '/login') => {
     let options = {
         showCancelButton: true,
         confirmButtonText: confirmText,
@@ -156,7 +156,7 @@ export const showSignInAlert = (text, title, callback, buttonInverse = false, co
                 Router.push('/register');
             }
             else if (result.dismiss == 'cancel') {
-                Router.push('/login');
+                Router.push(redirectTo);
             }
         });
 
