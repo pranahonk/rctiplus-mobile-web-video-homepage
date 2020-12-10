@@ -186,7 +186,7 @@ class NavbarDef_v2 extends Component {
                         <ActiveLink activeClassName="active" href="/news" activeMenu={'news' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
                                 <img className="img-menu-icon" src={'/news.svg'}/>
-                                News
+                                News +
                             </Button>
                         </ActiveLink>
                         {/* <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
