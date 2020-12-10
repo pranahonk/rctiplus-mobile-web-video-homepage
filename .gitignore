@@ -32,3 +32,4 @@ lighthouse-reports
 
 #env
 .env
+.env.rc
