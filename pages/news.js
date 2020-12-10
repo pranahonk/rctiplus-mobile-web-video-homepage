@@ -19,7 +19,7 @@ import ArticleLoader from '../components/Includes/Shimmer/ArticleLoader';
 import NoConnectionIcon from '../components/Includes/Common/NoConnection';
 import WrenchIcon from '../components/Includes/Common/Wrench';
 
-import { Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem } from 'reactstrap';
+import { Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, Container, Row, Col } from 'reactstrap';
 import AddIcon from '@material-ui/icons/Add';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP } from '../config';
@@ -34,6 +34,7 @@ import { showSignInAlert } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
 import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 import queryString from 'query-string';
 
@@ -513,6 +514,31 @@ class Trending_v2 extends React.Component {
                                             {this.state.tabs.map((tab, i) => (
                                                 <TabPane key={i} tabId={tab.id.toString()}>
                                                     {tab.name === 'Berita Utama' ? (this.state.is_trending_loading ? (<HeadlineLoader />) : (<HeadlineCarousel articles={this.state.trending_articles} />)) : null}
+                                                    <div className="interest-topic_wrapper">
+                                                        <div className="interest-topic_title">
+                                                            <h1>topik menarik</h1>
+                                                            <Link href="/interest-topic" className=""><span className="news-more_action">See More <ArrowForwardIosIcon /></span></Link>                                                 
+                                                        </div>
+                                                        <div className="interest-topic_list">
+                                                            <Row>
+                                                                <Col xs="6" className="interest-topic-item">
+                                                                  <h5>#testing</h5>
+                                                                </Col>
+                                                                <Col xs="6" className="interest-topic-item">
+                                                                  <h5>#testing</h5>
+                                                                </Col>
+                                                                <Col xs="6" className="interest-topic-item">
+                                                                  <h5>#testing</h5>
+                                                                </Col>
+                                                                <Col xs="6" className="interest-topic-item">
+                                                                  <h5>#testing</h5>
+                                                                </Col>
+                                                                <Col xs="6" className="interest-topic-item">
+                                                                  <h5>#testing</h5>
+                                                                </Col>
+                                                            </Row>
+                                                        </div>
+                                                    </div>
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => (
                                                             (j > 6) && (j + 1) != 1 && (j + 1) % 5 === 0 ? (
