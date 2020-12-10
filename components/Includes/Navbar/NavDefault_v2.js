@@ -201,7 +201,7 @@ class NavbarDef_v2 extends Component {
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_HOT}?token=${this.state.token}`}>
                             <img className="img-menu-icon" src={'/hot-icon.png'}/>
-                            HOT +
+                            HOT
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_GAMES}?token=${this.state.token}`}>
                             <img className="img-menu-icon" src={'/games.svg'}/>
