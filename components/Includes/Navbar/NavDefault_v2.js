@@ -180,7 +180,7 @@ class NavbarDef_v2 extends Component {
                         <ActiveLink activeClassName="active" href="/" activeMenu={'home' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
                                 <img className="img-menu-icon" src={'/videos.svg'}/>
-                                Videos
+                                Videos +
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/news" activeMenu={'news' + this.props.router.asPath}>
@@ -201,11 +201,11 @@ class NavbarDef_v2 extends Component {
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_HOT}?token=${this.state.token}`}>
                             <img className="img-menu-icon" src={'/hot-icon.png'}/>
-                            HOT
+                            HOT +
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_GAMES}?token=${this.state.token}`}>
                             <img className="img-menu-icon" src={'/games.svg'}/>
-                            Games
+                            Games +
                         </Button>
                     </div>
                 </Navbar>
