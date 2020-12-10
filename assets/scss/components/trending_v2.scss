@@ -192,3 +192,51 @@
         }
     }
 }
+.interest-topic_wrapper {
+    .interest-topic_title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 10px;
+        h1 {
+            text-transform: capitalize;
+            font-size: 14px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            color: #ffffff;
+            margin: 0;
+        }
+        span {
+            font-size: 10px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: 0.43px;
+            text-align: right;
+            color: #ffffff;
+            svg {
+                width: 12px;
+            }
+        }
+    }
+    .interest-topic_list {
+        margin: 10px;
+        padding: 15px;
+        border-radius: 7px;
+        background-color: #3a3a3a;
+        h5 {
+            font-size: 12px;
+            font-weight: 600;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.67;
+            letter-spacing: normal;
+            color: #ffffff;
+        }
+    }
+
+}
