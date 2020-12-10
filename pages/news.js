@@ -544,7 +544,7 @@ class Trending_v2 extends React.Component {
                                                             (j > 6) && (j + 1) != 1 && (j + 1) % 5 === 0 ? (
                                                                 <div key={j}>
                                                                     {/* <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} /> */}
-                                                                    {/* <iframe 
+                                                                    <iframe 
                                                                         onLoad={() => {
                                                                             window.addEventListener('scroll', () => {
                                                                                 const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
@@ -565,7 +565,7 @@ class Trending_v2 extends React.Component {
                                                                             height: '250px',
                                                                             width: '100%',
                                                                             display: 'none',
-                                                                        }} /> */}
+                                                                        }} />
                                                                     {/* <iframe 
                                                                         ref={this.iframeAds} 
                                                                         id="iframe-ads-1" src="/dfp" 
