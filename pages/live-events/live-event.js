@@ -748,18 +748,6 @@ class LiveEvent extends React.Component {
 		let playerRef = (<div></div>);
 		let errorRef = (<div></div>);
 
-		if (this.state.errorCon) {
-			errorRef = (
-				<ErrorPlayer
-				iconError={<StreamVideoIcon />}
-				title="No Internet Connection"
-				content1="Please check your connection,"
-				content2="you seem to be offline."
-				status={ 500 }
-				statusCode={ 500 } />
-				);
-			return errorRef;
-		}
 		if (this.state.error) {
 			errorRef = (
 				<ErrorPlayer
@@ -796,38 +784,21 @@ class LiveEvent extends React.Component {
 
 			return errorRef;
 		}
-		if(!this.state.error || !this.state.errorEnd || !this.state.errorCon) {
+		if (!this.state.error || !this.state.errorEnd) {
 			playerRef = (
-				<div className="player-liveevent-container">
-					<div data-vjs-player>
-						<div
-							onClick={() => {
-								if (this.player) {
-									this.player.pause();
-								}
-							}}
-							style={{
-								position: 'absolute',
-								top: '50%',
-								left: this.state.screen_width / 2,
-								marginTop: '-0.81666em',
-								display: this.state.playing && this.state.user_active ? 'block' : 'none',
-								transform: 'scale(1.5) translateX(-30%) translateY(-30%)',
-								padding: 0
-							}}>
-							<PauseIcon/>
-						</div>
-						<video
-							autoPlay
-							playsInline
-							style={{
-								width: '100%',
-							}}
-							ref={node => this.videoNode = node}
-							className="video-js vjs-default-skin vjs-big-play-centered"
-						></video>
-					</div>
-				</div>
+				<>
+					<JwPlayer
+						data={ this.props.selected_event_url && this.props.selected_event_url.data }
+						type={ this.props.router.asPath.match('/past-event/') ? 'missed event' : 'live event' }
+						customData={ {
+							program_name: this.props.selected_event && this.props.selected_event.data && this.props.selected_event.data.name,
+							isLogin: this.props.user.isAuth,
+							sectionPage: this.props.router.asPath.match('/past-event/') ? 'missed event' : 'live event' ,
+							} }
+						geoblockStatus={ this.state.statusError === 2 ? true : false }
+						adsOverlayData={ this.state.adsOverlayDuration }
+						/>
+				</>
 			);
 		}
 
@@ -1034,8 +1005,20 @@ class LiveEvent extends React.Component {
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					<div ref={ this.playerContainerRef }  className="rplus-player-container">
 					<NavBack navPlayer={true} stylePos="absolute"/>
+					<Online>
+						{this.renderPlayer()}
+					</Online>
+					<Offline>
+						<ErrorPlayer
+							iconError={<StreamVideoIcon />}
+							title="No Internet Connection"
+							content1="Please check your connection,"
+							content2="you seem to be offline."
+							status={ 500 }
+							statusCode={ 500 } />
+					</Offline>
 						{/* {this.renderPlayer()} */}
-						<JwPlayer
+						{/* <JwPlayer
 							data={ selected_event_url && selected_event_url.data }
 							type={ this.props.router.asPath.match('/past-event/') ? 'missed event' : 'live event' }
 							customData={ {
@@ -1045,7 +1028,7 @@ class LiveEvent extends React.Component {
 								} }
 							geoblockStatus={ this.state.statusError === 2 ? true : false }
               adsOverlayData={ state.adsOverlayDuration }
-							/>
+							/> */}
 					</div>
 					<div ref= { this.titleRef } className="title-wrap">
 						<div>

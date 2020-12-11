@@ -699,9 +699,7 @@ const JwPlayer = (props) => {
 
   return (
     <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
-      {/* { getPlayer(status.isError01 , status.isError02 ) } */}
-      <Online>Online</Online>
-      <Offline>Offline</Offline>
+      { getPlayer(status.isError01 , status.isError02 ) }
       {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
     </div>
   );
@@ -888,9 +886,9 @@ const msgError01 = () => {
 const msgError02 = () => {
   return(
     <div>
-      <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
-      <span style={{ fontSize: 12 }}>Please try again later,</span><br />
-      <span style={{ fontSize: 12 }}>we are working to fix the problem</span>
+      <strong style={{ fontSize: 14 }}>Video Errror</strong><br />
+      <span style={{ fontSize: 12 }}>Sorry, Error has occurred,</span><br />
+      <span style={{ fontSize: 12 }}>Please try again later.</span>
     </div>
   )
 }
