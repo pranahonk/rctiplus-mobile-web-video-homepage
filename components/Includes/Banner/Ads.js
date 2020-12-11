@@ -86,12 +86,12 @@ AdsBanner.propTypes = {
 };
 
 AdsBanner.defaultProps = {
-  path: '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250',
+  path: '',
   size: [300, 250],
   style: {
     width: 300,
     height: 250,
   },
-  idGpt: 'div-gpt-ad-1591240670591-0',
+  idGpt: '',
   partner: null,
 };
