@@ -1,8 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layouts/Default_v2';
 import Head from 'next/head';
+import queryString from 'query-string';
+
+// import component
+import ThumbnailNews from '../components/Includes/News/ThumbnailNews'
+import NavBack from '../components/Includes/Navbar/NavTrendingDetail';
 
 const InteresTopic = (props) => {
+  const [accessToken, setAccessToken] = useState(null)
+  const [platform, setPlatform] = useState(null)
+  useEffect(() => {
+    const query = queryString.parse(location.search)
+    if (query.accessToken) {
+      setAccessToken(query.accessToken)
+      setPlatform(query.platform)
+    }
+  },[])
   return (
     <>
       <Layout title="RCTI+ - News + Tagar">
@@ -34,8 +48,13 @@ const InteresTopic = (props) => {
               gtag('config', 'UA-145455301-9');
           ` }} /> */}
         </Head>
-        <div>
-          test
+        <NavBack
+          src={`/news${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`}
+          params={`${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`}
+          titleNavbar={'#ANUNGGANTENG'}
+          disableScrollListener />
+        <div className="news-interest_wrapper">
+          <ThumbnailNews />
         </div>
       </Layout>
     </>

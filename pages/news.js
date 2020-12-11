@@ -517,7 +517,7 @@ class Trending_v2 extends React.Component {
                                                     <div className="interest-topic_wrapper">
                                                         <div className="interest-topic_title">
                                                             <h1>topik menarik</h1>
-                                                            <Link href="/interest-topic" className=""><span className="news-more_action">See More <ArrowForwardIosIcon /></span></Link>                                                 
+                                                            <Link href={`/interest-topic${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`} className=""><span className="news-more_action">See More <ArrowForwardIosIcon /></span></Link>                                                 
                                                         </div>
                                                         <div className="interest-topic_list">
                                                             <Row>
