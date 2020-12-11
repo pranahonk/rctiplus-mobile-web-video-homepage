@@ -141,7 +141,7 @@ class Pnl_3 extends React.Component {
 								{c?.premium ? (
 									<div className="paid-label">
 										<div style={{ position: 'relative', display: 'flex' }}>
-											<span className="title-paid-video">Special</span>
+											<span className="title-paid-video">Premium</span>
 											<span className="icon-paid-video">
 												<img src="/icons-menu/crown_icon@3x.png" alt="icon-video"/>
 											</span>
