@@ -5,6 +5,7 @@ import { getUserId } from '../../../utils/appier';
 import { onTrackingClick } from '../program-detail/programDetail';
 import { isIOS } from 'react-device-detect';
 import Wrench from '../Common/Wrench';
+import { Offline, Online } from 'react-detect-offline';
 import '../../../assets/scss/jwplayer.scss';
 
 const pubAdsRefreshInterval = {
@@ -679,7 +680,9 @@ const JwPlayer = (props) => {
 
   return (
     <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
-      { getPlayer(status.isError01 , status.isError02 ) }
+      {/* { getPlayer(status.isError01 , status.isError02 ) } */}
+      <Online>Online</Online>
+      <Offline>Offline</Offline>
       {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
     </div>
   );
