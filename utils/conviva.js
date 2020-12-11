@@ -1,7 +1,7 @@
 import { getUserId } from './appier';
 import { setCookie, getCookie } from './cookie';
 export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName, tags, cdn = '') => {
-    console.log('TAGS',tags)
+    // console.log('TAGS',tags)
     return {
         assetName: assetName,
         player: player,
@@ -27,13 +27,13 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
 
             const streamer = new Conviva.ConvivaVideojsStreamerProxy(this.player);
             this.sessionId = Conviva.LivePass.createSession(streamer, convivaMetadata);
-            console.log('CONVIVA SESSION CREATED WITH ID', this.sessionId);
+            // console.log('CONVIVA SESSION CREATED WITH ID', this.sessionId);
             setCookie('CONVIVA_SESSION_ID', this.sessionId);
             return this.sessionId;
         },
         cleanUpSession: function() {
             const sessionId = getCookie('CONVIVA_SESSION_ID');
-            console.log('CLEAN UP SESSION: ' + sessionId);
+            // console.log('CLEAN UP SESSION: ' + sessionId);
             if (sessionId != null) {
                 Conviva.LivePass.cleanupSession(sessionId);
                 this.sessionId = null;
@@ -43,21 +43,21 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
 };
 
 export const convivaJwPlayer = (assetName = null, player = null, duration = null, playerUrl = null, tags = {}, cdn = 'Anevia', isLive = false) => {
-    console.log('TAGS',isLive)
-    console.log('TAGS 2',assetName)
+    // console.log('TAGS',isLive)
+    // console.log('TAGS 2',assetName)
     return {
         assetName: assetName,
         player: player,
         sessionId: getCookie('CONVIVA_SESSION_ID'),
         createSession: function() {
-            console.log('CREATE SESSION CONVIVA')
+            // console.log('CREATE SESSION CONVIVA')
             let convivaVideoAnalytics = null;
             if(convivaVideoAnalytics === null) {
                 switch (process.env.MODE) {
                     case 'DEVELOPMENT':
                         const settings = {  };
                         settings[Conviva.Constants.GATEWAY_URL] = 'https://rcti-test.testonly.conviva.com';
-                        settings[Conviva.Constants.LOG_LEVEL] = Conviva.Constants.LogLevel.DEBUG;
+                        // settings[Conviva.Constants.LOG_LEVEL] = Conviva.Constants.LogLevel.DEBUG;
                         Conviva.Analytics.init('ffc2bacab709e3c5eedc49af6520b33d3c204182', null, settings);
                         break;
     
