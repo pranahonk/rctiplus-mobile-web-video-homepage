@@ -81,6 +81,9 @@ class NavTrendingSearch extends Component {
                                 <ArrowBackIcon/> <span className="trendingHeader"></span>
                             </NavbarBrand>
                             </Col>
+                            <div className="navbar-interest__topic" >
+                                <h1>{this.props.titleNavbar || ''}</h1>
+                            </div>
                         </Row>
                     </Navbar>
                     <StatusNotification />
