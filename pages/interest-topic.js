@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Layout from '../components/Layouts/Default_v2';
 import Head from 'next/head';
 import queryString from 'query-string';
+import '../assets/scss/components/trending_v2.scss';
 
 // import component
 import ThumbnailNews from '../components/Includes/News/ThumbnailNews'
@@ -10,6 +11,7 @@ import NavBack from '../components/Includes/Navbar/NavTrendingDetail';
 const InteresTopic = (props) => {
   const [accessToken, setAccessToken] = useState(null)
   const [platform, setPlatform] = useState(null)
+  const navbarRef = useRef(null)
   useEffect(() => {
     const query = queryString.parse(location.search)
     if (query.accessToken) {
@@ -48,11 +50,13 @@ const InteresTopic = (props) => {
               gtag('config', 'UA-145455301-9');
           ` }} /> */}
         </Head>
-        <NavBack
-          src={`/news${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`}
-          params={`${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`}
-          titleNavbar={'#ANUNGGANTENG'}
-          disableScrollListener />
+        <div ref={navbarRef}>
+          <NavBack
+            src={`/news${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`}
+            params={`${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`}
+            titleNavbar={'#ANUNGGANTENG'}
+            disableScrollListener />
+        </div>
         <div className="news-interest_wrapper">
           <ThumbnailNews />
         </div>
