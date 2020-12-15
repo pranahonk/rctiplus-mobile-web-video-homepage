@@ -488,7 +488,7 @@ class Detail extends React.Component {
                                             partner={cdata.source}
                                             path={getPlatformGpt(this.platform)}
                                             size={[300, 250]}
-                                            idGpt="div-gpt-ad-1591241112683-0"
+                                            idGpt={process.env.GPT_ID_DETAIL}
                                             />
                                         {/* <span>partner: { cdata.source }</span> */}
                                     </div>
