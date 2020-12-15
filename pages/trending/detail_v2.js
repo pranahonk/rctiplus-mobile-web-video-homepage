@@ -410,7 +410,6 @@ class Detail extends React.Component {
                         } }
                     </Sticky>
                 </StickyContainer>
-                
                 {this.state.iframe_opened ? (
                     <div className="content-trending-detail" style={{ height: '100vh' }}>
                         <iframe src={cdata.link} style={{ 
