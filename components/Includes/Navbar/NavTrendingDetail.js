@@ -75,7 +75,7 @@ class NavTrendingSearch extends Component {
                                         // Router.push(`/news${Isplatform}`);
                                         Router.push(`/news?${this.props.params}`)
                                     } else {
-                                        document.referrer.length === 0 || document.referrer.indexOf(Router.router.query.id) > -1 ? Router.push(`/news?${this.props.params}`): Router.back()
+                                        Router.back()
                                     }
                                 }} style={{color: 'white'}}>
                                 <ArrowBackIcon/> <span className="trendingHeader"></span>
