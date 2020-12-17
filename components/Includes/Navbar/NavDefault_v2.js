@@ -177,7 +177,7 @@ class NavbarDef_v2 extends Component {
                         </div>
                     </div>
                     <div className="nav-menu-container">
-                        <ActiveLink activeClassName="active" href="/" activeMenu={'home' + this.props.router.asPath}>
+                        <ActiveLink activeClassName="active" href="/anung-ganteng" activeMenu={'home' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
                                 <img className="img-menu-icon" src={'/videos.svg'}/>
                                 Videos
