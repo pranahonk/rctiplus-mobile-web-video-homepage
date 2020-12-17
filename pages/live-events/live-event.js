@@ -251,7 +251,7 @@ class LiveEvent extends React.Component {
 				selected_tab: ['now-playing', 'upcoming-events', 'past-events'].includes(this.tabName) ? this.tabName : 'now-playing',
 			});
 		}
-		if (this.props.router.asPath.match('/past-event/')) {
+		if (this.props.router.asPath.match('/missed-event/')) {
 			this.setState({
 				selected_tab: 'past-events',
 			});
@@ -378,7 +378,7 @@ class LiveEvent extends React.Component {
 			}
 			return false;
 		}
-		if(this.props.router.asPath.match('/past-event/')) {
+		if(this.props.router.asPath.match('/missed-event/')) {
 			// console.log("testt2")
 			this.setState({ isAvailable: true })
 			return false
@@ -789,11 +789,11 @@ class LiveEvent extends React.Component {
 				<>
 					<JwPlayer
 						data={ this.props.selected_event_url && this.props.selected_event_url.data }
-						type={ this.props.router.asPath.match('/past-event/') ? 'missed event' : 'live event' }
+						type={ this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' }
 						customData={ {
 							program_name: this.props.selected_event && this.props.selected_event.data && this.props.selected_event.data.name,
 							isLogin: this.props.user.isAuth,
-							sectionPage: this.props.router.asPath.match('/past-event/') ? 'missed event' : 'live event' ,
+							sectionPage: this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' ,
 							} }
 						geoblockStatus={ this.state.statusError === 2 ? true : false }
 						adsOverlayData={ this.state.adsOverlayDuration }
@@ -934,7 +934,7 @@ class LiveEvent extends React.Component {
     return (
       this.props.chats?.data?.past_event?.data?.map((list, i) => {
         return (
-          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'past-event', 'past-events')}>
+          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'missed-event', 'past-events')}>
             <Thumbnail
 						dateEvent={list.live_at}
             key={list.content_id + list.content_title}
@@ -1036,7 +1036,7 @@ class LiveEvent extends React.Component {
 							{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
 						</h1>
 						<h2 className="label-title__live-event_date">
-							{	!this.props.router.asPath.match('/past-event/') && `${moment.unix(this.props.selected_event.data.release_date_quiz).format('dddd, DD MMM YYYY - h:mm:ss')} WIB` }
+							{	!this.props.router.asPath.match('/missed-event/') && `${moment.unix(this.props.selected_event.data.release_date_quiz).format('dddd, DD MMM YYYY - h:mm:ss')} WIB` }
 						</h2>
 						<div className="flex-countdown_live-event">
 							{this.isLive()[0] ? (
@@ -1113,7 +1113,7 @@ class LiveEvent extends React.Component {
 							</TabContent>
 						</div>
 						</div>
-						{ this.props.router.asPath.match('/past-event/') || this.state.selected_tab === 'past-events'  ? (<div />) :
+						{ this.props.router.asPath.match('/missed-event/') || this.state.selected_tab === 'past-events'  ? (<div />) :
 						(<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
 						{height: `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
 						: null}>

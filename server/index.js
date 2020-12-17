@@ -248,27 +248,27 @@ const UIVersion = '2.0';
         title: req.params.title
       });
     });
-    // server.get('/missed-event/:id/:title', (req, res) => {
-    //   return app.render(req, res, '/live-events/live-event', {
-    //     id: req.params.id,
-    //     title: req.params.title
-    //   });
-    // });
-    server.get('/past-event/:id/:title', (req, res) => {
+    server.get('/missed-event/:id/:title', (req, res) => {
       return app.render(req, res, '/live-events/live-event', {
         id: req.params.id,
         title: req.params.title
       });
     });
+    // server.get('/past-event/:id/:title', (req, res) => {
+    //   return app.render(req, res, '/live-events/live-event', {
+    //     id: req.params.id,
+    //     title: req.params.title
+    //   });
+    // });
     server.get('/live-event', (req, res) => {
       return app.render(req, res, '/live-events');
     });
-    // server.get('/missed-event', (req, res) => {
-    //   return app.render(req, res, '/live-events');
-    // });
-    server.get('/past-event', (req, res) => {
+    server.get('/missed-event', (req, res) => {
       return app.render(req, res, '/live-events');
     });
+    // server.get('/past-event', (req, res) => {
+    //   return app.render(req, res, '/live-events');
+    // });
 
     // default request handler by next handler:
     server.get('*', (req, res) => {

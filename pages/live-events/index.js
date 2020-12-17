@@ -98,7 +98,7 @@ class Index extends React.Component {
     return (
       this.props.liveEvent?.data?.past_event?.data?.map((list, i) => {
         return (
-          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'past-event', 'past-events')}>
+          <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'missed-event', 'past-events')}>
             <Thumbnail
             dateEvent={list.live_at}
             key={list.content_id + list.content_title}
@@ -115,9 +115,9 @@ class Index extends React.Component {
 
   render() {
     return (
-      <Layout title={this.props.router.asPath.match('past-event') ? 'Past events - RCTI+' : 'Live event - RCTI+'}>
+      <Layout title={this.props.router.asPath.match('missed-event') ? 'Past events - RCTI+' : 'Live event - RCTI+'}>
         <Head>
-          <meta name="description" content={this.props.router.asPath.match('past-event') ? 'Past events' : 'Live event'}/>
+          <meta name="description" content={this.props.router.asPath.match('missed-event') ? 'Missed events' : 'Live event'}/>
         </Head>
         {/* <NavBack title="Live Event"/> */}
         {process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)}
