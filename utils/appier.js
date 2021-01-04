@@ -1,15 +1,30 @@
 import { getCookie } from '../utils/cookie';
 import { formatDateTime } from '../utils/dateHelpers';
 import Cookie from 'js-cookie';
+import nextCookie from 'next-cookies';
 
 const jwtDecode = require('jwt-decode');
 const TOKEN_KEY = 'ACCESS_TOKEN';
 
 const uuidRandom = '23984824_' + Math.floor(Math.random() * 100000000000) 
 
-export const getUidAppier = () => {
-    const _auid = getCookie('_auid') || uuidRandom;
-    //const _auid = Cookie.get('QGUserId') || uuidRandom;
+export const getUidAppier = (ctx = null) => {
+    let _auid = getCookie('_auid') || uuidRandom;
+    const accessToken = getCookie(TOKEN_KEY);
+    if(accessToken) {
+        try {
+            _auid = jwtDecode(accessToken).vid;
+        }
+        catch (e) {
+            console.log(e);
+        }
+    } else {
+        if(ctx) {
+            _auid = nextCookie(ctx).uid_ads
+        } else {
+            _auid = Cookie.get('uid_ads') 
+        }
+    }
     return _auid;
 } 
 

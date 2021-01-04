@@ -25,6 +25,7 @@ import '../../node_modules/videojs-ima/dist/videojs.ima.css';
 import '../../assets/scss/videojs.scss';
 
 import '../../assets/scss/apps/homepage/default.scss';
+import Cookie from 'js-cookie';
 
 class Default_v2 extends React.Component {
 
@@ -54,6 +55,9 @@ class Default_v2 extends React.Component {
     componentDidMount() {
         // this.props.initializeFirebase();
         // console.log('User added to home screen');
+        if(!Cookie.get('uid_ads')) {
+            Cookie.set('uid_ads', new DeviceUUID().get())
+        }
         if (typeof window !== 'undefined') {
             window.addEventListener('beforeinstallprompt', async e => {
                 // beforeinstallprompt Event fired

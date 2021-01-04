@@ -110,13 +110,13 @@ class LiveEvent extends React.Component {
 		if (ctx.asPath.match('/missed-event/') || ctx.asPath.match('/past-event/')) {
 			res = await Promise.all([
 				fetch(`${DEV_API}/api/v1/missed-event/${id}`, options),
-				fetch(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${getUidAppier()}`, options)
+				fetch(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${getUidAppier(ctx)}`, options)
 			]);
 		}
 		else {
 			res = await Promise.all([
 				fetch(`${DEV_API}/api/v1/live-event/${id}`, options),
-				fetch(`${DEV_API}/api/v1/live-event/${id}/url?appierid=${getUidAppier()}`, options)
+				fetch(`${DEV_API}/api/v1/live-event/${id}/url?appierid=${getUidAppier(ctx)}`, options)
 			]);
 		}
 
