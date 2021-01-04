@@ -3,22 +3,39 @@ import Layout from '../components/Layouts/Default_v2';
 import Head from 'next/head';
 import queryString from 'query-string';
 import '../assets/scss/components/trending_v2.scss';
+import Img from 'react-image';
+import { getTruncate } from '../utils/helpers';
 
 // import component
-import ThumbnailNews from '../components/Includes/News/ThumbnailNews'
+// import ThumbnailNews from '../components/Includes/News/ThumbnailNews';
 import NavBack from '../components/Includes/Navbar/NavTrendingDetail';
 
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/swiper.scss';
+
 const InteresTopic = (props) => {
-  const [accessToken, setAccessToken] = useState(null)
-  const [platform, setPlatform] = useState(null)
-  const navbarRef = useRef(null)
+  const [mockData, setMockData] = useState(constMockApi);
+  const [endChild, setEndChild] = useState(false);
+  const [accessToken, setAccessToken] = useState(null);
+  const [platform, setPlatform] = useState(null);
+  const navbarRef = useRef(null);
   useEffect(() => {
-    const query = queryString.parse(location.search)
+    const query = queryString.parse(location.search);
     if (query.accessToken) {
-      setAccessToken(query.accessToken)
-      setPlatform(query.platform)
+      setAccessToken(query.accessToken);
+      setPlatform(query.platform);
     }
-  },[])
+  },[]);
+  useEffect(() => {
+    if (endChild) {
+      if (mockData.meta.page < mockData.meta.totalPage) {
+        setMockData((mockData) => ({data: [...mockData.data, ...constMockApi2.data], meta: constMockApi2.meta}));
+      }
+    }
+  }, [endChild]);
   return (
     <>
       <Layout title="RCTI+ - News + Tagar">
@@ -54,11 +71,51 @@ const InteresTopic = (props) => {
           <NavBack
             src={`/news${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`}
             params={`${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`}
-            titleNavbar={'#ANUNGGANTENG'}
+            titleNavbar={'Topik Menarik'}
             disableScrollListener />
         </div>
-        <div className="news-interest_wrapper">
-          <ThumbnailNews />
+        <div className="news-interest_wrapper" style={{color: '#ffffff'}}>
+          <div className="news-interest_tags">
+            <ul>
+              {constMockApi.data.map((item, index) => {
+                if (index < 4) {
+                  return (
+                      <li key={index} style={{border: 'none'}}>
+                        <span>{ index + 1 }. #AnungGanteng</span>
+                        <Swiper
+                        spaceBetween={10}
+                        width={242}
+                        height={140}
+                        onReachEnd={(swiper) => {
+                          setEndChild(swiper.isEnd);
+                        }}
+                        >
+                          {mockData.data.map((item, i) => {
+                            return (<SwiperSlide key={i}>
+                              <div className="news-interest_thumbnail-wrapper">
+                                <Img
+                                  alt={'null'}
+                                  unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+                                  loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+                                  src={['/static/placeholders/placeholder_landscape.png', '/static/placeholders/placeholder_landscape.png']}
+                                  className="news-interest_thumbnail"
+                                  />
+                                <div className="news-interest_thumbnail-title" >
+                                  <h1>{getTruncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '...', 100)}</h1>
+                                  <h2>sindonews.com <span>Senin, 2 Ferbuari 2020 - 18:03</span></h2>
+                                </div>
+                              </div>
+                            </SwiperSlide>);
+                          })}
+                        </Swiper>
+                      </li>
+                    );
+                }
+                return (<li key={index}>{ index + 1 }. #AnungGanteng</li>);
+              })}
+            </ul>
+          </div>
+          {/* <ThumbnailNews /> */}
         </div>
       </Layout>
     </>
@@ -66,3 +123,37 @@ const InteresTopic = (props) => {
 };
 
 export default InteresTopic;
+
+const constMockApi = { data: [
+  {name: 1},
+  {name: 2},
+  {name: 3},
+  {name: 4},
+  {name: 5},
+  {name: 6},
+  {name: 7},
+  {name: 8},
+  {name: 9},
+  {name: 11},
+  {name: 12},
+  {name: 14},
+  {name: 16},
+ ],
+ meta: {
+   page: 1,
+   totalPage: 2,
+   totalData: 50,
+ },
+};
+const constMockApi2 = { data: [
+  {name: 17},
+  {name: 18},
+  {name: 19},
+  {name: 21},
+ ],
+ meta: {
+   page: 2,
+   totalPage: 2,
+   totalData: 50,
+ },
+};
