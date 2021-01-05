@@ -170,6 +170,10 @@ const UIVersion = '2.0';
       })
     });
 
+    server.get('/news/list-tags', (req, res) => {
+      return app.render(req, res, '/trending/list-tags')
+    });
+
     server.get('/news/detail/:category/:id/:title', (req, res) => {
       return app.render(req, res, '/trending/detail_v2', {
         id: req.params.id,
