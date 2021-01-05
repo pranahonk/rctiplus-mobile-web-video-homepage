@@ -698,7 +698,8 @@ const JwPlayer = (props) => {
   }, [playerFullscreen]);
 
   return (
-    <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
+    // <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
+    <div className="rplus-jw-container">
       { getPlayer(status.isError01 , status.isError02 ) }
       {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
     </div>
