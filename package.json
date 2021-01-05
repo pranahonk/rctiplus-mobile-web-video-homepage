@@ -90,7 +90,7 @@
     "modernizr": "^3.6.0",
     "moment": "^2.29.1",
     "morgan": "^1.9.1",
-    "next": "^9.1.7",
+    "next": "^10.0.3",
     "next-cookies": "^2.0.3",
     "next-offline": "^4.0.2",
     "next-redux-wrapper": "^3.0.0-alpha.3",
