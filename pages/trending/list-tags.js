@@ -3,6 +3,7 @@ import Layout from '../../components/Layouts/Default_v2';
 import Head from 'next/head';
 import queryString from 'query-string';
 import '../../assets/scss/components/trending_v2.scss';
+import Image from 'next/image';
 import Img from 'react-image';
 import { getTruncate } from '../../utils/helpers';
 
@@ -74,7 +75,89 @@ const InteresTopic = (props) => {
         </div>
         <div className="list_tags_wrapper">
           <div className="list_tags_thumb">
-            test
+            <div className="lt_img">
+              <Image
+                src="/static/placeholders/placeholder_landscape.png"
+                alt="Picture of the author"
+                layout="fill"
+                objectFit="cover"
+              />
+            </div>
+            <div className="lt_content">
+              <h1>{getTruncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '...', 100)}</h1>
+              <div className="lt_content-info">
+                <h5>sindonews.com</h5>
+                <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
+              </div>
+            </div>
+          </div>
+          <div className="list_tags_thumb">
+            <div className="lt_img">
+              <Image
+                src="/static/placeholders/placeholder_landscape.png"
+                alt="Picture of the author"
+                layout="fill"
+                objectFit="cover"
+              />
+            </div>
+            <div className="lt_content">
+              <h1>{getTruncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '...', 100)}</h1>
+              <div className="lt_content-info">
+                <h5>sindonews.com</h5>
+                <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
+              </div>
+            </div>
+          </div>
+          <div className="list_tags_thumb">
+            <div className="lt_img">
+              <Image
+                src="/static/placeholders/placeholder_landscape.png"
+                alt="Picture of the author"
+                layout="fill"
+                objectFit="cover"
+              />
+            </div>
+            <div className="lt_content">
+              <h1>{getTruncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '...', 100)}</h1>
+              <div className="lt_content-info">
+                <h5>sindonews.com</h5>
+                <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
+              </div>
+            </div>
+          </div>
+          <div className="list_tags_thumb">
+            <div className="lt_img">
+              <Image
+                src="/static/placeholders/placeholder_landscape.png"
+                alt="Picture of the author"
+                layout="fill"
+                objectFit="cover"
+              />
+            </div>
+            <div className="lt_content">
+              <h1>{getTruncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '...', 100)}</h1>
+              <div className="lt_content-info">
+                <h5>sindonews.com</h5>
+                <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
+              </div>
+            </div>
+          </div>
+          <div className="list_tags_thumb">
+            <div className="lt_img">
+              <Image
+                src="/static/placeholders/placeholder_landscape.png"
+                alt="Picture of the author"
+                layout="fill"
+                objectFit="cover"
+              />
+            </div>
+            <div className="lt_content">
+              <h1>{getTruncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '...', 100)}</h1>
+              <div className="lt_content-info">
+                <h5>sindonews.com</h5>
+                <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
+              </div>
+            </div>
           </div>
         </div>
       </Layout>
