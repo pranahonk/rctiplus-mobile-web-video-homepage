@@ -53,7 +53,7 @@ class Default_v2 extends React.Component {
     }
 
     componentDidMount() {
-        // this.props.initializeFirebase();
+        this.props.initializeFirebase();
         // console.log('User added to home screen');
         if(!Cookie.get('uid_ads')) {
             Cookie.set('uid_ads', new DeviceUUID().get())
@@ -183,7 +183,7 @@ class Default_v2 extends React.Component {
                     <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
 
                     {/* <script src="/static/js/firebase.js"></script> */}
-                    <script dangerouslySetInnerHTML={{ __html: `
+                    {/* <script async dangerouslySetInnerHTML={{ __html: `
                         var firebaseConfig = { 
                                 apiKey: "${FIREBASE_apiKey}",
                                 authDomain: "${FIREBASE_authDomain}",
@@ -197,7 +197,7 @@ class Default_v2 extends React.Component {
                             firebase.initializeApp(firebaseConfig);
                             firebase.analytics();
                     `}}>
-                    </script>
+                    </script> */}
                 </Head>
                 <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
