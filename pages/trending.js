@@ -13,6 +13,8 @@ import NavTrending from '../components/Includes/Navbar/NavTrending_v2';
 import HeadlineCarousel from '../components/Includes/Gallery/HeadlineCarousel';
 import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
 
+import { StickyContainer, Sticky } from 'react-sticky';
+
 import TabLoader from '../components/Includes/Shimmer/TabLoader';
 import HeadlineLoader from '../components/Includes/Shimmer/HeadlineLoader';
 import ArticleLoader from '../components/Includes/Shimmer/ArticleLoader';
@@ -62,7 +64,8 @@ class Trending_v2 extends React.Component {
         load_more_allowed: {},
         articles_length: 10,
         is_load_more: false,
-        user_data: null
+        user_data: null,
+        sticky_category_shown: false
     };
 
     constructor(props) {
@@ -351,7 +354,6 @@ class Trending_v2 extends React.Component {
 
     render() {
         const metadata = this.getMetadata();
-        console.log(this.state.articles['20']);
         return (
             <Layout title={metadata.title}>
                 <Head>
@@ -412,7 +414,7 @@ class Trending_v2 extends React.Component {
                     offset={50}
                     onBottom={this.bottomScrollFetch.bind(this)} />
 
-                <div className="main-content" style={{ marginTop: this.platform === 'ios' ? 26 : this.platform === 'android' ? 15 : '' }}>
+                <div className={`main-content ${this.state.sticky_category_shown ? 'sticky-menu-category-active' : ''} ${(this.platform === 'ios' || this.platform === 'android') && 'apps-mode'}`} style={{ marginTop: this.platform === 'ios' ? 26 : this.platform === 'android' ? 15 : '' }}>
                     {this.state.load_error ? (
                         <div style={{
                             display: 'flex',
@@ -453,51 +455,65 @@ class Trending_v2 extends React.Component {
                                                 <TabLoader />
                                             </div>
                                         ) : (
-                                                <div className="navigation-container">
-                                                    <Nav tabs className="navigation-tabs">
-                                                        {this.state.tabs.map((tab, i) => (
-                                                            <NavItem
-                                                                key={`${i}`}
-                                                                className={classnames({
-                                                                    active: this.state.active_tab == tab.id,
-                                                                    'navigation-tabs-item': true
-                                                                })}>
-                                                                <Link
-                                                                    href={`/trending?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`}
-                                                                    as={`/trending/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
-                                                                    <NavLink onClick={() => this.toggleTab(tab.id.toString(), tab)} className="item-link">{tab.name}</NavLink>
-                                                                </Link>
-                                                            </NavItem>
-                                                        ))}
-                                                    </Nav>
-                                                    <div className="add-tab-button">
-                                                        <AddIcon onClick={() => {
-                                                            removeCookie('NEWS_TOKEN_V2');
-                                                            newsAddChannelClicked('mweb_news_add_kanal_clicked');
-                                                            // if (this.state.user_data) {
-                                                            if (true) {
-                                                                if (this.platform && this.platform === 'android') {
-                                                                    if (typeof window.NewsInterface !== 'undefined') {
-                                                                        window.NewsInterface.hideHeader();
-                                                                    }
+                                            <StickyContainer>
+                                                <Sticky>
+                                                    { ({ distanceFromTop }) => {
+                                                        const self = this;
+                                                        const {sticky_category_shown} = self.state
+                                                        setTimeout(() => {
+                                                            let distance = this.platform === 'ios' || this.platform === 'android' ? 15 : 110
+                                                            self.setState({ sticky_category_shown: distanceFromTop < distance });
+                                                        }, 200);
+                                                        return (
+                                                            <div className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : ''}`}>
+                                                                <Nav tabs className="navigation-tabs">
+                                                                    {this.state.tabs.map((tab, i) => (
+                                                                        <NavItem
+                                                                            key={`${i}`}
+                                                                            className={classnames({
+                                                                                active: this.state.active_tab == tab.id,
+                                                                                'navigation-tabs-item': true
+                                                                            })}>
+                                                                            <Link
+                                                                                href={`/trending?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`}
+                                                                                as={`/trending/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
+                                                                                <NavLink onClick={() => this.toggleTab(tab.id.toString(), tab)} className="item-link">{tab.name}</NavLink>
+                                                                            </Link>
+                                                                        </NavItem>
+                                                                    ))}
+                                                                </Nav>
+                                                                <div className="add-tab-button">
+                                                                    <AddIcon onClick={() => {
+                                                                        removeCookie('NEWS_TOKEN_V2');
+                                                                        newsAddChannelClicked('mweb_news_add_kanal_clicked');
+                                                                        // if (this.state.user_data) {
+                                                                        if (true) {
+                                                                            if (this.platform && this.platform === 'android') {
+                                                                                if (typeof window.NewsInterface !== 'undefined') {
+                                                                                    window.NewsInterface.hideHeader();
+                                                                                }
 
-                                                                    Router.push('/trending/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
-                                                                }
-                                                                else {
-                                                                    Router.push('/trending/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
-                                                                }
-                                                                
-                                                            }
-                                                            else {
-                                                                showSignInAlert(`Please <b>Sign In</b><br/>
-                                                                Woops! Gonna sign in first!<br/>
-                                                                Only a click away and you<br/>
-                                                                can continue to enjoy<br/>
-                                                                <b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
-                                                            }
-                                                        }} />
-                                                    </div>
-                                                </div>
+                                                                                Router.push('/trending/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+                                                                            }
+                                                                            else {
+                                                                                Router.push('/trending/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+                                                                            }
+                                                                            
+                                                                        }
+                                                                        else {
+                                                                            showSignInAlert(`Please <b>Sign In</b><br/>
+                                                                            Woops! Gonna sign in first!<br/>
+                                                                            Only a click away and you<br/>
+                                                                            can continue to enjoy<br/>
+                                                                            <b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+                                                                        }
+                                                                    }} />
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    } }
+                                                </Sticky>
+                                            </StickyContainer>
                                             )}
 
                                         {this.state.is_tabs_loading ? (<HeadlineLoader />) : null}
