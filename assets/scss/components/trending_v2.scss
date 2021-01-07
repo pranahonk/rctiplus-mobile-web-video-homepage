@@ -272,6 +272,7 @@
     .news-interest_thumbnail-wrapper {
         position: relative;
         width: calc(100% - 10px);
+        height: 154px;
         margin: 10px;
         border-radius: 10px;
         box-sizing: border-box;
@@ -280,6 +281,9 @@
         
         .news-interest_thumbnail-title {
             content: '';
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             position: absolute;
             width: 100%;
             height: 63px;
@@ -319,6 +323,7 @@
     }
     .news-interest_thumbnail {
         width: 100%;
+        height: 100%;
     }
 }
 .list_tags_wrapper {
