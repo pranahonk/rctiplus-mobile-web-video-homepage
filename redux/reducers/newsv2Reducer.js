@@ -1,5 +1,7 @@
 const initialState = {
     data: null,
+    data_topic: [],
+    data_tag: [],
     search_result: [],
     meta: null,
     query: '',
@@ -12,6 +14,10 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case 'GET_TRENDING_CONTENT':
             return Object.assign({}, state, { data: action.data });
+        case 'GET_TOPIC':
+            return Object.assign({}, state, { data_topic: action.data });
+        case 'GET_LIST_TAG':
+            return Object.assign({}, state, { data_tag: action.data });
         case 'SET_QUERY':
             return Object.assign({}, state, { query: action.q });
         case 'SET_SEARCH':
