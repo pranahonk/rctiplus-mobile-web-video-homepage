@@ -316,6 +316,53 @@ const getPopularSearch = () => {
     });
 };
 
+const getTagTrending = (length = 10) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/tag/trending?length=${length}`);
+            if (response.status === 200) {
+                dispatch({
+                    type: 'GET_TOPIC',
+                    data: response.data, 
+                    status: response.status
+                });
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+const getListTag = (key = '') => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/tag/${key}`);
+            if (response.status === 200) {
+                console.log(response)
+                dispatch({
+                    type: 'GET_LIST_TAG',
+                    data: response.data, 
+                });
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
 export default {
     clearSearch,
     setQuery,
@@ -333,5 +380,7 @@ export default {
     getRelatedArticles,
     getChannels,
     getPopularSearch,
-    incrementCount
+    incrementCount,
+    getTagTrending,
+    getListTag,
 };

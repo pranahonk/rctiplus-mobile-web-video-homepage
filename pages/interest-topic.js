@@ -1,46 +1,46 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { connect } from 'react-redux';
 import Layout from '../components/Layouts/Default_v2';
 import Head from 'next/head';
 import queryString from 'query-string';
 import '../assets/scss/components/trending_v2.scss';
-import Img from 'react-image';
-import { getTruncate } from '../utils/helpers';
 
 // import component
 // import ThumbnailNews from '../components/Includes/News/ThumbnailNews';
+import HeadlineLoader from '../components/Includes/Shimmer/HeadlineLoader';
 import NavBack from '../components/Includes/Navbar/NavTrendingDetail';
+import ItemTags from '../components/Includes/news/ItemTags';
 
-// Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
-
-// Import Swiper styles
-import 'swiper/swiper.scss';
+// action
+import newsAction from '../redux/actions/newsv2Actions';
 
 const InteresTopic = (props) => {
   const [mockData, setMockData] = useState(constMockApi);
-  const [endChild, setEndChild] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
   const navbarRef = useRef(null);
+  const [loop, setLoop] = useState(3) 
   useEffect(() => {
     const query = queryString.parse(location.search);
     if (query.accessToken) {
       setAccessToken(query.accessToken);
       setPlatform(query.platform);
     }
+    props.getTagTrending().then((res) => {
+      // res.data.length > 0 ? (
+      //   res.data.map((item, index) => {
+      //     if (index < 4) {
+      //       props.getListTag('covid-19')
+      //     }
+      //   })
+      // ) : ''
+    })
   },[]);
-  useEffect(() => {
-    if (endChild) {
-      if (mockData.meta.page < mockData.meta.totalPage) {
-        setMockData((mockData) => ({data: [...mockData.data, ...constMockApi2.data], meta: constMockApi2.meta}));
-      }
-    }
-  }, [endChild]);
   return (
     <>
       <Layout title="RCTI+ - News + Tagar">
         <Head>
-          {/* <meta name="description" content={metadata.description} />
+          {/* <meta name="description" conata.description} />
           <meta name="keywords" content={metadata.keywords} />
           <meta property="og:title" content={metadata.title} />
           <meta property="og:image" itemProp="image" content={metadata.image} />
@@ -76,42 +76,10 @@ const InteresTopic = (props) => {
         </div>
         <div className="news-interest_wrapper" style={{color: '#ffffff'}}>
           <div className="news-interest_tags">
+            {/* <HeadlineLoader /> */}
             <ul>
-              {constMockApi.data.map((item, index) => {
-                if (index < 4) {
-                  return (
-                      <li key={index} style={{border: 'none'}}>
-                        <span>{ index + 1 }. #AnungGanteng</span>
-                        <Swiper
-                        spaceBetween={10}
-                        width={242}
-                        height={140}
-                        onReachEnd={(swiper) => {
-                          setEndChild(swiper.isEnd);
-                        }}
-                        >
-                          {mockData.data.map((item, i) => {
-                            return (<SwiperSlide key={i}>
-                              <div className="news-interest_thumbnail-wrapper">
-                                <Img
-                                  alt={'null'}
-                                  unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-                                  loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-                                  src={['/static/placeholders/placeholder_landscape.png', '/static/placeholders/placeholder_landscape.png']}
-                                  className="news-interest_thumbnail"
-                                  />
-                                <div className="news-interest_thumbnail-title" >
-                                  <h1>{getTruncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '...', 100)}</h1>
-                                  <h2>sindonews.com <span>Senin, 2 Ferbuari 2020 - 18:03</span></h2>
-                                </div>
-                              </div>
-                            </SwiperSlide>);
-                          })}
-                        </Swiper>
-                      </li>
-                    );
-                }
-                return (<li key={index}>{ index + 1 }. #AnungGanteng</li>);
+              {props.listTopic.data_topic.map((item, index) => {
+                return (<ItemTags item={item} index={index} key={index}/>)
               })}
             </ul>
           </div>
@@ -122,7 +90,13 @@ const InteresTopic = (props) => {
   );
 };
 
-export default InteresTopic;
+const mapStateToProps = (state) => {
+  return {
+    listTopic: state.newsv2,
+  };
+}
+
+export default connect(mapStateToProps, {...newsAction})(InteresTopic);
 
 const constMockApi = { data: [
   {name: 1},

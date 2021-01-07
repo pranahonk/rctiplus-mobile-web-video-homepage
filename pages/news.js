@@ -357,8 +357,8 @@ class Trending_v2 extends React.Component {
                     });
                 });
         });
+        this.props.getTagTrending().then((res) => console.log(res)).catch((err) => console.log(err))
     }
-
     goToDetail(article) {
         let category = ''
         if (article.subcategory_name.length < 1) {
@@ -563,21 +563,14 @@ class Trending_v2 extends React.Component {
                                                         </div>
                                                         <div className="interest-topic_list">
                                                             <Row>
-                                                                <Col xs="6" className="interest-topic-item">
-                                                                  <h5>#testing</h5>
-                                                                </Col>
-                                                                <Col xs="6" className="interest-topic-item">
-                                                                  <h5>#testing</h5>
-                                                                </Col>
-                                                                <Col xs="6" className="interest-topic-item">
-                                                                  <h5>#testing</h5>
-                                                                </Col>
-                                                                <Col xs="6" className="interest-topic-item">
-                                                                  <h5>#testing</h5>
-                                                                </Col>
-                                                                <Col xs="6" className="interest-topic-item">
-                                                                  <h5>#testing</h5>
-                                                                </Col>
+                                                                {this.props.newsv2.data_topic.map((item, i) => {
+                                                                    return i > 10 ? ''
+                                                                    : (
+                                                                    <Col xs="6" className="interest-topic-item" key={i}>
+                                                                        <h5>{`#${item.tag}`}</h5>
+                                                                    </Col>
+                                                                    );
+                                                                })}
                                                             </Row>
                                                         </div>
                                                     </div>
