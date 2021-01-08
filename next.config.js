@@ -8,6 +8,9 @@ require("dotenv").config({ path: './.env' });
 
 let nextConfig = {
 	// next-offline options:
+	images: {
+    domains: ['placeimg.com', 'fornews.co'],
+  },
 	dontAutoRegisterSw: true, // since we want runtime registration
 	onDemandEntries: {
 		maxInactiveAge: 25 * 1000 * 1000
