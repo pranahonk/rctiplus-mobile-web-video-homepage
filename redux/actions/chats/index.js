@@ -29,10 +29,6 @@ const initializeFirebase = () => {
                 measurementId: process.env.FIREBASE_measurementId
             });
             firebaseApp.initializeApp(JSON.parse(configFirebase));
-<<<<<<< HEAD
-=======
-            firebaseApp.analytics();
->>>>>>> 1b94386... fix firebase
         }
     };
 };
