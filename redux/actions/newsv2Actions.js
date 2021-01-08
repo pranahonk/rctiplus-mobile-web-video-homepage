@@ -339,12 +339,11 @@ const getTagTrending = (length = 10) => {
         }
     });
 };
-const getListTag = (key = '') => {
+const getListTag = (key = '', page = 1) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/tag/${key}`);
+            const response = await axios.get(`/v1/tag/${key}?page=${page}&length=10`);
             if (response.status === 200) {
-                console.log(response)
                 dispatch({
                     type: 'GET_LIST_TAG',
                     data: response.data, 

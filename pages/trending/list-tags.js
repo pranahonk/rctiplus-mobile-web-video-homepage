@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useRouter } from 'next/router';
+import { connect } from 'react-redux';
 import Layout from '../../components/Layouts/Default_v2';
 import Head from 'next/head';
 import queryString from 'query-string';
@@ -11,16 +13,31 @@ import { getTruncate } from '../../utils/helpers';
 // import ThumbnailNews from '../components/Includes/News/ThumbnailNews';
 import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 
+// action
+import newsAction from '../../redux/actions/newsv2Actions';
+
 
 // Import Swiper styles
 import 'swiper/swiper.scss';
 
 const InteresTopic = (props) => {
+  const [image, setImage] = useState({
+    fallbackSrc: '/static/placeholders/placeholder_landscape.png',
+    error: false,
+    loaded: false,
+  })
   const [mockData, setMockData] = useState(constMockApi);
   const [endChild, setEndChild] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
   const navbarRef = useRef(null);
+  const router = useRouter()
+  const _onImageLoaded = () => {
+    setImage({...image , loaded: true, test: 'loaded'});
+  }
+  const _onImageError = () => {
+    setImage({...image , error: true, test: 'error'})
+  }
   useEffect(() => {
     const query = queryString.parse(location.search);
     if (query.accessToken) {
@@ -35,6 +52,10 @@ const InteresTopic = (props) => {
       }
     }
   }, [endChild]);
+  useEffect(() => {
+    props.getListTag(router.query.title_tag)
+  },[])
+  console.log(props)
   return (
     <>
       <Layout title="RCTI+ - News + Tagar">
@@ -74,98 +95,51 @@ const InteresTopic = (props) => {
             disableScrollListener />
         </div>
         <div className="list_tags_wrapper">
-          <div className="list_tags_thumb">
-            <div className="lt_img">
-              <Image
-                src="/static/placeholders/placeholder_landscape.png"
-                alt="Picture of the author"
-                layout="fill"
-                objectFit="cover"
-              />
-            </div>
-            <div className="lt_content">
-              <h1>{getTruncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '...', 100)}</h1>
-              <div className="lt_content-info">
-                <h5>sindonews.com</h5>
-                <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
+          {props.contents.data_tag?.data?.map((item, index) => {
+            return (
+              <div className="list_tags_thumb" key={index}>
+                <div className="lt_img">
+                  <Image
+                    src={image.error ? image.fallbackSrc : !image.loaded ? image.fallbackSrc : item.cover}
+                    alt="Picture of the author"
+                    layout="fill"
+                    onLoad={_onImageLoaded}
+                    onError={_onImageError}
+                    objectFit="cover"
+                  />
+                  {/* <div className="lt_img_wrap">
+                    <Img
+                    alt={'null'}
+                    unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+                    loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+                    src={[item.cover, '/static/placeholders/placeholder_landscape.png']}
+                    className="news-interest_thumbnail"
+                    />
+                  </div> */}
+                </div>
+                <div className="lt_content">
+                  <h1>{getTruncate(item.title, '...', 100)}</h1>
+                  <div className="lt_content-info">
+                    <h5>{item.source}</h5>
+                    <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="list_tags_thumb">
-            <div className="lt_img">
-              <Image
-                src="/static/placeholders/placeholder_landscape.png"
-                alt="Picture of the author"
-                layout="fill"
-                objectFit="cover"
-              />
-            </div>
-            <div className="lt_content">
-              <h1>{getTruncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '...', 100)}</h1>
-              <div className="lt_content-info">
-                <h5>sindonews.com</h5>
-                <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
-              </div>
-            </div>
-          </div>
-          <div className="list_tags_thumb">
-            <div className="lt_img">
-              <Image
-                src="/static/placeholders/placeholder_landscape.png"
-                alt="Picture of the author"
-                layout="fill"
-                objectFit="cover"
-              />
-            </div>
-            <div className="lt_content">
-              <h1>{getTruncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '...', 100)}</h1>
-              <div className="lt_content-info">
-                <h5>sindonews.com</h5>
-                <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
-              </div>
-            </div>
-          </div>
-          <div className="list_tags_thumb">
-            <div className="lt_img">
-              <Image
-                src="/static/placeholders/placeholder_landscape.png"
-                alt="Picture of the author"
-                layout="fill"
-                objectFit="cover"
-              />
-            </div>
-            <div className="lt_content">
-              <h1>{getTruncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '...', 100)}</h1>
-              <div className="lt_content-info">
-                <h5>sindonews.com</h5>
-                <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
-              </div>
-            </div>
-          </div>
-          <div className="list_tags_thumb">
-            <div className="lt_img">
-              <Image
-                src="/static/placeholders/placeholder_landscape.png"
-                alt="Picture of the author"
-                layout="fill"
-                objectFit="cover"
-              />
-            </div>
-            <div className="lt_content">
-              <h1>{getTruncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '...', 100)}</h1>
-              <div className="lt_content-info">
-                <h5>sindonews.com</h5>
-                <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </Layout>
     </>
   );
 };
 
-export default InteresTopic;
+const mapStateToProps = (state) => {
+  return {
+    contents: state.newsv2,
+  }
+}
+
+export default connect(mapStateToProps, { ...newsAction })(InteresTopic);
 
 const constMockApi = { data: [
   {name: 1},
