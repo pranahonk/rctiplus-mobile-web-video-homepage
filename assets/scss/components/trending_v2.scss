@@ -22,7 +22,9 @@
         color: #8f8f8f;
         font-size: 13px;
         letter-spacing: 0.36px;
-
+        transition-timing-function: ease-in;
+        transition: 0.2s;
+        transform: translateY(0);
         ul {
             margin-bottom: 0;
             padding-left: 0;
@@ -81,6 +83,9 @@
             background-color: #282828;
             top: 5rem;
             padding-top: 1.2rem;
+            transition-timing-function: ease-out;
+            transition: 0.25s;
+            transform: translateY(0);
         }
     }
 
