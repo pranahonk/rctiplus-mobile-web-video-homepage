@@ -495,7 +495,7 @@ class Trending_v2 extends React.Component {
                                                         setTimeout(() => {
                                                             let distance = this.platform === 'ios' || this.platform === 'android' ? 15 : 110
                                                             self.setState({ sticky_category_shown: distanceFromTop < distance })
-                                                        }, 200);
+                                                        }, 1000);
                                                         return (
                                                             <div className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : ''}`}>
                                                                 <Nav tabs className="navigation-tabs">
