@@ -100,7 +100,7 @@ class Trending_v2 extends React.Component {
     toggleTab(tab, tabData) {
         newsTabClicked(tabData.name, 'mweb_news_tab_clicked');
         if (this.state.active_tab != tab) {
-            this.setState({ active_tab: tab }, () => {
+            this.setState({ active_tab: tab, sticky_category_shown: false }, () => {
                 if (!this.state.articles[tab]) {
                     this.loadArticles(tab);
                 }
@@ -462,8 +462,8 @@ class Trending_v2 extends React.Component {
                                                         const {sticky_category_shown} = self.state
                                                         setTimeout(() => {
                                                             let distance = this.platform === 'ios' || this.platform === 'android' ? 15 : 110
-                                                            self.setState({ sticky_category_shown: distanceFromTop < distance });
-                                                        }, 1000);
+                                                            self.setState({ sticky_category_shown: distanceFromTop < distance })
+                                                        }, 1500);
                                                         return (
                                                             <div className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : ''}`}>
                                                                 <Nav tabs className="navigation-tabs">
