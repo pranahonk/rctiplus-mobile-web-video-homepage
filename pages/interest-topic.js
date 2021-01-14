@@ -7,7 +7,7 @@ import '../assets/scss/components/trending_v2.scss';
 
 // import component
 // import ThumbnailNews from '../components/Includes/News/ThumbnailNews';
-import HeadlineLoader from '../components/Includes/Shimmer/HeadlineLoader';
+import TopicLoader from '../components/Includes/Shimmer/TopicLoader';
 import NavBack from '../components/Includes/Navbar/NavTrendingDetail';
 import ItemTags from '../components/Includes/news/ItemTags';
 
@@ -77,11 +77,12 @@ const InteresTopic = (props) => {
         <div className="news-interest_wrapper" style={{color: '#ffffff'}}>
           <div className="news-interest_tags">
             {/* <HeadlineLoader /> */}
-            <ul>
+            { props.listTopic.data_topic.length === 0 ? (constMockApi.fill(true).map((item, index) => (<div key={index}><TopicLoader withList/></div>))) : (<ul>
               {props.listTopic.data_topic.map((item, index) => {
                 return (<ItemTags item={item} index={index} key={index}/>)
               })}
-            </ul>
+            </ul>) }
+            
           </div>
           {/* <ThumbnailNews /> */}
         </div>
@@ -98,36 +99,4 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {...newsAction})(InteresTopic);
 
-const constMockApi = { data: [
-  {name: 1},
-  {name: 2},
-  {name: 3},
-  {name: 4},
-  {name: 5},
-  {name: 6},
-  {name: 7},
-  {name: 8},
-  {name: 9},
-  {name: 11},
-  {name: 12},
-  {name: 14},
-  {name: 16},
- ],
- meta: {
-   page: 1,
-   totalPage: 2,
-   totalData: 50,
- },
-};
-const constMockApi2 = { data: [
-  {name: 17},
-  {name: 18},
-  {name: 19},
-  {name: 21},
- ],
- meta: {
-   page: 2,
-   totalPage: 2,
-   totalData: 50,
- },
-};
+const constMockApi = new Array(3)
