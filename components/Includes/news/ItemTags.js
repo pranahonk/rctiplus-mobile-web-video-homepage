@@ -11,32 +11,57 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/swiper.scss';
 
+import TopicLoader from '../Shimmer/TopicLoader';
+
 const ItemTags = ({item, index, ...props}) => {
   const [endChild, setEndChild] = useState(false);
+  const [meta, setMeta] = useState([]);
   const [list, setList] = useState([]);
   // useEffect(() => {
   //   if (endChild) {
-  //     if (mockData.meta.page < mockData.meta.totalPage) {
-  //       setMockData((mockData) => ({data: [...mockData.data, ...constMockApi2.data], meta: constMockApi2.meta}));
+  //     if (list.data) {
+  //       list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
+  //       (props.getListTag(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
+  //         const resultRes = {...list, data: [...list.data, ...res.data.data], meta: res.data.meta}
+  //         setList(resultRes)
+  //       }).catch((err) => console.log(err))) : ''
   //     }
+  //     // if (list.length > 0) {
+  //     //   console.log([...list, ...list])
+  //       // list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
+  //       // (props.getListTag(item.tag).then((res) => setList([...list, ...list])).catch((err) => console.log(err))) : ''
+  //     // }
   //   }
   // }, [endChild]);
   useEffect(() => {
     if (index < 4) {
-      props.getListTag('covid-19').then((res) => setList(res.data)).catch((err) => console.log(err))
+      props.getListTag(item.tag).then((res) => setList(res.data)).catch((err) => console.log(err))
     }
   }, []);
-  console.log(props)
+  console.log(list)
   if (index < 4) {
     return (
         <li key={index} style={{border: 'none'}}>
           <span>{` ${index + 1}. #${item.tag} `}</span>
-          <Swiper
+          {list.length === 0 ? (<TopicLoader />) : (<Swiper
           spaceBetween={10}
           width={242}
           height={140}
+          onSwiper={(swiper) => console.log(swiper)}
           onReachEnd={(swiper) => {
-          setEndChild(swiper.isEnd);
+            if (swiper.isEnd) {
+              if (list.data) {
+                console.log(list)
+                list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
+                (props.getListTag(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
+                  const resultRes = {...list, data: [...list.data, ...res.data.data], meta: res.data.meta}
+                  setList(resultRes)
+                }).catch((err) => console.log(err))) : ''
+              }
+            }
+            console.log('Reach end: ', swiper)
+          //   swiper.isEnd ? setEndChild(swiper.isEnd)
+          // setEndChild(swiper.isEnd);
           }}
           >
             {list?.data?.map((item, index) => {
@@ -58,7 +83,7 @@ const ItemTags = ({item, index, ...props}) => {
               </SwiperSlide>
               );
             })}
-          </Swiper>
+          </Swiper>) }
         </li>
       );
   }

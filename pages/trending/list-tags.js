@@ -5,7 +5,7 @@ import Layout from '../../components/Layouts/Default_v2';
 import Head from 'next/head';
 import queryString from 'query-string';
 import '../../assets/scss/components/trending_v2.scss';
-import Image from 'next/image';
+// import Image from 'next/image';
 import Img from 'react-image';
 import { getTruncate } from '../../utils/helpers';
 
@@ -55,7 +55,6 @@ const InteresTopic = (props) => {
   useEffect(() => {
     props.getListTag(router.query.title_tag)
   },[])
-  console.log(props)
   return (
     <>
       <Layout title="RCTI+ - News + Tagar">
@@ -99,15 +98,15 @@ const InteresTopic = (props) => {
             return (
               <div className="list_tags_thumb" key={index}>
                 <div className="lt_img">
-                  <Image
+                  {/* <Image
                     src={image.error ? image.fallbackSrc : !image.loaded ? image.fallbackSrc : item.cover}
                     alt="Picture of the author"
                     layout="fill"
                     onLoad={_onImageLoaded}
                     onError={_onImageError}
                     objectFit="cover"
-                  />
-                  {/* <div className="lt_img_wrap">
+                  /> */}
+                  <div className="lt_img_wrap">
                     <Img
                     alt={'null'}
                     unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
@@ -115,7 +114,7 @@ const InteresTopic = (props) => {
                     src={[item.cover, '/static/placeholders/placeholder_landscape.png']}
                     className="news-interest_thumbnail"
                     />
-                  </div> */}
+                  </div>
                 </div>
                 <div className="lt_content">
                   <h1>{getTruncate(item.title, '...', 100)}</h1>
