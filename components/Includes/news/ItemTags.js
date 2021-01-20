@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
 import Img from 'react-image';
+import Link from 'next/link';
+import queryString from 'query-string';
 import { getTruncate } from '../../../utils/helpers';
 // action
 import newsAction from '../../../redux/actions/newsv2Actions';
@@ -17,6 +19,15 @@ const ItemTags = ({item, index, ...props}) => {
   const [endChild, setEndChild] = useState(false);
   const [meta, setMeta] = useState([]);
   const [list, setList] = useState([]);
+  const [accessToken, setAccessToken] = useState(null);
+  const [platform, setPlatform] = useState(null);
+    useEffect(() => {
+    const query = queryString.parse(location.search);
+    if (query.accessToken) {
+      setAccessToken(query.accessToken);
+      setPlatform(query.platform);
+    }
+  },[]);
   // useEffect(() => {
   //   if (endChild) {
   //     if (list.data) {
@@ -38,7 +49,6 @@ const ItemTags = ({item, index, ...props}) => {
       props.getListTag(item.tag).then((res) => setList(res.data)).catch((err) => console.log(err))
     }
   }, []);
-  console.log(list)
   if (index < 4) {
     return (
         <li key={index} style={{border: 'none'}}>
@@ -51,15 +61,12 @@ const ItemTags = ({item, index, ...props}) => {
           onReachEnd={(swiper) => {
             if (swiper.isEnd) {
               if (list.data) {
-                console.log(list)
                 list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
                 (props.getListTag(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
-                  const resultRes = {...list, data: [...list.data, ...res.data.data], meta: res.data.meta}
-                  setList(resultRes)
+                  setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
                 }).catch((err) => console.log(err))) : ''
               }
             }
-            console.log('Reach end: ', swiper)
           //   swiper.isEnd ? setEndChild(swiper.isEnd)
           // setEndChild(swiper.isEnd);
           }}
@@ -87,7 +94,11 @@ const ItemTags = ({item, index, ...props}) => {
         </li>
       );
   }
-  return (<li key={index}>{` ${index + 1}. #${item.tag} `}</li>);
+  return (<li key={index}>
+    <Link href={`/news/topic/tag/${item.tag.toLowerCase()}${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`}>
+      {` ${index + 1}. #${item.tag} `}
+    </Link>
+  </li>);
 } 
 
 const mapStateToProps = (state) => {

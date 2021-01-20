@@ -324,11 +324,20 @@ const getTagTrending = (length = 10) => {
                 dispatch({
                     type: 'GET_TOPIC',
                     data: response.data, 
-                    status: response.status
+                    status: response.status,
+                    loading: false
                 });
                 resolve(response);
+                dispatch({
+                    type: 'GET_LIST_TAG_LOADING',
+                    loading: false
+                });
             }
             else {
+                dispatch({
+                    type: 'GET_LIST_TAG_LOADING',
+                    loading: false
+                });
                 removeAccessToken();
                 reject(response);
             }
@@ -339,18 +348,59 @@ const getTagTrending = (length = 10) => {
         }
     });
 };
-const getListTag = (key = '', page = 1) => {
+const getMorePage = (value) => {
+    return dispatch => { 
+        dispatch({
+            type: 'GET_MORE_PAGE',
+            data: value
+        })
+    }
+}
+const setLike = (news_id, love, device_id) => {
+    return () => new Promise(async (resolve, reject) => { 
+        try {
+            const response = await axios.post(`/v1/like`, { news_id, love, device_id });
+                if (response.status === 200) {
+                    resolve(response);
+                }
+                else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch(err) {
+            removeAccessToken();
+            reject(err)
+        }
+    })
+}
+const getListTag = (key = '', page = 1, isMore= false) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/tag/${key}?page=${page}&length=10`);
             if (response.status === 200) {
+                isMore ? 
+                   dispatch({
+                        type: 'GET_LIST_TAG_MORE',
+                        data: response.data, 
+                        loading: false
+                    })
+                 : dispatch({
+                        type: 'GET_LIST_TAG',
+                        data: response.data, 
+                        loading: false
+                    })
                 dispatch({
-                    type: 'GET_LIST_TAG',
-                    data: response.data, 
+                    type: 'GET_LIST_TAG_LOADING',
+                    loading: false
                 });
                 resolve(response);
             }
             else {
+                dispatch({
+                    type: 'GET_LIST_TAG_LOADING',
+                    loading: false
+                });
                 removeAccessToken();
                 reject(response);
             }
@@ -382,4 +432,6 @@ export default {
     incrementCount,
     getTagTrending,
     getListTag,
+    getMorePage,
+    setLike
 };
