@@ -6,7 +6,6 @@ import fetch from 'isomorphic-unfetch';
 import Img from 'react-image';
 import { ScrollPercentage } from 'react-scroll-percentage';
 import { StickyContainer, Sticky } from 'react-sticky';
-import Cookie from 'js-cookie';
 
 import { DEV_API, BASE_URL, NEWS_API_V2, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, UTM_NAME } from '../../config';
 
@@ -25,7 +24,7 @@ import { urlRegex } from '../../utils/regex';
 import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
 import newsv2Actions from '../../redux/actions/newsv2Actions';
 
-// import ShareIcon from '@material-ui/icons/Share';
+import ShareIcon from '@material-ui/icons/Share';
 
 import queryString from 'query-string';
 import { isIOS } from 'react-device-detect';
@@ -79,7 +78,6 @@ class Detail extends React.Component {
             trending_detail_data: this.props.initial,
             trending_related: [],
             iframe_opened: false,
-            isLike: false,
             scrolled_down: false,
             sticky_share_shown: false,
             count: false,
@@ -126,15 +124,6 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
-      if(!Cookie.get('uid_ads')) {
-          Cookie.set('uid_ads', new DeviceUUID().get())
-      }
-        if(!Cookie.get('is_like_article')) {
-          Cookie.set('is_like_article', [{ like: false, news_id: false }])
-        }
-        const like = JSON.parse(Cookie.get('is_like_article'))
-        const foundLike = like.find(element => element.news_id == this.props.initial?.id)
-        this.setState({ isLike: foundLike?.like || false })
         window.onhashchange = () => {
             if (this.state.iframe_opened) {
                 this.setState({ iframe_opened: false });
@@ -166,27 +155,6 @@ class Detail extends React.Component {
             taken[x] = --len in taken ? taken[len] : len;
         }
         return result;
-    }
-    setLike(e) {
-        if(!Cookie.get('is_like_article')) {
-          Cookie.set('is_like_article', [{ like: false, news_id: false }])
-          return
-        }
-        let like = JSON.parse(Cookie.get('is_like_article'))
-        const device_id = Cookie.get('uid_ads')
-        const id_news = this.props.initial?.id?.toString()
-        const foundLike = like.find(element => element.news_id == this.props.initial?.id)
-        if(like.some((value) => value.news_id == this.props.initial?.id)) {
-            const replaceArray = [{ like: !foundLike?.like, news_id: id_news}]
-            this.props.setLike(id_news, !foundLike?.like, device_id)
-            Cookie.set('is_like_article', like.map(obj => replaceArray.find(value => value.news_id == obj.news_id || obj)))
-            this.setState({ isLike: !foundLike?.like })
-            return 
-        }
-        like.push({ like: !foundLike?.like, news_id: id_news})
-        this.setState({ isLike: !foundLike?.like })
-        this.props.setLike(id_news, !foundLike?.like, device_id)
-        Cookie.set('is_like_article', like)
     }
 
     openIframe() {
@@ -236,7 +204,6 @@ class Detail extends React.Component {
         let hashtags = ['rcti', 'rctinews'];
         return (
             <div className="sheet-action-button-container">
-              <div className="sheet-wrap-left">
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#034ea1' }}>
                     {this.platform && this.platform == 'ios' ? (
                     <div onClick={() => {
@@ -340,7 +307,7 @@ class Detail extends React.Component {
                     )}
                     
                 </div>
-                {/* <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: scrolledDown ? '#3a3a3a' : '', float: 'right' }}>
+                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: scrolledDown ? '#3a3a3a' : '', float: 'right' }}>
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
                         const cdata = this.state.trending_detail_data;
                         if (this.platform && (this.platform == 'android')) {
@@ -356,48 +323,20 @@ class Detail extends React.Component {
                                 .catch(error => console.log('Error sharing:', error));
                         }
                     }}/>
-                </div> */}
-              </div>
-              <div className="sheet-wrap-right">
-                <div onClick={this.setLike.bind(this)} className="sheet-action-button" style={{ background: '#282828' }}>
-                    {console.log('like', this.state.isLike)}
-                    {this.state.isLike ?
-                     (<img src={`/share-icon/like.svg`} style={{ height: 22 }} alt="like-image"/>) :
-                     (<img src={`/share-icon/unlike.svg`} style={{ height: 22 }} alt="like-image"/>) }
                 </div>
-                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#282828' }}>
-                    <img src="/share-icon/share.svg" style={{ height: 22 }} onClick={() => {
-                        const cdata = this.state.trending_detail_data;
-                        if (this.platform && (this.platform == 'android')) {
-                            window.AndroidShareHandler.action(URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'all', 'android'), cdata.title);
-                        }
-                        else {
-                            navigator.share({
-                                    title: cdata.title,
-                                    text: "",
-                                    url: URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'all'),
-                                })
-                                .then(() => console.log('Successful share'))
-                                .catch(error => console.log('Error sharing:', error));
-                        }
-                    }}/>
-                </div>
-              </div>
             </div>
         );
     }
 
     render() {
         const cdata = this.state.trending_detail_data;
-        console.log(cdata)
-        console.log(this.props.initial)
         const isInfographic = this.state.infographic;
         // cdata.link = 'https://m.rctiplus.com';
 
         return (
             <Layout title={cdata.title}>
                 <Head>
-                    <meta name="description" content={cdata.content?.replace( /(<([^>]+)>)/ig, '')}></meta>
+                    <meta name="description" content={cdata.content.replace( /(<([^>]+)>)/ig, '')}></meta>
                     <meta property="og:image" itemProp="image" content={cdata.cover}></meta>
                     <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)}></meta>
                     <meta property="og:image:type" content="image/jpeg" />
@@ -410,7 +349,7 @@ class Detail extends React.Component {
                     <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite}></meta>
                     <meta name="twitter:image" content={cdata.cover}></meta>
                     <meta name="twitter:title" content={cdata.title}></meta>
-                    <meta name="twitter:description" content={cdata.content?.replace( /(<([^>]+)>)/ig, '')}></meta>
+                    <meta name="twitter:description" content={cdata.content.replace( /(<([^>]+)>)/ig, '')}></meta>
                     <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)}></meta>
                     <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)}></meta>
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
@@ -510,7 +449,7 @@ class Detail extends React.Component {
                     }}>
                         {({ ref }) => (
                             <div ref={ref} className="content-trending-detail">
-                                <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title?.replace(/\\/g, '') }}></b></h1>
+                                <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title.replace(/\\/g, '') }}></b></h1>
                                 <small className="content-trending-detail-create"><strong>{cdata.source}</strong>&nbsp;&nbsp;{formatDateWordID(new Date(cdata.pubDate * 1000))}</small>
                                 {}
                                 <StickyContainer>
