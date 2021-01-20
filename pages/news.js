@@ -567,7 +567,9 @@ class Trending_v2 extends React.Component {
                                                                     return i > 10 ? ''
                                                                     : (
                                                                     <Col xs="6" className="interest-topic-item" key={i}>
-                                                                        <h5>{`#${item.tag}`}</h5>
+                                                                        <Link href={`/news/topic/tag/${item.tag.toLowerCase()}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
+                                                                            {`#${item.tag}`}
+                                                                        </Link>
                                                                     </Col>
                                                                     );
                                                                 })}

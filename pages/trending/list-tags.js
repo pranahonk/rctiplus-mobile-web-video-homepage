@@ -1,9 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { connect } from 'react-redux';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { urlRegex } from '../../utils/regex';
 import Layout from '../../components/Layouts/Default_v2';
 import Head from 'next/head';
 import queryString from 'query-string';
+import BottomScrollListener from 'react-bottom-scroll-listener';
 import '../../assets/scss/components/trending_v2.scss';
 // import Image from 'next/image';
 import Img from 'react-image';
@@ -16,6 +20,8 @@ import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 // action
 import newsAction from '../../redux/actions/newsv2Actions';
 
+const Loading = dynamic(() => import('../../components/Includes/Shimmer/ListTagLoader'))
+
 
 // Import Swiper styles
 import 'swiper/swiper.scss';
@@ -26,8 +32,6 @@ const InteresTopic = (props) => {
     error: false,
     loaded: false,
   })
-  const [mockData, setMockData] = useState(constMockApi);
-  const [endChild, setEndChild] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
   const navbarRef = useRef(null);
@@ -46,15 +50,24 @@ const InteresTopic = (props) => {
     }
   },[]);
   useEffect(() => {
-    if (endChild) {
-      if (mockData.meta.page < mockData.meta.totalPage) {
-        setMockData((mockData) => ({data: [...mockData.data, ...constMockApi2.data], meta: constMockApi2.meta}));
-      }
-    }
-  }, [endChild]);
-  useEffect(() => {
     props.getListTag(router.query.title_tag)
   },[])
+  const _moreTags = (pagination) => {
+    if(pagination.total > pagination.current_page && !props.contents.isMorePage) {
+      props.getMorePage(true)
+      props.getListTag(router.query.title_tag, pagination.current_page + 1, true)
+    }
+  }
+  const _arrayLoading = new Array(10).fill('2')
+  const _goToDetail = (article) => {
+        let category = ''
+        if (article.subcategory_name.length < 1) {
+          category = 'berita-utama';
+        } else {
+          category = urlRegex(article.subcategory_name)
+        }
+        return ('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
+    }
   return (
     <>
       <Layout title="RCTI+ - News + Tagar">
@@ -93,39 +106,46 @@ const InteresTopic = (props) => {
             titleNavbar={'#testtagar'}
             disableScrollListener />
         </div>
+        <BottomScrollListener offset={500} onBottom={()  => _moreTags(props.contents.data_tag?.meta?.pagination)} />;
         <div className="list_tags_wrapper">
-          {props.contents.data_tag?.data?.map((item, index) => {
-            return (
-              <div className="list_tags_thumb" key={index}>
-                <div className="lt_img">
-                  {/* <Image
-                    src={image.error ? image.fallbackSrc : !image.loaded ? image.fallbackSrc : item.cover}
-                    alt="Picture of the author"
-                    layout="fill"
-                    onLoad={_onImageLoaded}
-                    onError={_onImageError}
-                    objectFit="cover"
-                  /> */}
-                  <div className="lt_img_wrap">
-                    <Img
-                    alt={'null'}
-                    unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-                    loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-                    src={[item.cover, '/static/placeholders/placeholder_landscape.png']}
-                    className="news-interest_thumbnail"
-                    />
+          {props.contents.loading ? (
+            _arrayLoading.map(() => (<Loading />))
+            ) : 
+            props.contents.data_tag?.data?.map((item, index) => {
+              return (
+                <div className="list_tags_thumb" key={index}>
+                  <div className="lt_img">
+                    {/* <Image
+                      src={image.error ? image.fallbackSrc : !image.loaded ? image.fallbackSrc : item.cover}
+                      alt="Picture of the author"
+                      layout="fill"
+                      onLoad={_onImageLoaded}
+                      onError={_onImageError}
+                      objectFit="cover"
+                    /> */}
+                    <div className="lt_img_wrap">
+                      <Img
+                      alt={'null'}
+                      unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+                      loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+                      src={[item.cover, '/static/placeholders/placeholder_landscape.png']}
+                      className="news-interest_thumbnail"
+                      />
+                    </div>
+                  </div>
+                  <div className="lt_content">
+                    <Link href={_goToDetail(item)}>{getTruncate(item.title, '...', 100)}</Link>
+                    {/* <h1 onClick={() => _goToDetail(item)}>{getTruncate(item.title, '...', 100)}</h1> */}
+                    <div className="lt_content-info">
+                      <h5>{item.source}</h5>
+                      <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
+                    </div>
                   </div>
                 </div>
-                <div className="lt_content">
-                  <h1>{getTruncate(item.title, '...', 100)}</h1>
-                  <div className="lt_content-info">
-                    <h5>{item.source}</h5>
-                    <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          }
+          {props.contents.isMorePage && (<Loading />)}
         </div>
       </Layout>
     </>
@@ -139,37 +159,3 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps, { ...newsAction })(InteresTopic);
-
-const constMockApi = { data: [
-  {name: 1},
-  {name: 2},
-  {name: 3},
-  {name: 4},
-  {name: 5},
-  {name: 6},
-  {name: 7},
-  {name: 8},
-  {name: 9},
-  {name: 11},
-  {name: 12},
-  {name: 14},
-  {name: 16},
- ],
- meta: {
-   page: 1,
-   totalPage: 2,
-   totalData: 50,
- },
-};
-const constMockApi2 = { data: [
-  {name: 17},
-  {name: 18},
-  {name: 19},
-  {name: 21},
- ],
- meta: {
-   page: 2,
-   totalPage: 2,
-   totalData: 50,
- },
-};

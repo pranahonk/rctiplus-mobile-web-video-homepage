@@ -255,7 +255,7 @@
         padding: 15px;
         border-radius: 7px;
         background-color: #3a3a3a;
-        h5 {
+        a {
             font-size: 12px;
             font-weight: 600;
             font-stretch: normal;
@@ -294,6 +294,9 @@
                     border-bottom: solid 2px #3a3a3a;
                 }
             }
+        }
+        a {
+            color: #ffffff;
         }
     }
     .news-interest_thumbnail-wrapper {
@@ -354,7 +357,7 @@
     }
 }
 .list_tags_wrapper {
-    margin-top: 42px;
+    margin-top: 10px;
     margin-bottom: 44px;
     box-sizing: border-box;
     padding: 0 13px;
@@ -362,7 +365,7 @@
       padding-top: 17px;
       display: flex;
       flex-wrap: nowrap;
-      h1 {
+      h1, a {
         font-size: 12px;
         font-weight: 600;
         font-stretch: normal;

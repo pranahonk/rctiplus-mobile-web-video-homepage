@@ -26,15 +26,7 @@ const InteresTopic = (props) => {
       setAccessToken(query.accessToken);
       setPlatform(query.platform);
     }
-    props.getTagTrending().then((res) => {
-      // res.data.length > 0 ? (
-      //   res.data.map((item, index) => {
-      //     if (index < 4) {
-      //       props.getListTag('covid-19')
-      //     }
-      //   })
-      // ) : ''
-    })
+    props.getTagTrending(100).catch((err) => console.log(err))
   },[]);
   return (
     <>
@@ -77,7 +69,7 @@ const InteresTopic = (props) => {
         <div className="news-interest_wrapper" style={{color: '#ffffff'}}>
           <div className="news-interest_tags">
             {/* <HeadlineLoader /> */}
-            { props.listTopic.data_topic.length === 0 ? (constMockApi.fill(true).map((item, index) => (<div key={index}><TopicLoader withList/></div>))) : (<ul>
+            { props.listTopic.loading ? (constMockApi.fill(true).map((item, index) => (<div key={index}><TopicLoader withList/></div>))) : (<ul>
               {props.listTopic.data_topic.map((item, index) => {
                 return (<ItemTags item={item} index={index} key={index}/>)
               })}
