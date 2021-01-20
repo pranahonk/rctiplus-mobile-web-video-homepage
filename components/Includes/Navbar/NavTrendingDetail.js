@@ -63,7 +63,7 @@ class NavTrendingSearch extends Component {
         return (
                 <div className={"nav-home-container nav-fixed-top"}>
                     <Navbar expand="md" className={'nav-container nav-trending-detail nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
-                        <Row className="wr-col-trn-search">
+                        <div className="wr-col-trn-search">
                             <Col xs="12">
                                 <NavbarBrand onClick={() => {
                                     let platform = isIOS ? 'ios' : isAndroid ? 'android' : 'mweb';
@@ -81,7 +81,10 @@ class NavTrendingSearch extends Component {
                                 <ArrowBackIcon/> <span className="trendingHeader"></span>
                             </NavbarBrand>
                             </Col>
-                        </Row>
+                            <div className="navbar-interest__topic" >
+                                <h1>{this.props.titleNavbar || ''}</h1>
+                            </div>
+                        </div>
                     </Navbar>
                     <StatusNotification />
                 </div>
