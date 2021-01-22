@@ -71,7 +71,7 @@ const InteresTopic = (props) => {
             {/* <HeadlineLoader /> */}
             { props.listTopic.loading ? (constMockApi.fill(true).map((item, index) => (<div key={index}><TopicLoader withList/></div>))) : (<ul>
               {props.listTopic.data_topic.map((item, index) => {
-                return (<ItemTags item={item} index={index} key={index}/>)
+                return (<ItemTags item={item} index={index} key={index + 'item'}/>)
               })}
             </ul>) }
             

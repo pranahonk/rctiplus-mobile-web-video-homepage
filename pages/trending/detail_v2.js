@@ -83,6 +83,7 @@ class Detail extends React.Component {
             scrolled_down: false,
             sticky_share_shown: false,
             count: false,
+            countLike: 0, 
             infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID
         };
 
@@ -178,14 +179,14 @@ class Detail extends React.Component {
         const foundLike = like.find(element => element.news_id == this.props.initial?.id)
         if(like.some((value) => value.news_id == this.props.initial?.id)) {
             const replaceArray = [{ like: !foundLike?.like, news_id: id_news}]
-            this.props.setLike(id_news, !foundLike?.like, device_id)
+            this.props.setLike(id_news, !foundLike?.like, device_id).then((res) => this.setState({countLike : res.data?.data?.total_like}))
             Cookie.set('is_like_article', like.map(obj => replaceArray.find(value => value.news_id == obj.news_id || obj)))
             this.setState({ isLike: !foundLike?.like })
             return 
         }
         like.push({ like: !foundLike?.like, news_id: id_news})
         this.setState({ isLike: !foundLike?.like })
-        this.props.setLike(id_news, !foundLike?.like, device_id)
+        this.props.setLike(id_news, !foundLike?.like, device_id).then((res) => this.setState({countLike : res.data?.data?.total_like}))
         Cookie.set('is_like_article', like)
     }
 
@@ -359,14 +360,16 @@ class Detail extends React.Component {
                 </div> */}
               </div>
               <div className="sheet-wrap-right">
-                <div onClick={this.setLike.bind(this)} className="sheet-action-button" style={{ background: '#282828' }}>
-                    {console.log('like', this.state.isLike)}
+                { this.state.countLike ? (<div className="total_like">
+                    <span>{this.state.countLike}</span>
+                </div>) : '' }
+                <div onClick={this.setLike.bind(this)} className="sheet-action-button" style={{ background: '#282828', margin: 0 }}>
                     {this.state.isLike ?
-                     (<img src={`/share-icon/like.svg`} style={{ height: 22 }} alt="like-image"/>) :
-                     (<img src={`/share-icon/unlike.svg`} style={{ height: 22 }} alt="like-image"/>) }
+                     (<img src={`/share-icon/like.svg`} className="img-height" alt="like-image"/>) :
+                     (<img src={`/share-icon/unlike.svg`} className="img-height" alt="unlike-image"/>) }
                 </div>
-                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#282828' }}>
-                    <img src="/share-icon/share.svg" style={{ height: 22 }} onClick={() => {
+                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#282828', marginLeft: 15 }}>
+                    <img src="/share-icon/share.svg" className="img-height" onClick={() => {
                         const cdata = this.state.trending_detail_data;
                         if (this.platform && (this.platform == 'android')) {
                             window.AndroidShareHandler.action(URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'all', 'android'), cdata.title);
@@ -389,8 +392,6 @@ class Detail extends React.Component {
 
     render() {
         const cdata = this.state.trending_detail_data;
-        console.log(cdata)
-        console.log(this.props.initial)
         const isInfographic = this.state.infographic;
         // cdata.link = 'https://m.rctiplus.com';
 
