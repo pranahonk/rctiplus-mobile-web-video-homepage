@@ -4,6 +4,8 @@ import Img from 'react-image';
 import Link from 'next/link';
 import queryString from 'query-string';
 import { getTruncate } from '../../../utils/helpers';
+import { formatDateWordID } from '../../../utils/dateHelpers';
+import { urlRegex } from '../../../utils/regex';
 // action
 import newsAction from '../../../redux/actions/newsv2Actions';
 
@@ -49,6 +51,15 @@ const ItemTags = ({item, index, ...props}) => {
       props.getListTag(item.tag).then((res) => setList(res.data)).catch((err) => console.log(err))
     }
   }, []);
+  const _goToDetail = (article) => {
+    let category = ''
+    if (article.subcategory_name.length < 1) {
+      category = 'berita-utama';
+    } else {
+      category = urlRegex(article.subcategory_name)
+    }
+    return ('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
+  }
   if (index < 4) {
     return (
         <li key={index} style={{border: 'none'}}>
@@ -74,19 +85,21 @@ const ItemTags = ({item, index, ...props}) => {
             {list?.data?.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
-                <div className="news-interest_thumbnail-wrapper">
-                  <Img
-                    alt={'null'}
-                    unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-                    loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-                    src={[item.cover, '/static/placeholders/placeholder_landscape.png']}
-                    className="news-interest_thumbnail"
-                    />
-                  <div className="news-interest_thumbnail-title" >
-                    <h1>{getTruncate(item.title, '...', 100)}</h1>
-                    <h2>{item.subcategory_name} <span>Senin, 2 Ferbuari 2020 - 18:03</span></h2>
-                  </div>
-                </div>
+                  <Link href={_goToDetail(item)}>
+                    <div className="news-interest_thumbnail-wrapper">
+                      <Img
+                        alt={'null'}
+                        unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+                        loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
+                        src={[item.cover, '/static/placeholders/placeholder_landscape.png']}
+                        className="news-interest_thumbnail"
+                        />
+                      <div className="news-interest_thumbnail-title" >
+                        <h1>{getTruncate(item.title, '...', 100)}</h1>
+                        <h2>{item.subcategory_name} <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
+                      </div>
+                    </div>
+                  </Link>
               </SwiperSlide>
               );
             })}

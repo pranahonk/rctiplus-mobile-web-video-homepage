@@ -12,6 +12,7 @@ import '../../assets/scss/components/trending_v2.scss';
 // import Image from 'next/image';
 import Img from 'react-image';
 import { getTruncate } from '../../utils/helpers';
+import { formatDateWordID } from '../../utils/dateHelpers';
 
 // import component
 // import ThumbnailNews from '../components/Includes/News/ThumbnailNews';
@@ -26,7 +27,7 @@ const Loading = dynamic(() => import('../../components/Includes/Shimmer/ListTagL
 // Import Swiper styles
 import 'swiper/swiper.scss';
 
-const InteresTopic = (props) => {
+const ListTags = (props) => {
   const [image, setImage] = useState({
     fallbackSrc: '/static/placeholders/placeholder_landscape.png',
     error: false,
@@ -103,17 +104,17 @@ const InteresTopic = (props) => {
           <NavBack
             src={`/news${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`}
             params={`${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`}
-            titleNavbar={'#testtagar'}
+            titleNavbar={`#${router.query.title_tag}`}
             disableScrollListener />
         </div>
         <BottomScrollListener offset={500} onBottom={()  => _moreTags(props.contents.data_tag?.meta?.pagination)} />;
         <div className="list_tags_wrapper">
           {props.contents.loading ? (
-            _arrayLoading.map(() => (<Loading />))
+            _arrayLoading.map((item, index) => (<Loading key={index} />))
             ) : 
             props.contents.data_tag?.data?.map((item, index) => {
               return (
-                <div className="list_tags_thumb" key={index}>
+                <div className="list_tags_thumb" key={index + item.title}>
                   <div className="lt_img">
                     {/* <Image
                       src={image.error ? image.fallbackSrc : !image.loaded ? image.fallbackSrc : item.cover}
@@ -138,7 +139,7 @@ const InteresTopic = (props) => {
                     {/* <h1 onClick={() => _goToDetail(item)}>{getTruncate(item.title, '...', 100)}</h1> */}
                     <div className="lt_content-info">
                       <h5>{item.source}</h5>
-                      <h6>Senin, 2 Ferbuari 2020 - 18:03</h6>
+                      <h6>{formatDateWordID(new Date(item.pubDate * 1000))}</h6>
                     </div>
                   </div>
                 </div>
@@ -158,4 +159,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, { ...newsAction })(InteresTopic);
+export default connect(mapStateToProps, { ...newsAction })(ListTags);

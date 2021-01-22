@@ -22,6 +22,17 @@
 
     .sheet-wrap-right {
     display: flex;
+    align-items: center;
+        .total_like { 
+            background: #282828;
+            margin: 0;
+            width: 10px;
+            height: 10px;
+            color: #fff;
+        }
+        .img-height {
+            height: 22px;
+        }
     }
 
     .sheet-action-button {
