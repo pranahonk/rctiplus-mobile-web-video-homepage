@@ -132,6 +132,9 @@ class Detail extends React.Component {
       if(!Cookie.get('uid_ads')) {
           Cookie.set('uid_ads', new DeviceUUID().get())
       }
+        if(this.props?.initial?.total_like) {
+            this.setState({countLike : this.state.countLike + this.props?.initial?.total_like})
+        }
         if(!Cookie.get('is_like_article')) {
           Cookie.set('is_like_article', [{ like: false, news_id: false }])
         }
@@ -183,15 +186,27 @@ class Detail extends React.Component {
         const foundLike = like.find(element => element.news_id == this.props.initial?.id)
         if(like.some((value) => value.news_id == this.props.initial?.id)) {
             const replaceArray = [{ like: !foundLike?.like, news_id: id_news}]
-            this.props.setLike(id_news, !foundLike?.like, device_id).then((res) => this.setState({countLike : res.data?.data?.total_like}))
-            Cookie.set('is_like_article', like.map(obj => replaceArray.find(value => value.news_id == obj.news_id || obj)))
-            this.setState({ isLike: !foundLike?.like })
+            this.props.setLike(id_news, !foundLike?.like, device_id).then((res) => {
+                if(!this.state.isLike) {
+                    this.setState({countLike : this.state.countLike + res.data?.data?.total_like})
+                } else {
+                    this.setState({countLike : this.state.countLike - 1})
+                }
+                Cookie.set('is_like_article', like.map(obj => replaceArray.find(value => value.news_id == obj.news_id || obj)))
+                this.setState({ isLike: !foundLike?.like })
+            })
             return 
         }
         like.push({ like: !foundLike?.like, news_id: id_news})
-        this.setState({ isLike: !foundLike?.like })
-        this.props.setLike(id_news, !foundLike?.like, device_id).then((res) => this.setState({countLike : res.data?.data?.total_like}))
-        Cookie.set('is_like_article', like)
+        this.props.setLike(id_news, !foundLike?.like, device_id).then((res) => {
+            if(!this.state.isLike) {
+                this.setState({countLike : this.state.countLike + res.data?.data?.total_like})
+            } else {
+                this.setState({countLike : this.state.countLike - 1})
+            }
+            Cookie.set('is_like_article', like)
+            this.setState({ isLike: !foundLike?.like })
+        })
     }
 
     openIframe() {
