@@ -188,7 +188,7 @@ class Detail extends React.Component {
             const replaceArray = [{ like: !foundLike?.like, news_id: id_news}]
             this.props.setLike(id_news, !foundLike?.like, device_id).then((res) => {
                 if(!this.state.isLike) {
-                    this.setState({countLike : this.state.countLike + res.data?.data?.total_like})
+                    this.setState({countLike : this.state.countLike + 1})
                 } else {
                     this.setState({countLike : this.state.countLike - 1})
                 }
@@ -200,7 +200,7 @@ class Detail extends React.Component {
         like.push({ like: !foundLike?.like, news_id: id_news})
         this.props.setLike(id_news, !foundLike?.like, device_id).then((res) => {
             if(!this.state.isLike) {
-                this.setState({countLike : this.state.countLike + res.data?.data?.total_like})
+                this.setState({countLike : this.state.countLike + 1})
             } else {
                 this.setState({countLike : this.state.countLike - 1})
             }
