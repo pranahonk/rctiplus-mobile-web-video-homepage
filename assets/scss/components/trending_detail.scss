@@ -125,6 +125,30 @@
             margin: auto;
         }
     }
+    .content-trending-tag {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 15px;
+        .content-trending-tag_item {
+            padding: 10px;
+            object-fit: contain;
+            border-radius: 7px;
+            background-color: #3a3a3a;
+            margin-right: 13px;
+            margin-bottom: 13px;
+            h6 {
+                font-size: 10px;
+                font-weight: 600;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1;
+                letter-spacing: normal;
+                text-align: center;
+                color: #8f8f8f;
+                margin: 0;
+            }
+        }
+    }
     .box-social{
         padding:15px;
         font-size: 12px;

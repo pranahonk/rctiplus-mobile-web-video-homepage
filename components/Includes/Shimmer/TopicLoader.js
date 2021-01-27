@@ -9,7 +9,6 @@ export default function TopicLoader({withList}) {
                 {withList ? (<Skeleton width="60%" height={20}/>) : ''}
                 <div>
                   <Skeleton width="70%" height={150}/>
-                  <Skeleton width="30%" height={150}/>
                 </div>
             </div>
         </SkeletonTheme>
