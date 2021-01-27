@@ -374,6 +374,24 @@ const setLike = (news_id, love, device_id) => {
         }
     })
 }
+const getTagByNews = (news_id) => {
+    return () => new Promise(async (resolve, reject) => { 
+        try {
+            const response = await axios.get(`/v1/news/${news_id}/tag`);
+                if (response.status === 200) {
+                    resolve(response);
+                }
+                else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch(err) {
+            removeAccessToken();
+            reject(err)
+        }
+    })
+}
 const getListTag = (key = '', page = 1, isMore= false) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -433,5 +451,6 @@ export default {
     getTagTrending,
     getListTag,
     getMorePage,
-    setLike
+    setLike,
+    getTagByNews
 };

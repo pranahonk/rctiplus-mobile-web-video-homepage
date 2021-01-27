@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Link from 'next/link';
 import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
@@ -82,6 +83,7 @@ class Detail extends React.Component {
             isLike: false,
             scrolled_down: false,
             sticky_share_shown: false,
+            listTagByNews: [],
             count: false,
             countLike: 0, 
             infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID
@@ -141,12 +143,14 @@ class Detail extends React.Component {
                 this.setState({ iframe_opened: false });
             }
         };
-
+        this.props.getTagByNews(this.state.trending_detail_id).then((res) => {
+            this.setState({listTagByNews : res.data})
+        }).catch(err => console.err)
         this.props.getRelatedArticles(this.state.trending_detail_id)
             .then(response => {
-                console.log(response);
+                // console.log(response);
                 if (response.status === 200) {
-                    console.log(response.data.data);
+                    // console.log(response.data.data);
                     this.setState({ trending_related: response.data.data });
                 }
             })
@@ -537,11 +541,22 @@ class Detail extends React.Component {
                                     <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>
                                     {/* <Link href="#" as={"#"}>
                                         <a> */}
-                                            <div onClick={this.openIframe.bind(this)} style={{ color: '#05b5f5', margin: 10, paddingBottom: 20 }}>
+                                            <div onClick={this.openIframe.bind(this)} style={{ color: '#05b5f5', padding: '0 15px' }}>
                                                 <i>Original Article</i>
                                             </div>
                                         {/* </a>
                                     </Link> */}
+                                    <div className="content-trending-tag">
+                                        { this.state.listTagByNews.map((item, index) => {
+                                            return (
+                                                <div className="content-trending-tag_item" key={index}>
+                                                    <Link href={`/news/topic/tag/${item.toLowerCase()}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
+                                                        <h6>{`#${item}`}</h6>
+                                                    </Link>
+                                                </div>
+                                            )
+                                        }) }
+                                    </div>
                                 </div>
                                 { cdata.exclusive === 'yes' ? (<div /> 
                                 ) : (
