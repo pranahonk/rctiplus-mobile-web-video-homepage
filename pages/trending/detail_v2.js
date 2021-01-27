@@ -186,7 +186,7 @@ class Detail extends React.Component {
         const foundLike = like.find(element => element.news_id == this.props.initial?.id)
         if(like.some((value) => value.news_id == this.props.initial?.id)) {
             const replaceArray = [{ like: !foundLike?.like, news_id: id_news}]
-            this.props.setLike(id_news, !foundLike?.like, device_id).then((res) => {
+            this.props.setLike(id_news, true, device_id).then((res) => {
                 if(!this.state.isLike) {
                     this.setState({countLike : this.state.countLike + 1})
                 } else {
@@ -198,7 +198,7 @@ class Detail extends React.Component {
             return 
         }
         like.push({ like: !foundLike?.like, news_id: id_news})
-        this.props.setLike(id_news, !foundLike?.like, device_id).then((res) => {
+        this.props.setLike(id_news, true, device_id).then((res) => {
             if(!this.state.isLike) {
                 this.setState({countLike : this.state.countLike + 1})
             } else {
@@ -379,7 +379,7 @@ class Detail extends React.Component {
                 </div> */}
               </div>
               <div className="sheet-wrap-right">
-                { this.state.countLike ? (<div className="total_like">
+                { this.state.countLike && this.state.countLike !== -1 ? (<div className="total_like">
                     <span>{this.state.countLike}</span>
                 </div>) : '' }
                 <div onClick={this.setLike.bind(this)} className="sheet-action-button" style={{ background: '#282828', margin: 0 }}>
