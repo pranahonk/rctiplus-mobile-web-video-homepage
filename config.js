@@ -405,5 +405,11 @@ export const SITEMAP = {
         description: `Nonton berita peristiwa, bola, kriminal, travel, teknologi paling update dan terkini tanpa buffering hanya di RCTI+`,
         keywords: `berita paling update`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+    },
+    topic_tagar: {
+        title: `Daftar Tagar Terpopular dan Terbaru Hari ini - ${SITE_NAME}`,
+        description: `Kumpulan berita, artikel dan tips terhangat seputar otomotif, motor dan mobil nasional dan internasional terkini di Indonesia`,
+        keywords: `tagar`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     }
 };

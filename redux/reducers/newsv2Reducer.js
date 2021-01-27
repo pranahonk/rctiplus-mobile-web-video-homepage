@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 const initialState = {
     data: null,
     data_topic: [],
@@ -19,7 +21,9 @@ export default function NewsReducer (state = initialState, action) {
         case 'GET_TRENDING_CONTENT':
             return Object.assign({}, state, { data: action.data });
         case 'GET_TOPIC':
-            return Object.assign({}, state, { data_topic: action.data });
+            let data = action.data
+            data = _.sortBy(data, ['sorting', 'tag']);
+            return Object.assign({}, state, { data_topic: data });
         case 'GET_LIST_TAG':
             return Object.assign({}, state, { data_tag: action.data });
         case 'GET_MORE_PAGE':
