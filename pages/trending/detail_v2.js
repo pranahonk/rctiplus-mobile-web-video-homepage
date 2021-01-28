@@ -379,7 +379,7 @@ class Detail extends React.Component {
                 </div> */}
               </div>
               <div className="sheet-wrap-right">
-                { this.state.countLike && this.state.countLike !== -1 ? (<div className="total_like">
+                { this.state.countLike && this.state.countLike > 0 ? (<div className="total_like">
                     <span>{this.state.countLike}</span>
                 </div>) : '' }
                 <div onClick={this.setLike.bind(this)} className="sheet-action-button" style={{ background: '#282828', margin: 0 }}>
