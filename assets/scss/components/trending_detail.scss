@@ -29,6 +29,15 @@
             width: 10px;
             height: 10px;
             color: #fff;
+            position: relative; 
+            span {
+                text-align: right;
+                position: absolute;
+                top: -4px;
+                width: 100px;
+                right: 0;
+                overflow: scroll;
+            }
         }
         .img-height {
             height: 22px;
