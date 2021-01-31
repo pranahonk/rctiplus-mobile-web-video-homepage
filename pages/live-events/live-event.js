@@ -290,7 +290,7 @@ class LiveEvent extends React.Component {
     this.props.setPageLoader();
     this.props.getAllLiveEvent().then((res) => {
 			this.props.unsetPageLoader();
-			console.log('resresrrserserser', res.data.data)
+			// console.log('resresrrserserser', res.data.data)
 			if(res.data.data.now_playing_event.data.length > 0) {
 				// this.setState({ selected_tab: 'now-playing' })
 				return false
