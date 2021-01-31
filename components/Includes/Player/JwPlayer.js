@@ -338,6 +338,14 @@ const JwPlayer = (props) => {
       });
       player.on('setupError', (event) => {
         // console.log('PLAYER SETUP ERROR', event);
+        if(event.code === 102630) {
+          setStatus({
+            isPlayer: false,
+            isError03: true,
+          });
+          player.remove();
+          return false;
+        }
         const convivaTracker = convivaJwPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
@@ -700,7 +708,7 @@ const JwPlayer = (props) => {
   return (
     // <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
     <div className="rplus-jw-container">
-      { getPlayer(status.isError01 , status.isError02 ) }
+      { getPlayer(status.isError01 , status.isError02, status.isError03 ) }
       {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
     </div>
   );
@@ -708,7 +716,7 @@ const JwPlayer = (props) => {
 
 export default JwPlayer;
 
-const getPlayer = (error1, error2) => {
+const getPlayer = (error1, error2, error3) => {
   if (error1) {
     console.log('GEO')
     return error(msgError01)
@@ -716,6 +724,9 @@ const getPlayer = (error1, error2) => {
   if (error2) {
     console.log('ERRORRRRR P')
     return error()
+  }
+  if (error3) {
+    return error(msgError03)
   }
   return (<div id="jwplayer-rctiplus" />)
 }
@@ -890,6 +901,15 @@ const msgError02 = () => {
       <strong style={{ fontSize: 14 }}>Video Errror</strong><br />
       <span style={{ fontSize: 12 }}>Sorry, Error has occurred,</span><br />
       <span style={{ fontSize: 12 }}>Please try again later.</span>
+    </div>
+  )
+}
+const msgError03 = () => {
+  return(
+    <div>
+      <strong style={{ fontSize: 14 }}>Video Errror</strong><br />
+      <span style={{ fontSize: 12 }}>Sorry, Video is not available,</span><br />
+      <span style={{ fontSize: 12 }}>You can watch other video below</span>
     </div>
   )
 }
