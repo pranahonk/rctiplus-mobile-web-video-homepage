@@ -56,8 +56,8 @@ class Pnl_2 extends React.Component {
 				let payload = {};
 				try {
 					payload = jwtDecode(this.props.token);
-					// console.log(payload.vid);
-					if (payload && !payload.vid) {
+					// console.log(payload && !payload.vid);
+					if (data.mandatory_login && !this.props.user.isAuth) {
 						showSignInAlert(`Please <b>Sign In</b><br/>
 							Woops! Gonna sign in first!<br/>
 							Only a click away and you<br/>
@@ -70,7 +70,7 @@ class Pnl_2 extends React.Component {
 					}
 				}
 				catch (e) {
-					if (data.mandatory_login) {
+					if (data.mandatory_login && !this.props.user.isAuth) {
 						showSignInAlert(`Please <b>Sign In</b><br/>
 							Woops! Gonna sign in first!<br/>
 							Only a click away and you<br/>
