@@ -521,10 +521,6 @@ const JwPlayer = (props) => {
       let maxHeight = props.data.gpt.size_height_2 != null && props.data.gpt.size_height_2 != undefined ? props.data.gpt.size_height_2 : 60;
       let custParams = props.data.gpt.cust_params != null && props.data.gpt.cust_params != undefined ? props.data.gpt.cust_params : null;
 
-      for (let i = 0; i < props.data.gpt.cust_params.length; i++) {
-        console.log("targeting value", props.data.gpt.cust_params[i].name, props.data.gpt.cust_params[i].value);
-      }
-
       if (adsStatus === 'start') {
         clearTimeout(pubAdsRefreshInterval.timeObject);
 
