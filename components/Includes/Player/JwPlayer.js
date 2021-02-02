@@ -510,6 +510,7 @@ const JwPlayer = (props) => {
       let maxWidth = props.data.gpt.size_width_2 != null && props.data.gpt.size_width_2 != undefined ? props.data.gpt.size_width_2 : 468;
       let minHeight = props.data.gpt.size_height_1 != null && props.data.gpt.size_height_1 != undefined ? props.data.gpt.size_height_1 : 50;
       let maxHeight = props.data.gpt.size_height_2 != null && props.data.gpt.size_height_2 != undefined ? props.data.gpt.size_height_2 : 60;
+      let custParams = props.data.gpt.cust_params != null && props.data.gpt.cust_params != undefined ? props.data.gpt.cust_params : null;
 
       if (adsStatus === 'start') {
         clearTimeout(pubAdsRefreshInterval.timeObject);
@@ -522,13 +523,22 @@ const JwPlayer = (props) => {
 
             googletag.defineSlot(slotName, [[maxWidth, maxHeight], [minWidth, minHeight]], slotDiv)
             .defineSizeMapping(mappingSlot)
-            .addService(googletag.pubads())
-            .setTargeting('logged_in', props.customData && props.customData.isLogin.toString())
+            .addService(googletag.pubads());
+            /* .setTargeting('logged_in', props.customData && props.customData.isLogin.toString())
             .setTargeting('channel_id', props.data && props.data.id)
             .setTargeting('program_title', props.type === 'live tv' ?
             tempId(props.data && props.data.id)[1] :
             props.type === 'live event' || props.type === 'missed event' ?
-            props.data && props.data.assets_name : 'NOT_SET');
+            props.data && props.data.assets_name : 'NOT_SET'); */
+
+            // TODO: looping targeting value
+            if (custParams != null) {
+              for (const custParam of custParams) {
+                console.log(custParam.name, custParam.value);
+                googletag.pubads().setTargeting(custParam.name, custParam.value);
+              }
+            }
+
             googletag.pubads().enableSingleRequest();
             googletag.pubads().collapseEmptyDivs();
             googletag.pubads().disableInitialLoad();
@@ -562,7 +572,7 @@ const JwPlayer = (props) => {
 
               adsImage.style.width = minWidth + 'px';
               adsImage.style.height = minHeight + 'px'; */
-              
+
               if (prevWidth != windowWidth) {
                 setPrevWidth(windowWidth);
                 googletag.pubads().refresh();
