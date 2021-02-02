@@ -542,9 +542,8 @@ const JwPlayer = (props) => {
 
             // TODO: looping targeting value
             if (custParams != null) {
-              for (const custParam of custParams) {
-                console.log(custParam.name, custParam.value);
-                googletag.pubads().setTargeting(custParam.name, custParam.value);
+              for (let i = 0; i < custParams.length; i++) {
+                console.log("targeting value", custParams[i].name, custParams.value);
               }
             }
 
