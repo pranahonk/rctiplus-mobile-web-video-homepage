@@ -521,6 +521,12 @@ const JwPlayer = (props) => {
       let maxHeight = props.data.gpt.size_height_2 != null && props.data.gpt.size_height_2 != undefined ? props.data.gpt.size_height_2 : 60;
       let custParams = props.data.gpt.cust_params != null && props.data.gpt.cust_params != undefined ? props.data.gpt.cust_params : null;
 
+      if (custParams != null) {
+        for (let i = 0; i < custParams.length; i++) {
+          console.log("targeting value", custParams[i].name, custParams[i].value);
+        }
+      }
+
       if (adsStatus === 'start') {
         clearTimeout(pubAdsRefreshInterval.timeObject);
 
@@ -543,7 +549,7 @@ const JwPlayer = (props) => {
             // TODO: looping targeting value
             if (custParams != null) {
               for (let i = 0; i < custParams.length; i++) {
-                console.log("targeting value", custParams[i].name, custParams.value);
+                googletag.pubads().setTargeting(custParams[i].name, custParams[i].value);
               }
             }
 
