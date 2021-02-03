@@ -67,7 +67,7 @@ const JwPlayer = (props) => {
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
     // console.log('EFFECT INIT 1', props);
-    if(_.isEmpty(props.data.url)) {
+    if(_.isEmpty(props?.data?.url)) {
         setStatus({
           isPlayer: false,
           isError03: true,
