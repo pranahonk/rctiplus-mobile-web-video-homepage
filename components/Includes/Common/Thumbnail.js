@@ -24,10 +24,16 @@ class Thumbnail extends React.Component {
                 loader={<img className="thumb-img" src="/static/placeholders/placeholder_landscape.png"/>}
                 src={[this.props.src]} />
         </div>
-        <h2 className="thumb-text_date">{`${moment.unix(this.props.dateEvent ).format('dddd, DD MMM YYYY - h:mm')} WIB`}</h2>
-        <div className="thumb-status_play">
-          <CountdownTimer timer={this.props.timer} timerCurrent={this.props.timerCurrent} statusTimer={this.props.statusTimer} statusPlay={this.props.statusPlay}/>
-        </div>
+        {this.props.dateEvent && (
+          <h2 className="thumb-text_date">{`${moment.unix(this.props.dateEvent ).format('dddd, DD MMM YYYY - h:mm')} WIB`}</h2>
+        )}
+        {
+          this.props.timer && (
+          <div className="thumb-status_play">
+            <CountdownTimer timer={this.props.timer} timerCurrent={this.props.timerCurrent} statusTimer={this.props.statusTimer} statusPlay={this.props.statusPlay}/>
+          </div>
+          )
+        }
       </>
     );
   }

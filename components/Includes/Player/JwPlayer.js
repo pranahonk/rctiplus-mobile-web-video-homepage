@@ -5,8 +5,9 @@ import { getUserId } from '../../../utils/appier';
 import { onTrackingClick } from '../program-detail/programDetail';
 import { isIOS } from 'react-device-detect';
 import Wrench from '../Common/Wrench';
-import { Offline, Online } from 'react-detect-offline';
+// import { Offline, Online } from 'react-detect-offline';
 import '../../../assets/scss/jwplayer.scss';
+import _ from 'lodash'
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -66,6 +67,13 @@ const JwPlayer = (props) => {
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
     // console.log('EFFECT INIT 1', props);
+    if(_.isEmpty(props.data.url)) {
+        setStatus({
+          isPlayer: false,
+          isError03: true,
+        });
+        return false;
+      }
     if (props.geoblockStatus) {
       setStatus({
         isPlayer: false,
@@ -687,7 +695,8 @@ const JwPlayer = (props) => {
   }, [playerFullscreen]);
 
   return (
-    <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
+    // <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
+    <div className="rplus-jw-container">
       { getPlayer(status.isError01 , status.isError02, status.isError03 ) }
       {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
     </div>
