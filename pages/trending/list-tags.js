@@ -130,9 +130,9 @@ const ListTags = (props) => {
                     <div className="lt_img_wrap">
                       <Img
                         alt={item.title}
-                        loader={<img alt={item.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
-                        unloader={<img alt={item.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
-                        className="article-thumbnail-full-width"
+                        loader={<img alt={item.title} className="news-interest_thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
+                        unloader={<img alt={item.title} className="news-interest_thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
+                        className="news-interest_thumbnail"
                         src={[item.cover, '/static/placeholders/placeholder_landscape.png']} />
                     </div>
                     {/* <div className="lt_img_wrap">
