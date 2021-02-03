@@ -135,15 +135,6 @@ const ListTags = (props) => {
                         className="news-interest_thumbnail"
                         src={[item.cover, '/static/placeholders/placeholder_landscape.png']} />
                     </div>
-                    {/* <div className="lt_img_wrap">
-                      <Img
-                      alt={'null'}
-                      unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-                      loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-                      src={[item.cover, '/static/placeholders/placeholder_landscape.png']}
-                      className="news-interest_thumbnail"
-                      />
-                    </div> */}
                   </div>
                   <div className="lt_content">
                     <Link href={_goToDetail(item)}>{getTruncate(item.title, '...', 100)}</Link>
