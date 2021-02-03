@@ -138,7 +138,6 @@ const ListTags = (props) => {
                   </div>
                   <div className="lt_content">
                     <Link href={_goToDetail(item)}>{getTruncate(item.title, '...', 100)}</Link>
-                    {/* <h1 onClick={() => _goToDetail(item)}>{getTruncate(item.title, '...', 100)}</h1> */}
                     <div className="lt_content-info">
                       <h5>{item.source}</h5>
                       <h6>{formatDateWordID(new Date(item.pubDate * 1000))}</h6>
