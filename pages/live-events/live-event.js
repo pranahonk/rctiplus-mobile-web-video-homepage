@@ -1037,7 +1037,7 @@ class LiveEvent extends React.Component {
 						{
 							!this.props.router.asPath.match('/past-event/') && (
 								<h2 className="label-title__live-event_date">
-								{`${moment.unix(this.props.selected_event.data.release_date_quiz).format('dddd, DD MMM YYYY - h:mm:ss')} WIB` }
+								{`${moment.unix(this.props.selected_event?.data?.release_date_quiz)?.format('dddd, DD MMM YYYY - h:mm:ss')} WIB` }
 								</h2>
 							)
 						}
@@ -1054,7 +1054,7 @@ class LiveEvent extends React.Component {
 										statusTimer="1"/>
 								) : this.props.router.asPath.match('/live-event/') && !this.isLive()[0] ?
 								<CountdownTimer
-										id= {selected_event.data.id}
+										id= {selected_event.data?.id}
 										onUrl={this.getPlayNow}
 										statusPlay={false}
 										key={this.isLive()[0]}
