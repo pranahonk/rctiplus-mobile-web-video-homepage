@@ -119,14 +119,6 @@ const ListTags = (props) => {
               return (
                 <div className="list_tags_thumb" key={index + item.title}>
                   <div className="lt_img">
-                    {/* <Image
-                      src={image.error ? image.fallbackSrc : !image.loaded ? image.fallbackSrc : item.cover}
-                      alt="Picture of the author"
-                      layout="fill"
-                      onLoad={_onImageLoaded}
-                      onError={_onImageError}
-                      objectFit="cover"
-                    /> */}
                     <div className="lt_img_wrap">
                       <Img
                         alt={item.title}
