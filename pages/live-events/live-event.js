@@ -1035,7 +1035,7 @@ class LiveEvent extends React.Component {
 							{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
 						</h1>
 						{
-							!this.props.router.asPath.match('/past-event/') && (
+							!this.props.router.asPath.match('/missed-event/') && (
 								<h2 className="label-title__live-event_date">
 								{`${moment.unix(this.props.selected_event?.data?.release_date_quiz)?.format('dddd, DD MMM YYYY - h:mm:ss')} WIB` }
 								</h2>
