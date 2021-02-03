@@ -89,7 +89,7 @@
     "lodash": "^4.17.15",
     "modernizr": "^3.6.0",
     "morgan": "^1.9.1",
-    "next": "^10.0.3",
+    "next": "latest",
     "next-offline": "^4.0.2",
     "next-redux-wrapper": "^3.0.0-alpha.3",
     "nextjs-sitemap-generator": "^0.4.1",
