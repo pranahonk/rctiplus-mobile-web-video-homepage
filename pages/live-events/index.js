@@ -100,7 +100,6 @@ class Index extends React.Component {
         return (
           <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'missed-event', 'past-events')}>
             <Thumbnail
-            dateEvent={list.live_at}
             key={list.content_id + list.content_title}
             label="Live"
             backgroundColor="#fa262f"

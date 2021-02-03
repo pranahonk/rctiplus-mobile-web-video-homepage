@@ -936,7 +936,6 @@ class LiveEvent extends React.Component {
         return (
           <Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'missed-event', 'past-events')}>
             <Thumbnail
-						dateEvent={list.live_at}
             key={list.content_id + list.content_title}
             label="Live"
             backgroundColor="#fa262f"
@@ -1035,9 +1034,13 @@ class LiveEvent extends React.Component {
 						<h1 className="label-title__live-event">
 							{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
 						</h1>
-						<h2 className="label-title__live-event_date">
-							{	!this.props.router.asPath.match('/missed-event/') && `${moment.unix(this.props.selected_event.data.release_date_quiz).format('dddd, DD MMM YYYY - h:mm:ss')} WIB` }
-						</h2>
+						{
+							!this.props.router.asPath.match('/past-event/') && (
+								<h2 className="label-title__live-event_date">
+								{`${moment.unix(this.props.selected_event.data.release_date_quiz).format('dddd, DD MMM YYYY - h:mm:ss')} WIB` }
+								</h2>
+							)
+						}
 						<div className="flex-countdown_live-event">
 							{this.isLive()[0] ? (
 									<CountdownTimer
@@ -1196,6 +1199,26 @@ class LiveEvent extends React.Component {
         	</Online>
 					<Offline>
 						<div className="live-event-content-wrap" style={{height: `calc(100vh - ${this.playerContainerRef?.current?.clientHeight + this.titleRef?.current?.clientHeight}px - 50px)`}}>
+						<Nav tabs className="tab-wrap">
+								{liveEvent?.data?.now_playing_event?.data.length > 0 ? 
+								(<NavItem
+										onClick={() => this.setState({ selected_tab: 'now-playing' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Now Playing');})}
+										className={this.state.selected_tab === 'now-playing' ? 'selected' : ''}>
+										<NavLink>Now Playing</NavLink>
+								</NavItem>) : (<div />)}
+								{liveEvent?.data?.upcoming_event?.data.length > 0 ? 
+								(<NavItem
+										onClick={() => this.setState({ selected_tab: 'upcoming-events' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Upcoming Events');})}
+										className={this.state.selected_tab === 'upcoming-events' ? 'selected' : ''}>
+										<NavLink>Upcoming Events</NavLink>
+								</NavItem>): (<div />)}
+								{liveEvent?.data?.past_event?.data.length > 0 ? 
+								(<NavItem
+										onClick={() => this.setState({ selected_tab: 'past-events' }, () => { liveEventTabClicked('mweb_homepage_live_event_tab_clicked', 'Past Events');})}
+										className={this.state.selected_tab === 'past-events' ? 'selected' : ''}>
+										<NavLink>Past Events</NavLink>
+								</NavItem>): (<div />)}
+						</Nav>
 							<div className="le-absolute-center">
 								{ this.errorEvent() }
 							</div>

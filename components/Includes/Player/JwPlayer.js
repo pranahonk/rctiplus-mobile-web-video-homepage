@@ -5,8 +5,9 @@ import { getUserId } from '../../../utils/appier';
 import { onTrackingClick } from '../program-detail/programDetail';
 import { isIOS } from 'react-device-detect';
 import Wrench from '../Common/Wrench';
-import { Offline, Online } from 'react-detect-offline';
+// import { Offline, Online } from 'react-detect-offline';
 import '../../../assets/scss/jwplayer.scss';
+import _ from 'lodash'
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -68,6 +69,13 @@ const JwPlayer = (props) => {
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
     // console.log('EFFECT INIT 1', props);
+    if(_.isEmpty(props.data.url)) {
+        setStatus({
+          isPlayer: false,
+          isError03: true,
+        });
+        return false;
+      }
     if (props.geoblockStatus) {
       setStatus({
         isPlayer: false,
