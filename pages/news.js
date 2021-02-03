@@ -514,7 +514,7 @@ class Trending_v2 extends React.Component {
                                             {this.state.tabs.map((tab, i) => (
                                                 <TabPane key={i} tabId={tab.id.toString()}>
                                                     {tab.name === 'Berita Utama' ? (this.state.is_trending_loading ? (<HeadlineLoader />) : (<HeadlineCarousel articles={this.state.trending_articles} />)) : null}
-                                                    { !_.isEmpty(this.props.newsv2.data_topic) && (
+                                                    { !_.isEmpty(this.props.newsv2.data_topic) ? (
                                                         <div className="interest-topic_wrapper">
                                                             <div className="interest-topic_title">
                                                                 <h1>topik menarik</h1>
@@ -535,7 +535,7 @@ class Trending_v2 extends React.Component {
                                                                 </Row>
                                                             </div>
                                                         </div>
-                                                    ) }
+                                                    ) : '' }
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => (
                                                             (j > 6) && (j + 1) != 1 && (j + 1) % 5 === 0 ? (
