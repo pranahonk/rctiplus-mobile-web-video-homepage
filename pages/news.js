@@ -39,9 +39,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 import queryString from 'query-string';
 
-import $ from 'jquery';
-
-import cookie from 'js-cookie';
+import _ from 'lodash';
 
 const jwtDecode = require('jwt-decode');
 
@@ -556,26 +554,28 @@ class Trending_v2 extends React.Component {
                                             {this.state.tabs.map((tab, i) => (
                                                 <TabPane key={i} tabId={tab.id.toString()}>
                                                     {tab.name === 'Berita Utama' ? (this.state.is_trending_loading ? (<HeadlineLoader />) : (<HeadlineCarousel articles={this.state.trending_articles} />)) : null}
-                                                    <div className="interest-topic_wrapper">
-                                                        <div className="interest-topic_title">
-                                                            <h1>topik menarik</h1>
-                                                            <Link href={`/interest-topic${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`} className=""><span className="news-more_action">See More <ArrowForwardIosIcon /></span></Link>                                                 
+                                                    { !_.isEmpty(this.props.newsv2.data_topic) && (
+                                                        <div className="interest-topic_wrapper">
+                                                            <div className="interest-topic_title">
+                                                                <h1>topik menarik</h1>
+                                                                <Link href={`/interest-topic${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`} className=""><span className="news-more_action">See More <ArrowForwardIosIcon /></span></Link>                                                 
+                                                            </div>
+                                                            <div className="interest-topic_list">
+                                                                <Row>
+                                                                    {this.props.newsv2.data_topic.map((item, i) => {
+                                                                        return i > 10 ? ''
+                                                                        : (
+                                                                        <Col xs="6" className="interest-topic-item" key={i}>
+                                                                            <Link href={`/news/topic/tag/${item.tag.toLowerCase()}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
+                                                                                {`#${item.tag}`}
+                                                                            </Link>
+                                                                        </Col>
+                                                                        );
+                                                                    })}
+                                                                </Row>
+                                                            </div>
                                                         </div>
-                                                        <div className="interest-topic_list">
-                                                            <Row>
-                                                                {this.props.newsv2.data_topic.map((item, i) => {
-                                                                    return i > 10 ? ''
-                                                                    : (
-                                                                    <Col xs="6" className="interest-topic-item" key={i}>
-                                                                        <Link href={`/news/topic/tag/${item.tag.toLowerCase()}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
-                                                                            {`#${item.tag}`}
-                                                                        </Link>
-                                                                    </Col>
-                                                                    );
-                                                                })}
-                                                            </Row>
-                                                        </div>
-                                                    </div>
+                                                    ) }
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => (
                                                             (j > 6) && (j + 1) != 1 && (j + 1) % 5 === 0 ? (
