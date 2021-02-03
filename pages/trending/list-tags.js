@@ -127,7 +127,7 @@ const ListTags = (props) => {
                       onError={_onImageError}
                       objectFit="cover"
                     /> */}
-                    <div className="lt_img_wrap lt-lstr-tr">
+                    <div className="lt_img_wrap">
                       <Img
                         alt={item.title}
                         loader={<img alt={item.title} className="news-interest_thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
