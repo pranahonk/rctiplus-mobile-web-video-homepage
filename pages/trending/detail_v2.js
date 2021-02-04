@@ -19,8 +19,9 @@ import '../../assets/scss/components/trending_detail.scss';
 
 import { FacebookShareButton, TwitterShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
 import { ListGroup, ListGroupItem } from 'reactstrap';
-
+// import BottomScrollListener from 'react-bottom-scroll-listener';
 import { formatDateWordID } from '../../utils/dateHelpers';
+import SquareItem from '../../components/Includes/news/SquareItem';
 import { setAccessToken, removeAccessToken } from '../../utils/cookie';
 import { urlRegex } from '../../utils/regex';
 import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
@@ -463,11 +464,20 @@ class Detail extends React.Component {
                 }} data={cdata} disableScrollListener />) : (
                     <NavBack pushNotif={this.pushNotif} params={`?token=${this.accessToken}&platform=${this.platform}`} src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`} data={cdata} disableScrollListener />
                 )}
-
                 <StickyContainer>
                     <Sticky>
-                        { ({ distanceFromTop }) => {
+                        { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
+                            console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight)
+                            if (distanceFromTop < -650) {
+                                setTimeout(() => {
+                                    if (self.state.sticky_share_shown) {
+                                        self.setState({ sticky_share_shown: false });
+                                    }
+                                
+                                }, 300);
+                                return <span></span>;
+                            }
                             if (distanceFromTop < -100) {
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
@@ -531,8 +541,8 @@ class Detail extends React.Component {
                             <div ref={ref} className="content-trending-detail">
                                 <h1 className="content-trending-detail-title"><b dangerouslySetInnerHTML={{ __html: cdata.title?.replace(/\\/g, '') }}></b></h1>
                                 <small className="content-trending-detail-create"><strong>{cdata.source}</strong>&nbsp;&nbsp;{formatDateWordID(new Date(cdata.pubDate * 1000))}</small>
-                                {}
-                                <StickyContainer>
+                                {this.renderActionButton()}
+                                {/* <StickyContainer>
                                     <Sticky>
                                         { ({ distanceFromTop }) => {
                                             if (distanceFromTop < 0) {
@@ -542,7 +552,7 @@ class Detail extends React.Component {
                                             return (this.renderActionButton());
                                         } }
                                     </Sticky>
-                                </StickyContainer>
+                                </StickyContainer> */}
 
                                 <div className="content-trending-detail-wrapper">
                                     <div className="content-trending-detail-cover-container" style={isInfographic ? null : { paddingBottom: '56.25%' }}>
@@ -561,7 +571,7 @@ class Detail extends React.Component {
                                             </div>
                                         {/* </a>
                                     </Link> */}
-                                    <div className="content-trending-tag">
+                                    <div className="content-trending-tag" style={{paddingBottom: 0}}>
                                         { this.state.listTagByNews.map((item, index) => {
                                             return (
                                                 <div className="content-trending-tag_item" key={index}>
@@ -571,6 +581,9 @@ class Detail extends React.Component {
                                                 </div>
                                             )
                                         }) }
+                                    </div>
+                                    <div style={{display: !this.state.sticky_share_shown ? 'block' : 'none', transition: 'all 0.3s ease-in-out'}}>
+                                        {this.renderActionButton()}
                                     </div>
                                 </div>
                                 { cdata.exclusive === 'yes' ? (<div /> 
@@ -587,7 +600,16 @@ class Detail extends React.Component {
                                 ) }
                                 <div className="content-trending-detail-related">
                                     <p className="related-title"><strong>Related Articles</strong></p>
-                                    <ListGroup>
+                                    <div className="item_square-wrapper">
+                                        {this.state.trending_related.map((item, index) => {
+                                            return (
+                                                <>
+                                                    <SquareItem key={index + item.title} item={item}/>
+                                                </>
+                                            );
+                                        })}
+                                    </div>
+                                    {/* <ListGroup>
                                         {this.state.trending_related.map((article, j) => (
                                             <ListGroupItem key={j} className={`article ${j == this.state.trending_related.length - 1 ? 'article-no-border' : ''}`} onClick={() => this.goToDetail(article, j)}>
                                                 <div className="article-description">
@@ -609,7 +631,8 @@ class Detail extends React.Component {
                                                 </div>
                                             </ListGroupItem>
                                         ))}
-                                    </ListGroup>
+                                    </ListGroup> */}
+                                    {/* <div>test</div> */}
                                 </div>
                             </div>
                         )}

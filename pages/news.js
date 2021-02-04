@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -39,7 +39,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 import queryString from 'query-string';
 
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 const jwtDecode = require('jwt-decode');
 
@@ -554,7 +554,7 @@ class Trending_v2 extends React.Component {
                                             {this.state.tabs.map((tab, i) => (
                                                 <TabPane key={i} tabId={tab.id.toString()}>
                                                     {tab.name === 'Berita Utama' ? (this.state.is_trending_loading ? (<HeadlineLoader />) : (<HeadlineCarousel articles={this.state.trending_articles} />)) : null}
-                                                    { !_.isEmpty(this.props.newsv2.data_topic) ? (
+                                                    { !isEmpty(this.props.newsv2.data_topic) ? (
                                                         <div className="interest-topic_wrapper">
                                                             <div className="interest-topic_title">
                                                                 <h1>topik menarik</h1>

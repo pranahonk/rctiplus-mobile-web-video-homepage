@@ -51,7 +51,7 @@
         padding-right: 10px;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        // justify-content: space-between;
 
         .title {
             margin: 0;
@@ -61,6 +61,7 @@
 
         .description {
             display: flex;
+            margin-top: 10px;
             flex-direction: row;
             font-size: 11px;
             color: #8f8f8f;

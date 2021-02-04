@@ -186,8 +186,19 @@
         // padding-bottom: 45px;
 
         .related-title {
-            background-color: #171717;
-            padding: 8px;
+            // background-color: #171717;
+            position: relative;
+            padding: 8px 15px;
+            margin: 0;
+            &::after {
+                content: '';
+                background-color: #303030;
+                position: absolute;
+                top: 0;
+                height: 2px;
+                width: calc(100% - 30px);
+                left: 15px;
+            }
         }
 
         .article {

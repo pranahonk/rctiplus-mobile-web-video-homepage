@@ -119,6 +119,7 @@
     "react-redux": "^7.1.0",
     "react-responsive-carousel": "^3.1.51",
     "react-ripples": "^2.2.1",
+    "react-scroll": "^1.8.1",
     "react-scroll-percentage": "^4.2.0",
     "react-share": "^3.0.1",
     "react-sticky": "^6.0.3",
