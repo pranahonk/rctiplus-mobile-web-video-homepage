@@ -196,7 +196,7 @@
     .interest-topic_title {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: baseline;
         padding: 0 10px;
         h1 {
             text-transform: capitalize;
@@ -225,7 +225,7 @@
     }
     .interest-topic_list {
         margin: 10px;
-        padding: 15px;
+        padding: 15px 20px;
         border-radius: 7px;
         background-color: #3a3a3a;
         a {
@@ -330,8 +330,11 @@
     }
 }
 .list_tags_wrapper {
-    margin-top: 10px;
-    margin-bottom: 44px;
+    margin-top: 20px;
+}
+.item_square-wrapper {
+    // margin-top: 10px;
+    // margin-bottom: 44px;
     box-sizing: border-box;
     padding: 0 13px;
     .list_tags_thumb {
@@ -400,9 +403,15 @@
       .lt_content {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        // justify-content: space-between;
         width: calc(100% - 108px);
         padding-left: 14px; 
+      }
+      .lt_content-info {
+        margin-top: 10px;
+        h6 {
+            margin-top: 5px;
+        }
       }
     }
 }
