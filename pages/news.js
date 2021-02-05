@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Head from 'next/head';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import Router, { withRouter } from 'next/router';
 import classnames from 'classnames';
 import BottomScrollListener from 'react-bottom-scroll-listener';
@@ -36,6 +37,8 @@ import { urlRegex } from '../utils/regex';
 import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+const Loading = dynamic(() => import('../components/Includes/Shimmer/ListTagLoader'))
+const SquareItem = dynamic(() => import('../components/Includes/news/SquareItem'),{loading: () => <Loading />})
 
 import queryString from 'query-string';
 
@@ -222,7 +225,7 @@ class Trending_v2 extends React.Component {
         //     }
         //     console.log('scrolll')
         // }, false)
-
+        // console.log(props)
         if (this.accessToken !== null &&  this.accessToken !== undefined) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -391,21 +394,24 @@ class Trending_v2 extends React.Component {
                     <meta name="description" content={metadata.description} />
                     <meta name="keywords" content={metadata.keywords} />
                     <meta property="og:title" content={metadata.title} />
-                    <meta property="og:image" itemProp="image" content={metadata.image}></meta>
-                    <meta property="og:url" content={encodeURI(this.props.router.asPath)}></meta>
+                    <meta property="og:description" content={metadata.description} />
+                    <meta property="og:image" itemProp="image" content={metadata.image} />
+                    <meta property="og:url" content={encodeURI(this.props.router.asPath)} />
+                    <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={SITE_NAME}></meta>
-                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId}></meta>
-                    <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard}></meta>
-                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator}></meta>
-                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite}></meta>
-                    <meta name="twitter:image" content={metadata.image}></meta>
-                    <meta name="twitter:title" content={metadata.title}></meta>
-                    <meta name="twitter:description" content={metadata.description}></meta>
-                    <meta name="twitter:url" content={encodeURI(this.props.router.asPath)}></meta>
-                    <meta name="twitter:domain" content={encodeURI(this.props.router.asPath)}></meta>
+                    <meta property="og:site_name" content={SITE_NAME} />
+                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+                    <meta name="twitter:image" content={metadata.image} />
+                    <meta name="twitter:image:alt" content={'News RCTIPlus'} />
+                    <meta name="twitter:title" content={metadata.title} />
+                    <meta name="twitter:description" content={metadata.description} />
+                    <meta name="twitter:url" content={encodeURI(this.props.router.asPath)} />
+                    <meta name="twitter:domain" content={encodeURI(this.props.router.asPath)} />
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
                     {/* <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
@@ -578,7 +584,7 @@ class Trending_v2 extends React.Component {
                                                     ) : '' }
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => (
-                                                            (j > 6) && (j + 1) != 1 && (j + 1) % 5 === 0 ? (
+                                                            (tab.name === 'Berita Utama' && j > 6) || (j + 1) != 1 && (j + 1) % 5 === 0 ? (
                                                                 <div key={j}>
                                                                     {/* <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} /> */}
                                                                     <iframe 
@@ -641,45 +647,9 @@ class Trending_v2 extends React.Component {
                                                                         </div>
                                                                     </ListGroupItem>
                                                                 </div>
-                                                            ) : (j > 4) ? (
-                                                                <ListGroupItem key={j} className={`article ${(j > 4) && (j + 1) > 1 && ((j + 2) % 5) == 0 ? 'article-no-border' : ''}`} onClick={() => this.goToDetail(article)}>
-                                                                    <div className="article-description">
-                                                                        <div className="article-thumbnail-container">
-                                                                            <Img
-                                                                                alt={article.title}
-                                                                                loader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                unloader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                className="article-thumbnail"
-                                                                                src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
-                                                                        </div>
-                                                                        <div className="article-title-container">
-                                                                            <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="article-source">
-                                                                        <p><strong>{article.source}</strong>&nbsp;&nbsp;</p>
-                                                                        <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
-                                                                    </div>
-                                                                </ListGroupItem>
-                                                            ) : <ListGroupItem key={j} className={`article`} onClick={() => this.goToDetail(article)}>
-                                                            <div className="article-description">
-                                                                <div className="article-thumbnail-container">
-                                                                    <Img
-                                                                        alt={article.title}
-                                                                        loader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                        unloader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                        className="article-thumbnail"
-                                                                        src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
-                                                                </div>
-                                                                <div className="article-title-container">
-                                                                    <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
-                                                                </div>
+                                                            )  : <div className="item_square-wrapper">
+                                                                <SquareItem key={j + article.title} item={article}/>
                                                             </div>
-                                                            <div className="article-source">
-                                                                <p><strong>{article.source}</strong>&nbsp;&nbsp;</p>
-                                                                <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
-                                                            </div>
-                                                        </ListGroupItem>
                                                         ))}
                                                     </ListGroup>
                                                     {this.state.is_articles_loading ? (<ArticleLoader />) : null}

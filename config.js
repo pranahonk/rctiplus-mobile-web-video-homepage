@@ -66,6 +66,7 @@ export const GRAPH_SITEMAP = {
     twitterSite: '@OfficialRCTI',
 };
 export const SITE_NAME = 'RCTI+';
+export const SITE_NAME_NEWS = 'News+ on RCTI+';
 export const UTM_NAME = (utm, utmCampaign, utmMedium, platform = 'mweb') => {
     switch (utm) {
         case 'trending':
@@ -245,63 +246,117 @@ export const SITEMAP = {
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_INEWS-min.png`
     },
     trending: {
-        title: `Informasi Berita Trending dan Terkini dari Berbagai Sumber Terpercaya - ${SITE_NAME}`,
+        title: `Informasi Berita Trending dan Terkini dari Berbagai Sumber Terpercaya - ${SITE_NAME_NEWS}`,
         description: `RCTI+ - Indeks portal berita trending Indonesia dan dunia hari ini dari berbagai situs terpercaya, mulai dari peristiwa, politik, hukum, ekonomi, bola, hingga gosip artis terbaru`,
-        keywords: `berita trending`,
+        keywords: `berita hari ini, berita harian, berita terkini, berita terbaru, berita indonesia, berita terpopuler, berita, berita terupdate, berita online, info terkini, berita dunia, peristiwa hari ini, berita viral`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
+    },
+    trending_populer: {
+        title: `Berita Terpopuler dan Paling Dicari Hari Ini - ${SITE_NAME_NEWS}`,
+        description: `Kumpulan berita populer hari ini eksklusif hanya di rctiplus.com dari berbagai kanal`,
+        keywords: `berita populer, Berita Terpopuler Hari Ini rctiplus.com, berita terbaru hari ini, berita terhangat, viral`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
     trending_top: {
-        title: `Informasi Berita Top Terbaru Hari ini dari Berbagai Sumber Terpercaya - ${SITE_NAME}`,
+        title: `Informasi Berita Top Terbaru Hari ini dari Berbagai Sumber Terpercaya - ${SITE_NAME_NEWS}`,
         description: `Indeks portal berita trending Indonesia dan dunia hari ini dari situs terpercaya, dari peristiwa, politik, tekno, ekonomi, bola, hingga gosip artis`,
         keywords: `berita top, berita top hari ini, berita teratas`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
-    trending_berita_terkini: {
-        title: `Berita Terkini, Viral dan Terbaru Dalam Negeri dan Internasional - ${SITE_NAME}`,
+    trending_terkini: {
+        title: `Berita Terkini, Viral dan Terbaru Dalam Negeri dan Internasional - ${SITE_NAME_NEWS}`,
         description: `Baca berita terkini yang sedang viral dari dalam negeri dan luar yang dikumpulkan dari berbagai situs terpercaya dan teraktual`,
-        keywords: `berita terkini`,
+        keywords: `berita terkini, berita hari ini, berita harian, berita terkini, berita terbaru, berita indonesia, berita terpopuler, berita, berita terupdate, berita online, info terkini, berita dunia, peristiwa hari ini, berita viral`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`,
     },
     trending_hiburan: {
-        title: `Gosip dan Hiburan Terbaru Artis Dalam Negeri & Internasional - ${SITE_NAME}`,
+        title: `Gosip dan Hiburan Terbaru Artis Dalam Negeri & Internasional - ${SITE_NAME_NEWS}`,
         description: `Kumpulan berita dan artikel hiburan dari gosip artis nasional dan internasional terkini di Indonesia`,
         keywords: `berita hiburan, artikel hiburan`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
+    trending_travel: {
+        title: `Berita Travel, Pariwisata, Kuliner Kekinian Hari Ini - ${SITE_NAME_NEWS}`,
+        description: `Kumpulan berita travel, wisata, liburan, promosi, pesawat, hotel, dan kuliner terbaru hari ini dari berbagai sumber terpercaya`,
+        keywords: `berita travel, berita wisata, berita pariwisata, destinasi wisata, tempat liburan, promosi, pesawat, hotel, wisata kuliner`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
+    },
     trending_gaya_hidup: {
-        title: `Informasi Gaya Hidup, Lifestyle, dan Fashion Terkini - ${SITE_NAME}`,
+        title: `Informasi Gaya Hidup, Lifestyle, dan Fashion Terkini - ${SITE_NAME_NEWS}`,
         description: `Kumpulan berita dan artikel gaya hidup, lifestyle, dan fashional dari artis serta publik figure nasional dan internasional terkini di Indonesia`,
         keywords: `berita lifestyle, berita gaya hidup, lifestyle`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
     trending_olahraga: {
-        title: `Berita Olahraga Nasional dan Internasional Terupdate - ${SITE_NAME}`,
+        title: `Berita Olahraga Nasional dan Internasional Terupdate - ${SITE_NAME_NEWS}`,
         description: `Kumpulan berita dan artikel olahraga nasional dan internasional terkini di Indonesia, mulai dari bola, motogp, bulu tangkis, futsal, hingga catur`,
         keywords: `berita bola, berita olahraga, bola`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
+    trending_olah_raga: {
+        title: `Berita Dunia Olahraga Nasional dan Internasional Terupdate - ${SITE_NAME}`,
+        description: `Baca kumpulan berita dan artikel olahraga nasional dan internasional terkini di Indonesia, mulai dari sepak bola, motogp, F1, bulu tangkis, futsal, fakta, gosip hingga catur terbaru hari ini eksklusif hanya di rctiplus.com`,
+        keywords: `berita bola, berita olahraga, bola, informasi olahraga, berita olahraga, berita olahraga terbaru, berita olahraga terlengkap, klasemen sepakbola, jadwal pertandingan, hasil pertandingan, fakta olahraga, gosip olahraga, sepakbola, tenis, bulutangkis, formula 1, moto gp, basket`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
+    },
     trending_kesehatan: {
-        title: `Berita Terkini Dunia Kesehatan dari Sumber Terpercaya - ${SITE_NAME}`,
+        title: `Berita Terkini Dunia Kesehatan dari Sumber Terpercaya - ${SITE_NAME_NEWS}`,
         description: `Kumpulan berita, artikel dan tips kesehatan terpercaya, mulai dari diet, olahraga, parenting, penyakit, obat hingga seks`,
         keywords: `berita kesehatan, artikel kesehatan, tips kesehatan`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
     trending_bisnis: {
-        title: `Info Berita Bisnis Terkini Nasional dan Dunia - ${SITE_NAME}`,
+        title: `Info Berita Bisnis Terkini Nasional dan Dunia - ${SITE_NAME_NEWS}`,
         description: `Kumpulan berita, artikel dan tips terhangat seputar bisnis, finansial, investasi, dan ekonomi, UKM nasional dan internasional terkini di Indonesia`,
         keywords: `berita bisnis, kabar bisnis hari ini, berita bisnis terbaru`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
     trending_otomotif: {
-        title: `Berita Otomotif Mobil dan Motor Terbaru Hari Ini - ${SITE_NAME}`,
-        description: `Kumpulan berita, artikel dan tips terhangat seputar otomotif, motor dan mobil nasional dan internasional terkini di Indonesia`,
-        keywords: `otomotif, berita otomotif, berita otomotif terbaru, kabar otomotif`,
+        title: `Berita Otomotif Mobil dan Motor Terbaru Hari Ini - ${SITE_NAME_NEWS}`,
+        description: `Baca kumpulan berita, artikel highlight, informasi, event, modifikasi, konsultasi, komunitas, review dan foto nasional dan internasional terkini di Indonesia eksklusif hanya di rctiplus.com`,
+        keywords: `rctiplus otomotif, berita otomotif, berita otomotif terbaru, otomotif, highlight otomotif, event otomotif, tips & tricks otomotif, modifikasi otomotif, konsultasi otomotif, komunitas otomotif, test review otomotif, foto otomotif dan video otomotif`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
     trending_muslim: {
-        title: `Kabar dan Berita Muslim Terbaru Hari Ini - ${SITE_NAME}`,
-        description: `Kumpulan berita, artikel dan tips terhangat seputar muslim, dan islam nasional dan internasional terkini di Indonesia`,
-        keywords: `kabar muslim terbaru, berita muslim`,
+        title: `Berita Dunia Islam Terkini dan Terupdate Hari Ini - ${SITE_NAME_NEWS}`,
+        description: `Baca berita seputar dunia Islam seperti al-quraan digital, tanya jawab ustad tips muslim, Halal Food,Fashion hijab, terupdate dan religi terbaru hari ini dari berbagai sumber terpercaya dan teraktual`,
+        keywords: `berita muslim, kabar muslim, berita harian muslim, Muslim, Berita Muslim, kabar Muslim, Muslim hari ini, berita harian Muslim, tag Muslim, arsip Muslim, indeks Muslim, Muslim terkini, Muslim terbaru dan viral`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
+    },
+    trending_teknologi: {
+        title: `Berita Teknologi IT, Informasi Gadget dan Sains Terbaru Hari Ini - ${SITE_NAME_NEWS}`,
+        description: `Kumpulan berita harian teknologi, aplikasi, game, sains, smartphone, internet, software, hardware, dan gadget terbaru hari ini dari berbagai sumber terpercaya`,
+        keywords: `teknologi informasi, berita teknologi, berita teknologi gadget, berita tekno, teknologi, teknologi terbaru, teknologi terkini, berita gadget, berita game, berita start-up, start-up, gadget terbaru, berita fotografi, berita aplikasi mobile, review gadget, review aplikasi, review game, review notebook terviral`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
+    },
+    trending_nasional: {
+        title: `Berita Nasional Indonesia Terbaru Hari Ini - ${SITE_NAME_NEWS}`,
+        description: `Kumpulan berita nasional hari ini eksklusif hanya di rctiplus.com dari berbagai kanal`,
+        keywords: `informasi, berita terbaru, politik, kriminal, hukum, peristiwa, berita hari ini, Indonesia, nasional terviral`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
+    },
+    trending_global: {
+        title: `Berita Global dan Isu Internasional Terbaru Hari Ini - ${SITE_NAME_NEWS}`,
+        description: `Baca kumpulan berita global, internasional baik peristiwa kecelakaan, kriminal, hukum, berita unik, politik, dan liputan khusus hari ini eksklusif hanya di rctiplus.com`,
+        keywords: `iberita global informasi kecelakaan ,berita hari ini, politik, kriminal, hukum, peristiwa, terupdate, liputan khusus, Indonesia, Internasional, terbaru, `,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
+    },
+    trending_ekonomi: {
+        title: `Berita Ekonomi Bisnis, dan InvestasiTerbaru Hari Ini - ${SITE_NAME_NEWS}`,
+        description: `Baca Berita dan Informasi Terbaru Hari ini Bisnis, Finansial, Ekonomi, Perbankan, Investasi, Market Research, Keuangan, UMKM, ekonomi makro terbaru hari ini eksklusif hanya di rctiplus.com `,
+        keywords: `berita ekonomi, berita ekonomi hari ini, Berita Bisnis dan Ekonomi, Bisnis, Finansial, Ekonomi, Perbankan, Investasi, Market Research, Keuangan, terbaru, berita bisnis, berita Finance, berita investasi, berita keuangan, berita finansial`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
+    },
+    trending_seleb: {
+        title: `Berita Selebritis dan Gosip  Berita, Foto, Video TerHOT di Indonesia dan Dunia Terbaru - ${SITE_NAME_NEWS}`, 
+        description: `Baca Info berita selebritis gosip, foto, video terHot di dunia di berbagai industri, meliputi film, musik, dan hiburan terbaru hari ini eksklusif hanya di rctiplus.com`,
+        keywords: `berita selebritis, hot, selebriti, artis, foto, video, entertainment, showbiz`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
+    },
+    trending_gaya_hidup: {
+        title: `Informasi Gaya Hidup, Lifestyle, dan Fashion Terkini - ${SITE_NAME_NEWS}`, 
+        description: `Baca kumpulan berita dan artikel gaya hidup, lifestyle, fashional, kesehatan, travel keluarga dari artis serta publik figure nasional dan internasional terkini di Indonesia eksklusif hanya di rctiplus.com `,
+        keywords: `berita lifestyle, berita gaya hidup, lifestyle, lifestyle rctiplus, berita lifestyle, berita gaya hidup, panduan wisata, tour dan travel, tips wirausaha, menu masakan kuliner, voucher belanja, promo produk, dekorasi`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
     explore_for_you: {
