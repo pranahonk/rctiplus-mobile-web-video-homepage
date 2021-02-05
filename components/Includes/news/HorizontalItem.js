@@ -6,6 +6,8 @@ import { formatDateWordID } from '../../../utils/dateHelpers';
 import { urlRegex } from '../../../utils/regex';
 import queryString from 'query-string';
 import '../../../assets/scss/components/trending_v2.scss';
+// Import Swiper styles
+import 'swiper/swiper.scss';
 
 export default function HorizontalItem({item}) {
   const router = useRouter()
