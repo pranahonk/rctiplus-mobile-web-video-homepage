@@ -49,7 +49,7 @@ class NavTrendingSearch extends Component {
     componentDidMount() {
         if (!this.props.disableScrollListener) {
             document.addEventListener('scroll', () => {
-                const isTop = window.scrollY < 150;
+                const isTop = window.scrollY < 10;
                 if (isTop !== this.state.is_top) {
                     this.setState({is_top: isTop});
                 }
@@ -82,7 +82,7 @@ class NavTrendingSearch extends Component {
                             </NavbarBrand>
                             </Col>
                             <div className="navbar-interest__topic" >
-                                <h1>{this.props.titleNavbar || ''}</h1>
+                                <h1>{!this.state.is_top ? this.props.titleNavbar || '' : ''}</h1>
                             </div>
                         </div>
                     </Navbar>

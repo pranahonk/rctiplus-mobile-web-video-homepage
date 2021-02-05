@@ -10,9 +10,6 @@ import queryString from 'query-string';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import '../../assets/scss/components/trending_v2.scss';
 // import Image from 'next/image';
-import Img from 'react-image';
-import { getTruncate } from '../../utils/helpers';
-import { formatDateWordID } from '../../utils/dateHelpers';
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP } from '../../config';
 
 // import component
@@ -23,6 +20,7 @@ import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 import newsAction from '../../redux/actions/newsv2Actions';
 
 const Loading = dynamic(() => import('../../components/Includes/Shimmer/ListTagLoader'))
+const SquareItem = dynamic(() => import('../../components/Includes/news/SquareItem'),{loading: () => <Loading />})
 
 
 // Import Swiper styles
@@ -118,25 +116,9 @@ const ListTags = (props) => {
               ) : 
               props.contents.data_tag?.data?.map((item, index) => {
                 return (
-                  <div className="list_tags_thumb" key={index + item.title}>
-                    <div className="lt_img">
-                      <div className="lt_img_wrap">
-                        <Img
-                          alt={item.title}
-                          loader={<img alt={item.title} className="news-interest_thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                          unloader={<img alt={item.title} className="news-interest_thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                          className="news-interest_thumbnail"
-                          src={[item.cover, '/static/placeholders/placeholder_landscape.png']} />
-                      </div>
-                    </div>
-                    <div className="lt_content">
-                      <Link href={_goToDetail(item)}>{getTruncate(item.title, '...', 100)}</Link>
-                      <div className="lt_content-info">
-                        <h5>{item.source}</h5>
-                        <h6>{formatDateWordID(new Date(item.pubDate * 1000))}</h6>
-                      </div>
-                    </div>
-                  </div>
+                  <>
+                    <SquareItem key={index + item.title} item={item}/>
+                  </>
                 );
               })
             }

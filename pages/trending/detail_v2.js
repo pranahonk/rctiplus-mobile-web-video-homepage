@@ -8,6 +8,7 @@ import Img from 'react-image';
 import { ScrollPercentage } from 'react-scroll-percentage';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Cookie from 'js-cookie';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { DEV_API, BASE_URL, NEWS_API_V2, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, UTM_NAME } from '../../config';
 
@@ -22,7 +23,9 @@ import { ListGroup, ListGroupItem } from 'reactstrap';
 // import BottomScrollListener from 'react-bottom-scroll-listener';
 import { formatDateWordID } from '../../utils/dateHelpers';
 import SquareItem from '../../components/Includes/news/SquareItem';
+import HorizontalItem from '../../components/Includes/news/HorizontalItem';
 import { setAccessToken, removeAccessToken } from '../../utils/cookie';
+import { getTruncate } from '../../utils/helpers';
 import { urlRegex } from '../../utils/regex';
 import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
 import newsv2Actions from '../../redux/actions/newsv2Actions';
@@ -418,22 +421,27 @@ class Detail extends React.Component {
         return (
             <Layout title={cdata.title}>
                 <Head>
-                    <meta name="description" content={cdata.content?.replace( /(<([^>]+)>)/ig, '')}></meta>
-                    <meta property="og:image" itemProp="image" content={cdata.cover}></meta>
-                    <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)}></meta>
+                    <meta name="keywords" content={cdata.title} />
+                    <meta name="description" content={getTruncate(cdata.content?.replace( /(<([^>]+)>)/ig, ''), 230)} />
+                    <meta property="og:title" content={`${cdata.title} - News+ on RCTI+`} />
+                    <meta property="og:description" content={getTruncate(cdata.content?.replace( /(<([^>]+)>)/ig, ''), 230)} />
+                    <meta property="og:image" itemProp="image" content={cdata.cover} />
+                    <meta property="og:type" content="website" />
+                    <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={SITE_NAME}></meta>
-                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId}></meta>
-                    <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard}></meta>
-                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator}></meta>
-                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite}></meta>
-                    <meta name="twitter:image" content={cdata.cover}></meta>
-                    <meta name="twitter:title" content={cdata.title}></meta>
-                    <meta name="twitter:description" content={cdata.content?.replace( /(<([^>]+)>)/ig, '')}></meta>
-                    <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)}></meta>
-                    <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)}></meta>
+                    <meta property="og:site_name" content={SITE_NAME} />
+                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+                    <meta name="twitter:image" content={cdata.cover} />
+                    <meta name="twitter:title" content={`${cdata.title} - News+ on RCTI+`} />
+                    <meta name="twitter:image:alt" content={cdata.title} />
+                    <meta name="twitter:description" content={getTruncate(cdata.content?.replace( /(<([^>]+)>)/ig, ''), 230)} />
+                    <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
+                    <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
                     <script dangerouslySetInnerHTML={{
@@ -462,13 +470,18 @@ class Detail extends React.Component {
                 {this.state.iframe_opened ? (<NavBackIframe closeFunction={() => {
                     this.setState({ iframe_opened: false });
                 }} data={cdata} disableScrollListener />) : (
-                    <NavBack pushNotif={this.pushNotif} params={`?token=${this.accessToken}&platform=${this.platform}`} src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`} data={cdata} disableScrollListener />
+                    <NavBack 
+                        pushNotif={this.pushNotif} 
+                        params={`?token=${this.accessToken}&platform=${this.platform}`} 
+                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`} 
+                        data={cdata} 
+                        titleNavbar={this.props?.initial?.source}/>
                 )}
                 <StickyContainer>
                     <Sticky>
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
-                            console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight)
+                            {/* console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight) */}
                             if (distanceFromTop < -650) {
                                 setTimeout(() => {
                                     if (self.state.sticky_share_shown) {
@@ -605,35 +618,37 @@ class Detail extends React.Component {
                                         {this.state.trending_related.map((item, index) => {
                                             return (
                                                 <>
-                                                    <SquareItem key={index + item.title} item={item}/>
+                                                    <SquareItem key={index + item.title} item={item} indexKey={index} isIndexKey/>
                                                 </>
                                             );
                                         })}
                                     </div>
-                                    {/* <ListGroup>
-                                        {this.state.trending_related.map((article, j) => (
-                                            <ListGroupItem key={j} className={`article ${j == this.state.trending_related.length - 1 ? 'article-no-border' : ''}`} onClick={() => this.goToDetail(article, j)}>
-                                                <div className="article-description">
-                                                    <div className="article-thumbnail-container">
-                                                        <Img
-                                                            alt={article.title}
-                                                            loader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                                            unloader={<img alt={article.title} className="article-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                                            className="article-thumbnail"
-                                                            src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
-                                                    </div>
-                                                    <div className="article-title-container">
-                                                        <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
-                                                    </div>
-                                                </div>
-                                                <div className="article-source">
-                                                    <p><strong>{article.source ? article.source : article.category_source}</strong>&nbsp;&nbsp;</p>
-                                                    <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
-                                                </div>
-                                            </ListGroupItem>
-                                        ))}
-                                    </ListGroup> */}
-                                    {/* <div>test</div> */}
+                                    <div>
+                                        <Swiper
+                                            spaceBetween={10}
+                                            width={242}
+                                            height={140}
+                                            onSwiper={(swiper) => console.log(swiper)}
+                                            // onReachEnd={(swiper) => {
+                                            //     if (swiper.isEnd) {
+                                            //     if (list.data) {
+                                            //         list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
+                                            //         (props.getListTag(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
+                                            //         setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
+                                            //         }).catch((err) => console.log(err))) : ''
+                                            //     }
+                                            //     }
+                                            // }}
+                                            >
+                                                {this.state.trending_related.map((item, index) => {
+                                                return (
+                                                    <SwiperSlide key={index}>
+                                                        <HorizontalItem item={item} />
+                                                    </SwiperSlide>
+                                                );
+                                                })}
+                                            </Swiper>
+                                    </div>
                                 </div>
                             </div>
                         )}

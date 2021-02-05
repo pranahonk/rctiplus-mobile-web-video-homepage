@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import Img from 'react-image';
-import Link from 'next/link';
+import { useRouter } from 'next/router'
 import { getTruncate } from '../../../utils/helpers';
 import { formatDateWordID } from '../../../utils/dateHelpers';
 import { urlRegex } from '../../../utils/regex';
 import queryString from 'query-string';
 import '../../../assets/scss/components/trending_v2.scss';
 
-export default function SquareItem({item}) {
+const redirectToPublisherIndex = [0, 1];
+export default function SquareItem({item, indexKey, isIndexKey}) {
+  const router = useRouter()
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
   useEffect(() => {
@@ -24,7 +26,15 @@ export default function SquareItem({item}) {
     } else {
       category = urlRegex(article.subcategory_name)
     }
-    return ('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
+    if(isIndexKey) {
+      if (redirectToPublisherIndex.indexOf(indexKey) != -1 && platform !== 'ios') {
+          return window.open(article.link, '_blank');
+      }
+          return router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
+    }
+    else { 
+      return router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
+    }
   }
   return(
     <div className="list_tags_thumb">
@@ -39,7 +49,12 @@ export default function SquareItem({item}) {
           </div>
       </div>
       <div className="lt_content">
-          <Link href={_goToDetail(item)}>{getTruncate(item.title, '...', 100)}</Link>
+          <a onClick={(e) => {
+            e.preventDefault()
+            _goToDetail(item)
+            }}>
+            {getTruncate(item.title, '...', 100)}
+          </a>
           <div className="lt_content-info">
           <h5>{item.source}</h5>
           <h6>{formatDateWordID(new Date(item.pubDate * 1000))}</h6>
