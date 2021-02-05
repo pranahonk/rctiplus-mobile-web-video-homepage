@@ -423,6 +423,7 @@ class Detail extends React.Component {
         return (
             <Layout title={cdata.title}>
                 <Head>
+                    <meta name="title" content={cdata.title} />
                     <meta name="keywords" content={cdata.title} />
                     <meta name="description" content={getTruncate(cdata.content?.replace( /(<([^>]+)>)/ig, ''), 230)} />
                     <meta property="og:title" content={`${cdata.title} - News+ on RCTI+`} />
@@ -440,7 +441,7 @@ class Detail extends React.Component {
                     <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
                     <meta name="twitter:image" content={cdata.cover} />
                     <meta name="twitter:title" content={`${cdata.title} - News+ on RCTI+`} />
-                    <meta name="twitter:image:alt" content={cdata.title} />
+                    <meta name="twitter:image:alt" content={'NewsRCTIPlus'} />
                     <meta name="twitter:description" content={getTruncate(cdata.content?.replace( /(<([^>]+)>)/ig, ''), 230)} />
                     <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)} />

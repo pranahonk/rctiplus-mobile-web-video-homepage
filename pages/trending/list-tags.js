@@ -73,6 +73,7 @@ const ListTags = (props) => {
     <>
       <Layout title={metaTitle}>
         <Head>
+          <meta name="title" content={metaTitle}  />
           <meta name="description" content={SITEMAP.topic_tagar.description}  />
           <meta name="keywords" content={'All Tagar'} />
           <meta property="og:title" content={metaTitle} />
@@ -89,6 +90,7 @@ const ListTags = (props) => {
           <meta name="twitter:site" content={SITEMAP.twitterSite} />
           <meta name="twitter:image" content={SITEMAP.topic_tagar.image} />
           <meta name="twitter:title" content={metaTitle} />
+          <meta name="twitter:image:alt" content={'NewsRCTIPlus'} />
           <meta name="twitter:description" content={SITEMAP.topic_tagar.description} />
           <meta name="twitter:url" content={encodeURI(router.asPath)} />
           <meta name="twitter:domain" content={encodeURI(router.asPath)} />

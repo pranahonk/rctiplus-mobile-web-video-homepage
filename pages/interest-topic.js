@@ -36,6 +36,7 @@ const InteresTopic = (props) => {
     <>
       <Layout title={SITEMAP.topic_tagar.title}>
         <Head>
+          <meta name="title" content={SITEMAP.topic_tagar.title}  />
           <meta name="description" content={SITEMAP.topic_tagar.description}  />
           <meta name="keywords" content={'All Tagar'} />
           <meta property="og:title" content={SITEMAP.topic_tagar.title} />
