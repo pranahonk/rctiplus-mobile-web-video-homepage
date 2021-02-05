@@ -76,8 +76,8 @@ export const OPEN_GRAPH = {
 export const GRAPH_SITEMAP = {
     appId: '211272363627736',
     twitterCard: 'summary_large_image',
-    twitterCreator: '@OfficialRCTI',
-    twitterSite: '@OfficialRCTI',
+    twitterCreator: '@RCTIPlus',
+    twitterSite: '@RCTIPlus',
 };
 export const SITE_NAME = 'RCTI+';
 export const SITE_NAME_NEWS = 'News+ on RCTI+';
