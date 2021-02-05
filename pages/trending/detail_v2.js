@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
-import Img from 'react-image';
+// import Img from 'react-image';
 import { ScrollPercentage } from 'react-scroll-percentage';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Cookie from 'js-cookie';
@@ -19,21 +20,22 @@ import AdsBanner from '../../components/Includes/Banner/Ads';
 import '../../assets/scss/components/trending_detail.scss';
 
 import { FacebookShareButton, TwitterShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
-import { ListGroup, ListGroupItem } from 'reactstrap';
+// import { ListGroup, ListGroupItem } from 'reactstrap';
 // import BottomScrollListener from 'react-bottom-scroll-listener';
 import { formatDateWordID } from '../../utils/dateHelpers';
 import SquareItem from '../../components/Includes/news/SquareItem';
-import HorizontalItem from '../../components/Includes/news/HorizontalItem';
+const HorizontalItem = dynamic(() => import('../../components/Includes/news/HorizontalItem'),{ ssr: false })
 import { setAccessToken, removeAccessToken } from '../../utils/cookie';
 import { getTruncate } from '../../utils/helpers';
 import { urlRegex } from '../../utils/regex';
 import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
 import newsv2Actions from '../../redux/actions/newsv2Actions';
+import isEmpty from 'lodash/isEmpty'
 
 // import ShareIcon from '@material-ui/icons/Share';
 
 import queryString from 'query-string';
-import { isIOS } from 'react-device-detect';
+// import { isIOS } from 'react-device-detect';
 
 class Detail extends React.Component {
 
@@ -478,7 +480,7 @@ class Detail extends React.Component {
                         titleNavbar={this.props?.initial?.source}/>
                 )}
                 <StickyContainer>
-                    <Sticky>
+                    <Sticky bottomOffset={100}>
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
                             {/* console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight) */}
@@ -622,22 +624,12 @@ class Detail extends React.Component {
                                             );
                                         })}
                                     </div>
-                                    <div>
+                                    {!isEmpty(this.state?.trending_related) && (<div>
                                         <Swiper
                                             spaceBetween={10}
                                             width={242}
                                             height={140}
                                             onSwiper={(swiper) => console.log(swiper)}
-                                            // onReachEnd={(swiper) => {
-                                            //     if (swiper.isEnd) {
-                                            //     if (list.data) {
-                                            //         list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
-                                            //         (props.getListTag(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
-                                            //         setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
-                                            //         }).catch((err) => console.log(err))) : ''
-                                            //     }
-                                            //     }
-                                            // }}
                                             >
                                                 {this.state.trending_related.map((item, index) => {
                                                 return (
@@ -646,8 +638,8 @@ class Detail extends React.Component {
                                                     </SwiperSlide>
                                                 );
                                                 })}
-                                            </Swiper>
-                                    </div>
+                                        </Swiper>
+                                    </div>)}
                                 </div>
                             </div>
                         )}
