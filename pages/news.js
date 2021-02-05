@@ -590,6 +590,7 @@ class Trending_v2 extends React.Component {
                                                                     <iframe 
                                                                         onLoad={() => {
                                                                             window.addEventListener('scroll', () => {
+                                                                                const iframeElement = document.getElementById(article.id)
                                                                                 const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
                                                                                 document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
                                                                                 const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
@@ -598,6 +599,10 @@ class Trending_v2 extends React.Component {
                                                                                 if(element && element.style.display === 'none' || element_2) {
                                                                                     element_3.style.display = 'none'
                                                                                 } else {
+                                                                                    if(!element) {
+                                                                                        iframeElement.style.display = 'none'
+                                                                                        return 
+                                                                                    }
                                                                                     element_3.style.display = 'block'
                                                                                 }
                                                                                 })
