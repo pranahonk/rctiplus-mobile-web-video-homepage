@@ -52,6 +52,7 @@ class Trending_v2 extends React.Component {
     }
 
     state = {
+        tab: '',
         active_tab: '-1',
         is_tabs_loading: true,
         is_trending_loading: true,
@@ -355,22 +356,34 @@ class Trending_v2 extends React.Component {
 
         return SITEMAP['trending'];
     }
+    getOgMetaData() {
+        const { articles, active_tab } = this.state
+        if(!isEmpty(articles)) {
+            return {
+                ogTitle: articles[active_tab][0].title || '',
+                ogImage: articles[active_tab][0].cover || '',
+                ogDescription: articles[active_tab][0].content.replace(/(<([^>]+)>)/gi, "") || '',
+            }
+        }
+        return {
+                ogTitle: '',
+                ogImage: '',
+                ogDescription: '',
+            }
+    }
 
-    // getAds() {
-    //     console.log()
-    // }
 
     render() {
         const metadata = this.getMetadata();
-        // console.log(this.state.articles['20']);
+        const ogMetaData = this.getOgMetaData();
         return (
             <Layout title={metadata.title}>
                 <Head>
                     <meta name="description" content={metadata.description} />
                     <meta name="keywords" content={metadata.keywords} />
-                    <meta property="og:title" content={metadata.title} />
-                    <meta property="og:description" content={metadata.description} />
-                    <meta property="og:image" itemProp="image" content={metadata.image} />
+                    <meta property="og:title" content={ogMetaData.ogTitle} />
+                    <meta property="og:description" content={ogMetaData.ogDescription} />
+                    <meta property="og:image" itemProp="image" content={ogMetaData.ogImage} />
                     <meta property="og:url" content={encodeURI(this.props.router.asPath)} />
                     <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
@@ -518,7 +531,8 @@ class Trending_v2 extends React.Component {
                                         {this.state.is_tabs_loading ? (<ArticleLoader />) : null}
 
                                         <TabContent activeTab={this.state.active_tab}>
-                                            {this.state.tabs.map((tab, i) => (
+                                            {this.state.tabs.map((tab, i) => {
+                                                return (
                                                 <TabPane key={i} tabId={tab.id.toString()}>
                                                     {tab.name === 'Berita Utama' ? (this.state.is_trending_loading ? (<HeadlineLoader />) : (<HeadlineCarousel articles={this.state.trending_articles} />)) : null}
                                                     { !isEmpty(this.props.newsv2.data_topic) ? (
@@ -613,14 +627,14 @@ class Trending_v2 extends React.Component {
                                                                         </div>
                                                                     </ListGroupItem>
                                                                 </div>
-                                                            )  : <div className="item_square-wrapper">
-                                                                <SquareItem key={j + article.title} item={article}/>
+                                                            )  : <div className="item_square-wrapper" key={j + article.title}>
+                                                                <SquareItem item={article}/>
                                                             </div>
                                                         ))}
                                                     </ListGroup>
                                                     {this.state.is_articles_loading ? (<ArticleLoader />) : null}
                                                 </TabPane>
-                                            ))}
+                                            )})}
                                         </TabContent>
                                     </div>
                                 )
