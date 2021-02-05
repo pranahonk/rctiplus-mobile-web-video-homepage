@@ -567,7 +567,7 @@ class Trending_v2 extends React.Component {
                                                                 <Link href={`/interest-topic${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`} className=""><span className="news-more_action">See More <ArrowForwardIosIcon /></span></Link>                                                 
                                                             </div>
                                                             <div className="interest-topic_list">
-                                                                <Row>
+                                                                <Row className="interest-topic_list_row">
                                                                     {this.props.newsv2.data_topic.map((item, i) => {
                                                                         return i > 10 ? ''
                                                                         : (
