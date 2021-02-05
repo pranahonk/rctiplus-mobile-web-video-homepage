@@ -37,6 +37,20 @@ export const FIREBASE_messagingSenderId = process.env.FIREBASE_messagingSenderId
 export const FIREBASE_appId = process.env.FIREBASE_appId;
 export const FIREBASE_measurementId = process.env.FIREBASE_measurementId;
 
+export const GPT_NEWS_MWEB_LIST = process.env.GPT_NEWS_MWEB_LIST
+export const GPT_NEWS_IOS_LIST = process.env.GPT_NEWS_IOS_LIST
+export const GPT_NEWS_ANDROID_LIST = process.env.GPT_NEWS_ANDROID_LIST
+export const GPT_NEWS_LINK_LIST = process.env.GPT_NEWS_LINK_LIST
+
+export const GPT_NEWS_MWEB_DETAIL = process.env.GPT_NEWS_MWEB_DETAIL
+export const GPT_NEWS_IOS_DETAIL = process.env.GPT_NEWS_IOS_DETAIL
+export const GPT_NEWS_ANDROID_DETAIL = process.env.GPT_NEWS_ANDROID_DETAIL
+export const GPT_NEWS_LINK_DETAIL = process.env.GPT_NEWS_LINK_DETAIL
+
+export const GPT_ID_LIST = process.env.GPT_ID_LIST
+
+export const GPT_ID_DETAIL = process.env.GPT_ID_DETAIL
+
 export const REDIRECT_SSR = process.env.REDIRECT_SSR;
 
 export const CONVIVA_TRACKING_KEY = process.env.CONVIVA_TRACKING_KEY;

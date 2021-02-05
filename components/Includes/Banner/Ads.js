@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import $ from 'jquery';
+import { GPT_NEWS_LINK_LIST, GPT_NEWS_LINK_DETAIL } from '../../../config'
+// import $ from 'jquery';
 // import { useSelector, useDispatch } from 'react-redux';
 
 const AdsBanner = ({path, size, idGpt, style, partner}) => {
@@ -26,8 +27,8 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
         googletag.pubads().addEventListener('slotRenderEnded', function(event) {
           // const elmnt = document.getElementById('google_ads_iframe_/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250_0');
           // const elmntDetail = document.getElementById('google_ads_iframe_/21865661642/PRO_MOBILE_DETAIL-NEWS_DISPLAY_300x250_0');
-          const elmnt = document.getElementById(process.env.GPT_NEWS_LINK_LIST);
-          const elmntDetail = document.getElementById(process.env.GPT_NEWS_LINK_DETAIL);
+          const elmnt = document.getElementById(GPT_NEWS_LINK_LIST);
+          const elmntDetail = document.getElementById(GPT_NEWS_LINK_DETAIL);
           if (typeof (elmnt) !== 'undefined' && elmnt !== null) {
             // console.log(elmnt);
             setUrl(elmnt.contentWindow.document.getElementsByTagName('a')[0].href);
@@ -36,11 +37,11 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
             // console.log(elmntDetail.contentWindow.document.getElementsByTagName('a')[0].href);
             setUrl(elmntDetail.contentWindow.document.getElementsByTagName('a')[0].href);
           }
-            // if (event.isEmpty) {
-            //     // dispatch({type: 'TOGGLE_ADS', toggle: false})
-            //     console.log('EMPTY ADS');
+            if (event.isEmpty) {
+                // dispatch({type: 'TOGGLE_ADS', toggle: false})
+                console.log('EMPTY ADS');
 
-            // }
+            }
         });
         googletag.enableServices();
     });
