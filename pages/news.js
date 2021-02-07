@@ -517,7 +517,7 @@ class Trending_v2 extends React.Component {
                                                             self.setState({ sticky_category_shown: distanceFromTop < distance })
                                                         }, 1500);
                                                         return (
-                                                            <div className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : ''}`}>
+                                                            <div className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : 'sticky-menu-inactive'}`}>
                                                                 <Nav tabs className="navigation-tabs">
                                                                     {this.state.tabs.map((tab, i) => (
                                                                         <NavItem
