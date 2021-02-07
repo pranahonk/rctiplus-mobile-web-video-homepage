@@ -466,7 +466,10 @@ class Trending_v2 extends React.Component {
                     offset={50}
                     onBottom={this.bottomScrollFetch.bind(this)} />
 
-                <div className={`main-content ${this.state.sticky_category_shown ? 'sticky-menu-category-active' : ''} ${(this.platform === 'ios' || this.platform === 'android') && 'apps-mode'}`} style={{ marginTop: this.platform === 'ios' ? 26 : this.platform === 'android' ? 15 : '' }}>
+                <div className={`
+                    main-content 
+                    ${this.state.sticky_category_shown ? 'sticky-menu-category-active' : ''} 
+                    ${(this.platform === 'ios' || this.platform === 'android') && 'apps-mode'}`}>
                     {this.state.load_error ? (
                         <div style={{
                             display: 'flex',
@@ -517,7 +520,7 @@ class Trending_v2 extends React.Component {
                                                             self.setState({ sticky_category_shown: distanceFromTop < distance })
                                                         }, 1500);
                                                         return (
-                                                            <div className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : ''}`}>
+                                                            <div className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : 'sticky-menu-inactive'}`}>
                                                                 <Nav tabs className="navigation-tabs">
                                                                     {this.state.tabs.map((tab, i) => (
                                                                         <NavItem
