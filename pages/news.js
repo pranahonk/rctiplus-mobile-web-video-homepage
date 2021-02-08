@@ -10,8 +10,9 @@ import BottomScrollListener from 'react-bottom-scroll-listener';
 import Img from 'react-image';
 import { StickyContainer, Sticky } from 'react-sticky';
 
-import Layout from '../components/Layouts/Default_v2';
-import NavTrending from '../components/Includes/Navbar/NavTrending_v2';
+import Layout from '../components/Layouts/DefaultNews';
+// import Layout from '../components/Layouts/Default_v2';
+// import NavTrending from '../components/Includes/Navbar/NavTrending_v2';
 import HeadlineCarousel from '../components/Includes/Gallery/HeadlineCarousel';
 import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
 
@@ -34,7 +35,7 @@ import newsv2Actions from '../redux/actions/newsv2Actions';
 import userActions from '../redux/actions/userActions';
 import { showSignInAlert, humanizeStr } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
-import AdsBanner from '../components/Includes/Banner/Ads';
+// import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 const Loading = dynamic(() => import('../components/Includes/Shimmer/ListTagLoader'))
