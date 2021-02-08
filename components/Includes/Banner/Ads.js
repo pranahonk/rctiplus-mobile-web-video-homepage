@@ -12,7 +12,7 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
   useEffect(() => {
     const googletag = window.googletag || {};
     window.googletag = window.googletag || {cmd: []};
-    googletag.cmd.push(function() {
+    googletag?.cmd?.push(function() {
         let  defineSlot;
         if (partner) {
           defineSlot = googletag.defineSlot(path, size, idGpt).setTargeting('partner_name', partner);
@@ -47,7 +47,7 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
         });
         googletag.enableServices();
     });
-    googletag.cmd.push(function() { googletag.display(idGpt); });
+    googletag?.cmd?.push(function() { googletag.display(idGpt); });
   },[]);
 
   // useEffect(() => {
