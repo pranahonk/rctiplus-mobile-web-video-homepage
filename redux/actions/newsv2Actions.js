@@ -56,7 +56,7 @@ const getSearchFromServer = (data) => {
             result: data?.data || [],
             meta: data?.meta || null,
             query: data.keyword,
-            search_show_more_allowed: data.data.length >= length
+            search_show_more_allowed: data.data?.length >= length
         });
     }
 };

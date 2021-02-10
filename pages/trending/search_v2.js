@@ -199,7 +199,7 @@ class Search extends React.Component {
             );
         }
 
-        return this.renderSearchHistory();
+        // return this.renderSearchHistory();
     }
 
     render() {
