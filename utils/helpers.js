@@ -106,7 +106,7 @@ export const showConfirmAlert = (text, title, callback, buttonInverse = false, c
         });
 };
 
-export const showSignInAlert = (text, title, callback, buttonInverse = false, confirmText = 'OK', cancelText = 'Cancel', html = false, styleInverse = false, confirmButtonId = '', cancelButtonId = '', redirectTo = '/login') => {
+export const showSignInAlert = (text, title, callback, buttonInverse = false, confirmText = 'OK', cancelText = 'Cancel', html = false, styleInverse = false, confirmButtonId = '', cancelButtonId = '') => {
     let options = {
         showCancelButton: true,
         confirmButtonText: confirmText,
@@ -156,7 +156,7 @@ export const showSignInAlert = (text, title, callback, buttonInverse = false, co
                 Router.push('/register');
             }
             else if (result.dismiss == 'cancel') {
-                Router.push(redirectTo);
+                Router.push('/login');
             }
         });
 
@@ -194,4 +194,13 @@ export const getTruncate = (text = '', clamp = '...', length = 100) => {
     tcText =  tcText.slice(0, last);
 
     return tcText + clamp;
+}
+
+export const humanizeStr = (str) => {
+    var i, frags = str.split('-');
+    for (i=0; i<frags.length; i++) {
+        frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
+    }
+ 
+    return frags.join(' ');
 }
