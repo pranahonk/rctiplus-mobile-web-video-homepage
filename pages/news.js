@@ -83,11 +83,23 @@ class Trending_v2 extends React.Component {
                 'Authorization': data_news.data.news_token
             }
         });
-        const error_code = res.statusCode > 200 ? res.statusCode : false;
+        const res_kanal = await fetch(`${NEWS_API_V2}/api/v1/kanal`, {
+            method: 'GET',
+            headers: {
+                'Authorization': data_news.data.news_token
+            }
+        });
+        const error_code = res.statusCode > 200 ? true : false;
         const data = await res.json();
-        const error_code_category = res_category.statusCode > 200 ? res_category.statusCode : false;
+        const error_code_category = res_category.statusCode > 200 ? true : false;
         const data_category = await res_category.json();
+        const error_code_kanal = res_kanal.statusCode > 200 ? true : false;
+        const data_kanal = await res_kanal.json();
         let metaSeo = data_category.data;
+        let dataCategory = {}
+        if(!error_code_kanal || !error_code_category) {
+            dataCategory= { data: [...data_category.data, ...data_kanal.data ] }
+        }
         if(isEmpty(ctx.query)) {
             metaSeo = [{title: SITEMAP.trending.title, description: SITEMAP.trending.description, keyword: SITEMAP.trending.keywords}]
         } else {
@@ -97,7 +109,7 @@ class Trending_v2 extends React.Component {
         }
         return { 
             query: ctx.query, metaOg: error_code ? {} : data.data[0], 
-            data_category: error_code_category ? [] : data_category,
+            data_category: error_code_category || error_code_kanal ? [] : dataCategory,
             metaSeo: metaSeo[0] || {}
         };
     }
