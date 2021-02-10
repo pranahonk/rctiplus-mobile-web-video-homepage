@@ -24,7 +24,7 @@ import WrenchIcon from '../components/Includes/Common/Wrench';
 import { Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, Container, Row, Col } from 'reactstrap';
 import AddIcon from '@material-ui/icons/Add';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2 } from '../config';
 import { formatDateWordID } from '../utils/dateHelpers';
 import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2 } from '../utils/cookie';
 
@@ -49,7 +49,36 @@ const jwtDecode = require('jwt-decode');
 class Trending_v2 extends React.Component {
 
     static async getInitialProps(ctx) {
-        return { query: ctx.query };
+        // console.log(isEmpty(ctx.query))
+        const queryId = isEmpty(ctx.query) ? 15 : ctx.query.subcategory_id
+        const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
+         if (response_visitor.statusCode === 200) {
+            return {};
+        }
+        const data_visitor = await response_visitor.json();
+        const response_news = await fetch(`${NEWS_API_V2}/api/v1/token`, {
+            method: 'POST',
+            body: JSON.stringify({
+                merchantName: 'rcti+',
+                hostToken: data_visitor.data.access_token,
+                platform: 'mweb'
+            })
+        });
+        if (response_news.statusCode === 200) {
+            return {};
+        }
+        const data_news = await response_news.json();
+
+        const res = await fetch(`${NEWS_API_V2}/api/v1/news?subcategory_id=${queryId}&page=1&pageSize=1`, {
+            method: 'GET',
+            headers: {
+                'Authorization': data_news.data.news_token
+            }
+        });
+        const error_code = res.statusCode > 200 ? res.statusCode : false;
+        const data = await res.json();
+        // console.log(data_visitor)
+        return { query: ctx.query, metaOg: error_code ? {} : data.data[0] };
     }
 
     state = {
@@ -372,6 +401,11 @@ class Trending_v2 extends React.Component {
                 ogDescription: '',
             }
     }
+    _linkTab(tab) {
+        const href = `/news?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`;
+        const as = `/news/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`;
+        Router.push(href, as)
+    }
 
 
     render() {
@@ -383,9 +417,9 @@ class Trending_v2 extends React.Component {
                     <meta name="title" content={metadata.title} />
                     <meta name="description" content={metadata.description} />
                     <meta name="keywords" content={metadata.keywords} />
-                    <meta property="og:title" content={ogMetaData.ogTitle} />
-                    <meta property="og:description" content={ogMetaData.ogDescription} />
-                    <meta property="og:image" itemProp="image" content={ogMetaData.ogImage} />
+                    <meta property="og:title" content={this.props.metaOg?.title || ''} />
+                    <meta property="og:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
+                    <meta property="og:image" itemProp="image" content={this.props.metaOg?.cover|| ''} />
                     <meta property="og:url" content={encodeURI(this.props.router.asPath)} />
                     <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
@@ -482,52 +516,68 @@ class Trending_v2 extends React.Component {
                                                 <TabLoader />
                                             </div>
                                         ) : (
-                                                <div className="navigation-container">
-                                                    <Nav tabs className="navigation-tabs">
-                                                        {this.state.tabs.map((tab, i) => (
-                                                            <NavItem
-                                                                key={`${i}`}
-                                                                className={classnames({
-                                                                    active: this.state.active_tab == tab.id,
-                                                                    'navigation-tabs-item': true
-                                                                })}>
-                                                                <Link
-                                                                    href={`/news?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`}
-                                                                    as={`/news/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
-                                                                    <NavLink onClick={() => this.toggleTab(tab.id.toString(), tab)} className="item-link">{tab.name}</NavLink>
-                                                                </Link>
-                                                            </NavItem>
-                                                        ))}
-                                                    </Nav>
-                                                    <div className="add-tab-button">
-                                                        <AddIcon onClick={() => {
-                                                            removeCookie('NEWS_TOKEN_V2');
-                                                            newsAddChannelClicked('mweb_news_add_kanal_clicked');
-                                                            // if (this.state.user_data) {
-                                                            if (true) {
-                                                                if (this.platform && this.platform === 'android') {
-                                                                    if (typeof window.NewsInterface !== 'undefined') {
-                                                                        window.NewsInterface.hideHeader();
-                                                                    }
+                                            <StickyContainer>
+                                                <Sticky>
+                                                    { ({ distanceFromTop }) => {
+                                                        const self = this;
+                                                        const {sticky_category_shown} = self.state
+                                                        setTimeout(() => {
+                                                            let distance = this.platform === 'ios' || this.platform === 'android' ? 15 : 110
+                                                            self.setState({ sticky_category_shown: distanceFromTop < distance })
+                                                        }, 1500);
+                                                        return (
+                                                            <div className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : 'sticky-menu-inactive'}`}>
+                                                                <Nav tabs className="navigation-tabs">
+                                                                    {this.state.tabs.map((tab, i) => (
+                                                                        <NavItem
+                                                                            key={`${i}`}
+                                                                            className={classnames({
+                                                                                active: this.state.active_tab == tab.id,
+                                                                                'navigation-tabs-item': true
+                                                                            })}>
+                                                                            <Link
+                                                                                href={`/news?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`}
+                                                                                as={`/news/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
+                                                                                <a onClick={() => _linkTab(tab)}>
+                                                                                    <NavLink onClick={() => this.toggleTab(tab.id.toString(), tab)} className="item-link">{tab.name}</NavLink>
+                                                                                </a>
+                                                                            </Link>
+                                                                        </NavItem>
+                                                                    ))}
+                                                                </Nav>
+                                                                <div className="add-tab-button">
+                                                                    <AddIcon onClick={() => {
+                                                                        removeCookie('NEWS_TOKEN_V2');
+                                                                        newsAddChannelClicked('mweb_news_add_kanal_clicked');
+                                                                        // if (this.state.user_data) {
+                                                                        if (true) {
+                                                                            if (this.platform && this.platform === 'android') {
+                                                                                if (typeof window.NewsInterface !== 'undefined') {
+                                                                                    window.NewsInterface.hideHeader();
+                                                                                }
 
-                                                                    Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
-                                                                }
-                                                                else {
-                                                                    Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
-                                                                }
-                                                                
-                                                            }
-                                                            else {
-                                                                showSignInAlert(`Please <b>Sign In</b><br/>
-                                                                Woops! Gonna sign in first!<br/>
-                                                                Only a click away and you<br/>
-                                                                can continue to enjoy<br/>
-                                                                <b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
-                                                            }
-                                                        }} />
-                                                    </div>
-                                                </div>
-                                            )}
+                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+                                                                            }
+                                                                            else {
+                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+                                                                            }
+                                                                            
+                                                                        }
+                                                                        else {
+                                                                            showSignInAlert(`Please <b>Sign In</b><br/>
+                                                                            Woops! Gonna sign in first!<br/>
+                                                                            Only a click away and you<br/>
+                                                                            can continue to enjoy<br/>
+                                                                            <b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+                                                                        }
+                                                                    }} />
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    } }
+                                                </Sticky>
+                                            </StickyContainer>
+                                        )}
 
                                         {this.state.is_tabs_loading ? (<HeadlineLoader />) : null}
                                         {this.state.is_tabs_loading ? (<ArticleLoader />) : null}

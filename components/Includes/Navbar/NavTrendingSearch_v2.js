@@ -33,26 +33,27 @@ class NavbarTrendingSearch extends Component {
     }
 
     componentDidMount() {
-        this.subject
-            .pipe(debounceTime(1))
-            .subscribe(() => {
-                this.props.toggleIsSearching(true);
-                if (this.props.newsv2.query) {
-                    searchKeywordEvent(this.props.newsv2.query, 'mweb_search_keyword');
-                }
+        // this.props.setQuery(this.props.subject);
+        // this.subject
+        //     .pipe(debounceTime(1))
+        //     .subscribe(() => {
+        //         this.props.toggleIsSearching(true);
+        //         if (this.props.newsv2.query) {
+        //             searchKeywordEvent(this.props.newsv2.query, 'mweb_search_keyword');
+        //         }
                 
-                this.props.searchNews(this.props.newsv2.query, 1, this.state.length)
-                    .then(responses => {
-                        console.log(responses);
-                        this.props.unsetPageLoader();
-                        this.props.toggleIsSearching(false);
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        this.props.unsetPageLoader();
-                        this.props.toggleIsSearching(false);
-                    });
-            });
+        //         this.props.searchNews(this.props.newsv2.query, 1, this.state.length)
+        //             .then(responses => {
+        //                 console.log(responses);
+        //                 this.props.unsetPageLoader();
+        //                 this.props.toggleIsSearching(false);
+        //             })
+        //             .catch(error => {
+        //                 console.log(error);
+        //                 this.props.unsetPageLoader();
+        //                 this.props.toggleIsSearching(false);
+        //             });
+        //     });
     }
 
     saveSearchHistory(q) {
@@ -89,10 +90,21 @@ class NavbarTrendingSearch extends Component {
         newsSearchClicked(this.props.newsv2.query, 'mweb_news_search_clicked');
         let q = this.props.newsv2.query.trim();
         if (q) {
+            this.props.searchNews(this.props.newsv2.query, 1, this.state.length)
+            .then(responses => {
+                console.log(responses);
+                this.props.unsetPageLoader();
+                this.props.toggleIsSearching(false);
+            })
+            .catch(error => {
+                console.log(error);
+                this.props.unsetPageLoader();
+                this.props.toggleIsSearching(false);
+            });
             this.saveSearchHistory(q);
             this.props.clearSearch();
-            this.props.setPageLoader();
-            this.subject.next();
+            // this.props.setPageLoader();
+            // this.subject.next();
         }
     }
 

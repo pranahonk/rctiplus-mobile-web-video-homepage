@@ -49,6 +49,18 @@ const clearSearch = () => {
     });
 };
 
+const getSearchFromServer = (data) => {
+    return dispatch => {
+        dispatch({
+            type: 'SEARCH_NEWS_RESULT',
+            result: data?.data || [],
+            meta: data?.meta || null,
+            query: data.keyword,
+            search_show_more_allowed: data.data.length >= length
+        });
+    }
+};
+
 const setSearch = (q, subject) => {
     return dispatch => dispatch({
         type: 'SET_SEARCH',
@@ -452,5 +464,6 @@ export default {
     getListTag,
     getMorePage,
     setLike,
-    getTagByNews
+    getTagByNews,
+    getSearchFromServer
 };
