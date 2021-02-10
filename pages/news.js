@@ -89,7 +89,6 @@ class Trending_v2 extends React.Component {
         let metaSeo = data_category.data;
         if(isEmpty(ctx.query)) {
             metaSeo = [{title: SITEMAP.trending.title, description: SITEMAP.trending.description, keyword: SITEMAP.trending.keywords}]
-            console.log(SITEMAP)
         } else {
             metaSeo = remove(metaSeo, (item) => {
             return item.id == queryId;
