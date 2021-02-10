@@ -326,104 +326,102 @@ class Channels extends React.Component {
     }
 
     render() {
-        const mobilePlatform = (this.platform !== null) ? 'mobilePlatform' : null
+        const mobilePlatform = (this.platform !== null) ? 'mobilePlatform' : '';
         return (
-            <Layout title={`Manage Channels`}>
-                <div className={mobilePlatform}>
-                    <NavBack />
-                    <div className="channels-content">
-                        <Nav tabs className="navigation-tabs">
-                            <NavItem
-                                className={classnames({
-                                    active: this.state.active_tab === 'Add Kanal',
-                                    'navigation-tabs-item': true
-                                })}
-                                onClick={() => this.toggleTab('Add Kanal')}>
-                                <NavLink className="item-link">Add Kanal</NavLink>
-                            </NavItem>
-                            <NavItem
-                                className={classnames({
-                                    active: this.state.active_tab === 'Edit Kanal',
-                                    'navigation-tabs-item': true
-                                })}
-                                onClick={() => this.toggleTab('Edit Kanal')}>
-                                <NavLink className="item-link">Edit Kanal</NavLink>
-                            </NavItem>
-                        </Nav>
-                        {this.state.is_category_loading ? (
-                            <div>
-                                <ListItemLoader />
-                                <ListItemLoader />
-                                <ListItemLoader />
-                                <ListItemLoader />
-                                <ListItemLoader />
-                                <ListItemLoader />
-                            </div>
-                        ) : (
-                                <TabContent activeTab={this.state.active_tab}>
-                                    <TabPane tabId={`Add Kanal`}>
-                                        <ListGroup className="add-channel-list">
-                                            {this.state.channels.map((channel, i) => (
-                                                <ListGroupItem key={i}>
-                                                    <div className="text-container">
-                                                        <ListGroupItemHeading>{channel.name}</ListGroupItemHeading>
-                                                        <ListGroupItemText>{channel.description}</ListGroupItemText>
-                                                    </div>
-                                                    <div className="button-container">
-                                                        <Button onClick={() => this.addChannel(channel, i)} className="add-button">Add</Button>
-                                                    </div>
-                                                </ListGroupItem>
-                                            ))}
-                                        </ListGroup>
-                                    </TabPane>
-                                    <TabPane tabId={`Edit Kanal`}>
-                                        <DragDropContext onDragEnd={this.onDragEnd}>
-                                            <Droppable droppableId="droppable">
-                                                {(provided, snapshot) => (
-                                                    <ul
-                                                        {...provided.droppableProps}
-                                                        ref={provided.innerRef}
-                                                        className="edit-channel-list list-group">
-                                                        {this.state.categories.map((category, i) => (
-                                                            category.label == 'priority' ? (
-                                                                <li className="list-group-item" key={'item-' + category.id.toString()}>
-                                                                    <div className="remove-container">
-                                                                    </div>
-                                                                    <h5 className="list-group-item-heading" style={{ color: '#8f8f8f' }}>{category.name}</h5>
-                                                                </li>
-                                                            ) : (
-                                                                    <Draggable
-                                                                        key={'item-' + category.id.toString()}
-                                                                        draggableId={'item-' + category.id.toString()}
-                                                                        index={i}>
-                                                                        {(provided, snapshot) => (
-                                                                            <li
-                                                                                className="list-group-item"
-                                                                                ref={provided.innerRef}
-                                                                                {...provided.draggableProps}
-                                                                                {...provided.dragHandleProps}>
-                                                                                <div className="remove-container">
-                                                                                    <RemoveCircleIcon onClick={() => this.removeChannel(category, i)} className="remove-button" />
-                                                                                </div>
-                                                                                <ListGroupItemHeading>{category.name}</ListGroupItemHeading>
-                                                                                <div className="sort-container">
-                                                                                    <CompareArrowsIcon className="sort-button" />
-                                                                                </div>
-                                                                            </li>
-                                                                        )}
-                                                                    </Draggable>
-                                                                )
-                                                        ))}
-                                                        {provided.placeholder}
-                                                    </ul>
-                                                )}
-                                            </Droppable>
-                                        </DragDropContext>
-                                    </TabPane>
-                                </TabContent>
-                            )}
+            <Layout title={`Manage Channels`} mobilePlatform={mobilePlatform}>
+                <NavBack />
+                <div className="channels-content">
+                    <Nav tabs className="navigation-tabs">
+                        <NavItem
+                            className={classnames({
+                                active: this.state.active_tab === 'Add Kanal',
+                                'navigation-tabs-item': true
+                            })}
+                            onClick={() => this.toggleTab('Add Kanal')}>
+                            <NavLink className="item-link">Add Kanal</NavLink>
+                        </NavItem>
+                        <NavItem
+                            className={classnames({
+                                active: this.state.active_tab === 'Edit Kanal',
+                                'navigation-tabs-item': true
+                            })}
+                            onClick={() => this.toggleTab('Edit Kanal')}>
+                            <NavLink className="item-link">Edit Kanal</NavLink>
+                        </NavItem>
+                    </Nav>
+                    {this.state.is_category_loading ? (
+                        <div>
+                            <ListItemLoader />
+                            <ListItemLoader />
+                            <ListItemLoader />
+                            <ListItemLoader />
+                            <ListItemLoader />
+                            <ListItemLoader />
+                        </div>
+                    ) : (
+                            <TabContent activeTab={this.state.active_tab}>
+                                <TabPane tabId={`Add Kanal`}>
+                                    <ListGroup className="add-channel-list">
+                                        {this.state.channels.map((channel, i) => (
+                                            <ListGroupItem key={i}>
+                                                <div className="text-container">
+                                                    <ListGroupItemHeading>{channel.name}</ListGroupItemHeading>
+                                                    <ListGroupItemText>{channel.description}</ListGroupItemText>
+                                                </div>
+                                                <div className="button-container">
+                                                    <Button onClick={() => this.addChannel(channel, i)} className="add-button">Add</Button>
+                                                </div>
+                                            </ListGroupItem>
+                                        ))}
+                                    </ListGroup>
+                                </TabPane>
+                                <TabPane tabId={`Edit Kanal`}>
+                                    <DragDropContext onDragEnd={this.onDragEnd}>
+                                        <Droppable droppableId="droppable">
+                                            {(provided, snapshot) => (
+                                                <ul
+                                                    {...provided.droppableProps}
+                                                    ref={provided.innerRef}
+                                                    className="edit-channel-list list-group">
+                                                    {this.state.categories.map((category, i) => (
+                                                        category.label == 'priority' ? (
+                                                            <li className="list-group-item" key={'item-' + category.id.toString()}>
+                                                                <div className="remove-container">
+                                                                </div>
+                                                                <h5 className="list-group-item-heading" style={{ color: '#8f8f8f' }}>{category.name}</h5>
+                                                            </li>
+                                                        ) : (
+                                                                <Draggable
+                                                                    key={'item-' + category.id.toString()}
+                                                                    draggableId={'item-' + category.id.toString()}
+                                                                    index={i}>
+                                                                    {(provided, snapshot) => (
+                                                                        <li
+                                                                            className="list-group-item"
+                                                                            ref={provided.innerRef}
+                                                                            {...provided.draggableProps}
+                                                                            {...provided.dragHandleProps}>
+                                                                            <div className="remove-container">
+                                                                                <RemoveCircleIcon onClick={() => this.removeChannel(category, i)} className="remove-button" />
+                                                                            </div>
+                                                                            <ListGroupItemHeading>{category.name}</ListGroupItemHeading>
+                                                                            <div className="sort-container">
+                                                                                <CompareArrowsIcon className="sort-button" />
+                                                                            </div>
+                                                                        </li>
+                                                                    )}
+                                                                </Draggable>
+                                                            )
+                                                    ))}
+                                                    {provided.placeholder}
+                                                </ul>
+                                            )}
+                                        </Droppable>
+                                    </DragDropContext>
+                                </TabPane>
+                            </TabContent>
+                        )}
                     </div>
-                </div>
             </Layout>
         );
     }
