@@ -190,7 +190,7 @@ class Search extends React.Component {
                                     unloader={<img className="list-item-thumbnail" src="/static/placeholders/placeholder_landscape.png" />} />
                             </Col>
                             <Col xs={6}>
-                                <p className="item-title" dangerouslySetInnerHTML={{ __html: n.title.length > 60 ? n.title.substring(0, 60).replace(/\\/g, '') + '...' : n.title.replace(/\\/g, '') }} onClick={() => this.link(n)}></p>
+                                <h2 className="item-title" dangerouslySetInnerHTML={{ __html: n.title.length > 60 ? n.title.substring(0, 60).replace(/\\/g, '') + '...' : n.title.replace(/\\/g, '') }} onClick={() => this.link(n)}></h2>
                                 <p className="item-subtitle"><small>{n.source}</small></p>
                             </Col>
                         </Row>
