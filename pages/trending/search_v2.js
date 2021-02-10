@@ -56,7 +56,7 @@ class Search extends React.Component {
                 });
                 const error_code = res.statusCode > 200 ? res.statusCode : false;
                 const data = await res.json();
-                console.log(data)
+                // console.log(data)
                 return { dataSearch: error_code ? {} : {...data, keyword: q.keyword} }
             }
         }
