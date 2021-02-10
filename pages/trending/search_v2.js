@@ -213,7 +213,7 @@ class Search extends React.Component {
                     <meta property="og:description" content={`RCTI+ - Portal berita terbaru dan terpercaya | ${this.props.dataSearch?.keyword || ''}`} />
                     <meta property="og:image" itemProp="image" content={'https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png'} />
                     <meta property="og:url" content={encodeURI(this.props.router.asPath)} />
-                    <meta property="og:type" content="article" />
+                    <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
