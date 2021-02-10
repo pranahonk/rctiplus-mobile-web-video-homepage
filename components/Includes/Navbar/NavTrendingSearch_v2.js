@@ -155,7 +155,7 @@ class NavbarTrendingSearch extends Component {
                     <div className="right-top-link">
                         <div className="btn-link-top-nav">
                             <NavbarBrand style={{ color: 'white' }}>
-                                <CloseIcon style={{ fontSize: 20, marginRight: 10, visibility: (this.props.newsv2.query.length > 0 ? 'visible' : 'hidden') }} onClick={this.clearKeyword.bind(this)}/>
+                                <CloseIcon style={{ fontSize: 20, marginRight: 10, visibility: (this.props.newsv2.query?.length > 0 ? 'visible' : 'hidden') }} onClick={this.clearKeyword.bind(this)}/>
                                 <SearchIcon style={{ fontSize: 20 }} onClick={() => this.search()} />
                             </NavbarBrand>
                         </div>
