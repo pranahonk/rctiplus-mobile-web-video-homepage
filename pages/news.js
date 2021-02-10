@@ -440,8 +440,8 @@ class Trending_v2 extends React.Component {
         return (
             <Layout title={metadata.title}>
                 <Head>
-                    <meta name="title" content={metadata.title} />
-                    <meta name="description" content={metadata.description} />
+                    <meta name="title" content={this.props.metaOg?.title || ''} />
+                    <meta name="description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
                     <meta name="keywords" content={metadata.keywords} />
                     <meta property="og:title" content={this.props.metaOg?.title || ''} />
                     <meta property="og:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
@@ -456,10 +456,10 @@ class Trending_v2 extends React.Component {
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
                     <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
                     <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-                    <meta name="twitter:image" content={metadata.image} />
-                    <meta name="twitter:image:alt" content={'News RCTIPlus'} />
-                    <meta name="twitter:title" content={metadata.title} />
-                    <meta name="twitter:description" content={metadata.description} />
+                    <meta name="twitter:image" content={this.props.metaOg?.cover|| ''} />
+                    <meta name="twitter:image:alt" content={this.props.metaOg?.title || ''} />
+                    <meta name="twitter:title" content={this.props.metaOg?.title || ''} />
+                    <meta name="twitter:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
                     <meta name="twitter:url" content={encodeURI(this.props.router.asPath)} />
                     <meta name="twitter:domain" content={encodeURI(this.props.router.asPath)} />
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
