@@ -86,10 +86,15 @@ class Trending_v2 extends React.Component {
         const data = await res.json();
         const error_code_category = res_category.statusCode > 200 ? res_category.statusCode : false;
         const data_category = await res_category.json();
-        const metaSeo = data_category.data;
-        metaSeo = remove(metaSeo, (item) => {
-        return item.id == queryId;
-      });
+        let metaSeo = data_category.data;
+        if(isEmpty(ctx.query)) {
+            metaSeo = [{title: SITEMAP.trending.title, description: SITEMAP.trending.description, keyword: SITEMAP.trending.keywords}]
+            console.log(SITEMAP)
+        } else {
+            metaSeo = remove(metaSeo, (item) => {
+            return item.id == queryId;
+            });
+        }
         return { 
             query: ctx.query, metaOg: error_code ? {} : data.data[0], 
             data_category: error_code_category ? [] : data_category,
