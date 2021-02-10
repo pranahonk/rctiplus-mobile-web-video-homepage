@@ -8,6 +8,7 @@ import Router, { withRouter } from 'next/router';
 import classnames from 'classnames';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import Img from 'react-image';
+import { StickyContainer, Sticky } from 'react-sticky';
 
 import Layout from '../components/Layouts/DefaultNews';
 // import Layout from '../components/Layouts/Default_v2';
@@ -32,7 +33,7 @@ import '../assets/scss/components/trending_v2.scss';
 
 import newsv2Actions from '../redux/actions/newsv2Actions';
 import userActions from '../redux/actions/userActions';
-import { showSignInAlert } from '../utils/helpers';
+import { showSignInAlert, humanizeStr } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
 // import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
@@ -117,7 +118,8 @@ class Trending_v2 extends React.Component {
         load_more_allowed: {},
         articles_length: 10,
         is_load_more: false,
-        user_data: null
+        user_data: null,
+        sticky_category_shown: false
     };
 
     constructor(props) {
@@ -152,7 +154,7 @@ class Trending_v2 extends React.Component {
     toggleTab(tab, tabData) {
         newsTabClicked(tabData.name, 'mweb_news_tab_clicked');
         if (this.state.active_tab != tab) {
-            this.setState({ active_tab: tab }, () => {
+            this.setState({ active_tab: tab, sticky_category_shown: false }, () => {
                 if (!this.state.articles[tab]) {
                     this.loadArticles(tab);
                 }
@@ -309,8 +311,10 @@ class Trending_v2 extends React.Component {
     }
 
     fetchData(isLoggedIn = false) {
+        let params = {};
         const savedCategoriesNews = getNewsChannels();
-        this.setState({ saved_tabs: savedCategoriesNews }, () => {
+        params['saved_tabs'] = savedCategoriesNews;
+        this.setState(params, () => {
             this.props.getCategory()
                 .then(response => {
                     let categories = response.data.data;
@@ -349,15 +353,37 @@ class Trending_v2 extends React.Component {
                     }
 
                     if (sortedCategories.length > 0) {
-                        // console.log(this.props.query)
-                        this.setState({
-                            tabs: sortedCategories,
-                            active_tab: Object.keys(this.props.query).length > 0 ? 
-                                (sortedCategories.findIndex(s => s.id == this.props.query && this.props.query.subcategory_id && this.props.query.subcategory_id.toString()) != -1 ? 
-                                this.props.query && this.props.query.subcategory_id && this.props.query.subcategory_id.toString() : sortedCategories[0].id.toString()) : sortedCategories[0].id.toString(),
-                            is_tabs_loading: false
-                        }, () => {
-                            this.loadContents(this.state.active_tab);
+                        let params = {is_tabs_loading: false};
+                        params['active_tab'] = Object.keys(this.props.query).length > 0 ? 
+                        (
+                            sortedCategories.findIndex(
+                                s => s.id == ((this.props.query) && this.props.query.subcategory_id) && parseInt(this.props.query.subcategory_id)
+                            ) != -1 ? ((this.props.query && this.props.query.subcategory_id) && this.props.query.subcategory_id.toString()) : sortedCategories[0].id.toString()
+                        ) : sortedCategories[0].id.toString();
+                
+                        this.props.getChannels()
+                        .then(response => {
+                            let channels = response.data.data;
+                            if ((this.props.query) && (this.props.query.subcategory_title)) {
+                                let chan = channels.filter((c) => c.name === humanizeStr(this.props.query.subcategory_title));
+                                if (chan.length > 0) {
+                                    params['active_tab'] = chan[0].id.toString();
+                                    let savedTabs = this.state.saved_tabs;
+                                    params['saved_tabs'] = savedTabs.filter((st) => st.id === chan[0].id).length === 0 ? (savedTabs).concat(chan) : savedTabs;
+                                    sortedCategories = sortedCategories.filter((st) => st.id === chan[0].id).length === 0 ? (sortedCategories).concat(chan) : sortedCategories;
+                                    let getListChannels = getNewsChannels();
+                                    if (getListChannels.filter((st) => st.id === chan[0].id).length === 0) {
+                                        setNewsChannels(getListChannels.concat(chan))
+                                    }
+                                }
+                            }
+                            params['tabs'] = sortedCategories;
+                            this.setState(params, () => {
+                                this.loadContents(this.state.active_tab);
+                            });
+                        })
+                        .catch(error => {
+                            console.log(error);
                         });
                     }
                 })
@@ -495,7 +521,10 @@ class Trending_v2 extends React.Component {
                     offset={50}
                     onBottom={this.bottomScrollFetch.bind(this)} />
 
-                <div className="main-content" style={{ marginTop: this.platform === 'ios' ? 26 : this.platform === 'android' ? 15 : '' }}>
+                <div className={`
+                    main-content 
+                    ${this.state.sticky_category_shown ? 'sticky-menu-category-active' : ''} 
+                    ${(this.platform === 'ios' || this.platform === 'android') && 'apps-mode'}`}>
                     {this.state.load_error ? (
                         <div style={{
                             display: 'flex',
@@ -634,7 +663,7 @@ class Trending_v2 extends React.Component {
                                                             (tab.name === 'Berita Utama' && j > 6) || (j + 1) != 1 && (j + 1) % 5 === 0 ? (
                                                                 <div key={j}>
                                                                     {/* <iframe ref={this.iframeAds} id="iframe-ads-1" src="/dfp" frameBorder="0" style={{ height: '250px', width: '100%' }} /> */}
-                                                                    {/* <iframe 
+                                                                    <iframe 
                                                                         onLoad={() => {
                                                                             window.addEventListener('scroll', () => {
                                                                                 const iframeElement = document.getElementById(article.id)
@@ -660,7 +689,7 @@ class Trending_v2 extends React.Component {
                                                                             height: '250px',
                                                                             width: '100%',
                                                                             display: 'none',
-                                                                        }} /> */}
+                                                                        }} />
                                                                     {/* <iframe 
                                                                         ref={this.iframeAds} 
                                                                         id="iframe-ads-1" src="/dfp" 
