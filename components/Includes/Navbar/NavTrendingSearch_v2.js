@@ -90,18 +90,19 @@ class NavbarTrendingSearch extends Component {
         newsSearchClicked(this.props.newsv2.query, 'mweb_news_search_clicked');
         let q = this.props.newsv2.query.trim();
         if (q) {
-            this.props.searchNews(this.props.newsv2.query, 1, this.state.length)
-            .then(responses => {
-                console.log(responses);
-                this.props.unsetPageLoader();
-                this.props.toggleIsSearching(false);
-            })
-            .catch(error => {
-                console.log(error);
-                this.props.unsetPageLoader();
-                this.props.toggleIsSearching(false);
-            });
-            this.saveSearchHistory(q);
+            Router.push('/news/search', `/news/search?keyword=${q}`)
+            // this.props.searchNews(this.props.newsv2.query, 1, this.state.length)
+            // .then(responses => {
+            //     console.log(responses);
+            //     this.props.unsetPageLoader();
+            //     this.props.toggleIsSearching(false);
+            // })
+            // .catch(error => {
+            //     console.log(error);
+            //     this.props.unsetPageLoader();
+            //     this.props.toggleIsSearching(false);
+            // });
+            // this.saveSearchHistory(q);
             this.props.clearSearch();
             // this.props.setPageLoader();
             // this.subject.next();
