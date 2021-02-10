@@ -43,6 +43,7 @@ const SquareItem = dynamic(() => import('../components/Includes/news/SquareItem'
 import queryString from 'query-string';
 
 import isEmpty from 'lodash/isEmpty';
+import remove from 'lodash/remove'
 
 const jwtDecode = require('jwt-decode');
 
@@ -75,10 +76,25 @@ class Trending_v2 extends React.Component {
                 'Authorization': data_news.data.news_token
             }
         });
+        const res_category = await fetch(`${NEWS_API_V2}/api/v1/category`, {
+            method: 'GET',
+            headers: {
+                'Authorization': data_news.data.news_token
+            }
+        });
         const error_code = res.statusCode > 200 ? res.statusCode : false;
         const data = await res.json();
-        // console.log(data_visitor)
-        return { query: ctx.query, metaOg: error_code ? {} : data.data[0] };
+        const error_code_category = res_category.statusCode > 200 ? res_category.statusCode : false;
+        const data_category = await res_category.json();
+        const metaSeo = data_category.data;
+        metaSeo = remove(metaSeo, (item) => {
+        return item.id == queryId;
+      });
+        return { 
+            query: ctx.query, metaOg: error_code ? {} : data.data[0], 
+            data_category: error_code_category ? [] : data_category,
+            metaSeo: metaSeo[0] || {}
+        };
     }
 
     state = {
@@ -409,14 +425,14 @@ class Trending_v2 extends React.Component {
 
 
     render() {
-        const metadata = this.getMetadata();
-        const ogMetaData = this.getOgMetaData();
+        // const metadata = this.getMetadata();
+        // const ogMetaData = this.getOgMetaData();
         return (
-            <Layout title={metadata.title}>
+            <Layout title={this.props?.metaSeo?.title}>
                 <Head>
-                    <meta name="title" content={this.props.metaOg?.title || ''} />
-                    <meta name="description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
-                    <meta name="keywords" content={metadata.keywords} />
+                    <meta name="title" content={this.props?.metaSeo?.title} />
+                    <meta name="description" content={this.props?.metaSeo?.description} />
+                    <meta name="keywords" content={this.props?.metaSeo?.keyword} />
                     <meta property="og:title" content={this.props.metaOg?.title || ''} />
                     <meta property="og:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
                     <meta property="og:image" itemProp="image" content={this.props.metaOg?.cover|| ''} />
