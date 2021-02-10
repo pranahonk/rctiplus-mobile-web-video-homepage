@@ -4,6 +4,8 @@ import Router, { withRouter } from 'next/router';
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
+import Head from 'next/head'
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2 } from '../../config';
 
 import newsv2Actions from '../../redux/actions/newsv2Actions';
 import pageActions from '../../redux/actions/pageActions';
@@ -20,9 +22,46 @@ import { getCookie, setCookie, removeCookie, removeAccessToken, setAccessToken }
 import { Subject } from 'rxjs';
 
 import queryString from 'query-string';
+import isEmpty from 'lodash/isEmpty'
 
 class Search extends React.Component {
+    static async getInitialProps(ctx) {
+       const findQueryString = ctx.asPath.split(/\?/);
+        if (findQueryString.length > 1) {
+            const q = queryString.parse(findQueryString[1]);
+            if(q.keyword) {
+                const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
+                if (response_visitor.statusCode === 200) {
+                    return {};
+                }
+                const data_visitor = await response_visitor.json();
+                const response_news = await fetch(`${NEWS_API_V2}/api/v1/token`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        merchantName: 'rcti+',
+                        hostToken: data_visitor.data.access_token,
+                        platform: 'mweb'
+                    })
+                });
+                if (response_news.statusCode === 200) {
+                    return {};
+                }
+                const data_news = await response_news.json();
 
+                const res = await fetch(`${NEWS_API_V2}/api/v1/search?q=${q.keyword}&page=1&pageSize=10`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': data_news.data.news_token
+                    }
+                });
+                const error_code = res.statusCode > 200 ? res.statusCode : false;
+                const data = await res.json();
+                console.log(data)
+                return { dataSearch: error_code ? {} : {...data, keyword: q.keyword} }
+            }
+        }
+        return { dataSearch : {} };
+    }
     constructor(props) {
         super(props);
         this.state = {
@@ -51,6 +90,8 @@ class Search extends React.Component {
     }
 
     componentDidMount() {
+        this.props.setQuery(this.props.dataSearch?.keyword || '');
+        this.props.getSearchFromServer(this.props.dataSearch)
         const searchHistory = getCookie('SEARCH_HISTORY');
         if (searchHistory) {
             this.setState({ search_history: JSON.parse(searchHistory) });
@@ -164,9 +205,33 @@ class Search extends React.Component {
     render() {
         return (
             <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
+                <Head>
+                    <meta name="title" content={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - News+ on RCTI+`} />
+                    <meta name="description" content={`RCTI+ - Portal berita terbaru dan terpercaya | ${this.props.dataSearch?.keyword || ''}`} />
+                    <meta name="keywords" content={'rctiplus'} />
+                    <meta property="og:title" content={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - News+ on RCTI+`} />
+                    <meta property="og:description" content={`RCTI+ - Portal berita terbaru dan terpercaya | ${this.props.dataSearch?.keyword || ''}`} />
+                    <meta property="og:image" itemProp="image" content={'https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png'} />
+                    <meta property="og:url" content={encodeURI(this.props.router.asPath)} />
+                    <meta property="og:type" content="article" />
+                    <meta property="og:image:type" content="image/jpeg" />
+                    <meta property="og:image:width" content="600" />
+                    <meta property="og:image:height" content="315" />
+                    <meta property="og:site_name" content={'RCTI+'} />
+                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+                    <meta name="twitter:image" content={'https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png'} />
+                    <meta name="twitter:image:alt" content={'News RCTIPlus'} />
+                    <meta name="twitter:title" content={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - News+ on RCTI+`} />
+                    <meta name="twitter:description" content={`RCTI+ - Portal berita terbaru dan terpercaya | ${this.props.dataSearch?.keyword || ''}`} />
+                    <meta name="twitter:url" content={encodeURI(this.props.router.asPath)} />
+                    <meta name="twitter:domain" content={encodeURI(this.props.router.asPath)} />
+                </Head>
                 <BottomScrollListener offset={80} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
-                <NavBack subject={this.subject}/>
+                <NavBack subject={'ronaldo'}/>
                 <main className="content-trending-search">
                     {this.renderContent()}
                 </main>
