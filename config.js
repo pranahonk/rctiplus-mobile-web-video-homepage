@@ -260,8 +260,8 @@ export const SITEMAP = {
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_INEWS-min.png`
     },
     trending: {
-        title: `Informasi Berita Trending dan Terkini dari Berbagai Sumber Terpercaya - ${SITE_NAME_NEWS}`,
-        description: `RCTI+ - Indeks portal berita trending Indonesia dan dunia hari ini dari berbagai situs terpercaya, mulai dari peristiwa, politik, hukum, ekonomi, bola, hingga gosip artis terbaru`,
+        title: `Informasi Berita Terkini dan Viral dari Berbagai Sumber Terpercaya - ${SITE_NAME_NEWS}`,
+        description: `RCTI+ - Portal berita trending Indonesia dan dunia hari ini dari berbagai situs terpercaya, mulai dari peristiwa, politik, hukum, ekonomi, bola, hingga gosip artis terbaru`,
         keywords: `berita hari ini, berita harian, berita terkini, berita terbaru, berita indonesia, berita terpopuler, berita, berita terupdate, berita online, info terkini, berita dunia, peristiwa hari ini, berita viral`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },

@@ -53,7 +53,7 @@ export default function SquareItem({item, indexKey, isIndexKey}) {
             e.preventDefault()
             _goToDetail(item)
             }}>
-            {getTruncate(item.title, '...', 100)}
+            <h2>{getTruncate(item.title, '...', 100)}</h2>
           </a>
           <div className="lt_content-info">
           <h5>{item.source}</h5>
