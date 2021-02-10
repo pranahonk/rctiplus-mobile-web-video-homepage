@@ -326,8 +326,9 @@ class Channels extends React.Component {
     }
 
     render() {
+        const mobilePlatform = (this.platform !== null) ? 'mobilePlatform' : '';
         return (
-            <Layout title={`Manage Channels`}>
+            <Layout title={`Manage Channels`} mobilePlatform={mobilePlatform}>
                 <NavBack />
                 <div className="channels-content">
                     <Nav tabs className="navigation-tabs">
@@ -420,7 +421,11 @@ class Channels extends React.Component {
                                 </TabPane>
                             </TabContent>
                         )}
+<<<<<<< HEAD
                 </div>
+=======
+                    </div>
+>>>>>>> 8691d5d... fixing bugs add channel
             </Layout>
         );
     }

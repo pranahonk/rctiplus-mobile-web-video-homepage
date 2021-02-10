@@ -93,7 +93,7 @@ class Default_v2 extends React.Component {
 
     render() {
         return (
-            <div style={{ height: '100%' }}>
+            <div style={{ height: '100%' }}  class={this.props.mobilePlatform}>
                 <Head>
                     <title>{this.props.title}</title>
                     <meta charSet="utf-8" />
