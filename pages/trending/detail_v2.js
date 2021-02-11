@@ -361,21 +361,6 @@ class Detail extends React.Component {
                         gtag('js', new Date());
                         gtag('config', 'UA-145455301-9');
                     ` }}></script>
-                    <script dangerouslySetInnerHTML={{
-                        __html: `
-                        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-                        ga('create', 'UA-145455301-5', 'auto');
-                        ga('create', 'UA-145455301-17', 'auto', 'teamTracker');
-                        ga('create', '${cdata.ga_partner_id}', 'auto', 'partnerTracker');
-
-                        ga('send', 'pageview');
-                        ga('teamTracker.send', 'pageview');
-                        ga('partnerTracker.send', 'pageview');
-                    ` }}></script>
                 </Head>
                 {this.state.iframe_opened ? (<NavBackIframe closeFunction={() => {
                     this.setState({ iframe_opened: false });
