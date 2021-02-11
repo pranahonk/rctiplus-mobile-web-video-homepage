@@ -763,3 +763,4 @@ export default connect(state => state, {
     ...newsv2Actions,
     ...userActions
 })(withRouter(Trending_v2));
+
