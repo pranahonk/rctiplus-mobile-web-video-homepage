@@ -50,7 +50,7 @@ import 'emoji-mart/css/emoji-mart.css';
 
 import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId, appierAdsShow, appierAdsClicked } from '../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTracking';
-import { RPLUSAdsShowing, RPLUSAdsClicked } from '../utils/internalTracking';
+// import { RPLUSAdsShowing, RPLUSAdsClicked } from '../utils/internalTracking';
 import { convivaVideoJs } from '../utils/conviva';
 
 import videojs from 'video.js';
@@ -1369,7 +1369,7 @@ class Tv extends React.Component {
 					if(data.data) {
 						stickyAdsShowing(data, 'sticky_ads_showing')
 						appierAdsShow(data, 'sticky_ads_showing');
-						RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
+						// RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
 					}
 				});
 				// console.log(this.state.ads_data);
