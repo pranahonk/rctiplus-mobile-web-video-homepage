@@ -125,7 +125,7 @@ class Explores extends React.Component {
 		
 	// }
 	componentWillUnmount() {
-		this.props.searches.setStatusSearch();
+		// this.props.searches.setStatusSearch();
 	}
 	selectGenre(genre, category = 'program', first = false) {
 		if (first == false) {
