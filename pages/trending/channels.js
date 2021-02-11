@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import classnames from 'classnames';
 
-import Layout from '../../components/Layouts/Default_v2';
+import Layout from '../../components/Layouts/DefaultNews';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 
 import ListItemLoader from '../../components/Includes/Shimmer/ListItemLoader';

@@ -8,7 +8,7 @@ import LoadingBar from 'react-top-loading-bar';
 import contentActions from '../../redux/actions/trending/content';
 import pageActions from '../../redux/actions/pageActions';
 
-import Layout from '../../components/Layouts/Default';
+import Layout from '../../components/Layouts/DefaultNews';
 import NavBack from '../../components/Includes/Navbar/NavTrendingSearch';
 
 import { Row, Col } from 'reactstrap';

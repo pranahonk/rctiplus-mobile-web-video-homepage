@@ -9,7 +9,7 @@ import BottomScrollListener from 'react-bottom-scroll-listener';
 import Img from 'react-image';
 import { StickyContainer, Sticky } from 'react-sticky';
 
-import Layout from '../components/Layouts/Default_v2';
+import Layout from '../components/Layouts/DefaultNews';
 import NavTrending from '../components/Includes/Navbar/NavTrending_v2';
 import HeadlineCarousel from '../components/Includes/Gallery/HeadlineCarousel';
 import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';

@@ -9,7 +9,7 @@ import { DEV_API, NEWS_API, BASE_URL } from '../../config';
 
 import newsContentActions from '../../redux/actions/trending/content';
 
-import Layout from '../../components/Layouts/Default_v2';
+import Layout from '../../components/Layouts/DefaultNews';
 import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 import '../../assets/scss/components/trending_detail.scss';
 

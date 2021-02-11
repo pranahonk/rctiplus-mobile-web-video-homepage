@@ -9,7 +9,7 @@ import { StickyContainer, Sticky } from 'react-sticky';
 
 import { DEV_API, BASE_URL, NEWS_API_V2, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, UTM_NAME } from '../../config';
 
-import Layout from '../../components/Layouts/Default_v2';
+import Layout from '../../components/Layouts/DefaultNews';
 import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 import NavBackIframe from '../../components/Includes/Navbar/NavIframe';
 import AdsBanner from '../../components/Includes/Banner/Ads';
