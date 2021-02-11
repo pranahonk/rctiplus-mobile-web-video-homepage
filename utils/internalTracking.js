@@ -20,28 +20,28 @@ export const getUserId = () => {
     return userId;
 };
 
-const instance =  axios.create({baseURL: 'https://rctiplus.addpush.com/probes/event.php'});
+// const instance =  axios.create({baseURL: 'https://rctiplus.addpush.com/probes/event.php'});
 
 
-export const RPLUSAdsShowing = (value,eventType, eventName ,platform = 'MWEB') => {
-  const data = {
-    'event-type': eventType,
-    'event-name': eventName,
-    'event-value': {
-      'sponsor_id': value.data.id || 'N/A',
-      'channel_id': value.data.channel_id || 'N/A',
-      'channel_type': value.data.channel || 'N/A',
-      'type': value.data.type || 'N/A',
-      'platform': platform,
-    },
-    'device-id': new DeviceUUID().get(),
-    'user-id': getUserId(),
-    'content-id': 'N/A',
-  };
-  instance.post('',data)
-  .then((response) => console.log(response))
-  .catch((error) => console.log(error));
-};
+// export const RPLUSAdsShowing = (value,eventType, eventName ,platform = 'MWEB') => {
+//   const data = {
+//     'event-type': eventType,
+//     'event-name': eventName,
+//     'event-value': {
+//       'sponsor_id': value.data.id || 'N/A',
+//       'channel_id': value.data.channel_id || 'N/A',
+//       'channel_type': value.data.channel || 'N/A',
+//       'type': value.data.type || 'N/A',
+//       'platform': platform,
+//     },
+//     'device-id': new DeviceUUID().get(),
+//     'user-id': getUserId(),
+//     'content-id': 'N/A',
+//   };
+//   instance.post('',data)
+//   .then((response) => console.log(response))
+//   .catch((error) => console.log(error));
+// };
 
 export const RPLUSAdsClicked = (value,eventType, eventName , clickType, platform = 'MWEB') => {
   const data = {
@@ -59,9 +59,9 @@ export const RPLUSAdsClicked = (value,eventType, eventName , clickType, platform
     'user-id': getUserId(),
     'content-id': 'N/A',
   };
-  instance.post('',data)
-  .then((response) => console.log(response))
-  .catch((error) => console.log(error));
+  // instance.post('',data)
+  // .then((response) => console.log(response))
+  // .catch((error) => console.log(error));
 };
 
 export const RPLUSAppVisit = (eventType = 'views', eventName = 'visit_apps', platform = 'MWEB') => {
@@ -76,7 +76,7 @@ export const RPLUSAppVisit = (eventType = 'views', eventName = 'visit_apps', pla
     'user-id': getUserId(),
     'content-id': 'N/A'
   };
-  instance.post('', data)
-  .then((response) => console.log(response))
-  .catch((error) => console.log(error));
+  // instance.post('', data)
+  // .then((response) => console.log(response))
+  // .catch((error) => console.log(error));
 };
