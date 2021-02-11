@@ -118,7 +118,7 @@ class DefaultNews extends React.Component {
                         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
                         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-                        ga('create', 'UA-145455301-17', 'auto', 'teamTracker');
+                        ga('create', 'UA-145455301-9', 'auto', 'teamTracker');
 
                         ga('teamTracker.send', 'pageview');
                     ` }}></script>
