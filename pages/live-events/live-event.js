@@ -22,7 +22,7 @@ import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
 import { contentGeneralEvent, liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked } from '../../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../utils/firebaseTracking';
-import { RPLUSAdsShowing, RPLUSAdsClicked } from '../../utils/internalTracking';
+// import { RPLUSAdsShowing, RPLUSAdsClicked } from '../../utils/internalTracking';
 
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
@@ -830,7 +830,7 @@ class LiveEvent extends React.Component {
 					if (data.data) {
 						stickyAdsShowing(data, 'sticky_ads_showing');
 						appierAdsShow(data, 'sticky_ads_showing', 'live-event');
-						RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
+						// RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
 					}
 				});
 				// console.log(this.state.ads_data);
