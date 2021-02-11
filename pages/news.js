@@ -25,7 +25,7 @@ import WrenchIcon from '../components/Includes/Common/Wrench';
 import { Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, Container, Row, Col } from 'reactstrap';
 import AddIcon from '@material-ui/icons/Add';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2 } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2, BASE_URL } from '../config';
 import { formatDateWordID } from '../utils/dateHelpers';
 import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2 } from '../utils/cookie';
 
@@ -478,7 +478,7 @@ class Trending_v2 extends React.Component {
                     <meta property="og:title" content={this.props.metaOg?.title || ''} />
                     <meta property="og:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
                     <meta property="og:image" itemProp="image" content={this.props.metaOg?.cover|| ''} />
-                    <meta property="og:url" content={encodeURI(this.props.router.asPath)} />
+                    <meta property="og:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
@@ -492,8 +492,8 @@ class Trending_v2 extends React.Component {
                     <meta name="twitter:image:alt" content={this.props.metaOg?.title || ''} />
                     <meta name="twitter:title" content={this.props.metaOg?.title || ''} />
                     <meta name="twitter:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
-                    <meta name="twitter:url" content={encodeURI(this.props.router.asPath)} />
-                    <meta name="twitter:domain" content={encodeURI(this.props.router.asPath)} />
+                    <meta name="twitter:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
+                    <meta name="twitter:domain" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
                     {/* <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
