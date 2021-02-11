@@ -421,11 +421,7 @@ class Channels extends React.Component {
                                 </TabPane>
                             </TabContent>
                         )}
-<<<<<<< HEAD
-                </div>
-=======
                     </div>
->>>>>>> 8691d5d... fixing bugs add channel
             </Layout>
         );
     }
