@@ -8,6 +8,38 @@ require("dotenv").config({ path: './.env' });
 
 let nextConfig = {
 	// next-offline options:
+	async redirects() {
+    return [
+      {
+        source: '/trending',
+        destination: '/news', // Matched parameters can be used in the destination
+        permanent: true,
+      },
+      {
+        source: '/trending/search',
+        destination: '/news/search', // Matched parameters can be used in the destination
+        permanent: true,
+      },
+      {
+        source: '/trending/detail/:id/:title',
+        destination: '/news/detail/:id/:title', // Matched parameters can be used in the destination
+        permanent: true,
+      },
+      {
+        source: '/trending/detail/:category/:id/:title',
+        destination: '/news/detail/:category/:id/:title', // Matched parameters can be used in the destination
+        permanent: true,
+      },
+      {
+        source: '/trending/:subcategory_id/:subcategory_title',
+        destination: '/news/:subcategory_id/:subcategory_title', // Matched parameters can be used in the destination
+        permanent: true,
+      },
+    ]
+  },
+	images: {
+    domains: ['placeimg.com', 'fornews.co'],
+  },
 	dontAutoRegisterSw: true, // since we want runtime registration
 	onDemandEntries: {
 		maxInactiveAge: 25 * 1000 * 1000

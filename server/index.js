@@ -203,16 +203,16 @@ const UIVersion = '2.0';
     //   })
     // });
 
-    server.get('/trending/detail/:id/:title', (req, res) => {
-      return app.render(req, res, '/trending/detail_v2', {
-        id: req.params.id,
-        title: req.params.title
-      })
-    });
+    // server.get('/trending/detail/:id/:title', (req, res) => {
+    //   return app.render(req, res, '/trending/detail_v2', {
+    //     id: req.params.id,
+    //     title: req.params.title
+    //   })
+    // });
 
-    server.get('/trending/search', (req, res) => {
-      return app.render(req, res, '/trending/search_v2');
-    });
+    // server.get('/trending/search', (req, res) => {
+    //   return app.render(req, res, '/trending/search_v2');
+    // });
 
     // server.get('/trending/detail/:id/:title', (req, res) => {
     //   return app.render(req, res, '/trending/detail', {
@@ -241,15 +241,15 @@ const UIVersion = '2.0';
       })
     })
 
-    server.get('/trending/:subcategory_id/:subcategory_title', (req, res) => {
-      return app.render(req, res, '/trending', {
-        subcategory_id: req.params.subcategory_id,
-        subcategory_title: req.params.subcategory_title
-      });
-    });
-    server.get('/trending', (req, res) => {
-      return app.render(req, res, '/trending');
-    });
+    // server.get('/trending/:subcategory_id/:subcategory_title', (req, res) => {
+    //   return app.render(req, res, '/trending', {
+    //     subcategory_id: req.params.subcategory_id,
+    //     subcategory_title: req.params.subcategory_title
+    //   });
+    // });
+    // server.get('/trending', (req, res) => {
+    //   return app.render(req, res, '/trending');
+    // });
 
     server.get('/live-event/:id/:title', (req, res) => {
       return app.render(req, res, '/live-events/live-event', {
