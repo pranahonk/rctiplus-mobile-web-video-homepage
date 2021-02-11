@@ -477,10 +477,9 @@ class Trending_v2 extends React.Component {
                     <meta name="keywords" content={this.props?.metaSeo?.keyword} />
                     <meta property="og:title" content={this.props.metaOg?.title || ''} />
                     <meta property="og:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
-                    <meta name="og:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
                     <meta property="og:image" itemProp="image" content={this.props.metaOg?.cover|| ''} />
                     <meta property="og:url" content={encodeURI(this.props.router.asPath)} />
-                    <meta property="og:type" content="website" />
+                    <meta property="og:type" content="article" />
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
