@@ -9,6 +9,8 @@ export const API = process.env.API;
 
 export const GTM = process.env.GTM;
 
+// export const GTM_AUTH = process.env.GTM_AUTH;
+
 export const DEV_API = process.env.DEV_API;
 
 export const CHAT_API = process.env.CHAT_API;
