@@ -106,7 +106,11 @@ class Default_v2 extends React.Component {
                     {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]} />))}
                     <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
-                    <link rel="canonical" href={`http://www.rctiplus.com${this.props.router.asPath}`}></link>
+                    {/* Canonical */}
+                    <link rel="canonical" href="https://m.rctiplus.com/trending" />
+                    <link rel="canonical" href="https://m.rctiplus.com/news" />
+                    <link rel="canonical" href="https://rctiplus.com/trending" />
+                    <link rel="canonical" href="https://www.rctiplus.com/trending" />
                     {/* <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" /> */}
 
                     {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}

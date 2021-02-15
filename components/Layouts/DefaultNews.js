@@ -102,7 +102,11 @@ class DefaultNews extends React.Component {
                     <meta name="viewport" content={VIEWPORT} />
                     <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
-                    <link rel="canonical" href={`http://www.rctiplus.com${this.props.router.asPath}`}></link>
+                    {/* Canonical */}
+                    <link rel="canonical" href="https://m.rctiplus.com/trending" />
+                    <link rel="canonical" href="https://m.rctiplus.com/news" />
+                    <link rel="canonical" href="https://rctiplus.com/trending" />
+                    <link rel="canonical" href="https://www.rctiplus.com/trending" />
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
