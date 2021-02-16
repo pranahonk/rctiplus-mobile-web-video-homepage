@@ -422,7 +422,7 @@ class Detail extends React.Component {
         // cdata.link = 'https://m.rctiplus.com';
 
         return (
-            <Layout title={cdata.title}>
+            <Layout title={`${cdata.title} - News+ on RCTI+`}>
                 <Head>
                     <meta name="title" content={`${cdata.title} - News+ on RCTI+`} />
                     <meta name="keywords" content={cdata.title} />
