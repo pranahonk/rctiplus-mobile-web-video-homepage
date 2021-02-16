@@ -533,10 +533,7 @@ class Trending_v2 extends React.Component {
                     offset={50}
                     onBottom={this.bottomScrollFetch.bind(this)} />
 
-                <div className={`
-                    main-content 
-                    ${this.state.sticky_category_shown ? 'sticky-menu-category-active' : ''} 
-                    ${(this.platform === 'ios' || this.platform === 'android') && 'apps-mode'}`}>
+                <div className={`main-content ${this.state.sticky_category_shown ? 'sticky-menu-category-active' : ''} ${(this.platform === 'ios' || this.platform === 'android') && 'apps-mode'}`} style={{ marginTop: this.platform === 'ios' ? 26 : this.platform === 'android' ? 15 : '' }}>
                     {this.state.load_error ? (
                         <div style={{
                             display: 'flex',
