@@ -424,7 +424,7 @@ class Detail extends React.Component {
         return (
             <Layout title={cdata.title}>
                 <Head>
-                    <meta name="title" content={cdata.title} />
+                    <meta name="title" content={`${cdata.title} - News+ on RCTI+`} />
                     <meta name="keywords" content={cdata.title} />
                     <meta name="description" content={cdata.content?.replace( /(<([^>]+)>)/ig, '')} />
                     <meta property="og:title" content={`${cdata.title} - News+ on RCTI+`} />
