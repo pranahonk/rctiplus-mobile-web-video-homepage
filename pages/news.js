@@ -103,7 +103,7 @@ class Trending_v2 extends React.Component {
         if(isEmpty(ctx.query)) {
             metaSeo = [{title: SITEMAP.trending.title, description: SITEMAP.trending.description, keyword: SITEMAP.trending.keywords}]
         } else {
-            metaSeo = remove(metaSeo, (item) => {
+            metaSeo = remove([...metaSeo, ...data_kanal?.data], (item) => {
             return item.id == queryId;
             });
         }
@@ -279,6 +279,7 @@ class Trending_v2 extends React.Component {
         // }
     }
     componentDidMount() {
+        console.log(this.props.metaSeo)
         // window.addEventListener('scroll', (event) => {
         //     if(this.isInViewport(document.getElementById('9'))) {
         //         console.log('YESSS')
