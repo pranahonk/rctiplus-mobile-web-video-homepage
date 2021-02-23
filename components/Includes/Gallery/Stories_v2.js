@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Head from 'next/head';
+import BottomScrollListener from 'react-bottom-scroll-listener';
+
 import storiesActions from '../../../redux/actions/storiesActions';
 
-import { homeStoryEvent } from '../../../utils/appier';
 import { RESOLUTION_IMG } from '../../../config';
 
 import '../../../assets/scss/components/stories.scss';
@@ -15,57 +16,37 @@ class Stories extends React.Component {
         this.storiesApi = null;
 
         this.state = {
+            zuckJS: null,
             stories: [],
             resolution: RESOLUTION_IMG,
+            page: 1,
+            length: 4,
+            loading: false,
+            endpage: false,
         }
     }
 
     componentDidMount() {
-        const Zuck = require('../../../assets/js/zuck');
-        this.props.getStories()
-            .then(response => {
+        document.getElementById('stories-react').addEventListener('scroll', this.handleScroll);
+
+        this.setState({
+            zuckJS: require('../../../assets/js/zuck')
+        }, () => {
+            this.props.getStories(this.state.page, this.state.length)
+            .then(() => {
+                const timelines = [];
+
                 const stories = this.props.stories.data;
-                let timelines = [];
-                for (let i = 0; i < stories.length; i++) {
-                    const story = stories[i];
-                    let items = [];
-                    for (let j = 0; j < story.story.length; j++) {
-                        items.push([
-                            story.story[j].id,
-                            story.story[j].link_video != null ? 'video' : 'photo',
-                            10,
-                            story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.image_path + this.state.resolution + story.story[j].story_img),
-                            story.story[j].link_video != null ? (story.story[j].link_video) : (this.props.stories.image_path + this.state.resolution + story.story[j].story_img),
-                            story.story[j].swipe_type == 'link' ? (story.story[j].swipe_value) : false, 'Click Here',
-                            false,
-                            story.story[j].release_date,
-                            story.story[j].title
-                        ]);
-
-                    }
-                    let programImg = '';
-                    if (story.program_img != null) {
-                        programImg = this.props.stories.image_path + this.state.resolution  + story.program_img;
-                    }
-                    else {
-                        programImg = 'static/placeholders/placeholder_potrait.png';
-                    }
-
-                    timelines.push(Zuck.buildTimelineItem(
-                        story.program_id,
-                        programImg,
-                        story.program_title,
-                        '',
-                        false,
-                        items
-                    ));
+                for (const story of stories) {
+                    timelines.push(this.buildTimeline(story));
                 }
 
                 this.setState({
                     stories: timelines
                 }, () => {
-                    let currentSkin = this.getCurrentSkin(); // from demo
-                    this.storiesApi = new Zuck("stories-react", {
+                    const currentSkin = this.getCurrentSkin();
+
+                    this.storiesApi = new this.state.zuckJS("stories-react", {
                         backNative: true,
                         previousTap: true,
                         skin: currentSkin['name'],
@@ -120,6 +101,11 @@ class Stories extends React.Component {
             .catch(error => {
                 console.log(error);
             });
+        });
+    }
+
+    componentWillUnmount() {
+        document.getElementById('stories-react').removeEventListener('scroll', this.handleScroll);
     }
 
     getCurrentSkin() {
@@ -189,6 +175,81 @@ class Stories extends React.Component {
         };
     }
 
+    buildTimeline = (story) => {
+        const items = [];
+
+        for (const item of story.story) {
+            items.push([
+                item.id,
+                item.link_video != null ? 'video' : 'photo',
+                10,
+                item.link_video != null ? (item.link_video) : (this.props.stories.image_path + this.state.resolution + item.story_img),
+                item.link_video != null ? (item.link_video) : (this.props.stories.image_path + this.state.resolution + item.story_img),
+                item.swipe_type == 'link' ? (item.swipe_value) : false, 'Click Here',
+                false,
+                item.release_date,
+                item.title
+            ]);
+        }
+
+        let programImg = '';
+        if (story.program_img != null) {
+            programImg = this.props.stories.image_path + this.state.resolution  + story.program_img;
+        }
+        else {
+            programImg = 'static/placeholders/placeholder_potrait.png';
+        }
+
+        const timeline = this.state.zuckJS.buildTimelineItem(
+            story.program_id,
+            programImg,
+            story.program_title,
+            '',
+            false,
+            items
+        );
+
+        return timeline;
+    }
+
+    handleScroll = (event) => {
+        const screenW = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        const totalStoriesW = (document.querySelector('.story').offsetWidth + 6) * this.state.stories.length;
+        const scrollOffset = totalStoriesW - screenW;
+
+        if (document.getElementById('stories-react').scrollLeft >= scrollOffset) {
+            this.loadMore();
+        }
+    }
+
+    loadMore = () => {
+        if (!this.state.loading && !this.state.endpage) {
+            let page = this.state.page + 1;
+			this.setState({ loading: true }, () => {
+                this.props.getStories(page, this.state.length)
+                .then(() => {
+                    //const currentStories = this.state.stories;
+                    const newStories = this.props.stories.data;
+
+                    for (const story of newStories) {
+                        //currentStories.push(this.buildTimeline(story));
+                        this.storiesApi.add(this.buildTimeline(story), true);
+                    }
+
+                    this.setState({ loading: false, page: page, endpage: this.props.stories.data.length < this.state.length }, () => {
+                        /* for (const story of newStories) {
+                            this.storiesApi.add(this.buildTimeline(story), true);
+                        }  */
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.setState({ loading: false, endpage: true })
+                });
+            });
+        }
+    }
+
     render() {
         const timelineItems = []
         this.state.stories.forEach((story, storyId) => {
@@ -222,12 +283,20 @@ class Stories extends React.Component {
                 </div>
             );
         });
+
         return (
             <div className="stories-wrapper">
                 <Head>
                     <link rel="stylesheet" href="static/css/zuck.css?v=2" />
                     <link rel="stylesheet" href="static/css/snapgram.css?v=2" />
                 </Head>
+                {/* <BottomScrollListener onBottom={this.loadMore.bind(this)}>
+                    {scrollRef => (
+                        <div ref={scrollRef} id="stories-react" className="storiesWrapper">
+                            {timelineItems}
+                        </div>
+                    )}
+                </BottomScrollListener> */}
                 <div ref={node => this.storiesElement = node} id="stories-react" className="storiesWrapper">
                     {timelineItems}
                 </div>
