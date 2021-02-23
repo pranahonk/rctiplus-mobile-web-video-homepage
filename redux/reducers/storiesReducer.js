@@ -9,11 +9,11 @@ const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
         case 'STORIES':
-            return Object.assign({}, state, { 
+            /* return Object.assign({}, state, { 
                 data: action.data, 
                 image_path: action.image_path, 
                 video_path: action.video_path 
-            });
+            }); */
         case 'GET_STORY':
         case 'GET_PROGRAM_STORIES':
             return Object.assign({}, state, {
