@@ -420,8 +420,7 @@ class Detail extends React.Component {
         const cdata = this.state.trending_detail_data;
         const isInfographic = this.state.infographic;
         const asPath = this.props.router.asPath;
-        const titleSegment = asPath.split("?")[0].split('/');
-        const oneSegment = titleSegment.length > 1 ? titleSegment[1] : '';
+        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com/' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com/' : 'https://www.rctiplus.com/'
         return (
             <Layout title={`${cdata.title} - News+ on RCTI+`}>
                 <Head>
@@ -447,7 +446,7 @@ class Detail extends React.Component {
                     <meta name="twitter:description" content={cdata.content?.replace( /(<([^>]+)>)/ig, '')} />
                     <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)} />
-                    <link rel="canonical" href={SHARE_BASE_URL + encodeURI(asPath).replace('trending/', 'news/')} />
+                    <link rel="canonical" href={oneSegment + encodeURI(asPath).replace('trending/', 'news/')} />
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
                     <script dangerouslySetInnerHTML={{
