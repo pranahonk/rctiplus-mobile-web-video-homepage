@@ -114,7 +114,15 @@ class Signin extends React.Component {
 		};
 		// console.log(data)
 		this.props.login(data).then(response => {
+			if(this.props?.authentication?.code === 8) {
+				return this.setState({
+							is_password_invalid: false,
+							is_username_invalid: true,
+							username_invalid_message: this.props.authentication.message,
+						});
+			}
 			if (this.props.authentication.data != null && this.props.authentication.data.status.code === 0) {
+				console.log(this.props.authentication)
 				const query = this.props.router.query;
 				if (query && Object.keys(query).length > 0 && query.referrer) {
 					window.location.href = this.constructReferrerUrl(this.props.authentication.token);
@@ -124,7 +132,6 @@ class Signin extends React.Component {
 				}
 			}
 			else {
-
 				switch (this.props.authentication.code) {
 					case 7: // code = 7 (Please Try Again Password Is Incorrect)
 						this.setState({
