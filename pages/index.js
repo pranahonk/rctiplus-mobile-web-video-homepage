@@ -15,7 +15,7 @@ import { homeGeneralClicked } from '../utils/appier';
 import Layout from '../components/Layouts/Default_v2';
 import Nav from '../components/Includes/Navbar/NavDefault_v2';
 import Carousel from '../components/Includes/Gallery/Carousel_v2';
-import Stories from '../components/Includes/Gallery/Stories';
+import Stories from '../components/Includes/Gallery/Stories_v2';
 import Panel1 from '../components/Panels/Pnl_1';
 import Panel2 from '../components/Panels/Pnl_2';
 import Panel3 from '../components/Panels/Pnl_3';

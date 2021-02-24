@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Head from 'next/head';
-import BottomScrollListener from 'react-bottom-scroll-listener';
 
 import storiesActions from '../../../redux/actions/storiesActions';
 
@@ -14,6 +13,7 @@ class Stories extends React.Component {
         super(props);
         this.storiesElement = null;
         this.storiesApi = null;
+        this.storyId = 0;
 
         this.state = {
             zuckJS: null,
@@ -45,7 +45,6 @@ class Stories extends React.Component {
                     stories: timelines
                 }, () => {
                     const currentSkin = this.getCurrentSkin();
-
                     this.storiesApi = new this.state.zuckJS("stories-react", {
                         backNative: true,
                         previousTap: true,
@@ -59,9 +58,22 @@ class Stories extends React.Component {
                         stories: this.state.stories,
                         reactive: true,
                         callbacks: {
-                            onDataUpdate: function (currentState, callback) {
+                            onDataUpdate: function (stories, callback) {
+                                const notSeen = [];
+                                const seen = [];
+
+                                for (const story of stories) {
+                                    if (story.seen) {
+                                        seen.push({...story});
+                                    } else {
+                                        notSeen.push({...story});
+                                    }
+                                }
+
+                                const storiesData = [...notSeen, ...seen];
+
                                 this.setState(state => {
-                                    state.stories = currentState;
+                                    state.stories = storiesData;
                                     return state;
                                 }, () => {
                                     callback();
@@ -201,13 +213,15 @@ class Stories extends React.Component {
         }
 
         const timeline = this.state.zuckJS.buildTimelineItem(
-            story.program_id,
+            this.storyId,
             programImg,
             story.program_title,
             '',
             false,
             items
         );
+
+        this.storyId = this.storyId + 1;
 
         return timeline;
     }
@@ -236,11 +250,13 @@ class Stories extends React.Component {
                         this.storiesApi.add(this.buildTimeline(story), true);
                     }
 
-                    this.setState({ loading: false, page: page, endpage: this.props.stories.data.length < this.state.length }, () => {
-                        /* for (const story of newStories) {
-                            this.storiesApi.add(this.buildTimeline(story), true);
-                        }  */
-                    });
+                    this.setState({ loading: false, page: page, endpage: this.props.stories.data.length < this.state.length }/* , () => {
+                        setTimeout(() => {
+                            for (const story of newStories) {
+                                this.storiesApi.add(this.buildTimeline(story), true);
+                            } 
+                        }, 300)
+                    } */);
                 })
                 .catch(error => {
                     console.log(error);
@@ -264,8 +280,8 @@ class Stories extends React.Component {
                 );
             });
 
-            let arrayFunc = story.seen ? 'push' : 'unshift';
-            timelineItems[arrayFunc](
+            //let arrayFunc = story.seen ? 'push' : 'unshift';
+            timelineItems.push(
                 <div className={(story.seen ? 'story seen' : 'story')} key={storyId} data-id={storyId} data-last-updated={story.lastUpdated} data-photo={story.photo}>
                     <a className="item-link" href={story.link}>
                         <span className="item-preview">

@@ -1601,8 +1601,6 @@ module.exports = (window => {
 			items: []
 		};
 
-		console.log('buildTimelineItem', timelineItem)
-
 		each(items, (itemIndex, itemArgs) => {
 			timelineItem.items.push(ZuckJS.buildStoryItem.apply(ZuckJS, itemArgs));
 		});
