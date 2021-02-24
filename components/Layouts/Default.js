@@ -24,7 +24,7 @@ import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
 //import Analytics from '../../components/Includes/Google/Analytics';
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, BASE_URL } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, SHARE_BASE_URL } from '../../config';
 import { Spinner } from 'reactstrap';
 
 class Default extends React.Component {
@@ -58,6 +58,9 @@ class Default extends React.Component {
     }
 
     render() {
+        const asPath = this.props.router.asPath;
+        const titleSegment = asPath.split("?")[0].split('/');
+        const oneSegment = titleSegment.length > 1 ? titleSegment[1] : '';
         return (
             <div>
                 <Head>
@@ -76,8 +79,7 @@ class Default extends React.Component {
                     {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]} />))}
                     <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
-                    {/* Canonical */}
-                    <link rel="canonical" href={BASE_URL + encodeURI(this.props.router.asPath).replace('trending/', 'news/')} />
+                    <link rel="canonical" href={SHARE_BASE_URL + encodeURI(asPath).replace('trending/', 'news/')} />
                     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
