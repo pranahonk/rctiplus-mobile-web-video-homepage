@@ -160,7 +160,7 @@ class Detail extends React.Component {
             .then(response => {
                 // console.log(response);
                 if (response.status === 200) {
-                    // console.log(response.data.data);
+                    console.log(response.data.data);
                     this.setState({ trending_related: response.data.data });
                 }
             })
@@ -605,27 +605,31 @@ class Detail extends React.Component {
                                     <p className="related-title"><strong>Related Articles</strong></p>
                                     <div className="item_square-wrapper">
                                         {this.state.trending_related.map((item, index) => {
-                                            return (
+                                            if(index < 4) {
+                                                return (
                                                 <>
                                                     <SquareItem key={index + item.title} item={item} indexKey={index} isIndexKey/>
                                                 </>
                                             );
+                                            }
                                         })}
                                     </div>
-                                    {!isEmpty(this.state?.trending_related) && (<div>
+                                    {!isEmpty(this.state?.trending_related) && this.state?.trending_related.length > 3 && (<div>
                                         <Swiper
                                             spaceBetween={10}
                                             width={242}
                                             height={140}
-                                            onSwiper={(swiper) => console.log(swiper)}
+                                            // onSwiper={(swiper) => console.log(swiper)}
                                             >
-                                                {this.state.trending_related.map((item, index) => {
-                                                return (
-                                                    <SwiperSlide key={index}>
-                                                        <HorizontalItem item={item} />
-                                                    </SwiperSlide>
-                                                );
-                                                })}
+                                            {this.state.trending_related.map((item, index) => {
+                                                if(index > 4) {
+                                                    return (
+                                                        <SwiperSlide key={index}>
+                                                            <HorizontalItem item={item} />
+                                                        </SwiperSlide>
+                                                    );
+                                                }
+                                            })}
                                         </Swiper>
                                     </div>)}
                                 </div>
