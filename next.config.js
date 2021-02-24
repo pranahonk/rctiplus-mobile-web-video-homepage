@@ -35,6 +35,11 @@ let nextConfig = {
         destination: '/news/:subcategory_id/:subcategory_title', // Matched parameters can be used in the destination
         permanent: true,
       },
+      {
+        source: '/interest-topic',
+        destination: '/news/interest-topic', // Matched parameters can be used in the destination
+        permanent: true,
+      },
     ]
   },
 	images: {

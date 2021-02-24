@@ -188,6 +188,9 @@ const UIVersion = '2.0';
     server.get('/news/search', (req, res) => {
       return app.render(req, res, '/trending/search_v2');
     });
+    server.get('/news/interest-topic', (req, res) => {
+      return app.render(req, res, '/interest-topic');
+    });
     server.get('/news', (req, res) => {
       return app.render(req, res, '/news');
     });

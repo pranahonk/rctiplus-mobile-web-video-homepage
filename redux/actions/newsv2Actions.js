@@ -249,10 +249,10 @@ const getArticle = id => {
     });
 };
 
-const getRelatedArticles = (id, page = 1, pageSize = 4) => {
+const getRelatedArticles = (id, page = 1, pageSize = 10) => {
     return () => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/related/${id}?pageSize=${pageSize}`);
+            const response = await axios.get(`/v1/related/${id}?page=${page}&pageSize=${pageSize}`);
             if (response.status === 200) {
                 resolve(response);
             }
