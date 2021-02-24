@@ -419,6 +419,9 @@ class Detail extends React.Component {
     render() {
         const cdata = this.state.trending_detail_data;
         const isInfographic = this.state.infographic;
+        const asPath = this.props.router.asPath;
+        const titleSegment = asPath.split("?")[0].split('/');
+        const oneSegment = titleSegment.length > 1 ? titleSegment[1] : '';
         return (
             <Layout title={`${cdata.title} - News+ on RCTI+`}>
                 <Head>
@@ -444,7 +447,9 @@ class Detail extends React.Component {
                     <meta name="twitter:description" content={cdata.content?.replace( /(<([^>]+)>)/ig, '')} />
                     <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)} />
-                    <link rel="canonical" href={BASE_URL + encodeURI(this.props.router.asPath).replace('trending/', 'news/')} />
+                    {
+                        (oneSegment != 'news') ? <link rel="canonical" href={BASE_URL + encodeURI(asPath).replace('trending/', 'news/')} /> : null
+                    }
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
                     <script dangerouslySetInnerHTML={{

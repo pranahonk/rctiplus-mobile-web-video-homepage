@@ -92,6 +92,9 @@ class Default_v2 extends React.Component {
     }
 
     render() {
+        const asPath = this.props.router.asPath;
+        const titleSegment = asPath.split("?")[0].split('/');
+        const oneSegment = titleSegment.length > 1 ? titleSegment[1] : '';
         return (
             <div style={{ height: '100%' }}  className={this.props.mobilePlatform}>
                 <Head>
@@ -110,7 +113,9 @@ class Default_v2 extends React.Component {
                     {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]} />))}
                     <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
-                    <link rel="canonical" href={BASE_URL + encodeURI(this.props.router.asPath).replace('trending/', 'news/')} />
+                    {
+                        (oneSegment != 'news') ? <link rel="canonical" href={BASE_URL + encodeURI(asPath).replace('trending/', 'news/')} /> : null
+                    }
                     {/* <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" /> */}
 
                     {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
