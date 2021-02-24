@@ -471,7 +471,7 @@ class Trending_v2 extends React.Component {
         // const metadata = this.getMetadata();
         // const ogMetaData = this.getOgMetaData();
         const asPath = this.props.router.asPath;
-        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com/' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com/' : 'https://www.rctiplus.com/'
+        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
         return (
             <Layout title={this.props?.metaSeo?.title}>
                 <Head>
