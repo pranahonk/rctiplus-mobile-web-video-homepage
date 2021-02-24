@@ -24,7 +24,7 @@ import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
 //import Analytics from '../../components/Includes/Google/Analytics';
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, BASE_URL } from '../../config';
 import { Spinner } from 'reactstrap';
 
 class Default extends React.Component {
@@ -77,10 +77,7 @@ class Default extends React.Component {
                     <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
                     {/* Canonical */}
-                    <link rel="canonical" href="https://m.rctiplus.com/trending" />
-                    <link rel="canonical" href="https://m.rctiplus.com/news" />
-                    <link rel="canonical" href="https://rctiplus.com/trending" />
-                    <link rel="canonical" href="https://www.rctiplus.com/trending" />
+                    <link rel="canonical" href={BASE_URL + encodeURI(this.props.router.asPath).replace('trending/', 'news/')} />
                     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
