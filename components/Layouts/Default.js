@@ -59,9 +59,7 @@ class Default extends React.Component {
 
     render() {
         const asPath = this.props.router.asPath;
-        var currentUrl = SHARE_BASE_URL;
-        var arr = currentUrl.split("/");
-        const oneSegment = arr[0] + "//" + arr[2];
+        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
         return (
             <div>
                 <Head>

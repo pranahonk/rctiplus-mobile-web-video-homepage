@@ -48,11 +48,7 @@ class DefaultNews extends React.Component {
 
     componentDidMount() {
         this.props.initializeFirebase();
-        var currentUrl = window.location.href;
-        var arr = currentUrl.split("/");
-        const oneSegment = arr[0] + "//" + arr[2];
-        this.setState({ canonical: oneSegment });
-
+    
         // console.log('User added to home screen');
         if(!Cookie.get('uid_ads')) {
             Cookie.set('uid_ads', new DeviceUUID().get())
@@ -92,9 +88,7 @@ class DefaultNews extends React.Component {
 
     render() {
         const asPath = this.props.router.asPath;
-        var currentUrl = SHARE_BASE_URL;
-        var arr = currentUrl.split("/");
-        const oneSegment = arr[0] + "//" + arr[2];
+        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
         return (
             <div style={{ height: '100%' }}>
                 <Head>
