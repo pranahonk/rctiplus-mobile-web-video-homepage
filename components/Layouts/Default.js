@@ -24,7 +24,7 @@ import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
 //import Analytics from '../../components/Includes/Google/Analytics';
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, SHARE_BASE_URL } from '../../config';
 import { Spinner } from 'reactstrap';
 
 class Default extends React.Component {
@@ -58,6 +58,8 @@ class Default extends React.Component {
     }
 
     render() {
+        const asPath = this.props.router.asPath;
+        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
         return (
             <div>
                 <Head>
@@ -76,11 +78,7 @@ class Default extends React.Component {
                     {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]} />))}
                     <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
-                    {/* Canonical */}
-                    <link rel="canonical" href="https://m.rctiplus.com/trending" />
-                    <link rel="canonical" href="https://m.rctiplus.com/news" />
-                    <link rel="canonical" href="https://rctiplus.com/trending" />
-                    <link rel="canonical" href="https://www.rctiplus.com/trending" />
+                    <link rel="canonical" href={oneSegment + encodeURI(asPath).replace('trending/', 'news/')} />
                     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `

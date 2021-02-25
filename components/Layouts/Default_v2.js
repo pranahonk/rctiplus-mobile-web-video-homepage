@@ -12,7 +12,7 @@ import chatsActions from '../../redux/actions/chats';
 import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, FIREBASE_apiKey,  FIREBASE_authDomain,  FIREBASE_databaseURL, FIREBASE_projectId, FIREBASE_storageBucket, FIREBASE_appId, FIREBASE_measurementId, FIREBASE_messagingSenderId } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, FIREBASE_apiKey,  FIREBASE_authDomain,  FIREBASE_databaseURL, FIREBASE_projectId, FIREBASE_storageBucket, FIREBASE_appId, FIREBASE_measurementId, FIREBASE_messagingSenderId, SHARE_BASE_URL } from '../../config';
 import { Spinner } from 'reactstrap';
 const PaidVideo = dynamic(() => import('../Includes/program-detail/PaidVideo'), { ssr: false });
 
@@ -88,6 +88,8 @@ class Default_v2 extends React.Component {
     }
 
     render() {
+        const asPath = this.props.router.asPath;
+        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
         return (
             <div style={{ height: '100%' }}  className={this.props.mobilePlatform}>
                 <Head>
@@ -106,11 +108,7 @@ class Default_v2 extends React.Component {
                     {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]} />))}
                     <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
-                    {/* Canonical */}
-                    <link rel="canonical" href="https://m.rctiplus.com/trending" />
-                    <link rel="canonical" href="https://m.rctiplus.com/news" />
-                    <link rel="canonical" href="https://rctiplus.com/trending" />
-                    <link rel="canonical" href="https://www.rctiplus.com/trending" />
+                    <link rel="canonical" href={oneSegment + encodeURI(asPath).replace('trending/', 'news/')} />
                     {/* <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" /> */}
 
                     {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}

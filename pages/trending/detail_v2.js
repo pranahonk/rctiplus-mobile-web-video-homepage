@@ -11,7 +11,7 @@ import { StickyContainer, Sticky } from 'react-sticky';
 import Cookie from 'js-cookie';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import { DEV_API, BASE_URL, NEWS_API_V2, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, UTM_NAME } from '../../config';
+import { DEV_API, BASE_URL, NEWS_API_V2, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, UTM_NAME, SHARE_BASE_URL } from '../../config';
 
 import Layout from '../../components/Layouts/DefaultNews';
 // import Layout from '../../components/Layouts/Default_v2';
@@ -420,7 +420,8 @@ class Detail extends React.Component {
         const cdata = this.state.trending_detail_data;
         const isInfographic = this.state.infographic;
         // cdata.link = 'https://m.rctiplus.com';
-
+        const asPath = this.props.router.asPath;
+        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
         return (
             <Layout title={`${cdata.title} - News+ on RCTI+`}>
                 <Head>
@@ -446,6 +447,7 @@ class Detail extends React.Component {
                     <meta name="twitter:description" content={cdata.content?.replace( /(<([^>]+)>)/ig, '')} />
                     <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)} />
+                    <link rel="canonical" href={oneSegment + encodeURI(asPath).replace('trending/', 'news/')} />
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
                     <script dangerouslySetInnerHTML={{

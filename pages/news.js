@@ -25,7 +25,7 @@ import WrenchIcon from '../components/Includes/Common/Wrench';
 import { Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, Container, Row, Col } from 'reactstrap';
 import AddIcon from '@material-ui/icons/Add';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2, BASE_URL } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2, BASE_URL, SHARE_BASE_URL } from '../config';
 import { formatDateWordID } from '../utils/dateHelpers';
 import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2 } from '../utils/cookie';
 
@@ -470,6 +470,8 @@ class Trending_v2 extends React.Component {
     render() {
         // const metadata = this.getMetadata();
         // const ogMetaData = this.getOgMetaData();
+        const asPath = this.props.router.asPath;
+        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
         return (
             <Layout title={this.props?.metaSeo?.title}>
                 <Head>
@@ -495,11 +497,7 @@ class Trending_v2 extends React.Component {
                     <meta name="twitter:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
                     <meta name="twitter:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta name="twitter:domain" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
-                    {/* Canonical */}
-                    <link rel="canonical" href="https://m.rctiplus.com/trending" />
-                    <link rel="canonical" href="https://m.rctiplus.com/news" />
-                    <link rel="canonical" href="https://rctiplus.com/trending" />
-                    <link rel="canonical" href="https://www.rctiplus.com/trending" />
+                    <link rel="canonical" href={oneSegment + encodeURI(asPath).replace('trending/', 'news/')} />
 
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
