@@ -24,7 +24,7 @@ import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
 //import Analytics from '../../components/Includes/Google/Analytics';
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, SHARE_BASE_URL } from '../../config';
 import { Spinner } from 'reactstrap';
 
 class Default extends React.Component {
@@ -59,7 +59,7 @@ class Default extends React.Component {
 
     render() {
         const asPath = this.props.router.asPath;
-        var currentUrl = window.location.href;
+        var currentUrl = SHARE_BASE_URL;
         var arr = currentUrl.split("/");
         const oneSegment = arr[0] + "//" + arr[2];
         return (

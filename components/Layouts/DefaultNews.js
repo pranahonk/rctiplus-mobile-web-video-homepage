@@ -12,7 +12,7 @@ import chatsActions from '../../redux/actions/chats';
 import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, SHARE_BASE_URL } from '../../config';
 
 import queryString from 'query-string';
 import { isIOS, isAndroid } from "react-device-detect";
@@ -48,6 +48,11 @@ class DefaultNews extends React.Component {
 
     componentDidMount() {
         this.props.initializeFirebase();
+        var currentUrl = window.location.href;
+        var arr = currentUrl.split("/");
+        const oneSegment = arr[0] + "//" + arr[2];
+        this.setState({ canonical: oneSegment });
+
         // console.log('User added to home screen');
         if(!Cookie.get('uid_ads')) {
             Cookie.set('uid_ads', new DeviceUUID().get())
@@ -86,6 +91,10 @@ class DefaultNews extends React.Component {
     }
 
     render() {
+        const asPath = this.props.router.asPath;
+        var currentUrl = SHARE_BASE_URL;
+        var arr = currentUrl.split("/");
+        const oneSegment = arr[0] + "//" + arr[2];
         return (
             <div style={{ height: '100%' }}>
                 <Head>
@@ -102,11 +111,7 @@ class DefaultNews extends React.Component {
                     <meta name="viewport" content={VIEWPORT} />
                     <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
-                    {/* Canonical */}
-                    <link rel="canonical" href="https://m.rctiplus.com/trending" />
-                    <link rel="canonical" href="https://m.rctiplus.com/news" />
-                    <link rel="canonical" href="https://rctiplus.com/trending" />
-                    <link rel="canonical" href="https://www.rctiplus.com/trending" />
+                    <link rel="canonical" href={oneSegment + encodeURI(asPath).replace('trending/', 'news/')} />
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

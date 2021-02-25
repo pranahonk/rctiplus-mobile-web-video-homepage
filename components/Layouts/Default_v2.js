@@ -12,7 +12,7 @@ import chatsActions from '../../redux/actions/chats';
 import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, FIREBASE_apiKey,  FIREBASE_authDomain,  FIREBASE_databaseURL, FIREBASE_projectId, FIREBASE_storageBucket, FIREBASE_appId, FIREBASE_measurementId, FIREBASE_messagingSenderId } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, FIREBASE_apiKey,  FIREBASE_authDomain,  FIREBASE_databaseURL, FIREBASE_projectId, FIREBASE_storageBucket, FIREBASE_appId, FIREBASE_measurementId, FIREBASE_messagingSenderId, SHARE_BASE_URL } from '../../config';
 import { Spinner } from 'reactstrap';
 const PaidVideo = dynamic(() => import('../Includes/program-detail/PaidVideo'), { ssr: false });
 
@@ -89,7 +89,7 @@ class Default_v2 extends React.Component {
 
     render() {
         const asPath = this.props.router.asPath;
-        var currentUrl = window.location.href;
+        var currentUrl = SHARE_BASE_URL;
         var arr = currentUrl.split("/");
         const oneSegment = arr[0] + "//" + arr[2];
         return (
