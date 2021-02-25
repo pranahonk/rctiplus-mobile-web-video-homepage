@@ -25,7 +25,7 @@ import WrenchIcon from '../components/Includes/Common/Wrench';
 import { Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, Container, Row, Col } from 'reactstrap';
 import AddIcon from '@material-ui/icons/Add';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2, BASE_URL, SHARE_BASE_URL } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2, BASE_URL } from '../config';
 import { formatDateWordID } from '../utils/dateHelpers';
 import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2 } from '../utils/cookie';
 
@@ -471,7 +471,9 @@ class Trending_v2 extends React.Component {
         // const metadata = this.getMetadata();
         // const ogMetaData = this.getOgMetaData();
         const asPath = this.props.router.asPath;
-        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
+        var currentUrl = window.location.href;
+        var arr = currentUrl.split("/");
+        const oneSegment = arr[0] + "//" + arr[2];
         return (
             <Layout title={this.props?.metaSeo?.title}>
                 <Head>
