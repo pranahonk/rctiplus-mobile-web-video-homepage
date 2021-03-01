@@ -421,15 +421,45 @@ class Detail extends React.Component {
         const isInfographic = this.state.infographic;
         const asPath = this.props.router.asPath;
         const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
+        const fullUrl = oneSegment + encodeURI(asPath).replace('trending/', 'news/');
+        const newsTitle = cdata.title
+        const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
+        const converImg = cdata.cover
+        const structuredData = {
+            "@context": "https://schema.org",
+            "@type": "NewsArticle",
+            "mainEntityOfPage": {
+                '@type': 'WebPage',
+                "@id": fullUrl
+            },
+            "headline": newsTitle.replace(/\\/g, ''),
+            "image": [converImg],
+            "datePublished": cdata.created_at, // The date and time the article was first published -->
+            "dateModified": cdata.updated_at, // The date and time the article was most recently modified -->
+            "author": {
+                "@type": "Person",
+                "name": cdata.author
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "rcti+",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": `${oneSegment}/assets/image/elements/logo.b9f35229.png`
+                }
+            },
+            "description": newsContent
+        }
+
         return (
-            <Layout title={`${cdata.title} - News+ on RCTI+`}>
+            <Layout title={`${newsTitle} - News+ on RCTI+`}>
                 <Head>
-                    <meta name="title" content={`${cdata.title} - News+ on RCTI+`} />
-                    <meta name="keywords" content={cdata.title} />
-                    <meta name="description" content={cdata.content?.replace( /(<([^>]+)>)/ig, '')} />
-                    <meta property="og:title" content={`${cdata.title} - News+ on RCTI+`} />
-                    <meta property="og:description" content={cdata.content?.replace( /(<([^>]+)>)/ig, '')} />
-                    <meta property="og:image" itemProp="image" content={cdata.cover} />
+                    <meta name="title" content={`${newsTitle} - News+ on RCTI+`} />
+                    <meta name="keywords" content={newsTitle} />
+                    <meta name="description" content={newsContent} />
+                    <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
+                    <meta property="og:description" content={newsContent} />
+                    <meta property="og:image" itemProp="image" content={converImg} />
                     <meta property="og:type" content="website" />
                     <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta property="og:image:type" content="image/jpeg" />
@@ -440,13 +470,14 @@ class Detail extends React.Component {
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
                     <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
                     <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-                    <meta name="twitter:image" content={cdata.cover} />
-                    <meta name="twitter:title" content={`${cdata.title} - News+ on RCTI+`} />
-                    <meta name="twitter:image:alt" content={cdata.title} />
-                    <meta name="twitter:description" content={cdata.content?.replace( /(<([^>]+)>)/ig, '')} />
+                    <meta name="twitter:image" content={converImg} />
+                    <meta name="twitter:title" content={`${newsTitle} - News+ on RCTI+`} />
+                    <meta name="twitter:image:alt" content={newsTitle} />
+                    <meta name="twitter:description" content={newsContent} />
                     <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)} />
-                    <link rel="canonical" href={oneSegment + encodeURI(asPath).replace('trending/', 'news/')} />
+                    <link rel="canonical" href={fullUrl} />
+                    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
                     <script dangerouslySetInnerHTML={{
