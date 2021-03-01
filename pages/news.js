@@ -601,7 +601,7 @@ class Trending_v2 extends React.Component {
                                                                             <Link
                                                                                 href={`/news?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`}
                                                                                 as={`/news/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
-                                                                                <a onClick={() => _linkTab(tab)}>
+                                                                                <a onClick={() => this._linkTab(tab)}>
                                                                                     <NavLink onClick={() => this.toggleTab(tab.id.toString(), tab)} className="item-link">{tab.name}</NavLink>
                                                                                 </a>
                                                                             </Link>
@@ -676,60 +676,64 @@ class Trending_v2 extends React.Component {
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => {
                                                             if((j + 1) % 5 === 0) {
                                                                 return(
-                                                                    <div key={j}>
-                                                                        <iframe 
-                                                                            onLoad={() => {
-                                                                                window.addEventListener('scroll', () => {
-                                                                                    const iframeElement = document.getElementById(article.id)
-                                                                                    const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
-                                                                                    document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
-                                                                                    const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
-                                                                                    document.getElementById(article.id).contentWindow.document.getElementById('error__page') 
-                                                                                    const element_3 = document.getElementById(article.id)
-                                                                                    if(element && element.style.display === 'none' || element_2) {
-                                                                                        element_3.style.display = 'none'
-                                                                                    } else {
-                                                                                        if(!element) {
-                                                                                            iframeElement.style.display = 'none'
-                                                                                            return 
-                                                                                        }
-                                                                                        element_3.style.display = 'block'
-                                                                                    }
-                                                                                    })
-                                                                            }}
-                                                                            id={article.id} src={`/dfp?platform=${this.platform}`} 
-                                                                            frameBorder="0" 
-                                                                            style={{ 
-                                                                                height: '250px',
-                                                                                width: '100%',
-                                                                                display: 'none',
-                                                                            }} />
-                                                                        <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
-                                                                            <div className="article-description">
-                                                                                <div className="article-thumbnail-container-full-width">
-                                                                                    <Img
-                                                                                        alt={article.title}
-                                                                                        loader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                        unloader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                        className="article-thumbnail-full-width"
-                                                                                        src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
-                                                                                </div>
-                                                                                <div className="article-title-container">
-                                                                                    <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
-                                                                                    <div className="article-source">
-                                                                                        <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
-                                                                                        <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                    <li key={j} className="listItems">
+                                                                        <ListGroup className="groupNews">
+                                                                            <ListGroupItem className="listNewsAdds">
+                                                                                <iframe 
+                                                                                    onLoad={() => {
+                                                                                        window.addEventListener('scroll', () => {
+                                                                                            const iframeElement = document.getElementById(article.id)
+                                                                                            const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
+                                                                                            document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
+                                                                                            const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
+                                                                                            document.getElementById(article.id).contentWindow.document.getElementById('error__page') 
+                                                                                            const element_3 = document.getElementById(article.id)
+                                                                                            if(element && element.style.display === 'none' || element_2) {
+                                                                                                element_3.style.display = 'none'
+                                                                                            } else {
+                                                                                                if(!element) {
+                                                                                                    iframeElement.style.display = 'none'
+                                                                                                    return 
+                                                                                                }
+                                                                                                element_3.style.display = 'block'
+                                                                                            }
+                                                                                            })
+                                                                                    }}
+                                                                                    id={article.id} src={`/dfp?platform=${this.platform}`} 
+                                                                                    frameBorder="0" 
+                                                                                    style={{ 
+                                                                                        height: '250px',
+                                                                                        width: '100%',
+                                                                                        display: 'none',
+                                                                                    }} />
+                                                                            </ListGroupItem>
+                                                                            <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
+                                                                                <div className="article-description">
+                                                                                    <div className="article-thumbnail-container-full-width">
+                                                                                        <Img
+                                                                                            alt={article.title}
+                                                                                            loader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                            unloader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
+                                                                                            className="article-thumbnail-full-width"
+                                                                                            src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
+                                                                                    </div>
+                                                                                    <div className="article-title-container">
+                                                                                        <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
+                                                                                        <div className="article-source">
+                                                                                            <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
+                                                                                            <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>
-                                                                        </ListGroupItem>
-                                                                    </div>
+                                                                            </ListGroupItem>
+                                                                        </ListGroup>
+                                                                    </li>
                                                                 )
                                                             } else {
                                                                 return(
-                                                                    <div className="item_square-wrapper" key={j + article.title}>
+                                                                    <li className="item_square-wrapper" key={j + article.title}>
                                                                         <SquareItem item={article}/>
-                                                                    </div>
+                                                                    </li>
                                                                 )
                                                             }
                                                         })}
