@@ -600,7 +600,7 @@ class Trending_v2 extends React.Component {
                                                                             <Link
                                                                                 href={`/news?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`}
                                                                                 as={`/news/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
-                                                                                <a onClick={() => _linkTab(tab)}>
+                                                                                <a onClick={() => this._linkTab(tab)}>
                                                                                     <NavLink onClick={() => this.toggleTab(tab.id.toString(), tab)} className="item-link">{tab.name}</NavLink>
                                                                                 </a>
                                                                             </Link>
