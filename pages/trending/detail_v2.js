@@ -434,8 +434,8 @@ class Detail extends React.Component {
             },
             "headline": newsTitle.replace(/\\/g, ''),
             "image": [converImg],
-            "datePublished": cdata.created_at, // The date and time the article was first published -->
-            "dateModified": cdata.updated_at, // The date and time the article was most recently modified -->
+            "datePublished": cdata.publish_date, // The date and time the article was first published
+            "dateModified": cdata.updated_at, // The date and time the article was most recently modified
             "author": {
                 "@type": "Person",
                 "name": cdata.author
