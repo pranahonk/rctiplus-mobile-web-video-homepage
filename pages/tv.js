@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
+import nextCookie from 'next-cookies' 
 import { Picker } from 'emoji-mart';
 import Img from 'react-image';
 import TimeAgo from 'react-timeago';
@@ -25,7 +26,7 @@ import Wrench from '../components/Includes/Common/Wrench';
 import MuteChat from '../components/Includes/Common/MuteChat';
 import Toast from '../components/Includes/Common/Toast';
 
-import { formatDate, formatDateWord, getFormattedDateBefore } from '../utils/dateHelpers';
+import { formatDate, formatDateWord, getFormattedDateBefore, formatMonthEngToID } from '../utils/dateHelpers';
 import { showAlert, showSignInAlert } from '../utils/helpers';
 
 import { Row, Col, Button, Nav, NavItem, NavLink, TabContent, TabPane, Input } from 'reactstrap';
@@ -51,17 +52,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId, appierAdsShow, appierAdsClicked } from '../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTracking';
 // import { RPLUSAdsShowing, RPLUSAdsClicked } from '../utils/internalTracking';
-import { convivaVideoJs } from '../utils/conviva';
-
-import videojs from 'video.js';
-import 'videojs-contrib-ads';
-import 'videojs-ima';
-import 'video.js/src/css/video-js.scss';
-import qualitySelector from 'videojs-hls-quality-selector';
-import qualityLevels from 'videojs-contrib-quality-levels';
-
-import 'videojs-seek-buttons';
-import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
+import queryString from 'query-string';
 
 import { getCookie, getVisitorToken, checkToken } from '../utils/cookie';
 
@@ -82,9 +73,44 @@ axios.interceptors.request.use(async (request) => {
 
 class Tv extends React.Component {
 
-	static getInitialProps(ctx) {
+	static async getInitialProps(ctx) {
 		initialize(ctx);
-		return { context_data: ctx.query };
+		// const { VISITOR_TOKEN, ACCESS_TOKEN } = nextCookie(ctx)
+		const idEpg = ctx.query.epg_id;
+		let dataEpg = null;
+		let q = null;
+		if(idEpg) {
+			const findQueryString = ctx.asPath.split(/\?/);
+			if(findQueryString.length > 1) {
+				q = queryString.parse(findQueryString[1]);
+				if(q.date) {
+					q = formatMonthEngToID(q.date)
+				}
+			}
+			const visitorToken = nextCookie(ctx)?.VISITOR_TOKEN
+			const userToken = nextCookie(ctx)?.ACCESS_TOKEN
+			let token = userToken?.VALUE || visitorToken?.VALUE || ''
+			if(!token) {
+				const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
+				if (response_visitor.statusCode === 200) {
+						return {};
+				}
+				const data_visitor = await response_visitor.json();
+				token = data_visitor.status.code === 0 ? data_visitor.data.access_token : 'undefined'
+			}
+			const response_epg = await fetch(`${DEV_API}/api/v1/epg/${idEpg}`, {
+					method: 'GET',
+					headers: {
+							'Authorization': token,
+					}
+			});
+			if (response_epg.statusCode === 200) {
+					return {};
+			}
+			const data_epg = await response_epg.json();
+			dataEpg = data_epg.status.code === 0 ? data_epg.data : null
+		}
+		return { context_data: ctx.query, data_epg: dataEpg, params_date: q };
 	}
 
 	constructor(props) {
@@ -297,673 +323,6 @@ class Tv extends React.Component {
 							firstLoadChat = false;
 						});
 					});
-
-	// initVOD() {
-	// 	if (this.player) {
-	// 		this.player.remove();
-	// 	}
-	// 	const playerId = 'live-tv-player';
-
-	// 	this.player = window.jwplayer(playerId);
-	// 	this.player.setup({
-	// 		autostart: true,
-	// 		floating: false,
-	// 		file: this.state.player_url,
-	// 		primary: 'html5',
-	// 		width: '100%',
-	// 		aspectratio: '16:9',
-	// 		displaytitle: true,
-	// 		setFullscreen: true,
-	// 		stretching: 'exactfit',
-	// 		advertising: {
-	// 			client: process.env.ADVERTISING_CLIENT,
-	// 			schedule: this.state.player_vmap
-	// 		},
-	// 		logo: {
-	// 			hide: true
-	// 		}
-	// 	});
-
-	// 	// this.player.on('adImpression', () => {
-	// 	// 	this.setState({ ad_closed: true });
-	// 	// });
-
-	// 	// this.player.on('adComplete', () => {
-	// 	// 	this.setState({ ad_closed: false }, () => {
-	// 	// 		window.googletag = window.googletag || { cmd: [] };
-	// 	// 		googletag.cmd.push(function () {
-	// 	// 			googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60], [320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
-	// 	// 			googletag.pubads().enableSingleRequest();
-	// 	// 			googletag.pubads().collapseEmptyDivs();
-	// 	// 			googletag.enableServices();
-	// 	// 		});
-	// 	// 	});
-	// 	// });
-
-	// 	const self = this;
-	// 	this.player.on('ready', function () {
-	// 		const assetName = self.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : self.state.selected_live_event.channel_code;
-	// 		switch (self.state.selected_tab) {
-	// 			case 'live':
-	// 				const currentEpg = self.getCurrentLiveEpg();
-	// 				if (currentEpg != null) {
-	// 					conviva.startMonitoring(this);
-	// 					const assetMetadata = {
-	// 						viewer_id: getUserId().toString(),
-	// 						application_name: 'RCTI+ MWEB',
-	// 						asset_cdn: 'Conversant',
-	// 						version: process.env.VERSION,
-	// 						start_session: 0,
-	// 						playerVersion: process.env.PLAYER_VERSION,
-	// 						tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id : self.state.selected_live_event.content_id,
-	// 						tv_name: assetName.toUpperCase(),
-	// 						content_id: currentEpg.id,
-	// 						asset_name: assetName.toUpperCase()
-	// 					};
-	// 					console.log('FIRST FRAME CONVIVA', assetMetadata);
-	// 					conviva.updatePlayerAssetMetadata(this, assetMetadata);
-	// 				}
-	// 				break;
-
-	// 			case 'catch_up_tv':
-	// 				conviva.startMonitoring(this);
-	// 				const assetMetadata = {
-	// 					viewer_id: getUserId().toString(),
-	// 					application_name: 'RCTI+ MWEB',
-	// 					asset_cdn: 'Conversant',
-	// 					version: process.env.VERSION,
-	// 					start_session: 0,
-	// 					playerVersion: process.env.PLAYER_VERSION,
-	// 					tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id : self.state.selected_live_event.content_id,
-	// 					tv_name: assetName.toUpperCase(),
-	// 					content_id: currentEpg.id,
-	// 					asset_name: assetName.toUpperCase()
-	// 				};
-	// 				console.log('FIRST FRAME CONVIVA', assetMetadata);
-	// 				conviva.updatePlayerAssetMetadata(this, assetMetadata);
-	// 				break;
-	// 		}
-
-	// 		if (isIOS) {
-	// 			let elementJwplayerInit = document.querySelector(`#${playerId} > .jw-wrapper`);
-	// 			let elementCreateWrapper = document.createElement('btn');
-	// 			let elementMuteIcon = document.createElement('span');
-	// 			elementCreateWrapper.classList.add('jwplayer-vol-off');
-	// 			elementCreateWrapper.innerText = 'Tap to unmute ';
-
-	// 			jwplayer().setMute(true);
-	// 			elementJwplayerInit.appendChild(elementCreateWrapper);
-	// 			elementCreateWrapper.appendChild(elementMuteIcon);
-	// 			elementCreateWrapper.addEventListener('click', () => {
-	// 				if (elementCreateWrapper === null) {
-	// 					jwplayer().setMute(true);
-	// 					elementJwplayer[0].classList.add('jwplayer-mute');
-	// 					elementJwplayer[0].classList.remove('jwplayer-full');
-	// 				}
-	// 				else {
-	// 					jwplayer().setMute(false);
-	// 					elementCreateWrapper.classList.add('jwplayer-full');
-	// 					elementCreateWrapper.classList.remove('jwplayer-mute');
-	// 				}
-	// 			});
-	// 		}
-	// 	});
-
-	// 	this.player.on('mute', function () {
-	// 		let elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
-	// 		if (elementJwplayer[0] !== undefined) {
-	// 			if (jwplayer().getMute()) {
-	// 				elementJwplayer[0].classList.add('jwplayer-mute');
-	// 				elementJwplayer[0].classList.remove('jwplayer-full');
-	// 			} else {
-	// 				elementJwplayer[0].classList.add('jwplayer-full');
-	// 				elementJwplayer[0].classList.remove('jwplayer-mute');
-	// 			}
-	// 		}
-	// 	});
-
-	// 	this.player.on('setupError', error => {
-	// 		console.log(error);
-	// 		this.player.remove();
-	// 		this.setState({
-	// 			error: true,
-	// 			error_data: error
-	// 		});
-	// 	});
-
-	// 	this.player.on('error', error => {
-	// 		console.log(error);
-	// 		this.player.remove();
-	// 		this.setState({
-	// 			error: true,
-	// 			error_data: error
-	// 		});
-	// 	});
-	// 	this.player.on('fullscreen', () => {
-	// 		if (screen.orientation.type === 'portrait-primary') {
-	// 			document.querySelector("#live-tv-player").requestFullscreen();
-	// 			screen.orientation.lock("landscape-primary");
-	// 		}
-	// 		if (screen.orientation.type === 'landscape-primary') {
-	// 			document.querySelector("#live-tv-player").requestFullscreen();
-	// 			screen.orientation.lock("portrait-primary");
-	// 		}
-	// 	});
-
-	// 	this.player.on('play', function () {
-	// 		if (self.state.selected_tab === 'catch_up_tv') {
-	// 			if (self.state.selected_catchup) {
-	// 				liveTvCatchupSchedulePlay(self.state.selected_date, self.state.live_events[self.state.selected_index].id ? self.state.live_events[self.state.selected_index].id : self.state.live_events[self.state.selected_index].id, self.state.live_events[self.state.selected_index].name, self.state.selected_catchup.title, 'mweb_livetv_catchup_schedule_play');
-	// 			}
-	// 		}
-	// 	});
-	// }
-
-	// removeSkipButton() {
-	// 	if (this.player) {
-	// 		const playerChildNodes = this.player.el().childNodes;
-	// 		for (let i = 0; i < playerChildNodes.length; i++) {
-	// 			if (playerChildNodes[i].className == 'vjs-control-bar') {
-	// 				let vjsControlBarChilds = playerChildNodes[i].childNodes;
-	// 				for (let j = 0; j < vjsControlBarChilds.length; j++) {
-	// 					if (vjsControlBarChilds[j].className == 'vjs-seek-button skip-back skip-10 vjs-control vjs-button' || vjsControlBarChilds[j].className == 'vjs-seek-button skip-forward skip-10 vjs-control vjs-button') {
-	// 						vjsControlBarChilds[j].parentNode.removeChild(vjsControlBarChilds[j]);
-	// 					}
-	// 				}
-
-	// 				vjsControlBarChilds = playerChildNodes[i].childNodes;
-	// 				for (let j = 0; j < vjsControlBarChilds.length; j++) {
-	// 					if (vjsControlBarChilds[j].className == 'vjs-seek-button skip-back skip-10 vjs-control vjs-button' || vjsControlBarChilds[j].className == 'vjs-seek-button skip-forward skip-10 vjs-control vjs-button') {
-	// 						vjsControlBarChilds[j].parentNode.removeChild(vjsControlBarChilds[j]);
-	// 					}
-	// 				}
-	// 				break;
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-	// setupPlayerBehavior() {
-	// 	if (this.player) {
-	// 		this.player.on('useractive', () => {
-	// 			if (!this.player.paused()) {
-	// 				const seekButtons = document.getElementsByClassName('vjs-seek-button');
-	// 				for (let i = 0; i < seekButtons.length; i++) {
-	// 					seekButtons[i].style.display = 'block';
-	// 				}
-
-	// 				this.setState({ user_active: true });
-	// 			}
-	// 		});
-
-	// 		this.player.on('userinactive', () => {
-	// 			if (!this.player.paused()) {
-	// 				const seekButtons = document.getElementsByClassName('vjs-seek-button');
-	// 				for (let i = 0; i < seekButtons.length; i++) {
-	// 					seekButtons[i].style.display = 'none';
-	// 				}
-
-	// 				this.setState({ user_active: false });
-	// 			}
-
-	// 			if (this.state.quality_selector_shown) {
-  //                   this.triggerQualityButtonClick('inactive');
-	// 			}
-	// 			this.setState({ quality_selector_shown: false });
-	// 		});
-
-	// 		this.player.on('play', () => {
-	// 			const seekButtons = document.getElementsByClassName('vjs-seek-button');
-	// 			for (let i = 0; i < seekButtons.length; i++) {
-	// 				seekButtons[i].style.display = 'none';
-	// 			}
-
-	// 			const playButton = document.getElementsByClassName('vjs-big-play-button');
-	// 			if (playButton.length > 0) {
-	// 				playButton[0].style.display = 'none';
-	// 			}
-
-	// 			this.setState({ playing: true });
-	// 		});
-
-	// 		this.player.on('pause', () => {
-	// 			const seekButtons = document.getElementsByClassName('vjs-seek-button');
-	// 			for (let i = 0; i < seekButtons.length; i++) {
-	// 				seekButtons[i].style.display = 'none';
-	// 			}
-
-	// 			const playButton = document.getElementsByClassName('vjs-big-play-button');
-	// 			if (playButton.length > 0) {
-	// 				playButton[0].style.display = 'block';
-	// 			}
-
-	// 			this.setState({ playing: false });
-	// 		});
-
-	// 		this.player.on('playing', () => {
-	// 			this.setState({ playing: true });
-	// 		});
-	// 	}
-	// }
-
-	// setSkipButtonCentered(orientation = 'portrait') {
-	// 	if (this.player) {
-	// 		const player = document.getElementById(this.player.id());
-	// 		if (player) {
-	// 			const playerHeight = player.clientHeight;
-	// 			const seekButtons = document.getElementsByClassName('vjs-seek-button');
-	// 			for (let i = 0; i < seekButtons.length; i++) {
-	// 				seekButtons[i].style.bottom = (Math.floor(playerHeight / 2) - 5) + 'px';
-
-	// 				if (i == 0) {
-	// 					seekButtons[i].style.left = (this.state.screen_width - ((this.state.screen_width / 3) * (orientation == 'portrait' ? 2.35 : 2.20))) + 'px';
-	// 				}
-	// 				else if (i == 1) {
-	// 					seekButtons[i].style.left = (this.state.screen_width - (this.state.screen_width / 3)) + 'px';
-	// 				}
-	// 			}
-	// 		}
-
-	// 	}
-	// }
-
-	// changeQualityIconButton() {
-  //       const self = this;
-  //       setTimeout(() => {
-	// 		const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
-  //           if (qualitySelectorElement.length > 0) {
-	// 			const childs = qualitySelectorElement[0].childNodes;
-  //               for (let i = 0; i < childs.length; i++) {
-  //                   if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
-  //                       childs[i].addEventListener('touchstart', function() {
-  //                           console.log('touch');
-  //                           self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
-  //                       });
-  //                       const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
-  //                       for (let j = 0; j < qualityItems.length; j++) {
-  //                           qualityItems[j].addEventListener('touchstart', function() {
-  //                               console.log('touch');
-  //                               self.setState({ quality_selector_shown: false });
-  //                           });
-  //                       }
-  //                       childs[i].addEventListener('click', function() {
-  //                           console.log('click');
-  //                           self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
-  //                       });
-
-	// 					const grandChilds = childs[i].childNodes;
-  //                       for (let j = 0; j < grandChilds.length; j++) {
-  //                           if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
-  //                               grandChilds[j].classList.remove('vjs-icon-hd');
-  //                               grandChilds[j].innerHTML = '<i style="transform: scale(1.5)" class="fas fa-cog"></i>';
-  //                               break;
-  //                           }
-  //                       }
-  //                       break;
-  //                   }
-  //               }
-  //           }
-  //       }, 1000);
-  //   }
-
-    // triggerQualityButtonClick(type = '') {
-    //     const qualitySelectorElement = document.getElementsByClassName('vjs-quality-selector');
-    //     if (qualitySelectorElement.length > 0) {
-    //         const childs = qualitySelectorElement[0].childNodes;
-    //         for (let i = 0; i < childs.length; i++) {
-    //             if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button' && type == 'inactive') {
-    //                 childs[i].click();
-    //                 break;
-    //             }
-    //         }
-    //     }
-    // }
-
-	// initPlayer() {
-
-	// 	// status code 12 means the video is geoblock-ed
-	// 	if (this.state.status && this.state.status.code === 12) {
-	// 		return;
-	// 	}
-
-	// 	if (this.disconnectHandler) {
-	// 		clearTimeout(this.disconnectHandler);
-	// 		this.disconnectHandler = null;
-	// 	}
-
-	// 	if (this.videoNode) {
-	// 		const assetName = this.state.selected_live_event.channel_code.toLowerCase() === 'globaltv' ? 'gtv' : this.state.selected_live_event.channel_code;
-	// 		if (this.state.first_init_player) {
-	// 			this.setState({ first_init_player: false, screen_width: window.outerWidth }, () => {
-	// 				const self = this;
-	// 				videojs.registerPlugin('hlsQualitySelector', qualitySelector);
-	// 				this.player = videojs(this.videoNode, {
-	// 					id: 'tv-player',
-	// 					autoplay: true,
-	// 					controls: true,
-	// 					muted: isIOS,
-	// 					// muted: true,
-	// 					fluid: true,
-	// 					aspectratio: '16:9',
-	// 					fill: true,
-	// 					html5: {
-	// 						hls: {
-	// 							overrideNative: true,
-	// 						},
-	// 					},
-	// 					sources: [{
-	// 						src: this.state.player_url,
-	// 						type: 'application/x-mpegURL'
-	// 					}]
-	// 				}, function onPlayerReady() {
-	// 					console.log('onPlayerReady', this);
-	// 					const player = this;
-	// 					switch (self.state.selected_tab) {
-	// 						case 'live':
-	// 							self.removeSkipButton();
-	// 							const currentEpg = self.getCurrentLiveEpg();
-	// 							if (currentEpg != null) {
-	// 								const customTags = {
-	// 									app_version: process.env.APP_VERSION,
-	// 									carrier: 'N/A',
-	// 									connection_type: 'N/A',
-	// 									content_type: 'live tv',
-	// 									content_id: 'N/A',
-	// 									program_name: 'N/A',
-	// 									tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id.toString() : self.state.selected_live_event.content_id.toString(),
-	// 									tv_name: assetName.toUpperCase(),
-	// 									date_video: 'N/A',
-	// 									genre: 'N/A',
-	// 									page_title: 'N/A',
-	// 									page_view: 'N/A',
-	// 									program_id: 'N/A',
-	// 									screen_mode: 'portrait',
-	// 									time_video: 'N/A',
-	// 									viewer_id: getUserId().toString(),
-	// 									application_name: 'RCTI+ MWEB',
-	// 									section_page: 'N/A',
-	// 									genre: 'N/A'
-	// 								};
-
-	// 								self.convivaTracker = convivaVideoJs(assetName.toUpperCase(), player, true, self.state.player_url, 'Live TV ' + assetName.toUpperCase(), customTags);
-	// 								self.convivaTracker.createSession();
-	// 							}
-	// 							break;
-
-	// 						case 'catch_up_tv':
-	// 							player.seekButtons({
-	// 								forward: 10,
-	// 								back: 10
-	// 							});
-	// 							setTimeout(() => {
-	// 								self.setSkipButtonCentered();
-	// 							}, 2000);
-	// 							window.onresize = () => {
-	// 								self.setSkipButtonCentered();
-	// 							};
-
-	// 							const customTags = {
-	// 								app_version: process.env.APP_VERSION,
-	// 								carrier: 'N/A',
-	// 								connection_type: 'N/A',
-	// 								content_type: 'catch up tv',
-	// 								content_id: self.state.selected_catchup.id.toString(),
-	// 								program_name: 'N/A',
-	// 								tv_id: self.state.selected_live_event.id ? self.state.selected_live_event.id.toString() : self.state.selected_live_event.content_id.toString(),
-	// 								tv_name: assetName.toUpperCase(),
-	// 								date_video: 'N/A',
-	// 								genre: 'N/A',
-	// 								page_title: 'N/A',
-	// 								page_view: 'N/A',
-	// 								program_id: 'N/A',
-	// 								screen_mode: 'portrait',
-	// 								time_video: 'N/A',
-	// 								viewer_id: getUserId().toString(),
-	// 								application_name: 'RCTI+ MWEB',
-	// 								section_page: 'N/A',
-	// 								genre: 'N/A'
-	// 							};
-
-	// 							self.convivaTracker = convivaVideoJs(self.state.selected_catchup.title.toUpperCase(), player, player.duration(), self.state.player_url, 'RCTI+ MWEB', customTags);
-	// 							self.convivaTracker.createSession();
-	// 							break;
-	// 					}
-
-	// 					self.setupPlayerBehavior();
-	// 					setTimeout(() => {
-	// 						self.changeQualityIconButton();
-	// 					}, 100);
-
-	// 					const vm = this;
-	// 					if(isIOS) {
-	// 						vm.muted(true)
-	// 						const wrapElement = document.getElementsByClassName('video-js');
-	// 						const elementCreateWrapper = document.createElement('btn');
-	// 						const elementMuteIcon = document.createElement('span');
-	// 						elementCreateWrapper.classList.add('jwplayer-vol-off');
-	// 						elementCreateWrapper.innerText = 'Tap to unmute ';
-	// 						wrapElement[0].appendChild(elementCreateWrapper);
-	// 						elementCreateWrapper.appendChild(elementMuteIcon);
-	// 						elementCreateWrapper.addEventListener('click', function() {
-	// 							console.log('mute video');
-	// 							vm.muted(false);
-	// 							elementCreateWrapper.classList.remove('jwplayer-mute');
-	// 							elementCreateWrapper.classList.add('jwplayer-full');
-	// 						});
-	// 					}
-	// 					const promise = vm.play();
-	// 					if(promise !== undefined) {
-	// 						promise.then(() => {
-	// 							vm.play()
-	// 							console.log('autoplay');
-	// 						})
-	// 						.catch((err) => console.log(err))
-	// 					}
-	// 				});
-
-	// 				this.player.on('fullscreenchange', () => {
-	// 					if (screen.orientation.type === 'portrait-primary') {
-	// 						screen.orientation.lock("landscape-primary");
-	// 					}
-	// 					if (screen.orientation.type === 'landscape-primary') {
-	// 						screen.orientation.lock("portrait-primary");
-	// 					}
-	// 				});
-	// 				this.player.on('error', () => {
-	// 					this.setState({
-	// 						error: true,
-	// 						first_init_player: true
-	// 					});
-	// 				});
-
-	// 				this.player.hlsQualitySelector({
-	// 					displayCurrentQuality: true
-	// 				});
-
-	// 				this.disconnectHandler = null;
-	// 				this.player.on('waiting', (e) => {
-	// 					if (this.disconnectHandler) {
-	// 						console.log('CLEAR TIMEOUT');
-	// 						clearTimeout(this.disconnectHandler);
-	// 					}
-
-	// 					this.disconnectHandler = setTimeout(() => {
-	// 						console.log('ERROR');
-	// 						this.setState({
-	// 							error: true,
-	// 						});
-	// 					}, 40000);
-	// 				})
-
-	// 				this.player.on('playing', () => {
-	// 					if (this.disconnectHandler) {
-	// 						console.log('CLEAR TIMEOUT');
-	// 						clearTimeout(this.disconnectHandler);
-	// 					}
-	// 				});
-
-	// 				window.onorientationchange = () => {
-	// 					if (!isIOS) {
-	// 						this.player.userActive(false);
-	// 						setTimeout(() => {
-	// 							this.setState({ screen_width: window.outerWidth }, () => {
-	// 								let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
-	// 								this.setSkipButtonCentered(orientation);
-	// 							});
-	// 						}, 1000);
-	// 					}
-	// 				};
-
-	// 				this.player.ima({
-	// 					adTagUrl: this.state.player_vmap,
-	// 					preventLateAdStart: true,
-	// 					adsManagerLoadedCallback: () => {
-	// 						this.player.ima.addEventListener(google.ima.AdEvent.Type.STARTED, () => {
-	// 							console.log('google.ima.AdEvent.Type.STARTED');
-	// 						});
-	// 					}
-	// 				});
-
-	// 				this.player.ima.initializeAdDisplayContainer();
-	// 			});
-	// 		}
-	// 		else {
-	// 			this.player.src(this.state.player_url);
-	// 			this.player.ima.changeAdTag(this.state.player_vmap);
-	// 			this.player.ima.initializeAdDisplayContainer();
-	// 			this.player.ima.requestAds();
-
-	// 			this.setupPlayerBehavior();
-
-	// 			switch (this.state.selected_tab) {
-	// 				case 'live':
-	// 					this.removeSkipButton();
-	// 					const currentEpg = this.getCurrentLiveEpg();
-	// 					if (currentEpg != null) {
-	// 						const customTags = {
-	// 							app_version: process.env.APP_VERSION,
-	// 							carrier: 'N/A',
-	// 							connection_type: 'N/A',
-	// 							content_type: 'live tv',
-	// 							content_id: 'N/A',
-	// 							program_name: 'N/A',
-	// 							tv_id: this.state.selected_live_event.id ? this.state.selected_live_event.id.toString() : this.state.selected_live_event.content_id.toString(),
-	// 							tv_name: assetName.toUpperCase(),
-	// 							date_video: 'N/A',
-	// 							genre: 'N/A',
-	// 							page_title: 'N/A',
-	// 							page_view: 'N/A',
-	// 							program_id: 'N/A',
-	// 							screen_mode: 'portrait',
-	// 							time_video: 'N/A',
-	// 							viewer_id: getUserId().toString(),
-	// 							application_name: 'RCTI+ MWEB',
-	// 							section_page: 'N/A',
-	// 							genre: 'N/A'
-	// 						};
-
-	// 						this.convivaTracker = convivaVideoJs(assetName.toUpperCase(), this.player, true, this.state.player_url, 'Live TV ' + assetName.toUpperCase(), customTags);
-	// 						this.convivaTracker.createSession();
-	// 					}
-
-	// 					break;
-
-	// 				case 'catch_up_tv':
-	// 					this.player.seekButtons({
-	// 						forward: 10,
-	// 						back: 10
-	// 					});
-	// 					setTimeout(() => {
-	// 						this.setSkipButtonCentered();
-	// 					}, 2000);
-	// 					window.onresize = () => {
-	// 						this.setSkipButtonCentered();
-	// 					};
-
-	// 					const customTags = {
-	// 						app_version: process.env.APP_VERSION,
-	// 						carrier: 'N/A',
-	// 						connection_type: 'N/A',
-	// 						content_type: 'catch up tv',
-	// 						content_id: this.state.selected_catchup.id.toString(),
-	// 						program_name: 'N/A',
-	// 						tv_id: this.state.selected_live_event.id ? this.state.selected_live_event.id.toString() : this.state.selected_live_event.content_id.toString(),
-	// 						tv_name: assetName.toUpperCase(),
-	// 						date_video: 'N/A',
-	// 						genre: 'N/A',
-	// 						page_title: 'N/A',
-	// 						page_view: 'N/A',
-	// 						program_id: 'N/A',
-	// 						screen_mode: 'portrait',
-	// 						time_video: 'N/A',
-	// 						viewer_id: getUserId().toString(),
-	// 						application_name: 'RCTI+ MWEB',
-	// 						section_page: 'N/A',
-	// 						genre: 'N/A'
-	// 					};
-
-	// 					this.convivaTracker = convivaVideoJs(this.state.selected_catchup.title, this.player, this.player.duration(), this.state.player_url, 'Catch Up TV ' + assetName.toUpperCase(), customTags);
-	// 					this.convivaTracker.createSession();
-	// 					break;
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-
-				// this.props.getChatSocket(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id)
-				// .then(data => {
-				// 	let chats = this.state.chats;
-				// 	if (!this.state.sending_chat) {
-				// 		if (chats.length > 0) {
-				// 			let lastChat = chats[chats.length - 1];
-				// 			let newChat = data.data;
-				// 			if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-				// 				chats = newChat;
-				// 			}
-				// 			}
-				// 			else {
-				// 				chats = data.data;
-				// 			}
-
-				// 		this.setState({ chats: chats }, () => {
-				// 			const chatBox = document.getElementById('chat-messages');
-				// 			chatBox.scrollTop = chatBox.scrollHeight;
-
-				// 			const chatInput = document.getElementById('chat-input');
-				// 			chatInput.style.height = `24px`;
-				// 		});
-				// 	}
-				// })
-				// .then(() => {
-				// 	this.props.listenSocketIo(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id)
-				// 	.then((socket) => {
-				// 		socket.on('message', (data) => {
-				// 		let chats = this.state.chats;
-				// 		let newChat = data;
-				// 			if (chats.length > 0) {
-				// 				let lastChat = chats[chats.length - 1];
-				// 				if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-				// 					chats.push(newChat);
-				// 				}
-				// 			}
-				// 			else {
-				// 				chats.push(newChat);
-				// 			}
-
-				// 			this.setState({ chats: chats }, () => {
-				// 				const chatBox = document.getElementById('chat-messages');
-				// 				chatBox.scrollTop = chatBox.scrollHeight;
-
-				// 				const chatInput = document.getElementById('chat-input');
-				// 				chatInput.style.height = `24px`;
-				// 			});
-				// 		})
-				// 	})
-				// })
-				// .catch((err) => {
-				// 	console.log(err);
-				// });
 			}
 
 		});
@@ -1279,28 +638,6 @@ class Tv extends React.Component {
 							this.setState({ chats: chats, sending_chat: false });
 						});
 				});
-				// this.props.postChatSocket(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.chat, this.state.user_data.photo_url, user)
-				// .then(response => {
-				// 	newChat.sent = true;
-				// 	if (response.status !== 200) {
-				// 		newChat.failed = true
-				// 	}
-				// 	chats[chats.length - 1] = newChat;
-				// 		this.setState({ chats: chats, sending_chat: false });
-				// })
-				// .catch(() => {
-				// 	newChat.sent = true;
-				// 	newChat.failed = true;
-				// 	chats[chats.length - 1] = newChat;
-				// 	this.setState({ chats: chats, sending_chat: false });
-				// });
-				// this.setState({ chats: chats, chat: '', sending_chat: true }, () => {
-				// 	const chatBox = document.getElementById('chat-messages');
-				// 	chatBox.scrollTop = chatBox.scrollHeight;
-
-				// 	const chatInput = document.getElementById('chat-input');
-				// 	chatInput.style.height = `24px`;
-				// });
 			}
 		}
 		else {
@@ -1428,6 +765,19 @@ class Tv extends React.Component {
 			isAds: e,
 		}, () => { console.log(this.state.isAds)})
 	}
+	_metaTags(){
+		const [titleChannel, titleEpg] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`].title, this.props.router.query.epg_title?.replace(/-/gi, ' ')]
+		const [descriptionChannel, channel] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`].description , this.props?.data_epg?.channel]
+		const [keywordsChannel, paramsDate] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`].keywords, this.props.params_date.replace(/-/gi, ' ')]
+		return {
+			title: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel?.toUpperCase()} - RCTI+` : titleChannel,
+			description: titleEpg ? `Nonton streaming ${titleEpg} - ${paramsDate}  online tanpa buffering dan acara favorit lainnya 7 hari kemarin. Dapatkan juga jadwal acara ${channel?.toUpperCase()} terbaru hanya di RCTI+` : descriptionChannel,
+			keywords: titleEpg ? `streaming ${channel}, live streaming ${channel}, ${channel} live, ${channel} streaming, ${channel} live streaming. ${titleEpg}, ${paramsDate}` : keywordsChannel
+		}
+	}
+	// _onClickEpg() {
+	// 	Router.replace(``)
+	// }
 	render() {
 		const { props, state } = this
 		let playerRef = (<div></div>);
@@ -1504,14 +854,15 @@ class Tv extends React.Component {
 		}
 
 		return (
-			<Layout className="live-tv-layout" title={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title}>
+			<Layout className="live-tv-layout" title={this._metaTags().title}>
 				<Head>
-					<meta name="description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description} />
-					<meta name="keywords" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].keywords} />
-					<meta property="og:title" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title} />
-					<meta property="og:description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description} />
+					<meta name="description" content={this._metaTags().description} />
+					<meta name="keywords" content={this._metaTags().keywords} />
+					<meta property="og:title" content={this._metaTags().title} />
+					<meta property="og:description" content={this._metaTags().description} />
 					<meta property="og:image" itemProp="image" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].image} />
 					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:type" content="video" />
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
 					<meta property="og:image:height" content="315" />
@@ -1521,9 +872,9 @@ class Tv extends React.Component {
 					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
 					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
 					<meta name="twitter:image" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].image} />
-					<meta name="twitter:image:alt" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title} />
-					<meta name="twitter:title" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].title} />
-					<meta name="twitter:description" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].description} />
+					<meta name="twitter:image:alt" content={this._metaTags().title} />
+					<meta name="twitter:title" content={this._metaTags().title} />
+					<meta name="twitter:description" content={this._metaTags().description} />
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 
@@ -1648,7 +999,7 @@ class Tv extends React.Component {
 									{this.props.chats.catchup.map(c => (
 										<Row key={c.id} className={'program-item'}>
 											<Col xs={9} onClick={this.selectCatchup.bind(this, c.id)}>
-												<Link href={`/tv?channel=${this.state.channel_code == 'globaltv' ? 'gtv' : this.state.channel_code}&id=${c.id}&title=${c.title}`} as={`/tv/${this.state.channel_code == 'globaltv' ? 'gtv' : this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`}>
+												<Link href={`/tv/${this.state.channel_code == 'globaltv' ? 'gtv' : this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}?date=${this.props.chats.catchup_date.replace(/ /gi, '-')}`}>
 													<a style={{ textDecoration: 'none', color: 'white' }}>
 														<div className="title">{c.title}</div>
 														<div className="subtitle">{c.s} - {c.e}</div>

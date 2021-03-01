@@ -38,3 +38,34 @@ export const getFormattedDateBefore = daysBefore => {
 
     return dates;
 };
+
+export const formatMonthEngToID = date => {
+    switch(date) {
+        case 'January':
+            return date.replace('January', 'Januari')
+        case 'February':
+            return date.replace('February', 'Februari')
+        case 'March':
+            return date.replace('March', 'Maret')
+        case 'April':
+            return date.replace('April', 'April')
+        case 'May':
+            return date.replace('May', 'Mei')
+        case 'June':
+            return date.replace('June', 'Juni')
+        case 'July':
+            return date.replace('July', 'Juli')
+        case 'August':
+            return date.replace('August', 'Agustus')
+        case 'September':
+            return date.replace('September', 'September')
+        case 'October':
+            return date.replace('October', 'Oktober')
+        case 'November':
+            return date.replace('November', 'November')
+        case 'December':
+            return date.replace('December', 'Desember')
+        default:
+            return date.replace('January', 'Januari')
+    }
+}

@@ -204,7 +204,7 @@ class Search extends React.Component {
 
     render() {
         return (
-            <Layout title="RCTI+ - Live Streaming Program 4 TV Terpopuler">
+            <Layout title={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - News+ on RCTI+`}>
                 <Head>
                     <meta name="title" content={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - News+ on RCTI+`} />
                     <meta name="description" content={`RCTI+ - Portal berita terbaru dan terpercaya | ${this.props.dataSearch?.keyword || ''}`} />

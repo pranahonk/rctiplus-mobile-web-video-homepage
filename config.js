@@ -102,9 +102,9 @@ export const UTM_NAME = (utm, utmCampaign, utmMedium, platform = 'mweb') => {
 };
 export const SITEMAP = {
     home: {
-        title: `${SITE_NAME} - Live Streaming Program 4 TV Terpopuler`,
-        description: `Live Streaming Program RCTI, MNCTV, GTV & iNews. Menyajikan konten eksklusif yang tidak tayang di TV & Informasi Trending Terupdate. Nonton Gak Monoton di RCTI+.`,
-        keywords: `rctiplus, rcti plus, rcti+`,
+        title: `${SITE_NAME} - Satu Aplikasi, Semua Hiburan`,
+        description: `Satu aplikasi, semua hiburan mulai dari live streaming program RCTI, MNCTV, GTV & iNews TV. Menyajikan konten eksklusif yang tidak tayang di TV & Informasi Trending Terupdate, dengar radio dan podcast favorit, menonton aksi talent terbaik, dan main games juga`,
+        keywords: `rctiplus, rcti plus, rcti+, rcti, mnctv, gtv, inews,hot, home of talent, games, news, radio, podcast, baca berita`,
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     terms_and_conditions: {
@@ -262,6 +262,18 @@ export const SITEMAP = {
         description: `Nonton live streaming iNews online hari ini tanpa buffering untuk semua program dan berita favorit yang tayang setiap hari. Dapatkan juga jadwal berita RCTI terbaru hanya di RCTI+`,
         keywords: `berita inews, inews, streaming inews, berita inews tv terbaru, inews terkini`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_INEWS-min.png`
+    },
+    live_event_index: {
+        title: `Streaming Live Event TV Online Indonesia - ${SITE_NAME}`,
+        description: `Nonton live streaming tv online Indonesia berbagai event menarik eksklusif hanya di RCTI+, mulai dari bola, entertainment, musik dan lainnya`,
+        keywords: `rctiplus, tv online indonesia`,
+        image: 'https://rctiplus.com/assets/image/elements/logo.b9f35229.png',
+    },
+    missed_event_index: {
+        title: `Tonton Tayangan Ulang Streaming Live Event TV Online Indonesia - ${SITE_NAME}`,
+        description: `Nonton tayangan ulang live streaming tv online Indonesia berbagai event menarik eksklusif hanya di RCTI+, mulai dari bola, entertainment, musik dan lainnya`,
+        keywords: `rctiplus, tv online indonesia`,
+        image: 'https://rctiplus.com/assets/image/elements/logo.b9f35229.png',
     },
     trending: {
         title: `Informasi Berita Terkini dan Viral dari Berbagai Sumber Terpercaya - ${SITE_NAME_NEWS}`,
