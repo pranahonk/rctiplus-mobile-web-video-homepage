@@ -885,9 +885,10 @@ class LiveEvent extends React.Component {
 				image: '',
 			}
 		}
+
 		return {
-			title: 'Streaming ' + this.props.router.query.title.replace(/-/gi, ' ') || '' + ' - RCTI+',
-			description: 'Nonton streaming online ' + this.props.router.query.title.replace(/-/gi, ' ') || '' + 'tanggal ' + this.props.selected_event.start_date || '' + ' WIB hanya di RCTI+ ',
+			title: this.props.router.asPath.includes('/missed-event') ? `Tayangan Ulang Streaming ${this.props.router.query.title.replace(/-/gi, ' ') || ''}`: 'Streaming ' + this.props.router.query.title.replace(/-/gi, ' ') || '' + ' - RCTI+',
+			description: `Tonton siaran langsung ${this.props.router.query.title.replace(/-/gi, ' ')} gratis dan tanpa buffering di RCTI+`,
 			image: this.props.selected_event.meta.image_path+'300'+this.props.selected_event.data.portrait_image || '',
 		}
 	}
@@ -906,6 +907,7 @@ class LiveEvent extends React.Component {
 					<meta property="og:image:width" content="600" />
 					<meta property="og:image:height" content="315" />
 					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="og:type" content= />
 					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
 					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
