@@ -534,7 +534,6 @@ class Trending_v2 extends React.Component {
                                                                                 style={{ 
                                                                                     height: '250px',
                                                                                     width: '100%',
-                                                                                    display: 'none',
                                                                                 }} />
                                                                             {/* <iframe 
                                                                                 ref={this.iframeAds} 

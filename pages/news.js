@@ -703,7 +703,6 @@ class Trending_v2 extends React.Component {
                                                                                     style={{ 
                                                                                         height: '250px',
                                                                                         width: '100%',
-                                                                                        display: 'none',
                                                                                     }} />
                                                                             </ListGroupItem>
                                                                             <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
