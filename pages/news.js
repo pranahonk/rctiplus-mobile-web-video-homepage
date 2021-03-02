@@ -680,29 +680,35 @@ class Trending_v2 extends React.Component {
                                                                             <ListGroupItem className="listNewsAdds">
                                                                                 <iframe 
                                                                                     onLoad={() => {
-                                                                                        window.addEventListener('scroll', () => {
-                                                                                            const iframeElement = document.getElementById(article.id)
-                                                                                            const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
-                                                                                            document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
-                                                                                            const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
-                                                                                            document.getElementById(article.id).contentWindow.document.getElementById('error__page') 
-                                                                                            const element_3 = document.getElementById(article.id)
-                                                                                            if(element && element.style.display === 'none' || element_2) {
-                                                                                                element_3.style.display = 'none'
-                                                                                            } else {
-                                                                                                if(!element) {
-                                                                                                    iframeElement.style.display = 'none'
-                                                                                                    return 
+                                                                                        setTimeout(() => {
+                                                                                            window.addEventListener('scroll', () => {
+                                                                                                const iframeElement = document.getElementById(article.id)
+                                                                                                const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
+                                                                                                document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
+                                                                                                const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
+                                                                                                document.getElementById(article.id).contentWindow.document.getElementById('error__page') 
+                                                                                                const element_3 = document.getElementById(article.id)
+                                                                                                console.log('element >>', element)
+                                                                                                console.log('element_2 >>', element_2)
+                                                                                                console.log('element_3 >>', element_3)
+                                                                                                if(element && element.style.display === 'none' || element_2) {
+                                                                                                    element_3.style.display = 'none'
+                                                                                                } else {
+                                                                                                    if(!element) {
+                                                                                                        iframeElement.style.display = 'none'
+                                                                                                        return 
+                                                                                                    }
+                                                                                                    element_3.style.display = 'block'
                                                                                                 }
-                                                                                                element_3.style.display = 'block'
-                                                                                            }
                                                                                             })
+                                                                                        }, 1000)
                                                                                     }}
                                                                                     id={article.id} src={`/dfp?platform=${this.platform}`} 
                                                                                     frameBorder="0" 
                                                                                     style={{ 
                                                                                         height: '250px',
                                                                                         width: '100%',
+                                                                                        display: 'none',
                                                                                     }} />
                                                                             </ListGroupItem>
                                                                             <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
