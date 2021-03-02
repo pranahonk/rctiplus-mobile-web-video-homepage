@@ -213,6 +213,8 @@ body {
     border: 1px solid #171717;
     &.listNewsAdds {
         padding: 1.5rem 0 0;
+        border: 0 none;
+        position: relative;
     }
 }
 .content-tab-exclusive {
