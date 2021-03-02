@@ -437,12 +437,12 @@ class Detail extends React.Component {
             "datePublished": cdata.publish_date, // The date and time the article was first published
             "dateModified": cdata.updated_at, // The date and time the article was most recently modified
             "author": {
-                "@type": "Person",
-                "name": cdata.author
+                "@type": "Organization",
+                "name": cdata.source
             },
             "publisher": {
                 "@type": "Organization",
-                "name": "rcti+",
+                "name": "RCTI+",
                 "logo": {
                     "@type": "ImageObject",
                     "url": `${oneSegment}/assets/image/elements/logo.b9f35229.png`
