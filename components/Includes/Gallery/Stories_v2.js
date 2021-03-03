@@ -200,7 +200,8 @@ class Stories extends React.Component {
                 item.swipe_type == 'link' ? (item.swipe_value) : false, 'Click Here',
                 false,
                 item.release_date,
-                item.title
+                item.title,
+                item.link_video != null ? item.link_video.split('.').pop() : ''
             ]);
         }
 
