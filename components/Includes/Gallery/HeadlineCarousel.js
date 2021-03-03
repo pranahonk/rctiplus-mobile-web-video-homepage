@@ -6,6 +6,9 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import Img from 'react-image';
 
+import { imgNews } from '../../../utils/helpers';
+
+
 import { formatDateWordID } from '../../../utils/dateHelpers';
 import { setAccessToken, removeAccessToken } from '../../../utils/cookie';
 import { newsArticleClicked } from '../../../utils/appier';
@@ -71,10 +74,16 @@ class HeadlineCarousel extends React.Component {
                 {this.props.articles.map((article, i) => (
                     <div onClick={() => this.goToDetail(article)} key={i}>
                         <div className="center-cropped">
+                            {
+                                console.log("hello wordd >>", imgNews(article.cover, article.image, 400))
+                            }
                             <Img 
                                 className="thumbnail"
                                 alt={article.title}
-                                src={[article.cover, '/static/placeholders/placeholder_landscape.png']}
+                                src={[
+                                    imgNews(article.cover, article.image, 400),
+                                    '/static/placeholders/placeholder_landscape.png'
+                                ]}
                                 loader={<img alt={article.title} className="thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
                                 unloader={<img alt={article.title} className="thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}/>
                             

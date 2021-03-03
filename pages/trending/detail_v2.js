@@ -27,7 +27,7 @@ import { formatDateWordID } from '../../utils/dateHelpers';
 import SquareItem from '../../components/Includes/news/SquareItem';
 const HorizontalItem = dynamic(() => import('../../components/Includes/news/HorizontalItem'),{ ssr: false })
 import { setAccessToken, removeAccessToken } from '../../utils/cookie';
-import { getTruncate } from '../../utils/helpers';
+import { getTruncate, imgNews } from '../../utils/helpers';
 import { urlRegex } from '../../utils/regex';
 import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
 import newsv2Actions from '../../redux/actions/newsv2Actions';
@@ -434,7 +434,7 @@ class Detail extends React.Component {
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
         const newsTitle = cdata.title
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
-        const converImg = cdata.cover
+        const coverImg = imgNews(cdata.cover, cdata.image, 400)
         const structuredData = {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
@@ -443,7 +443,7 @@ class Detail extends React.Component {
                 "@id": currentUrl
             },
             "headline": newsTitle.replace(/\\/g, ''),
-            "image": [converImg],
+            "image": [coverImg],
             "datePublished": cdata.publish_date, // The date and time the article was first published
             "dateModified": cdata.updated_at, // The date and time the article was most recently modified
             "author": {
@@ -470,7 +470,7 @@ class Detail extends React.Component {
                     <meta name="description" content={newsContent} />
                     <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta property="og:description" content={newsContent} />
-                    <meta property="og:image" itemProp="image" content={converImg} />
+                    <meta property="og:image" itemProp="image" content={coverImg} />
                     <meta property="og:type" content="website" />
                     <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta property="og:image:type" content="image/jpeg" />
@@ -481,7 +481,7 @@ class Detail extends React.Component {
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
                     <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
                     <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-                    <meta name="twitter:image" content={converImg} />
+                    <meta name="twitter:image" content={coverImg} />
                     <meta name="twitter:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta name="twitter:image:alt" content={newsTitle} />
                     <meta name="twitter:description" content={newsContent} />
@@ -607,7 +607,7 @@ class Detail extends React.Component {
                                             height: '100%',
                                             position: 'absolute'
                                         }}
-                                        className="content-trending-detail-cover" src={cdata.cover} />
+                                        className="content-trending-detail-cover" src={coverImg} />
                                     </div>
                                     <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>
                                     {/* <Link href="#" as={"#"}>

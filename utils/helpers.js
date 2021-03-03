@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import Router from 'next/router';
+import isEmpty from 'lodash/isEmpty'
 
 export const showAlert = (text, title, confirmText = 'OK', cancelText = '', confirmCallback = () => {}, styleInverse = false, confirmButtonId = '', cancelButtonId = '') => {
     let options = {
@@ -203,4 +204,8 @@ export const humanizeStr = (str) => {
     }
  
     return frags.join(' ');
+}
+
+export const imgNews = (source, staticUrl, size = 200, assetsUrl = 'https://rstatic.akamaized.net/media/') => {
+    return !isEmpty(staticUrl) && staticUrl !== '-' ? `${assetsUrl}${size}${staticUrl}` : source;
 }
