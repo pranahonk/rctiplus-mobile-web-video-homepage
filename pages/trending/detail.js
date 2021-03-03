@@ -13,6 +13,8 @@ import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 import '../../assets/scss/components/trending_detail.scss';
 
+import { imgNews } from '../../utils/helpers';
+
 import { FacebookShareButton, TwitterShareButton, EmailShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
 import { Row, Col } from 'reactstrap';
 
@@ -193,7 +195,7 @@ class Detail extends React.Component {
                                         alt={tr.title}
                                         unloader={<img alt={tr.title} className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
 										loader={<img alt={tr.title} className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
-                                        src={[tr.cover, '/static/placeholders/placeholder_potrait.png']} /><h2 className="font-trending-title-trending-default" dangerouslySetInnerHTML={{ __html: `${tr.title.substring(0, 35)}...` }}></h2></div>
+                                        src={[imgNews(tr.cover, tr.image, 200), '/static/placeholders/placeholder_potrait.png']} /><h2 className="font-trending-title-trending-default" dangerouslySetInnerHTML={{ __html: `${tr.title.substring(0, 35)}...` }}></h2></div>
                                     </Col>
                                 ))}
                                 

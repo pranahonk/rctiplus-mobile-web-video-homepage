@@ -33,7 +33,7 @@ import '../assets/scss/components/trending_v2.scss';
 
 import newsv2Actions from '../redux/actions/newsv2Actions';
 import userActions from '../redux/actions/userActions';
-import { showSignInAlert, humanizeStr } from '../utils/helpers';
+import { showSignInAlert, humanizeStr, imgNews } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
 // import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
@@ -719,7 +719,10 @@ class Trending_v2 extends React.Component {
                                                                                             loader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
                                                                                             unloader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
                                                                                             className="article-thumbnail-full-width"
-                                                                                            src={[article.cover, '/static/placeholders/placeholder_landscape.png']} />
+                                                                                            src={[
+                                                                                                imgNews(article.cover, article.image, 355),
+                                                                                                '/static/placeholders/placeholder_landscape.png'
+                                                                                            ]} />
                                                                                     </div>
                                                                                     <div className="article-title-container">
                                                                                         <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>

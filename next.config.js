@@ -78,7 +78,10 @@ let nextConfig = {
 		*/
 		config.plugins.push(new webpack.DefinePlugin(env));
 		return config
-	}
+	},
+  devIndicators: {
+    autoPrerender: false,
+  },
 };
 
 // nextConfig = withOffline(nextConfig);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Img from 'react-image';
 import { useRouter } from 'next/router'
-import { getTruncate } from '../../../utils/helpers';
+import { getTruncate, imgNews } from '../../../utils/helpers';
 import { formatDateWordID } from '../../../utils/dateHelpers';
 import { urlRegex } from '../../../utils/regex';
 import queryString from 'query-string';
@@ -39,7 +39,7 @@ export default function HorizontalItem({item}) {
             alt={'null'}
             unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
             loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-            src={[item.cover, '/static/placeholders/placeholder_landscape.png']}
+            src={[imgNews(item.cover, item.image, 237), '/static/placeholders/placeholder_landscape.png']}
             className="news-interest_thumbnail"
             />
         <div className="news-interest_thumbnail-title" >
