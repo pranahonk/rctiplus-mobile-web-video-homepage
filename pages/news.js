@@ -131,7 +131,8 @@ class Trending_v2 extends React.Component {
         articles_length: 10,
         is_load_more: false,
         user_data: null,
-        sticky_category_shown: false
+        sticky_category_shown: false,
+        assets_url: null
     };
 
     constructor(props) {
@@ -178,6 +179,7 @@ class Trending_v2 extends React.Component {
         this.setState({ is_articles_loading: true }, () => {
             this.props.getNews(categoryId, this.state.articles_length, page)
                 .then(res => {
+                    const {assets_url} = res.data.meta;
                     let articles = this.state.articles;
                     let pages = this.state.pages;
                     let loadMoreAllowed = this.state.load_more_allowed;
@@ -196,7 +198,8 @@ class Trending_v2 extends React.Component {
                         is_articles_loading: false,
                         articles: articles,
                         load_more_allowed: loadMoreAllowed,
-                        is_load_more: false
+                        is_load_more: false,
+                        assets_url: assets_url
                     });
                 })
                 .catch(error => {
@@ -720,7 +723,7 @@ class Trending_v2 extends React.Component {
                                                                                             unloader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
                                                                                             className="article-thumbnail-full-width"
                                                                                             src={[
-                                                                                                imgNews(article.cover, article.image, 355),
+                                                                                                imgNews(article.cover, article.image, 355, this.state.assets_url),
                                                                                                 '/static/placeholders/placeholder_landscape.png'
                                                                                             ]} />
                                                                                     </div>
@@ -739,7 +742,7 @@ class Trending_v2 extends React.Component {
                                                             } else {
                                                                 return(
                                                                     <li className="item_square-wrapper" key={j + article.title}>
-                                                                        <SquareItem item={article}/>
+                                                                        <SquareItem item={article} assets_url={this.state.assets_url} />
                                                                     </li>
                                                                 )
                                                             }

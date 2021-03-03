@@ -8,7 +8,7 @@ import queryString from 'query-string';
 import '../../../assets/scss/components/trending_v2.scss';
 
 const redirectToPublisherIndex = [0, 1];
-export default function SquareItem({item, indexKey, isIndexKey}) {
+export default function SquareItem({item, assets_url, indexKey, isIndexKey}) {
   const router = useRouter()
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
@@ -45,7 +45,7 @@ export default function SquareItem({item, indexKey, isIndexKey}) {
               loader={<img alt={item.title} className="news-interest_thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
               unloader={<img alt={item.title} className="news-interest_thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
               className="news-interest_thumbnail"
-              src={[imgNews(item.cover, item.image, 200), '/static/placeholders/placeholder_landscape.png']} />
+              src={[imgNews(item.cover, item.image, 200, assets_url), '/static/placeholders/placeholder_landscape.png']} />
           </div>
       </div>
       <div className="lt_content">

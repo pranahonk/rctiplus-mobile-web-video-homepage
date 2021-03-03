@@ -74,9 +74,6 @@ class HeadlineCarousel extends React.Component {
                 {this.props.articles.map((article, i) => (
                     <div onClick={() => this.goToDetail(article)} key={i}>
                         <div className="center-cropped">
-                            {
-                                console.log("hello wordd >>", imgNews(article.cover, article.image, 400))
-                            }
                             <Img 
                                 className="thumbnail"
                                 alt={article.title}

@@ -206,6 +206,8 @@ export const humanizeStr = (str) => {
     return frags.join(' ');
 }
 
-export const imgNews = (source, staticUrl, size = 200, assetsUrl = 'https://rstatic.akamaized.net/media/') => {
-    return !isEmpty(staticUrl) && staticUrl !== '-' ? `${assetsUrl}${size}${staticUrl}` : source;
+export const imgNews = (source, staticUrl, size = 200, assetsUrl) => {
+    const assets_url_check = !isEmpty(assetsUrl) && assetsUrl !== undefined
+    const assets_url = assets_url_check ? assetsUrl : 'https://rstatic.akamaized.net/media/'
+    return !isEmpty(staticUrl) && staticUrl !== '-' && assets_url_check ? `${assets_url}${size}${staticUrl}` : source;
 }
