@@ -430,7 +430,8 @@ class Detail extends React.Component {
             'desktop': 'https://www.rctiplus.com',
             'mobile': 'https://m.rctiplus.com',
         };
-        const fullUrl = oneSegment + encodeURI(asPath).replace('trending/', 'news/');
+
+        const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
         const newsTitle = cdata.title
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
         const coverImg = imgNews(cdata.cover, cdata.image, 400)
@@ -439,26 +440,27 @@ class Detail extends React.Component {
             "@type": "NewsArticle",
             "mainEntityOfPage": {
                 '@type': 'WebPage',
-                "@id": fullUrl
+                "@id": currentUrl
             },
             "headline": newsTitle.replace(/\\/g, ''),
             "image": [coverImg],
             "datePublished": cdata.publish_date, // The date and time the article was first published
             "dateModified": cdata.updated_at, // The date and time the article was most recently modified
             "author": {
-                "@type": "Person",
-                "name": cdata.author
+                "@type": "Organization",
+                "name": cdata.source
             },
             "publisher": {
                 "@type": "Organization",
-                "name": "rcti+",
+                "name": "RCTI+",
                 "logo": {
                     "@type": "ImageObject",
-                    "url": `${oneSegment}/assets/image/elements/logo.b9f35229.png`
+                    "url": `${oneSegment['desktop']}/assets/image/elements/logo.b9f35229.png`
                 }
             },
             "description": newsContent
         }
+        const canonicalFullUrl = oneSegment['desktop'] + encodeURI(asPath).replace('trending/', 'news/');
 
         return (
             <Layout title={`${newsTitle} - News+ on RCTI+`}>
@@ -485,7 +487,7 @@ class Detail extends React.Component {
                     <meta name="twitter:description" content={newsContent} />
                     <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)} />
-                    <link rel="canonical" href={fullUrl} />
+                    <link rel="canonical" href={canonicalFullUrl} />
                     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
