@@ -240,6 +240,7 @@ class Stories extends React.Component {
         if (!this.state.loading && !this.state.endpage) {
             let page = this.state.page + 1;
 			this.setState({ loading: true }, () => {
+                this.props.loadingBar && this.props.loadingBar.continuousStart();
                 this.props.getStories(page, this.state.length)
                 .then(() => {
                     //const currentStories = this.state.stories;
@@ -257,10 +258,12 @@ class Stories extends React.Component {
                             } 
                         }, 300)
                     } */);
+                    this.props.loadingBar && this.props.loadingBar.complete();
                 })
                 .catch(error => {
                     console.log(error);
-                    this.setState({ loading: false, endpage: true })
+                    this.setState({ loading: false, endpage: true });
+                    this.props.loadingBar && this.props.loadingBar.complete();
                 });
             });
         }
