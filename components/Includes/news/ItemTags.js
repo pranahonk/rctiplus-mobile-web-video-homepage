@@ -6,6 +6,8 @@ import queryString from 'query-string';
 import { getTruncate } from '../../../utils/helpers';
 import { formatDateWordID } from '../../../utils/dateHelpers';
 import { urlRegex } from '../../../utils/regex';
+import { imgNews } from '../../../utils/helpers';
+
 // action
 import newsAction from '../../../redux/actions/newsv2Actions';
 
@@ -91,7 +93,7 @@ const ItemTags = ({item, index, ...props}) => {
                         alt={'null'}
                         unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
                         loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-                        src={[item.cover, '/static/placeholders/placeholder_landscape.png']}
+                        src={[imgNews(item.cover, item.image, 237), '/static/placeholders/placeholder_landscape.png']}
                         className="news-interest_thumbnail"
                         />
                       <div className="news-interest_thumbnail-title" >

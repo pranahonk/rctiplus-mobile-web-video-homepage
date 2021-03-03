@@ -93,7 +93,8 @@ class Detail extends React.Component {
             listTagByNews: [],
             count: false,
             countLike: 0, 
-            infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID
+            infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID,
+            assets_url: null
         };
 
         // this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
@@ -160,8 +161,11 @@ class Detail extends React.Component {
             .then(response => {
                 // console.log(response);
                 if (response.status === 200) {
-                    console.log(response.data.data);
-                    this.setState({ trending_related: response.data.data });
+                    const {assets_url} = response.data.meta
+                    this.setState({
+                        trending_related: response.data.data,
+                        assets_url: assets_url
+                    });
                 }
             })
             .catch(error => {
@@ -651,7 +655,7 @@ class Detail extends React.Component {
                                             if(index < 4) {
                                                 return (
                                                 <>
-                                                    <SquareItem key={index + item.title} item={item} indexKey={index} isIndexKey/>
+                                                    <SquareItem key={index + item.title} item={item} assets_url={this.state.assets_url} indexKey={index} isIndexKey/>
                                                 </>
                                             );
                                             }
@@ -668,7 +672,7 @@ class Detail extends React.Component {
                                                 if(index > 4) {
                                                     return (
                                                         <SwiperSlide key={index}>
-                                                            <HorizontalItem item={item} />
+                                                            <HorizontalItem item={item} assets_url={this.state.assets_url} />
                                                         </SwiperSlide>
                                                     );
                                                 }
