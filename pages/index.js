@@ -163,7 +163,7 @@ class Index_v2 extends React.Component {
                     <Carousel showStickyInstall={this.state.show_sticky_install}>
                     <GridMenu />
                     </Carousel>
-                    <Stories/>
+                    <Stories loadingBar={this.LoadingBar}/>
                     <StickyContainer>
                         <Sticky disableHardwareAcceleration>
                             { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
