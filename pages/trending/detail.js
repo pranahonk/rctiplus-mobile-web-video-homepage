@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
-import Img from 'react-image';
 
 import { DEV_API, NEWS_API, BASE_URL } from '../../config';
 
@@ -13,7 +12,7 @@ import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 import '../../assets/scss/components/trending_detail.scss';
 
-import { imgNews } from '../../utils/helpers';
+import { imageNews } from '../../utils/helpers';
 
 import { FacebookShareButton, TwitterShareButton, EmailShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
 import { Row, Col } from 'reactstrap';
@@ -191,11 +190,11 @@ class Detail extends React.Component {
                             <Row className="related-content">
                                 {this.state.trending_related.map((tr, i) => (
                                     <Col xs={6} key={i}>
-                                        <div onClick={() => this.goToDetail(tr)}><Img className="box-img-trending" 
-                                        alt={tr.title}
-                                        unloader={<img alt={tr.title} className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
-										loader={<img alt={tr.title} className="box-img-trending" src="/static/placeholders/placeholder_potrait.png"/>}
-                                        src={[imgNews(tr.cover, tr.image, 200), '/static/placeholders/placeholder_potrait.png']} /><h2 className="font-trending-title-trending-default" dangerouslySetInnerHTML={{ __html: `${tr.title.substring(0, 35)}...` }}></h2></div>
+                                        <div onClick={() => this.goToDetail(tr)}>
+                                            {
+                                                imageNews(tr.title, tr.cover, tr.image, 200, null, 'box-img-trending', 'potrait')
+                                            }
+                                            <h2 className="font-trending-title-trending-default" dangerouslySetInnerHTML={{ __html: `${tr.title.substring(0, 35)}...` }}></h2></div>
                                     </Col>
                                 ))}
                                 
