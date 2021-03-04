@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import Img from 'react-image';
 import { useRouter } from 'next/router'
-import { getTruncate, imgNews } from '../../../utils/helpers';
+import { getTruncate, imageNews } from '../../../utils/helpers';
 import { formatDateWordID } from '../../../utils/dateHelpers';
 import { urlRegex } from '../../../utils/regex';
 import queryString from 'query-string';
@@ -40,12 +39,9 @@ export default function SquareItem({item, assets_url, indexKey, isIndexKey}) {
     <div className="list_tags_thumb">
       <div className="lt_img">
           <div className="lt_img_wrap">
-          <Img
-              alt={item.title}
-              loader={<img alt={item.title} className="news-interest_thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-              unloader={<img alt={item.title} className="news-interest_thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-              className="news-interest_thumbnail"
-              src={[imgNews(item.cover, item.image, 200, assets_url), '/static/placeholders/placeholder_landscape.png']} />
+            {
+              imageNews(item.title, item.cover, item.image, 200, assets_url, 'news-interest_thumbnail')
+            }
           </div>
       </div>
       <div className="lt_content">

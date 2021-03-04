@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic';
 import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
-// import Img from 'react-image';
 import { ScrollPercentage } from 'react-scroll-percentage';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Cookie from 'js-cookie';
@@ -27,7 +26,7 @@ import { formatDateWordID } from '../../utils/dateHelpers';
 import SquareItem from '../../components/Includes/news/SquareItem';
 const HorizontalItem = dynamic(() => import('../../components/Includes/news/HorizontalItem'),{ ssr: false })
 import { setAccessToken, removeAccessToken } from '../../utils/cookie';
-import { getTruncate, imgNews } from '../../utils/helpers';
+import { getTruncate, imgURL, imageNews } from '../../utils/helpers';
 import { urlRegex } from '../../utils/regex';
 import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
 import newsv2Actions from '../../redux/actions/newsv2Actions';
@@ -452,7 +451,7 @@ class Detail extends React.Component {
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
         const newsTitle = cdata.title
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
-        const coverImg = imgNews(cdata.cover, cdata.image, 400, assets_url)
+        const coverImg = imgURL(cdata.cover, cdata.image, 400, assets_url)
         const structuredData = {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
@@ -619,13 +618,10 @@ class Detail extends React.Component {
                                 </StickyContainer> */}
 
                                 <div className="content-trending-detail-wrapper">
-                                    <div className="content-trending-detail-cover-container" style={isInfographic ? null : { paddingBottom: '56.25%' }}>
-                                        <img alt={cdata.title} 
-                                        style={isInfographic ? null : {
-                                            height: '100%',
-                                            position: 'absolute'
-                                        }}
-                                        className="content-trending-detail-cover" src={coverImg} />
+                                    <div className="content-trending-detail-cover-container">
+                                        {
+                                            imageNews(cdata.title, cdata.cover, cdata.image, 450, assets_url, 'content-trending-detail-cover')
+                                        }
                                     </div>
                                     <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>
                                     {/* <Link href="#" as={"#"}>

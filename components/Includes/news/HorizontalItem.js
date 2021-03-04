@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import Img from 'react-image';
 import { useRouter } from 'next/router'
-import { getTruncate, imgNews } from '../../../utils/helpers';
+import { getTruncate, imageNews } from '../../../utils/helpers';
 import { formatDateWordID } from '../../../utils/dateHelpers';
 import { urlRegex } from '../../../utils/regex';
 import queryString from 'query-string';
@@ -35,13 +34,9 @@ export default function HorizontalItem({item, assets_url}) {
         _goToDetail(item)
         }}>
         <div className="news-interest_thumbnail-wrapper">
-        <Img
-            alt={item?.title}
-            unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-            loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-            src={[imgNews(item.cover, item.image, 237, assets_url), '/static/placeholders/placeholder_landscape.png']}
-            className="news-interest_thumbnail"
-            />
+          {
+            imageNews(item.title, item.cover, item.image, 237, assets_url, 'news-interest_thumbnail')
+          }
         <div className="news-interest_thumbnail-title" >
             <h1>{getTruncate(item.title, '...', 100)}</h1>
             <h2>{item.subcategory_name} <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>

@@ -7,7 +7,6 @@ import dynamic from 'next/dynamic';
 import Router, { withRouter } from 'next/router';
 import classnames from 'classnames';
 import BottomScrollListener from 'react-bottom-scroll-listener';
-import Img from 'react-image';
 import { StickyContainer, Sticky } from 'react-sticky';
 
 import Layout from '../components/Layouts/DefaultNews';
@@ -33,7 +32,7 @@ import '../assets/scss/components/trending_v2.scss';
 
 import newsv2Actions from '../redux/actions/newsv2Actions';
 import userActions from '../redux/actions/userActions';
-import { showSignInAlert, humanizeStr, imgNews } from '../utils/helpers';
+import { showSignInAlert, humanizeStr, imageNews } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
 // import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
@@ -651,7 +650,7 @@ class Trending_v2 extends React.Component {
                                             {this.state.tabs.map((tab, i) => {
                                                 return (
                                                 <TabPane key={i} tabId={tab.id.toString()}>
-                                                    {tab.name === 'Berita Utama' ? (this.state.is_trending_loading ? (<HeadlineLoader />) : (<HeadlineCarousel articles={this.state.trending_articles} />)) : null}
+                                                    {tab.name === 'Berita Utama' ? (this.state.is_trending_loading ? (<HeadlineLoader />) : (<HeadlineCarousel articles={this.state.trending_articles} assets_url={this.state.assets_url} />)) : null}
                                                     { !isEmpty(this.props.newsv2.data_topic) ? (
                                                         <div className="interest-topic_wrapper">
                                                             <div className="interest-topic_title">
@@ -717,15 +716,9 @@ class Trending_v2 extends React.Component {
                                                                             <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
                                                                                 <div className="article-description">
                                                                                     <div className="article-thumbnail-container-full-width">
-                                                                                        <Img
-                                                                                            alt={article.title}
-                                                                                            loader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                            unloader={<img alt={article.title} className="article-thumbnail-full-width" src="/static/placeholders/placeholder_landscape.png" />}
-                                                                                            className="article-thumbnail-full-width"
-                                                                                            src={[
-                                                                                                imgNews(article.cover, article.image, 355, this.state.assets_url),
-                                                                                                '/static/placeholders/placeholder_landscape.png'
-                                                                                            ]} />
+                                                                                        {
+                                                                                            imageNews(article.title, article.cover, article.image, 355, this.state.assets_url, 'article-thumbnail-full-width')
+                                                                                        }
                                                                                     </div>
                                                                                     <div className="article-title-container">
                                                                                         <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
