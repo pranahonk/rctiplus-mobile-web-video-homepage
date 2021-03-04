@@ -100,7 +100,7 @@ class DefaultNews extends React.Component {
 
                     <meta name="author" content={AUTHOR} />
                     <meta name="viewport" content={VIEWPORT} />
-                    <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
+                    <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" type="image/png" sizes="16x16" />
                     <link rel="manifest" href="/static/manifest.json" />
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
