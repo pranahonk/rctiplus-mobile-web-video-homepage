@@ -63,6 +63,7 @@ class Stories extends React.Component {
                         reactive: true,
                         callbacks: {
                             onDataUpdate: function (stories, callback) {
+                                //console.log('DATA UPDATED');
                                 const notSeen = [];
                                 const seen = [];
 
@@ -91,7 +92,7 @@ class Stories extends React.Component {
                                 callback();
                             },
                             onView: function (storyId) {
-                                console.log(storyId, this.state.stories.length);
+                                console.log('VIEW');
                                 if (parseInt(storyId) >= (this.state.stories.length - 3)) {
                                     this.loadMore();
                                 }
