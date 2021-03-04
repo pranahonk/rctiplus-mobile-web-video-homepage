@@ -21,6 +21,7 @@ class Stories extends React.Component {
             resolution: RESOLUTION_IMG,
             page: 1,
             length: 4,
+            totalLength: 0,
             loading: false,
             endpage: false,
         }
@@ -41,8 +42,11 @@ class Stories extends React.Component {
                     timelines.push(this.buildTimeline(story));
                 }
 
+                let currentLength = this.state.totalLength + this.props.stories.data.length;
+
                 this.setState({
-                    stories: timelines
+                    stories: timelines,
+                    totalLength: currentLength,
                 }, () => {
                     const currentSkin = this.getCurrentSkin();
                     this.storiesApi = new this.state.zuckJS("stories-react", {
@@ -78,12 +82,20 @@ class Stories extends React.Component {
                                 }, () => {
                                     callback();
                                 });
+                                // console.log('onDataUpdate', stories)
+                                callback();
                             }.bind(this),
                             onOpen: function (storyId, callback) {
                                 console.log('OPEN');
                                 document.body.style.overflow = 'hidden'; // disable scroll when opening a story
                                 callback();
                             },
+                            onView: function (storyId) {
+                                console.log(storyId, this.state.stories.length);
+                                if (parseInt(storyId) >= (this.state.stories.length - 3)) {
+                                    this.loadMore();
+                                }
+                            }.bind(this),
                             onClose: function (storyId, callback) {
                                 console.log('CLOSED');
                                 document.body.style.overflow = 'unset'; // enable scroll after closing the story
@@ -118,6 +130,19 @@ class Stories extends React.Component {
 
     componentWillUnmount() {
         document.getElementById('stories-react').removeEventListener('scroll', this.handleScroll);
+    }
+
+    componentDidUpdate(prevProps, prevStates) {
+        if (this.storiesApi != null) {
+            if (prevStates.totalLength < this.state.totalLength) {
+                this.storyId = prevStates.totalLength;
+                const newStories = [];
+                for (const story of this.props.stories.data) {
+                    newStories.push(this.buildTimeline(story));
+                }
+                this.storiesApi.addStories(newStories, true);
+            }
+        }
     }
 
     getCurrentSkin() {
@@ -244,21 +269,28 @@ class Stories extends React.Component {
                 this.props.loadingBar && this.props.loadingBar.continuousStart();
                 this.props.getStories(page, this.state.length)
                 .then(() => {
-                    //const currentStories = this.state.stories;
+                    const buildedStories = [];
                     const newStories = this.props.stories.data;
 
                     for (const story of newStories) {
-                        //currentStories.push(this.buildTimeline(story));
-                        this.storiesApi.add(this.buildTimeline(story), true);
+                        buildedStories.push(this.buildTimeline(story));
                     }
 
-                    this.setState({ loading: false, page: page, endpage: this.props.stories.data.length < this.state.length }/* , () => {
-                        setTimeout(() => {
-                            for (const story of newStories) {
-                                this.storiesApi.add(this.buildTimeline(story), true);
-                            } 
-                        }, 300)
-                    } */);
+                    const seen = [];
+                    const notseen = [];
+
+                    for (const story of this.state.stories) {
+                        if (story.seen) {
+                            seen.push({...story});
+                        } else {
+                            notseen.push({...story});
+                        }
+                    }
+
+                    const storiesData = [...notseen, ...buildedStories, ...seen];
+                    let currentLength = this.state.totalLength + this.props.stories.data.length;
+
+                    this.setState({ totalLength: currentLength, stories: storiesData, loading: false, page: page, endpage: this.props.stories.data.length < this.state.length });
                     this.props.loadingBar && this.props.loadingBar.complete();
                 })
                 .catch(error => {
@@ -286,7 +318,7 @@ class Stories extends React.Component {
 
             //let arrayFunc = story.seen ? 'push' : 'unshift';
             timelineItems.push(
-                <div className={(story.seen ? 'story seen' : 'story')} key={storyId} data-id={storyId} data-last-updated={story.lastUpdated} data-photo={story.photo}>
+                <div className={(story.seen ? 'story seen' : 'story')} key={story.id} data-id={story.id} data-last-updated={story.lastUpdated} data-photo={story.photo}>
                     <a className="item-link" href={story.link}>
                         <span className="item-preview">
                             <img src={story.photo} />
