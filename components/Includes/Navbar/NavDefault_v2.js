@@ -182,7 +182,7 @@ class NavbarDef_v2 extends Component {
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
                             <NavbarBrand>
-                                <img className="logo-top" src="/static/logo/rcti-sm.png" />
+                                <img className="logo-top" src="/static/logo/rcti-sm.png" width="28" height="28" alt="logo RCTI+" />
                             </NavbarBrand>
                         </div>
                     </div>
@@ -194,13 +194,13 @@ class NavbarDef_v2 extends Component {
                     <div className="nav-menu-container">
                         <ActiveLink activeClassName="active" href="/anung-ganteng" activeMenu={'home' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
-                                <img className="img-menu-icon" src={'/videos.svg'}/>
+                                <img className="img-menu-icon" src={'/videos.svg'} alt="video" width="10" height="9" />
                                 Videos
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/news" activeMenu={'news' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
-                                <img className="img-menu-icon" src={'/news.svg'}/>
+                                <img className="img-menu-icon" src={'/news.svg'} alt="news" width="10" height="9" />
                                 News
                             </Button>
                         </ActiveLink>
@@ -211,15 +211,15 @@ class NavbarDef_v2 extends Component {
                             </Button>
                         </ActiveLink> */}
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_RADIO}?token=${this.state.token}`}>
-                            <img className="img-menu-icon" src={'/radio.png'}/>
+                            <img className="img-menu-icon" src={'/radio.png'} alt="radio" width="10" height="9" />
                             Radio +
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_HOT}?token=${this.state.token}`}>
-                            <img className="img-menu-icon" src={'/hot-icon.png'}/>
+                            <img className="img-menu-icon" src={'/hot-icon.png'} alt="hot" width="10" height="9" />
                             HOT
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_GAMES}?token=${this.state.token}`}>
-                            <img className="img-menu-icon" src={'/games.svg'}/>
+                            <img className="img-menu-icon" src={'/games.svg'} alt="games" width="10" height="9" />
                             Games
                         </Button>
                     </div>
