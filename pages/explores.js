@@ -424,7 +424,7 @@ class Explores extends React.Component {
 											}
 											{/* <div className="new-label" style="">label</div> */}
 												<Img 
-													alt={this.getImageFileName(r.portrait_image)} 
+													alt={r.content_title} 
 													className="content-image"
 													unloader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
 													loader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}

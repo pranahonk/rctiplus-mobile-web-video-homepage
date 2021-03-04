@@ -146,7 +146,7 @@ class Pnl_1 extends React.Component {
 								<div style={{ width: '100%' }} onClick={() => this.link(c)} key={`${this.props.contentId}-${i}`} className="swiper-slide">
 									<div style={{ position: 'relative' }}>
 										<Img 
-											alt={c.program_title} 
+											alt={c.program_title || c.content_title} 
 											unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 											loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 											src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />

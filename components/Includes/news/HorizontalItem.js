@@ -36,7 +36,7 @@ export default function HorizontalItem({item, assets_url}) {
         }}>
         <div className="news-interest_thumbnail-wrapper">
         <Img
-            alt={'null'}
+            alt={item?.title}
             unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
             loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
             src={[imgNews(item.cover, item.image, 237, assets_url), '/static/placeholders/placeholder_landscape.png']}

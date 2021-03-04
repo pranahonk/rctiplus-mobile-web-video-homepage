@@ -1036,9 +1036,9 @@ class LiveEvent extends React.Component {
 						</h1>
 						{
 							!this.props.router.asPath.match('/missed-event/') && (
-								<h2 className="label-title__live-event_date">
+								<h1 className="label-title__live-event_date">
 								{`${moment.unix(this.props.selected_event?.data?.release_date_quiz)?.format('dddd, DD MMM YYYY - h:mm:ss')} WIB` }
-								</h2>
+								</h1>
 							)
 						}
 						<div className="flex-countdown_live-event">
