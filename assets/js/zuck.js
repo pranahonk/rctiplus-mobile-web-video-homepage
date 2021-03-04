@@ -368,20 +368,25 @@ module.exports = (window => {
                       class="item ${get(item, 'seen') === true ? 'seen' : ''} ${currentIndex === index ? 'active' : ''}"
                       data-time="${get(item, 'time')}" data-type="${get(item, 'type')}" data-index="${index}" data-item-id="${get(item, 'id')}">
                       ${
-						get(item, 'type') === 'video'
-							? `<video class="media" muted webkit-playsinline playsinline preload="auto" src="${get(item, 'src')}" ${get(item, 'type')}></video>
-                          <b class="tip muted">${option('language', 'unmute')}</b>`
-							: `<img loading="auto" class="media" src="${get(item, 'src')}" ${get(item, 'type')} />
+												get(item, 'type') === 'video'
+												? get(item, 'videoType') === 'mpd'
+													? `<video class="media ${get(item, 'tagClass')}" muted webkit-playsinline playsinline ${get(item, 'type')}>
+															<source src="${get(item, 'src')}" type="application/dash+xml">
+														</video>
+														<b class="tip muted">${option('language', 'unmute')}</b>`
+													: `<video class="media" muted webkit-playsinline playsinline preload="auto" src="${get(item, 'src')}" ${get(item, 'type')}></video>
+														<b class="tip muted">${option('language', 'unmute')}</b>`
+												: `<img loading="auto" class="media" src="${get(item, 'src')}" ${get(item, 'type')} alt="${get(item, 'title')}" />
                       `}
   
                       ${
-						get(item, 'link')
-							? `<a id="${`link-${item.id}`}" class="tip link" href="${get(item, 'link')}" rel="noopener" target="_blank">
-                              ${!get(item, 'linkText') || get(item, 'linkText') === '' ? option('language', 'visitLink') : get(item, 'linkText')}
-                            </a>`
-							: ``
-						}
-                    </div>`;
+												get(item, 'link')
+												? `<a id="${`link-${item.id}`}" class="tip link" href="${get(item, 'link')}" rel="noopener" target="_blank">
+													${!get(item, 'linkText') || get(item, 'linkText') === '' ? option('language', 'visitLink') : get(item, 'linkText')}
+													</a>`
+												: ``
+											}
+                  </div>`;
 				}
 			},
 			language: {
@@ -497,7 +502,19 @@ module.exports = (window => {
 						zuck.internalData['currentStory'] = currentStory;
 
 						const oldStory = query(`#zuck-modal .story-viewer.${useless}`);
+
 						if (oldStory) {
+							const uselessStoryId = oldStory.getAttribute('data-story-id');
+							const uselessStoryItems = zuck.data[uselessStoryId].items;
+							
+							each(uselessStoryItems, (i, item) => {
+								if (item.type == 'video' && item.videoType == 'mpd') {
+									if (item.mpdPlayer) {
+										item.mpdPlayer.destory();
+									}
+								}
+							});
+
 							oldStory.parentNode.removeChild(oldStory);
 						}
 
@@ -592,6 +609,10 @@ module.exports = (window => {
 						currentItemTime = item.timeAgo;
 					}
 
+					if (item.videoType == 'mpd') {
+						item['tagClass'] = `story-${storyId}-item-${i}`
+					}
+
 					pointerItems += option('template', 'viewerItemPointer')(i, currentItem, item);
 					htmlItems += option('template', 'viewerItemBody')(i, currentItem, item);
 					
@@ -599,40 +620,82 @@ module.exports = (window => {
 
 				slides.innerHTML = htmlItems;
 
-				const video = slides.querySelector('video');
-				const addMuted = function (video) {
-					if (video.muted) {
-						storyViewer.classList.add('muted');
-					} else {
-						storyViewer.classList.remove('muted');
+				each(storyItems, (i, item) => {
+					if (item.videoType == 'mpd') {
+						item['mpdPlayer'] = dashjs.MediaPlayerFactory.create(slides.querySelector(`.${get(item, 'tagClass')}`));
 					}
-				};
+				});
 
+				const video = slides.querySelector('video');
 				if (video) {
-					video.onwaiting = e => {
-						if (video.paused) {
-							storyViewer.classList.add('paused');
-							storyViewer.classList.add('loading');
+					const item = storyData.items[currentItem];
+
+					const addMuted = function (video) {
+						const muted = item.videoType == 'mpd' ? video.isMuted() : video.muted;
+						if (muted) {
+							storyViewer.classList.add('muted');
+						} else {
+							storyViewer.classList.remove('muted');
 						}
 					};
 
-					video.onplay = () => {
-						addMuted(video);
+					if (item.videoType != 'mpd') {
+						video.onwaiting = e => {
+							if (video.paused) {
+								storyViewer.classList.add('paused');
+								storyViewer.classList.add('loading');
+							}
+						};
 
-						storyViewer.classList.remove('stopped');
-						storyViewer.classList.remove('paused');
-						storyViewer.classList.remove('loading');
-					};
+						video.onplay = () => {
+							addMuted(video);
 
-					video.onload = video.onplaying = video.oncanplay = () => {
-						addMuted(video);
+							storyViewer.classList.remove('stopped');
+							storyViewer.classList.remove('paused');
+							storyViewer.classList.remove('loading');
+						};
 
-						storyViewer.classList.remove('loading');
-					};
+						video.onload = video.onplaying = video.oncanplay = () => {
+							addMuted(video);
 
-					video.onvolumechange = () => {
-						addMuted(video);
-					};
+							storyViewer.classList.remove('loading');
+						};
+
+						video.onvolumechange = () => {
+							addMuted(video);
+						};
+					} else {
+						item.mpdPlayer.preload();
+
+						item.mpdPlayer.on('playbackWaiting', () => {
+							if (item.mpdPlayer.isPaused()) {
+								storyViewer.classList.add('paused');
+								storyViewer.classList.add('loading');
+							}
+						});
+
+						item.mpdPlayer.getVideoElement().onplay = () => {
+							addMuted(item.mpdPlayer);
+
+							storyViewer.classList.remove('stopped');
+							storyViewer.classList.remove('paused');
+							storyViewer.classList.remove('loading');
+						}
+
+						item.mpdPlayer.on('playbackPlaying', () => {
+							addMuted(item.mpdPlayer);
+							storyViewer.classList.remove('loading');
+						});
+
+						item.mpdPlayer.on('canPlay', () => {
+							addMuted(item.mpdPlayer);
+							storyViewer.classList.remove('loading');
+						});
+
+						item.mpdPlayer.getVideoElement().onvolumechange = () => {
+							addMuted(item.mpdPlayer);
+						}
+					}
 				}
 
 				let storyViewerWrap = document.createElement('div');
@@ -1216,28 +1279,44 @@ module.exports = (window => {
 			}
 
 			if (itemElement.getAttribute('data-type') === 'video') {
-				const video = itemElement.getElementsByTagName('video')[0];
-				if (!video) {
+				const videoTag = itemElement.getElementsByTagName('video')[0];
+				if (!videoTag) {
 					zuck.internalData['currentVideoElement'] = false;
 
 					return false;
 				}
 
+				let storyId = -1;
+				let itemId = -1;
+
+				if (videoTag.classList.length > 1) {
+					const classStrings = videoTag.classList[1].split('-');
+					storyId = parseInt(classStrings[1]);
+					itemId = parseInt(classStrings[3]);
+				}
+
+				const video = videoTag.classList.length > 1 ? zuck.data[storyId].items[itemId].mpdPlayer : videoTag;
+
 				const setDuration = function () {
-					if (video.duration) {
+					const duration = videoTag.classList.length > 1 ? video.duration() : video.duration
+					if (duration) {
 						setVendorVariable(
 							itemPointer.getElementsByTagName('b')[0].style,
 							'AnimationDuration',
-							`${video.duration}s`
+							`${duration}s`
 						);
 					}
 				};
 
 				setDuration();
-				video.addEventListener('loadedmetadata', setDuration);
+				if (videoTag.classList.length > 1) {
+					video.on('playbackMetaDataLoaded', setDuration);
+				} else {
+					video.addEventListener('loadedmetadata', setDuration);
+				}
 				zuck.internalData['currentVideoElement'] = video;
 
-				const isPlaying = video.currentTime > 0 && !video.paused && !video.ended && video.readyState > 2;
+				const isPlaying = videoTag.classList.length > 1 ? video.time() > 0 && !video.isPaused() && !video.getVideoElement().ended && video.isReady() : video.currentTime > 0 && !video.paused && !video.ended && video.readyState > 2;
 
 				if (!isPlaying) {
 					video.play();
@@ -1262,20 +1341,40 @@ module.exports = (window => {
 		};
 
 		const unmuteVideoItem = function (video, storyViewer) {
-			video.muted = false;
-			video.volume = 1.0;
-			video.removeAttribute('muted');
-			let isPlaying = video.currentTime > 0 && !video.paused && !video.ended && video.readyState > 2;
-
-			if (!isPlaying) {
-				video.play();
-			}
-
-			if (video.paused) {
-				video.muted = true;
-				isPlaying = video.currentTime > 0 && !video.paused && !video.ended && video.readyState > 2;
+			const isMPD = video.src == undefined ? true : false;
+			if (isMPD) {
+				video.setMute(false)
+				video.setVolume(1.0);
+				video.getVideoElement().removeAttribute('muted');
+				let isPlaying = video.time() > 0 && !video.isPaused() && !video.getVideoElement().ended && video.isReady();
+	
 				if (!isPlaying) {
 					video.play();
+				}
+	
+				if (video.isPaused()) {
+					video.setMute(true);
+					isPlaying = video.time() > 0 && !video.isPaused() && !video.getVideoElement().ended && video.isReady()
+					if (!isPlaying) {
+						video.play();
+					}
+				}
+			} else {
+				video.muted = false;
+				video.volume = 1.0;
+				video.removeAttribute('muted');
+				let isPlaying = video.currentTime > 0 && !video.paused && !video.ended && video.readyState > 2;
+	
+				if (!isPlaying) {
+					video.play();
+				}
+	
+				if (video.paused) {
+					video.muted = true;
+					isPlaying = video.currentTime > 0 && !video.paused && !video.ended && video.readyState > 2;
+					if (!isPlaying) {
+						video.play();
+					}
 				}
 			}
 
@@ -1311,6 +1410,36 @@ module.exports = (window => {
 		zuck.data = option('stories') || {};
 		zuck.internalData = {};
 		zuck.internalData['seenItems'] = getLocalData('seenItems') || {};
+
+		zuck.addStories = (datas, append) => {
+			each(datas, (i, data) => {
+				zuck.data.push(data);
+			});
+
+			if (timeline && timeline.querySelector('.story')) {
+				each(timeline.querySelectorAll('.story'), (storyIndex, story) => {
+					parseStory(story);
+				});
+			}
+
+			if (!option('reactive')) {
+				let seenItems = getLocalData('seenItems');
+
+				for (let key in seenItems) {
+					if (seenItems.hasOwnProperty(key)) {
+						if (zuck.data[key]) {
+							zuck.data[key].seen = seenItems[key];
+						}
+					}
+				}
+			}
+
+			each(datas, (i, item) => {
+				zuck.add(item, append);
+			});
+
+			updateStorySeenPosition();
+		};
 
 		zuck.add = zuck.update = (data, append) => {
 			const storyId = get(data, 'id');
@@ -1608,7 +1737,10 @@ module.exports = (window => {
 		return timelineItem;
 	};
 
-	ZuckJS.buildStoryItem = (id, type, length, src, preview, link, linkText, seen, time, title) => {
+	/**
+	 * Deprecated for personal RCTI+ use case
+	 */
+	/* ZuckJS.buildStoryItem = (id, type, length, src, preview, link, linkText, seen, time, title) => {
 		return {
 			id,
 			type,
@@ -1620,6 +1752,21 @@ module.exports = (window => {
 			seen,
 			time,
 			title
+		};
+	}; */
+	ZuckJS.buildStoryItem = (id, type, length, src, preview, link, linkText, seen, time, title, videoType) => {
+		return {
+			id,
+			type,
+			length,
+			src,
+			preview,
+			link,
+			linkText,
+			seen,
+			time,
+			title,
+			videoType
 		};
 	};
 
