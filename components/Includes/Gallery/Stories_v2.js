@@ -221,8 +221,8 @@ class Stories extends React.Component {
                 item.id,
                 item.link_video != null ? 'video' : 'photo',
                 10,
-                item.link_video != null ? (item.link_video) : (this.props.stories.image_path + this.state.resolution + item.story_img),
-                item.link_video != null ? (item.link_video) : (this.props.stories.image_path + this.state.resolution + item.story_img),
+                item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
+                item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 item.swipe_type == 'link' ? (item.swipe_value) : false, 'Click Here',
                 false,
                 item.release_date,
@@ -233,7 +233,7 @@ class Stories extends React.Component {
 
         let programImg = '';
         if (story.program_img != null) {
-            programImg = this.props.stories.image_path + this.state.resolution  + story.program_img;
+            programImg = this.props.stories.meta.image_path + this.state.resolution  + story.program_img;
         }
         else {
             programImg = 'static/placeholders/placeholder_potrait.png';
