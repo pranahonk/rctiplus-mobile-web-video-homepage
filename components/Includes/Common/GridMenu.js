@@ -33,7 +33,7 @@ class GridMenu extends React.Component {
                         </div>
                     </Col>
                     <Col className="menu-item">
-                        <Link href="/explores?id=1&genre=Drama">
+                        <Link href="/explores/1/Drama">
                             <a id="action-drama" >
                                 <div onClick={() => {
                                     homeGeneralClicked('mweb_drama_clicked');
@@ -45,7 +45,7 @@ class GridMenu extends React.Component {
                         </Link>
                     </Col>
                     <Col className="menu-item">
-                        <Link href="/explores?id=6&genre=Comedy">
+                        <Link href="/explores/6/Comedy">
                             <a id="action-comedy" >
                                 <div onClick={() => {
                                     homeGeneralClicked('mweb_comedy_clicked');
