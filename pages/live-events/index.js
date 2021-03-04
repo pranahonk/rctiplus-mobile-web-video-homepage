@@ -12,7 +12,7 @@ import Thumbnail from '../../components/Includes/Common/Thumbnail';
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
 import { getCountdown } from '../../utils/helpers';
-import { RESOLUTION_IMG } from '../../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../../config';
 import NavDefault_v2 from '../../components/Includes/Navbar/NavDefault_v2';
 import ErrorIcon from '../../components/Includes/Common/ErrorLiveEvent';
 
@@ -114,9 +114,28 @@ class Index extends React.Component {
 
   render() {
     return (
-      <Layout title={this.props.router.asPath.match('missed-event') ? 'Past events - RCTI+' : 'Live event - RCTI+'}>
+      <Layout title={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.title : SITEMAP.live_event_index.title}>
         <Head>
-          <meta name="description" content={this.props.router.asPath.match('missed-event') ? 'Missed events' : 'Live event'}/>
+            <meta name="description" content={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.title : SITEMAP.live_event_index.title} />
+            <meta name="keywords" content={SITEMAP.live_event_index.keywords} />
+            <meta property="og:title" content={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.title : SITEMAP.live_event_index.title} />
+            <meta property="og:image" itemProp="image" content={SITEMAP.live_event_index.image} />
+            <meta property="og:url" content={REDIRECT_WEB_DESKTOP} />
+            <meta property="og:image:type" content="image/jpeg" />
+            <meta property="og:image:width" content="600" />
+            <meta property="og:image:height" content="315" />
+            <meta property="og:site_name" content={SITE_NAME} />
+            <meta property="og:type" content='video' />
+            <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+            <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+            <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+            <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+            <meta name="twitter:image" content={SITEMAP.live_event_index.image} />
+            <meta name="twitter:title" content={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.title : SITEMAP.live_event_index.title} />
+            <meta name="twitter:image:alt" content="streaming rctiplus" />
+            <meta name="twitter:description" content={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.title : SITEMAP.live_event_index.title} />
+            <meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+            <meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
         </Head>
         {/* <NavBack title="Live Event"/> */}
         {process.env.UI_VERSION == '2.0' ? (<NavDefault_v2 disableScrollListener />) : (<NavDefault disableScrollListener />)}

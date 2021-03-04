@@ -814,8 +814,8 @@ class LiveEvent extends React.Component {
 		}
 		const { data, meta } = this.props.selected_event;
 		return {
-			title: 'Streaming ' + (this.props.router.query.title.replace(/-/gi, ' ') || '') + ' - RCTI+',
-			description: 'Nonton streaming online ' + (this.props.router.query.title.replace(/-/gi, ' ') || '') + ' tanggal ' + (data && meta ? data.start_date : '') + ' WIB hanya di RCTI+ ',
+			title: this.props.router.asPath.includes('/missed-event') ? `Tayangan Ulang Streaming ${this.props.router.query.title.replace(/-/gi, ' ') || ''}`: 'Streaming ' + this.props.router.query.title.replace(/-/gi, ' ') || '' + ' - RCTI+',
+			description: this.props.router.asPath.includes('/missed-event') ? `Tonton siaran ulang ${(this.props.router.query.title.replace(/-/gi, ' ') || '')} gratis dan tanpa buffering di RCTI+` : 'Nonton streaming online ' + (this.props.router.query.title.replace(/-/gi, ' ') || '') + ' tanggal ' + (data && meta ? data.start_date : '') + ' WIB hanya di RCTI+ ',
 			image: data && meta ? (meta.image_path + '300' + data.portrait_image) : '',
 		};
 	}
@@ -1036,9 +1036,9 @@ class LiveEvent extends React.Component {
 						</h1>
 						{
 							!this.props.router.asPath.match('/missed-event/') && (
-								<h2 className="label-title__live-event_date">
+								<h1 className="label-title__live-event_date">
 								{`${moment.unix(this.props.selected_event?.data?.release_date_quiz)?.format('dddd, DD MMM YYYY - h:mm:ss')} WIB` }
-								</h2>
+								</h1>
 							)
 						}
 						<div className="flex-countdown_live-event">

@@ -90,7 +90,7 @@ const ItemTags = ({item, index, ...props}) => {
                   <Link href={_goToDetail(item)}>
                     <div className="news-interest_thumbnail-wrapper">
                       {
-                        imageNews(item.title, item.cover, item.image, 237, assetUrl, 'thumbnail')
+                        imageNews(item.title, item.cover, item.image, 237, assetUrl, 'news-interest_thumbnail')
                       }
                       <div className="news-interest_thumbnail-title" >
                         <h1>{getTruncate(item.title, '...', 100)}</h1>
