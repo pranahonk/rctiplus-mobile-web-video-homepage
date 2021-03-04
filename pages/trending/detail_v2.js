@@ -65,26 +65,40 @@ class Detail extends React.Component {
 
         const data_news = await response_news.json();
 
-        const res = await fetch(`${NEWS_API_V2}/api/v1/news/${programId}`, {
+        const resv2 = await fetch(`${NEWS_API_V2}/api/v2/news/${programId}`, {
             method: 'GET',
             headers: {
                 'Authorization': data_news.data.news_token
             }
         });
-        const error_code = res.statusCode > 200 ? res.statusCode : false;
-        const data = await res.json();
-        console.log(data);
-        if (error_code) {
-            return { initial: false };
+        let error_code = resv2.statusCode > 200 ? resv2.statusCode : false;
+        let data = null;
+        if (error_code == false) {
+            data = await resv2.json();
+        } else {
+            const res = await fetch(`${NEWS_API_V2}/api/v1/news/${programId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': data_news.data.news_token
+                }
+            });
+            error_code = res.statusCode > 200 ? res.statusCode : false;
+            data = await res.json();
+            if (error_code) {
+                return { initial: false };
+            }
         }
+        
         return { initial: data, props_id: programId };
     }
 
     constructor(props) {
         super(props);
+        const {props_id, initial} = this.props
         this.state = {
-            trending_detail_id: this.props.props_id,
-            trending_detail_data: this.props.initial,
+            trending_detail_id: props_id,
+            trending_detail_data: initial.data === undefined ? initial : initial.data,
+            assets_url: initial.meta === undefined ? null : (initial.meta.assets_url != undefined ? initial.meta.assets_url : null),
             trending_related: [],
             iframe_opened: false,
             isLike: false,
@@ -93,8 +107,7 @@ class Detail extends React.Component {
             listTagByNews: [],
             count: false,
             countLike: 0, 
-            infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID,
-            assets_url: null
+            infographic: initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID
         };
 
         // this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
@@ -422,6 +435,7 @@ class Detail extends React.Component {
 
     render() {
         const cdata = this.state.trending_detail_data;
+        const assets_url = this.state.assets_url;
         const isInfographic = this.state.infographic;
         const asPath = this.props.router.asPath;
         const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? {
@@ -438,7 +452,7 @@ class Detail extends React.Component {
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
         const newsTitle = cdata.title
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
-        const coverImg = imgNews(cdata.cover, cdata.image, 400)
+        const coverImg = imgNews(cdata.cover, cdata.image, 400, assets_url)
         const structuredData = {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
@@ -511,7 +525,7 @@ class Detail extends React.Component {
                         params={`?token=${this.accessToken}&platform=${this.platform}`} 
                         src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`} 
                         data={cdata} 
-                        titleNavbar={this.props?.initial?.source}/>
+                        titleNavbar={cdata.source}/>
                 )}
                 <StickyContainer>
                     <Sticky bottomOffset={100}>
