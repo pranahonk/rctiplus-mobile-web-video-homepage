@@ -420,7 +420,7 @@ class Detail extends React.Component {
         const cdata = this.state.trending_detail_data;
         const isInfographic = this.state.infographic;
         const asPath = this.props.router.asPath;
-        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
+        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') > -1 ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
         const fullUrl = oneSegment + encodeURI(asPath).replace('trending/', 'news/');
         const newsTitle = cdata.title
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
