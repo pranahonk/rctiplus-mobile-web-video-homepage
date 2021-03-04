@@ -31,6 +31,7 @@ class MyDocument extends Document {
 					<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet"></link>
 					<script src="/static/js/conviva-core-sdk.js"></script>
 
+					<script src="/static/js/dash.js"></script>
 				</Head>
 				<body style={{ height: '100%' }}>
 					<Main style={{ height: '100%' }}/>

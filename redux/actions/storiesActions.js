@@ -10,18 +10,20 @@ axios.interceptors.request.use(async (request) => {
     return request;
 });
 
-const getStories = (page = 1, length = 20) => {
+const getStories = (page = 1, length = 6) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             await checkToken();
-            const response = await axios.get(`/v1/stories?page=${page}`);
+            const response = await axios.get(`/v1/stories?page=${page}&length=${length}`);
             if (response.data.status.code === 0) {
                 const data = response.data.data;
                 dispatch({ 
                     type: 'STORIES', 
                     data: data,
-                    image_path: response.data.meta.image_path,
-                    video_path: response.data.meta.video_path
+                    meta: response.data.meta,
+                    status: response.data.status
+                    /* image_path: response.data.meta.image_path,
+                    video_path: response.data.meta.video_path */
                 });
                 resolve(data);
             }

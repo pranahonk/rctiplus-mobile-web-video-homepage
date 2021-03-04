@@ -65,7 +65,7 @@ class Stories extends React.Component {
                     stories: timelines
                 }, () => {
                     let currentSkin = this.getCurrentSkin(); // from demo
-                    this.storiesApi = new Zuck(this.storiesElement, {
+                    this.storiesApi = new Zuck("stories-react", {
                         backNative: true,
                         previousTap: true,
                         skin: currentSkin['name'],

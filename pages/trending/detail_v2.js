@@ -420,8 +420,19 @@ class Detail extends React.Component {
         const cdata = this.state.trending_detail_data;
         const isInfographic = this.state.infographic;
         const asPath = this.props.router.asPath;
-        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') > -1 ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
-        const fullUrl = oneSegment + encodeURI(asPath).replace('trending/', 'news/');
+
+        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? {
+            'desktop': 'https://dev-webd.rctiplus.com',
+            'mobile': 'https://dev-webm.rctiplus.com'
+        } : SHARE_BASE_URL.indexOf('//rc-') > -1 ? {
+            'desktop': 'https://rc-webd.rctiplus.com',
+            'mobile': 'https://rc-webm.rctiplus.com'
+        } : {
+            'desktop': 'https://www.rctiplus.com',
+            'mobile': 'https://m.rctiplus.com',
+        };
+
+        const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
         const newsTitle = cdata.title
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
         const converImg = cdata.cover
@@ -430,7 +441,7 @@ class Detail extends React.Component {
             "@type": "NewsArticle",
             "mainEntityOfPage": {
                 '@type': 'WebPage',
-                "@id": fullUrl
+                "@id": currentUrl
             },
             "headline": newsTitle.replace(/\\/g, ''),
             "image": [converImg],
@@ -445,11 +456,12 @@ class Detail extends React.Component {
                 "name": "RCTI+",
                 "logo": {
                     "@type": "ImageObject",
-                    "url": `${oneSegment}/assets/image/elements/logo.b9f35229.png`
+                    "url": `${oneSegment['desktop']}/assets/image/elements/logo.b9f35229.png`
                 }
             },
             "description": newsContent
         }
+        const canonicalFullUrl = oneSegment['desktop'] + encodeURI(asPath).replace('trending/', 'news/');
 
         return (
             <Layout title={`${newsTitle} - News+ on RCTI+`}>
@@ -476,7 +488,7 @@ class Detail extends React.Component {
                     <meta name="twitter:description" content={newsContent} />
                     <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)} />
-                    <link rel="canonical" href={fullUrl} />
+                    <link rel="canonical" href={canonicalFullUrl} />
                     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
