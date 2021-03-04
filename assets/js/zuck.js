@@ -376,7 +376,7 @@ module.exports = (window => {
 														<b class="tip muted">${option('language', 'unmute')}</b>`
 													: `<video class="media" muted webkit-playsinline playsinline preload="auto" src="${get(item, 'src')}" ${get(item, 'type')}></video>
 														<b class="tip muted">${option('language', 'unmute')}</b>`
-												: `<img loading="auto" class="media" src="${get(item, 'src')}" ${get(item, 'type')} />
+												: `<img loading="auto" class="media" src="${get(item, 'src')}" ${get(item, 'type')} alt="${get(item, 'title')}" />
                       `}
   
                       ${
@@ -502,6 +502,17 @@ module.exports = (window => {
 						zuck.internalData['currentStory'] = currentStory;
 
 						const oldStory = query(`#zuck-modal .story-viewer.${useless}`);
+						const uselessStoryId = oldStory.getAttribute('data-story-id');
+						const uselessStoryItems = zuck.data[uselessStoryId].items;
+						
+						each(uselessStoryItems, (i, item) => {
+							if (item.type == 'video' && item.videoType == 'mpd') {
+								if (item.mpdPlayer) {
+									item.mpdPlayer.destory();
+								}
+							}
+						});
+
 						if (oldStory) {
 							oldStory.parentNode.removeChild(oldStory);
 						}
