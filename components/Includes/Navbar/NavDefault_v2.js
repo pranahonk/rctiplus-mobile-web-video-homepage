@@ -54,46 +54,61 @@ class NavbarDef_v2 extends Component {
     }
 
     goToExplore(e) {
-        switch (this.props.router.asPath) {
-            case '/exclusive':
-                exclusiveGeneralEvent('mweb_exclusive_library_clicked');
-                break;
-
-            case '/profile':
-                accountGeneralEvent('mweb_account_library_clicked');
-                break;
-
-            case '/':
-                homeGeneralClicked('mweb_search_clicked');
-                break;
-            case '/news':
-                Router.push('/news/search');
-                // homeGeneralClicked('mweb_search_clicked');
-                break;
-
-            default:
-                if (this.props.router.asPath.indexOf('/news') === 0) {
-                    // newsGeneralEvent('mweb_news_search_clicked');
-                }
-                else {
-                    homeGeneralClicked('mweb_library_clicked');
-                }
-                break;
-        }
-        if (e.includes('/news/')) {
+        if(e === '/news') {
             Router.push('/news/search');
-            return;
+        } else {
+            Router.push('/explores/search');
         }
-        switch (e) {
-            case '/' || '/explores' || '/live-event' || '/exclusive' :
-                Router.push('/explores/search');
-            break;
-            case '/radio' :
-                Router.push('/radio/search');
-            break;
-            default:
-                Router.push('/news/search');
-        }
+        // switch (e) {
+        //     case ['/' , '/explores' , '/live-event' , '/exclusive'].includes(e) :
+        //         Router.push('/explores/search');
+        //     break;
+        //     case '/radio' :
+        //         Router.push('/radio/search');
+        //     break;
+        //     default:
+        //         Router.push('/news/search');
+        // }
+        // switch (this.props.router.asPath) {
+        //     case '/exclusive':
+        //         exclusiveGeneralEvent('mweb_exclusive_library_clicked');
+        //         break;
+
+        //     case '/profile':
+        //         accountGeneralEvent('mweb_account_library_clicked');
+        //         break;
+
+        //     case '/':
+        //         homeGeneralClicked('mweb_search_clicked');
+        //         break;
+        //     case '/news':
+        //         Router.push('/news/search');
+        //         // homeGeneralClicked('mweb_search_clicked');
+        //         break;
+
+        //     // default:
+        //     //     if (this.props.router.asPath.indexOf('/news') === 0) {
+        //     //         // newsGeneralEvent('mweb_news_search_clicked');
+        //     //     }
+        //     //     else {
+        //     //         homeGeneralClicked('mweb_library_clicked');
+        //     //     }
+        //     //     break;
+        // }
+        // if (e.includes('/news/')) {
+        //     Router.push('/news/search');
+        //     return;
+        // }
+        // switch (e) {
+        //     case '/' || '/explores' || '/live-event' || '/exclusive' :
+        //         Router.push('/explores/search');
+        //     break;
+        //     case '/radio' :
+        //         Router.push('/radio/search');
+        //     break;
+        //     default:
+        //         Router.push('/news/search');
+        // }
     }
 
     signOut() {

@@ -768,7 +768,7 @@ class Tv extends React.Component {
 	_metaTags(){
 		const [titleChannel, titleEpg] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`].title, this.props.router.query.epg_title?.replace(/-/gi, ' ')]
 		const [descriptionChannel, channel] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`].description , this.props?.data_epg?.channel]
-		const [keywordsChannel, paramsDate] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`].keywords, this.props.params_date.replace(/-/gi, ' ')]
+		const [keywordsChannel, paramsDate] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`].keywords, this.props.params_date?.replace(/-/gi, ' ')]
 		return {
 			title: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel?.toUpperCase()} - RCTI+` : titleChannel,
 			description: titleEpg ? `Nonton streaming ${titleEpg} - ${paramsDate}  online tanpa buffering dan acara favorit lainnya 7 hari kemarin. Dapatkan juga jadwal acara ${channel?.toUpperCase()} terbaru hanya di RCTI+` : descriptionChannel,
@@ -931,22 +931,22 @@ class Tv extends React.Component {
 						<Row>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=rcti" as="/tv/rcti">
-									<Button size="sm" color="link" className={this.state.selected_index === 0 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 0)}>RCTI</Button>
+									<Button size="sm" color="link" className={this.state.selected_index === 0 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 0)}><h1 className="heading-rplus">RCTI</h1></Button>
 								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=mnctv" as="/tv/mnctv">
-									<Button size="sm" color="link" className={this.state.selected_index === 1 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 1)}>MNCTV</Button>
+									<Button size="sm" color="link" className={this.state.selected_index === 1 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 1)}><h1 className="heading-rplus">MNCTV</h1></Button>
 								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=gtv" as="/tv/gtv">
-									<Button size="sm" color="link" className={this.state.selected_index === 2 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 2)}>GTV</Button>
+									<Button size="sm" color="link" className={this.state.selected_index === 2 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 2)}><h1 className="heading-rplus">GTV</h1></Button>
 								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=inews" as="/tv/inews">
-									<Button size="sm" color="link" className={this.state.selected_index === 3 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 3)}>INEWS</Button>
+									<Button size="sm" color="link" className={this.state.selected_index === 3 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 3)}><h1 className="heading-rplus">INEWS</h1></Button>
 								</Link>
 							</Col>
 						</Row>
@@ -957,14 +957,14 @@ class Tv extends React.Component {
 								liveTvTabClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'Live', 'mweb_livetv_tab_clicked');
 							});
 						}} className={this.state.selected_tab === 'live' ? 'selected' : ''}>
-							<NavLink>Live</NavLink>
+							<NavLink><h2 className="heading-rplus">Live</h2></NavLink>
 						</NavItem>
 						<NavItem onClick={() => {
 							this.setState({ selected_tab: 'catch_up_tv' }, () => {
 								liveTvTabClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'Catch Up TV', 'mweb_livetv_tab_clicked');
 							});
 						}} className={this.state.selected_tab === 'catch_up_tv' ? 'selected' : ''}>
-							<NavLink>Catch Up TV</NavLink>
+							<NavLink><h2 className="heading-rplus">Catch Up TV</h2></NavLink>
 						</NavItem>
 					</Nav>
 					<div className="tab-content-wrap">
@@ -974,7 +974,7 @@ class Tv extends React.Component {
 									if (this.isLiveProgram(e)) {
 										return (<Row key={i} className={'program-item selected'}>
 											<Col xs={9}>
-												<div className="title">{e.title} <FiberManualRecordIcon /></div>
+												<div className="title"><h3 className="heading-rplus"> {e.title} <FiberManualRecordIcon /> </h3></div>
 												<div className="subtitle">{e.s} - {e.e}</div>
 											</Col>
 											<Col className="right-side">
@@ -985,7 +985,7 @@ class Tv extends React.Component {
 
 									return (<Row key={i} className={'program-item'}>
 										<Col xs={9}>
-											<div className="title">{e.title}</div>
+											<div className="title"><h3 className="heading-rplus"> {e.title} </h3></div>
 											<div className="subtitle">{e.s} - {e.e}</div>
 										</Col>
 									</Row>);
@@ -1001,7 +1001,7 @@ class Tv extends React.Component {
 											<Col xs={9} onClick={this.selectCatchup.bind(this, c.id)}>
 												<Link href={`/tv/${this.state.channel_code == 'globaltv' ? 'gtv' : this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}?date=${this.props.chats.catchup_date.replace(/ /gi, '-')}`}>
 													<a style={{ textDecoration: 'none', color: 'white' }}>
-														<div className="title">{c.title}</div>
+														<div className="title"><h3 className="heading-rplus"> {c.title} </h3></div>
 														<div className="subtitle">{c.s} - {c.e}</div>
 													</a>
 												</Link>

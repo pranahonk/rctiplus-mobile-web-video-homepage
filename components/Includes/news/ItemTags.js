@@ -88,7 +88,7 @@ const ItemTags = ({item, index, ...props}) => {
                   <Link href={_goToDetail(item)}>
                     <div className="news-interest_thumbnail-wrapper">
                       <Img
-                        alt={'null'}
+                        alt={item?.title}
                         unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
                         loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
                         src={[item.cover, '/static/placeholders/placeholder_landscape.png']}

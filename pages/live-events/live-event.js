@@ -1360,9 +1360,11 @@ class LiveEvent extends React.Component {
 							/>
 					</div>
 					<div ref= { this.titleRef } className="title-wrap">
-						<div style={{
+						<h1 style={{
 							display: 'flex',
-							alignItems: 'center'
+							alignItems: 'center',
+							fontSize: '1em',
+							margin: 0
 						}}>
 						{this.state.is_live[0] ? (
 								<CountdownTimer
@@ -1377,7 +1379,7 @@ class LiveEvent extends React.Component {
 							) : null}
 
 							{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
-						</div>
+						</h1>
 
 						<ShareIcon onClick={() => {
 							liveShareEvent(selected_event.data && selected_event.data.id || 'error', selected_event.data && selected_event.data.name || 'error');
