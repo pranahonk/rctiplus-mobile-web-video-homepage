@@ -1399,6 +1399,36 @@ module.exports = (window => {
 		zuck.internalData = {};
 		zuck.internalData['seenItems'] = getLocalData('seenItems') || {};
 
+		zuck.addStories = (datas, append) => {
+			each(datas, (i, data) => {
+				zuck.data.push(data);
+			});
+
+			if (timeline && timeline.querySelector('.story')) {
+				each(timeline.querySelectorAll('.story'), (storyIndex, story) => {
+					parseStory(story);
+				});
+			}
+
+			if (!option('reactive')) {
+				let seenItems = getLocalData('seenItems');
+
+				for (let key in seenItems) {
+					if (seenItems.hasOwnProperty(key)) {
+						if (zuck.data[key]) {
+							zuck.data[key].seen = seenItems[key];
+						}
+					}
+				}
+			}
+
+			each(datas, (i, item) => {
+				zuck.add(item, append);
+			});
+
+			updateStorySeenPosition();
+		};
+
 		zuck.add = zuck.update = (data, append) => {
 			const storyId = get(data, 'id');
 			const storyEl = query(`#${id} [data-id="${storyId}"]`);
