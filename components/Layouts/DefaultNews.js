@@ -132,18 +132,6 @@ class DefaultNews extends React.Component {
                     {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
 
 
-                    <script src="/static/js/fontawesome.min.js" crossOrigin="anonymous" defer></script>
-
-                    {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
-                    <script src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
-                    <script dangerouslySetInnerHTML={{ __html: `
-                        AIQUA.init({
-                            appId: 'c63c2960bf562e9ec2de',
-                            timeout: 5000
-                        });
-                    `}}>
-                    </script>
-
                     {/* Comscore */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         var _comscore=_comscore||[];_comscore.push({c1:"2",c2:"9013027"}),function(){var c=document.createElement("script"),e=document.getElementsByTagName("script")[0];c.async=!0,c.src=("https:"==document.location.protocol?"https://sb":"http://b")+".scorecardresearch.com/beacon.js",e.parentNode.insertBefore(c,e)}();
