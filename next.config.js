@@ -82,7 +82,7 @@ let nextConfig = {
   devIndicators: {
     autoPrerender: false,
   },
-  "plugins": [
+  plugins: [
     "postcss-flexbugs-fixes",
       [
         "postcss-preset-env",
