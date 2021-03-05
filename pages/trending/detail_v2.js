@@ -9,21 +9,23 @@ import { ScrollPercentage } from 'react-scroll-percentage';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Cookie from 'js-cookie';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import loadable from '@loadable/component'
 
 import { DEV_API, BASE_URL, NEWS_API_V2, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, UTM_NAME, SHARE_BASE_URL } from '../../config';
 
-import Layout from '../../components/Layouts/DefaultNews';
+
+const Layout = loadable(() => import('../../components/Layouts/DefaultNews'))
 // import Layout from '../../components/Layouts/Default_v2';
-import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
-import NavBackIframe from '../../components/Includes/Navbar/NavIframe';
-import AdsBanner from '../../components/Includes/Banner/Ads';
+const NavBack = loadable(() => import('../../components/Includes/Navbar/NavTrendingDetail'))
+const NavBackIframe = loadable(() => import('../../components/Includes/Navbar/NavIframe'))
+const AdsBanner = loadable(() => import('../../components/Includes/Banner/Ads'))
 import '../../assets/scss/components/trending_detail.scss';
 
 import { FacebookShareButton, TwitterShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
 // import { ListGroup, ListGroupItem } from 'reactstrap';
 // import BottomScrollListener from 'react-bottom-scroll-listener';
 import { formatDateWordID } from '../../utils/dateHelpers';
-import SquareItem from '../../components/Includes/news/SquareItem';
+const SquareItem = loadable(() => import('../../components/Includes/news/SquareItem'))
 const HorizontalItem = dynamic(() => import('../../components/Includes/news/HorizontalItem'),{ ssr: false })
 import { setAccessToken, removeAccessToken } from '../../utils/cookie';
 import { getTruncate, imgURL, imageNews } from '../../utils/helpers';
