@@ -3,14 +3,15 @@ import Head from 'next/head';
 import { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import dynamic from 'next/dynamic';
+import loadable from '@loadable/component'
 
 import actions from '../../redux/actions';
 import pageActions from '../../redux/actions/pageActions';
 import userActions from '../../redux/actions/userActions';
 import chatsActions from '../../redux/actions/chats';
 
-import Footer from '../../components/Includes/Footer/Default';
-import Footer_v2 from '../../components/Includes/Footer/Default_v2';
+const Footer = loadable(() => import('../../components/Includes/Footer/Default'))
+const Footer_v2 = loadable(() => import('../../components/Includes/Footer/Default_v2'))
 
 import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, FIREBASE_apiKey,  FIREBASE_authDomain,  FIREBASE_databaseURL, FIREBASE_projectId, FIREBASE_storageBucket, FIREBASE_appId, FIREBASE_measurementId, FIREBASE_messagingSenderId, SHARE_BASE_URL } from '../../config';
 import { Spinner } from 'reactstrap';
