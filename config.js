@@ -103,7 +103,7 @@ export const UTM_NAME = (utm, utmCampaign, utmMedium, platform = 'mweb') => {
 export const SITEMAP = {
     home: {
         title: `${SITE_NAME} - Satu Aplikasi, Semua Hiburan`,
-        description: `Satu aplikasi, semua hiburan mulai dari live streaming program RCTI, MNCTV, GTV & iNews TV. Menyajikan konten eksklusif yang tidak tayang di TV & Informasi Trending Terupdate, dengar radio dan podcast favorit, menonton aksi talent terbaik, dan main games juga`,
+        description: 'Satu aplikasi, semua hiburan mulai dari live streaming program RCTI, MNCTV, GTV & iNews TV. Menyajikan konten eksklusif yang tidak tayang di TV & Informasi Trending Terupdate, dengar radio dan podcast favorit, menonton aksi talent terbaik, dan main games juga',
         keywords: `rctiplus, rcti plus, rcti+, rcti, mnctv, gtv, inews,hot, home of talent, games, news, radio, podcast, baca berita`,
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
