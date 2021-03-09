@@ -37,6 +37,7 @@ import StreamVideoIcon from '../../components/Includes/Common/StreamVideoIcon';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 import ErrorPlayer from '../../components/Includes/Player/ErrorPlayer';
 import Toast from '../../components/Includes/Common/Toast';
+import JsonLDVideo from '../../components/Seo/JsonLDVideo';
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -1286,7 +1287,7 @@ class LiveEvent extends React.Component {
 	}
 
 	render() {
-		const { state } = this;
+		const { state, props } = this;
 		const  { selected_event, selected_event_url } = this.props;
 		let errorEvent = (<Col xs="12" key="1" className="le-error">
 				<LiveIcon />
@@ -1294,9 +1295,15 @@ class LiveEvent extends React.Component {
 				<p>content isn't available right now</p>
 			</Col>
 		);
+		const contentData = {
+			asPath: props.router.asPath || '',
+			title: selected_event_url?.data?.assets_name || '',
+			thumbnailUrl: this.getMeta().image || ''
+		}
 		return (
 			<Layout title={this.getMeta().title}>
 				<Head>
+					<JsonLDVideo content={contentData} />
 					<meta name="description" content={this.getMeta().description} />
 					<meta name="keywords" content={this.getMeta().title} />
 					<meta property="og:title" content={this.getMeta().title} />

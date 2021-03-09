@@ -8,6 +8,7 @@ import actions from '../../redux/actions';
 import pageActions from '../../redux/actions/pageActions';
 import userActions from '../../redux/actions/userActions';
 import chatsActions from '../../redux/actions/chats';
+import JsonLDWebsite from '../Seo/JsonLDWebsite';
 
 import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
@@ -93,6 +94,7 @@ class Default_v2 extends React.Component {
         return (
             <div style={{ height: '100%' }}  className={this.props.mobilePlatform}>
                 <Head>
+                    <JsonLDWebsite keyword={'Home'} />
                     <title>{this.props.title}</title>
                     <meta charSet="utf-8" />
                     <meta name="theme-color" content="#171717" />
