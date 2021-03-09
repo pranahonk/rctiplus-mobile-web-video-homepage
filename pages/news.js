@@ -123,7 +123,7 @@ class Trending_v2 extends React.Component {
         load_content_error: false,
         tabs: [],
         saved_tabs: getNewsChannels(),
-        trending_articles: [],
+        trending_articles: {},
         articles: {},
         pages: {},
         load_more_allowed: {},
@@ -215,9 +215,10 @@ class Trending_v2 extends React.Component {
         this.setState({ is_trending_loading: true }, () => {
             this.props.getTrending(categoryId)
                 .then(res => {
+                    this.state.trending_articles[categoryId] = res.data.data
                     this.setState({
                         is_trending_loading: false,
-                        trending_articles: res.data.data
+                        trending_articles: this.state.trending_articles
                     });
                 })
                 .catch(error => {
@@ -280,6 +281,7 @@ class Trending_v2 extends React.Component {
         //     return (<div>lalala</div>)
         // }
     }
+
     componentDidMount() {
         console.log(this.props.metaSeo)
         // window.addEventListener('scroll', (event) => {
@@ -312,7 +314,6 @@ class Trending_v2 extends React.Component {
                     this.fetchData();
                 });
         }
-
         
     }
 
@@ -463,6 +464,7 @@ class Trending_v2 extends React.Component {
             }
     }
     _linkTab(tab) {
+        this.loadContents(tab.id);
         const href = `/news?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`;
         const as = `/news/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`;
         Router.push(href, as)
@@ -599,13 +601,9 @@ class Trending_v2 extends React.Component {
                                                                                 active: this.state.active_tab == tab.id,
                                                                                 'navigation-tabs-item': true
                                                                             })}>
-                                                                            <Link
-                                                                                href={`/news?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`}
-                                                                                as={`/news/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
-                                                                                <a onClick={() => this._linkTab(tab)}>
-                                                                                    <NavLink onClick={() => this.toggleTab(tab.id.toString(), tab)} className="item-link">{tab.name}</NavLink>
-                                                                                </a>
-                                                                            </Link>
+                                                                            <a onClick={() => this._linkTab(tab)}>
+                                                                                <NavLink onClick={() => this.toggleTab(tab.id.toString(), tab)} className="item-link">{tab.name}</NavLink>
+                                                                            </a>
                                                                         </NavItem>
                                                                     ))}
                                                                 </Nav>
@@ -645,12 +643,13 @@ class Trending_v2 extends React.Component {
 
                                         {this.state.is_tabs_loading ? (<HeadlineLoader />) : null}
                                         {this.state.is_tabs_loading ? (<ArticleLoader />) : null}
-
                                         <TabContent activeTab={this.state.active_tab}>
                                             {this.state.tabs.map((tab, i) => {
                                                 return (
                                                 <TabPane key={i} tabId={tab.id.toString()}>
-                                                    {tab.name === 'Berita Utama' ? (this.state.is_trending_loading ? (<HeadlineLoader />) : (<HeadlineCarousel articles={this.state.trending_articles} assets_url={this.state.assets_url} />)) : null}
+                                                    {(this.state.is_trending_loading ? (<HeadlineLoader />) : (
+                                                        !isEmpty(this.state.trending_articles[tab.id]) ? <HeadlineCarousel articles={this.state.trending_articles[tab.id]} assets_url={this.state.assets_url} /> : null
+                                                    ))}
                                                     { !isEmpty(this.props.newsv2.data_topic) ? (
                                                         <div className="interest-topic_wrapper">
                                                             <div className="interest-topic_title">
