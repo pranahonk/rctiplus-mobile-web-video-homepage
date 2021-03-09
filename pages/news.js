@@ -127,7 +127,7 @@ class Trending_v2 extends React.Component {
         articles: {},
         pages: {},
         load_more_allowed: {},
-        articles_length: 10,
+        articles_length: 6,
         is_load_more: false,
         user_data: null,
         sticky_category_shown: false,
@@ -669,7 +669,7 @@ class Trending_v2 extends React.Component {
                                                     ) : '' }
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => {
-                                                            if((j + 1) % 5 === 0) {
+                                                            if((j + 1) % 7 === 0) {
                                                                 return(
                                                                     <li key={j} className="listItems">
                                                                         <ListGroup className="groupNews">
