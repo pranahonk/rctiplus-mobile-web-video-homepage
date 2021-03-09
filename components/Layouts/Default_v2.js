@@ -107,6 +107,7 @@ class Default_v2 extends React.Component {
                     <meta name="mobile-web-app-capable" content="yes" />
                     <meta name="apple-mobile-web-app-capable" content="yes" />
                     <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta property="og:site_name" content="RCTI+" />
 
                     <meta name="author" content={AUTHOR} />
                     <meta name="viewport" content={VIEWPORT} />
