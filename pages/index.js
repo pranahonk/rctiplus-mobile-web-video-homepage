@@ -139,6 +139,7 @@ class Index_v2 extends React.Component {
                     <meta name="description" content={SITEMAP.home.description} />
                     <meta name="keywords" content={SITEMAP.home.keywords} />
                     <meta property="og:title" content={SITEMAP.home.title} />
+                    <meta property="og:description" content={SITEMAP.home.description} />
                     <meta property="og:image" itemProp="image" content={SITEMAP.home.image} />
                     <meta property="og:url" content={REDIRECT_WEB_DESKTOP} />
                     <meta property="og:image:type" content="image/jpeg" />
