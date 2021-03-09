@@ -171,6 +171,10 @@ class Trending_v2 extends React.Component {
                     this.loadArticles(tab);
                 }
             });
+            this.loadContents(tabData.id);
+            const href = `/news?subcategory_id=${tabData.id}&subcategory_title=${tabData.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`;
+            const as = `/news/${tabData.id}/${tabData.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`;
+            Router.push(href, as)
         }
     }
 
@@ -461,13 +465,6 @@ class Trending_v2 extends React.Component {
                 ogDescription: '',
             }
     }
-    _linkTab(tab) {
-        this.loadContents(tab.id);
-        const href = `/news?subcategory_id=${tab.id}&subcategory_title=${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`;
-        const as = `/news/${tab.id}/${tab.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`;
-        Router.push(href, as)
-    }
-
 
     render() {
         // const metadata = this.getMetadata();
@@ -600,9 +597,7 @@ class Trending_v2 extends React.Component {
                                                                                 active: this.state.active_tab == tab.id,
                                                                                 'navigation-tabs-item': true
                                                                             })}>
-                                                                            <a onClick={() => this._linkTab(tab)}>
-                                                                                <NavLink onClick={() => this.toggleTab(tab.id.toString(), tab)} className="item-link">{tab.name}</NavLink>
-                                                                            </a>
+                                                                            <NavLink onClick={() => this.toggleTab(tab.id.toString(), tab)} className="item-link">{tab.name}</NavLink>
                                                                         </NavItem>
                                                                     ))}
                                                                 </Nav>
