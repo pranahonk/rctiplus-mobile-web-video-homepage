@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Head from 'next/head'
 import PropTypes from 'prop-types';
 import { convivaJwPlayer} from '../../../utils/conviva';
 import { getUserId } from '../../../utils/appier';
@@ -724,10 +725,15 @@ const JwPlayer = (props) => {
 
   return (
     // <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
-    <div className="rplus-jw-container">
-      { getPlayer(status.isError01 , status.isError02, status.isError03 ) }
-      {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
-    </div>
+    <>
+      <Head>
+          <script src="/static/js/jwplayer.js"></script>
+      </Head>
+      <div className="rplus-jw-container">
+        { getPlayer(status.isError01 , status.isError02, status.isError03 ) }
+        {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
+      </div>
+    </>
   );
 };
 
