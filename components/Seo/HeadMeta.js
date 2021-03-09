@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router'
 import { SHARE_BASE_URL, SITE_NAME, SITEMAP, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../../config';
+import JsonLDVideo from '../Seo/JsonLDVideo'
 
 const HeadMeta = (props) => {
   const router = useRouter()
@@ -15,9 +16,15 @@ const HeadMeta = (props) => {
       keyword.push(item.name);
     });
   }
+  const contentData = {
+			asPath: router.asPath || '',
+			title: seo.title || '',
+			thumbnailUrl: seo.imagePath || ''
+		}
   if (data || dataPlayer) {
     return (
       <Head>
+        <JsonLDVideo content={contentData} />
         <title>{seo.title}</title>
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="keywords" content={keyword.toString() || 'rctiplus'} />
