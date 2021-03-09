@@ -13,7 +13,7 @@ import chatsActions from '../../redux/actions/chats';
 const Footer = loadable(() => import('../../components/Includes/Footer/Default'))
 const Footer_v2 = loadable(() => import('../../components/Includes/Footer/Default_v2'))
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, FIREBASE_apiKey,  FIREBASE_authDomain,  FIREBASE_databaseURL, FIREBASE_projectId, FIREBASE_storageBucket, FIREBASE_appId, FIREBASE_measurementId, FIREBASE_messagingSenderId, SHARE_BASE_URL } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GRAPH_SITEMAP, SHARE_BASE_URL } from '../../config';
 import { Spinner } from 'reactstrap';
 const PaidVideo = dynamic(() => import('../Includes/program-detail/PaidVideo'), { ssr: false });
 
@@ -106,6 +106,7 @@ class Default_v2 extends React.Component {
                     <meta name="apple-mobile-web-app-status-bar-style" content="#171717" />
                     <meta name="mobile-web-app-capable" content="yes" />
                     <meta name="apple-mobile-web-app-capable" content="yes" />
+                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
 
                     <meta name="author" content={AUTHOR} />
                     <meta name="viewport" content={VIEWPORT} />
