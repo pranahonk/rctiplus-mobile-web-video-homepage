@@ -158,15 +158,20 @@
         }
     }
 
-    &.adsBigBox {
+    /* &.adsBigBox {
         .adsStyling {
             width: 468px;
             height: 60px;
         }
-    }
+    } */
 
     &.fullscreen-player{
         position: fixed;
         z-index: 2147483647;
+
+        .adsStyling {
+          width: 468px;
+          height: 60px;
+        }
     }
 }
