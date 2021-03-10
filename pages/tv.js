@@ -204,7 +204,7 @@ class Tv extends React.Component {
 		this.props.getLiveEvent('on air')
 			.then(response => {
 				this.setState({ live_events: response.data.data, meta: response.data.meta }, () => {
-					// this.props.unsetPageLoader();
+					this.props.unsetPageLoader();
 					if (this.state.live_events.length > 0) {
 						for (let i = 0; i < this.state.live_events.length; i++) {
 							if (this.state.live_events[i].channel_code === this.state.channel_code) {
@@ -347,7 +347,7 @@ class Tv extends React.Component {
 	}
 
 	selectChannel(index, first = false) {
-		this.props.setPageLoader();
+		// this.props.setPageLoader();
 		this.setState({ selected_index: index, error: false, chats: [], ads_data: null, isAds: false }, () => {
 			setTimeout(() => {
 				if (this.state.chat_open) {
@@ -463,7 +463,7 @@ class Tv extends React.Component {
 	}
 
 	selectCatchup(id, ref = false) {
-		this.props.setPageLoader();
+		// this.props.setPageLoader();
 		if (!ref) {
 			liveTvCatchupScheduleClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_catchup_schedule_clicked');
 		}
@@ -767,9 +767,9 @@ class Tv extends React.Component {
 		}, () => { console.log(this.state.isAds)})
 	}
 	_metaTags(){
-		const [titleChannel, titleEpg] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`].title, this.props.router.query.epg_title?.replace(/-/gi, ' ')]
-		const [descriptionChannel, channel] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`].description , this.props?.data_epg?.channel]
-		const [keywordsChannel, paramsDate] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`].keywords, this.props.params_date?.replace(/-/gi, ' ')]
+		const [titleChannel, titleEpg] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.title, this.props.router.query.epg_title?.replace(/-/gi, ' ')]
+		const [descriptionChannel, channel] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.description , this.props?.data_epg?.channel]
+		const [keywordsChannel, paramsDate] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.keywords, this.props.params_date?.replace(/-/gi, ' ')]
 		return {
 			title: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel?.toUpperCase()} - RCTI+` : titleChannel,
 			description: titleEpg ? `Nonton streaming ${titleEpg} - ${paramsDate}  online tanpa buffering dan acara favorit lainnya 7 hari kemarin. Dapatkan juga jadwal acara ${channel?.toUpperCase()} terbaru hanya di RCTI+` : descriptionChannel,
@@ -784,7 +784,7 @@ class Tv extends React.Component {
 		const contentData = {
 			asPath: props.router.asPath,
 			title: props.context_data?.epg_title || props.context_data?.channel,
-			thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].image
+			thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image
 		}
 		let playerRef = (<div></div>);
 		if (this.state.error) {
@@ -867,7 +867,7 @@ class Tv extends React.Component {
 					<meta name="keywords" content={this._metaTags().keywords} />
 					<meta property="og:title" content={this._metaTags().title} />
 					<meta property="og:description" content={this._metaTags().description} />
-					<meta property="og:image" itemProp="image" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].image} />
+					<meta property="og:image" itemProp="image" content={SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image} />
 					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
 					<meta property="og:type" content="video" />
 					<meta property="og:image:type" content="image/jpeg" />
@@ -878,7 +878,7 @@ class Tv extends React.Component {
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
 					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
 					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-					<meta name="twitter:image" content={SITEMAP[`live_tv_${this.state.channel_code.toLowerCase()}`].image} />
+					<meta name="twitter:image" content={SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image} />
 					<meta name="twitter:image:alt" content={this._metaTags().title} />
 					<meta name="twitter:title" content={this._metaTags().title} />
 					<meta name="twitter:description" content={this._metaTags().description} />
