@@ -673,11 +673,6 @@ const JwPlayer = (props) => {
   return (
     // <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
     <>
-      <Head>
-        <script src="/static/js/jwplayer.js"></script>
-        <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>
-        <script src="/static/js/conviva-core-sdk.js"></script>
-      </Head>
       <div className="rplus-jw-container">
         { getPlayer(status.isError01 , status.isError02 ) }
         {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
