@@ -726,9 +726,6 @@ const JwPlayer = (props) => {
   return (
     // <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
     <>
-      <Head>
-          <script src="/static/js/jwplayer.js"></script>
-      </Head>
       <div className="rplus-jw-container">
         { getPlayer(status.isError01 , status.isError02, status.isError03 ) }
         {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
