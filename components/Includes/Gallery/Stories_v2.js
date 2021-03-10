@@ -340,6 +340,7 @@ class Stories extends React.Component {
         return (
             <div className="stories-wrapper">
                 <Head>
+                    <script src="/static/js/dash.js"></script>
                     <link rel="stylesheet" href="static/css/zuck.css?v=2" />
                     <link rel="stylesheet" href="static/css/snapgram.css?v=2" />
                 </Head>
