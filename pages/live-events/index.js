@@ -67,6 +67,7 @@ class Index extends React.Component {
             statusPlay={false}
             statusLabel="1"
             statusTimer="1"
+            timer
             src={`${this.props.liveEvent?.data?.now_playing_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
           </Col>
         );
