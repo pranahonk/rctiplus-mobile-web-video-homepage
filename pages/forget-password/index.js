@@ -81,7 +81,7 @@ class ForgetPassword extends React.Component {
 
     checkUser () {
         if (this.state.username && this.state.username.length >= 6) {
-            this.props.checkUser(this.state.username)
+            this.props.checkUserv2(this.state.username)
                 .then(response => {
                     if (response.status === 200) {
                         const message = response.data.status.message_client;
@@ -102,23 +102,32 @@ class ForgetPassword extends React.Component {
                             if (response.data.status.code != 0) {
                                 this.setState({
                                     username_invalid: true,
-                                    username_invalid_message: message
+                                    username_invalid_message: message === undefined ? 'User has not been registered' : message
                                 });
                             }
                             else {
                                 this.setState({
                                     username_invalid: true,
-                                    username_invalid_message: ''
+                                    username_invalid_message: 'User has not been registered'
                                     // username_invalid_message: 'Username does not exist'
                                 });
                                 
                             }
-                            
                         }
-                        
                     }
                 })
-                .catch(error => console.log(error));
+                .catch((error) => {
+                    const {errors, status} = error.response.data
+                    if (status === 422) {
+                        this.setState({username_invalid: false});
+                    } else {
+                        console.log('errors >>', errors);
+                        this.setState({
+                            username_invalid: true,
+                            username_invalid_message: errors.length > 0 ? errors[0].value : 'User has not been registered'
+                        });
+                    }
+                });
         }
     }
     componentDidMount() {
