@@ -111,7 +111,7 @@ class Index extends React.Component {
     return (
       <Layout title={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.title : SITEMAP.live_event_index.title}>
         <Head>
-            <meta name="description" content={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.title : SITEMAP.live_event_index.title} />
+            <meta name="description" content={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.description : SITEMAP.live_event_index.description} />
             <meta name="keywords" content={SITEMAP.live_event_index.keywords} />
             <meta property="og:title" content={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.title : SITEMAP.live_event_index.title} />
             <meta property="og:image" itemProp="image" content={SITEMAP.live_event_index.image} />
@@ -128,7 +128,7 @@ class Index extends React.Component {
             <meta name="twitter:image" content={SITEMAP.live_event_index.image} />
             <meta name="twitter:title" content={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.title : SITEMAP.live_event_index.title} />
             <meta name="twitter:image:alt" content="streaming rctiplus" />
-            <meta name="twitter:description" content={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.title : SITEMAP.live_event_index.title} />
+            <meta name="twitter:description" content={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.description : SITEMAP.live_event_index.description} />
             <meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
             <meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
         </Head>

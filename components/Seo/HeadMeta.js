@@ -69,13 +69,19 @@ export const convert = (value, tv_name, valueDetail, router, meta) => {
     // }
     return  {
       title: `Nonton Streaming ${valueDetail?.title} Sub Indo - ${SITE_NAME}`,
-      description: `${valueDetail?.summary} - ${SITE_NAME}`,
+      description: `Nonton streaming online ${valueDetail?.title} ${tv_name} full episode lengkap sub indo dengan cuplikan video menarik lainnya hanya di RCTI+  . Lihat selengkapnya disini`,
       imagePath: `${meta && meta.image_path}140${valueDetail && valueDetail.portrait_image}`,
     };
   }
   if (router.pathname === '/programs') {
     switch (router.query.content_type || router.query.tab) {
       case 'episodes':
+          return  {
+            title: `Nonton Streaming ${value && value.title} Online Download Full Episode Sub Indo - ${SITE_NAME}`,
+            description: `Nonton Series dan cuplikan video ${value && value.title} ${tv_name} online per episode lengkap dengan kualitas HD Gratis Terlengkap dan Terbaru Sub Indo hanya di - ${SITE_NAME}`,
+            imagePath: `${meta && meta.image_path}140${value && value.portrait_image}`,
+          };
+      case 'episode':
           return  {
             title: `Nonton Streaming ${value && value.title} Online Download Full Episode Sub Indo - ${SITE_NAME}`,
             description: `Nonton Series dan cuplikan video ${value && value.title} ${tv_name} online per episode lengkap dengan kualitas HD Gratis Terlengkap dan Terbaru Sub Indo hanya di - ${SITE_NAME}`,

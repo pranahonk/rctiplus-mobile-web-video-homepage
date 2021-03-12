@@ -23,6 +23,7 @@ import Panel4 from '../components/Panels/Pnl_4';
 import StickyAds from '../components/Includes/Banner/StickyAds';
 import GridMenu from '../components/Includes/Common/GridMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
+import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
@@ -136,6 +137,7 @@ class Index_v2 extends React.Component {
         return (
             <Layout title={SITEMAP.home.title}>
                 <Head>
+                    <JsonLDWebsite keyword={'Home'} />
                     <meta name="description" content={SITEMAP.home.description} />
                     <meta name="keywords" content={SITEMAP.home.keywords} />
                     <meta property="og:title" content={SITEMAP.home.title} />
