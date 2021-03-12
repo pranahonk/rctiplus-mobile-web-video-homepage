@@ -249,6 +249,12 @@ const UIVersion = '2.0';
         id: req.params.id
       })
     })
+    server.get('/explores/keyword', (req, res) => {
+      return app.render(req, res, '/searchLibrary', {
+        id: req.params.id,
+        q: req.query.q
+      })
+    })
     server.get('/explores/:id/:genre_name', (req, res) => {
       return app.render(req, res, '/explores', {
         id: req.params.id,

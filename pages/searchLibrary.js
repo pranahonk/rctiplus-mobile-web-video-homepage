@@ -88,42 +88,6 @@ class Explores extends React.Component {
 		// this.props.setPageLoader();
 	}
 
-	// componentDidMount() { 
-	// 	if (this.state.selected_genre_id != -1) {
-	// 		this.selectGenre(this.state.selected_genre, 'program', true);
-	// 	}
-	// 	else {
-	// 		this.LoadingBar.continuousStart();
-	// 		this.props.getRecommendation(1, this.state.length)
-	// 			.then(response => {
-	// 				if (response.status === 200 && response.data.status.code === 0) {
-	// 					let recommendations = this.state.recommendations;
-	// 					recommendations[`genre-${this.state.selected_genre_id}`] = response.data.data;
-						
-	// 					let pages = {};
-	// 					pages[`genre-${this.state.selected_genre_id}`] = 1;
-
-	// 					let showMoreAllowed = this.state.show_more_allowed;
-	// 					showMoreAllowed[`genre-${this.state.selected_genre_id}`] = response.data.data.length >= this.state.length;
-
-	// 					this.setState({
-	// 						recommendations: recommendations,
-	// 						page: pages,
-	// 						show_more_allowed: showMoreAllowed
-	// 					});
-	// 				}
-
-	// 				this.props.unsetPageLoader();
-	// 				this.LoadingBar.complete();
-	// 			})
-	// 			.catch(error => {
-	// 				console.log(error);
-	// 				this.LoadingBar.complete();
-	// 			});
-	// 	}
-
-		
-	// }
 	componentWillUnmount() {
 		// this.props.searches.setStatusSearch();
 	}
@@ -284,15 +248,6 @@ class Explores extends React.Component {
 		}
 	}
 
-	getMetadata() {
-		const name = this.state.selected_genre_name.toLowerCase().replace(/ /g, '_');
-		if (SITEMAP[`explore_${name}`]) {
-			return SITEMAP[`explore_${name}`];
-		}
-		
-		return SITEMAP['explore_for_you'];
-	}
-
 	getImageFileName(url) {
 		const segments = url.split('/');
 		if (segments.length <= 0) {
@@ -301,6 +256,18 @@ class Explores extends React.Component {
 
 		let filename = segments[segments.length - 1];
 		return filename.split('.').slice(0, -1).join('.');
+	}
+
+	getMetadata() {
+		const keyword = this.props.router.query.q || '';
+		return {
+				title: `Cari konten ${keyword} terbaru - RCTI+`,
+				description: `RCTI+ - Pencarian Kumpulan konten terbaru dan terpercaya | ${keyword}`,
+				keywords: `rctiplus`,
+				image: 'https://rctiplus.com/assets/image/elements/logo.b9f35229.png',
+				twitter_img_alt: `Hasil Pencarian ${keyword}`,
+				url: REDIRECT_WEB_DESKTOP + this.props.router.asPath
+			}
 	}
 
 	render() {
@@ -313,11 +280,12 @@ class Explores extends React.Component {
 					<meta property="og:title" content={metadata.title} />
 					<meta property="og:description" content={metadata.description} />
 					<meta property="og:image" itemProp="image" content={metadata.image} />
-					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+					<meta property="og:url" content={metadata.url} />
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
 					<meta property="og:image:height" content="315" />
 					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="og:type" content="website" />
 					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
 					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
@@ -326,7 +294,7 @@ class Explores extends React.Component {
 					<meta name="twitter:image:alt" content={metadata.title} />
 					<meta name="twitter:title" content={metadata.title} />
 					<meta name="twitter:description" content={metadata.description} />
-					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+					<meta name="twitter:url" content={metadata.url} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
 				<BottomScrollListener offset={8} onBottom={this.bottomScrollFetch.bind(this)} />
