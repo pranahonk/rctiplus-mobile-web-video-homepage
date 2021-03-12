@@ -109,7 +109,8 @@ class Trending_v2 extends React.Component {
         return { 
             query: ctx.query, metaOg: error_code ? {} : data.data[0], 
             data_category: error_code_category || error_code_kanal ? [] : dataCategory,
-            metaSeo: metaSeo[0] || {}
+            metaSeo: metaSeo[0] || {},
+            newsToken: data_news?.data?.news_token || ''
         };
     }
 
@@ -142,8 +143,9 @@ class Trending_v2 extends React.Component {
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
-                this.accessToken = q.token;
-                setAccessToken(q.token);
+                const newsTokenApp = q.token === 'null' ? this.props.newsToken : q.token
+                this.accessToken = newsTokenApp;
+                setAccessToken(newsTokenApp);
             }
             if (q.platform) {
                 this.platform = q.platform;
