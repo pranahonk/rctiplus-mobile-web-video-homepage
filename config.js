@@ -126,20 +126,20 @@ export const SITEMAP = {
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     faq: {
-        title: `Halaman Frequently Asked Questions - ${SITE_NAME}`,
+        title: `Halaman Frequently Ask and Questions - ${SITE_NAME}`,
         description: `Pertanyaan yang paling sering diajukan terkait informasi penggunaan dan program tayangan di RCTI+ beserta jawabannya`,
         keywords: `faq rctiplus, faq rcti+, cara pakai rctiplus, rctiplus`,
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     register: {
         title: `Halaman Sign Up / Pendaftaran Akun - ${SITE_NAME}`,
-        description: `Tempat pendaftaran / register akun di RCTI+. Buruan register sekarang, gratis streaming online sepuasnya`,
+        description: `Tempat pendaftaran / register akun di RCTI+. Buruan register sekarang, gratis streaming online sepuasnya untuk menikmati semua layanan entertainment gratis di RCTI+`,
         keywords: `register rctiplus, register rcti+, daftar rctiplus, rctiplus`,
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     login: {
         title: `Halaman Login Akun - ${SITE_NAME}`,
-        description: `Tempat login akun dan nonton tayangan streaming tv online gratis di RCTI+`,
+        description: `Tempat login akun untuk menikmati semua layanan entertainment gratis di RCTI+`,
         keywords: `login rctiplus, login rcti+, masuk rctiplus, rctiplus`,
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
@@ -246,19 +246,19 @@ export const SITEMAP = {
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_MNCTV-min.png`
     },
     live_tv_globaltv: {
-        title: `Live Streaming Global TV (GTV) Hari Ini | TV Online Indonesia - ${SITE_NAME}`,
-        description: `Nonton live streaming GTV online hari ini tanpa buffering untuk semua program dan acara favorit yang tayang setiap hari. Dapatkan juga jadwal acara Global TV terbaru hanya di RCTI+`,
+        title: `Live Streaming GTV Hari Ini | TV Online Indonesia - ${SITE_NAME}`,
+        description: `Nonton live streaming GTV online hari ini tanpa buffering untuk semua program dan acara favorit yang tayang setiap hari. Dapatkan juga jadwal acara GTV terbaru hanya di RCTI+`,
         keywords: `global tv, gtv jadwal, tv bersama gtv, live streaming gtv sekarang, siaran langsung gtv`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_GTV-min.png`
     },
     live_tv_gtv: {
-        title: `Live Streaming Global TV (GTV) Hari Ini | TV Online Indonesia - ${SITE_NAME}`,
-        description: `Nonton live streaming GTV online hari ini tanpa buffering untuk semua program dan acara favorit yang tayang setiap hari. Dapatkan juga jadwal acara Global TV terbaru hanya di RCTI+`,
+        title: `Live Streaming GTV Hari Ini | TV Online Indonesia - ${SITE_NAME}`,
+        description: `Nonton live streaming GTV online hari ini tanpa buffering untuk semua program dan acara favorit yang tayang setiap hari. Dapatkan juga jadwal acara GTV terbaru hanya di RCTI+`,
         keywords: `global tv, gtv jadwal, tv bersama gtv, live streaming gtv sekarang, siaran langsung gtv`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_GTV-min.png`
     },
     live_tv_inews: {
-        title: `Live Streaming iNews Hari Ini | TV Online Indonesia - ${SITE_NAME}`,
+        title: `Live Streaming iNews TV Hari Ini | TV Online Indonesia - ${SITE_NAME}`, 
         description: `Nonton live streaming iNews online hari ini tanpa buffering untuk semua program dan berita favorit yang tayang setiap hari. Dapatkan juga jadwal berita RCTI terbaru hanya di RCTI+`,
         keywords: `berita inews, inews, streaming inews, berita inews tv terbaru, inews terkini`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_INEWS-min.png`
