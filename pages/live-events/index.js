@@ -68,7 +68,7 @@ class Index extends React.Component {
             statusLabel="1"
             statusTimer="1"
             timer
-            src={`${this.props.liveEvent?.data?.now_playing_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+            src={`${this.props.liveEvent?.data?.now_playing_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.content_name}/>
           </Col>
         );
       })
@@ -89,7 +89,7 @@ class Index extends React.Component {
             backgroundColor="#fa262f"
             statusLabel="1"
             statusTimer="1"
-            src={`${this.props.liveEvent?.data?.upcoming_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+            src={`${this.props.liveEvent?.data?.upcoming_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.content_name}/>
           </Col>
         );
       })
@@ -106,7 +106,7 @@ class Index extends React.Component {
             backgroundColor="#fa262f"
             statusLabel="0"
             statusTimer="0"
-            src={`${this.props.liveEvent?.data?.past_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+            src={`${this.props.liveEvent?.data?.past_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.content_name}/>
           </Col>
         );
       })

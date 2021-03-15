@@ -11,6 +11,7 @@ class Thumbnail extends React.Component {
     super(props);
   }
   render() {
+    console.log(this.props)
     return (
       <>
         <div className="thumb-container">
@@ -18,7 +19,7 @@ class Thumbnail extends React.Component {
             {this.props.label}
           </div>
             <Img
-                alt={this.props.src}
+                alt={this.props.alt}
                 className="thumb-img"
                 unloader={<img className="thumb-img" src="/static/placeholders/placeholder_landscape.png"/>}
                 loader={<img className="thumb-img" src="/static/placeholders/placeholder_landscape.png"/>}

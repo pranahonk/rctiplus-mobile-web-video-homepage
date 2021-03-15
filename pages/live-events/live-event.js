@@ -842,7 +842,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 	callbackAds(e) {
-		console.log(e)
+		// console.log(e)
 		this.setState({
 			ads_data: null,
 		}, () => {
@@ -855,7 +855,7 @@ class LiveEvent extends React.Component {
 	}
 
 	callbackCount(end, current) {
-		console.log(this.state.isAds)
+		// console.log(this.state.isAds)
 		if(this.state.isAds) {
 			let distance = getCountdown(end, current)[0] || 100000;
 			const countdown = setInterval(() => {
@@ -894,6 +894,7 @@ class LiveEvent extends React.Component {
 	liveEventNow() {
 		return (
 			this.props.chats?.data?.now_playing_event?.data?.map((list, i) => {
+				console.log(list)
 				return (
 					<Col xs="6" key={i} onClick={this.getLink.bind(this, list, 'live-event', 'now-playing')}>
 						<Thumbnail
@@ -904,7 +905,7 @@ class LiveEvent extends React.Component {
 						statusPlay={false}
 						statusLabel="1"
 						statusTimer="1"
-						src={`${this.props.chats?.data?.now_playing_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+						src={`${this.props.chats?.data?.now_playing_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.content_name}/>
 					</Col>
 				)
 			})
@@ -925,7 +926,7 @@ class LiveEvent extends React.Component {
             backgroundColor="#fa262f"
             statusLabel="1"
             statusTimer="1"
-            src={`${this.props.chats?.data?.upcoming_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+            src={`${this.props.chats?.data?.upcoming_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.content_name}/>
           </Col>
         );
       })
@@ -942,7 +943,7 @@ class LiveEvent extends React.Component {
             backgroundColor="#fa262f"
             statusLabel="0"
             statusTimer="0"
-            src={`${this.props.chats?.data?.past_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+            src={`${this.props.chats?.data?.past_event?.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.content_name}/>
           </Col>
         );
       })
