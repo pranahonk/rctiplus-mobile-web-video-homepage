@@ -1,6 +1,6 @@
 import ax from 'axios';
-import { DEV_API } from '../../config';
-import { setCookie, getVisitorToken, checkToken } from '../../utils/cookie';
+import { DEV_API, AUTH_API } from '../../config';
+import { getCookie, setCookie, getVisitorToken, checkToken, getVisitorTokenPassport } from '../../utils/cookie';
 
 const axios = ax.create({
     // baseURL: API + '/api',
@@ -10,6 +10,15 @@ const axios = ax.create({
 axios.interceptors.request.use(async (request) => {
     await checkToken();
     request.headers['Authorization'] = getVisitorToken();
+    return request;
+});
+
+const axAuthAPI = ax.create({ baseURL: AUTH_API });
+
+axAuthAPI.interceptors.request.use(async (request) => {
+    await checkToken();
+    const accessToken = getCookie('ACCESS_TOKEN');
+    request.headers['Authorization'] = accessToken == undefined ? getVisitorTokenPassport() : accessToken;
     return request;
 });
 
@@ -106,6 +115,28 @@ const getOtp = (username, type = 'registration', phone_code = null) => {
             resolve(response);
         }
         catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getOtpv2 = (username, type = 'registration', phone_code = null) => {
+    console.log(phone_code)
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axAuthAPI.post(`/v1/partner/otp`, {
+                username: phone_code ? phone_code + username : username,
+                type: type,
+                signature_code: ''
+            });
+            if (response.data.status === 200) {
+                dispatch({ type: 'GET_OTP' });
+            }
+
+            resolve(response);
+        }
+        catch (error) {
+            console.log('hello world')
             reject(error);
         }
     });
@@ -210,6 +241,29 @@ const verifyOtp = (username, otp, phone_code = null) => {
     });
 };
 
+const verifyOtpv2 = (username, otp, phone_code = null) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axAuthAPI.post(`/v1/partner/verify_otp`, {
+                username: phone_code ? phone_code + username : username,
+                type: "forget-password",
+                otp: otp
+            });
+
+            // code = 26 (wrong otp)
+            // code = 1 (otp max length is 4)
+            if (response.data.status === 200) {
+                dispatch({ type: 'VERIFY_OTP' });
+            }
+
+            resolve(response);
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const forgotPassword = (emailphone, device_id, platform = 'mweb') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -280,17 +334,44 @@ const createForgotPassword = (username, new_password, otp, phone_code = '') => {
             reject(error);
         }
     });
-}; 
+};
+
+const createForgotPasswordv2 = (username, new_password, otp, phone_code = '') => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axAuthAPI.post(`/v1/partner/forgot_password`, {
+                phone_code: phone_code,
+                username: username,
+                new_password: new_password,
+                otp: otp,
+            });
+
+            if (response.data.status === 200) {
+                dispatch({ type: 'CREATE_NEW_PASSWORD', status: response.data.status });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
 
 export default {
     register,
     resendVerifyEmail,
     getPhoneOtp,
     getOtp,
+    getOtpv2,
     verifyOtp,
+    verifyOtpv2,
     forgotPassword,
     createNewPassword,
     createForgotPassword,
+    createForgotPasswordv2,
     setUsername,
     setPassword,
     setFullname,

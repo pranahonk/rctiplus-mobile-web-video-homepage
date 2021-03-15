@@ -1,6 +1,6 @@
 import ax from 'axios';
-import { DEV_API } from '../../config';
-import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
+import { DEV_API, AUTH_API } from '../../config';
+import { getCookie, getVisitorToken, checkToken, getVisitorTokenPassport } from '../../utils/cookie';
 
 const axios = ax.create({ baseURL: DEV_API + '/api' });
 
@@ -8,6 +8,14 @@ axios.interceptors.request.use(async (request) => {
     await checkToken();
     const accessToken = getCookie('ACCESS_TOKEN');
     request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : accessToken;
+    return request;
+});
+
+const axAuthAPI = ax.create({ baseURL: AUTH_API });
+axAuthAPI.interceptors.request.use(async (request) => {
+    await checkToken();
+    const accessToken = getCookie('ACCESS_TOKEN');
+    request.headers['Authorization'] = accessToken == undefined ? getVisitorTokenPassport() : accessToken;
     return request;
 });
 
@@ -258,6 +266,19 @@ const checkUser = (username, phone_code = null) => {
     });
 };
 
+const checkUserv2 = (username, phone_code = null) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axAuthAPI.get(`/v1/partner/user_available?username=${phone_code ? (phone_code + username) : username}`);
+            dispatch({ type: 'CHECK_USER', status: response.data.status });
+            resolve(response);
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const contactUs = ({ name, phone, email, comment }) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -286,6 +307,7 @@ export default {
     getUserData,
     getInterests,
     checkUser,
+    checkUserv2,
     setInterest,
     setUserProfile,
     setValue,
