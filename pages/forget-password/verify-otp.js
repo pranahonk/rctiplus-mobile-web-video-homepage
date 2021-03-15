@@ -6,7 +6,7 @@ import Countdown, { zeroPad } from 'react-countdown-now';
 
 import registrationActions from '../../redux/actions/registerActions';
 
-import { showConfirmAlert } from '../../utils/helpers';
+import { showConfirmAlert, showAlert } from '../../utils/helpers';
 
 import Layout from '../../components/Layouts/Default';
 import NavBack from '../../components/Includes/Navbar/NavBack';
@@ -37,9 +37,8 @@ class VerifyOtp extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props)
         this.setState({ username: this.props.registration.username }, () => {
-            this.props.getOtp(this.state.username, 'forget-password', this.props.registration.phone_code)
+            this.props.getOtpv2(this.props.registration.username, 'forget-password', this.props.registration.phone_code)
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
@@ -48,13 +47,14 @@ class VerifyOtp extends React.Component {
                         });
                     }
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                    const {errors} = error.response.data
+                    showAlert(errors.length > 0 ? errors[0].value : 'Please try again', 'Warning', 'OK', '', () => Router.push('/forget-password'));
+                });
         });
     }
 
     submitOtp() {
-        // Router.push('/forget-password/verification-success');
-        // Router.push('/login');
         Router.push('/forget-password/change-password');
     }
 
@@ -62,36 +62,36 @@ class VerifyOtp extends React.Component {
         this.setState({ otp: otp, is_submitting: otp && otp.length >= 4 }, () => {
             this.props.setOtp(this.state.otp);
             if (this.state.is_submitting) {
-                this.props.verifyOtp(this.state.username, this.state.otp, this.props.registration.phone_code)
+                this.props.verifyOtpv2(this.props.registration.username, this.state.otp, this.props.registration.phone_code)
                     .then(response => {
                         if (response.status === 200) {
-                            switch (response.data.status.code) {
-                                case 0:
-                                    this.submitOtp();
-                                    break;
-
-                                default:
-                                    this.otpInput.__clearvalues__();
-                                    this.setState({  
-                                        is_submitting: false,
-                                        submit_message: 'Invalid verification code',
-                                        otp: ''
-                                    });
-                                    break;
-                            }
-                            
+                            this.submitOtp();
+                        } else {
+                            this.otpInput.__clearvalues__();
+                            this.setState({  
+                                is_submitting: false,
+                                submit_message: 'Invalid verification code',
+                                otp: ''
+                            });
                         }
                     })
                     .catch(error => {
-                        console.log(error);
-                        this.setState({ is_submitting: false });
+                        const {errors, status} = error.response.data
+                        if (status === 422) {
+                            this.setState({username_invalid: false});
+                        } else {
+                            this.setState({
+                                username_invalid: true,
+                                username_invalid_message: errors.length > 0 ? errors[0].value : 'User has not been registered'
+                            });
+                        }
                     });
             }
         });
     }
 
-    showAlert() {
-        let username = this.state.username;
+    popShowAlert() {
+        let username = this.props.registration.username;
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
             this.props.getOtp(username, 'forget-password', this.props.registration.phone_code)
                 .then(response => {
@@ -149,7 +149,7 @@ class VerifyOtp extends React.Component {
 
     render() {
         let text = 'Please enter verification code, <br>sent via email:';
-		let username = this.state.username || '';
+		let username = this.props.registration.username || '';
 
 		let actionElement = null;
 		if (this.state.is_submitting) {
@@ -167,7 +167,7 @@ class VerifyOtp extends React.Component {
 								date={this.state.current_time + (this.state.interval * 1000)}
 								renderer={({ hours, minutes, seconds, completed }) => {
 									if (completed) {
-										return (<p className="text-default-rcti" style={{ textAlign: 'center' }}>did not receive any code<br/><span onClick={this.showAlert.bind(this)} className="el-red">send me code</span></p>);
+										return (<p className="text-default-rcti" style={{ textAlign: 'center' }}>did not receive any code<br/><span onClick={this.popShowAlert.bind(this)} className="el-red">send me code</span></p>);
 									}
 	
 									return (<span>Resend code <span className="time-resendcode">{zeroPad(minutes)}:<span>{zeroPad(seconds)}</span></span></span>);
