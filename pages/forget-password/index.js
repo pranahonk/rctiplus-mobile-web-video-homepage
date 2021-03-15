@@ -46,6 +46,7 @@ class ForgetPassword extends React.Component {
 			if (value) {
 				if (value.charAt(0) === '0') {
 					value = value.slice(1);
+                    value = this.state.phone_code + value 
                 }
             this.setState({ isPhoneNumber: true });
             this.props.setPhoneCode(this.state.phone_code);
@@ -80,7 +81,9 @@ class ForgetPassword extends React.Component {
     }
 
     checkUser () {
-        if (this.state.username && this.state.username.length >= 6) {
+        let username = this.state.username;
+        if (username && username.length >= 6) {
+            // console.log('phone number >>', username, '>>', this.state.phone_code);
             this.props.checkUserv2(this.state.username)
                 .then(response => {
                     if (response.status === 200) {

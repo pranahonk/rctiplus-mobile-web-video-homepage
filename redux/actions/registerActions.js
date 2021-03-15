@@ -120,17 +120,15 @@ const getOtp = (username, type = 'registration', phone_code = null) => {
     });
 };
 
-const getOtpv2 = (username, type = 'registration', phone_code = null) => {
-    console.log(phone_code)
+const getOtpv2 = (username, type = 'registration') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axAuthAPI.post(`/v1/partner/otp`, { 
-                username: phone_code ? phone_code + username : username,
+                username: username,
                 type: type,
                 signature_code: ''
             });
-            console.log('hello >>', response)
-            if (response.data.status.code === 0) {
+            if (response.data.status === 200) {
                 dispatch({ type: 'GET_OTP' });
             }
 
@@ -242,18 +240,18 @@ const verifyOtp = (username, otp, phone_code = null) => {
     });
 };
 
-const verifyOtpv2 = (username, otp, phone_code = null) => {
+const verifyOtpv2 = (username, otp) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axAuthAPI.post(`/v1/partner/verify_otp`, {
-                username: phone_code ? phone_code + username : username,
+                username: username,
                 type: "forget-password",
                 otp: otp
             });
 
             // code = 26 (wrong otp)
             // code = 1 (otp max length is 4)
-            if (response.data.status.code === 0) {
+            if (response.data.status === 200) {
                 dispatch({ type: 'VERIFY_OTP' });
             }
 
@@ -347,7 +345,7 @@ const createForgotPasswordv2 = (username, new_password, otp, phone_code = '') =>
                 otp: otp,
             });
 
-            if (response.data.status.code === 0) {
+            if (response.data.status === 200) {
                 dispatch({ type: 'CREATE_NEW_PASSWORD', status: response.data.status });
                 resolve(response);
             }

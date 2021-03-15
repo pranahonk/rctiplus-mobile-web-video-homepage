@@ -38,7 +38,7 @@ class VerifyOtp extends React.Component {
 
     componentDidMount() {
         this.setState({ username: this.props.registration.username }, () => {
-            this.props.getOtpv2(this.state.username, 'forget-password', this.props.registration.phone_code)
+            this.props.getOtpv2(this.props.registration.username, 'forget-password')
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
@@ -62,7 +62,7 @@ class VerifyOtp extends React.Component {
         this.setState({ otp: otp, is_submitting: otp && otp.length >= 4 }, () => {
             this.props.setOtp(this.state.otp);
             if (this.state.is_submitting) {
-                this.props.verifyOtpv2(this.state.username, this.state.otp, this.props.registration.phone_code)
+                this.props.verifyOtpv2(this.props.registration.username, this.state.otp)
                     .then(response => {
                         if (response.status === 200) {
                             this.submitOtp();
@@ -95,7 +95,7 @@ class VerifyOtp extends React.Component {
     }
 
     popShowAlert() {
-        let username = this.state.username;
+        let username = this.props.registration.username;
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
             this.props.getOtp(username, 'forget-password', this.props.registration.phone_code)
                 .then(response => {
@@ -153,7 +153,7 @@ class VerifyOtp extends React.Component {
 
     render() {
         let text = 'Please enter verification code, <br>sent via email:';
-		let username = this.state.username || '';
+		let username = this.props.registration.username || '';
 
 		let actionElement = null;
 		if (this.state.is_submitting) {
