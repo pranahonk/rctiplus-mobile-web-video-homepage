@@ -85,7 +85,7 @@ class Index extends React.Component {
           backgroundColor="#fa262f"
           statusLabel="1"
           statusTimer="1"
-          src={`${this.state.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+          src={`${this.state.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.content_title}/>
         </Col>
       );
     });
@@ -98,7 +98,7 @@ class Index extends React.Component {
           backgroundColor="#fa262f"
           statusLabel="0"
           statusTimer="0"
-          src={`${this.state.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.name}/>
+          src={`${this.state.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.content_title}/>
         </Col>
       );
     });

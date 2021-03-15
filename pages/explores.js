@@ -389,7 +389,7 @@ class Explores extends React.Component {
 									<Link href={`/explores/${interest.id}/${interest.name.replace('/',' ')}`} scroll={false} key={i}>
 										<div className="swiper-slide" id={interest.name} onClick={() => this.selectGenre(interest)}>
 											<Img 
-												alt={interest.name} 
+												alt={`Genre ${interest.name}`} 
 												className="content-image"
 												unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												loader={<img src="/static/placeholders/placeholder_landscape.png"/>}

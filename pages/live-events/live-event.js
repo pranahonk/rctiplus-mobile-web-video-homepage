@@ -1236,7 +1236,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 	callbackAds(e) {
-		console.log(e)
+		// console.log(e)
 		this.setState({
 			ads_data: null,
 		}, () => {
@@ -1249,7 +1249,7 @@ class LiveEvent extends React.Component {
 	}
 
 	callbackCount(end, current) {
-		console.log(this.state.isAds)
+		// console.log(this.state.isAds)
 		if(this.state.isAds) {
 			let distance = getCountdown(end, current)[0] || 100000;
 			const countdown = setInterval(() => {
@@ -1420,7 +1420,7 @@ class LiveEvent extends React.Component {
 												backgroundColor="#fa262f"
 												statusLabel="1"
 												statusTimer="1"
-												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.name}/>
+												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.content_title}/>
 											</Col>
 										)) : this.props.pages.status ? (<div/>)
 										 : errorEvent}
@@ -1435,7 +1435,7 @@ class LiveEvent extends React.Component {
 												backgroundColor="#fa262f"
 												statusLabel="0"
 												statusTimer="0"
-												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.name}/>
+												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.content_title}/>
 											</Col>
 										)) : this.props.pages.status ? (<div/>)
 										: errorEvent}
