@@ -64,6 +64,10 @@ export const VISITOR_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjAsI
 export const NEWS_TOKEN = '';
 export const IS_SHOWN = true;
 
+export const AUTH_API = process.env.AUTH_API;
+export const AUTH_PARTNER_KEY = process.env.AUTH_PARTNER_KEY;
+export const AUTH_PARTNER_SECRET = process.env.AUTH_PARTNER_SECRET;
+
 
 // SEO CONSTANTS
 

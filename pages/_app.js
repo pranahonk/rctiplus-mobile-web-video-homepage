@@ -3,7 +3,7 @@ import App from 'next/app';
 import withRedux from 'next-redux-wrapper';
 import { register, unregister } from 'next-offline/runtime';
 import initStore  from '../redux';
-import { setVisitorTokenNews, setNewsTokenV2, setNewsToken, setVisitorToken, getVisitorToken, getVisitorTokenNews, getNewsToken, getNewsTokenV2 } from '../utils/cookie';
+import { setVisitorTokenNews, setNewsTokenV2, setNewsToken, setVisitorToken, getVisitorToken, getVisitorTokenNews, getNewsToken, getNewsTokenV2, setVisitorTokenPassport, getVisitorTokenPassport } from '../utils/cookie';
 
 import 'sweetalert2/src/sweetalert2.scss';
 import '../assets/scss/apps/homepage/default.scss';
@@ -43,6 +43,11 @@ export default withRedux(initStore, { debug: false })(
             }
             if (visitorTokenNews == null) {
                 promises.push(setVisitorTokenNews());
+            }
+
+            const passportToken = getVisitorTokenPassport();
+            if (passportToken == null) {
+                promises.push(setVisitorTokenPassport());
             }
 
             await Promise.all(promises);

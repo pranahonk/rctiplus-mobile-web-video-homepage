@@ -9,6 +9,8 @@ import notificationActions from '../../redux/actions/notificationActions';
 import Layout from '../../components/Layouts/Default';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 
+import { showAlert } from '../../utils/helpers';
+
 //load reactstrap components
 import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback } from 'reactstrap';
 
@@ -34,27 +36,26 @@ class ChangePassword extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        this.props.createForgotPassword(this.props.registration.username, this.state.password, this.props.registration.otp, this.props.registration.phone_code)
+        this.props.createForgotPasswordv2(this.props.registration.username, this.state.password, this.props.registration.otp, this.props.registration.phone_code)
             .then(response => {
                 const hideNotification = this.props.hideNotification;
-                if (response.data.status.code === 0) {
+                if (response.status === 200) {
                     this.props.showNotification('Your new password successfully created. Please login.');
                     setTimeout(function() {
 						hideNotification();
                     }, 3000);
                     Router.push('/forget-password/verification-success');
-                    // Router.push('/login');
-                    // Router.push('/forget-password/change-password');
-                }
-                else {
+                } else {
                     this.props.showNotification(response.data.status.message_client + '. Please try again! (Response code = ' + response.data.status.code + ')', false);
                     setTimeout(function() {
 						hideNotification();
 					}, 3000);
                 }
-                
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+                const {errors} = error.response.data
+                showAlert(errors.length > 0 ? errors[0].value : 'Please try again', 'Warning', 'OK', '', () => Router.push('/forget-password'));
+            });
         
     }
 

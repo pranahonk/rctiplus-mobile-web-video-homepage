@@ -1,6 +1,6 @@
 import cookie from 'js-cookie';
 import ax from 'axios';
-import { NEWS_API_V2, NEWS_API, DEV_API, VISITOR_TOKEN } from '../config';
+import { NEWS_API_V2, NEWS_API, DEV_API, VISITOR_TOKEN, AUTH_PARTNER_KEY, AUTH_PARTNER_SECRET } from '../config';
 
 const axios = ax.create({
     // baseURL: API + '/api',
@@ -67,6 +67,11 @@ export const checkToken = async () => {
     if (!newsTokenV2) {
         await setNewsTokenV2();
     }
+
+    const visitorTokenPassport = getVisitorTokenPassport();
+    if (!visitorTokenPassport) {
+        await setVisitorTokenPassport();
+    }
 };
 
 export const setDeviceId = () => {
@@ -97,6 +102,16 @@ export const getNewsToken = () => {
     const newsToken = cookie.get('NEWS_TOKEN');
     if (newsToken) {
         const data = JSON.parse(newsToken);
+        return data['VALUE'];
+    }
+
+    return null;
+};
+
+export const getVisitorTokenPassport = () => {
+    const visitorTokenPassport = cookie.get('VISITOR_TOKEN_PASSPORT');
+    if (visitorTokenPassport) {
+        const data = JSON.parse(visitorTokenPassport);
         return data['VALUE'];
     }
 
@@ -148,6 +163,20 @@ export const setVisitorToken = async () => {
         }
     } catch (error) {
         // console.log(error);
+    }
+
+    return null;
+};
+
+export const setVisitorTokenPassport = async () => {
+    let visitorTokenPassport = cookie.get('VISITOR_TOKEN_PASSPORT');
+    let cookieDataToken = '';
+    if (!visitorTokenPassport) {
+        cookieDataToken = cookie.set('VISITOR_TOKEN_PASSPORT', JSON.stringify({
+            NAME: 'VISITOR_TOKEN_PASSPORT',
+            VALUE: btoa(`${AUTH_PARTNER_KEY}:${AUTH_PARTNER_SECRET}`),
+            CREATED_AT: new Date()
+        }));
     }
 
     return null;
