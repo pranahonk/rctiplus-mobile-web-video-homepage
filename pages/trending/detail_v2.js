@@ -151,9 +151,14 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
-      if(!Cookie.get('uid_ads')) {
-          Cookie.set('uid_ads', new DeviceUUID().get())
-      }
+        const {initial: {data = null}, router: {asPath = null}} = this.props;
+        if (asPath.split('/').length < 6) {
+            location.replace(`${SHARE_BASE_URL}/news/detail/${urlRegex(data.subcategory_name)}/${data.id}/${encodeURI(urlRegex(data.title))}`);
+        }
+
+        if(!Cookie.get('uid_ads')) {
+            Cookie.set('uid_ads', new DeviceUUID().get())
+        }
         if(this.props?.initial?.total_like) {
             this.setState({countLike : this.state.countLike + this.props?.initial?.total_like})
         }
