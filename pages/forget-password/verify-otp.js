@@ -85,10 +85,6 @@ class VerifyOtp extends React.Component {
                                 username_invalid_message: errors.length > 0 ? errors[0].value : 'User has not been registered'
                             });
                         }
-                        this.setState({
-                            is_submitting: false,
-                            submit_message: 'Invalid verification code'
-                        });
                     });
             }
         });
