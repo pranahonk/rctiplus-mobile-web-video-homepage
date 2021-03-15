@@ -120,11 +120,11 @@ const getOtp = (username, type = 'registration', phone_code = null) => {
     });
 };
 
-const getOtpv2 = (username, type = 'registration') => {
+const getOtpv2 = (username, type = 'registration', phone_code = null) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axAuthAPI.post(`/v1/partner/otp`, { 
-                username: username,
+            const response = await axAuthAPI.post(`/v1/partner/otp`, {
+                username: phone_code ? phone_code + username : username,
                 type: type,
                 signature_code: ''
             });
@@ -240,11 +240,11 @@ const verifyOtp = (username, otp, phone_code = null) => {
     });
 };
 
-const verifyOtpv2 = (username, otp) => {
+const verifyOtpv2 = (username, otp, phone_code = null) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axAuthAPI.post(`/v1/partner/verify_otp`, {
-                username: username,
+                username: phone_code ? phone_code + username : username,
                 type: "forget-password",
                 otp: otp
             });

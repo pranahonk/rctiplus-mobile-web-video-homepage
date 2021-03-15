@@ -38,7 +38,7 @@ class VerifyOtp extends React.Component {
 
     componentDidMount() {
         this.setState({ username: this.props.registration.username }, () => {
-            this.props.getOtpv2(this.props.registration.username, 'forget-password')
+            this.props.getOtpv2(this.props.registration.username, 'forget-password', this.props.registration.phone_code)
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
@@ -62,7 +62,7 @@ class VerifyOtp extends React.Component {
         this.setState({ otp: otp, is_submitting: otp && otp.length >= 4 }, () => {
             this.props.setOtp(this.state.otp);
             if (this.state.is_submitting) {
-                this.props.verifyOtpv2(this.props.registration.username, this.state.otp)
+                this.props.verifyOtpv2(this.props.registration.username, this.state.otp, this.props.registration.phone_code)
                     .then(response => {
                         if (response.status === 200) {
                             this.submitOtp();

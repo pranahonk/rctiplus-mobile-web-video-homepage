@@ -46,7 +46,8 @@ class ForgetPassword extends React.Component {
 			if (value) {
 				if (value.charAt(0) === '0') {
 					value = value.slice(1);
-                    value = this.state.phone_code + value 
+                } else {
+                    value = value.slice(this.state.phone_code.length)
                 }
             this.setState({ isPhoneNumber: true });
             this.props.setPhoneCode(this.state.phone_code);
@@ -83,8 +84,9 @@ class ForgetPassword extends React.Component {
     checkUser () {
         let username = this.state.username;
         if (username && username.length >= 6) {
-            // console.log('phone number >>', username, '>>', this.state.phone_code);
-            this.props.checkUserv2(this.state.username)
+            const regex = /^[0-9]+$/;
+            let uname = this.state.username;
+            this.props.checkUserv2(this.state.username, !(regex.test(uname) && uname.length >= 3) ? null : this.state.phone_code)
                 .then(response => {
                     if (response.status === 200) {
                         const message = response.data.status.message_client;
@@ -152,7 +154,7 @@ class ForgetPassword extends React.Component {
         }
         console.log('REMOVE NUMBER: ', value, phone_code)
         let result = value;
-            result = value.slice(phone_code.length)
+        result = value.indexOf(phone_code) > -1 ? value.slice(phone_code.length) : value;
         console.log('RESULT: ', result)
         return result;
     }
@@ -199,7 +201,7 @@ class ForgetPassword extends React.Component {
                                     changeCode: state.changeCode + 1,
                                     codeCountry: e.code, 
                                     phone_code: e.phone_code, 
-                                    username: e.phone_code + this.removeCountryCode(state.username, state.phone_code) }, () => {
+                                    username: this.removeCountryCode(state.username, state.phone_code) }, () => {
                                         {/* this.subject.next() */}
                                         this.checkUser()
                                     });}
