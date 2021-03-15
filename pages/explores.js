@@ -8,6 +8,7 @@ import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import fetch from 'isomorphic-unfetch';
 import queryString from 'query-string';
+import { urlRegex } from '../utils/regex'
 
 import pageActions from '../redux/actions/pageActions';
 import userActions from '../redux/actions/userActions';
@@ -386,7 +387,7 @@ class Explores extends React.Component {
 									</div>
 								</Link>
 								{this.state.interests.map((interest, i) => (
-									<Link href={`/explores/${interest.id}/${interest.name.replace('/',' ')}`} scroll={false} key={i}>
+									<Link href={`/explores/${interest.id}/${urlRegex(interest.name)}`} scroll={false} key={i}>
 										<div className="swiper-slide" id={interest.name} onClick={() => this.selectGenre(interest)}>
 											<Img 
 												alt={`Genre ${interest.name}`} 
