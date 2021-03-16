@@ -58,8 +58,7 @@ const HeadMeta = (props) => {
 export default HeadMeta;
 
 export const convert = (value, tv_name, valueDetail, router, meta) => {
-  if (router.query.id && router.query.content_id) {
-      console.log(valueDetail)
+  if (router.query.id && !router.query.content_id) {
     // if (router.query.content_type === 'episode') {
     //   return  {
     //     title: `Nonton Streaming ${valueDetail?.title} Sub Indo - ${SITE_NAME}`, 
@@ -68,9 +67,9 @@ export const convert = (value, tv_name, valueDetail, router, meta) => {
     //   };
     // }
     return  {
-      title: `Nonton Streaming ${valueDetail?.title} Sub Indo - ${SITE_NAME}`,
-      description: `Nonton streaming online ${valueDetail?.title} ${tv_name} full episode lengkap sub indo dengan cuplikan video menarik lainnya hanya di RCTI+  . Lihat selengkapnya disini`,
-      imagePath: `${meta && meta.image_path}140${valueDetail && valueDetail.portrait_image}`,
+      title: `Nonton Streaming ${value?.title} Sub Indo - ${SITE_NAME}`,
+      description: `Nonton streaming online ${value?.title} ${tv_name} full episode lengkap sub indo dengan cuplikan video menarik lainnya hanya di RCTI+  . Lihat selengkapnya disini`,
+      imagePath: `${meta && meta.image_path}140${value && value.portrait_image}`,
     };
   }
   if (router.pathname === '/programs') {
