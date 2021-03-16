@@ -136,9 +136,10 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
-        const {initial: {data = null}, router: {asPath = null}} = this.props;
+        const {initial, router: {asPath = null}} = this.props;
+
         if (asPath.split('/').length < 6) {
-            location.replace(`${SHARE_BASE_URL}/news/detail/${urlRegex(data.subcategory_name)}/${data.id}/${encodeURI(urlRegex(data.title))}`);
+            location.replace(`${SHARE_BASE_URL}/news/detail/${urlRegex(initial.subcategory_name)}/${initial.id}/${encodeURI(urlRegex(initial.title))}`);
         }
 
         if(!Cookie.get('uid_ads')) {
