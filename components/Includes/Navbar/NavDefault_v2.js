@@ -167,7 +167,7 @@ class NavbarDef_v2 extends Component {
                             }}/>
                         </Col>
                         <Col xs={6} className="center-content install-description">
-                            <img className="install-logo" src="/static/logo/rcti-sm.png" />
+                            <img className="install-logo" src="/static/logo/rcti-sm.png" alt="Logo RCTI+"/>
                             Lebih Asyik Nonton dengan Aplikasi RCTI+
                         </Col>
                         <Col xs={4} className="center-content" >
@@ -182,7 +182,7 @@ class NavbarDef_v2 extends Component {
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
                             <NavbarBrand>
-                                <img className="logo-top" src="/static/logo/rcti-sm.png" />
+                                <img className="logo-top" src="/static/logo/rcti-sm.png" alt="Logo RCTI+"/>
                             </NavbarBrand>
                         </div>
                     </div>
@@ -194,13 +194,13 @@ class NavbarDef_v2 extends Component {
                     <div className="nav-menu-container">
                         <ActiveLink activeClassName="active" href="/" activeMenu={'home' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
-                                <img className="img-menu-icon" src={'/videos.svg'}/>
+                                <img alt="Videos +" className="img-menu-icon" src={'/videos.svg'}/>
                                 Videos +
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/news" activeMenu={'news' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
-                                <img className="img-menu-icon" src={'/news.svg'}/>
+                                <img alt="News +" className="img-menu-icon" src={'/news.svg'}/>
                                 News +
                             </Button>
                         </ActiveLink>
@@ -211,15 +211,15 @@ class NavbarDef_v2 extends Component {
                             </Button>
                         </ActiveLink> */}
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_RADIO}?token=${this.state.token}`}>
-                            <img className="img-menu-icon" src={'/radio.png'}/>
+                            <img alt="Radio +" className="img-menu-icon" src={'/radio.png'}/>
                             Radio +
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_HOT}?token=${this.state.token}`}>
-                            <img className="img-menu-icon" src={'/hot-icon.png'}/>
+                            <img alt="HOT" className="img-menu-icon" src={'/hot-icon.png'}/>
                             HOT
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_GAMES}?token=${this.state.token}`}>
-                            <img className="img-menu-icon" src={'/games.svg'}/>
+                            <img alt="Games +" className="img-menu-icon" src={'/games.svg'}/>
                             Games +
                         </Button>
                     </div>
