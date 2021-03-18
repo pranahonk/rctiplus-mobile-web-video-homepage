@@ -184,7 +184,7 @@ class Profile extends React.Component {
 				</Head>
 				{/* <NavDefault disableScrollListener/> */}
 				<div style={{padding: 10}}>
-					<img src="/static/logo/rcti-sm.png" alt="logo" style={{width: 30}}/>
+					<img src="/static/logo/rcti-sm.png" alt="Logo RCTI+" style={{width: 30}}/>
 				</div>
 				<LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
 				<ListGroup className="list-menu-container">

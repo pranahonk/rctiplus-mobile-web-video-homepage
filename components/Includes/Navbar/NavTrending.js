@@ -72,7 +72,7 @@ class NavTrending extends Component {
                         <div className="left-top-link">
                             <div className="logo-top-wrapper">
                                 <NavbarBrand onClick={this.goToHome.bind(this)}>
-                                    <img className="logo-top" src="/static/logo/rcti-sm.png" />
+                                    <img className="logo-top" src="/static/logo/rcti-sm.png" alt="Logo RCTI+"/>
                                 </NavbarBrand>
                             </div>
                         </div>
