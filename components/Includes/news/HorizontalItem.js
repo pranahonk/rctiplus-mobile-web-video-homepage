@@ -8,7 +8,8 @@ import '../../../assets/scss/components/trending_v2.scss';
 // Import Swiper styles
 import 'swiper/swiper.scss';
 
-export default function HorizontalItem({item, assets_url}) {
+const redirectToPublisherIndex = [0, 1];
+export default function HorizontalItem({item, assets_url, indexKey, isIndexKey}) {
   const router = useRouter()
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
@@ -26,8 +27,16 @@ export default function HorizontalItem({item, assets_url}) {
     } else {
       category = urlRegex(article.subcategory_name)
     }
+    if(isIndexKey) {
+      if (redirectToPublisherIndex.indexOf(indexKey) != -1 && platform !== 'ios') {
+          return window.open(article.link, '_blank');
+      }
+          return router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
+    }
+    else { 
       return router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
     }
+  }
   return(
       <a onClick={(e) => {
         e.preventDefault()
