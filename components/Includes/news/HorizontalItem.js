@@ -15,7 +15,7 @@ export default function HorizontalItem({item, assets_url, indexKey, isIndexKey})
   const [platform, setPlatform] = useState(null);
   useEffect(() => {
     const query = queryString.parse(location.search);
-    if (query.accessToken) {
+    if (query.accessToken || query.platform) {
       setAccessToken(query.accessToken);
       setPlatform(query.platform);
     }
