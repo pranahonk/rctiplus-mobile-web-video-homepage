@@ -72,7 +72,6 @@ class Explores extends React.Component {
         if (data.status.code === 1) {
             return { initial: false };
 		}
-		console.log(resContent)
 		return { query: ctx.query, interests: data, genre_name: ctx.query.genre_name, meta_content: resContent };
 	}
 
