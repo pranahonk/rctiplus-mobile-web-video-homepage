@@ -72,6 +72,7 @@ class Explores extends React.Component {
         if (data.status.code === 1) {
             return { initial: false };
 		}
+		console.log(resContent)
 		return { query: ctx.query, interests: data, genre_name: ctx.query.genre_name, meta_content: resContent };
 	}
 
@@ -425,7 +426,7 @@ class Explores extends React.Component {
 											}
 											{/* <div className="new-label" style="">label</div> */}
 												<Img 
-													alt={r.content_title} 
+													alt={r.title} 
 													className="content-image"
 													unloader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
 													loader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
