@@ -674,7 +674,7 @@ class Detail extends React.Component {
                                                 if(index > 4) {
                                                     return (
                                                         <SwiperSlide key={index}>
-                                                            <HorizontalItem item={item} />
+                                                            <HorizontalItem item={item} indexKey={index - 5} isIndexKey/>
                                                         </SwiperSlide>
                                                     );
                                                 }
