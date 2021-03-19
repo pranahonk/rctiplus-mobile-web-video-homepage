@@ -194,14 +194,14 @@ class NavbarDef_v2 extends Component {
                     <div className="nav-menu-container">
                         <ActiveLink activeClassName="active" href="/" activeMenu={'home' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
-                                <img alt="Videos +" className="img-menu-icon" src={'/videos.svg'}/>
-                                Videos +
+                                <img alt="Videos+" className="img-menu-icon" src={'/videos.svg'}/>
+                                Videos+
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/news" activeMenu={'news' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
-                                <img alt="News +" className="img-menu-icon" src={'/news.svg'}/>
-                                News +
+                                <img alt="News+" className="img-menu-icon" src={'/news.svg'}/>
+                                News+
                             </Button>
                         </ActiveLink>
                         {/* <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
@@ -211,16 +211,16 @@ class NavbarDef_v2 extends Component {
                             </Button>
                         </ActiveLink> */}
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_RADIO}?token=${this.state.token}`}>
-                            <img alt="Radio +" className="img-menu-icon" src={'/radio.png'}/>
-                            Radio +
+                            <img alt="Radio+" className="img-menu-icon" src={'/radio.png'}/>
+                            Radio+
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_HOT}?token=${this.state.token}`}>
                             <img alt="HOT" className="img-menu-icon" src={'/hot-icon.png'}/>
                             HOT
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_GAMES}?token=${this.state.token}`}>
-                            <img alt="Games +" className="img-menu-icon" src={'/games.svg'}/>
-                            Games +
+                            <img alt="Games+" className="img-menu-icon" src={'/games.svg'}/>
+                            Games+
                         </Button>
                     </div>
                 </Navbar>
