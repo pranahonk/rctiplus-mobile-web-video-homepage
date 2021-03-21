@@ -50,6 +50,7 @@ class Stories extends React.Component {
                 }, () => {
                     const currentSkin = this.getCurrentSkin();
                     this.storiesApi = new this.state.zuckJS("stories-react", {
+                        backButton: false,
                         backNative: true,
                         previousTap: true,
                         skin: currentSkin['name'],
@@ -223,12 +224,31 @@ class Stories extends React.Component {
                 10,
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
-                item.swipe_type == 'link' ? (item.swipe_value) : false, 'Click Here',
+                item.swipe_type == 'link' ? (item.swipe_value) : false, 
+                'Click Here',
                 false,
                 item.release_date,
                 item.title,
                 item.link_video != null ? item.link_video.split('.').pop() : ''
             ]);
+        }
+
+        // Add GPT
+        //console.log('story gpt', story.gpt)
+        for (const item of story.gpt) {
+            items.push([
+                item.id, // id
+                'ads', // type
+                '5', // durations in string
+                '/21865661642/RC_MOBILE_INSERTION-STORIES-3', // item.path src
+                'div-gpt-ad-1596100737011-0', // item.div_gpt preview
+                false, // link
+                '', // linkText
+                false, // seen
+                new Date().getTime(), // time
+                '', // title
+                '' // videoType
+            ])
         }
 
         let programImg = '';
