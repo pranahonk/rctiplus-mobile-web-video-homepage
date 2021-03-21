@@ -320,7 +320,7 @@ module.exports = (window => {
 				viewerItem(storyData, currentStoryItem) {
 					return `<div class="story-viewer">
                       <div class="head">
-                        <div class="left">
+												<div class="left">
                           ${option('backButton') ? '<a class="back">&lsaquo;</a>' : ''}
   
                           <span class="item-preview">
@@ -334,9 +334,9 @@ module.exports = (window => {
                         </div>
                         
                         <div class="right">
-                          <span class="time">${get(currentStoryItem, 'timeAgo')}</span>
+													<span class="time">${get(currentStoryItem, 'timeAgo')}</span>
                           <span class="loading"></span>
-                          <a class="close" tabIndex="2">&times;</a>
+                          <a class="close" tabIndex="2">&#9587;</a>
                         </div>
                       </div>
   
@@ -344,14 +344,13 @@ module.exports = (window => {
                         <div class="wrap"></div>
                       </div>
   
-                      ${
-						option('paginationArrows')
-							? `<div class="slides-pagination">
-                            <span class="previous">&lsaquo;</span>
-                            <span class="next">&rsaquo;</span>
-                          </div>`
-							: ``
-						}
+                    ${option('paginationArrows')
+										? `<div class="slides-pagination">
+												<span class="previous">&lsaquo;</span>
+												<span class="next">&rsaquo;</span>
+											</div>`
+											: ``
+										}
                     </div>`;
 				},
 
@@ -376,7 +375,9 @@ module.exports = (window => {
 														<b class="tip muted">${option('language', 'unmute')}</b>`
 													: `<video class="media" muted webkit-playsinline playsinline preload="auto" src="${get(item, 'src')}" ${get(item, 'type')}></video>
 														<b class="tip muted">${option('language', 'unmute')}</b>`
-												: `<img loading="auto" class="media" src="${get(item, 'src')}" ${get(item, 'type')} alt="${get(item, 'title')}" />
+												: get(item, 'type') === 'ads'
+													?	`<div id=${get(item, 'preview')} ${get(item, 'type')}></div>`
+													: `<img loading="auto" class="media" src="${get(item, 'src')}" ${get(item, 'type')} alt="${get(item, 'title')}" />
                       `}
   
                       ${
@@ -621,8 +622,10 @@ module.exports = (window => {
 				slides.innerHTML = htmlItems;
 
 				each(storyItems, (i, item) => {
-					if (item.videoType == 'mpd') {
-						item['mpdPlayer'] = dashjs.MediaPlayerFactory.create(slides.querySelector(`.${get(item, 'tagClass')}`));
+					if (item.type != 'ads') {
+						if (item.videoType == 'mpd') {
+							item['mpdPlayer'] = dashjs.MediaPlayerFactory.create(slides.querySelector(`.${get(item, 'tagClass')}`));
+						}
 					}
 				});
 
@@ -702,7 +705,7 @@ module.exports = (window => {
 				storyViewerWrap.innerHTML = option('template', 'viewerItem')(storyData, currentItem);
 
 				let storyViewer = storyViewerWrap.firstElementChild;
-				storyViewer.className = `story-viewer muted ${className} ${!forcePlay ? 'stopped' : ''} ${option('backButton') ? 'with-back-button' : ''}`;
+				storyViewer.className = `story-viewer muted ${className} ${!forcePlay ? 'stopped' : ''} ${option('backButton') ? 'with-back-button' : 'with-close-button'}`;
 
 				storyViewer.setAttribute('data-story-id', storyId);
 				storyViewer.querySelector('.slides-pointers .wrap').innerHTML = pointerItems;
@@ -736,6 +739,18 @@ module.exports = (window => {
 				} else {
 					modalSlider.appendChild(storyViewer);
 				}
+
+				each(storyItems, (i, item) => {
+					if (item.type == 'ads') {
+						window.googletag = window.googletag || {cmd: []};
+						googletag.cmd.push(function() {
+							googletag.defineSlot(item.src, ['fluid'], item.preview).addService(googletag.pubads());
+							googletag.pubads().enableSingleRequest();
+							googletag.pubads().collapseEmptyDivs();
+							googletag.enableServices();
+						});
+					}
+				});
 
 				// if (parent.firstChild) {
 				// 	parent.insertBefore(child, parent.firstChild);
@@ -1115,6 +1130,11 @@ module.exports = (window => {
 
 						const stories = query('#zuck-modal .story-viewer.next');
 						if (!stories) {
+							const currentItemData = zuck.data[lastStory].items[zuck.data[lastStory].currentItem];
+							if (currentItemData.type == 'ads') {
+								googletag.destroySlots([currentItemData.adsSlot]);
+							}
+
 							modal.close();
 						} else {
 							moveStoryItem(true);
@@ -1328,6 +1348,16 @@ module.exports = (window => {
 				}
 			} else {
 				zuck.internalData['currentVideoElement'] = false;
+
+				const currentStory = zuck.internalData['currentStory'];
+				const currentItem = zuck.data[currentStory]['currentItem'];
+				const adsItem = zuck.data[currentStory].items[currentItem];
+
+				if (adsItem.type == 'ads') {
+					googletag.cmd.push(function() {
+						adsItem['adsSlot'] = googletag.display(adsItem.preview);
+					});
+				}
 			}
 		};
 
@@ -1597,6 +1627,11 @@ module.exports = (window => {
 
 					nextItem.classList.remove('seen');
 					nextItem.classList.add('active');
+
+					const currentItemData = zuck.data[currentStory].items[zuck.data[currentStory].currentItem];
+					if (currentItemData.type == 'ads') {
+						googletag.destroySlots([currentItemData.adsSlot]);
+					}
 
 					zuck.data[currentStory]['currentItem'] = zuck.data[currentStory]['currentItem'] + directionNumber;
 
