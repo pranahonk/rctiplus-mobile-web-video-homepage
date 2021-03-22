@@ -4,7 +4,7 @@
     min-height: 480px;
     overflow-y: hidden;
     &.sticky-menu-category-active {
-        margin-top: 152px;
+        margin-top: 110px;
         &.apps-mode {
             margin-top: 1rem !important;
             .navigation-container.sticky-menu-category {
@@ -91,9 +91,8 @@
             }
         }
         &.sticky-menu-inactive {
-            transition-timing-function: ease-out;
-            transition: 0.6s;
-            transform: translateY(0);
+            opacity: 1;
+            transition: width 0.5s, height 0.5s, opacity 0.5s 0.5s;
         }
     }
 
