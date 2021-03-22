@@ -16,8 +16,8 @@ export default function HorizontalItem({item, indexKey, isIndexKey}) {
   const [platform, setPlatform] = useState(null);
   useEffect(() => {
     const query = queryString.parse(location.search);
-    if (query.accessToken || query.platform) {
-      setAccessToken(query.accessToken);
+    if (query.token || query.platform) {
+      setAccessToken(query.token);
       setPlatform(query.platform);
     }
   },[]);
@@ -29,13 +29,13 @@ export default function HorizontalItem({item, indexKey, isIndexKey}) {
       category = urlRegex(article.subcategory_name)
     }
     if(isIndexKey) {
-      if (redirectToPublisherIndex.indexOf(indexKey) != -1 && platform !== 'ios') {
+      if ((redirectToPublisherIndex.indexOf(indexKey) != -1) && platform !== 'ios') {
           return window.open(article.link, '_blank');
       }
-          return router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
+          return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
     else { 
-      return router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
+          return router.push(`/news/detail/${category}/${article.id}${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
   }
   return(
