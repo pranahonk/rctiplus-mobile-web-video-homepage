@@ -91,8 +91,9 @@
             }
         }
         &.sticky-menu-inactive {
-            opacity: 1;
-            transition: width 0.5s, height 0.5s, opacity 0.5s 0.5s;
+            transition-timing-function: ease-out;
+            transition: 0.6s;
+            transform: translateY(0);
         }
     }
 
