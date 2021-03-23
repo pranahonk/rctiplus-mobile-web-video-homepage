@@ -224,7 +224,7 @@ class Stories extends React.Component {
                 10,
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
-                item.swipe_type == 'link' ? (item.swipe_value) : false, 
+                item.swipe_type == 'link' ? (item.swipe_value) : false,
                 'Click Here',
                 false,
                 item.release_date,
@@ -235,11 +235,12 @@ class Stories extends React.Component {
 
         // Add GPT
         //console.log('story gpt', story.gpt)
-        for (const item of story.gpt) {
+        //for (const item of story.gpt) {
+        if (this.storyId == 0) {
             items.push([
-                item.id, // id
+                Math.floor(Math.random() * Math.floor(999999)), // id
                 'ads', // type
-                '5', // durations in string
+                50, // durations in string
                 '/21865661642/RC_MOBILE_INSERTION-STORIES-3', // item.path src
                 'div-gpt-ad-1596100737011-0', // item.div_gpt preview
                 false, // link
@@ -248,7 +249,7 @@ class Stories extends React.Component {
                 new Date().getTime(), // time
                 '', // title
                 '' // videoType
-            ])
+            ]);
         }
 
         let programImg = '';
