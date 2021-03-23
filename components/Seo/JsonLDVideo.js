@@ -1,5 +1,5 @@
 
-import { BASE_URL } from '../../config'
+import { BASE_URL, SHARE_BASE_URL } from '../../config'
 const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') > -1 ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
 export default function JsonLDWebsite ({content, isProgram}) {
   const structurData = {
