@@ -147,10 +147,14 @@ class Pnl_3 extends React.Component {
 											</span>
 										</div>
 									</div>
-								) : ''}
+								) : c?.label != '' ? (
+                  <div className="new-label">
+                    {c.label}
+                  </div>
+                ) : ''}
 									<div>
-										<Img 
-											alt={c.program_title || c.content_title} 
+										<Img
+											alt={c.program_title || c.content_title}
 											unloader={<img src="/static/placeholders/placeholder_potrait.png"/>}
 											loader={<img src="/static/placeholders/placeholder_potrait.png"/>}
 											src={[this.props.imagePath + this.props.resolution + c.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
@@ -160,7 +164,7 @@ class Pnl_3 extends React.Component {
 						</div>
 					)}
 				</BottomScrollListener>
-				
+
 			</div>
 		);
 	}
