@@ -88,13 +88,13 @@ class Pnl_2 extends React.Component {
 
 			case 'live':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_live_event_clicked');
-				
+
 				Router.push(`/live-event/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 
 			default:
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_content_clicked');
-				
+
 				Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}/${data.content_type}/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 		}
@@ -150,9 +150,13 @@ class Pnl_2 extends React.Component {
 													<span className="title-paid-video" style={{ padding: 5 }}>{c.expired_in}</span>
 												</div>
 											</>
-											) : ''}
-											<Img 
-												alt={c.program_title || c.content_title} 
+											) : c?.label != '' ? (
+                        <div className="new-label">
+                          {c.label}
+                        </div>
+                      ) : ''}
+											<Img
+												alt={c.program_title || c.content_title}
 												unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
@@ -165,13 +169,13 @@ class Pnl_2 extends React.Component {
 												<p>{c.content_title}</p>
 											</div>
 										)}
-										
+
 									</div>
 							))}
 						</div>
 					)}
 				</BottomScrollListener>
-				
+
 			</div>
 		);
 	}
