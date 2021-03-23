@@ -62,7 +62,7 @@ class Roov extends React.Component {
                         __html: `
                         window.dataLayer = window.dataLayer || [];
                         window.dataLayer.push({
-                            'pilar' : 'news'
+                            'pillar' : 'news'
                         });
 
                         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
