@@ -84,18 +84,18 @@
             top: 5rem;
             padding-top: 1.2rem;
             transition-timing-function: ease-out;
-            transition: 0.2s;
+            transition: 0.1s;
             transform: translateY(0);
             @media (min-width: 220px) and (max-width: 300px) {
                 padding-top: 2rem;
             }
         }
         &.sticky-menu-inactive {
-            -webkit-transition: opacity 0.2s ease-in-out;
-            -moz-transition: opacity 0.2s ease-in-out;
-            -ms-transition: opacity 0.2s ease-in-out;
-            -o-transition: opacity 0.2s ease-in-out;
-            transition: opacity 0.2s ease-in-out;
+            -webkit-transition: opacity 0.1s ease-in-out;
+            -moz-transition: opacity 0.1s ease-in-out;
+            -ms-transition: opacity 0.1s ease-in-out;
+            -o-transition: opacity 0.1s ease-in-out;
+            transition: opacity 0.1s ease-in-out;
             opacity: 1;
             transform: translateY(0);
         }
