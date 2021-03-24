@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Head from 'next/head';
 import PropTypes from 'prop-types';
 import { convivaJwPlayer} from '../../../utils/conviva';
 import { getUserId } from '../../../utils/appier';
@@ -48,7 +49,7 @@ const JwPlayer = (props) => {
     hlsjsdefault: true,
     aspectratio: '16:9',
     displaytitle: true,
-    setFullscreen: true,
+    // setFullscreen: true,
     stretching: 'uniform',
     height: 180,
     advertising: {
@@ -106,10 +107,12 @@ const JwPlayer = (props) => {
     // console.log('PLAYER GET DATA: ',props, player);
     if (player !== null) {
       player.on('ready', (event) => {
-        if (props.isFullscreen) {
+        /* if (props.isFullscreen) {
           player.setFullscreen(true);
           setPlayerFullscreen(true);
-        }
+        } */
+        setPlayerFullscreen(props.isFullscreen);
+
         const playerContainer = player.getContainer();
         const fowardContainer = playerContainer.querySelector('.jw-icon-next');
         const backwardContainer = playerContainer.querySelector('.jw-icon-rewind');
@@ -260,7 +263,7 @@ const JwPlayer = (props) => {
         }
       });
       player.on('fullscreen', (event) => {
-        if (event.fullscreen) {
+        /* if (event.fullscreen) {
           if (!playerFullscreen) {
             setPlayerFullscreen(true);
           }
@@ -268,7 +271,8 @@ const JwPlayer = (props) => {
           if (playerFullscreen) {
             setPlayerFullscreen(false);
           }
-        }
+        } */
+        setPlayerFullscreen(player.getFullscreen());
       });
       // ads event
       player.on('adImpression', (event) => {
@@ -300,13 +304,13 @@ const JwPlayer = (props) => {
           document.querySelector('.ads_wrapper').style.bottom = '5px';
         }
       });
-      window.addEventListener('resize', (event) => {
+      /* window.addEventListener('resize', (event) => {
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'idle' || adsStatus === 'close') {
             setAdStatus('restart');
           }
         }
-      });
+      }); */
     }
   },);
 
@@ -412,6 +416,7 @@ const JwPlayer = (props) => {
       }
     }
   }, [props.geoblockStatus]);
+  
   // Conviva Tracker
   useEffect(() => {
     if (props.data) {
@@ -502,7 +507,7 @@ const JwPlayer = (props) => {
   // ads overlay
   useEffect(() => {
     if (player !== null) {
-      let windowWidth = document.documentElement.clientWidth;
+      // let windowWidth = document.documentElement.clientWidth;
       let slotName = props.data.gpt.path != null && props.data.gpt.path != undefined ? props.data.gpt.path : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
       let slotDiv = props.data.gpt.div_gpt != null && props.data.gpt.div_gpt != undefined ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
       let intervalTime = props.data.gpt.interval_gpt != null && props.data.gpt.interval_gpt != undefined ? props.data.gpt.interval_gpt : props.adsOverlayData.reloadDuration;
@@ -552,32 +557,19 @@ const JwPlayer = (props) => {
       } else if (adsStatus === 'restart') {
         if (document.querySelector('.ads_wrapper')) {
           if (document.querySelector('.adsContainer').style.display != 'none') {
-            //const adsIFrame = document.getElementById(slotDiv).children[0].children[0];
-            //const adsImage = adsIFrame.contentWindow.document.querySelector('amp-img');
-            if (windowWidth >= (maxWidth + 12)) {
-              /* adsIFrame.width = maxWidth;
-              adsIFrame.height = maxHeight;
-
-              adsImage.style.width = maxWidth + 'px';
-              adsImage.style.height = maxHeight + 'px'; */
-
-              if (prevWidth != windowWidth) {
-                setPrevWidth(windowWidth);
-                googletag.pubads().refresh();
-                document.querySelector('.ads_wrapper').classList.add('adsBigBox');
-              }
-            } else {
-              /* adsIFrame.width = minWidth;
-              adsIFrame.height = minHeight;
-
-              adsImage.style.width = minWidth + 'px';
-              adsImage.style.height = minHeight + 'px'; */
-
-              if (prevWidth != windowWidth) {
-                setPrevWidth(windowWidth);
-                googletag.pubads().refresh();
-                document.querySelector('.ads_wrapper').classList.remove('adsBigBox');
-              }
+            const adsIFrame = document.getElementById(slotDiv).children[0].children[0];
+            if (adsIFrame) {
+              setTimeout(() => {
+                if (document.querySelector('.fullscreen-player')) {
+                  if (adsIFrame.width != maxWidth) {
+                    googletag.pubads().refresh();
+                  }
+                } else {
+                  if (adsIFrame.width != minWidth) {
+                    googletag.pubads().refresh();
+                  }
+                }
+              }, 100);
             }
           }
         }
@@ -628,7 +620,7 @@ const JwPlayer = (props) => {
             } else {
               refreshCounter = 0
             }
-            console.log('CALL CALL')
+            // console.log('CALL CALL')
             setTimeout(() => {
               if (document.querySelector('.ads_wrapper')) {
                 if (document.querySelector('.adsContainer').style.display != 'none') {
@@ -663,24 +655,6 @@ const JwPlayer = (props) => {
                       }
                     }
 
-                    if (windowWidth >= (maxWidth + 12)) {
-                      /* adsIFrame.width = maxWidth;
-                      adsIFrame.height = maxHeight;
-
-                      adsImage.style.width = maxWidth + 'px';
-                      adsImage.style.height = maxHeight + 'px'; */
-
-                      document.querySelector('.ads_wrapper').classList.add('adsBigBox');
-                    } else {
-                      /* adsIFrame.width = minWidth;
-                      adsIFrame.height = minHeight;
-
-                      adsImage.style.width = minWidth + 'px';
-                      adsImage.style.height = minHeight + 'px'; */
-
-                      document.querySelector('.ads_wrapper').classList.remove('adsBigBox');
-                    }
-
                     document.querySelector('.ads_wrapper').style.display = 'block';
 
                     pubAdsRefreshInterval.timeStart = 0;
@@ -707,10 +681,13 @@ const JwPlayer = (props) => {
   }, [playerFullscreen]);
 
   return (
-    <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
-      { getPlayer(status.isError01 , status.isError02 ) }
-      {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
-    </div>
+    // <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
+    <>
+      <div className="rplus-jw-container">
+        { getPlayer(status.isError01 , status.isError02 ) }
+        {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
+      </div>
+    </>
   );
 };
 
