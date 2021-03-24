@@ -21,7 +21,7 @@ import Panel2 from '../components/Panels/Pnl_2';
 import Panel3 from '../components/Panels/Pnl_3';
 import Panel4 from '../components/Panels/Pnl_4';
 import StickyAds from '../components/Includes/Banner/StickyAds';
-import GridMenu from '../components/Includes/Common/GridMenu';
+import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
@@ -162,9 +162,9 @@ class Index_v2 extends React.Component {
                 <LoadingBar progress={0} height={3} color={this.state.show_sticky_install ? '#000' : '#fff'} onRef={ref => (this.LoadingBar = ref)} />
                 {this.state.isShimmer ? (<HomeLoader/>) : (
                 <div>
-                        <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
+                    <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
                     <Carousel showStickyInstall={this.state.show_sticky_install}>
-                    <GridMenu />
+                        <GridMenu />
                     </Carousel>
                     <Stories loadingBar={this.LoadingBar}/>
                     <StickyContainer>
