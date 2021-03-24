@@ -9,14 +9,15 @@ import '../../../assets/scss/components/trending_v2.scss';
 // Import Swiper styles
 import 'swiper/swiper.scss';
 
-export default function HorizontalItem({item}) {
+const redirectToPublisherIndex = [0, 1];
+export default function HorizontalItem({item, indexKey, isIndexKey}) {
   const router = useRouter()
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
   useEffect(() => {
     const query = queryString.parse(location.search);
-    if (query.accessToken) {
-      setAccessToken(query.accessToken);
+    if (query.token || query.platform) {
+      setAccessToken(query.token);
       setPlatform(query.platform);
     }
   },[]);
@@ -27,8 +28,16 @@ export default function HorizontalItem({item}) {
     } else {
       category = urlRegex(article.subcategory_name)
     }
-      return router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
+    if(isIndexKey) {
+      if ((redirectToPublisherIndex.indexOf(indexKey) != -1) && platform !== 'ios') {
+          return window.open(article.link, '_blank');
+      }
+          return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
+    else { 
+          return router.push(`/news/detail/${category}/${article.id}${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
+    }
+  }
   return(
       <a onClick={(e) => {
         e.preventDefault()
@@ -36,7 +45,7 @@ export default function HorizontalItem({item}) {
         }}>
         <div className="news-interest_thumbnail-wrapper">
         <Img
-            alt={'null'}
+            alt={item?.title}
             unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
             loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
             src={[item.cover, '/static/placeholders/placeholder_landscape.png']}

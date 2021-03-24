@@ -54,46 +54,61 @@ class NavbarDef_v2 extends Component {
     }
 
     goToExplore(e) {
-        switch (this.props.router.asPath) {
-            case '/exclusive':
-                exclusiveGeneralEvent('mweb_exclusive_library_clicked');
-                break;
-
-            case '/profile':
-                accountGeneralEvent('mweb_account_library_clicked');
-                break;
-
-            case '/':
-                homeGeneralClicked('mweb_search_clicked');
-                break;
-            case '/news':
-                Router.push('/news/search');
-                // homeGeneralClicked('mweb_search_clicked');
-                break;
-
-            default:
-                if (this.props.router.asPath.indexOf('/news') === 0) {
-                    // newsGeneralEvent('mweb_news_search_clicked');
-                }
-                else {
-                    homeGeneralClicked('mweb_library_clicked');
-                }
-                break;
-        }
-        if (e.includes('/news/')) {
+        if(e === '/news') {
             Router.push('/news/search');
-            return;
+        } else {
+            Router.push('/explores/search');
         }
-        switch (e) {
-            case '/' || '/explores' || '/live-event' || '/exclusive' :
-                Router.push('/explores/search');
-            break;
-            case '/radio' :
-                Router.push('/radio/search');
-            break;
-            default:
-                Router.push('/news/search');
-        }
+        // switch (e) {
+        //     case ['/' , '/explores' , '/live-event' , '/exclusive'].includes(e) :
+        //         Router.push('/explores/search');
+        //     break;
+        //     case '/radio' :
+        //         Router.push('/radio/search');
+        //     break;
+        //     default:
+        //         Router.push('/news/search');
+        // }
+        // switch (this.props.router.asPath) {
+        //     case '/exclusive':
+        //         exclusiveGeneralEvent('mweb_exclusive_library_clicked');
+        //         break;
+
+        //     case '/profile':
+        //         accountGeneralEvent('mweb_account_library_clicked');
+        //         break;
+
+        //     case '/':
+        //         homeGeneralClicked('mweb_search_clicked');
+        //         break;
+        //     case '/news':
+        //         Router.push('/news/search');
+        //         // homeGeneralClicked('mweb_search_clicked');
+        //         break;
+
+        //     // default:
+        //     //     if (this.props.router.asPath.indexOf('/news') === 0) {
+        //     //         // newsGeneralEvent('mweb_news_search_clicked');
+        //     //     }
+        //     //     else {
+        //     //         homeGeneralClicked('mweb_library_clicked');
+        //     //     }
+        //     //     break;
+        // }
+        // if (e.includes('/news/')) {
+        //     Router.push('/news/search');
+        //     return;
+        // }
+        // switch (e) {
+        //     case '/' || '/explores' || '/live-event' || '/exclusive' :
+        //         Router.push('/explores/search');
+        //     break;
+        //     case '/radio' :
+        //         Router.push('/radio/search');
+        //     break;
+        //     default:
+        //         Router.push('/news/search');
+        // }
     }
 
     signOut() {
@@ -152,7 +167,7 @@ class NavbarDef_v2 extends Component {
                             }}/>
                         </Col>
                         <Col xs={6} className="center-content install-description">
-                            <img className="install-logo" src="/static/logo/rcti-sm.png" />
+                            <img className="install-logo" src="/static/logo/rcti-sm.png" alt="Logo RCTI+"/>
                             Lebih Asyik Nonton dengan Aplikasi RCTI+
                         </Col>
                         <Col xs={4} className="center-content" >
@@ -167,7 +182,7 @@ class NavbarDef_v2 extends Component {
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
                             <NavbarBrand>
-                                <img className="logo-top" src="/static/logo/rcti-sm.png" />
+                                <img className="logo-top" src="/static/logo/rcti-sm.png" alt="Logo RCTI+"/>
                             </NavbarBrand>
                         </div>
                     </div>
@@ -179,14 +194,14 @@ class NavbarDef_v2 extends Component {
                     <div className="nav-menu-container">
                         <ActiveLink activeClassName="active" href="/" activeMenu={'home' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
-                                <img className="img-menu-icon" src={'/videos.svg'}/>
-                                Videos +
+                                <img alt="Video+" className="img-menu-icon" src={'/videos.svg'}/>
+                                Video+
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/news" activeMenu={'news' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
-                                <img className="img-menu-icon" src={'/news.svg'}/>
-                                News +
+                                <img alt="News+" className="img-menu-icon" src={'/news.svg'}/>
+                                News+
                             </Button>
                         </ActiveLink>
                         {/* <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
@@ -196,16 +211,16 @@ class NavbarDef_v2 extends Component {
                             </Button>
                         </ActiveLink> */}
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_RADIO}?token=${this.state.token}`}>
-                            <img className="img-menu-icon" src={'/radio.png'}/>
-                            Radio +
+                            <img alt="Radio+" className="img-menu-icon" src={'/radio.png'}/>
+                            Radio+
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_HOT}?token=${this.state.token}`}>
-                            <img className="img-menu-icon" src={'/hot-icon.png'}/>
+                            <img alt="HOT" className="img-menu-icon" src={'/hot-icon.png'}/>
                             HOT
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_GAMES}?token=${this.state.token}`}>
-                            <img className="img-menu-icon" src={'/games.svg'}/>
-                            Games +
+                            <img alt="Games+" className="img-menu-icon" src={'/games.svg'}/>
+                            Games+
                         </Button>
                     </div>
                 </Navbar>

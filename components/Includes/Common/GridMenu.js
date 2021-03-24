@@ -27,30 +27,30 @@ class GridMenu extends React.Component {
                             Router.push('/exclusive');
                         }}>
                             <a>
-                                <img className="menu-icon" src={'/icons-menu/exclusive.svg'}/>
+                                <img alt="Exclusive" className="menu-icon" src={'/icons-menu/exclusive.svg'}/>
                                 <p className="menu-label">Exclusive</p>
                             </a>
                         </div>
                     </Col>
                     <Col className="menu-item">
-                        <Link href="/explores?id=1&genre=Drama">
+                        <Link href="/explores/1/Drama">
                             <a id="action-drama" >
                                 <div onClick={() => {
                                     homeGeneralClicked('mweb_drama_clicked');
                                 }}>
-                                    <img className="menu-icon" src={'/icons-menu/drama.svg'} style={{ width: 35 }}/>
+                                    <img alt="Drama" className="menu-icon" src={'/icons-menu/drama.svg'} style={{ width: 35 }}/>
                                     <p className="menu-label">Drama</p>
                                 </div>
                             </a>
                         </Link>
                     </Col>
                     <Col className="menu-item">
-                        <Link href="/explores?id=6&genre=Comedy">
+                        <Link href="/explores/6/Comedy">
                             <a id="action-comedy" >
                                 <div onClick={() => {
                                     homeGeneralClicked('mweb_comedy_clicked');
                                 }}>
-                                    <img className="menu-icon" src={'/icons-menu/comedy.svg'}/>
+                                    <img alt="Comedy" className="menu-icon" src={'/icons-menu/comedy.svg'}/>
                                     <p className="menu-label">Comedy</p>
                                 </div>
                             </a>
@@ -62,17 +62,17 @@ class GridMenu extends React.Component {
                             window.location.assign('https://radio.rctiplus.com/');
                         }}>
                             <a>
-                                <Img className="menu-icon" src={'/icons/comedy.svg'}/>
+                                <img alt="menu - icon" className="menu-icon" src={'/icons/comedy.svg'}/>
                                 <p className="menu-label">Comedy</p>
                             </a>
                         </div>
                     </Col> */}
                     {/* <Col className="menu-item">
-                        <Img className="menu-icon" src={['/trivia_quiz.svg']}/>
+                        <img alt="menu - icon" className="menu-icon" src={['/trivia_quiz.svg']}/>
                         <p className="menu-label">TriviaQuiz</p>
                     </Col>
                     <Col className="menu-item">
-                        <Img className="menu-icon" src={['/more.svg']}/>
+                        <img alt="menu - icon" className="menu-icon" src={['/more.svg']}/>
                         <p className="menu-label">More</p>
                     </Col> */}
                 </Row>

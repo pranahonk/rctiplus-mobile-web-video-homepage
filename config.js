@@ -9,7 +9,7 @@ export const API = process.env.API;
 
 export const GTM = process.env.GTM;
 
-// export const GTM_AUTH = process.env.GTM_AUTH;
+export const GTM_AUTH = process.env.GTM_AUTH;
 
 export const DEV_API = process.env.DEV_API;
 
@@ -102,9 +102,9 @@ export const UTM_NAME = (utm, utmCampaign, utmMedium, platform = 'mweb') => {
 };
 export const SITEMAP = {
     home: {
-        title: `${SITE_NAME} - Live Streaming Program 4 TV Terpopuler`,
-        description: `Live Streaming Program RCTI, MNCTV, GTV & iNews. Menyajikan konten eksklusif yang tidak tayang di TV & Informasi Trending Terupdate. Nonton Gak Monoton di RCTI+.`,
-        keywords: `rctiplus, rcti plus, rcti+`,
+        title: `${SITE_NAME} - Satu Aplikasi, Semua Hiburan`,
+        description: 'Satu aplikasi, semua hiburan mulai dari live streaming program RCTI, MNCTV, GTV & iNews TV. Menyajikan konten eksklusif yang tidak tayang di TV & Informasi Trending Terupdate, dengar radio dan podcast favorit, menonton aksi talent terbaik, dan main games juga',
+        keywords: `rctiplus, rcti plus, rcti+, rcti, mnctv, gtv, inews,hot, home of talent, games, news, radio, podcast, baca berita`,
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     terms_and_conditions: {
@@ -126,20 +126,20 @@ export const SITEMAP = {
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     faq: {
-        title: `Halaman Frequently Asked Questions - ${SITE_NAME}`,
+        title: `Halaman Frequently Ask and Questions - ${SITE_NAME}`,
         description: `Pertanyaan yang paling sering diajukan terkait informasi penggunaan dan program tayangan di RCTI+ beserta jawabannya`,
         keywords: `faq rctiplus, faq rcti+, cara pakai rctiplus, rctiplus`,
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     register: {
         title: `Halaman Sign Up / Pendaftaran Akun - ${SITE_NAME}`,
-        description: `Tempat pendaftaran / register akun di RCTI+. Buruan register sekarang, gratis streaming online sepuasnya`,
+        description: `Tempat pendaftaran / register akun di RCTI+. Buruan register sekarang, gratis streaming online sepuasnya untuk menikmati semua layanan entertainment gratis di RCTI+`,
         keywords: `register rctiplus, register rcti+, daftar rctiplus, rctiplus`,
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     login: {
         title: `Halaman Login Akun - ${SITE_NAME}`,
-        description: `Tempat login akun dan nonton tayangan streaming tv online gratis di RCTI+`,
+        description: `Tempat login akun untuk menikmati semua layanan entertainment gratis di RCTI+`,
         keywords: `login rctiplus, login rcti+, masuk rctiplus, rctiplus`,
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
@@ -246,22 +246,34 @@ export const SITEMAP = {
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_MNCTV-min.png`
     },
     live_tv_globaltv: {
-        title: `Live Streaming Global TV (GTV) Hari Ini | TV Online Indonesia - ${SITE_NAME}`,
-        description: `Nonton live streaming GTV online hari ini tanpa buffering untuk semua program dan acara favorit yang tayang setiap hari. Dapatkan juga jadwal acara Global TV terbaru hanya di RCTI+`,
+        title: `Live Streaming GTV Hari Ini | TV Online Indonesia - ${SITE_NAME}`,
+        description: `Nonton live streaming GTV online hari ini tanpa buffering untuk semua program dan acara favorit yang tayang setiap hari. Dapatkan juga jadwal acara GTV terbaru hanya di RCTI+`,
         keywords: `global tv, gtv jadwal, tv bersama gtv, live streaming gtv sekarang, siaran langsung gtv`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_GTV-min.png`
     },
     live_tv_gtv: {
-        title: `Live Streaming Global TV (GTV) Hari Ini | TV Online Indonesia - ${SITE_NAME}`,
-        description: `Nonton live streaming GTV online hari ini tanpa buffering untuk semua program dan acara favorit yang tayang setiap hari. Dapatkan juga jadwal acara Global TV terbaru hanya di RCTI+`,
+        title: `Live Streaming GTV Hari Ini | TV Online Indonesia - ${SITE_NAME}`,
+        description: `Nonton live streaming GTV online hari ini tanpa buffering untuk semua program dan acara favorit yang tayang setiap hari. Dapatkan juga jadwal acara GTV terbaru hanya di RCTI+`,
         keywords: `global tv, gtv jadwal, tv bersama gtv, live streaming gtv sekarang, siaran langsung gtv`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_GTV-min.png`
     },
     live_tv_inews: {
-        title: `Live Streaming iNews Hari Ini | TV Online Indonesia - ${SITE_NAME}`,
+        title: `Live Streaming iNews TV Hari Ini | TV Online Indonesia - ${SITE_NAME}`, 
         description: `Nonton live streaming iNews online hari ini tanpa buffering untuk semua program dan berita favorit yang tayang setiap hari. Dapatkan juga jadwal berita RCTI terbaru hanya di RCTI+`,
         keywords: `berita inews, inews, streaming inews, berita inews tv terbaru, inews terkini`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_INEWS-min.png`
+    },
+    live_event_index: {
+        title: `Streaming Live Event TV Online Indonesia - ${SITE_NAME}`,
+        description: `Nonton live streaming tv online Indonesia berbagai event menarik eksklusif hanya di RCTI+, mulai dari bola, entertainment, musik dan lainnya`,
+        keywords: `rctiplus, tv online indonesia`,
+        image: 'https://rctiplus.com/assets/image/elements/logo.b9f35229.png',
+    },
+    missed_event_index: {
+        title: `Tonton Tayangan Ulang Streaming Live Event TV Online Indonesia - ${SITE_NAME}`,
+        description: `Nonton tayangan ulang live streaming tv online Indonesia berbagai event menarik eksklusif hanya di RCTI+, mulai dari bola, entertainment, musik dan lainnya`,
+        keywords: `rctiplus, tv online indonesia`,
+        image: 'https://rctiplus.com/assets/image/elements/logo.b9f35229.png',
     },
     trending: {
         title: `Informasi Berita Terkini dan Viral dari Berbagai Sumber Terpercaya - ${SITE_NAME_NEWS}`,
@@ -378,106 +390,123 @@ export const SITEMAP = {
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
     explore_for_you: {
-        title: `Nonton Kumpulan Program TV dan Sinetron RCTI, MNC, GTV, iNews - ${SITE_NAME}`,
-        description: `Nonton kumpulan program, sinetron dan acara TV RCTI, MNC TV, GTV, iNews terbaru full episode tanpa buffering hanya di RCTI+`,
-        keywords: `program TV`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        title: `Streaming Film, Serial, dan Program Lain di RCTI, MNCTV, GTV, iNews TV - ${SITE_NAME}`,
+        description: `Nonton kumpulan program, sinetron dan acara TV RCTI, MNCTV, GTV, iNews TV terbaru full episode tanpa buffering hanya di RCTI+`,
+        keywords: `film sub indo, Nonton film, nonton film indonesia,  nonton drama korea, cinemaindo, drama, Realilty Show, Special Event, Variety Show, Sport Hightlight, Music, Talet Search, Match, Documentary, Hard News, Infotainment, Animation, Kids Entertainment, Comedy, Skill / Hobbies, Travel, Action, Horror, Game Show, Sitcom Comedy, Pearch Dialog, Trailer, Talkshow, Crime, TV Magazine, Edutaiment, Sport Hightlight, Quiz, Kids Game Show, Series, Exercise, Light Entertainement, drama indonesia, sinetron indonesia`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     explore_talent_search: {
-        title: `Nonton Acara TV Ajang Pencarian Bakat Terbaru - ${SITE_NAME}`,
+        title: `Nonton Streaming Film Talent Search Sub Indo Gratis Terlengkap di Indonesia - ${SITE_NAME}`,
         description: `Nonton video ajang pencarian bakat nyanyi, sulap, atraksi dan lainnya terpopuler di Indonesia tanpa buffering hanya di RCTI+`,
-        keywords: `ajang pencarian bakat`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        keywords: `watch talent search tv shows online, talent search tv streaming, stream talent search tv shows online`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     explore_drama: {
-        title: `Nonton Kumpulan Drama & Sinetron Terbaik dan Terbaru - ${SITE_NAME}`,
-        description: `Nonton drama acara sinetron romantis, religi dan misteri favoritmu full episode tanpa buffering hanya di RCTI+`,
-        keywords: `nonton drama`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        title: `Nonton Streaming Film Drama Sub Indo Gratis Terlengkap di Indonesia - ${SITE_NAME}`,
+        description: `Nonton kumpulan drama program, sinetron dan acara TV RCTI, MNCTV, GTV, iNews TV terbaru full episode tanpa buffering hanya di RCTI+`,
+        keywords: `watch Drama tv shows online, Drama tv streaming, stream Drama tv shows online, sinetron indonesia, drama korea, drakor`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'Drama di RCTIPlus'
     },
     explore_special_event: {
-        title: `Nonton Tayangan Acara Spesial Terbaru - ${SITE_NAME}`,
-        description: `Nonton tayangan program dan acara momentum spesial dan besar di Indonesia tanpa buffering hanya di RCTI+`,
-        keywords: `special events`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        title: `Nonton Streaming Film Special Event Sub Indo Gratis Terlengkap di Indonesia - ${SITE_NAME}`,
+        description: `Nonton kumpulan special event program, sinetron dan acara TV RCTI, MNCTV, GTV, iNews TV terbaru full episode tanpa buffering hanya di RCTI+`,
+        keywords: `nonton watch special event, event live, show special online`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'Special Event di RCTIPlus'
     },
     explore_sport: {
         title: `Nonton Bola dan Video Olahraga Lainnya Terbaru - ${SITE_NAME}`,
         description: `Nonton bola online dan highlight olahraga lainnya paling lengkap dan terupdate liga Champion, Inggris, Italia, Indonesia dan lainnya hanya di RCTI+`,
         keywords: `nonton bola`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     explore_animation: {
         title: `Nonton Film Kartun Lucu dan Program TV Anak Lainnya - ${SITE_NAME}`,
         description: `Nonton tayangan program dan acara kartun animasi, kartun anak lucu dan paling baru hanya di RCTI+`,
         keywords: `film kartun, film kartun lucu, film kartun anak`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     explore_entertainment: {
         title: `Nonton Gosip dan Hiburan Dunia Artis Terbaru - ${SITE_NAME}`,
         description: `Nonton gosip, hiburan dan entertainment online dari artis top dunia dan Indonesia paling lengkap dan tanpa buffering hanya di RCTI+`,
         keywords: `gosip artis, gosip artis terbaru`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     explore_variety_music: {
         title: `Nonton Video Musik Lengkap dan Terbaru - ${SITE_NAME}`,
         description: `Nonton video dan acara musik terbaru dan terkini lagi viral nasional dan internasional gratis tanpa buffering hanya di RCTI+`,
         keywords: `video musik, acara musik, program musik`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     explore_comedy: {
-        title: `Nonton Video dan Acara Komedi Paling Lucu dan Terbaru - ${SITE_NAME}`,
-        description: `Nonton video komedi paling lucu dari seluruh tayangan dan program RCTI, MNC TV, GTV, dan iNews. Selengkapnya hanya ada di RCTI+`,
-        keywords: `acara komedi, video komedi`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        title: `Nonton Streaming Film Comedy Sub Indo Gratis Terlengkap di Indonesia - ${SITE_NAME}`,
+        description: `Nonton kumpulan Comedy program, sinetron dan acara TV RCTI, MNCTV, GTV, iNews TV terbaru full episode tanpa buffering hanya di RCTI+`,
+        keywords: `watch comedy tv shows online, comedy tv streaming, stream comedy tv shows online`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'Comedy di RCTIPlus'
     },
-    explore_sitkom: {
-        title: `Nonton Program Komedi Terbaru Paling Kocak - ${SITE_NAME}`,
-        description: `Nonton program acara situasi komedi paling lucu favoritmu full episode tanpa buffering hanya di RCTI+`,
-        keywords: `video komedi lucu, video lucu komedi`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+    explore_sitcom: {
+        title: `Nonton Streaming Film Sitcom Sub Indo Gratis Terlengkap di Indonesia - ${SITE_NAME}`,
+        description: `Nonton kumpulan sitcom program, sinetron dan acara TV RCTI, MNCTV, GTV, iNews TV terbaru full episode tanpa buffering hanya di RCTI+`,
+        keywords: `watch sitcom tv shows online, sitcom tv streaming, stream sitcom tv shows online`,
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'Sitcom Comedy di RCTIPlus'
     },
-    expore_mistery: {
+    explore_misteri: {
         title: `Nonton Program Misteri Horor Paling Seram Terbaru - ${SITE_NAME}`,
         description: `Nonton acara horor, misteri, mitos untuk menguak semua pengalaman mengerikan hanya di RCTI+`,
         keywords: `video horor, acara horor, program horor, film horor`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     explore_movie: {
         title: `Nonton Film, Drama dan Serial Favorit Terbaru - ${SITE_NAME}`,
         description: `Nonton film Indonesia online, drama korea, jepang, barat, dan bollywood terbaru. Pilih dan tonton online favoritmu hanya di RCTI+`,
         keywords: `nonton film online, nonton film streaming, nonton drakor, nonton movie online`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     explore_ftv: {
         title: `Nonton Sinetron FTV Romantis Terbaru - ${SITE_NAME}`,
         description: `Nonton FTV, sinetron, dan acara TV paling menarik untuk menemani hari-harimu. Lihat selengkapnya hanya di RCTI+`,
         keywords: `ftv, nonton ftv, nonton sinetron, sinetron`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     explore_religious: {
         title: `Nonton Program Religi dan Sinetron Religi Terbaru - ${SITE_NAME}`,
         description: `Nonton film religi, azab, dan program siraman rohani terupdate, lengkap dan tidak membosankan tanpa buffering hanya di RCTI+`,
         keywords: `film religi, nonton film religi`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     explore_game_show: {
         title: `Nonton Tayangan Program Reality Show Terbaru - ${SITE_NAME}`,
         description: `Nonton reality show terbaik di RCTI, MNC TV, GTV dan iNews full episode tanpa buffering hanya di RCTI+`,
         keywords: `reality show, program tv, program tv hari ini`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     explore_infotainment: {
         title: `Saksikan Program Infotainment dan Gosip Artis Terbaru dan Teraktual - ${SITE_NAME}`,
         description: `Nonton gosip infotainment artis top paling update dan seru untuk ditonton terkait gaya hidup, kasus, perjalanan karir dan lainnya hanya di RCTI+`,
         keywords: `kabar artis, kabar artis terbaru`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     explore_information: {
         title: `Tayangan Berita dan Informasi Terbaru dari Berbagai Kanal - ${SITE_NAME}`,
         description: `Nonton berita peristiwa, bola, kriminal, travel, teknologi paling update dan terkini tanpa buffering hanya di RCTI+`,
         keywords: `berita paling update`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+        twitter_img_alt: 'ExploreRCTIPlus'
     },
     topic_tagar: {
         title: `Daftar Tagar Terpopular dan Terbaru Hari ini - ${SITE_NAME}`,

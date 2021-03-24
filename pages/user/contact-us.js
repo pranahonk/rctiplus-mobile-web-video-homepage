@@ -113,6 +113,7 @@ class ContactUs extends React.PureComponent {
 					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
+                    <meta property="og:type" content="website" />
 					<meta property="og:image:height" content="315" />
 					<meta property="og:site_name" content={SITE_NAME} />
 					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />

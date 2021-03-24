@@ -13,7 +13,7 @@ import PhotoFeed from '../../components/Includes/Gallery/PhotoFeed';
 import '../../assets/scss/components/photo-detail.scss';
 import '../../assets/scss/plugins/carousel/carousel.scss';
 
-import { DEV_API, VISITOR_TOKEN, SITE_NAME } from '../../config';
+import { DEV_API, VISITOR_TOKEN, SITE_NAME, REDIRECT_WEB_DESKTOP, SHARE_BASE_URL } from '../../config';
 import { getCookie } from '../../utils/cookie';
 
 class PhotoList extends React.Component {
@@ -57,21 +57,52 @@ class PhotoList extends React.Component {
         if (this.state.program) {
             this.props.getProgramPhoto(this.props.initial.data.id)
                 .then(response => {
-                    console.log(response);
+                    // console.log(response);
                     this.setState({ 
                         photos: response.data.data,
                         meta: response.data.meta 
-                    }, () => console.log(this.state));
+                    });
                 })
                 .catch(error => console.log(error));
         }
     }
 
+    metaTag() {
+        return {
+            title: `Foto ${this.state.title} - ${SITE_NAME}`,
+            description: `Lihat foto ${this.state.title} - ${this.state.program.title} - ${SITE_NAME}`,
+            keywords: `${this.state?.meta?.image_path}/140/${this.state?.photos[0]?.photos[0]?.image}`,
+        }
+    }
+
     render() {
+        const meta = this.metaTag()
         return (
-            <Layout title={`Foto ${this.state.title}`}>
+            <Layout title={`${meta.title}`}>
                 <Head>
-                    <meta name="description" content={`Lihat foto ${this.state.title} - ${this.state.program.title} - ${SITE_NAME}`}/>
+                    <meta name="mobile-web-app-capable" content="yes" />
+                    <meta name="keywords" content={meta.keywords || 'rctiplus'} />
+                    <meta name="apple-mobile-web-app-capable " content="yes" />
+                    <meta name="title" content={meta.title} />
+                    <meta name="description" content={`${meta.description}`}/>
+                    <meta property="og:description" content={meta.description} />
+                    <meta property="og:title" content={meta.title} />
+                    <meta property="og:image" itemProp="image" content={meta.image} />
+                    <meta property="og:url" content={SHARE_BASE_URL + this.props.router.asPath}/>
+                    <meta property="og:image:type" content="image/jpeg" />
+                    <meta property="og:image:width" content="600" />
+                    <meta property="og:image:height" content="315" />
+                    <meta property="og:type" content={'album'}/>
+                    <meta property="og:site_name" content="RCTI+"/>
+                    <meta name="twitter:title" content={meta.title} />
+                    <meta name="twitter:description" content={meta.description} />
+                    <meta name="twitter:card" content="summary_large_image" />
+                    <meta name="twitter:image" content={meta.image} />
+                    <meta name="twitter:image:alt" content={meta.title} />
+                    <meta name="twitter:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
+                    <meta name="twitter:creator" content="@RCTIPlus" />
+                    <meta property="fb:app_id" content="211272363627736" />
+                    <meta name="twitter:site" content="@RCTIPlus" />
                 </Head>
                 <NavBack title={this.state.program.title}/>
                 <div className="container-box-cpd wrapper-box">

@@ -23,6 +23,7 @@ import Panel4 from '../components/Panels/Pnl_4';
 import StickyAds from '../components/Includes/Banner/StickyAds';
 import GridMenu from '../components/Includes/Common/GridMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
+import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
@@ -136,16 +137,18 @@ class Index_v2 extends React.Component {
         return (
             <Layout title={SITEMAP.home.title}>
                 <Head>
+                    <JsonLDWebsite keyword={'Home'} />
                     <meta name="description" content={SITEMAP.home.description} />
                     <meta name="keywords" content={SITEMAP.home.keywords} />
                     <meta property="og:title" content={SITEMAP.home.title} />
+                    <meta property="og:description" content={SITEMAP.home.description} />
                     <meta property="og:image" itemProp="image" content={SITEMAP.home.image} />
                     <meta property="og:url" content={REDIRECT_WEB_DESKTOP} />
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
                     <meta property="og:site_name" content={SITE_NAME} />
-                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta property="og:type" content="website" />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
                     <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
                     <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />

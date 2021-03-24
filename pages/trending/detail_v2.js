@@ -136,9 +136,15 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
-      if(!Cookie.get('uid_ads')) {
-          Cookie.set('uid_ads', new DeviceUUID().get())
-      }
+        const {initial, router: {asPath = null}} = this.props;
+
+        if (asPath.split('/').length < 6) {
+            location.replace(`${SHARE_BASE_URL}/news/detail/${urlRegex(initial.subcategory_name)}/${initial.id}/${encodeURI(urlRegex(initial.title))}`);
+        }
+
+        if(!Cookie.get('uid_ads')) {
+            Cookie.set('uid_ads', new DeviceUUID().get())
+        }
         if(this.props?.initial?.total_like) {
             this.setState({countLike : this.state.countLike + this.props?.initial?.total_like})
         }
@@ -668,7 +674,7 @@ class Detail extends React.Component {
                                                 if(index > 4) {
                                                     return (
                                                         <SwiperSlide key={index}>
-                                                            <HorizontalItem item={item} />
+                                                            <HorizontalItem item={item} indexKey={index - 5} isIndexKey/>
                                                         </SwiperSlide>
                                                     );
                                                 }

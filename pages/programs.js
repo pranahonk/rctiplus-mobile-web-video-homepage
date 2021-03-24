@@ -52,6 +52,7 @@ const Trailer = dynamic(() => import('../components/Includes/program-detail/prog
 
 class Index extends React.Component {
   static async getInitialProps(ctx) {
+    // console.log('on server')
     const programId = ctx.query.id;
     const accessToken = getCookie('ACCESS_TOKEN');
     const res = await fetch(`${DEV_API}/api/v1/program/${programId}/detail`, {
@@ -138,18 +139,19 @@ class Index extends React.Component {
       this.props.dispatch(fetchPlayerUrl(this.props.router.query.content_id,'data-player',this.props.router.query.content_type));
     }
     if (this.props.server && this.props.server[this.type].data) {
+      console.log(this.props)
       if (this.isTabs(this.props.server[this.type].data).length > 0) {
-        if (this.props.router.query.content_type === 'extras') {
+        if (this.props.router.query.content_type === 'extras' || this.props.router.query.content_type === 'extra') {
           this.setState({toggle: 'Extra'});
           this.props.dispatch(fetchExtra(this.programId, 'program-extra'));
           return false;
         }
-        if (this.props.router.query.content_type === 'clips') {
+        if (this.props.router.query.content_type === 'clips' || this.props.router.query.content_type === 'clip') {
           this.setState({toggle: 'Clips'});
           this.props.dispatch(fetchClip(this.programId, 'program-clip'));
           return false;
         }
-        if (this.props.router.query.content_type === 'photos') {
+        if (this.props.router.query.content_type === 'photos' || this.props.router.query.content_type === 'photo') {
           this.setState({toggle: 'Photo'});
           this.props.dispatch(fetchPhoto(this.programId, 'program-photo'));
           return false;
@@ -253,8 +255,7 @@ class Index extends React.Component {
       return (
         <>
           {(this.props?.data?.paid_video?.data?.is_paid && this.props?.server['program-detail'].data?.premium === 1) || this.props?.server['program-detail'].data?.premium === 0 ? (<Link
-              href={`/programs?id=${mainData.id}&title=${urlRegex(mainData.title)}&content_type=episode&content_id=${detailData.id}&content_title=${urlRegex(detailData.title)}`}
-              as={`/programs/${mainData.id}/${urlRegex(mainData.title)}/episode/${detailData.id}/${urlRegex(detailData.title)}${this.reference ? '?ref=' + this.reference : ''}`}
+              href={`/programs/${mainData.id}/${urlRegex(mainData.title)}/episode/${detailData.id}/${urlRegex(detailData.title)}${this.reference ? '?ref=' + this.reference : ''}`}
               shallow>
               <a onClick={ () => { 
                 this.props.dispatch(fetchPlayerUrl(detailData.id,'data-player','episode'))
@@ -426,28 +427,32 @@ class Index extends React.Component {
     const { id, title, content_id, content_title, content_type } = this.props.router.query;
     let href, as;
     let convert = '';
-    if (tab === 'Episodes') {convert = 'episodes';}
-    if (tab === 'Extra') {convert = 'extras';}
-    if (tab === 'Clips') {convert = 'clips';}
-    if (tab === 'Photo') {convert = 'photos';}
+    console.log(tab)
+    if (tab === 'Episodes') {convert = 'episode';}
+    if (tab === 'Extra') {convert = 'extra';}
+    if (tab === 'Clips') {convert = 'clip';}
+    if (tab === 'Photo') {convert = 'photo';}
     if (!content_id) {
+      // href = `/programs/${id}/${urlRegex(title)}/${convert}${this.reference ? '?ref=' + this.reference : ''}`;
       href = `/programs?id=${id}&title=${urlRegex(title)}&tab=${convert}`;
       as = `/programs/${id}/${urlRegex(title)}/${convert}${this.reference ? '?ref=' + this.reference : ''}`;
+      Router.push(href, as, { shallow: true });
     }
-    if (content_id) {
-      href = `/programs?id=${id}&title=${urlRegex(title)}&content_type=${content_type}&content_id=${content_id}&content_title=${urlRegex(content_title)}&tab=${tab}`;
-      as = `/programs/${id}/${urlRegex(title)}/${content_type}/${content_id}/${urlRegex(content_title)}?${convert + this.reference ? '&ref=' + this.reference : ''}`;
-    }
-    if (!this.props.data['program-extra'] && convert === 'extras') {
+    // if (content_id) {
+    //   // href = `/programs/${id}/${urlRegex(title)}/${content_type}/${content_id}/${urlRegex(content_title)}?${convert + this.reference ? '&ref=' + this.reference : ''}`;
+    //   href = `/programs?id=${id}&title=${urlRegex(title)}&content_type=${convert}&content_id=${content_id}&content_title=${urlRegex(content_title)}&tab=${tab}`;
+    //   as = `/programs/${id}/${urlRegex(title)}/${convert}/${content_id}/${urlRegex(content_title)}?${convert + this.reference ? '&ref=' + this.reference : ''}`;
+    // }
+    if (!this.props.data['program-extra'] && convert === 'extra') {
       this.props.dispatch(fetchExtra(id, 'program-extra'));
     }
-    if (!this.props.data['program-clip'] && convert === 'clips') {
+    if (!this.props.data['program-clip'] && convert === 'clip') {
       this.props.dispatch(fetchClip(id, 'program-clip'));
     }
-    if (!this.props.data['program-photo'] && convert === 'photos') {
+    if (!this.props.data['program-photo'] && convert === 'photo') {
       this.props.dispatch(fetchPhoto(id, 'program-photo'));
     }
-    Router.push(href, as, { shallow: true });
+    // Router.push(href, as, { shallow: true });
     onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'], 'tab_click');
   }
   hasMore(props, page) {
@@ -727,8 +732,7 @@ class Index extends React.Component {
     return (
       <Layout>
         <HeadMeta data={props.seo_content}
-                  router={props.router}
-                  dataPlayer={(props.data && props.data['description-player']) || props.seo_content_detail}/>
+                  dataPlayer={(props.data && props.data['description-player']) || props.seo_content_detail} ogType={this.props.router.query?.content_id ? 'video' : 'website'}/>
         <div className="program-detail-container animated fadeInDown go">
           <div ref={this.refMainContent} style={{minHeight: '10px'}}>
             { this.switchPanel() }

@@ -12,7 +12,7 @@ import chatsActions from '../../redux/actions/chats';
 import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, FIREBASE_apiKey,  FIREBASE_authDomain,  FIREBASE_databaseURL, FIREBASE_projectId, FIREBASE_storageBucket, FIREBASE_appId, FIREBASE_measurementId, FIREBASE_messagingSenderId, SHARE_BASE_URL } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GRAPH_SITEMAP, SHARE_BASE_URL, GTM_AUTH } from '../../config';
 import { Spinner } from 'reactstrap';
 const PaidVideo = dynamic(() => import('../Includes/program-detail/PaidVideo'), { ssr: false });
 
@@ -101,11 +101,12 @@ class Default_v2 extends React.Component {
                     <meta name="apple-mobile-web-app-status-bar-style" content="#171717" />
                     <meta name="mobile-web-app-capable" content="yes" />
                     <meta name="apple-mobile-web-app-capable" content="yes" />
+                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
 
                     <meta name="author" content={AUTHOR} />
                     <meta name="viewport" content={VIEWPORT} />
                     <meta name="description" content={MAIN_DESCRIPTION} />
-                    {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]} />))}
+                    {/* {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]} />))} */}
                     <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
                     <link rel="canonical" href={oneSegment + encodeURI(asPath).replace('trending/', 'news/')} />
@@ -114,10 +115,14 @@ class Default_v2 extends React.Component {
                     {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
+                        window.dataLayer = window.dataLayer || [];
+                        window.dataLayer.push({
+                            'pillar' : 'video'
+                        });
                         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                         j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                        'https://www.googletagmanager.com/gtm.js?id='+i+dl+ '&gtm_auth=bo364VFvv-awdeFc2S8KmA&gtm_preview=${GTM}&gtm_cookies_win=x';f.parentNode.insertBefore(j,f);
+                        'https://www.googletagmanager.com/gtm.js?id='+i+dl+ '&gtm_auth=${GTM_AUTH}&gtm_preview=${GTM}&gtm_cookies_win=x';f.parentNode.insertBefore(j,f);
                         })(window,document,'script','dataLayer','GTM-WJNRTJP');
                     ` }}></script>
                     {/* End Google Tag Manager */}
@@ -174,7 +179,7 @@ class Default_v2 extends React.Component {
                     {/* End Comscore */}
 
                     {/* <!-- Google Tag Manager (noscript) --> */}
-                    <noscript key="gtm-noscript"><iframe src={`https://www.googletagmanager.com/ns.html?id=GTM-WJNRTJP&gtm_auth=bo364VFvv-awdeFc2S8KmA&gtm_preview=${GTM}&gtm_cookies_win=x`}
+                    <noscript key="gtm-noscript"><iframe src={`https://www.googletagmanager.com/ns.html?id=GTM-WJNRTJP&gtm_auth=${GTM_AUTH}&gtm_preview=${GTM}&gtm_cookies_win=x`}
                     height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript>
                     {/* <!-- End Google Tag Manager (noscript) --> */}
 

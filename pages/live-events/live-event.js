@@ -37,6 +37,7 @@ import StreamVideoIcon from '../../components/Includes/Common/StreamVideoIcon';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 import ErrorPlayer from '../../components/Includes/Player/ErrorPlayer';
 import Toast from '../../components/Includes/Common/Toast';
+import JsonLDVideo from '../../components/Seo/JsonLDVideo';
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -1208,8 +1209,8 @@ class LiveEvent extends React.Component {
 		}
 		const { data, meta } = this.props.selected_event;
 		return {
-			title: 'Streaming ' + (this.props.router.query.title.replace(/-/gi, ' ') || '') + ' - RCTI+',
-			description: 'Nonton streaming online ' + (this.props.router.query.title.replace(/-/gi, ' ') || '') + ' tanggal ' + (data && meta ? data.start_date : '') + ' WIB hanya di RCTI+ ',
+			title: this.props.router.asPath.includes('/missed-event') ? `Tayangan Ulang Streaming ${this.props.router.query.title.replace(/-/gi, ' ') || ''}`: 'Live streaming ' + (this.props.router.query.title.replace(/-/gi, ' ') || ''),
+			description: this.props.router.asPath.includes('/missed-event') ? `Tonton siaran ulang ${(this.props.router.query.title.replace(/-/gi, ' ') || '')} gratis dan tanpa buffering di RCTI+` : `Tonton siaran langsung ${(this.props.router.query.title.replace(/-/gi, ' ') || '')} gratis dan tanpa buffering di RCTI+` ,
 			image: data && meta ? (meta.image_path + '300' + data.portrait_image) : '',
 		};
 	}
@@ -1235,7 +1236,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 	callbackAds(e) {
-		console.log(e)
+		// console.log(e)
 		this.setState({
 			ads_data: null,
 		}, () => {
@@ -1248,7 +1249,7 @@ class LiveEvent extends React.Component {
 	}
 
 	callbackCount(end, current) {
-		console.log(this.state.isAds)
+		// console.log(this.state.isAds)
 		if(this.state.isAds) {
 			let distance = getCountdown(end, current)[0] || 100000;
 			const countdown = setInterval(() => {
@@ -1286,7 +1287,7 @@ class LiveEvent extends React.Component {
 	}
 
 	render() {
-		const { state } = this;
+		const { state, props } = this;
 		const  { selected_event, selected_event_url } = this.props;
 		let errorEvent = (<Col xs="12" key="1" className="le-error">
 				<LiveIcon />
@@ -1294,9 +1295,15 @@ class LiveEvent extends React.Component {
 				<p>content isn't available right now</p>
 			</Col>
 		);
+		const contentData = {
+			asPath: props.router.asPath || '',
+			title: selected_event_url?.data?.assets_name || '',
+			thumbnailUrl: this.getMeta().image || ''
+		}
 		return (
 			<Layout title={this.getMeta().title}>
 				<Head>
+					<JsonLDVideo content={contentData} />
 					<meta name="description" content={this.getMeta().description} />
 					<meta name="keywords" content={this.getMeta().title} />
 					<meta property="og:title" content={this.getMeta().title} />
@@ -1306,6 +1313,7 @@ class LiveEvent extends React.Component {
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
 					<meta property="og:image:height" content="315" />
+					<meta property="og:type" content="video" />
 					<meta property="og:site_name" content={SITE_NAME} />
 					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
@@ -1360,9 +1368,11 @@ class LiveEvent extends React.Component {
 							/>
 					</div>
 					<div ref= { this.titleRef } className="title-wrap">
-						<div style={{
+						<h1 style={{
 							display: 'flex',
-							alignItems: 'center'
+							alignItems: 'center',
+							fontSize: '1em',
+							margin: 0
 						}}>
 						{this.state.is_live[0] ? (
 								<CountdownTimer
@@ -1377,7 +1387,7 @@ class LiveEvent extends React.Component {
 							) : null}
 
 							{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
-						</div>
+						</h1>
 
 						<ShareIcon onClick={() => {
 							liveShareEvent(selected_event.data && selected_event.data.id || 'error', selected_event.data && selected_event.data.name || 'error');
@@ -1411,7 +1421,7 @@ class LiveEvent extends React.Component {
 												backgroundColor="#fa262f"
 												statusLabel="1"
 												statusTimer="1"
-												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.name}/>
+												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.content_title}/>
 											</Col>
 										)) : this.props.pages.status ? (<div/>)
 										 : errorEvent}
@@ -1426,7 +1436,7 @@ class LiveEvent extends React.Component {
 												backgroundColor="#fa262f"
 												statusLabel="0"
 												statusTimer="0"
-												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.name}/>
+												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.content_title}/>
 											</Col>
 										)) : this.props.pages.status ? (<div/>)
 										: errorEvent}
