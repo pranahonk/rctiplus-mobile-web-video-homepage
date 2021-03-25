@@ -671,10 +671,8 @@ class Detail extends React.Component {
                                         {this.state.trending_related.map((item, index) => {
                                             if(index < 4) {
                                                 return (
-                                                <>
-                                                    <SquareItem key={index + item.title} item={item} assets_url={this.state.assets_url} indexKey={index} isIndexKey/>
-                                                </>
-                                            );
+                                                    <SquareItem key={index} item={item} indexKey={index} isIndexKey assets_url={this.state.assets_url} />
+                                                );
                                             }
                                         })}
                                     </div>
