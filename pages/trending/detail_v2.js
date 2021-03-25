@@ -659,7 +659,7 @@ class Detail extends React.Component {
                                             if(index < 4) {
                                                 return (
                                                 <>
-                                                    <SquareItem key={index + item.title} item={item} indexKey={index} isIndexKey/>
+                                                    <SquareItem key={index + item.title} item={item} indexKey={index} isIndexKey assets_url={this.state.assets_url} />
                                                 </>
                                             );
                                             }
