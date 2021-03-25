@@ -39,14 +39,15 @@
         }
 
         .navigation-tabs {
-            overflow: auto;
+            overflow-y: auto;
+            overflow-x: visible;
             display: block;
             white-space: nowrap;
             scrollbar-width: none;
             width: 90%;
             border-bottom: none;
             padding-top: 5px;
-    
+            height: 37px;
             .navigation-tabs-item {
                 display: inline-block;
                 width: 100px;
