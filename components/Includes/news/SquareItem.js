@@ -7,7 +7,7 @@ import queryString from 'query-string';
 import '../../../assets/scss/components/trending_v2.scss';
 
 const redirectToPublisherIndex = [0, 1];
-export default function SquareItem({item, assets_url, indexKey, isIndexKey}) {
+export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
   const router = useRouter()
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
