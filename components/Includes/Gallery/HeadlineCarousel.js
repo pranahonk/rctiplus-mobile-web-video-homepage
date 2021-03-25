@@ -4,7 +4,7 @@ import Router, { withRouter } from 'next/router';
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
-import Img from 'react-image';
+import { imageNews } from '../../../utils/helpers';
 
 import { formatDateWordID } from '../../../utils/dateHelpers';
 import { setAccessToken, removeAccessToken } from '../../../utils/cookie';
@@ -71,13 +71,9 @@ class HeadlineCarousel extends React.Component {
                 {this.props.articles.map((article, i) => (
                     <div onClick={() => this.goToDetail(article)} key={i}>
                         <div className="center-cropped">
-                            <Img 
-                                className="thumbnail"
-                                alt={article.title}
-                                src={[article.cover, '/static/placeholders/placeholder_landscape.png']}
-                                loader={<img alt={article.title} className="thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
-                                unloader={<img alt={article.title} className="thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}/>
-                            
+                            {
+                                imageNews(article.title, article.cover, article.image, 400, this.props.assets_url, 'thumbnail')
+                            }
                         </div>
                         <div className="caption">
                             <h2 className="title" dangerouslySetInnerHTML={{ __html: this.renderTitle(article.title).replace(/\\/g, '') }}></h2>

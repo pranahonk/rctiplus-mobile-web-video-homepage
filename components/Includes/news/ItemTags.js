@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
-import Img from 'react-image';
 import Link from 'next/link';
 import queryString from 'query-string';
 import { getTruncate } from '../../../utils/helpers';
 import { formatDateWordID } from '../../../utils/dateHelpers';
 import { urlRegex } from '../../../utils/regex';
+import { imageNews } from '../../../utils/helpers';
+
 // action
 import newsAction from '../../../redux/actions/newsv2Actions';
 
@@ -61,6 +62,7 @@ const ItemTags = ({item, index, ...props}) => {
     return ('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
   }
   if (index < 4) {
+    let assetUrl = list.meta && list.meta.assets_url ? list.meta.assets_url : null;
     return (
         <li key={index} style={{border: 'none'}}>
           <span>{` ${index + 1}. #${item.tag} `}</span>
@@ -87,13 +89,9 @@ const ItemTags = ({item, index, ...props}) => {
                 <SwiperSlide key={index}>
                   <Link href={_goToDetail(item)}>
                     <div className="news-interest_thumbnail-wrapper">
-                      <Img
-                        alt={item?.title}
-                        unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-                        loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-                        src={[item.cover, '/static/placeholders/placeholder_landscape.png']}
-                        className="news-interest_thumbnail"
-                        />
+                      {
+                        imageNews(item.title, item.cover, item.image, 237, assetUrl, 'thumbnail')
+                      }
                       <div className="news-interest_thumbnail-title" >
                         <h1>{getTruncate(item.title, '...', 100)}</h1>
                         <h2>{item.subcategory_name} <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
