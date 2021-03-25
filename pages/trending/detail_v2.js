@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic';
 import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
-// import Img from 'react-image';
 import { ScrollPercentage } from 'react-scroll-percentage';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Cookie from 'js-cookie';
@@ -27,7 +26,7 @@ import { formatDateWordID } from '../../utils/dateHelpers';
 import SquareItem from '../../components/Includes/news/SquareItem';
 const HorizontalItem = dynamic(() => import('../../components/Includes/news/HorizontalItem'),{ ssr: false })
 import { setAccessToken, removeAccessToken } from '../../utils/cookie';
-import { getTruncate } from '../../utils/helpers';
+import { getTruncate, imgURL, imageNews } from '../../utils/helpers';
 import { urlRegex } from '../../utils/regex';
 import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
 import newsv2Actions from '../../redux/actions/newsv2Actions';
@@ -82,9 +81,11 @@ class Detail extends React.Component {
 
     constructor(props) {
         super(props);
+        const {props_id, initial} = this.props
         this.state = {
-            trending_detail_id: this.props.props_id,
-            trending_detail_data: this.props.initial,
+            trending_detail_id: props_id,
+            trending_detail_data: initial.data === undefined ? initial : initial.data,
+            assets_url: initial.meta === undefined ? null : (initial.meta.assets_url != undefined ? initial.meta.assets_url : null),
             trending_related: [],
             iframe_opened: false,
             isLike: false,
@@ -166,8 +167,11 @@ class Detail extends React.Component {
             .then(response => {
                 // console.log(response);
                 if (response.status === 200) {
-                    console.log(response.data.data);
-                    this.setState({ trending_related: response.data.data });
+                    const {assets_url} = response.data.meta
+                    this.setState({
+                        trending_related: response.data.data,
+                        assets_url: assets_url
+                    });
                 }
             })
             .catch(error => {
@@ -424,6 +428,7 @@ class Detail extends React.Component {
 
     render() {
         const cdata = this.state.trending_detail_data;
+        const assets_url = this.state.assets_url;
         const isInfographic = this.state.infographic;
         const asPath = this.props.router.asPath;
 
@@ -441,7 +446,7 @@ class Detail extends React.Component {
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
         const newsTitle = cdata.title
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
-        const converImg = cdata.cover
+        const coverImg = imgURL(cdata.cover, cdata.image, 400, assets_url)
         const structuredData = {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
@@ -450,7 +455,7 @@ class Detail extends React.Component {
                 "@id": currentUrl
             },
             "headline": newsTitle.replace(/\\/g, ''),
-            "image": [converImg],
+            "image": [coverImg],
             "datePublished": cdata.publish_date, // The date and time the article was first published
             "dateModified": cdata.updated_at, // The date and time the article was most recently modified
             "author": {
@@ -607,13 +612,10 @@ class Detail extends React.Component {
                                 </StickyContainer> */}
 
                                 <div className="content-trending-detail-wrapper">
-                                    <div className="content-trending-detail-cover-container" style={isInfographic ? null : { paddingBottom: '56.25%' }}>
-                                        <img alt={cdata.title} 
-                                        style={isInfographic ? null : {
-                                            height: '100%',
-                                            position: 'absolute'
-                                        }}
-                                        className="content-trending-detail-cover" src={cdata.cover} />
+                                    <div className="content-trending-detail-cover-container">
+                                        {
+                                            imageNews(cdata.title, cdata.cover, cdata.image, 450, assets_url, 'content-trending-detail-cover')
+                                        }
                                     </div>
                                     <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>
                                     {/* <Link href="#" as={"#"}>
@@ -674,7 +676,7 @@ class Detail extends React.Component {
                                                 if(index > 4) {
                                                     return (
                                                         <SwiperSlide key={index}>
-                                                            <HorizontalItem item={item} indexKey={index - 5} isIndexKey/>
+                                                            <HorizontalItem item={item} indexKey={index - 5} isIndexKey assets_url={this.state.assets_url} />
                                                         </SwiperSlide>
                                                     );
                                                 }

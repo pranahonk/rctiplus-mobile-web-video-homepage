@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
-import Img from 'react-image';
 import { useRouter } from 'next/router'
-import { getTruncate } from '../../../utils/helpers';
+import { getTruncate, imageNews } from '../../../utils/helpers';
 import { formatDateWordID } from '../../../utils/dateHelpers';
 import { urlRegex } from '../../../utils/regex';
 import queryString from 'query-string';
 import '../../../assets/scss/components/trending_v2.scss';
 
 const redirectToPublisherIndex = [0, 1];
-export default function SquareItem({item, indexKey, isIndexKey}) {
+export default function SquareItem({item, assets_url, indexKey, isIndexKey}) {
   const router = useRouter()
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
@@ -40,12 +39,9 @@ export default function SquareItem({item, indexKey, isIndexKey}) {
     <div className="list_tags_thumb">
       <div className="lt_img">
           <div className="lt_img_wrap">
-          <Img
-              alt={item.title}
-              loader={<img alt={item.title} className="news-interest_thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-              unloader={<img alt={item.title} className="news-interest_thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-              className="news-interest_thumbnail"
-              src={[item.cover, '/static/placeholders/placeholder_landscape.png']} />
+            {
+              imageNews(item.title, item.cover, item.image, 200, assets_url, 'news-interest_thumbnail')
+            }
           </div>
       </div>
       <div className="lt_content">
