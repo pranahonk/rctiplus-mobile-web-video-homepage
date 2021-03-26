@@ -19,12 +19,13 @@ const HeadMeta = (props) => {
   const contentData = {
 			asPath: router.asPath || '',
 			title: seo.title || '',
-			thumbnailUrl: seo.imagePath || ''
+			thumbnailUrl: seo.imagePath || '',
+      startDate: data?.release_date || '2021'
 		}
   if (data || dataPlayer) {
     return (
       <Head>
-        <JsonLDVideo content={contentData} />
+        <JsonLDVideo content={contentData} isProgram/>
         <title>{seo.title}</title>
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="keywords" content={keyword.toString() || 'rctiplus'} />
