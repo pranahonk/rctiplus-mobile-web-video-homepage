@@ -375,13 +375,32 @@ class Stories extends React.Component {
         // Add GPT
         //console.log('story gpt', story.gpt)
         //for (const item of story.gpt) {
-        if (this.storyId == 0) {
+        /**
+         * Ukuran Avatar 40x40 margin left 15px
+         * font size title 16px margin left 15px
+         */
+        /* if (this.storyId == 0) {
             items.push([
                 Math.floor(Math.random() * Math.floor(999999)), // id
                 'ads', // type
-                50, // durations in string
+                5, // durations in string
                 '/21865661642/RC_MOBILE_INSERTION-STORIES-3', // item.path src
                 'div-gpt-ad-1596100737011-0', // item.div_gpt preview
+                false, // link
+                '', // linkText
+                false, // seen
+                new Date().getTime(), // time
+                '', // title
+                '' // videoType
+            ]);
+        } */
+        for (const item of story.gpt) {
+            items.push([
+                item.id + Math.floor(Math.random() * Math.floor(999999)) + Math.floor(Math.random() * Math.floor(99)), // id
+                'ads', // type
+                5, // durations in string
+                item.path, // item.path src
+                item.div_gpt, // item.div_gpt preview
                 false, // link
                 '', // linkText
                 false, // seen

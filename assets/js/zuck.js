@@ -317,7 +317,8 @@ module.exports = (window => {
                     </a>`;
 				},
 
-				viewerItem(storyData, currentStoryItem) {
+				/** Deprecated: modify this for story ads */
+				/* viewerItem(storyData, currentStoryItem) {
 					return `<div class="story-viewer">
                       <div class="head">
 												<div class="left">
@@ -335,6 +336,40 @@ module.exports = (window => {
                         
                         <div class="right">
 													<span class="time">${get(currentStoryItem, 'timeAgo')}</span>
+                          <span class="loading"></span>
+                          <a class="close" tabIndex="2">&#9587;</a>
+                        </div>
+                      </div>
+  
+                      <div class="slides-pointers">
+                        <div class="wrap"></div>
+                      </div>
+  
+                    ${option('paginationArrows')
+										? `<div class="slides-pagination">
+												<span class="previous">&lsaquo;</span>
+												<span class="next">&rsaquo;</span>
+											</div>`
+											: ``
+										}
+                    </div>`;
+				}, */
+
+				viewerItem(storyData, currentStoryItem) {
+					return `<div class="story-viewer">
+                      <div class="head${storyData.items[currentStoryItem].type == 'ads' ? ' story-ads-content': ''}">
+												<div class="left">
+                          <span class="item-preview">
+                            <img lazy="eager" class="profilePhoto" src="${get(storyData, 'photo')}" />
+                          </span>
+  
+                          <div class="info">
+                            <strong class="name story-item-title" id="story-item-title">${storyData.items[currentStoryItem].title}</strong>
+                            <span class="time">${get(storyData, 'timeAgo')}</span>
+                          </div>
+                        </div>
+                        
+                        <div class="right">
                           <span class="loading"></span>
                           <a class="close" tabIndex="2">&#9587;</a>
                         </div>
@@ -511,8 +546,12 @@ module.exports = (window => {
 							each(uselessStoryItems, (i, item) => {
 								if (item.type == 'video' && item.videoType == 'mpd') {
 									if (item.mpdPlayer) {
-										item.mpdPlayer.destory();
+										item.mpdPlayer.destroy();
 									}
+									item.destroyed = true;
+								} else if (item.type == 'ads') {
+									googletag.destroySlots([item.adsSlot]);
+									item.destroyed = true;
 								}
 							});
 
@@ -625,6 +664,7 @@ module.exports = (window => {
 					if (item.type != 'ads') {
 						if (item.videoType == 'mpd') {
 							item['mpdPlayer'] = dashjs.MediaPlayerFactory.create(slides.querySelector(`.${get(item, 'tagClass')}`));
+							item['destroyed'] = false;
 						}
 					}
 				});
@@ -740,18 +780,6 @@ module.exports = (window => {
 					modalSlider.appendChild(storyViewer);
 				}
 
-				each(storyItems, (i, item) => {
-					if (item.type == 'ads') {
-						window.googletag = window.googletag || {cmd: []};
-						googletag.cmd.push(function() {
-							googletag.defineSlot(item.src, ['fluid'], item.preview).addService(googletag.pubads());
-							googletag.pubads().enableSingleRequest();
-							googletag.pubads().collapseEmptyDivs();
-							googletag.enableServices();
-						});
-					}
-				});
-
 				// if (parent.firstChild) {
 				// 	parent.insertBefore(child, parent.firstChild);
 				// } else {
@@ -775,7 +803,84 @@ module.exports = (window => {
 						homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_here', 'N/A'); // TODO: story ads type
 					};
 				}
+
+				// Story Ads
+				setTimeout(() => {
+					createStoryViewerAds(storyItems);
+				}, 150);
 			};
+
+			// Story Ads
+			const createStoryViewerAds = function (storyAdsItems) {
+				each(storyAdsItems, (i, item) => {
+					if (item.type == 'ads') {
+						window.googletag = window.googletag || {cmd: []};
+						googletag.cmd.push(function() {
+							googletag.defineSlot(item.src, ['fluid'], item.preview).addService(googletag.pubads());
+							googletag.pubads().enableSingleRequest();
+							googletag.pubads().collapseEmptyDivs();
+							googletag.enableServices();
+						});
+
+						googletag.cmd.push(function() {
+							item['adsSlot'] = googletag.display(item.preview);
+						});
+
+						item['destroyed'] = false;
+					}
+				});
+
+				setTimeout(function setIFrameHeight() {
+					const parentElement = document.querySelector('.slides');
+					each(storyAdsItems, (i, item) => {
+						if (item.type == 'ads') {
+							const adsFrame = document.querySelector(`#${item.preview} > div > iframe`);
+							if (adsFrame) {
+								adsFrame.style.height = parentElement.offsetHeight + 'px';
+								
+								const videoAds = adsFrame.contentWindow.document.querySelector('video#videoStory');
+								if (videoAds) {
+									const addMuted = function (video) {
+										const muted = video.muted;
+										if (muted) {
+											storyViewer.classList.add('muted');
+										} else {
+											storyViewer.classList.remove('muted');
+										}
+									};
+
+									videoAds.onwaiting = e => {
+										if (videoAds.paused) {
+											storyViewer.classList.add('paused');
+											storyViewer.classList.add('loading');
+										}
+									};
+			
+									videoAds.onplay = () => {
+										addMuted(videoAds);
+			
+										storyViewer.classList.remove('stopped');
+										storyViewer.classList.remove('paused');
+										storyViewer.classList.remove('loading');
+									};
+			
+									videoAds.onload = videoAds.onplaying = videoAds.oncanplay = () => {
+										addMuted(videoAds);
+			
+										storyViewer.classList.remove('loading');
+									};
+			
+									videoAds.onvolumechange = () => {
+										addMuted(videoAds);
+									};
+								}
+							} else {
+								setTimeout(setIFrameHeight, 100);
+							}
+						}
+					});
+				}, 100);
+			}
 
 			const createStoryTouchEvents = function (modalSliderElement) {
 				const modalContainer = query('#zuck-modal');
@@ -903,7 +1008,7 @@ module.exports = (window => {
 									const storyData = zuck.data[storyId];
 									const currentItem = storyData.currentItem || 0;
 									const item = storyData.items[currentItem];
-									console.log(window.screen);
+									//console.log(window.screen);
 									if (
 										lastTouchOffset.x > window.screen.width / 3 ||
 										!option('previousTap')
@@ -1130,11 +1235,6 @@ module.exports = (window => {
 
 						const stories = query('#zuck-modal .story-viewer.next');
 						if (!stories) {
-							const currentItemData = zuck.data[lastStory].items[zuck.data[lastStory].currentItem];
-							if (currentItemData.type == 'ads') {
-								googletag.destroySlots([currentItemData.adsSlot]);
-							}
-
 							modal.close();
 						} else {
 							moveStoryItem(true);
@@ -1148,6 +1248,8 @@ module.exports = (window => {
 				},
 				close() {
 					const modalContainer = query('#zuck-modal');
+
+					// destroy all
 
 					const callback = function () {
 						if (option('backNative')) {
@@ -1306,6 +1408,11 @@ module.exports = (window => {
 					return false;
 				}
 
+				const itemHeader = query(`#zuck-modal .story-viewer[data-story-id="${zuck.internalData['currentStory']}"] > .head`);
+				if (itemHeader && itemHeader.classList.contains('story-ads-content')) {
+					itemHeader.classList.remove('story-ads-content');
+				}
+
 				let storyId = -1;
 				let itemId = -1;
 
@@ -1354,9 +1461,48 @@ module.exports = (window => {
 				const adsItem = zuck.data[currentStory].items[currentItem];
 
 				if (adsItem.type == 'ads') {
-					googletag.cmd.push(function() {
-						adsItem['adsSlot'] = googletag.display(adsItem.preview);
-					});
+					const itemHeader = query(`#zuck-modal .story-viewer[data-story-id="${currentStory}"] > .head`);
+					if (itemHeader && !itemHeader.classList.contains('story-ads-content')) {
+						itemHeader.classList.add('story-ads-content');
+					}
+
+					// ads with video type
+					const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
+					if (adsFrame) {
+						const videoAds = adsFrame.contentWindow.document.querySelector('video#videoStory');
+						if (videoAds) {
+							const setDuration = function () {
+								const duration = videoAds.duration
+								if (duration) {
+									setVendorVariable(
+										itemPointer.getElementsByTagName('b')[0].style,
+										'AnimationDuration',
+										`${duration}s`
+									);
+								}
+							};
+			
+							setDuration();
+							videoAds.addEventListener('loadedmetadata', setDuration);
+							zuck.internalData['currentVideoElement'] = videoAds;
+			
+							const isPlaying = videoAds.currentTime > 0 && !videoAds.paused && !videoAds.ended && videoAds.readyState > 2;
+			
+							if (!isPlaying) {
+								videoAds.play();
+							}
+			
+							unmuteVideoItem(videoAds, storyViewer);
+							if (unmute && unmute.target) {
+								unmuteVideoItem(videoAds, storyViewer);
+							}
+						}
+					}
+				} else {
+					const itemHeader = query(`#zuck-modal .story-viewer[data-story-id="${currentStory}"] > .head`);
+					if (itemHeader && itemHeader.classList.contains('story-ads-content')) {
+						itemHeader.classList.remove('story-ads-content');
+					}
 				}
 			}
 		};
@@ -1627,11 +1773,6 @@ module.exports = (window => {
 
 					nextItem.classList.remove('seen');
 					nextItem.classList.add('active');
-
-					const currentItemData = zuck.data[currentStory].items[zuck.data[currentStory].currentItem];
-					if (currentItemData.type == 'ads') {
-						googletag.destroySlots([currentItemData.adsSlot]);
-					}
 
 					zuck.data[currentStory]['currentItem'] = zuck.data[currentStory]['currentItem'] + directionNumber;
 
