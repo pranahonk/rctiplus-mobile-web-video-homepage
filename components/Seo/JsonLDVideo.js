@@ -1,25 +1,26 @@
 
-import { BASE_URL, SHARE_BASE_URL } from '../../config'
-const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') > -1 ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
-export default function JsonLDWebsite ({content, isProgram}) {
+// import { BASE_URL, SHARE_BASE_URL } from '../../config'
+const oneSegment = 'm.rctiplus.com';
+export default function JsonLDVideo ({content, isProgram}) {
+    // console.log('Meta seo: ',content)
   const structurData = {
     "@context": "https://schema.org",
     "@type": "VideoObject",
     "contentURL": `${oneSegment}${content?.asPath}`,
     "description": `${content?.title} livestream`,
-    "duration": "PT37M14S",
+    // "duration": "PT37M14S",
     "embedUrl": `${oneSegment}${content?.asPath}`,
-    "expires": "2018-10-30T14:37:14+00:00",
+    "expires": `${content?.expires || '1 Januari 9999'}`,
     "interactionCount": "4756",
     "name": `Live ${content?.title} livestream!`,
     "thumbnailUrl": `${content?.thumbnailUrl}`,
-    "uploadDate": "2018-10-27T14:00:00+00:00",
+    "uploadDate": content?.startDate || "2018-10-27T14:00:00+00:00",
     "publication": [
       {
         "@type": "BroadcastEvent",
         "isLiveBroadcast": true,
-        "startDate": "15:45",
-        "endDate": "17:45"
+        "startDate": content?.startDate || '1 Januari 1979',
+        "endDate": content?.endDate || '1 Januari 9999'
       }
     ]
   }
@@ -31,15 +32,10 @@ export default function JsonLDWebsite ({content, isProgram}) {
         "thumbnailUrl": [
             content?.thumbnailUrl
         ],
-        "uploadDate": "2016-03-31T08:00:00+08:00",
-        "duration": "PT1M54S",
+        "uploadDate": content?.startDate || '1 Januari 1979',
+        // "duration": "PT1M54S",
         "contentUrl": `${oneSegment}${content?.asPath}`,
-        "embedUrl": `${oneSegment}${content?.asPath}`,
-        "interactionStatistic": {
-            "@type": "InteractionCounter",
-            "interactionType": { "@type": "http://schema.org/WatchAction" },
-            "userInteractionCount": "5647018"
-        }
+        // "embedUrl": `${oneSegment}${content?.asPath}`,
     }
   return(
     <>

@@ -972,8 +972,11 @@ class LiveEvent extends React.Component {
 		);
 		const contentData = {
 			asPath: props.router.asPath || '',
-			title: selected_event_url?.data?.assets_name || '',
-			thumbnailUrl: this.getMeta().image || ''
+			title: selected_event?.data?.name,
+			thumbnailUrl: this.getMeta().image || '',
+			expires: selected_event?.data?.end_date || '',
+			startDate: selected_event?.data?.start_date || '',
+			endDate: selected_event?.data?.end_date || '',
 		}
 		return (
 			<Layout title={this.getMeta().title}>
