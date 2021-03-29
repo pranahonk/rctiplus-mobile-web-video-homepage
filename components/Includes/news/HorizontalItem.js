@@ -34,7 +34,7 @@ export default function HorizontalItem({item, assets_url, indexKey, isIndexKey})
           return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
     else { 
-          return router.push(`/news/detail/${category}/${article.id}${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
+          return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
   }
   return(
