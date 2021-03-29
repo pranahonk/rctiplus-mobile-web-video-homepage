@@ -304,6 +304,7 @@ class Stories extends React.Component {
     }
 
     render() {
+        console.log(`ini storiesss`, this.state.stories)
         const timelineItems = []
         this.state.stories.forEach((story, storyId) => {
             const storyItems = [];

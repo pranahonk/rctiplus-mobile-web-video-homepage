@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import Link from "next/link";
+// import Link from "next/link";
 import {useSelector, useDispatch} from "react-redux";
 import {getActiveCategory} from "../../../redux/actions/homeCategoryActions";
 import TextLength from "../../../utils/textLength";
@@ -28,19 +28,18 @@ const CategoryMenu = ({contents}) => {
                 {listMenu?.data && 
                 listMenu.data.map((val, ind) => (
                     <div className="menu-item-cat">
-                        <Link href={`/category?category_id=${val.id}&category_title=${val.name}`}>
-                            <a>
+                        {/* <Link href={`/category?category_id=${val.id}&category_title=${val.name}`}> */}
+                            <div onClick={() => window.location.href=`/category?category_id=${val.id}&category_title=${val.name}`}>
                                 <div style={{display: "flex",  flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
                                     <div className="container-menu-icon-cat">
                                         <img alt={val.name} className="menu-icon-cat" src={`${listMenu?.meta?.image_path}${size}${val.icon}`}/>
                                     </div>
                                     <p className="menu-label-cat">{TextLength(val.name, 10)}</p>
                                 </div>
-                            </a>
-                        </Link>
+                            </div>
+                        {/* </Link> */}
                     </div>
                 ))}
-
             </div>
         </div>
     )
