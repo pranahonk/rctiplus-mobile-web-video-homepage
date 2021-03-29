@@ -1,7 +1,9 @@
 const initialState = {
-    listMenuHomeCategory : {},
-    subCategory: {},
-    subBanner: {}
+    listMenuHomeCategory : null,
+    subCategory: null,
+    subBanner: null,
+    homepageCategory: null,
+    listStoriesCategory: null
 };
 
 export default (state = initialState, action) => {
@@ -24,10 +26,28 @@ export default (state = initialState, action) => {
                     status: action.status
                 },
               };
+        case 'HOMEPAGE_CATEGORY':
+            return {
+                ...state,
+                homepageCategory: { 
+                    data: action.data,
+                    meta: action.meta,
+                    status: action.status
+                },
+            };
         case 'BANNER_CATEGORY_ACTIVE':
             return {
                 ...state,
                 subBanner: { 
+                    data: action.data,
+                    meta: action.meta,
+                    status: action.status
+                },
+            };
+        case 'STORIES_CATEGORY':
+            return {
+                ...state,
+                listStoriesCategory: { 
                     data: action.data,
                     meta: action.meta,
                     status: action.status

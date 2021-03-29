@@ -134,6 +134,7 @@ class Index_v2 extends React.Component {
     render() {
         const contents = this.state.contents;
         const meta = this.state.meta || {};
+
         return (
             <Layout title={SITEMAP.home.title}>
                 <Head>
@@ -163,7 +164,7 @@ class Index_v2 extends React.Component {
                 {this.state.isShimmer ? (<HomeLoader/>) : (
                 <div>
                     <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
-                    <Carousel showStickyInstall={this.state.show_sticky_install}>
+                    <Carousel showStickyInstall={this.state.show_sticky_install} >
                         <GridMenu />
                     </Carousel>
                     <Stories loadingBar={this.LoadingBar}/>
@@ -202,7 +203,7 @@ class Index_v2 extends React.Component {
                             } }
                         </Sticky>
                     </StickyContainer>
-                    <div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
+                    <div style={{paddingBottom: 10, paddingTop: 10}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
                         {contents.map((content, i) => {
                             switch (content.display_type) {
                                 case 'horizontal_landscape_large':

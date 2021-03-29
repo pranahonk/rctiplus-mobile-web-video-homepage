@@ -21,14 +21,21 @@ class Crs_v2 extends Component {
     }
 
     componentDidMount() {
-        this.props.getBanner().then(response => {
-            const contents = this.props.contents;
-            console.log(contents.banner);
+        if(this.props.detailCategory){
             this.setState({
-                banner: contents.banner,
-                meta: contents.meta,
+                banner: this.props.data.banner,
+                meta: this.props.data.meta,
             });
-        });
+        }else{
+            this.props.getBanner().then(response => {
+                const contents = this.props.contents;
+                this.setState({
+                    banner: contents.banner,
+                    meta: contents.meta,
+                });
+            });
+        }
+        
     }
 
     goToProgram(program) {
