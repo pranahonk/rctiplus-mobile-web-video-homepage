@@ -44,17 +44,19 @@ const Category = () => {
     return (
         <Layout hideFooter={true}>
             {isShimmer ? <HomeLoader /> : 
-            <div>
+
+            <div style={{marginTop: "56px"}}>
                 <Header title={category_title} />
+
                 <Carousel detailCategory={true} data={{banner: subBanner?.data, meta: subBanner?.meta}} >
                     {subCategory && subCategory?.data?.length >= 3 && <GridMenu contents={subCategory} />}
                 </Carousel>
 
                 <div style={subCategory === null ? { marginTop: -110 } : {}}>
-                    <Stories />
+                    <Stories detailCategory={true} id={category_id} />
                 </div>
 
-                <div style={{paddingBottom: 10}}>
+                <div style={subCategory === null && listStoriesCategory === null ? {paddingBottom: 10, marginTop: 60} : {paddingBottom: 10}}>
                     {homepageCategory?.data && homepageCategory?.data?.map((content, i) => {
                         switch (content.display_type) {
                             case 'horizontal_landscape_large':
@@ -71,6 +73,7 @@ const Category = () => {
                         }
                     })}
                 </div>
+                
             </div>}  
         </Layout>
     )

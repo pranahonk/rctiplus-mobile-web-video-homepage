@@ -30,103 +30,206 @@ class Stories extends React.Component {
     componentDidMount() {
         document.getElementById('stories-react').addEventListener('scroll', this.handleScroll);
 
-        this.setState({
-            zuckJS: require('../../../assets/js/zuck')
-        }, () => {
-            this.props.getStories(this.state.page, this.state.length)
-            .then(() => {
-                const timelines = [];
+        if(this.props.detailCategory) { // IF PARENT COMPONENT IS DETAIL HOME CATEGORY
+            this.setState({
+                zuckJS: require('../../../assets/js/zuck')
+            }, () => {
+                this.props.getStoriesCategory(this.state.page, this.state.length, this.props.id)
+                .then(() => {
+                    const timelines = [];
 
-                const stories = this.props.stories.data;
-                for (const story of stories) {
-                    timelines.push(this.buildTimeline(story));
-                }
+                    const stories = this.props.stories.data;
+                    for (const story of stories) {
+                        timelines.push(this.buildTimeline(story));
+                    }
 
-                let currentLength = this.state.totalLength + this.props.stories.data.length;
+                    let currentLength = this.state.totalLength + this.props.stories.data.length;
 
-                this.setState({
-                    stories: timelines,
-                    totalLength: currentLength,
-                }, () => {
-                    const currentSkin = this.getCurrentSkin();
-                    this.storiesApi = new this.state.zuckJS("stories-react", {
-                        backNative: true,
-                        previousTap: true,
-                        skin: currentSkin['name'],
-                        autoFullScreen: currentSkin['params']['autoFullScreen'],
-                        avatars: currentSkin['params']['avatars'],
-                        paginationArrows: currentSkin['params']['paginationArrows'],
-                        list: currentSkin['params']['list'],
-                        cubeEffect: currentSkin['params']['cubeEffect'],
-                        localStorage: true,
-                        stories: this.state.stories,
-                        reactive: true,
-                        callbacks: {
-                            onDataUpdate: function (stories, callback) {
-                                //console.log('DATA UPDATED');
-                                const notSeen = [];
-                                const seen = [];
+                    this.setState({
+                        stories: timelines,
+                        totalLength: currentLength,
+                    }, () => {
+                        const currentSkin = this.getCurrentSkin();
+                        this.storiesApi = new this.state.zuckJS("stories-react", {
+                            backNative: true,
+                            previousTap: true,
+                            skin: currentSkin['name'],
+                            autoFullScreen: currentSkin['params']['autoFullScreen'],
+                            avatars: currentSkin['params']['avatars'],
+                            paginationArrows: currentSkin['params']['paginationArrows'],
+                            list: currentSkin['params']['list'],
+                            cubeEffect: currentSkin['params']['cubeEffect'],
+                            localStorage: true,
+                            stories: this.state.stories,
+                            reactive: true,
+                            callbacks: {
+                                onDataUpdate: function (stories, callback) {
+                                    //console.log('DATA UPDATED');
+                                    const notSeen = [];
+                                    const seen = [];
 
-                                for (const story of stories) {
-                                    if (story.seen) {
-                                        seen.push({...story});
-                                    } else {
-                                        notSeen.push({...story});
+                                    for (const story of stories) {
+                                        if (story.seen) {
+                                            seen.push({...story});
+                                        } else {
+                                            notSeen.push({...story});
+                                        }
                                     }
-                                }
 
-                                const storiesData = [...notSeen, ...seen];
+                                    const storiesData = [...notSeen, ...seen];
 
-                                this.setState(state => {
-                                    state.stories = storiesData;
-                                    return state;
-                                }, () => {
+                                    this.setState(state => {
+                                        state.stories = storiesData;
+                                        return state;
+                                    }, () => {
+                                        callback();
+                                    });
+                                    // console.log('onDataUpdate', stories)
                                     callback();
-                                });
-                                // console.log('onDataUpdate', stories)
-                                callback();
-                            }.bind(this),
-                            onOpen: function (storyId, callback) {
-                                console.log('OPEN');
-                                document.body.style.overflow = 'hidden'; // disable scroll when opening a story
-                                callback();
-                            },
-                            onView: function (storyId) {
-                                console.log('VIEW');
-                                if (parseInt(storyId) >= (this.state.stories.length - 3)) {
-                                    this.loadMore();
+                                }.bind(this),
+                                onOpen: function (storyId, callback) {
+                                    console.log('OPEN');
+                                    document.body.style.overflow = 'hidden'; // disable scroll when opening a story
+                                    callback();
+                                },
+                                onView: function (storyId) {
+                                    console.log('VIEW');
+                                    if (parseInt(storyId) >= (this.state.stories.length - 3)) {
+                                        this.loadMore();
+                                    }
+                                }.bind(this),
+                                onClose: function (storyId, callback) {
+                                    console.log('CLOSED');
+                                    document.body.style.overflow = 'unset'; // enable scroll after closing the story
+                                    callback();
                                 }
-                            }.bind(this),
-                            onClose: function (storyId, callback) {
-                                console.log('CLOSED');
-                                document.body.style.overflow = 'unset'; // enable scroll after closing the story
-                                callback();
+                            },
+                            language: { // if you need to translate :)
+                                unmute: 'Touch to unmute',
+                                keyboardTip: 'Press space to see next',
+                                visitLink: 'Visit link',
+                                time: {
+                                    ago: 'ago',
+                                    hour: 'hour',
+                                    hours: 'hours',
+                                    minute: 'minute',
+                                    minutes: 'minutes',
+                                    fromnow: 'from now',
+                                    seconds: 'seconds',
+                                    yesterday: 'yesterday',
+                                    tomorrow: 'tomorrow',
+                                    days: 'days'
+                                }
                             }
-                        },
-                        language: { // if you need to translate :)
-                            unmute: 'Touch to unmute',
-                            keyboardTip: 'Press space to see next',
-                            visitLink: 'Visit link',
-                            time: {
-                                ago: 'ago',
-                                hour: 'hour',
-                                hours: 'hours',
-                                minute: 'minute',
-                                minutes: 'minutes',
-                                fromnow: 'from now',
-                                seconds: 'seconds',
-                                yesterday: 'yesterday',
-                                tomorrow: 'tomorrow',
-                                days: 'days'
-                            }
-                        }
+                        });
                     });
+                })
+                .catch(error => {
+                    console.log(error);
                 });
-            })
-            .catch(error => {
-                console.log(error);
             });
-        });
+
+        }else {
+            this.setState({
+                zuckJS: require('../../../assets/js/zuck')
+            }, () => {
+                this.props.getStories(this.state.page, this.state.length)
+                .then(() => {
+                    const timelines = [];
+
+                    const stories = this.props.stories.data;
+                    for (const story of stories) {
+                        timelines.push(this.buildTimeline(story));
+                    }
+
+                    let currentLength = this.state.totalLength + this.props.stories.data.length;
+
+                    this.setState({
+                        stories: timelines,
+                        totalLength: currentLength,
+                    }, () => {
+                        const currentSkin = this.getCurrentSkin();
+                        this.storiesApi = new this.state.zuckJS("stories-react", {
+                            backNative: true,
+                            previousTap: true,
+                            skin: currentSkin['name'],
+                            autoFullScreen: currentSkin['params']['autoFullScreen'],
+                            avatars: currentSkin['params']['avatars'],
+                            paginationArrows: currentSkin['params']['paginationArrows'],
+                            list: currentSkin['params']['list'],
+                            cubeEffect: currentSkin['params']['cubeEffect'],
+                            localStorage: true,
+                            stories: this.state.stories,
+                            reactive: true,
+                            callbacks: {
+                                onDataUpdate: function (stories, callback) {
+                                    //console.log('DATA UPDATED');
+                                    const notSeen = [];
+                                    const seen = [];
+
+                                    for (const story of stories) {
+                                        if (story.seen) {
+                                            seen.push({...story});
+                                        } else {
+                                            notSeen.push({...story});
+                                        }
+                                    }
+
+                                    const storiesData = [...notSeen, ...seen];
+
+                                    this.setState(state => {
+                                        state.stories = storiesData;
+                                        return state;
+                                    }, () => {
+                                        callback();
+                                    });
+                                    // console.log('onDataUpdate', stories)
+                                    callback();
+                                }.bind(this),
+                                onOpen: function (storyId, callback) {
+                                    console.log('OPEN');
+                                    document.body.style.overflow = 'hidden'; // disable scroll when opening a story
+                                    callback();
+                                },
+                                onView: function (storyId) {
+                                    console.log('VIEW');
+                                    if (parseInt(storyId) >= (this.state.stories.length - 3)) {
+                                        this.loadMore();
+                                    }
+                                }.bind(this),
+                                onClose: function (storyId, callback) {
+                                    console.log('CLOSED');
+                                    document.body.style.overflow = 'unset'; // enable scroll after closing the story
+                                    callback();
+                                }
+                            },
+                            language: { // if you need to translate :)
+                                unmute: 'Touch to unmute',
+                                keyboardTip: 'Press space to see next',
+                                visitLink: 'Visit link',
+                                time: {
+                                    ago: 'ago',
+                                    hour: 'hour',
+                                    hours: 'hours',
+                                    minute: 'minute',
+                                    minutes: 'minutes',
+                                    fromnow: 'from now',
+                                    seconds: 'seconds',
+                                    yesterday: 'yesterday',
+                                    tomorrow: 'tomorrow',
+                                    days: 'days'
+                                }
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            });
+        }
+
+        
     }
 
     componentWillUnmount() {
@@ -304,7 +407,6 @@ class Stories extends React.Component {
     }
 
     render() {
-        console.log(`ini storiesss`, this.state.stories)
         const timelineItems = []
         this.state.stories.forEach((story, storyId) => {
             const storyItems = [];
