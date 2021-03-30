@@ -815,7 +815,7 @@ class LiveEvent extends React.Component {
 		}
 		const { data, meta } = this.props.selected_event;
 		return {
-			title: this.props.router.asPath.includes('/missed-event') ? `Tayangan Ulang Streaming ${this.props.router.query.title.replace(/-/gi, ' ') || ''}`: 'Live streaming ' + (this.props.router.query.title.replace(/-/gi, ' ') || ''),
+			title: this.props.router.asPath.includes('/missed-event') ? `Nonton Tayangan Ulang Streaming ${this.props.router.query.title.replace(/-/gi, ' ') || ''}`: 'Nonton Live Streaming ' + (this.props.router.query.title.replace(/-/gi, ' ') || ''),
 			description: this.props.router.asPath.includes('/missed-event') ? `Tonton siaran ulang ${(this.props.router.query.title.replace(/-/gi, ' ') || '')} gratis dan tanpa buffering di RCTI+` : `Tonton siaran langsung ${(this.props.router.query.title.replace(/-/gi, ' ') || '')} gratis dan tanpa buffering di RCTI+` ,
 			image: data && meta ? (meta.image_path + '300' + data.portrait_image) : '',
 		};

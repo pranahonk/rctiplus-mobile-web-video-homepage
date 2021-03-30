@@ -148,7 +148,7 @@ class ForgetPassword extends React.Component {
     render() {
         const { state, props } = this;
         return (
-            <Layout title="Forget Password">
+            <Layout title="Lupa Password - RCTI+">
                 <NavBack title="Forget Password"/>
                 <div className="container-box-cp">
                     <Form onSubmit={this.submitUsername.bind(this)}>

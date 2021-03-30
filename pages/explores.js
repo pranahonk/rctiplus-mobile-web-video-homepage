@@ -304,11 +304,13 @@ class Explores extends React.Component {
 
 	getMetadata() {
 		const name = this.state.selected_genre_name;
+		const nameLowercase = this.state.selected_genre_name?.toLowerCase()?.replace(/ /g, '_') || 'rctiplus'
 		if (this.state.selected_genre_name.includes('for you') > -1) {
 			return {
 				title: `Nonton Streaming ${name} Sub Indo Gratis Terlengkap di Indonesia - RCTI+`,
 				description: `Nonton kumpulan ${name} program, sinetron dan acara TV RCTI, MNCTV, GTV, iNews TV terbaru full episode tanpa buffering hanya di RCTI+`,
 				image: '',
+				keywords: SITEMAP[`explore_${nameLowercase}`]?.keywords || 'rctiplus',
 				twitter_img_alt: `${name} Di RCTIPlus`
 			}
 		}
