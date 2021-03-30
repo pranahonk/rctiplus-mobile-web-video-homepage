@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
+import dynamic from "next/dynamic"
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
@@ -23,6 +24,8 @@ import { Subject } from 'rxjs';
 
 import queryString from 'query-string';
 import isEmpty from 'lodash/isEmpty'
+const Loading = dynamic(() => import('../../components/Includes/Shimmer/ListTagLoader'))
+const SquareItem = dynamic(() => import('../../components/Includes/news/SquareItem'),{loading: () => <Loading />})
 
 class Search extends React.Component {
     static async getInitialProps(ctx) {
@@ -179,21 +182,10 @@ class Search extends React.Component {
         if (this.props.newsv2.search_result.length > 0) {
             return (
                 <div className="result-content">
-                    {this.props.newsv2.search_result.map((n, i) => (
-                        <Row key={i}>
-                            <Col xs={6} onClick={() => this.link(n)}>
-                                <Img
-                                    alt={n.title}
-                                    className="list-item-thumbnail"
-                                    src={[n.cover, '/static/placeholders/placeholder_landscape.png']}
-                                    loader={<img className="list-item-thumbnail" src="/static/placeholders/placeholder_landscape.png" />}
-                                    unloader={<img className="list-item-thumbnail" src="/static/placeholders/placeholder_landscape.png" />} />
-                            </Col>
-                            <Col xs={6}>
-                                <h2 className="item-title" dangerouslySetInnerHTML={{ __html: n.title.length > 60 ? n.title.substring(0, 60).replace(/\\/g, '') + '...' : n.title.replace(/\\/g, '') }} onClick={() => this.link(n)}></h2>
-                                <p className="item-subtitle"><small>{n.source}</small></p>
-                            </Col>
-                        </Row>
+                    {this.props.newsv2.search_result.map((article, i) => (
+                        <div className="item_square-wrapper" key={i + article.title}>
+                            <SquareItem item={article}/>
+                        </div>
                     ))}
                 </div>
             );
