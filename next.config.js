@@ -40,6 +40,11 @@ let nextConfig = {
         destination: '/news/interest-topic', // Matched parameters can be used in the destination
         permanent: true,
       },
+      {
+        source: '/news/search_v2',
+        destination: '/news/search', // Matched parameters can be used in the destination
+        permanent: true,
+      },
     ]
   },
 	images: {
