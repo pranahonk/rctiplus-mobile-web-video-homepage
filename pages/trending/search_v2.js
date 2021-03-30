@@ -23,7 +23,7 @@ import { getCookie, setCookie, removeCookie, removeAccessToken, setAccessToken }
 import { Subject } from 'rxjs';
 
 import queryString from 'query-string';
-import isEmpty from 'lodash/isEmpty'
+// import isEmpty from 'lodash/isEmpty'
 const Loading = dynamic(() => import('../../components/Includes/Shimmer/ListTagLoader'))
 const SquareItem = dynamic(() => import('../../components/Includes/news/SquareItem'),{loading: () => <Loading />})
 
@@ -190,8 +190,6 @@ class Search extends React.Component {
                 </div>
             );
         }
-
-        // return this.renderSearchHistory();
     }
 
     render() {
