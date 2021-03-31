@@ -25,6 +25,7 @@
         color: #8f8f8f;
         font-size: 13px;
         letter-spacing: 0.36px;
+        height: auto;
         ul {
             margin-bottom: 0;
             padding-left: 0;
@@ -38,8 +39,8 @@
         }
 
         .navigation-tabs {
-            overflow-y: auto;
-            overflow-x: visible;
+            overflow-y: hidden;
+            overflow-x: auto;
             display: block;
             white-space: nowrap;
             scrollbar-width: none;
