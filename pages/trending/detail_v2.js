@@ -64,7 +64,7 @@ class Detail extends React.Component {
 
         const data_news = await response_news.json();
 
-        const res = await fetch(`${NEWS_API_V2}/api/v1/news/${programId}`, {
+        const res = await fetch(`${NEWS_API_V2}/api/v2/news/${programId}`, {
             method: 'GET',
             headers: {
                 'Authorization': data_news.data.news_token
