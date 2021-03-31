@@ -39,9 +39,14 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
     <div className="list_tags_thumb">
       <div className="lt_img">
           <div className="lt_img_wrap">
-            {
-              imageNews(item.title, item.cover, item.image, 200, assets_url, 'news-interest_thumbnail')
-            }
+            <a onClick={(e) => {
+            e.preventDefault()
+            _goToDetail(item)
+            }}>
+              {
+                imageNews(item.title, item.cover, item.image, 200, assets_url, 'news-interest_thumbnail')
+              }
+            </a>
           </div>
       </div>
       <div className="lt_content">
