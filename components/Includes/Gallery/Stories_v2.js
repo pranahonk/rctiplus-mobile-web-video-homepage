@@ -30,6 +30,9 @@ class Stories extends React.Component {
     componentDidMount() {
         document.getElementById('stories-react').addEventListener('scroll', this.handleScroll);
 
+        console.log(`apakah ini stories dari detail category`, this.props.detailCategory)
+        console.log(`apakah ini stories dari homepage`, this.props.homepage)
+
         if(this.props.detailCategory) { // IF PARENT COMPONENT IS DETAIL HOME CATEGORY
             this.setState({
                 zuckJS: require('../../../assets/js/zuck')
@@ -62,48 +65,6 @@ class Stories extends React.Component {
                             localStorage: true,
                             stories: this.state.stories,
                             reactive: true,
-                            callbacks: {
-                                onDataUpdate: function (stories, callback) {
-                                    //console.log('DATA UPDATED');
-                                    const notSeen = [];
-                                    const seen = [];
-
-                                    for (const story of stories) {
-                                        if (story.seen) {
-                                            seen.push({...story});
-                                        } else {
-                                            notSeen.push({...story});
-                                        }
-                                    }
-
-                                    const storiesData = [...notSeen, ...seen];
-
-                                    this.setState(state => {
-                                        state.stories = storiesData;
-                                        return state;
-                                    }, () => {
-                                        callback();
-                                    });
-                                    // console.log('onDataUpdate', stories)
-                                    callback();
-                                }.bind(this),
-                                onOpen: function (storyId, callback) {
-                                    console.log('OPEN');
-                                    document.body.style.overflow = 'hidden'; // disable scroll when opening a story
-                                    callback();
-                                },
-                                onView: function (storyId) {
-                                    console.log('VIEW');
-                                    if (parseInt(storyId) >= (this.state.stories.length - 3)) {
-                                        this.loadMore();
-                                    }
-                                }.bind(this),
-                                onClose: function (storyId, callback) {
-                                    console.log('CLOSED');
-                                    document.body.style.overflow = 'unset'; // enable scroll after closing the story
-                                    callback();
-                                }
-                            },
                             language: { // if you need to translate :)
                                 unmute: 'Touch to unmute',
                                 keyboardTip: 'Press space to see next',
@@ -129,7 +90,9 @@ class Stories extends React.Component {
                 });
             });
 
-        }else {
+        }
+        
+        if(this.props.homepage){
             this.setState({
                 zuckJS: require('../../../assets/js/zuck')
             }, () => {
@@ -407,6 +370,7 @@ class Stories extends React.Component {
     }
 
     render() {
+        console.log(`ini data stories`, this.state.stories)
         const timelineItems = []
         this.state.stories.forEach((story, storyId) => {
             const storyItems = [];
