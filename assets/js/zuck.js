@@ -837,8 +837,50 @@ module.exports = (window => {
 							const adsFrame = document.querySelector(`#${item.preview} > div > iframe`);
 							if (adsFrame) {
 								adsFrame.style.height = parentElement.offsetHeight + 'px';
+
+								window.addEventListener('message', (event) => {
+									console.log('from iframe', event.data);
+									const res = JSON.parse(event.data);
+									if (res.type == 'video') {
+										const videoAds = res.videoObj;
+
+										const addMuted = function (video) {
+											const muted = video.muted;
+											if (muted) {
+												storyViewer.classList.add('muted');
+											} else {
+												storyViewer.classList.remove('muted');
+											}
+										};
+	
+										videoAds.onwaiting = e => {
+											if (videoAds.paused) {
+												storyViewer.classList.add('paused');
+												storyViewer.classList.add('loading');
+											}
+										};
+				
+										videoAds.onplay = () => {
+											addMuted(videoAds);
+				
+											storyViewer.classList.remove('stopped');
+											storyViewer.classList.remove('paused');
+											storyViewer.classList.remove('loading');
+										};
+				
+										videoAds.onload = videoAds.onplaying = videoAds.oncanplay = () => {
+											addMuted(videoAds);
+				
+											storyViewer.classList.remove('loading');
+										};
+				
+										videoAds.onvolumechange = () => {
+											addMuted(videoAds);
+										};
+									}
+								}, false);
 								
-								const videoAds = adsFrame.contentWindow.document.querySelector('video#videoStory');
+								/* const videoAds = adsFrame.contentWindow.document.querySelector('video#videoStory');
 								if (videoAds) {
 									const addMuted = function (video) {
 										const muted = video.muted;
@@ -873,7 +915,7 @@ module.exports = (window => {
 									videoAds.onvolumechange = () => {
 										addMuted(videoAds);
 									};
-								}
+								} */
 							} else {
 								setTimeout(setIFrameHeight, 100);
 							}
@@ -1469,7 +1511,41 @@ module.exports = (window => {
 					// ads with video type
 					const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
 					if (adsFrame) {
-						const videoAds = adsFrame.contentWindow.document.querySelector('video#videoStory');
+						window.addEventListener('message', (event) => {
+							console.log('from iframe', event.data);
+							const res = JSON.parse(event.data);
+							if (res.type == 'video') {
+								const videoAds = res.videoObj;
+								
+								const setDuration = function () {
+									const duration = videoAds.duration
+									if (duration) {
+										setVendorVariable(
+											itemPointer.getElementsByTagName('b')[0].style,
+											'AnimationDuration',
+											`${duration}s`
+										);
+									}
+								};
+				
+								setDuration();
+								videoAds.addEventListener('loadedmetadata', setDuration);
+								zuck.internalData['currentVideoElement'] = videoAds;
+				
+								const isPlaying = videoAds.currentTime > 0 && !videoAds.paused && !videoAds.ended && videoAds.readyState > 2;
+				
+								if (!isPlaying) {
+									videoAds.play();
+								}
+				
+								unmuteVideoItem(videoAds, storyViewer);
+								if (unmute && unmute.target) {
+									unmuteVideoItem(videoAds, storyViewer);
+								}
+							}
+						}, false);
+
+						/* const videoAds = adsFrame.contentWindow.document.querySelector('video#videoStory');
 						if (videoAds) {
 							const setDuration = function () {
 								const duration = videoAds.duration
@@ -1496,7 +1572,7 @@ module.exports = (window => {
 							if (unmute && unmute.target) {
 								unmuteVideoItem(videoAds, storyViewer);
 							}
-						}
+						} */
 					}
 				} else {
 					const itemHeader = query(`#zuck-modal .story-viewer[data-story-id="${currentStory}"] > .head`);
