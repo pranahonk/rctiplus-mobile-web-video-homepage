@@ -5,7 +5,7 @@ import { GPT_NEWS_LINK_LIST, GPT_NEWS_LINK_DETAIL } from '../../../config'
 // import { useSelector, useDispatch } from 'react-redux';
 
 const AdsBanner = ({path, size, idGpt, style, partner}) => {
-  console.log(path, size, idGpt);
+  alert(`path: ${path}, size: ${size}, Id: ${idGpt}`)
   const [ads, setAds] = useState(null);
   const [url, setUrl] = useState(null);
   // const toggleAds = useSelector(state => state.ads)
