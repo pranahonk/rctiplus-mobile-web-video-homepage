@@ -10,7 +10,6 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
   // const toggleAds = useSelector(state => state.ads)
   // const dispatch = useDispatch();
   useEffect(() => {
-    alert(`path: ${path}, size: ${size}, Id: ${idGpt}`)
     const googletag = window.googletag || {};
     window.googletag = window.googletag || {cmd: []};
     googletag?.cmd?.push(function() {
