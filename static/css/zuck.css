@@ -154,7 +154,8 @@ and open the template in the editor.
   display: block;
 }
 #zuck-modal-content .story-viewer.loading .head .right .time,
-#zuck-modal-content .story-viewer.loading .head .right .close {
+#zuck-modal-content .story-viewer.loading .head .right .close,
+#zuck-modal-content .story-viewer.with-close-button.loading .head .right .close {
   display: none;
 }
 
