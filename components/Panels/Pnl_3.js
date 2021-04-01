@@ -147,7 +147,7 @@ class Pnl_3 extends React.Component {
 											</span>
 										</div>
 									</div>
-								) : c?.label != '' ? (
+								) : c?.label && c?.label != '' ? (
                   <div className="new-label">
                     {c.label}
                   </div>

@@ -144,7 +144,7 @@ class Pnl_1 extends React.Component {
 						<div ref={scrollRef} className="swiper-container">
 							{this.state.contents.map((c, i) => (
 								<div style={{ width: '100%' }} onClick={() => this.link(c)} key={`${this.props.contentId}-${i}`} className="swiper-slide">
-                {c?.label != '' ? (
+                {c?.label && c?.label != '' ? (
                   <div className="new-label">
                     {c.label}
                   </div>

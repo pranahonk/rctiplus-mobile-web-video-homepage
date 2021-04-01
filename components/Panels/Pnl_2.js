@@ -150,7 +150,7 @@ class Pnl_2 extends React.Component {
 													<span className="title-paid-video" style={{ padding: 5 }}>{c.expired_in}</span>
 												</div>
 											</>
-											) : c?.label != '' ? (
+											) : c?.label && c?.label != '' ? (
                         <div className="new-label">
                           {c.label}
                         </div>
