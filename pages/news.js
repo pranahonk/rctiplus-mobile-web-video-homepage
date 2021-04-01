@@ -106,8 +106,8 @@ class Trending_v2 extends React.Component {
             return item.id == queryId;
             });
         }
-        return { 
-            query: ctx.query, metaOg: error_code ? {} : data.data[0], 
+        return {
+            query: ctx.query, metaOg: error_code ? {} : data.data[0],
             data_category: error_code_category || error_code_kanal ? [] : dataCategory,
             metaSeo: metaSeo[0] || {}
         };
@@ -257,7 +257,7 @@ class Trending_v2 extends React.Component {
                 ` }}>
                 </script>
                     </div>
-    
+
                     `
                 }
                 // return (<AdsBanner />)
@@ -315,7 +315,7 @@ class Trending_v2 extends React.Component {
                 });
         }
 
-        
+
     }
 
     componentDidUpdate() {
@@ -342,7 +342,7 @@ class Trending_v2 extends React.Component {
                             if (sortedCategories.findIndex(s => s.id == savedCategories[i].id) == -1) {
                                 sortedCategories.push(savedCategories[i]);
                             }
-                            
+
                             savedCategories.splice(i, 1);
                             i--;
                         }
@@ -355,7 +355,7 @@ class Trending_v2 extends React.Component {
                             }
                         }
                     }
-                    
+
 
                     if (sortedCategories.length <= 0) {
                         setNewsChannels(categories);
@@ -371,13 +371,13 @@ class Trending_v2 extends React.Component {
 
                     if (sortedCategories.length > 0) {
                         let params = {is_tabs_loading: false};
-                        params['active_tab'] = Object.keys(this.props.query).length > 0 ? 
+                        params['active_tab'] = Object.keys(this.props.query).length > 0 ?
                         (
                             sortedCategories.findIndex(
                                 s => s.id == ((this.props.query) && this.props.query.subcategory_id) && parseInt(this.props.query.subcategory_id)
                             ) != -1 ? ((this.props.query && this.props.query.subcategory_id) && this.props.query.subcategory_id.toString()) : sortedCategories[0].id.toString()
                         ) : sortedCategories[0].id.toString();
-                
+
                         this.props.getChannels()
                         .then(response => {
                             let channels = response.data.data;
@@ -616,7 +616,7 @@ class Trending_v2 extends React.Component {
                                                                             else {
                                                                                 Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
                                                                             }
-                                                                            
+
                                                                         }
                                                                         else {
                                                                             showSignInAlert(`Please <b>Sign In</b><br/>
@@ -648,7 +648,7 @@ class Trending_v2 extends React.Component {
                                                         <div className="interest-topic_wrapper">
                                                             <div className="interest-topic_title">
                                                                 <h1>topik menarik</h1>
-                                                                <Link href={`/news/interest-topic${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`} className=""><span className="news-more_action">See More <ArrowForwardIosIcon /></span></Link>                                                 
+                                                                <Link href={`/news/interest-topic${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`} className=""><span className="news-more_action">See More <ArrowForwardIosIcon /></span></Link>
                                                             </div>
                                                             <div className="interest-topic_list">
                                                                 <Row className="interest-topic_list_row">
@@ -673,33 +673,36 @@ class Trending_v2 extends React.Component {
                                                                     <li key={j} className="listItems">
                                                                         <ListGroup className="groupNews">
                                                                             <ListGroupItem className="listNewsAdds">
-                                                                                <iframe 
-                                                                                    onLoad={() => {
-                                                                                        window.addEventListener('scroll', () => {
-                                                                                            const iframeElement = document.getElementById(article.id)
-                                                                                            const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
-                                                                                            document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
-                                                                                            const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
-                                                                                            document.getElementById(article.id).contentWindow.document.getElementById('error__page') 
-                                                                                            const element_3 = document.getElementById(article.id)
-                                                                                            if(element && element.style.display === 'none' || element_2) {
-                                                                                                element_3.style.display = 'none'
-                                                                                            } else {
-                                                                                                if(!element) {
-                                                                                                    iframeElement.style.display = 'none'
-                                                                                                    return 
-                                                                                                }
-                                                                                                element_3.style.display = 'block'
-                                                                                            }
-                                                                                            })
-                                                                                    }}
-                                                                                    id={article.id} src={`/dfp?platform=${this.platform}`} 
-                                                                                    frameBorder="0" 
-                                                                                    style={{ 
-                                                                                        height: '250px',
-                                                                                        width: '100%',
-                                                                                        display: 'none',
-                                                                                    }} />
+                                                                              <iframe
+                                                                                onLoad={() => {
+                                                                                  setTimeout(() => {
+                                                                                    window.addEventListener('scroll', () => {
+                                                                                      const iframeElement = document.getElementById(article.id)
+                                                                                      const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document &&
+                                                                                        document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
+                                                                                      const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document &&
+                                                                                        document.getElementById(article.id).contentWindow.document.getElementById('error__page')
+                                                                                      const element_3 = document.getElementById(article.id)
+                                                                                      if(element && element.style.display === 'none' || element_2) {
+                                                                                        element_3.style.display = 'none'
+                                                                                      } else {
+                                                                                        if(!element) {
+                                                                                          iframeElement.style.display = 'none'
+                                                                                          return
+                                                                                        }
+                                                                                        element_3.style.display = 'block'
+                                                                                      }
+                                                                                    })
+                                                                                  }, 1000)
+                                                                                }}
+                                                                                id={article.id} src={`/dfp?platform=${this.platform}`}
+                                                                                frameBorder="0"
+                                                                                style={{
+                                                                                  height: '250px',
+                                                                                  width: '100%',
+                                                                                  display: 'none',
+                                                                                }} />
+
                                                                             </ListGroupItem>
                                                                             <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
                                                                                 <div className="article-description">
