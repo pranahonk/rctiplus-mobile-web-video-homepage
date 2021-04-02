@@ -56,7 +56,7 @@ const Category = () => {
                     <Stories detailCategory={true} id={category_id} />
                 </div>
 
-                <div style={subCategory === null && listStoriesCategory === null ? {paddingBottom: 10, marginTop: 60, paddingLeft: 12} : {paddingBottom: 10, paddingLeft: 12, marginTop: 15}}>
+                <div style={subCategory === null && listStoriesCategory === null ? {paddingBottom: 10, marginTop: 60} : {paddingBottom: 10}}>
                     {homepageCategory && homepageCategory?.data && homepageCategory?.data?.map((content, i) => {
                         switch (content.display_type) {
                             case 'horizontal_landscape_large':
