@@ -91,7 +91,7 @@ class Crs_v2 extends Component {
                                 homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + this.state.resolution + program.portrait_image, this.state.meta.image_path + this.state.resolution + program.landscape_image, 'mweb_homepage_banner_swipe');
                             }
                     }}>
-                        {this.state.banner.map((b, i) => (
+                        {this.state.banner && this.state.banner.length && this.state.banner.map((b, i) => (
                             <div data-index={i} onClick={this.goToProgram.bind(this, b)} key={b.id} style={{ 
                                 width: '100%', 
                                 minHeight: 320
@@ -105,7 +105,7 @@ class Crs_v2 extends Component {
                             ))}
                     </Carousel>
                     {this.props.children}
-                    <div style={{ position: 'absolute', bottom: 0, backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 0%,#282828)', width: '100%', height: 100 }}></div>
+                    <div style={{ position: 'absolute', backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 0%,#282828)', width: '100%', height: 100 }}></div>
                 </div>
                 );
     }
