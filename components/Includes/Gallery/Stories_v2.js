@@ -30,9 +30,6 @@ class Stories extends React.Component {
     componentDidMount() {
         document.getElementById('stories-react').addEventListener('scroll', this.handleScroll);
 
-        console.log(`apakah ini stories dari detail category`, this.props.detailCategory)
-        console.log(`apakah ini stories dari homepage`, this.props.homepage)
-
         if(this.props.detailCategory) { // IF PARENT COMPONENT IS DETAIL HOME CATEGORY
             this.setState({
                 zuckJS: require('../../../assets/js/zuck')
@@ -370,7 +367,7 @@ class Stories extends React.Component {
     }
 
     render() {
-        console.log(`ini data stories`, this.state.stories)
+
         const timelineItems = []
         this.state.stories.forEach((story, storyId) => {
             const storyItems = [];
