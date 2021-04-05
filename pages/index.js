@@ -148,7 +148,7 @@ class Index_v2 extends React.Component {
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
                     <meta property="og:site_name" content={SITE_NAME} />
-                    <meta property="og:type" content="website" />
+                    <meta property="og:type" content="article" />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
                     <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
                     <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />

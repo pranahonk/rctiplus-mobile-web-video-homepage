@@ -1316,7 +1316,7 @@ class LiveEvent extends React.Component {
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
 					<meta property="og:image:height" content="315" />
-					<meta property="og:type" content="video" />
+					<meta property="og:type" content="article" />
 					<meta property="og:site_name" content={SITE_NAME} />
 					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
