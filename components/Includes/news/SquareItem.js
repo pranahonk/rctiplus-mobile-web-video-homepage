@@ -54,7 +54,7 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
             e.preventDefault()
             _goToDetail(item)
             }}>
-            <h2>{getTruncate(item.title, '...', 100)}</h2>
+            <h2 dangerouslySetInnerHTML={{ __html: getTruncate(item.title, '...', 100) }}></h2>
           </a>
           <div className="lt_content-info">
           <h5>{item.source}</h5>
