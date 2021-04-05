@@ -4,6 +4,8 @@ const initialState = {
     data: null,
     data_topic: [],
     data_tag: [],
+    data_section: null,
+    data_section_article: [],
     search_result: [],
     meta: null,
     query: '',
@@ -16,6 +18,15 @@ const initialState = {
 
 export default function NewsReducer (state = initialState, action) {
     switch (action.type) {
+        case 'GET_SECTION_NEWS':
+            if(state.data_section === null) {
+                return {...state, data_section: action.payload}
+            }
+            return {...state, data_section: {
+                data: [...state?.data_section?.data, action.payload.data],
+                meta: action.payload.meta,
+                status: action.payload.status
+            }}
         case 'GET_LIST_TAG_LOADING':
             return Object.assign({}, state, { loading: action.loading });
         case 'GET_TRENDING_CONTENT':

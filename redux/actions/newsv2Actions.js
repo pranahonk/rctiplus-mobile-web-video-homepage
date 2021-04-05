@@ -503,10 +503,10 @@ export default {
     incrementCount,
     getTagTrending,
     getListTag,
+    getSectionArticle,
     getMorePage,
     setLike,
     getTagByNews,
     getSearchFromServer,
-    getSectionNews,
-    getSectionArticle
+    getSectionNews
 };
