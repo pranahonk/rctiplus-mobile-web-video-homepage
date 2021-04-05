@@ -131,7 +131,8 @@ class Trending_v2 extends React.Component {
         articles_length: 10,
         is_load_more: false,
         user_data: null,
-        sticky_category_shown: false
+        sticky_category_shown: false,
+        section: 1,
     };
 
     constructor(props) {
@@ -182,6 +183,11 @@ class Trending_v2 extends React.Component {
         this.setState({ is_articles_loading: true }, () => {
             this.props.getNews(categoryId, this.state.articles_length, page)
                 .then(res => {
+                    const data = res.data.data
+                    const pageSection = res.data.meta.pagination.current_page
+                    // if(data.length > 6) {
+                    //     data[6].section = page
+                    // }
                     let articles = this.state.articles;
                     let pages = this.state.pages;
                     let loadMoreAllowed = this.state.load_more_allowed;
@@ -189,11 +195,11 @@ class Trending_v2 extends React.Component {
                     const assets_url = res.data.meta.assets_url
 
                     if (articles[categoryId.toString()]) {
-                        articles[categoryId.toString()].push.apply(articles[categoryId.toString()], res.data.data);
+                        articles[categoryId.toString()].push.apply(articles[categoryId.toString()], data);
                         pages[categoryId.toString()] = page + 1;
                     }
                     else {
-                        articles[categoryId.toString()] = res.data.data;
+                        articles[categoryId.toString()] = data;
                         pages[categoryId.toString()] = 2;
                     }
                     // console.log(this.state.tabs, articles['20']);
@@ -202,7 +208,8 @@ class Trending_v2 extends React.Component {
                         articles: articles,
                         load_more_allowed: loadMoreAllowed,
                         is_load_more: false,
-                        assets_url: assets_url
+                        assets_url: assets_url,
+                        section: pageSection
                     });
                 })
                 .catch(error => {
@@ -701,9 +708,7 @@ class Trending_v2 extends React.Component {
                                                                                   display: 'none',
                                                                                 }} />
                                                                             </ListGroupItem>
-                                                                            <li className="item_square-wrapper">
-                                                                                <SectionNews idSection={j}/>
-                                                                            </li>
+                                                                            <SectionNews idSection={this.state.section}/>
                                                                         </ListGroup>
                                                                     </li>
                                                                     </>

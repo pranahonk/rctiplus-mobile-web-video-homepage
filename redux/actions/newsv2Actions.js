@@ -250,7 +250,7 @@ const getSectionNews = (category_id = 16, pageSize = 3, page = 1) => {
         }
     });
 };
-const getSectionArticle = (section_id = 1, pageSize = 3, page = 1) => {
+const getSectionArticle = (section_id = 1, page = 1, pageSize = 6) => {
     return () => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v2/section/${section_id}/content?page=${page}&pageSize=${pageSize}`);

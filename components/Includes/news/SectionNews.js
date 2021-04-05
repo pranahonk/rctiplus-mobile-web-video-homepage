@@ -6,6 +6,7 @@ import { getTruncate } from '../../../utils/helpers';
 import { formatDateWordID } from '../../../utils/dateHelpers';
 import { urlRegex } from '../../../utils/regex';
 import { imageNews } from '../../../utils/helpers';
+import isEmpty from 'lodash/isEmpty'
 
 // action
 import newsAction from '../../../redux/actions/newsv2Actions';
@@ -19,9 +20,10 @@ import 'swiper/swiper.scss';
 import TopicLoader from '../Shimmer/TopicLoader';
 
 const ItemTags = ({...props}) => {
-  const [endChild, setEndChild] = useState(false);
+  const [show, setShow] = useState(false);
   const [meta, setMeta] = useState([]);
   const [list, setList] = useState([]);
+  const [loadingMore, setLoadingMore] = useState(false)
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
     useEffect(() => {
@@ -30,11 +32,14 @@ const ItemTags = ({...props}) => {
       setAccessToken(query.accessToken);
       setPlatform(query.platform);
     }
-    console.log(props.idSection % 6)
-    console.log(props.idSection)
-    console.log(props.listTopic.data_section?.data[props.idSection])
-    // props.getSectionArticle(props.listTopic.data_section?.data[props.idSection - 6], 6, 1)
+    console.log(isEmpty(props.listTopic.data_section?.data[props.idSection - 1]))
+    if(!isEmpty(props.listTopic.data_section?.data[props.idSection - 1])) {
+      props.getSectionArticle(props.listTopic.data_section?.data[props.idSection - 1].id).then((res) => {
+        setList(res.data)
+      })
+    }
   },[]);
+  let assetUrl = list.meta && list.meta.assets_url ? list.meta.assets_url : null;
   const _goToDetail = (article) => {
     let category = ''
     if (article.subcategory_name.length < 1) {
@@ -45,7 +50,9 @@ const ItemTags = ({...props}) => {
     return ('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
   }
     return (
-        <ul>
+      <>
+        {!isEmpty(props.listTopic.data_section?.data[props.idSection - 1]) && (
+          <ul style={{paddingLeft: 0}}>
             <li style={{border: 'none'}}>
             {list.length === 0 ? (<TopicLoader />) : (<Swiper
             spaceBetween={10}
@@ -54,11 +61,12 @@ const ItemTags = ({...props}) => {
             onSwiper={(swiper) => console.log(swiper)}
             onReachEnd={(swiper) => {
               if (swiper.isEnd) {
-                if (list.data) {
-                  list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
-                  (props.getListTag(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
+                if (list.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page)) {
+                  setLoadingMore(true)
+                  props.getSectionArticle(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
+                    setLoadingMore(false)
                     setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
-                  }).catch((err) => console.log(err))) : ''
+                  }).catch((err) => console.log(err))
                 }
               }
             }}
@@ -80,9 +88,15 @@ const ItemTags = ({...props}) => {
                 </SwiperSlide>
                 );
               })}
+              {loadingMore && (              
+              <SwiperSlide>
+                <TopicLoader />
+              </SwiperSlide>)}
             </Swiper>) }
           </li>
         </ul>
+        )}
+      </>
       );
 } 
 
