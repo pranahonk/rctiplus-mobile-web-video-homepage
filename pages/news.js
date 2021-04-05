@@ -38,6 +38,7 @@ import { urlRegex } from '../utils/regex';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 const Loading = dynamic(() => import('../components/Includes/Shimmer/ListTagLoader'))
+const SectionNews = dynamic(() => import('../components/Includes/news/SectionNews'))
 const SquareItem = dynamic(() => import('../components/Includes/news/SquareItem'),{loading: () => <Loading />})
 
 import queryString from 'query-string';
@@ -106,11 +107,10 @@ class Trending_v2 extends React.Component {
             return item.id == queryId;
             });
         }
-        return { 
-            query: ctx.query, metaOg: error_code ? {} : data.data[0], 
+        return {
+            query: ctx.query, metaOg: error_code ? {} : data.data[0],
             data_category: error_code_category || error_code_kanal ? [] : dataCategory,
-            metaSeo: metaSeo[0] || {},
-            newsToken: data_news?.data?.news_token || ''
+            metaSeo: metaSeo[0] || {}
         };
     }
 
@@ -128,11 +128,11 @@ class Trending_v2 extends React.Component {
         articles: {},
         pages: {},
         load_more_allowed: {},
-        articles_length: 6,
+        articles_length: 10,
         is_load_more: false,
         user_data: null,
         sticky_category_shown: false,
-        assets_url: null
+        section: 1,
     };
 
     constructor(props) {
@@ -143,9 +143,8 @@ class Trending_v2 extends React.Component {
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
-                const newsTokenApp = q.token === 'null' ? this.props.newsToken : q.token
-                this.accessToken = newsTokenApp;
-                setAccessToken(newsTokenApp);
+                this.accessToken = q.token;
+                setAccessToken(q.token);
             }
             if (q.platform) {
                 this.platform = q.platform;
@@ -160,11 +159,11 @@ class Trending_v2 extends React.Component {
     bottomScrollFetch() {
         if (!this.state.is_load_more && this.state.load_more_allowed[this.state.active_tab]) {
             this.setState({ is_load_more: true }, () => {
+                this.props.getSectionNews(this.state.active_tab, 3, this.state.pages[this.state.active_tab])
                 this.loadArticles(this.state.active_tab, this.state.pages[this.state.active_tab]);
             });
         }
     }
-
     toggleTab(tab, tabData) {
         newsTabClicked(tabData.name, 'mweb_news_tab_clicked');
         if (this.state.active_tab != tab) {
@@ -184,18 +183,22 @@ class Trending_v2 extends React.Component {
         this.setState({ is_articles_loading: true }, () => {
             this.props.getNews(categoryId, this.state.articles_length, page)
                 .then(res => {
-                    const {assets_url} = res.data.meta;
+                    const data = res.data.data
+                    const pageSection = res.data.meta.pagination.current_page
+                    // if(data.length > 6) {
+                    //     data[6].section = page
+                    // }
                     let articles = this.state.articles;
                     let pages = this.state.pages;
                     let loadMoreAllowed = this.state.load_more_allowed;
                     loadMoreAllowed[categoryId.toString()] = res.data.data.length >= this.state.articles_length
 
                     if (articles[categoryId.toString()]) {
-                        articles[categoryId.toString()].push.apply(articles[categoryId.toString()], res.data.data);
+                        articles[categoryId.toString()].push.apply(articles[categoryId.toString()], data);
                         pages[categoryId.toString()] = page + 1;
                     }
                     else {
-                        articles[categoryId.toString()] = res.data.data;
+                        articles[categoryId.toString()] = data;
                         pages[categoryId.toString()] = 2;
                     }
                     // console.log(this.state.tabs, articles['20']);
@@ -204,7 +207,7 @@ class Trending_v2 extends React.Component {
                         articles: articles,
                         load_more_allowed: loadMoreAllowed,
                         is_load_more: false,
-                        assets_url: assets_url
+                        section: pageSection
                     });
                 })
                 .catch(error => {
@@ -262,7 +265,7 @@ class Trending_v2 extends React.Component {
                 ` }}>
                 </script>
                     </div>
-    
+
                     `
                 }
                 // return (<AdsBanner />)
@@ -287,9 +290,7 @@ class Trending_v2 extends React.Component {
         //     return (<div>lalala</div>)
         // }
     }
-
     componentDidMount() {
-        console.log(this.props.metaSeo)
         // window.addEventListener('scroll', (event) => {
         //     if(this.isInViewport(document.getElementById('9'))) {
         //         console.log('YESSS')
@@ -300,6 +301,7 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
+        this.props.getSectionNews(this.props.query.subcategory_id || 15)
         if (this.accessToken !== null &&  this.accessToken !== undefined) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -320,7 +322,8 @@ class Trending_v2 extends React.Component {
                     this.fetchData();
                 });
         }
-        
+
+
     }
 
     componentDidUpdate() {
@@ -347,7 +350,7 @@ class Trending_v2 extends React.Component {
                             if (sortedCategories.findIndex(s => s.id == savedCategories[i].id) == -1) {
                                 sortedCategories.push(savedCategories[i]);
                             }
-                            
+
                             savedCategories.splice(i, 1);
                             i--;
                         }
@@ -360,7 +363,7 @@ class Trending_v2 extends React.Component {
                             }
                         }
                     }
-                    
+
 
                     if (sortedCategories.length <= 0) {
                         setNewsChannels(categories);
@@ -376,13 +379,13 @@ class Trending_v2 extends React.Component {
 
                     if (sortedCategories.length > 0) {
                         let params = {is_tabs_loading: false};
-                        params['active_tab'] = Object.keys(this.props.query).length > 0 ? 
+                        params['active_tab'] = Object.keys(this.props.query).length > 0 ?
                         (
                             sortedCategories.findIndex(
                                 s => s.id == ((this.props.query) && this.props.query.subcategory_id) && parseInt(this.props.query.subcategory_id)
                             ) != -1 ? ((this.props.query && this.props.query.subcategory_id) && this.props.query.subcategory_id.toString()) : sortedCategories[0].id.toString()
                         ) : sortedCategories[0].id.toString();
-                
+
                         this.props.getChannels()
                         .then(response => {
                             let channels = response.data.data;
@@ -474,7 +477,7 @@ class Trending_v2 extends React.Component {
         // const metadata = this.getMetadata();
         // const ogMetaData = this.getOgMetaData();
         const asPath = this.props.router.asPath;
-        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
+        const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') > -1 ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
         return (
             <Layout title={this.props?.metaSeo?.title}>
                 <Head>
@@ -501,6 +504,7 @@ class Trending_v2 extends React.Component {
                     <meta name="twitter:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta name="twitter:domain" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <link rel="canonical" href={oneSegment + encodeURI(asPath).replace('trending/', 'news/')} />
+
                     {/* <!-- Trending site tag (gtag.js) - Google Analytics --> */}
                     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145455301-9"></script>
                     {/* <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
@@ -589,7 +593,7 @@ class Trending_v2 extends React.Component {
                                                         setTimeout(() => {
                                                             let distance = this.platform === 'ios' || this.platform === 'android' ? 15 : 110
                                                             self.setState({ sticky_category_shown: distanceFromTop < distance })
-                                                        }, 500);
+                                                        }, 100);
                                                         return (
                                                             <div className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : 'sticky-menu-inactive'}`}>
                                                                 <Nav tabs className="navigation-tabs">
@@ -620,7 +624,7 @@ class Trending_v2 extends React.Component {
                                                                             else {
                                                                                 Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
                                                                             }
-                                                                            
+
                                                                         }
                                                                         else {
                                                                             showSignInAlert(`Please <b>Sign In</b><br/>
@@ -640,6 +644,7 @@ class Trending_v2 extends React.Component {
 
                                         {this.state.is_tabs_loading ? (<HeadlineLoader />) : null}
                                         {this.state.is_tabs_loading ? (<ArticleLoader />) : null}
+
                                         <TabContent activeTab={this.state.active_tab}>
                                             {this.state.tabs.map((tab, i) => {
                                                 return (
@@ -651,7 +656,7 @@ class Trending_v2 extends React.Component {
                                                         <div className="interest-topic_wrapper">
                                                             <div className="interest-topic_title">
                                                                 <h1>topik menarik</h1>
-                                                                <Link href={`/news/interest-topic${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`} className=""><span className="news-more_action">See More <ArrowForwardIosIcon /></span></Link>                                                 
+                                                                <Link href={`/news/interest-topic${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`} className=""><span className="news-more_action">See More <ArrowForwardIosIcon /></span></Link>
                                                             </div>
                                                             <div className="interest-topic_list">
                                                                 <Row className="interest-topic_list_row">
@@ -671,71 +676,47 @@ class Trending_v2 extends React.Component {
                                                     ) : '' }
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => {
-                                                            if((j + 1) % 7 === 0) {
-                                                                return(
-                                                                    <li key={j} className="listItems">
+                                                            return(((j+1) % 7  === 0) ?
+                                                                (<>
+                                                                    <li className="listItems" key={j + article.title}>
                                                                         <ListGroup className="groupNews">
-                                                                            <ListGroupItem className="listNewsAdds">
-                                                                                <iframe 
-                                                                                    onLoad={() => {
-                                                                                        setTimeout(() => {
-                                                                                            window.addEventListener('scroll', () => {
-                                                                                                const iframeElement = document.getElementById(article.id)
-                                                                                                const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
-                                                                                                document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0') 
-                                                                                                const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && 
-                                                                                                document.getElementById(article.id).contentWindow.document.getElementById('error__page') 
-                                                                                                const element_3 = document.getElementById(article.id)
-                                                                                                console.log('element >>', element)
-                                                                                                console.log('element_2 >>', element_2)
-                                                                                                console.log('element_3 >>', element_3)
-                                                                                                if(element && element.style.display === 'none' || element_2) {
-                                                                                                    element_3.style.display = 'none'
-                                                                                                } else {
-                                                                                                    if(!element) {
-                                                                                                        iframeElement.style.display = 'none'
-                                                                                                        return 
-                                                                                                    }
-                                                                                                    element_3.style.display = 'block'
-                                                                                                }
-                                                                                            })
-                                                                                        }, 1000)
-                                                                                    }}
-                                                                                    id={article.id} src={`/dfp?platform=${this.platform}`} 
-                                                                                    frameBorder="0" 
-                                                                                    style={{ 
-                                                                                        height: '250px',
-                                                                                        width: '100%',
-                                                                                        display: 'none',
-                                                                                    }} />
+                                                                            <ListGroupItem className="">
+                                                                                <iframe
+                                                                                onLoad={() => {
+                                                                                    window.addEventListener('scroll', () => {
+                                                                                      const adsFrame = document.getElementById(article.id);
+                                                                                      const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
+                                                                                      const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
+                                                                                      const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
+                                                                                    if(adsFrame.contentWindow.document && iframeAdsID){
+                                                                                      adsFrame.style.display = 'block'
+
+                                                                                    }else if(element && element.style.display === 'none' || element_2 || !element){
+                                                                                      adsFrame.style.display = 'none'
+                                                                                    }else{
+                                                                                      adsFrame.style.display = 'none'
+                                                                                    }
+
+                                                                                    })
+                                                                                }}
+                                                                                id={article.id} src={`/dfp?platform=${this.platform}`}
+                                                                                frameBorder="0"
+                                                                                style={{
+                                                                                  height: '250px',
+                                                                                  width: '100%',
+                                                                                  display: 'none',
+                                                                                }} />
                                                                             </ListGroupItem>
-                                                                            <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
-                                                                                <div className="article-description">
-                                                                                    <div className="article-thumbnail-container-full-width">
-                                                                                        {
-                                                                                            imageNews(article.title, article.cover, article.image, 355, this.state.assets_url, 'article-thumbnail-full-width')
-                                                                                        }
-                                                                                    </div>
-                                                                                    <div className="article-title-container">
-                                                                                        <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
-                                                                                        <div className="article-source">
-                                                                                            <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
-                                                                                            <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </ListGroupItem>
+                                                                            <SectionNews idSection={this.state.section}/>
                                                                         </ListGroup>
                                                                     </li>
-                                                                )
-                                                            } else {
-                                                                return(
-                                                                    <li className="item_square-wrapper" key={j + article.title}>
-                                                                        <SquareItem item={article} assets_url={this.state.assets_url} />
-                                                                    </li>
-                                                                )
-                                                            }
-                                                        })}
+                                                                    </>
+                                                                )  : 
+                                                                (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
+                                                                    <SquareItem item={article}/>
+                                                                </ListGroupItem>)
+
+                                                            )})}
                                                     </ListGroup>
                                                     {this.state.is_articles_loading ? (<ArticleLoader />) : null}
                                                 </TabPane>
@@ -753,6 +734,6 @@ class Trending_v2 extends React.Component {
 
 export default connect(state => state, {
     ...newsv2Actions,
-    ...userActions
+    ...userActions,
 })(withRouter(Trending_v2));
 
