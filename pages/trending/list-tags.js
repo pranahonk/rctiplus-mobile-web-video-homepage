@@ -51,6 +51,7 @@ const ListTags = (props) => {
   },[]);
   useEffect(() => {
     props.getListTag(router.query.title_tag)
+    props.incrementCountTag(router.query.title_tag)
   },[])
   const _moreTags = (pagination) => {
     if(pagination.total > pagination.current_page && !props.contents.isMorePage) {
