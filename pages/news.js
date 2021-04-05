@@ -38,6 +38,7 @@ import { urlRegex } from '../utils/regex';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 const Loading = dynamic(() => import('../components/Includes/Shimmer/ListTagLoader'))
+const SectionNews = dynamic(() => import('../components/Includes/news/SectionNews'))
 const SquareItem = dynamic(() => import('../components/Includes/news/SquareItem'),{loading: () => <Loading />})
 
 import queryString from 'query-string';
@@ -157,11 +158,11 @@ class Trending_v2 extends React.Component {
     bottomScrollFetch() {
         if (!this.state.is_load_more && this.state.load_more_allowed[this.state.active_tab]) {
             this.setState({ is_load_more: true }, () => {
+                this.props.getSectionNews(this.state.active_tab, 3, this.state.pages[this.state.active_tab])
                 this.loadArticles(this.state.active_tab, this.state.pages[this.state.active_tab]);
             });
         }
     }
-
     toggleTab(tab, tabData) {
         newsTabClicked(tabData.name, 'mweb_news_tab_clicked');
         if (this.state.active_tab != tab) {
@@ -285,7 +286,6 @@ class Trending_v2 extends React.Component {
         // }
     }
     componentDidMount() {
-        console.log(this.props.metaSeo)
         // window.addEventListener('scroll', (event) => {
         //     if(this.isInViewport(document.getElementById('9'))) {
         //         console.log('YESSS')
@@ -296,6 +296,7 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
+        this.props.getSectionNews(this.props.query.subcategory_id || 15)
         if (this.accessToken !== null &&  this.accessToken !== undefined) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -670,12 +671,12 @@ class Trending_v2 extends React.Component {
                                                     ) : '' }
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => {
-                                                            if((j + 1) % 5 === 0) {
-                                                                return(
-                                                                    <li key={j} className="listItems">
+                                                            return(((j+1) % 7  === 0) ?
+                                                                (<>
+                                                                    <li className="listItems" key={j + article.title}>
                                                                         <ListGroup className="groupNews">
-                                                                            <ListGroupItem className="listNewsAdds">
-                                                                              <iframe
+                                                                            <ListGroupItem className="">
+                                                                                <iframe
                                                                                 onLoad={() => {
                                                                                   window.addEventListener('scroll', () => {
                                                                                     const adsFrame = document.getElementById(article.id);
@@ -699,35 +700,19 @@ class Trending_v2 extends React.Component {
                                                                                   width: '100%',
                                                                                   display: 'none',
                                                                                 }} />
-
                                                                             </ListGroupItem>
-                                                                            <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
-                                                                                <div className="article-description">
-                                                                                    <div className="article-thumbnail-container-full-width">
-                                                                                        {
-                                                                                            imageNews(article.title, article.cover, article.image, 355, this.state.assets_url, 'article-thumbnail-full-width')
-                                                                                        }
-                                                                                    </div>
-                                                                                    <div className="article-title-container">
-                                                                                        <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
-                                                                                        <div className="article-source">
-                                                                                            <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
-                                                                                            <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </ListGroupItem>
+                                                                            <li className="item_square-wrapper">
+                                                                                <SectionNews idSection={j}/>
+                                                                            </li>
                                                                         </ListGroup>
                                                                     </li>
-                                                                )
-                                                            } else {
-                                                                return(
-                                                                    <li className="item_square-wrapper" key={j + article.title}>
-                                                                        <SquareItem item={article} assets_url={this.state.assets_url} />
-                                                                    </li>
-                                                                )
-                                                            }
-                                                        })}
+                                                                    </>
+                                                                )  : 
+                                                                (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
+                                                                    <SquareItem item={article}/>
+                                                                </ListGroupItem>)
+
+                                                            )})}
                                                     </ListGroup>
                                                     {this.state.is_articles_loading ? (<ArticleLoader />) : null}
                                                 </TabPane>
