@@ -305,7 +305,7 @@ class Explores extends React.Component {
 	getMetadata() {
 		const name = this.state.selected_genre_name;
 		const nameLowercase = this.state.selected_genre_name?.toLowerCase()?.replace(/ /g, '_') || 'rctiplus'
-		if (this.state.selected_genre_name.includes('for you') > -1) {
+		if (!this.state.selected_genre_name.includes('For You')) {
 			return {
 				title: `Nonton Streaming ${name} Sub Indo Gratis Terlengkap di Indonesia - RCTI+`,
 				description: `Nonton kumpulan ${name} program, sinetron dan acara TV RCTI, MNCTV, GTV, iNews TV terbaru full episode tanpa buffering hanya di RCTI+`,
@@ -357,7 +357,7 @@ class Explores extends React.Component {
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
 					<meta property="og:image:height" content="315" />
-					<meta property="og:type" content="website" />
+					<meta property="og:type" content="article" />
 					<meta property="og:site_name" content={SITE_NAME} />
 					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
