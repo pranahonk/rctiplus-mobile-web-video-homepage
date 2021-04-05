@@ -163,7 +163,7 @@ export const SITEMAP = {
     },
     edit_profile: {
         title: `Edit Profile - ${SITE_NAME}`,
-        description: `Profile user untuk melanjutkan video yang belum selesai ditonton`,
+        description: `Edit profile user`,
         keywords: `rctiplus, rcti+`,
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },

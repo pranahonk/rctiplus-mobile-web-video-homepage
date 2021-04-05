@@ -869,7 +869,7 @@ class Tv extends React.Component {
 					<meta property="og:description" content={this._metaTags().description} />
 					<meta property="og:image" itemProp="image" content={SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image} />
 					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
-					<meta property="og:type" content="video" />
+					<meta property="og:type" content="article" />
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
 					<meta property="og:image:height" content="315" />
