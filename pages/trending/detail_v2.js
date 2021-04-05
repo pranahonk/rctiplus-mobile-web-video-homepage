@@ -166,7 +166,9 @@ class Detail extends React.Component {
           Cookie.set('is_like_article', [{ like: false, news_id: false }])
         }
         const like = JSON.parse(Cookie.get('is_like_article'))
-        const foundLike = like.find(element => element.news_id == this.props.initial?.id)
+        const cdata = this.state.trending_detail_data;
+
+        const foundLike = like.find(element => element.news_id == cdata.id?.toString())
         this.setState({ isLike: foundLike?.like || false })
         window.onhashchange = () => {
             if (this.state.iframe_opened) {
@@ -212,9 +214,11 @@ class Detail extends React.Component {
         }
         let like = JSON.parse(Cookie.get('is_like_article'))
         const device_id = Cookie.get('uid_ads')
-        const id_news = this.props.initial?.id?.toString()
-        const foundLike = like.find(element => element.news_id == this.props.initial?.id)
-        if(like.some((value) => value.news_id == this.props.initial?.id)) {
+        const cdata = this.state.trending_detail_data;
+
+        const id_news = cdata.id?.toString()
+        const foundLike = like.find(element => element.news_id == id_news)
+        if(like.some((value) => value.news_id == id_news)) {
             const replaceArray = [{ like: !foundLike?.like, news_id: id_news}]
             this.props.setLike(id_news, true, device_id).then((res) => {
                 if(!this.state.isLike) {
