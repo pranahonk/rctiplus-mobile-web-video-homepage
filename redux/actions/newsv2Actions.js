@@ -442,6 +442,29 @@ const getListTag = (key = '', page = 1, isMore= false) => {
     });
 };
 
+const incrementCountTag = tagName => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v1/tag/count`, {
+                tag: tagName
+            });
+
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
+
 export default {
     clearSearch,
     setQuery,
@@ -465,5 +488,6 @@ export default {
     getMorePage,
     setLike,
     getTagByNews,
-    getSearchFromServer
+    getSearchFromServer,
+    incrementCountTag
 };
