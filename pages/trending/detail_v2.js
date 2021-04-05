@@ -153,7 +153,9 @@ class Detail extends React.Component {
           Cookie.set('is_like_article', [{ like: false, news_id: false }])
         }
         const like = JSON.parse(Cookie.get('is_like_article'))
-        const foundLike = like.find(element => element.news_id == this.props.initial?.id)
+
+        const cdata = this.state.trending_detail_data;
+        const foundLike = like.find(element => element.news_id == cdata.id?.toString())
         this.setState({ isLike: foundLike?.like || false })
         window.onhashchange = () => {
             if (this.state.iframe_opened) {
@@ -199,9 +201,11 @@ class Detail extends React.Component {
         }
         let like = JSON.parse(Cookie.get('is_like_article'))
         const device_id = Cookie.get('uid_ads')
-        const id_news = this.props.initial?.id?.toString()
-        const foundLike = like.find(element => element.news_id == this.props.initial?.id)
-        if(like.some((value) => value.news_id == this.props.initial?.id)) {
+        const cdata = this.state.trending_detail_data;
+
+        const id_news = cdata.id?.toString()
+        const foundLike = like.find(element => element.news_id == id_news)
+        if(like.some((value) => value.news_id == id_news)) {
             const replaceArray = [{ like: !foundLike?.like, news_id: id_news}]
             this.props.setLike(id_news, true, device_id).then((res) => {
                 if(!this.state.isLike) {
@@ -276,7 +280,7 @@ class Detail extends React.Component {
               <div className="sheet-wrap-left">
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#034ea1' }}>
                     {this.platform && this.platform == 'ios' ? (
-                    <div onClick={() => {
+                    <a className="sheet-wrap-link" onClick={() => {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
@@ -286,7 +290,7 @@ class Detail extends React.Component {
                                 .catch(error => console.log('Error sharing:', error));
                         }}>
                             <i className="fab fa-facebook-f"></i>
-                    </div>
+                    </a>
                     ) : this.platform && (this.platform == 'android') ?
                     (
                         <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${REDIRECT_WEB_DESKTOP + encodeURI(asPath) + UTM_NAME('news', this.props.router.query.id, 'wa', 'android')}`} url={URL_SHARE + UTM_NAME('news', this.props.router.query.id, 'fb', 'android')}>
@@ -328,7 +332,7 @@ class Detail extends React.Component {
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#4a90e2' }}>
                     {this.platform && this.platform == 'ios' ? (
-                        <div onClick={() => {
+                        <a className="sheet-wrap-link" onClick={() => {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
@@ -338,7 +342,7 @@ class Detail extends React.Component {
                                 .catch(error => console.log('Error sharing:', error));
                         }}>
                             <i className="fab fa-twitter"></i>
-                        </div>
+                        </a>
                     ) : this.platform && this.platform == 'android' ?
                     (
                         <TwitterShareButton title={cdata.title} url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'twit', 'android')} hashtags={hashtags}>
@@ -355,7 +359,7 @@ class Detail extends React.Component {
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
                     {this.platform && this.platform == 'ios' ? (
-                    <div onClick={() => {
+                    <a className="sheet-wrap-link" onClick={() => {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
@@ -365,7 +369,7 @@ class Detail extends React.Component {
                                 .catch(error => console.log('Error sharing:', error));
                         }}>
                             <i className="fab fa-line"></i>
-                    </div>
+                    </a>
                     ) : this.platform && (this.platform == 'android') ?
                         <LineShareButton url={URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'line', 'android')} title={cdata.title}>
                             <i className="fab fa-line"></i>
@@ -404,7 +408,7 @@ class Detail extends React.Component {
                      (<img src={`/share-icon/like.svg`} className="img-height" alt="like-image"/>) :
                      (<img src={`/share-icon/unlike.svg`} className="img-height" alt="unlike-image"/>) }
                 </div>
-                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#282828', marginLeft: 15 }}>
+                <a className="sheet-wrap-link" onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#282828', marginLeft: 15 }}>
                     <img src="/share-icon/share.svg" className="img-height" onClick={() => {
                         const cdata = this.state.trending_detail_data;
                         if (this.platform && (this.platform == 'android')) {
@@ -420,7 +424,7 @@ class Detail extends React.Component {
                                 .catch(error => console.log('Error sharing:', error));
                         }
                     }}/>
-                </div>
+                </a>
               </div>
             </div>
         );
@@ -519,7 +523,7 @@ class Detail extends React.Component {
                         params={`?token=${this.accessToken}&platform=${this.platform}`} 
                         src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`} 
                         data={cdata} 
-                        titleNavbar={this.props?.initial?.source}/>
+                        titleNavbar={cdata?.source}/>
                 )}
                 <StickyContainer>
                     <Sticky bottomOffset={100}>
