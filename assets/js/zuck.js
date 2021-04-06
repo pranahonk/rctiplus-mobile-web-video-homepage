@@ -79,10 +79,78 @@ module.exports = (window => {
 		return 'stories-' + Math.random().toString(36).substr(2, 9);
 	}
 
-
 	/* Zuckera */
 	const ZuckJS = function (timeline, options) {
 		const zuck = this;
+
+		const parsingMessage = (event) => {
+			const data = JSON.parse(event.data);
+			const storyViewer = query('#zuck-modal .viewing');
+	
+			switch(data.state) {
+				case 'init':
+					{
+						const story = zuck.data.find(element => element.id == data.storyId);
+						const item = story.items.find(element => element.id == data.itemId);
+
+						item.contentType = data.contentType;
+					}
+					break;
+				case 'play':
+					{
+						const items = storyViewer.querySelectorAll('[data-index].active');
+						const itemPointer = items[0];
+
+						setVendorVariable(
+							itemPointer.getElementsByTagName('b')[0].style,
+							'AnimationDuration',
+							`${data.duration}s`
+						);
+					}
+					break;
+				case 'unmute':
+					{
+						if (storyViewer) {
+							storyViewer.classList.remove('paused');
+						}
+					}
+					break;
+				case 'onplay':
+					{
+						storyViewer.classList.remove('stopped');
+						storyViewer.classList.remove('paused');
+						storyViewer.classList.remove('loading');
+					}
+					break;
+				case 'onload':
+					{
+						storyViewer.classList.remove('loading');
+					}
+					break;
+				case 'onwaiting':
+					{
+						if (data.paused) {
+							storyViewer.classList.add('paused');
+							storyViewer.classList.add('loading');
+						}
+					}
+					break;
+				case 'onmute':
+					{
+						if (data.muted) {
+							storyViewer.classList.add('muted');
+						} else {
+							storyViewer.classList.remove('muted');
+						}
+					}
+					break;
+			}
+		}
+
+		window.addEventListener('message', (event) => {
+			parsingMessage(event);
+		}, false);
+
 		const option = function (name, prop) {
 			const type = function (what) {
 				return typeof what !== 'undefined';
@@ -399,7 +467,7 @@ module.exports = (window => {
 
 				viewerItemBody(index, currentIndex, item) {
 					return `<div 
-                      class="item ${get(item, 'seen') === true ? 'seen' : ''} ${currentIndex === index ? 'active' : ''}"
+                      class="item${get(item, 'seen') === true ? ' seen' : ''}${currentIndex === index ? ' active' : ''}"
                       data-time="${get(item, 'time')}" data-type="${get(item, 'type')}" data-index="${index}" data-item-id="${get(item, 'id')}">
                       ${
 												get(item, 'type') === 'video'
@@ -806,12 +874,12 @@ module.exports = (window => {
 
 				// Story Ads
 				setTimeout(() => {
-					createStoryViewerAds(storyItems);
+					createStoryViewerAds(storyId, storyItems);
 				}, 150);
 			};
 
 			// Story Ads
-			const createStoryViewerAds = function (storyAdsItems) {
+			const createStoryViewerAds = function (storyID, storyAdsItems) {
 				each(storyAdsItems, (i, item) => {
 					if (item.type == 'ads') {
 						window.googletag = window.googletag || {cmd: []};
@@ -838,84 +906,14 @@ module.exports = (window => {
 							if (adsFrame) {
 								adsFrame.style.height = parentElement.offsetHeight + 'px';
 
-								window.addEventListener('message', (event) => {
-									console.log('from iframe', event.data);
-									const res = JSON.parse(event.data);
-									if (res.type == 'video') {
-										const videoAds = res.videoObj;
+								// test post message
+								const msg = {
+									state: 'init',
+									storyId: storyID,
+									itemId: item.id
+								};
 
-										const addMuted = function (video) {
-											const muted = video.muted;
-											if (muted) {
-												storyViewer.classList.add('muted');
-											} else {
-												storyViewer.classList.remove('muted');
-											}
-										};
-	
-										videoAds.onwaiting = e => {
-											if (videoAds.paused) {
-												storyViewer.classList.add('paused');
-												storyViewer.classList.add('loading');
-											}
-										};
-				
-										videoAds.onplay = () => {
-											addMuted(videoAds);
-				
-											storyViewer.classList.remove('stopped');
-											storyViewer.classList.remove('paused');
-											storyViewer.classList.remove('loading');
-										};
-				
-										videoAds.onload = videoAds.onplaying = videoAds.oncanplay = () => {
-											addMuted(videoAds);
-				
-											storyViewer.classList.remove('loading');
-										};
-				
-										videoAds.onvolumechange = () => {
-											addMuted(videoAds);
-										};
-									}
-								}, false);
-								
-								/* const videoAds = adsFrame.contentWindow.document.querySelector('video#videoStory');
-								if (videoAds) {
-									const addMuted = function (video) {
-										const muted = video.muted;
-										if (muted) {
-											storyViewer.classList.add('muted');
-										} else {
-											storyViewer.classList.remove('muted');
-										}
-									};
-
-									videoAds.onwaiting = e => {
-										if (videoAds.paused) {
-											storyViewer.classList.add('paused');
-											storyViewer.classList.add('loading');
-										}
-									};
-			
-									videoAds.onplay = () => {
-										addMuted(videoAds);
-			
-										storyViewer.classList.remove('stopped');
-										storyViewer.classList.remove('paused');
-										storyViewer.classList.remove('loading');
-									};
-			
-									videoAds.onload = videoAds.onplaying = videoAds.oncanplay = () => {
-										addMuted(videoAds);
-			
-										storyViewer.classList.remove('loading');
-									};
-			
-									videoAds.onvolumechange = () => {
-										addMuted(videoAds);
-									};
-								} */
+								adsFrame.contentWindow.postMessage(JSON.stringify(msg));
 							} else {
 								setTimeout(setIFrameHeight, 100);
 							}
@@ -1509,70 +1507,15 @@ module.exports = (window => {
 					}
 
 					// ads with video type
-					const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
-					if (adsFrame) {
-						window.addEventListener('message', (event) => {
-							console.log('from iframe', event.data);
-							const res = JSON.parse(event.data);
-							if (res.type == 'video') {
-								const videoAds = res.videoObj;
-								
-								const setDuration = function () {
-									const duration = videoAds.duration
-									if (duration) {
-										setVendorVariable(
-											itemPointer.getElementsByTagName('b')[0].style,
-											'AnimationDuration',
-											`${duration}s`
-										);
-									}
-								};
-				
-								setDuration();
-								videoAds.addEventListener('loadedmetadata', setDuration);
-								zuck.internalData['currentVideoElement'] = videoAds;
-				
-								const isPlaying = videoAds.currentTime > 0 && !videoAds.paused && !videoAds.ended && videoAds.readyState > 2;
-				
-								if (!isPlaying) {
-									videoAds.play();
-								}
-				
-								unmuteVideoItem(videoAds, storyViewer);
-								if (unmute && unmute.target) {
-									unmuteVideoItem(videoAds, storyViewer);
-								}
-							}
-						}, false);
-
-						/* const videoAds = adsFrame.contentWindow.document.querySelector('video#videoStory');
-						if (videoAds) {
-							const setDuration = function () {
-								const duration = videoAds.duration
-								if (duration) {
-									setVendorVariable(
-										itemPointer.getElementsByTagName('b')[0].style,
-										'AnimationDuration',
-										`${duration}s`
-									);
-								}
+					if (adsItem.contentType == 'video') {
+						const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
+						if (adsFrame) {
+							const msg = {
+								state: 'play'
 							};
-			
-							setDuration();
-							videoAds.addEventListener('loadedmetadata', setDuration);
-							zuck.internalData['currentVideoElement'] = videoAds;
-			
-							const isPlaying = videoAds.currentTime > 0 && !videoAds.paused && !videoAds.ended && videoAds.readyState > 2;
-			
-							if (!isPlaying) {
-								videoAds.play();
-							}
-			
-							unmuteVideoItem(videoAds, storyViewer);
-							if (unmute && unmute.target) {
-								unmuteVideoItem(videoAds, storyViewer);
-							}
-						} */
+
+							adsFrame.contentWindow.postMessage(JSON.stringify(msg));
+						}
 					}
 				} else {
 					const itemHeader = query(`#zuck-modal .story-viewer[data-story-id="${currentStory}"] > .head`);
