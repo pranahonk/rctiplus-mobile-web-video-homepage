@@ -682,12 +682,11 @@ class Trending_v2 extends React.Component {
                                                                         <ListGroup className="groupNews">
                                                                             <ListGroupItem className="">
                                                                                 <iframe
-                                                                                onLoad={() => {
-                                                                                    window.addEventListener('scroll', () => {
-                                                                                      const adsFrame = document.getElementById(article.id);
-                                                                                      const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
-                                                                                      const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
-                                                                                      const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
+                                                                                  onLoad={() => {
+                                                                                    const adsFrame = document.getElementById(article.id);
+                                                                                    const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
+                                                                                    const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
+                                                                                    const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
                                                                                     if(adsFrame.contentWindow.document && iframeAdsID){
                                                                                       adsFrame.style.display = 'block'
 
@@ -696,9 +695,7 @@ class Trending_v2 extends React.Component {
                                                                                     }else{
                                                                                       adsFrame.style.display = 'none'
                                                                                     }
-
-                                                                                    })
-                                                                                }}
+                                                                                  }}
                                                                                 id={article.id} src={`/dfp?platform=${this.platform}`}
                                                                                 frameBorder="0"
                                                                                 style={{
@@ -711,7 +708,7 @@ class Trending_v2 extends React.Component {
                                                                         </ListGroup>
                                                                     </li>
                                                                     </>
-                                                                )  : 
+                                                                )  :
                                                                 (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
                                                                     <SquareItem item={article}/>
                                                                 </ListGroupItem>)
