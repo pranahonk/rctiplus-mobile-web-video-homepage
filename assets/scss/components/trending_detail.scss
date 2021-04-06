@@ -20,6 +20,10 @@
     display: flex;
     }
 
+    .sheet-wrap-link {
+        cursor: pointer;
+    }
+
     .sheet-wrap-right {
     display: flex;
     align-items: center;
@@ -116,11 +120,27 @@
         padding: 15px;
         color: white;
         text-align: left;
-
         p, span {
             font-size: 14px !important;
             font-family: 'Open Sans' !important;
             line-height: 1.64 !important;
+        }
+        p {
+            margin-bottom: 1rem;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+        img {
+            display: block;
+            max-width: 83%;
+            height: auto;
+            margin: auto;
+        }
+        > h4 {
+            font-size: 0.9rem !important;
+            line-height: 1.4rem;
+            margin-bottom: 1rem;
         }
     }
     .content-trending-tag {

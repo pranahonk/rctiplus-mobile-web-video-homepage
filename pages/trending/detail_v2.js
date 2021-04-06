@@ -166,7 +166,9 @@ class Detail extends React.Component {
           Cookie.set('is_like_article', [{ like: false, news_id: false }])
         }
         const like = JSON.parse(Cookie.get('is_like_article'))
-        const foundLike = like.find(element => element.news_id == this.props.initial?.id)
+        const cdata = this.state.trending_detail_data;
+
+        const foundLike = like.find(element => element.news_id == cdata.id?.toString())
         this.setState({ isLike: foundLike?.like || false })
         window.onhashchange = () => {
             if (this.state.iframe_opened) {
@@ -212,9 +214,11 @@ class Detail extends React.Component {
         }
         let like = JSON.parse(Cookie.get('is_like_article'))
         const device_id = Cookie.get('uid_ads')
-        const id_news = this.props.initial?.id?.toString()
-        const foundLike = like.find(element => element.news_id == this.props.initial?.id)
-        if(like.some((value) => value.news_id == this.props.initial?.id)) {
+        const cdata = this.state.trending_detail_data;
+
+        const id_news = cdata.id?.toString()
+        const foundLike = like.find(element => element.news_id == id_news)
+        if(like.some((value) => value.news_id == id_news)) {
             const replaceArray = [{ like: !foundLike?.like, news_id: id_news}]
             this.props.setLike(id_news, true, device_id).then((res) => {
                 if(!this.state.isLike) {
@@ -289,7 +293,7 @@ class Detail extends React.Component {
               <div className="sheet-wrap-left">
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#034ea1' }}>
                     {this.platform && this.platform == 'ios' ? (
-                    <div onClick={() => {
+                    <a className="sheet-wrap-link" onClick={() => {
                                 navigator.share({
                                     title: cdata.title,
                                     text: "",
@@ -299,7 +303,7 @@ class Detail extends React.Component {
                                 .catch(error => console.log('Error sharing:', error));
                         }}>
                             <i className="fab fa-facebook-f"></i>
-                    </div>
+                    </a>
                     ) : this.platform && (this.platform == 'android') ?
                     (
                         <FacebookShareButton hashtag={hashtags.map(h => '#' + h).join(' ')} quote={`${cdata.title} ${REDIRECT_WEB_DESKTOP + encodeURI(asPath) + UTM_NAME('news', this.props.router.query.id, 'wa', 'android')}`} url={URL_SHARE + UTM_NAME('news', this.props.router.query.id, 'fb', 'android')}>
@@ -314,7 +318,7 @@ class Detail extends React.Component {
                     )}
                     
                 </div>
-                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
+                <a onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
                     {(this.platform) ? (
                         <div onClick={() => {
                             if (this.platform == 'android') {
@@ -336,10 +340,9 @@ class Detail extends React.Component {
                         <WhatsappShareButton title={cdata.title} url={REDIRECT_WEB_DESKTOP + encodeURI(asPath) + UTM_NAME('trending', this.props.router.query.id, 'wa')} separator=" - ">
                             <i className="fab fa-whatsapp"></i>
                         </WhatsappShareButton>
-                    )}
-                    
-                </div>
-                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#4a90e2' }}>
+                    )} 
+                </a>
+                <a onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#4a90e2' }}>
                     {this.platform && this.platform == 'ios' ? (
                         <div onClick={() => {
                                 navigator.share({
@@ -365,8 +368,8 @@ class Detail extends React.Component {
                         </TwitterShareButton>
                     )}
                     
-                </div>
-                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
+                </a>
+                <a onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
                     {this.platform && this.platform == 'ios' ? (
                     <div onClick={() => {
                                 navigator.share({
@@ -387,9 +390,8 @@ class Detail extends React.Component {
                         <LineShareButton url={REDIRECT_WEB_DESKTOP + encodeURI(asPath) + UTM_NAME('trending', this.props.router.query.id, 'line')} title={cdata.title}>
                             <i className="fab fa-line"></i>
                         </LineShareButton>
-                    )}
-                    
-                </div>
+                    )} 
+                </a>
                 {/* <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: scrolledDown ? '#3a3a3a' : '', float: 'right' }}>
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
                         const cdata = this.state.trending_detail_data;
@@ -412,12 +414,12 @@ class Detail extends React.Component {
                 { this.state.countLike && this.state.countLike > 0 ? (<div className="total_like">
                     <span>{this.state.countLike}</span>
                 </div>) : '' }
-                <div onClick={this.setLike.bind(this)} className="sheet-action-button" style={{ background: '#282828', margin: 0 }}>
+                <a className="sheet-wrap-link" onClick={this.setLike.bind(this)} className="sheet-action-button" style={{ background: '#282828', margin: 0 }}>
                     {this.state.isLike ?
                      (<img src={`/share-icon/like.svg`} className="img-height" alt="like-image"/>) :
                      (<img src={`/share-icon/unlike.svg`} className="img-height" alt="unlike-image"/>) }
-                </div>
-                <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#282828', marginLeft: 15 }}>
+                </a>
+                <a className="sheet-wrap-link" onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#282828', marginLeft: 15 }}>
                     <img src="/share-icon/share.svg" className="img-height" onClick={() => {
                         const cdata = this.state.trending_detail_data;
                         if (this.platform && (this.platform == 'android')) {
@@ -433,7 +435,7 @@ class Detail extends React.Component {
                                 .catch(error => console.log('Error sharing:', error));
                         }
                     }}/>
-                </div>
+                </a>
               </div>
             </div>
         );

@@ -732,7 +732,7 @@ class Index extends React.Component {
     return (
       <Layout>
         <HeadMeta data={props.seo_content}
-                  dataPlayer={(props.data && props.data['description-player']) || props.seo_content_detail} ogType={this.props.router.query?.content_id ? 'video' : 'website'}/>
+                  dataPlayer={(props.data && props.data['description-player']) || props.seo_content_detail} ogType={'article'}/>
         <div className="program-detail-container animated fadeInDown go">
           <div ref={this.refMainContent} style={{minHeight: '10px'}}>
             { this.switchPanel() }

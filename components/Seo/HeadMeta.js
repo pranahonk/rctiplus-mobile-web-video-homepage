@@ -68,7 +68,7 @@ export const convert = (value, tv_name, valueDetail, router, meta) => {
     //   };
     // }
     return  {
-      title: `Nonton Streaming ${value?.title} Sub Indo - ${SITE_NAME}`,
+      title: `Nonton Streaming ${value?.title} Online Sub Indo - ${SITE_NAME}`,
       description: `Nonton streaming online ${value?.title} ${tv_name} full episode lengkap sub indo dengan cuplikan video menarik lainnya hanya di RCTI+  . Lihat selengkapnya disini`,
       imagePath: `${meta && meta.image_path}140${value && value.portrait_image}`,
     };
