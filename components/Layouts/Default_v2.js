@@ -13,7 +13,7 @@ import chatsActions from '../../redux/actions/chats';
 const Footer = loadable(() => import('../../components/Includes/Footer/Default'))
 const Footer_v2 = loadable(() => import('../../components/Includes/Footer/Default_v2'))
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GRAPH_SITEMAP, SHARE_BASE_URL, GTM_AUTH } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GRAPH_SITEMAP, SHARE_BASE_URL, GTM_AUTH, MODE, APPIER_ID } from '../../config';
 import { Spinner } from 'reactstrap';
 const PaidVideo = dynamic(() => import('../Includes/program-detail/PaidVideo'), { ssr: false });
 
@@ -162,7 +162,7 @@ class Default_v2 extends React.Component {
                     <script src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
                     <script dangerouslySetInnerHTML={{ __html: `
                         AIQUA.init({
-                            appId: 'c63c2960bf562e9ec2de',
+                            appId: '${APPIER_ID}',
                             timeout: 5000
                         });
                     `}}>
@@ -223,7 +223,8 @@ class Default_v2 extends React.Component {
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
                 {/* <!-- DO NOT touch the following DIV --> */}
-                <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
+                  {MODE === 'PRODUCTION' ? (
+                    <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
                     !function(q,g,r,a,p,h,js) {
                         if(q.qg)return;
                         js = q.qg = function() {
@@ -234,6 +235,19 @@ class Default_v2 extends React.Component {
                         h.parentNode.insertBefore(p,h);
                     } (window,document,'script','//cdn.qgr.ph/qgraph.c63c2960bf562e9ec2de.js');
                 ` }}></script>
+                ) : (
+                <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
+                    !function(q,g,r,a,p,h,js) {
+                        if(q.qg)return;
+                        js = q.qg = function() {
+                        js.callmethod ? js.callmethod.call(js, arguments) : js.queue.push(arguments);
+                        };
+                        js.queue = [];
+                        p=g.createElement(r);p.async=!0;p.src=a;h=g.getElementsByTagName(r)[0];
+                        h.parentNode.insertBefore(p,h);
+                    } (window,document,'script','https://cdn.qgr.ph/qgraph.3be8515a1c2359442dfd.js');
+                ` }}></script>
+                )}
 
                 {this.props.pages.loading ? (
                     <div className={'default-loader ' + (this.props.pages.fade ? 'loader-fade' : '')}>
