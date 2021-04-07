@@ -402,7 +402,7 @@ class Stories extends React.Component {
         });
 
         return (
-            <div style={{paddingTop: 55}} className="stories-wrapper">
+            <div style={{paddingTop: 55, paddingLeft: 14}} >
                 <Head>
                     <link rel="stylesheet" href="static/css/zuck.css?v=2" />
                     <link rel="stylesheet" href="static/css/snapgram.css?v=2" />

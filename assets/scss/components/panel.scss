@@ -56,6 +56,16 @@
 }
 
 .pnl_horizontal_landscape, .pnl_horizontal, .pnl_vertical, .horizontal_landscape_large {
+    .content-title{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 19px;
+        /* identical to box height */
+        color: #FFFFFF;
+    }
+    
     .swiper-container {
         overflow: auto;
         white-space: nowrap;

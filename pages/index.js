@@ -171,11 +171,11 @@ class Index_v2 extends React.Component {
                     <StickyContainer>
                         <Sticky disableHardwareAcceleration>
                             { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
-                                const topDistance = this.state.show_sticky_install ? 120 : 60;
+                                const topDistance = this.state.show_sticky_install ? 120 : 40;
                                 if (distanceFromTop < topDistance) {
                                     if (!this.props.ads.ads_displayed) {
                                         return (
-                                            <div {...rest}>
+                                            <div {...rest} >
                                                 <StickyAds/>
                                             </div>
                                         );
@@ -190,20 +190,20 @@ class Index_v2 extends React.Component {
                                         }
                                     }
                                     return (
-                                        <div {...rest}>
+                                        <div {...rest} >
                                             <StickyAds sticky/>
                                         </div>
                                     );
                                 }
                                 return (
-                                    <div {...rest}>
+                                    <div {...rest} >
                                         <StickyAds id='div-gpt-ad-1584677577539-0'/>
                                     </div>
                                 );
                             } }
                         </Sticky>
                     </StickyContainer>
-                    <div style={{paddingBottom: 10, paddingTop: 10}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
+                    <div style={{paddingBottom: 10, paddingTop: 10, paddingLeft: 14}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
                         {contents.map((content, i) => {
                             switch (content.display_type) {
                                 case 'horizontal_landscape_large':
