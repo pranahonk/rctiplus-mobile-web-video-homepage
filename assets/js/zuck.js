@@ -83,67 +83,89 @@ module.exports = (window => {
 	const ZuckJS = function (timeline, options) {
 		const zuck = this;
 
+		const isJson = (item) => {
+			item = typeof item !== "string"
+					? JSON.stringify(item)
+					: item;
+	
+			try {
+					item = JSON.parse(item);
+			} catch (e) {
+					return false;
+			}
+	
+			if (typeof item === "object" && item !== null) {
+					return true;
+			}
+	
+			return false;
+		}
+
 		const parsingMessage = (event) => {
+			if (!isJson(event.data)) return;
 			const data = JSON.parse(event.data);
 			const storyViewer = query('#zuck-modal .viewing');
 	
-			switch(data.state) {
-				case 'init':
-					{
-						const story = zuck.data.find(element => element.id == data.storyId);
-						const item = story.items.find(element => element.id == data.itemId);
+			if (data.state) {
+				switch(data.state) {
+					case 'init':
+						{
+							const story = zuck.data.find(element => element.id == data.storyId);
+							const item = story.items.find(element => element.id == data.itemId);
 
-						item.contentType = data.contentType;
-					}
-					break;
-				case 'play':
-					{
-						const items = storyViewer.querySelectorAll('[data-index].active');
-						const itemPointer = items[0];
+							item.contentType = data.contentType;
+						}
+						break;
+					case 'play':
+						{
+							const items = storyViewer.querySelectorAll('[data-index].active');
+							const itemPointer = items[0];
 
-						setVendorVariable(
-							itemPointer.getElementsByTagName('b')[0].style,
-							'AnimationDuration',
-							`${data.duration}s`
-						);
-					}
-					break;
-				case 'unmute':
-					{
-						if (storyViewer) {
+							console.log(data.duration)
+							setVendorVariable(
+								itemPointer.getElementsByTagName('b')[0].style,
+								'AnimationDuration',
+								`${data.duration}s`
+							);
+						}
+						break;
+					case 'unmute':
+						{
+							if (storyViewer) {
+								storyViewer.classList.remove('paused');
+							}
+						}
+						break;
+					case 'onplay':
+						{
+							storyViewer.classList.remove('stopped');
 							storyViewer.classList.remove('paused');
+							storyViewer.classList.remove('loading');
 						}
-					}
-					break;
-				case 'onplay':
-					{
-						storyViewer.classList.remove('stopped');
-						storyViewer.classList.remove('paused');
-						storyViewer.classList.remove('loading');
-					}
-					break;
-				case 'onload':
-					{
-						storyViewer.classList.remove('loading');
-					}
-					break;
-				case 'onwaiting':
-					{
-						if (data.paused) {
-							storyViewer.classList.add('paused');
-							storyViewer.classList.add('loading');
+						break;
+					case 'onload':
+						{
+							storyViewer.classList.remove('loading');
 						}
-					}
-					break;
-				case 'onmute':
-					{
-						if (data.muted) {
-							storyViewer.classList.add('muted');
-						} else {
-							storyViewer.classList.remove('muted');
+						break;
+					case 'onwaiting':
+						{
+							if (data.paused) {
+								storyViewer.classList.add('paused');
+								storyViewer.classList.add('loading');
+							}
 						}
-					}
-					break;
+						break;
+					case 'onmute':
+						{
+							if (data.muted) {
+								storyViewer.classList.add('muted');
+							} else {
+								storyViewer.classList.remove('muted');
+							}
+						}
+						break;
+				}
 			}
 		}
 
@@ -898,22 +920,26 @@ module.exports = (window => {
 					}
 				});
 
+				const story_id = storyID;
 				setTimeout(function setIFrameHeight() {
 					const parentElement = document.querySelector('.slides');
 					each(storyAdsItems, (i, item) => {
 						if (item.type == 'ads') {
 							const adsFrame = document.querySelector(`#${item.preview} > div > iframe`);
 							if (adsFrame) {
-								adsFrame.style.height = parentElement.offsetHeight + 'px';
-
-								// test post message
-								const msg = {
-									state: 'init',
-									storyId: storyID,
-									itemId: item.id
-								};
-
-								adsFrame.contentWindow.postMessage(JSON.stringify(msg));
+								setTimeout(() => {
+									adsFrame.style.height = parentElement.offsetHeight + 'px';
+	
+									// test post message
+									const msg = {
+										state: 'init',
+										storyId: story_id,
+										itemId: item.id
+									};
+	
+									//console.log('message string', JSON.stringify(msg))
+									adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
+								}, 1000)
 							} else {
 								setTimeout(setIFrameHeight, 100);
 							}
@@ -1119,9 +1145,27 @@ module.exports = (window => {
 							};
 
 							const storyViewerViewing = query('#zuck-modal .viewing');
+							const adsItem = zuck.data[zuck.internalData['currentStory']].items[zuck.data[zuck.internalData['currentStory']]['currentItem']]
+							console.log('touch End', adsItem.contentType);
 							if (storyViewerViewing && video) {
 								if (storyViewerViewing.classList.contains('muted')) {
 									unmuteVideoItem(video, storyViewerViewing);
+								} else {
+									navigateItem();
+								}
+							} else if (storyViewerViewing && adsItem.type == 'ads' && adsItem.contentType == 'video') {
+								const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
+
+								if (adsFrame) {
+									if (storyViewerViewing.classList.contains('muted')) {
+										const msg = {
+											state: 'unmute'
+										}
+										
+										adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
+									} else {
+										navigateItem();
+									}
 								} else {
 									navigateItem();
 								}
@@ -1507,6 +1551,7 @@ module.exports = (window => {
 					}
 
 					// ads with video type
+					console.log('play', adsItem.contentType);
 					if (adsItem.contentType == 'video') {
 						const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
 						if (adsFrame) {
@@ -1514,7 +1559,7 @@ module.exports = (window => {
 								state: 'play'
 							};
 
-							adsFrame.contentWindow.postMessage(JSON.stringify(msg));
+							adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
 						}
 					}
 				} else {
@@ -1532,6 +1577,21 @@ module.exports = (window => {
 				try {
 					video.pause();
 				} catch (e) { }
+			} else {
+				const currentStory = zuck.internalData['currentStory'];
+				const currentItem = zuck.data[currentStory]['currentItem'];
+				const adsItem = zuck.data[currentStory].items[currentItem];
+
+				console.log('pause', adsItem.contentType);
+				if (adsItem.type == 'ads' && adsItem.contentType == 'video') {
+					const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
+
+					const msg = {
+						state: 'pause'
+					}
+
+					adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*')
+				}
 			}
 		};
 
