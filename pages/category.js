@@ -42,7 +42,7 @@ const Category = () => {
     }, [])
 
     return (
-        <Layout hideFooter={true}>
+        <Layout >
             {isShimmer ? <HomeLoader /> : 
 
             <div style={{marginTop: "56px"}}>
@@ -56,8 +56,8 @@ const Category = () => {
                     <Stories detailCategory={true} id={category_id} />
                 </div>
 
-                <div style={subCategory === null && listStoriesCategory === null ? {paddingBottom: 10, marginTop: 60} : {paddingBottom: 10}}>
-                    {homepageCategory?.data && homepageCategory?.data?.map((content, i) => {
+                <div style={subCategory === null && listStoriesCategory === null ? {paddingBottom: 10, marginTop: 60, paddingLeft: 14} : {paddingBottom: 10, paddingLeft: 14, marginTop: 15}}>
+                    {homepageCategory && homepageCategory?.data && homepageCategory?.data?.map((content, i) => {
                         switch (content.display_type) {
                             case 'horizontal_landscape_large':
                                 return <Panel1 token={token} type={content.type} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={homepageCategory.meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;

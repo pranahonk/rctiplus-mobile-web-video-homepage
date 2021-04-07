@@ -575,7 +575,7 @@ class Stories extends React.Component {
         });
 
         return (
-            <div style={{paddingTop: 55}} className="stories-wrapper">
+            <div style={{paddingTop: 55, paddingLeft: 14}} >
                 <Head>
                     <script src="/static/js/dash.js"></script>
                     <link rel="stylesheet" href="static/css/zuck.css?v=2" />
