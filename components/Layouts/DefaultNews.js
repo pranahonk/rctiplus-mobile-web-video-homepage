@@ -173,7 +173,7 @@ class DefaultNews extends React.Component {
                 </Head>
 
                 {/* <!-- DO NOT touch the following DIV --> */}
-                {MODE === 'PRODUCTION' ? (
+                {MODE === 'DEVELOPMENT' ? (
                     <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
                     !function(q,g,r,a,p,h,js) {
                         if(q.qg)return;

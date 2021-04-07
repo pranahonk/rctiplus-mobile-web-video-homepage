@@ -223,7 +223,7 @@ class Default_v2 extends React.Component {
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
                 {/* <!-- DO NOT touch the following DIV --> */}
-                  {MODE === 'PRODUCTION' ? (
+                  {MODE === 'DEVELOPMENT' ? (
                     <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
                     !function(q,g,r,a,p,h,js) {
                         if(q.qg)return;
