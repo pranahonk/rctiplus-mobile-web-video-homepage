@@ -10,6 +10,7 @@ import {connect} from "react-redux";
 import {NEWS_API_V2} from "../../../config";
 import { getNewsTokenV2 } from '../../../utils/cookie';
 import axios from 'axios';
+import ReactDOMServer from 'react-dom/server';
 
 const redirectToPublisherIndex = [0, 1];
 
@@ -18,21 +19,17 @@ const useFetch = (id, item) => {
   const [newContent, setNewContent]  = useState(null);
   useEffect( () => {
     async function fetchData(){
-      const result =  await axios.get(`${NEWS_API_V2}/api/v1/readalso/${id}?page=1&pageSize=2`,{
+      const result =  await axios.get(`${NEWS_API_V2}/api/v1/readalso/${id}?page=1&pageSize=1`,{
         headers: {
           'Authorization': getNewsTokenV2(),
         },
       });
       await setResponse(result.data.data);
-      const paragraph = item.content.split('<p>');
-      const addRead = `<p>Baca juga: ${response.length > 0 ? response[0].title : null}</p>`;
-      paragraph.splice(paragraph.length - 2, 0, addRead);
-      paragraph.splice( 0, 1);
-      setNewContent(paragraph);
     }
     fetchData();
   }, []);
-  return {response};
+
+  return {response, newContent};
 };
 
 export default function NewsDetailContent({item, indexKey, isIndexKey}) {
@@ -40,7 +37,6 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
   const {response, newContent} = useFetch(item.id, item,{});
-
 
 
   useEffect(  () => {
@@ -51,18 +47,8 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       setPlatform(query.platform);
     }
 
-    // for (let i = 0; i < paragraph.length  ; i++) {
-    //   if(paragraph[i] === "" || paragraph[i] === " "){
-    //     paragraph.splice(i, 1)
-    //   }else {
-    //     paragraph[i]+= '<p>';
-    //   }
-    //
-    //   console.log(paragraph[i]);
-    // }
-    // setNewContent(paragraph)
+  },[]);
 
-  },[response]);
 
   const _goToDetail = (article) => {
     let category = ''
@@ -82,33 +68,25 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
     }
   };
 
-  if(response.length > 0){
-    const paragraph = item.content.split('<p>');
-    const addRead = `<p>Baca juga: ${response.length > 0 ? response[0].title : null}</p>`;
-    paragraph.splice(paragraph.length - 2, 0, addRead);
-    // for (let i = 0; i < paragraph.length  ; i++) {
-    //   if(paragraph[i] === "" || paragraph[i] === " "){
-    //     paragraph.splice(i, 1)
-    //   }else {
-    //     paragraph[i]+= '<p>';
-    //   }
-    //
-    //   console.log(paragraph[i]);
-    // }
-    // setNewContent(paragraph)
+  const newCont = (response) => {
+    const getTag =  item.content.match(/(<\w+>)/gm)[0];
+    let category = '';
+    if (response.subcategory_name.length < 1) {
+      category = 'berita-utama';
+    } else {
+      category = urlRegex(response.subcategory_name)
+    }
+    const paragraph = item.content.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#");
+    const addRead = ReactDOMServer.renderToStaticMarkup(<p> <div>Baca juga: <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`}>{response.title }</a></div></p>);
+    paragraph.splice(paragraph.length - 1, 0, addRead);
+    paragraph.splice(0, 1);
+    return paragraph.join('')
   }
-
-  const paragraph = item.content.split('<p>');
-  const addRead = `<p>Baca juga: ${response.length > 0 ? response[0].title : null}</p>`;
-  paragraph.splice(paragraph.length - 2, 0, addRead);
-  paragraph.splice(0, 1);
-
-
 
 
   return(
     <div>
-      <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${response.length > 0 ? paragraph : item.content}` }}></div>
+      <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${response && response.length > 0 ? newCont(response[0]) : item.content}` }}></div>
     </div>
   )
 }
