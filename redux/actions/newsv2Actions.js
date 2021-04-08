@@ -43,6 +43,30 @@ const searchNews = (q, page = 1, pageSize = 10) => {
     });
 };
 
+const readAlso = (id,page = 1, pageSize = 2) => {
+  return dispatch => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`/news/api/v1/readalso/${id}?page=/${page}&pageSize=${pageSize}`);
+      if (response.status === 200) {
+        dispatch({
+          type: 'SEARCH_NEWS_RESULT',
+          result: response.data.data,
+          meta: response && response.data && response.data.meta ? response.data.meta : null,
+        });
+        resolve(response);
+      }
+      else {
+        removeAccessToken();
+        reject(response);
+      }
+    }
+    catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+};
+
 const clearSearch = () => {
     return dispatch => dispatch({
         type: 'CLEAR_SEARCH'
@@ -212,8 +236,8 @@ const getNews = (subcategoryId = 1, pageSize = 10, page = 1) => {
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_NEWS',
-                    data: response.data.data, 
-                    meta: response.data.meta, 
+                    data: response.data.data,
+                    meta: response.data.meta,
                     status: response.data.status
                 });
                 resolve(response);
@@ -293,7 +317,7 @@ const incrementCount = newsId => {
             const response = await axios.post(`/v1/news/count`, {
                 news_id: newsId
             });
-            
+
             if (response.status === 200) {
                 resolve(response);
             }
@@ -335,7 +359,7 @@ const getTagTrending = (length = 10) => {
             if (response.status === 200) {
                 dispatch({
                     type: 'GET_TOPIC',
-                    data: response.data, 
+                    data: response.data,
                     status: response.status,
                     loading: false
                 });
@@ -361,7 +385,7 @@ const getTagTrending = (length = 10) => {
     });
 };
 const getMorePage = (value) => {
-    return dispatch => { 
+    return dispatch => {
         dispatch({
             type: 'GET_MORE_PAGE',
             data: value
@@ -369,7 +393,7 @@ const getMorePage = (value) => {
     }
 }
 const setLike = (news_id, love, device_id) => {
-    return () => new Promise(async (resolve, reject) => { 
+    return () => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.post(`/v1/like`, { news_id, love, device_id });
                 if (response.status === 200) {
@@ -387,7 +411,7 @@ const setLike = (news_id, love, device_id) => {
     })
 }
 const getTagByNews = (news_id) => {
-    return () => new Promise(async (resolve, reject) => { 
+    return () => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/news/${news_id}/tag`);
                 if (response.status === 200) {
@@ -409,15 +433,15 @@ const getListTag = (key = '', page = 1, isMore= false) => {
         try {
             const response = await axios.get(`/v1/tag/${key}?page=${page}&length=10`);
             if (response.status === 200) {
-                isMore ? 
+                isMore ?
                    dispatch({
                         type: 'GET_LIST_TAG_MORE',
-                        data: response.data, 
+                        data: response.data,
                         loading: false
                     })
                  : dispatch({
                         type: 'GET_LIST_TAG',
-                        data: response.data, 
+                        data: response.data,
                         loading: false
                     })
                 dispatch({
@@ -489,5 +513,6 @@ export default {
     setLike,
     getTagByNews,
     getSearchFromServer,
-    incrementCountTag
+    incrementCountTag,
+    readAlso,
 };

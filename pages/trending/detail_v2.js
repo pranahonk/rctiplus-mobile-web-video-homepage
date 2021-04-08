@@ -18,6 +18,7 @@ import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 import NavBackIframe from '../../components/Includes/Navbar/NavIframe';
 import AdsBanner from '../../components/Includes/Banner/Ads';
 import '../../assets/scss/components/trending_detail.scss';
+import NewsDetailContent from "../../components/Includes/news/NewsDetailContent"
 
 import { FacebookShareButton, TwitterShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
 // import { ListGroup, ListGroupItem } from 'reactstrap';
@@ -41,6 +42,7 @@ class Detail extends React.Component {
 
     static async getInitialProps(ctx) {
         const programId = ctx.query.id;
+        console.log(programId);
 
         const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
         if (response_visitor.statusCode === 200) {
@@ -64,7 +66,7 @@ class Detail extends React.Component {
 
         const data_news = await response_news.json();
 
-        const res = await fetch(`${NEWS_API_V2}/api/v2/news/${programId}`, {
+        const res = await fetch(`${NEWS_API_V2}/api/v2/news/${programId}?page1&pageSize=6`, {
             method: 'GET',
             headers: {
                 'Authorization': data_news.data.news_token
@@ -72,16 +74,29 @@ class Detail extends React.Component {
         });
         const error_code = res.statusCode > 200 ? res.statusCode : false;
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
+        const res_read_also = await fetch(`${NEWS_API_V2}/api/v1/readalso/${programId}?page1&pageSize=6`, {
+            method: 'GET',
+            headers: {
+                'Authorization': data_news.data.news_token
+            }
+        });
+        const error_code_read_also = res_read_also.statusCode > 200 ? res_read_also.statusCode : false;
+        const read_also = await res_read_also.json();
+        // console.log((cdata.content.match(/<p>/g) || []).length)
+
         if (error_code) {
             return { initial: false };
         }
-        return { initial: data, props_id: programId };
+        if (error_code_read_also) {
+            return { read_also: false };
+        }
+        return { initial: data, props_id: programId, read_also: read_also };
     }
 
     constructor(props) {
         super(props);
-        const {props_id, initial} = this.props
+        const {props_id, initial} = this.props;
         this.state = {
             trending_detail_id: props_id,
             trending_detail_data: initial.data === undefined ? initial : initial.data,
@@ -93,7 +108,7 @@ class Detail extends React.Component {
             sticky_share_shown: false,
             listTagByNews: [],
             count: false,
-            countLike: 0, 
+            countLike: 0,
             infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID
         };
 
@@ -104,6 +119,7 @@ class Detail extends React.Component {
         this.pushNotif = null;
         const segments = this.props.router.asPath.split(/\?/);
         const segments2 = this.props.router.asPath.split(/\#/);
+        console.log(this.props.router.query.id)
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
@@ -216,7 +232,7 @@ class Detail extends React.Component {
                 Cookie.set('is_like_article', like.map(obj => replaceArray.find(value => value.news_id == obj.news_id || obj)))
                 this.setState({ isLike: !foundLike?.like })
             })
-            return 
+            return
         }
         like.push({ like: !foundLike?.like, news_id: id_news})
         this.props.setLike(id_news, true, device_id).then((res) => {
@@ -303,7 +319,7 @@ class Detail extends React.Component {
                             <i className="fab fa-facebook-f"></i>
                         </FacebookShareButton>
                     )}
-                    
+
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
                     {(this.platform) ? (
@@ -328,7 +344,7 @@ class Detail extends React.Component {
                             <i className="fab fa-whatsapp"></i>
                         </WhatsappShareButton>
                     )}
-                    
+
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#4a90e2' }}>
                     {this.platform && this.platform == 'ios' ? (
@@ -355,7 +371,7 @@ class Detail extends React.Component {
                             <i className="fab fa-twitter"></i>
                         </TwitterShareButton>
                     )}
-                    
+
                 </div>
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
                     {this.platform && this.platform == 'ios' ? (
@@ -379,7 +395,7 @@ class Detail extends React.Component {
                             <i className="fab fa-line"></i>
                         </LineShareButton>
                     )}
-                    
+
                 </div>
                 {/* <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: scrolledDown ? '#3a3a3a' : '', float: 'right' }}>
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
@@ -435,6 +451,7 @@ class Detail extends React.Component {
         const assets_url = this.state.assets_url;
         const isInfographic = this.state.infographic;
         const asPath = this.props.router.asPath;
+       // console.log((cdata.content.match(/<p>/g) || []).length)
 
         const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? {
             'desktop': 'https://dev-webd.rctiplus.com',
@@ -518,11 +535,11 @@ class Detail extends React.Component {
                 {this.state.iframe_opened ? (<NavBackIframe closeFunction={() => {
                     this.setState({ iframe_opened: false });
                 }} data={cdata} disableScrollListener />) : (
-                    <NavBack 
-                        pushNotif={this.pushNotif} 
-                        params={`?token=${this.accessToken}&platform=${this.platform}`} 
-                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`} 
-                        data={cdata} 
+                    <NavBack
+                        pushNotif={this.pushNotif}
+                        params={`?token=${this.accessToken}&platform=${this.platform}`}
+                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`}
+                        data={cdata}
                         titleNavbar={cdata?.source}/>
                 )}
                 <StickyContainer>
@@ -535,7 +552,7 @@ class Detail extends React.Component {
                                     if (self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: false });
                                     }
-                                
+
                                 }, 300);
                                 return <span></span>;
                             }
@@ -544,7 +561,7 @@ class Detail extends React.Component {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
                                     }
-                                    
+
                                 }, 300);
                                 return (
                                     <div className={`sticky-share-button ${this.state.sticky_share_shown ? 'sticky-share-button-viewed' : ''}`}>
@@ -556,7 +573,7 @@ class Detail extends React.Component {
                                 if (self.state.sticky_share_shown) {
                                     self.setState({ sticky_share_shown: false });
                                 }
-                                
+
                             }, 300);
                             return <span></span>;
                         } }
@@ -564,9 +581,9 @@ class Detail extends React.Component {
                 </StickyContainer>
                 {this.state.iframe_opened ? (
                     <div className="content-trending-detail" style={{ height: '100vh' }}>
-                        <iframe src={cdata.link} style={{ 
-                            width: '100%', 
-                            height: '100%', 
+                        <iframe src={cdata.link} style={{
+                            width: '100%',
+                            height: '100%',
                             display: 'block',
                             margin: 0,
                             padding: 0
@@ -584,7 +601,7 @@ class Detail extends React.Component {
                                         .catch(error => {
                                             console.log(error);
                                         });
-                                    
+
                                     this.setState({ scrolled_down: true, count: true });
                                 }
                                 else {
@@ -621,7 +638,8 @@ class Detail extends React.Component {
                                             imageNews(cdata.title, cdata.cover, cdata.image, 450, assets_url, 'content-trending-detail-cover')
                                         }
                                     </div>
-                                    <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>
+                                    <NewsDetailContent  item={cdata} />
+                                    {/*<div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>*/}
                                     {/* <Link href="#" as={"#"}>
                                         <a> */}
                                             <div onClick={this.openIframe.bind(this)} style={{ color: '#05b5f5', padding: '0 15px' }}>
@@ -644,10 +662,10 @@ class Detail extends React.Component {
                                         {this.renderActionButton()}
                                     </div>
                                 </div>
-                                { cdata.exclusive === 'yes' ? (<div /> 
+                                { cdata.exclusive === 'yes' ? (<div />
                                 ) : (
                                     <div className="ads-banner__detail_news">
-                                        <AdsBanner 
+                                        <AdsBanner
                                             partner={cdata.source}
                                             path={getPlatformGpt(this.platform)}
                                             size={[300, 250]}
@@ -701,7 +719,7 @@ const getPlatformGpt = (platform) => {
     // webview
       if(platform === 'ios') {
         return process.env.GPT_NEWS_IOS_DETAIL;
-      } 
+      }
       if(platform === 'android') {
         return process.env.GPT_NEWS_ANDROID_DETAIL;
       }
