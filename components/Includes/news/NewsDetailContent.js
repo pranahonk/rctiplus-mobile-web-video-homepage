@@ -77,7 +77,12 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       category = urlRegex(response.subcategory_name)
     }
     const paragraph = item.content.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#");
-    const addRead = ReactDOMServer.renderToStaticMarkup(<p> <div>Baca juga: <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`}>{response.title }</a></div></p>);
+    for (let i = 0; i < paragraph.length; i++) {
+      if(paragraph[i].match(/(<a href)|(Baca juga)|(baca juga)/gm)){
+        paragraph.splice(0, i);
+      }
+    }
+    const addRead = ReactDOMServer.renderToStaticMarkup(<p> Baca juga: <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`}>{response.title }</a></p>);
     paragraph.splice(paragraph.length - 1, 0, addRead);
     paragraph.splice(0, 1);
     return paragraph.join('')
