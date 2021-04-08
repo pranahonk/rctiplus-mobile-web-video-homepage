@@ -42,7 +42,6 @@ class Detail extends React.Component {
 
     static async getInitialProps(ctx) {
         const programId = ctx.query.id;
-        console.log(programId);
 
         const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
         if (response_visitor.statusCode === 200) {
@@ -119,7 +118,6 @@ class Detail extends React.Component {
         this.pushNotif = null;
         const segments = this.props.router.asPath.split(/\?/);
         const segments2 = this.props.router.asPath.split(/\#/);
-        console.log(this.props.router.query.id)
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
