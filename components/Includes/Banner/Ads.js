@@ -58,9 +58,6 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
 
   return (
     <div>
-      <div style={{backgroundColor: "white"}}>{path}</div>
-      <div style={{backgroundColor: "white"}}>{size}</div>
-      <div style={{backgroundColor: "white"}}>{idGpt}</div>
       <div id="ads-banner" style={{ position: 'relative' }}>
         <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" />
         <center>
