@@ -13,7 +13,7 @@ import chatsActions from '../../redux/actions/chats';
 const Footer = loadable(() => import('../../components/Includes/Footer/Default'))
 const Footer_v2 = loadable(() => import('../../components/Includes/Footer/Default_v2'))
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GTM_AUTH, SHARE_BASE_URL } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GTM_AUTH, SHARE_BASE_URL, MODE, APPIER_ID } from '../../config';
 
 import queryString from 'query-string';
 import { isIOS, isAndroid } from "react-device-detect";
@@ -138,6 +138,18 @@ class DefaultNews extends React.Component {
                     {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
 
 
+                    <script src="/static/js/fontawesome.min.js" crossOrigin="anonymous" defer></script>
+
+                    {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
+                    <script src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
+                    <script dangerouslySetInnerHTML={{ __html: `
+                        AIQUA.init({
+                            appId: '${APPIER_ID}',
+                            timeout: 5000
+                        });
+                    `}}>
+                    </script>
+
                     {/* Comscore */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         var _comscore=_comscore||[];_comscore.push({c1:"2",c2:"9013027"}),function(){var c=document.createElement("script"),e=document.getElementsByTagName("script")[0];c.async=!0,c.src=("https:"==document.location.protocol?"https://sb":"http://b")+".scorecardresearch.com/beacon.js",e.parentNode.insertBefore(c,e)}();
@@ -161,7 +173,8 @@ class DefaultNews extends React.Component {
                 </Head>
 
                 {/* <!-- DO NOT touch the following DIV --> */}
-                <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
+                {MODE === 'DEVELOPMENT' ? (
+                    <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
                     !function(q,g,r,a,p,h,js) {
                         if(q.qg)return;
                         js = q.qg = function() {
@@ -172,6 +185,19 @@ class DefaultNews extends React.Component {
                         h.parentNode.insertBefore(p,h);
                     } (window,document,'script','//cdn.qgr.ph/qgraph.c63c2960bf562e9ec2de.js');
                 ` }}></script>
+                ) : (
+                <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
+                    !function(q,g,r,a,p,h,js) {
+                        if(q.qg)return;
+                        js = q.qg = function() {
+                        js.callmethod ? js.callmethod.call(js, arguments) : js.queue.push(arguments);
+                        };
+                        js.queue = [];
+                        p=g.createElement(r);p.async=!0;p.src=a;h=g.getElementsByTagName(r)[0];
+                        h.parentNode.insertBefore(p,h);
+                    } (window,document,'script','https://cdn.qgr.ph/qgraph.3be8515a1c2359442dfd.js');
+                ` }}></script>
+                )}
 
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>

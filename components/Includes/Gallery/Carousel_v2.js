@@ -4,10 +4,9 @@ import { connect } from 'react-redux';
 import contentActions from '../../../redux/actions/contentActions';
 import { Carousel } from 'react-responsive-carousel';
 import Img from 'react-image';
+
 import { RESOLUTION_IMG } from '../../../config';
-
 import { homeBannerEvent } from '../../../utils/appier';
-
 import '../../../assets/scss/plugins/carousel/carousel.scss';
 
 class Crs_v2 extends Component {
@@ -105,7 +104,7 @@ class Crs_v2 extends Component {
                             ))}
                     </Carousel>
                     {this.props.children}
-                    <div style={{ position: 'absolute', bottom: 0, backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 0%,#282828)', width: '100%', height: 100 }}></div>
+                    <div style={{ position: 'absolute', bottom: "-2px", backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 0%,#282828)', width: '100%', height: 200 }}></div>
                 </div>
                 );
     }

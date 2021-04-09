@@ -77,15 +77,15 @@ export const convert = (value, tv_name, valueDetail, router, meta) => {
     switch (router.query.content_type || router.query.tab) {
       case 'episodes':
           return  {
-            title: `Nonton Streaming ${value && value.title} Online Download Full Episode Sub Indo - ${SITE_NAME}`,
-            description: `Nonton Series dan cuplikan video ${value && value.title} ${tv_name} online per episode lengkap dengan kualitas HD Gratis Terlengkap dan Terbaru Sub Indo hanya di - ${SITE_NAME}`,
-            imagePath: `${meta && meta.image_path}140${value && value.portrait_image}`,
+            title: `Nonton Streaming ${valueDetail && valueDetail.title} Online Download Full Episode Sub Indo - ${SITE_NAME}`,
+            description: `Nonton streaming online ${valueDetail && valueDetail.title} ${valueDetail?.summary}`,
+            imagePath: `${meta && meta.image_path}140${valueDetail && valueDetail.program_portrait_image}`,
           };
       case 'episode':
           return  {
-            title: `Nonton Streaming ${value && value.title} Online Download Full Episode Sub Indo - ${SITE_NAME}`,
-            description: `Nonton Series dan cuplikan video ${value && value.title} ${tv_name} online per episode lengkap dengan kualitas HD Gratis Terlengkap dan Terbaru Sub Indo hanya di - ${SITE_NAME}`,
-            imagePath: `${meta && meta.image_path}140${value && value.portrait_image}`,
+            title: `Nonton Streaming ${valueDetail && valueDetail.title} Online Download Full Episode Sub Indo - ${SITE_NAME}`,
+            description: `Nonton streaming online ${valueDetail && valueDetail.title} ${valueDetail?.summary}`,
+            imagePath: `${meta && meta.image_path}140${valueDetail && valueDetail.program_portrait_image}`,
           };
 
       case 'extras':

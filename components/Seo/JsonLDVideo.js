@@ -7,12 +7,12 @@ export default function JsonLDVideo ({content, isProgram}) {
     "@context": "https://schema.org",
     "@type": "VideoObject",
     "contentURL": `${oneSegment}${content?.asPath}`,
-    "description": `${content?.title} livestream`,
+    "description": `${channel(content?.title)} Live Streaming`,
     // "duration": "PT37M14S",
     "embedUrl": `${oneSegment}${content?.asPath}`,
     "expires": `${content?.expires || '1 Januari 9999'}`,
     "interactionCount": "4756",
-    "name": `Live ${content?.title} livestream!`,
+    "name": `Live ${channel(content?.title)} livestream!`,
     "thumbnailUrl": `${content?.thumbnailUrl}`,
     "uploadDate": content?.startDate || "2018-10-27T14:00:00+00:00",
     "publication": [
@@ -42,4 +42,20 @@ export default function JsonLDVideo ({content, isProgram}) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(isProgram ? structurDataProgram : structurData) }} />
     </>
   )
+}
+
+const channel = (title) => {
+  if(title === 'rcti') {
+    return 'RCTI'
+  }
+  if(title === 'mnctv') {
+    return 'MNCTV'
+  }
+  if(title === 'gtv') {
+    return 'GTV'
+  }
+  if(title === 'inews') {
+    return 'iNews TV'
+  }
+  return title
 }

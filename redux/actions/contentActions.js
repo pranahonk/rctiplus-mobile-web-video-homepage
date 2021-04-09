@@ -2,6 +2,7 @@ import ax from 'axios';
 import { DEV_API } from '../../config';
 import { getCookie, getVisitorToken, checkToken, setCookie } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
+import { getUidAppier } from '../../utils/appier';
 
 const axios = ax.create({ baseURL: DEV_API + '/api' });
 
@@ -123,7 +124,7 @@ const getContentShareLink = (id, type) => {
 const getBanner = (page = 1, length = 10, infos = 'id,title,portrait_image,image_landscape,type,type_value,sorting,program_id,popup_img,link,summary,square_image,program_name') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/banner?page=${page}&length=${length}&infos=${infos}`);
+            const response = await axios.get(`/v1/banner?page=${page}&length=${length}&infos=${infos}&appierid=${getUidAppier()}`);
             if (response.data.status.code === 0) {
                 dispatch({ type: 'BANNER', data: response.data.data, meta: response.data.meta });
                 resolve(response);

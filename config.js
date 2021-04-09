@@ -1,6 +1,8 @@
 import { isIOS, isAndroid } from "react-device-detect";
 
 export const BASE_URL = process.env.BASE_URL;
+export const MODE = process.env.MODE
+export const APPIER_ID = process.env.APPIER_ID
 
 export const FE = process.env.FE;
 export const VERSION = process.env.VERSION;
@@ -126,7 +128,7 @@ export const SITEMAP = {
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
     },
     faq: {
-        title: `Frequently Ask and Questions - ${SITE_NAME}`,
+        title: `Frequently Asked and Questions - ${SITE_NAME}`,
         description: `Kumpulan pertanyaan yang paling sering diajukan (FAQ) terkait informasi penggunaan dan program tayangan di RCTI+ beserta jawabannya.`,
         keywords: `faq rctiplus, faq rcti+, cara melihat tv di hp, cara menggunakan aplikasi rcti plus, cara download rcti plus, cara download video di rctiplus`,
         image: `https://rctiplus.com/assets/image/elements/logo.b9f35229.png`
