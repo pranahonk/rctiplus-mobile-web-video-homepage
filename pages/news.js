@@ -159,7 +159,7 @@ class Trending_v2 extends React.Component {
     bottomScrollFetch() {
         if (!this.state.is_load_more && this.state.load_more_allowed[this.state.active_tab]) {
             this.setState({ is_load_more: true }, () => {
-                this.props.getSectionNews(this.state.active_tab, 3, this.state.pages[this.state.active_tab])
+                // this.props.getSectionNews(this.state.active_tab, 3, this.state.pages[this.state.active_tab])
                 this.loadArticles(this.state.active_tab, this.state.pages[this.state.active_tab]);
             });
         }
@@ -181,6 +181,7 @@ class Trending_v2 extends React.Component {
 
     loadArticles(categoryId, page = 1) {
         this.setState({ is_articles_loading: true }, () => {
+            this.props.getSectionNews(this.props.query.subcategory_id || 15, 1, page).then((resSection) => {
             this.props.getNews(categoryId, this.state.articles_length, page)
                 .then(res => {
                     const data = res.data.data
@@ -202,6 +203,12 @@ class Trending_v2 extends React.Component {
                         articles[categoryId.toString()] = data;
                         pages[categoryId.toString()] = 2;
                     }
+
+                    articles[categoryId.toString()].forEach((item, i) => {
+                        if(((i+1) % 7  === 0) && !item.section) {
+                            item.section = resSection.data[0] || []
+                        }
+                    })
                     // console.log(this.state.tabs, articles['20']);
                     this.setState({
                         is_articles_loading: false,
@@ -219,6 +226,7 @@ class Trending_v2 extends React.Component {
                         is_load_more: false
                     });
                 });
+            })
         });
     }
 
@@ -303,7 +311,6 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
-        this.props.getSectionNews(this.props.query.subcategory_id || 15)
         if (this.accessToken !== null &&  this.accessToken !== undefined) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -708,7 +715,7 @@ class Trending_v2 extends React.Component {
                                                                                   display: 'none',
                                                                                 }} />
                                                                             </ListGroupItem>
-                                                                            <SectionNews idSection={this.state.section}/>
+                                                                            <SectionNews  article={article}/>
                                                                         </ListGroup>
                                                                     </li>
                                                                     </>
