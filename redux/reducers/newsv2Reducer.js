@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import sortBy from 'lodash/sortBy'
 
 const initialState = {
     data: null,
@@ -14,6 +14,7 @@ const initialState = {
     is_searching: false,
     loading: true,
     isMorePage: false,
+    countSection: 0,
 };
 
 export default function NewsReducer (state = initialState, action) {
@@ -33,7 +34,7 @@ export default function NewsReducer (state = initialState, action) {
             return Object.assign({}, state, { data: action.data });
         case 'GET_TOPIC':
             let data = action.data
-            data = _.sortBy(data, ['sorting', 'tag']);
+            data = sortBy(data, ['sorting', 'tag']);
             return Object.assign({}, state, { data_topic: data });
         case 'GET_LIST_TAG':
             return Object.assign({}, state, { data_tag: action.data });
@@ -71,6 +72,10 @@ export default function NewsReducer (state = initialState, action) {
         case 'TOGGLE_IS_SEARCHING':
             return Object.assign({}, state, {
                 is_searching: action.is_searching
+            });
+        case 'ADD_SECTION':
+            return Object.assign({}, state, {
+                countSection: state.countSection + 1
             });
         default:
             return state;

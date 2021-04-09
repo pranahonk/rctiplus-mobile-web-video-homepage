@@ -213,7 +213,7 @@ const getSectionNews = (category_id = 16, pageSize = 3, page = 1) => {
                     type: 'GET_SECTION_NEWS',
                     payload: response.data, 
                 });
-                resolve(response);
+                resolve(response.data);
             }
             else {
                 removeAccessToken();
@@ -505,6 +505,9 @@ const incrementCountTag = tagName => {
     });
 };
 
+const setSection = () => dispatch => dispatch({ type: "ADD_SECTION" })
+
+
 export default {
     clearSearch,
     setQuery,
@@ -531,5 +534,7 @@ export default {
     getTagByNews,
     getSearchFromServer,
     getSectionNews,
-    incrementCountTag
+    incrementCountTag,
+    getSectionNews,
+    setSection
 };
