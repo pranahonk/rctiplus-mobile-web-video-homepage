@@ -185,6 +185,7 @@ class Trending_v2 extends React.Component {
                 .then(res => {
                     const data = res.data.data
                     const pageSection = res.data.meta.pagination.current_page
+                    const assets_url = res.data.meta.assets_url
                     // if(data.length > 6) {
                     //     data[6].section = page
                     // }
@@ -207,7 +208,8 @@ class Trending_v2 extends React.Component {
                         articles: articles,
                         load_more_allowed: loadMoreAllowed,
                         is_load_more: false,
-                        section: pageSection
+                        section: pageSection,
+                        assets_url: assets_url
                     });
                 })
                 .catch(error => {
@@ -713,7 +715,7 @@ class Trending_v2 extends React.Component {
                                                                     </>
                                                                 )  : 
                                                                 (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
-                                                                    <SquareItem item={article}/>
+                                                                    <SquareItem item={article} assets_url={this.state.assets_url} />
                                                                 </ListGroupItem>)
 
                                                             )})}
