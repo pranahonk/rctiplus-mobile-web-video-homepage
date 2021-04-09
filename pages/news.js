@@ -185,6 +185,7 @@ class Trending_v2 extends React.Component {
                     let pages = this.state.pages;
                     let loadMoreAllowed = this.state.load_more_allowed;
                     loadMoreAllowed[categoryId.toString()] = res.data.data.length >= this.state.articles_length
+                    const assets_url = res.data.meta.assets_url
 
                     if (articles[categoryId.toString()]) {
                         articles[categoryId.toString()].push.apply(articles[categoryId.toString()], res.data.data);
@@ -199,7 +200,8 @@ class Trending_v2 extends React.Component {
                         is_articles_loading: false,
                         articles: articles,
                         load_more_allowed: loadMoreAllowed,
-                        is_load_more: false
+                        is_load_more: false,
+                        assets_url: assets_url
                     });
                 })
                 .catch(error => {
@@ -721,7 +723,7 @@ class Trending_v2 extends React.Component {
                                                             } else {
                                                                 return(
                                                                     <li className="item_square-wrapper" key={j + article.title}>
-                                                                        <SquareItem item={article}/>
+                                                                        <SquareItem item={article} assets_url={this.state.assets_url} />
                                                                     </li>
                                                                 )
                                                             }
