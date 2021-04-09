@@ -635,105 +635,6 @@ class Trending_v2 extends React.Component {
                                                                             Only a click away and you<br/>
                                                                             can continue to enjoy<br/>
                                                                             <b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
-<<<<<<< HEAD
-                                                                        }
-                                                                    }} />
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    } }
-                                                </Sticky>
-                                            </StickyContainer>
-                                        )}
-
-                                        {this.state.is_tabs_loading ? (<HeadlineLoader />) : null}
-                                        {this.state.is_tabs_loading ? (<ArticleLoader />) : null}
-
-                                        <TabContent activeTab={this.state.active_tab}>
-                                            {this.state.tabs.map((tab, i) => {
-                                                return (
-                                                <TabPane key={i} tabId={tab.id.toString()}>
-                                                    {(this.state.is_trending_loading ? (<HeadlineLoader />) : (
-                                                        !isEmpty(this.state.trending_articles[tab.id]) ? <HeadlineCarousel articles={this.state.trending_articles[tab.id]} assets_url={this.state.assets_url} /> : null
-                                                    ))}
-                                                    { !isEmpty(this.props.newsv2.data_topic) ? (
-                                                        <div className="interest-topic_wrapper">
-                                                            <div className="interest-topic_title">
-                                                                <h1>topik menarik</h1>
-                                                                <Link href={`/news/interest-topic${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`} className=""><span className="news-more_action">See More <ArrowForwardIosIcon /></span></Link>
-                                                            </div>
-                                                            <div className="interest-topic_list">
-                                                                <Row className="interest-topic_list_row">
-                                                                    {this.props.newsv2.data_topic.map((item, i) => {
-                                                                        return i > 10 ? ''
-                                                                        : (
-                                                                        <Col xs="6" className="interest-topic-item" key={i}>
-                                                                            <Link href={`/news/topic/tag/${item.tag.toLowerCase()}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`}>
-                                                                                {`#${item.tag}`}
-                                                                            </Link>
-                                                                        </Col>
-                                                                        );
-                                                                    })}
-                                                                </Row>
-                                                            </div>
-                                                        </div>
-                                                    ) : '' }
-                                                    <ListGroup className="article-list">
-                                                        {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => {
-                                                            return(((j+1) % 7  === 0) ?
-                                                                (<>
-                                                                    <li className="listItems" key={j + article.title}>
-                                                                        <ListGroup className="groupNews">
-                                                                            <ListGroupItem className="">
-                                                                                <iframe
-                                                                                onLoad={() => {
-                                                                                    window.addEventListener('scroll', () => {
-                                                                                      const adsFrame = document.getElementById(article.id);
-                                                                                      const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
-                                                                                      const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
-                                                                                      const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
-                                                                                    if(adsFrame.contentWindow.document && iframeAdsID){
-                                                                                      adsFrame.style.display = 'block'
-
-                                                                                    }else if(element && element.style.display === 'none' || element_2 || !element){
-                                                                                      adsFrame.style.display = 'none'
-                                                                                    }else{
-                                                                                      adsFrame.style.display = 'none'
-                                                                                    }
-
-                                                                                    })
-                                                                                }}
-                                                                                id={article.id} src={`/dfp?platform=${this.platform}`}
-                                                                                frameBorder="0"
-                                                                                style={{
-                                                                                  height: '250px',
-                                                                                  width: '100%',
-                                                                                  display: 'none',
-                                                                                }} />
-                                                                            </ListGroupItem>
-                                                                            <SectionNews idSection={this.state.section}/>
-                                                                        </ListGroup>
-                                                                    </li>
-                                                                    </>
-                                                                )  : 
-                                                                (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
-                                                                    <SquareItem item={article} assets_url={this.state.assets_url} />
-                                                                </ListGroupItem>)
-
-                                                            )})}
-                                                    </ListGroup>
-                                                    {this.state.is_articles_loading ? (<ArticleLoader />) : null}
-                                                </TabPane>
-                                            )})}
-                                        </TabContent>
-                                    </div>
-                                )
-                        )}
-                </div>
-            </Layout>
-        );
-    }
-=======
                                 }
                               }} />
                             </div>
@@ -828,7 +729,6 @@ class Trending_v2 extends React.Component {
       </Layout>
     );
   }
->>>>>>> 0ffa545f8a16520f5f32b3e038162438c9dd6ca2
 
 }
 
