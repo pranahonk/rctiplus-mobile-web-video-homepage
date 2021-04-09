@@ -23,6 +23,7 @@ class Dfp extends React.Component {
     return(
       <div>
         <div style={{backgroundColor: "white"}}>{this.platform}</div>
+        <div style={{backgroundColor: "white"}}>{getPlatformGpt(this.platform)}</div>
         <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} />
       </div>
     )
@@ -33,30 +34,43 @@ export default withRouter(Dfp);
 
 const getPlatformGpt = (platform) => {
   // webview
-  switch (platform) {
-    case platform === 'ios':
-      return GPT_NEWS_IOS_LIST;
-    case platform === 'android':
-      return GPT_NEWS_ANDROID_LIST;
-    default:
-      return GPT_NEWS_MWEB_LIST;
+  if(platform === 'ios') {
+    return GPT_NEWS_IOS_LIST;
   }
-  //   if(platform === 'ios') {
-  //     // console.log('ISO')
-  //     return GPT_NEWS_IOS_LIST;
-  //     // return '/21865661642/PRO_IOS-APP_LIST-NEWS_DISPLAY_300x250'
-  //     // return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
-  //   }
-  //   if(platform === 'android') {
-  //     // console.log('ANDROID')
-  //     return GPT_NEWS_ANDROID_LIST;
-  //     // return '/21865661642/PRO_ANDROID-APP_LIST-NEWS_DISPLAY_300x250'
-  //     // return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
-  //   }
-  // // native browser
-  // if(!isWebview('Mozilla/5.0 (Linux; Android 4.4.4; One Build/KTU84L.H4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.135 Mobile Safari/537.36')) {
-  //   // console.log('NATIVE')
-  //   // return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
-  //   return GPT_NEWS_MWEB_LIST;
-  // }
+  else if(platform === 'android') {
+    return GPT_NEWS_ANDROID_LIST;
+  }
+  else {
+    return  GPT_NEWS_MWEB_LIST;
+  }
 }
+
+// const getPlatformGpt = (platform) => {
+//   // webview
+//   switch (platform) {
+//     case platform === 'ios':
+//       return GPT_NEWS_IOS_LIST;
+//     case platform === 'android':
+//       return GPT_NEWS_ANDROID_LIST;
+//     default:
+//       return GPT_NEWS_MWEB_LIST;
+//   }
+//     if(platform === 'ios') {
+//       // console.log('ISO')
+//       return GPT_NEWS_IOS_LIST;
+//       // return '/21865661642/PRO_IOS-APP_LIST-NEWS_DISPLAY_300x250'
+//       // return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
+//     }
+//     if(platform === 'android') {
+//       // console.log('ANDROID')
+//       return GPT_NEWS_ANDROID_LIST;
+//       // return '/21865661642/PRO_ANDROID-APP_LIST-NEWS_DISPLAY_300x250'
+//       // return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
+//     }
+//   // native browser
+//   if(!isWebview('Mozilla/5.0 (Linux; Android 4.4.4; One Build/KTU84L.H4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.135 Mobile Safari/537.36')) {
+//     // console.log('NATIVE')
+//     // return '/21865661642/PRO_MOBILE_LIST-NEWS_DISPLAY_300x250'
+//     return GPT_NEWS_MWEB_LIST;
+//   }
+// }
