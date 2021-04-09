@@ -714,7 +714,7 @@ class Trending_v2 extends React.Component {
                                                                     </>
                                                                 )  : 
                                                                 (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
-                                                                    <SquareItem item={article}/>
+                                                                    <SquareItem item={article} assets_url={this.state.assets_url} />
                                                                 </ListGroupItem>)
 
                                                             )})}
