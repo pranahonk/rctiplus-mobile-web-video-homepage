@@ -18,13 +18,11 @@ class Dfp extends React.Component {
         }
     }
   }
-  componentDidMount() {
-    alert(this.platform);
-  }
 
   render() {
     return(
       <div>
+        <div style={{backgroundColor: "white"}}>{this.platform}</div>
         <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} />
       </div>
     )

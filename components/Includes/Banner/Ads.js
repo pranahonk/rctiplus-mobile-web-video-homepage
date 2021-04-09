@@ -10,7 +10,6 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
   // const toggleAds = useSelector(state => state.ads)
   // const dispatch = useDispatch();
   useEffect(() => {
-    alert(path, size, idGpt)
     const googletag = window.googletag || {};
     window.googletag = window.googletag || {cmd: []};
     googletag?.cmd?.push(function() {
@@ -59,6 +58,9 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
 
   return (
     <div>
+      <div style={{backgroundColor: "white"}}>{path}</div>
+      <div style={{backgroundColor: "white"}}>{size}</div>
+      <div style={{backgroundColor: "white"}}>{idGpt}</div>
       <div id="ads-banner" style={{ position: 'relative' }}>
         <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" />
         <center>
