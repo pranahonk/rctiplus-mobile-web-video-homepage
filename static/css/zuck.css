@@ -154,7 +154,8 @@ and open the template in the editor.
   display: block;
 }
 #zuck-modal-content .story-viewer.loading .head .right .time,
-#zuck-modal-content .story-viewer.loading .head .right .close {
+#zuck-modal-content .story-viewer.loading .head .right .close,
+#zuck-modal-content .story-viewer.with-close-button.loading .head .right .close {
   display: none;
 }
 
@@ -231,26 +232,24 @@ and open the template in the editor.
   color: #fff;
   font-size: 14px;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.35), 1px 0 1px rgba(0, 0, 0, 0.35);
-  padding: 6px 12px;
+  margin: 15px 11px;
 }
 #zuck-modal-content .story-viewer .head .item-preview {
   overflow: hidden;
-  vertical-align: top;
   background-size: cover;
   width: 42px;
   height: 42px;
   display: inline-block;
-  margin-right: 9px;
+  margin-right: 15px;
   border-radius: 50%;
-  vertical-align: middle;
   background-repeat: no-repeat;
   background-position: center;
 }
 #zuck-modal-content .story-viewer .head .item-preview img {
   display: block;
   box-sizing: border-box;
-  height: 95%;
-  width: 95%;
+  height: 100%;
+  width: 100%;
   background-size: cover;
   background-position: center;
   object-fit: cover;
@@ -263,12 +262,11 @@ and open the template in the editor.
 #zuck-modal-content .story-viewer .head .left {
   line-height: 1 !important;
   display: inline-block;
-  margin: 6px 0;
 }
 #zuck-modal-content .story-viewer .head .left .info {
   display: inline-block;
-  max-width: 30vw;
-  vertical-align: middle;
+  width: calc(100vw - 130px);
+  vertical-align: top;
 }
 #zuck-modal-content .story-viewer .head .left .info > * {
   width: 100%;
@@ -283,10 +281,10 @@ and open the template in the editor.
 }
 #zuck-modal-content .story-viewer .head .right .close,
 #zuck-modal-content .story-viewer .head .back {
-  font-size: 42px;
-  width: 48px;
-  height: 48px;
-  line-height: 48px;
+  font-size: 15px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
   cursor: pointer;
   text-align: center;
 }
@@ -365,9 +363,14 @@ and open the template in the editor.
   padding: 12px 24px;
 }
 
+/* Story Ads */
+#zuck-modal-content .story-viewer .head.story-ads-content .left {
+  display: none !important;
+}
+
 @media (max-width: 1024px) {
   #zuck-modal-content .story-viewer .head {
-    top: 3px;
+    top: 0px;
   }
   #zuck-modal-content .story-viewer .head .loading {
     width: 24px;
@@ -375,13 +378,12 @@ and open the template in the editor.
     margin: 6px 0;
   }
   #zuck-modal-content .story-viewer .head .item-preview {
-    width: 30px;
-    height: 30px;
-    margin-right: 9px;
+    width: 40px;
+    height: 40px;
+    margin-right: 15px;
   }
   #zuck-modal-content .story-viewer .head .left {
     font-size: 15px;
-    margin: 15px 0;
   }
   #zuck-modal-content .story-viewer .head .left > div {
     line-height: 30px;
@@ -425,8 +427,19 @@ and open the template in the editor.
     padding: 6px 12px;
   }
   #zuck-modal-content .story-viewer .head .left .time,
+  #zuck-modal-content .story-viewer .head .right .time,
   #zuck-modal-content .story-viewer .head .right .close {
     display: none;
+  }
+
+  #zuck-modal-content .story-viewer.with-close-button .head .right .close {
+    display: block;
+    opacity: 1 !important;
+  }
+
+  /* Story Ads */
+  #zuck-modal-content .story-viewer .head.story-ads-content .left {
+    display: none !important;
   }
 }
 

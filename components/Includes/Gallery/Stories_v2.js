@@ -51,6 +51,7 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
+                            backButton: false,
                             backNative: true,
                             previousTap: true,
                             skin: currentSkin['name'],
@@ -62,6 +63,48 @@ class Stories extends React.Component {
                             localStorage: true,
                             stories: this.state.stories,
                             reactive: true,
+                            callbacks: {
+                                onDataUpdate: function (stories, callback) {
+                                    //console.log('DATA UPDATED');
+                                    const notSeen = [];
+                                    const seen = [];
+
+                                    for (const story of stories) {
+                                        if (story.seen) {
+                                            seen.push({...story});
+                                        } else {
+                                            notSeen.push({...story});
+                                        }
+                                    }
+
+                                    const storiesData = [...notSeen, ...seen];
+
+                                    this.setState(state => {
+                                        state.stories = storiesData;
+                                        return state;
+                                    }, () => {
+                                        callback();
+                                    });
+                                    // console.log('onDataUpdate', stories)
+                                    callback();
+                                }.bind(this),
+                                onOpen: function (storyId, callback) {
+                                    console.log('OPEN');
+                                    document.body.style.overflow = 'hidden'; // disable scroll when opening a story
+                                    callback();
+                                },
+                                onView: function (storyId) {
+                                    console.log('VIEW');
+                                    if (parseInt(storyId) >= (this.state.stories.length - 3)) {
+                                        this.loadMore();
+                                    }
+                                }.bind(this),
+                                onClose: function (storyId, callback) {
+                                    console.log('CLOSED');
+                                    document.body.style.overflow = 'unset'; // enable scroll after closing the story
+                                    callback();
+                                }
+                            },
                             language: { // if you need to translate :)
                                 unmute: 'Touch to unmute',
                                 keyboardTip: 'Press space to see next',
@@ -79,6 +122,40 @@ class Stories extends React.Component {
                                     days: 'days'
                                 }
                             }
+                /* let currentLength = this.state.totalLength + this.props.stories.data.length;
+
+                this.setState({
+                    stories: timelines,
+                    totalLength: currentLength,
+                }, () => {
+                    const currentSkin = this.getCurrentSkin();
+                    this.storiesApi = new this.state.zuckJS("stories-react", {
+                        backButton: false,
+                        backNative: true,
+                        previousTap: true,
+                        skin: currentSkin['name'],
+                        autoFullScreen: currentSkin['params']['autoFullScreen'],
+                        avatars: currentSkin['params']['avatars'],
+                        paginationArrows: currentSkin['params']['paginationArrows'],
+                        list: currentSkin['params']['list'],
+                        cubeEffect: currentSkin['params']['cubeEffect'],
+                        localStorage: true,
+                        stories: this.state.stories,
+                        reactive: true,
+                        callbacks: {
+                            onDataUpdate: function (stories, callback) {
+                                //console.log('DATA UPDATED');
+                                const notSeen = [];
+                                const seen = [];
+
+                                for (const story of stories) {
+                                    if (story.seen) {
+                                        seen.push({...story});
+                                    } else {
+                                        notSeen.push({...story});
+                                    }
+                                }
+                            } */
                         });
                     });
                 })
@@ -110,6 +187,7 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
+                            backButton: false,
                             backNative: true,
                             previousTap: true,
                             skin: currentSkin['name'],
@@ -286,11 +364,50 @@ class Stories extends React.Component {
                 10,
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
-                item.swipe_type == 'link' ? (item.swipe_value) : false, 'Click Here',
+                item.swipe_type == 'link' ? (item.swipe_value) : false,
+                'Click Here',
                 false,
                 item.release_date,
                 item.title,
                 item.link_video != null ? item.link_video.split('.').pop() : ''
+            ]);
+        }
+
+        // Add GPT
+        //console.log('story gpt', story.gpt)
+        //for (const item of story.gpt) {
+        /**
+         * Ukuran Avatar 40x40 margin left 15px
+         * font size title 16px margin left 15px
+         */
+        /* if (this.storyId == 0) {
+            items.push([
+                Math.floor(Math.random() * Math.floor(999999)), // id
+                'ads', // type
+                500, // durations in string
+                '/21865661642/RC_MOBILE_INSERTION-STORIES', // item.path src
+                'div-gpt-ad-1596100730972-0', // item.div_gpt preview
+                false, // link
+                '', // linkText
+                false, // seen
+                new Date().getTime(), // time
+                '', // title
+                '' // videoType
+            ]);
+        } */
+        for (const item of story.gpt) {
+            items.push([
+                item.id + Math.floor(Math.random() * Math.floor(999999)) + Math.floor(Math.random() * Math.floor(99)), // id
+                'ads', // type
+                5, // durations in string
+                item.path, // item.path src
+                item.div_gpt, // item.div_gpt preview
+                false, // link
+                '', // linkText
+                false, // seen
+                new Date().getTime(), // time
+                '', // title
+                '' // videoType
             ]);
         }
 
