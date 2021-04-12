@@ -4,6 +4,8 @@ import { useRouter } from 'next/router'
 import Layout from '../components/Layouts/Default_v2';
 import Head from 'next/head';
 import queryString from 'query-string';
+import dynamic from 'next/dynamic';
+
 import '../assets/scss/components/trending_v2.scss';
 
 // import component
