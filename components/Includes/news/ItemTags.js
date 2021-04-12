@@ -29,10 +29,11 @@ const ItemTags = ({item, index, ...props}) => {
   useEffect(() => {
     const query = queryString.parse(location.search);
     alert('query >>' + JSON.stringify(query));
-    alert('accessToken >>>', accessToken, ' access qry >>', query.accessToken);
-    alert('platform', platform, 'query.platform >>', query.platform);
-    if (query.accessToken) {
-      setAccessToken(query.accessToken);
+    alert('queryss >>' + query);
+    alert('accessToken >>>' + accessToken + ' access qry >>' + query.token);
+    alert('platform' + platform + 'query.platform >>' + query.platform);
+    if (query && query.platform && query.token) {
+      setAccessToken(query.token);
       setPlatform(query.platform);
     }
   },[]);
@@ -57,6 +58,8 @@ const ItemTags = ({item, index, ...props}) => {
       props.getListTag(item.tag).then((res) => setList(res.data)).catch((err) => console.log(err))
     }
   }, []);
+  alert('accessToken 2 >>>' + accessToken + ' access qry 2 >>' + platform);
+
   const _goToDetail = (article) => {
     let category = ''
     if (article.subcategory_name.length < 1) {
