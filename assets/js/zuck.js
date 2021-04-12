@@ -953,19 +953,6 @@ module.exports = (window => {
 							if (adsFrame) {
 								adsFrame.style.height = parentElement.offsetHeight + 'px';
 								initAds(story_id, item);
-
-								/* setTimeout(() => {
-	
-									// test post message
-									const msg = {
-										state: 'init',
-										storyId: story_id,
-										itemId: item.id
-									};
-	
-									//console.log('message string', JSON.stringify(msg))
-									adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
-								}, 100) */
 							} else {
 								setTimeout(setIFrameHeight, 100);
 							}

@@ -240,7 +240,7 @@ class Stories extends React.Component {
          * Ukuran Avatar 40x40 margin left 15px
          * font size title 16px margin left 15px
          */
-        if (this.storyId == 0) {
+        /* if (this.storyId == 0) {
             items.push([
                 Math.floor(Math.random() * Math.floor(999999)), // id
                 'ads', // type
@@ -254,8 +254,8 @@ class Stories extends React.Component {
                 '', // title
                 '' // videoType
             ]);
-        }
-        /* for (const item of story.gpt) {
+        } */
+        for (const item of story.gpt) {
             items.push([
                 item.id + Math.floor(Math.random() * Math.floor(999999)) + Math.floor(Math.random() * Math.floor(99)), // id
                 'ads', // type
@@ -269,7 +269,7 @@ class Stories extends React.Component {
                 '', // title
                 '' // videoType
             ]);
-        } */
+        }
 
         let programImg = '';
         if (story.program_img != null) {
