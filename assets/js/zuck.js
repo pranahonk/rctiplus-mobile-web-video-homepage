@@ -114,6 +114,8 @@ module.exports = (window => {
 							const item = story.items.find(element => element.id == data.itemId);
 
 							item.contentType = data.contentType;
+
+							console.log(item.contentType);
 						}
 						break;
 					case 'play':
@@ -640,8 +642,7 @@ module.exports = (window => {
 									}
 									item.destroyed = true;
 								} else if (item.type == 'ads') {
-									googletag.destroySlots([item.adsSlot]);
-									item.destroyed = true;
+									item.destroyed = googletag.destroySlots([item.adsSlot]);;
 								}
 							});
 
@@ -756,6 +757,8 @@ module.exports = (window => {
 							item['mpdPlayer'] = dashjs.MediaPlayerFactory.create(slides.querySelector(`.${get(item, 'tagClass')}`));
 							item['destroyed'] = false;
 						}
+					} else if (item.type == 'ads') {
+						item['contentType'] = 'none';
 					}
 				});
 
@@ -906,19 +909,40 @@ module.exports = (window => {
 					if (item.type == 'ads') {
 						window.googletag = window.googletag || {cmd: []};
 						googletag.cmd.push(function() {
-							googletag.defineSlot(item.src, ['fluid'], item.preview).addService(googletag.pubads());
+							item['adsSlot'] = googletag.defineSlot(item.src, ['fluid'], item.preview).addService(googletag.pubads());
 							googletag.pubads().enableSingleRequest();
 							googletag.pubads().collapseEmptyDivs();
 							googletag.enableServices();
 						});
 
 						googletag.cmd.push(function() {
-							item['adsSlot'] = googletag.display(item.preview);
+							googletag.display(item.preview);
 						});
 
 						item['destroyed'] = false;
 					}
 				});
+
+				const initAds = (sID, item) => {
+					const adsFrame = document.querySelector(`#${item.preview} > div > iframe`);
+					if (adsFrame) {
+						setTimeout(function initializingAds() {
+							// test post message
+							const msg = {
+								state: 'init',
+								storyId: sID,
+								itemId: item.id
+							};
+
+							//console.log('message string', JSON.stringify(msg))
+							adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
+
+							if (item.contentType == 'none') {
+								setTimeout(initializingAds, 300);
+							}
+						}, 300)
+					}
+				}
 
 				const story_id = storyID;
 				setTimeout(function setIFrameHeight() {
@@ -927,8 +951,10 @@ module.exports = (window => {
 						if (item.type == 'ads') {
 							const adsFrame = document.querySelector(`#${item.preview} > div > iframe`);
 							if (adsFrame) {
-								setTimeout(() => {
-									adsFrame.style.height = parentElement.offsetHeight + 'px';
+								adsFrame.style.height = parentElement.offsetHeight + 'px';
+								initAds(story_id, item);
+
+								/* setTimeout(() => {
 	
 									// test post message
 									const msg = {
@@ -939,7 +965,7 @@ module.exports = (window => {
 	
 									//console.log('message string', JSON.stringify(msg))
 									adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
-								}, 1000)
+								}, 100) */
 							} else {
 								setTimeout(setIFrameHeight, 100);
 							}
@@ -1334,6 +1360,15 @@ module.exports = (window => {
 					const modalContainer = query('#zuck-modal');
 
 					// destroy all
+					const item = zuck.data[zuck.internalData['currentStory']].items[zuck.data[zuck.internalData['currentStory']]['currentItem']];
+					if (item.type == 'video' && item.videoType == 'mpd') {
+						if (item.mpdPlayer) {
+							item.mpdPlayer.destroy();
+						}
+						item.destroyed = true;
+					} else if (item.type == 'ads') {
+						item.destroyed = googletag.destroySlots([item.adsSlot]);;
+					}
 
 					const callback = function () {
 						if (option('backNative')) {
@@ -1551,17 +1586,21 @@ module.exports = (window => {
 					}
 
 					// ads with video type
-					console.log('play', adsItem.contentType);
-					if (adsItem.contentType == 'video') {
-						const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
-						if (adsFrame) {
-							const msg = {
-								state: 'play'
-							};
-
-							adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
+					setTimeout(function checkVideoReady() {
+						if (adsItem.contentType == 'video') {
+							const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
+							if (adsFrame) {
+								const msg = {
+									state: 'play'
+								};
+	
+								adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
+								console.log('state play')
+							}
+						} else if (adsItem.contentType == 'none') {
+							setTimeout(checkVideoReady, 300)
 						}
-					}
+					}, 300)
 				} else {
 					const itemHeader = query(`#zuck-modal .story-viewer[data-story-id="${currentStory}"] > .head`);
 					if (itemHeader && itemHeader.classList.contains('story-ads-content')) {
