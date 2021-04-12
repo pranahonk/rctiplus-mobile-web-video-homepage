@@ -53,6 +53,7 @@ const ItemTags = ({item, index, ...props}) => {
     if (index < 4) {
       props.getListTag(item.tag).then((res) => setList(res.data)).catch((err) => console.log(err))
     }
+    alert('item Tags >>' + window.location.href)
   }, []);
   const _goToDetail = (article) => {
     let category = ''

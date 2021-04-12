@@ -31,6 +31,7 @@ const InteresTopic = (props) => {
       setPlatform(query.platform);
     }
     props.getTagTrending(100).catch((err) => console.log(err))
+    alert('interest Topic >>' + window.location.href)
   },[]);
   return (
     <>
