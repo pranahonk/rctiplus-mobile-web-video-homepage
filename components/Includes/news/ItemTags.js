@@ -28,9 +28,6 @@ const ItemTags = ({item, index, ...props}) => {
   const [platform, setPlatform] = useState(null);
   useEffect(() => {
     const query = queryString.parse(location.search);
-    alert('query >>' + JSON.stringify(query));
-    alert('accessToken >>>' + accessToken + ' access qry >>' + query.token);
-    alert('platform' + platform + 'query.platform >>' + query.platform);
     if (query && query.platform && query.token) {
       setAccessToken(query.token);
       setPlatform(query.platform);
@@ -57,7 +54,6 @@ const ItemTags = ({item, index, ...props}) => {
       props.getListTag(item.tag).then((res) => setList(res.data)).catch((err) => console.log(err))
     }
   }, []);
-  alert('accessToken 2 >>>' + accessToken + ' access qry 2 >>' + platform);
 
   const _goToDetail = (article) => {
     let category = ''
