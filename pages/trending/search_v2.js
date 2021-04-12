@@ -93,6 +93,7 @@ class Search extends React.Component {
     }
 
     componentDidMount() {
+        alert('search >>' + window.location.href)
         this.props.setQuery(this.props.dataSearch?.keyword || '');
         this.props.getSearchFromServer(this.props.dataSearch)
         const searchHistory = getCookie('SEARCH_HISTORY');
@@ -184,7 +185,7 @@ class Search extends React.Component {
                 <div className="result-content">
                     {this.props.newsv2.search_result.map((article, i) => (
                         <div className="item_square-wrapper" key={i + article.title}>
-                            <SquareItem item={article}/>
+                            <SquareItem key={i + article.title} item={article}/>
                         </div>
                     ))}
                 </div>
