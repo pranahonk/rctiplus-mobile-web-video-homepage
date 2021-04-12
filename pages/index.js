@@ -203,7 +203,7 @@ class Index_v2 extends React.Component {
                             } }
                         </Sticky>
                     </StickyContainer>
-                    <div style={{paddingBottom: 10, paddingTop: 10, paddingLeft: 14}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
+                    <div style={{paddingBottom: 10, paddingTop: 10, paddingLeft: 12}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
                         {contents.map((content, i) => {
                             switch (content.display_type) {
                                 case 'horizontal_landscape_large':
