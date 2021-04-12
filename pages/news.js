@@ -173,8 +173,8 @@ class Trending_v2 extends React.Component {
                 }
             });
             this.loadContents(tabData.id);
-            const href = `/news?subcategory_id=${tabData.id}&subcategory_title=${tabData.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`;
-            const as = `/news/${tabData.id}/${tabData.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`;
+            const href = `/news?subcategory_id=${tabData.id}&subcategory_title=${tabData.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}&page=home` : ''}`;
+            const as = `/news/${tabData.id}/${tabData.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&page=home` : ''}`;
             Router.push(href, as)
         }
     }
