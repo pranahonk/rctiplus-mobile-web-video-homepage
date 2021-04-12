@@ -187,6 +187,7 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
+                            backButton: false,
                             backNative: true,
                             previousTap: true,
                             skin: currentSkin['name'],
