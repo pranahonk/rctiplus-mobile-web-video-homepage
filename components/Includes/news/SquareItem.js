@@ -30,7 +30,6 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
           return window.open(article.link, '_blank');
       }
       else if((redirectToPublisherIndex.indexOf(indexKey) != -1) && platform === 'ios'){
-        alert('true');
         return window.open(article.link, "_self");
       }
       return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
