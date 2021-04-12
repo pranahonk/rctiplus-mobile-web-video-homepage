@@ -15,11 +15,14 @@ import SearchIcon from '@material-ui/icons/Search';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 
+import queryString from 'query-string';
+
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked, newsSearchClicked } from '../../../utils/appier';
-import { getCookie, setCookie } from '../../../utils/cookie';
+import { getCookie, setCookie, removeAccessToken, setAccessToken } from '../../../utils/cookie';
+
 
 class NavbarTrendingSearch extends Component {
     constructor(props) {
@@ -30,6 +33,24 @@ class NavbarTrendingSearch extends Component {
         };
 
         this.subject = this.props.subject;
+
+        this.accessToken = null;
+        this.platform = null;
+        const segments = this.props.router.asPath.split(/\?/);
+        console.log('segments >>', segments)
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.token) {
+                this.accessToken = q.token;
+                setAccessToken(q.token);
+            }
+            if (q.platform) {
+                this.platform = q.platform;
+            }
+        }
+        else {
+            removeAccessToken();
+        }
     }
 
     componentDidMount() {
@@ -85,37 +106,29 @@ class NavbarTrendingSearch extends Component {
         // this.setState({ q: q });
         this.props.setQuery(q);
     }
-
+    initSearch(q) {
+        if (q) {
+            let queryParams = `keyword=${q || ''}`
+            if (this.accessToken) {
+                queryParams += `&token=${this.accessToken}`
+                queryParams += `&platform=${this.platform}`
+                queryParams += '&footer=0'
+            }
+            Router.push('/news/search', `/news/search?${queryParams}`)
+            this.props.clearSearch();
+        }
+    }
     search() {
         newsSearchClicked(this.props.newsv2.query, 'mweb_news_search_clicked');
         let q = this.props.newsv2.query.trim();
-        if (q) {
-            Router.push('/news/search', `/news/search?keyword=${q}`)
-            // this.props.searchNews(this.props.newsv2.query, 1, this.state.length)
-            // .then(responses => {
-            //     console.log(responses);
-            //     this.props.unsetPageLoader();
-            //     this.props.toggleIsSearching(false);
-            // })
-            // .catch(error => {
-            //     console.log(error);
-            //     this.props.unsetPageLoader();
-            //     this.props.toggleIsSearching(false);
-            // });
-            // this.saveSearchHistory(q);
-            this.props.clearSearch();
-            // this.props.setPageLoader();
-            // this.subject.next();
-        }
+        this.initSearch(q)
     }
 
     clearKeyword() {
         this.props.clearSearch();
         this.props.setQuery('');
         searchKeywordEvent(this.props.newsv2.query, 'mweb_search_clear_keyword_clicked');
-        this.setState({ q: '' }, () => {
-            this.changeQuery(this.props.newsv2.query);
-        });
+        this.initSearch('')
     }
 
     handleKeyPress = (event) => {
