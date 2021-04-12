@@ -10,7 +10,8 @@ import '../assets/scss/components/trending_v2.scss';
 // import ThumbnailNews from '../components/Includes/News/ThumbnailNews';
 import TopicLoader from '../components/Includes/Shimmer/TopicLoader';
 import NavBack from '../components/Includes/Navbar/NavTrendingDetail';
-import ItemTags from '../components/Includes/news/ItemTags';
+
+const ItemTags = dynamic(() => import('../components/Includes/news/ItemTags'))
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP } from '../config';
 
