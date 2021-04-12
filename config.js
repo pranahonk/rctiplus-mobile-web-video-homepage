@@ -240,30 +240,35 @@ export const SITEMAP = {
         description: `Nonton tv online bersama Indonesia. Cek jadwal live streaming tayangan video siaran RCTI terbaru hari ini di RCTI+.`,
         keywords: `rcti, streaming rcti, live streaming rcti, rcti live, tv online, streaming tv, live streaming, tv bersama, nonton tv`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_RCTI-min.png`,
+        twitter_img_alt: 'streaming rcti'
     },
     live_tv_mnctv: {
         title: `Nonton Live Streaming MNCTV Hari Ini - TV Online Indonesia - ${SITE_NAME}`,
         description: `Nonton live streaming tv Indonesia, MNCTV online hari ini tanpa buffering. Cek juga jadwal program dan acara terbaru di RCTI+.`,
         keywords: `streaming mnctv, live streaming mnctv, mnctv, mnctv live, live mnctv, mnc, tv online mnctv, mnc tv, tv online indonesia, streaming tv indonesia`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_MNCTV-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_MNCTV-min.png`,
+        twitter_img_alt: 'streaming mnc tv'
     },
     live_tv_globaltv: {
         title: `Nonton Live Streaming GTV Hari Ini - TV Online Indonesia - ${SITE_NAME}`,
-        description: `GTV (Global TV) kini bisa Anda akses via live streaming. Cek jadwal siaran acara terbaru hari ini untuk nonton online di RCTI+.`,
+        description: `Nonton live streaming GTV online hari ini tanpa buffering untuk semua program dan acara favorit yang tayang setiap hari. Dapatkan juga jadwal acara Global TV terbaru hanya di RCTI+`,
         keywords: `gtv, streaming gtv, live streaming gtv, global tv, gtv live, streaming global tv, live streaming global tv, global tv live, jadwal global tv hari ini, live tv online`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_GTV-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_GTV-min.png`,
+        twitter_img_alt: 'streaming gtv'
     },
     live_tv_gtv: {
         title: `Nonton Live Streaming GTV Hari Ini - TV Online Indonesia - ${SITE_NAME}`,
-        description: `GTV (Global TV) kini bisa Anda akses via live streaming. Cek jadwal siaran acara terbaru hari ini untuk nonton online di RCTI+.`,
+        description: `Nonton live streaming GTV online hari ini tanpa buffering untuk semua program dan acara favorit yang tayang setiap hari. Dapatkan juga jadwal acara Global TV terbaru hanya di RCTI+`,
         keywords: `gtv, streaming gtv, live streaming gtv, global tv, gtv live, streaming global tv, live streaming global tv, global tv live, jadwal global tv hari ini, live tv online`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_GTV-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_GTV-min.png`,
+        twitter_img_alt: 'streaming gtv'
     },
     live_tv_inews: {
         title: `Nonton Live Streaming iNews TV - Berita Terkini Terbaru Hari Ini - ${SITE_NAME}`, 
         description: `Berita terkini terbaru hari ini dan program favorit lainnya disajikan iNews TV. Nonton online live streaming di RCTI+.`,
         keywords: `inews, inews tv, streaming inews, live streaming inews, inews tv online, inews live, streaming inews tv, berita terkini, berita terbaru`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_INEWS-min.png`
+        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_INEWS-min.png`,
+        twitter_img_alt: 'streaming inews tv'
     },
     live_event_index: {
         title: `Nonton Streaming Live Event - Siaran Langsung - TV Online Indonesia - ${SITE_NAME}`,
