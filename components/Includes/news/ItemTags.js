@@ -29,6 +29,8 @@ const ItemTags = ({item, index, ...props}) => {
   useEffect(() => {
     const query = queryString.parse(location.search);
     alert('query >>' + JSON.stringify(query));
+    alert('accessToken >>>', accessToken, ' access qry >>', query.accessToken);
+    alert('platform', platform, 'query.platform >>', query.platform);
     if (query.accessToken) {
       setAccessToken(query.accessToken);
       setPlatform(query.platform);
