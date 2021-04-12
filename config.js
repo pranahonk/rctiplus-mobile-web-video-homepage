@@ -1,6 +1,8 @@
 import { isIOS, isAndroid } from "react-device-detect";
 
 export const BASE_URL = process.env.BASE_URL;
+export const MODE = process.env.MODE
+export const APPIER_ID = process.env.APPIER_ID
 
 export const FE = process.env.FE;
 export const VERSION = process.env.VERSION;

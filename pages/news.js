@@ -38,6 +38,7 @@ import { urlRegex } from '../utils/regex';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 const Loading = dynamic(() => import('../components/Includes/Shimmer/ListTagLoader'))
+const SectionNews = dynamic(() => import('../components/Includes/news/SectionNews'))
 const SquareItem = dynamic(() => import('../components/Includes/news/SquareItem'),{loading: () => <Loading />})
 
 import queryString from 'query-string';
@@ -130,7 +131,8 @@ class Trending_v2 extends React.Component {
         articles_length: 10,
         is_load_more: false,
         user_data: null,
-        sticky_category_shown: false
+        sticky_category_shown: false,
+        section: 1,
     };
 
     constructor(props) {
@@ -157,11 +159,11 @@ class Trending_v2 extends React.Component {
     bottomScrollFetch() {
         if (!this.state.is_load_more && this.state.load_more_allowed[this.state.active_tab]) {
             this.setState({ is_load_more: true }, () => {
+                // this.props.getSectionNews(this.state.active_tab, 3, this.state.pages[this.state.active_tab])
                 this.loadArticles(this.state.active_tab, this.state.pages[this.state.active_tab]);
             });
         }
     }
-
     toggleTab(tab, tabData) {
         newsTabClicked(tabData.name, 'mweb_news_tab_clicked');
         if (this.state.active_tab != tab) {
@@ -179,27 +181,42 @@ class Trending_v2 extends React.Component {
 
     loadArticles(categoryId, page = 1) {
         this.setState({ is_articles_loading: true }, () => {
+            this.props.getSectionNews(this.props.query.subcategory_id || 15, 1, page).then((resSection) => {
             this.props.getNews(categoryId, this.state.articles_length, page)
                 .then(res => {
+                    const data = res.data.data
+                    const pageSection = res.data.meta.pagination.current_page
+                    // if(data.length > 6) {
+                    //     data[6].section = page
+                    // }
                     let articles = this.state.articles;
                     let pages = this.state.pages;
                     let loadMoreAllowed = this.state.load_more_allowed;
                     loadMoreAllowed[categoryId.toString()] = res.data.data.length >= this.state.articles_length
+                    const assets_url = res.data.meta.assets_url
 
                     if (articles[categoryId.toString()]) {
-                        articles[categoryId.toString()].push.apply(articles[categoryId.toString()], res.data.data);
+                        articles[categoryId.toString()].push.apply(articles[categoryId.toString()], data);
                         pages[categoryId.toString()] = page + 1;
                     }
                     else {
-                        articles[categoryId.toString()] = res.data.data;
+                        articles[categoryId.toString()] = data;
                         pages[categoryId.toString()] = 2;
                     }
+
+                    articles[categoryId.toString()].forEach((item, i) => {
+                        if(((i+1) % 7  === 0) && !item.section) {
+                            item.section = resSection.data[0] || []
+                        }
+                    })
                     // console.log(this.state.tabs, articles['20']);
                     this.setState({
                         is_articles_loading: false,
                         articles: articles,
                         load_more_allowed: loadMoreAllowed,
-                        is_load_more: false
+                        is_load_more: false,
+                        assets_url: assets_url,
+                        section: pageSection
                     });
                 })
                 .catch(error => {
@@ -209,6 +226,7 @@ class Trending_v2 extends React.Component {
                         is_load_more: false
                     });
                 });
+            })
         });
     }
 
@@ -283,7 +301,6 @@ class Trending_v2 extends React.Component {
         // }
     }
     componentDidMount() {
-        console.log(this.props.metaSeo)
         // window.addEventListener('scroll', (event) => {
         //     if(this.isInViewport(document.getElementById('9'))) {
         //         console.log('YESSS')
@@ -668,12 +685,12 @@ class Trending_v2 extends React.Component {
                                                     ) : '' }
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => {
-                                                            if((j + 1) % 5 === 0) {
-                                                                return(
-                                                                    <li key={j} className="listItems">
+                                                            return(((j+1) % 7  === 0) ?
+                                                                (<>
+                                                                    <li className="listItems" key={j + article.title}>
                                                                         <ListGroup className="groupNews">
-                                                                            <ListGroupItem className="listNewsAdds">
-                                                                              <iframe
+                                                                            <ListGroupItem className="">
+                                                                                <iframe
                                                                                 onLoad={() => {
                                                                                   window.addEventListener('scroll', () => {
                                                                                     const adsFrame = document.getElementById(article.id);
@@ -697,35 +714,17 @@ class Trending_v2 extends React.Component {
                                                                                   width: '100%',
                                                                                   display: 'none',
                                                                                 }} />
-
                                                                             </ListGroupItem>
-                                                                            <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
-                                                                                <div className="article-description">
-                                                                                    <div className="article-thumbnail-container-full-width">
-                                                                                        {
-                                                                                            imageNews(article.title, article.cover, article.image, 355, this.state.assets_url, 'article-thumbnail-full-width')
-                                                                                        }
-                                                                                    </div>
-                                                                                    <div className="article-title-container">
-                                                                                        <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
-                                                                                        <div className="article-source">
-                                                                                            <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
-                                                                                            <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </ListGroupItem>
+                                                                            <SectionNews  article={article}/>
                                                                         </ListGroup>
                                                                     </li>
-                                                                )
-                                                            } else {
-                                                                return(
-                                                                    <li className="item_square-wrapper" key={j + article.title}>
-                                                                        <SquareItem item={article}/>
-                                                                    </li>
-                                                                )
-                                                            }
-                                                        })}
+                                                                    </>
+                                                                )  : 
+                                                                (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
+                                                                    <SquareItem item={article} assets_url={this.state.assets_url} />
+                                                                </ListGroupItem>)
+
+                                                            )})}
                                                     </ListGroup>
                                                     {this.state.is_articles_loading ? (<ArticleLoader />) : null}
                                                 </TabPane>

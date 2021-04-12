@@ -10,12 +10,17 @@ class StickyAds extends React.Component {
         closed: false
     }
 
-    componentDidMount() {
+    fetchAds(custParams) {
         switch (process.env.MODE) {
             case 'PRODUCTION':
                 window.googletag = window.googletag || { cmd: [] };
                 googletag.cmd.push(function() {
                     googletag.defineSlot('/21865661642/PRO_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1584677487159-0').addService(googletag.pubads());
+                    if (custParams.length > 0) {
+                        for (const custParam of custParams) {
+                            googletag.pubads().setTargeting(custParam.name, custParam.value);
+                        }
+                    }
                     googletag.pubads().enableSingleRequest();
                     googletag.pubads().collapseEmptyDivs();
                     googletag.pubads().addEventListener('slotRenderEnded', function(event) {
@@ -32,6 +37,11 @@ class StickyAds extends React.Component {
                 window.googletag = window.googletag || {cmd: []};
                 googletag.cmd.push(function() {
                     googletag.defineSlot('/21865661642/RC_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1584677577539-0').addService(googletag.pubads());
+                    if (custParams.length > 0) {
+                        for (const custParam of custParams) {
+                            googletag.pubads().setTargeting(custParam.name, custParam.value);
+                        }
+                    }
                     googletag.pubads().enableSingleRequest();
                     googletag.pubads().collapseEmptyDivs();
 
@@ -46,6 +56,13 @@ class StickyAds extends React.Component {
                 googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584677577539-0'); });
                 break;
         }
+    }
+    componentDidMount() {
+        this.props.fetchTargetingAds()
+        .then((res) => {
+                this.fetchAds(res)
+            })
+        .catch((err) => this.fetchAds([]))
         
     }
 
@@ -58,64 +75,24 @@ class StickyAds extends React.Component {
                 <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
                 {process.env.MODE == 'PRODUCTION' ? (
                     <div>
-                        <script dangerouslySetInnerHTML={{ __html: `
-                            window.googletag = window.googletag || {cmd: []};
-                            googletag.cmd.push(function() {
-                                googletag.defineSlot('/21865661642/PRO_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1584677487159-0').addService(googletag.pubads());
-                                googletag.pubads().enableSingleRequest();
-                                googletag.pubads().collapseEmptyDivs();
-                                googletag.pubads().addEventListener('slotRenderEnded', function(event) {
-                                    if (event.isEmpty) {
-                                        document.getElementById('sticky-ads-container').style.display = 'none';
-                                    }
-                                });
-                                googletag.enableServices();
-                            });
-                        ` }}>
-                        </script>
                         <div className="sticky-ads-content">
                             <center>
                             <div id='div-gpt-ad-1584677487159-0' style={{
                                 width: 320,
                                 height: 50
                             }}>
-                                <script dangerouslySetInnerHTML={{ __html: `
-                                    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584677487159-0'); });
-                                ` }}>
-                                </script>
                             </div>
                             </center>
                         </div>
                     </div>
                 ) : (
                     <div>
-                        <script dangerouslySetInnerHTML={{ __html: `
-                            window.googletag = window.googletag || {cmd: []};
-                            googletag.cmd.push(function() {
-                                googletag.defineSlot('/21865661642/RC_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1584677577539-0').addService(googletag.pubads());
-                                googletag.pubads().enableSingleRequest();
-                                googletag.pubads().collapseEmptyDivs();
-
-                                googletag.pubads().addEventListener('slotRenderEnded', function(event) {
-                                    if (event.isEmpty) {
-                                        document.getElementById('sticky-ads-container').style.display = 'none';
-                                        console.log('EMPTY ADS');
-                                    }
-                                });
-                                googletag.enableServices();
-                            });
-                        ` }}>
-                        </script>
                         <div className="sticky-ads-content">
                             <center>
                             <div id='div-gpt-ad-1584677577539-0' style={{
                                 width: 320,
                                 height: 50
                             }}>
-                                <script dangerouslySetInnerHTML={{ __html: `
-                                    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584677577539-0'); });
-                                ` }}>
-                                </script>
                             </div>
                             </center>
                         </div>
