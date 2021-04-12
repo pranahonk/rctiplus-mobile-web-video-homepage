@@ -19,7 +19,7 @@ const useFetch = (id, total) => {
   const [newContent, setNewContent]  = useState(null);
   useEffect( () => {
     async function fetchData(){
-      const result =  await axios.get(`${NEWS_API_V2}/api/v1/readalso/${id}?page=1&pageSize=3`,{
+      const result =  await axios.get(`${NEWS_API_V2}/api/v1/readalso/${id}?page=1&pageSize=${total}`,{
         headers: {
           'Authorization': getNewsTokenV2(),
         },
@@ -109,7 +109,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
     else{
       let addReadArrayIndex = 0;
       for (let i = 0; i < paragraph.length; i++) {
-        if(i % 3 === 0 && i !== 0){
+        if(i % 3 === 0 && i !== 0 && addReadArray[addReadArrayIndex]){
           paragraph.splice(i - 1, 0, addReadArray[addReadArrayIndex]);
           addReadArrayIndex+=1;
         }
