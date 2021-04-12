@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
+import { useRouter } from 'next/router'
 import Link from 'next/link';
 import queryString from 'query-string';
 import { getTruncate } from '../../../utils/helpers';
