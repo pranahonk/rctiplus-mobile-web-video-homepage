@@ -768,12 +768,15 @@ class Tv extends React.Component {
 	}
 	_metaTags(){
 		const [titleChannel, titleEpg] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.title, this.props.router.query.epg_title?.replace(/-/gi, ' ')]
-		const [descriptionChannel, channel] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.description , this.props?.data_epg?.channel]
+		let [descriptionChannel, channel] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.description , this.props?.data_epg?.channel]
 		const [keywordsChannel, paramsDate] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.keywords, this.props.params_date?.replace(/-/gi, ' ')]
+		const twitter_img_alt = SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.twitter_img_alt
+		channel = channel === 'globaltv' ? 'gtv' : channel
 		return {
 			title: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel?.toUpperCase()} - RCTI+` : titleChannel,
 			description: titleEpg ? `Nonton streaming ${titleEpg} - ${paramsDate}  online tanpa buffering dan acara favorit lainnya 7 hari kemarin. Dapatkan juga jadwal acara ${channel?.toUpperCase()} terbaru hanya di RCTI+` : descriptionChannel,
-			keywords: titleEpg ? `streaming ${channel}, live streaming ${channel}, ${channel} live, ${channel} streaming, ${channel} live streaming. ${titleEpg}, ${paramsDate}` : keywordsChannel
+			keywords: titleEpg ? `streaming ${channel}, live streaming ${channel}, ${channel} live, ${channel} streaming, ${channel} live streaming. ${titleEpg}, ${paramsDate}` : keywordsChannel,
+			twitter_img_alt: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel?.toUpperCase()} - RCTI+` : twitter_img_alt,
 		}
 	}
 	// _onClickEpg() {
@@ -879,7 +882,7 @@ class Tv extends React.Component {
 					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
 					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
 					<meta name="twitter:image" content={SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image} />
-					<meta name="twitter:image:alt" content={this._metaTags().title} />
+					<meta name="twitter:image:alt" content={this._metaTags().twitter_img_alt} />
 					<meta name="twitter:title" content={this._metaTags().title} />
 					<meta name="twitter:description" content={this._metaTags().description} />
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
