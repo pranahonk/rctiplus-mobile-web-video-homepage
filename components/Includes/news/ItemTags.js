@@ -19,6 +19,7 @@ import 'swiper/swiper.scss';
 import TopicLoader from '../Shimmer/TopicLoader';
 
 const ItemTags = ({item, index, ...props}) => {
+  const router = useRouter()
   const [endChild, setEndChild] = useState(false);
   const [meta, setMeta] = useState([]);
   const [list, setList] = useState([]);
@@ -59,7 +60,7 @@ const ItemTags = ({item, index, ...props}) => {
     } else {
       category = urlRegex(article.subcategory_name)
     }
-    return ('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
+    return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
   }
   if (index < 4) {
     let assetUrl = list.meta && list.meta.assets_url ? list.meta.assets_url : null;;
@@ -87,7 +88,10 @@ const ItemTags = ({item, index, ...props}) => {
             {list?.data?.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
-                  <Link href={_goToDetail(item)}>
+                  <a onClick={(e) => {
+                    e.preventDefault()
+                    _goToDetail(item)
+                  }}>
                     <div className="news-interest_thumbnail-wrapper">
                       {
                         imageNews(item.title, item.cover, item.image, 237, assetUrl, 'news-interest_thumbnail')
@@ -97,7 +101,7 @@ const ItemTags = ({item, index, ...props}) => {
                         <h2>{item.subcategory_name} <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
                       </div>
                     </div>
-                  </Link>
+                  </a>
               </SwiperSlide>
               );
             })}
