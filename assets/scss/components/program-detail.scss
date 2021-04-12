@@ -8,6 +8,21 @@ h3, h4, p {
   height: 100%;
   background-color: #000000;
   transition: max-height .4s ease;
+
+  .title-player{
+    width: 320px;
+    height: 17px;
+    object-fit: contain;
+    font-family: OpenSans;
+    font-size: 13px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.31;
+    letter-spacing: normal;
+    color: #ffffff;
+    padding: 11px 15px;
+  }
 }
 .program-detail-main-wrapper {
   width: 100%;

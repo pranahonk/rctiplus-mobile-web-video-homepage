@@ -90,7 +90,7 @@ class Crs_v2 extends Component {
                                 homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + this.state.resolution + program.portrait_image, this.state.meta.image_path + this.state.resolution + program.landscape_image, 'mweb_homepage_banner_swipe');
                             }
                     }}>
-                        {this.state.banner && this.state.banner.length && this.state.banner.map((b, i) => (
+                        {this.state.banner.map((b, i) => (
                             <div data-index={i} onClick={this.goToProgram.bind(this, b)} key={b.id} style={{ 
                                 width: '100%', 
                                 minHeight: 320
