@@ -104,7 +104,7 @@ class Crs_v2 extends Component {
                             ))}
                     </Carousel>
                     {this.props.children}
-                    <div style={{ position: 'absolute', bottom: "-2px", backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 0%,#282828)', width: '100%', height: 200 }}></div>
+                    <div style={{ position: 'absolute', bottom: "-2px", backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 0%,#282828)', width: '100%', height: 160 }}></div>
                 </div>
                 );
     }
