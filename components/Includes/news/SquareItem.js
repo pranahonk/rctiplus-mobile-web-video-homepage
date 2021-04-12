@@ -13,7 +13,6 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
   const [platform, setPlatform] = useState(null);
   useEffect(() => {
     const query = queryString.parse(location.search);
-    alert('query >>' + JSON.stringify(query))
     if (query.token || query.platform) {
       setAccessToken(query.token);
       setPlatform(query.platform);
