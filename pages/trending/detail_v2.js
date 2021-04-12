@@ -192,7 +192,7 @@ class Detail extends React.Component {
             .catch(error => {
                 console.log(error);
             });
-        alert('interest Topic >>' + window.location.href)
+        alert('detail >>' + window.location.href)
     }
 
     getRandom(arr, n) {
