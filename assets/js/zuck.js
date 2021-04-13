@@ -922,9 +922,9 @@ module.exports = (window => {
 				});
 
 				const initAds = (sID, item) => {
-					const adsFrame = document.querySelector(`#${item.preview} > div > iframe`);
-					if (adsFrame) {
-						setTimeout(function initializingAds() {
+					setTimeout(function initializingAds() {
+						const adsFrame = document.querySelector(`#${item.preview} > div > iframe`);
+						if (adsFrame) {
 							// test post message
 							const msg = {
 								state: 'init',
@@ -940,8 +940,8 @@ module.exports = (window => {
 							if (item.contentType == 'none') {
 								setTimeout(initializingAds, 300);
 							}
-						}, 300)
-					}
+						}
+					}, 300);
 				}
 
 				const story_id = storyID;
@@ -1107,7 +1107,16 @@ module.exports = (window => {
 											translate(modalSlider, position.x, 300);
 										}
 										else {
-											modal.close();
+											const totalItems = zuck.data[zuck.internalData['currentStory']].items.length - 1;
+											const currentItem = zuck.data[zuck.internalData['currentStory']]['currentItem'];
+											
+											console.log('check item index', totalItems, currentItem)
+											
+											if (parseInt(currentItem) < parseInt(totalItems)) {
+												translate(modalSlider, position.x, 300);
+											} else {
+												modal.close();
+											}
 										}
 										
 									}
@@ -1347,15 +1356,17 @@ module.exports = (window => {
 					const modalContainer = query('#zuck-modal');
 
 					// destroy all
-					const item = zuck.data[zuck.internalData['currentStory']].items[zuck.data[zuck.internalData['currentStory']]['currentItem']];
-					if (item.type == 'video' && item.videoType == 'mpd') {
-						if (item.mpdPlayer) {
-							item.mpdPlayer.destroy();
+					const items = zuck.data[zuck.internalData['currentStory']].items;
+					each(items, (i, item) => {
+						if (item.type == 'video' && item.videoType == 'mpd') {
+							if (item.mpdPlayer) {
+								item.mpdPlayer.destroy();
+							}
+							item.destroyed = true;
+						} else if (item.type == 'ads') {
+							item.destroyed = googletag.destroySlots([item.adsSlot]);;
 						}
-						item.destroyed = true;
-					} else if (item.type == 'ads') {
-						item.destroyed = googletag.destroySlots([item.adsSlot]);;
-					}
+					})
 
 					const callback = function () {
 						if (option('backNative')) {
