@@ -29,9 +29,12 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
       if ((redirectToPublisherIndex.indexOf(indexKey) != -1) && platform !== 'ios') {
           return window.open(article.link, '_blank');
       }
-          return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
+      else if((redirectToPublisherIndex.indexOf(indexKey) != -1) && platform === 'ios'){
+        return window.open(article.link, "_self");
+      }
+      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
-    else { 
+    else {
           return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
   }

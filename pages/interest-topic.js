@@ -4,13 +4,16 @@ import { useRouter } from 'next/router'
 import Layout from '../components/Layouts/Default_v2';
 import Head from 'next/head';
 import queryString from 'query-string';
+import dynamic from 'next/dynamic';
+
 import '../assets/scss/components/trending_v2.scss';
 
 // import component
 // import ThumbnailNews from '../components/Includes/News/ThumbnailNews';
 import TopicLoader from '../components/Includes/Shimmer/TopicLoader';
 import NavBack from '../components/Includes/Navbar/NavTrendingDetail';
-import ItemTags from '../components/Includes/news/ItemTags';
+
+const ItemTags = dynamic(() => import('../components/Includes/news/ItemTags'))
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP } from '../config';
 

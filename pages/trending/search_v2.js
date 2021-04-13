@@ -23,7 +23,8 @@ import { getCookie, setCookie, removeCookie, removeAccessToken, setAccessToken }
 import { Subject } from 'rxjs';
 
 import queryString from 'query-string';
-// import isEmpty from 'lodash/isEmpty'
+import isEmpty from 'lodash/isEmpty'
+
 const Loading = dynamic(() => import('../../components/Includes/Shimmer/ListTagLoader'))
 const SquareItem = dynamic(() => import('../../components/Includes/news/SquareItem'),{loading: () => <Loading />})
 
@@ -179,12 +180,14 @@ class Search extends React.Component {
     }
 
     renderContent() {
-        if (this.props.newsv2.search_result.length > 0) {
+        const {search_result, meta = null} = this.props.newsv2
+        const assetsUrl = !isEmpty(meta) ? meta.assets_url : null
+        if (search_result.length > 0) {
             return (
                 <div className="result-content">
-                    {this.props.newsv2.search_result.map((article, i) => (
+                    {search_result.map((article, i) => (
                         <div className="item_square-wrapper" key={i + article.title}>
-                            <SquareItem item={article}/>
+                            <SquareItem key={i + article.title} item={article} assets_url={assetsUrl}/>
                         </div>
                     ))}
                 </div>
