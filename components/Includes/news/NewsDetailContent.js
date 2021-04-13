@@ -38,8 +38,14 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const [platform, setPlatform] = useState(null);
 
   const getTag =  item.content.match(/(<\w+>)/gm)[0];
-  const paragraph = item.content.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#");
-  const total  = paragraph.length - 1 > 6 ? Math.floor(paragraph.length / 3) : 1;
+  const paragraph = item.content.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);
+  const pattern = /<\w+>(\s|(&nbsp);?)*<\/\w+>/gmi;
+  paragraph.some((e, i ) => {
+    if (pattern.test(e)) {
+      paragraph.splice(i, 1)
+    }
+  });
+  const total  = paragraph.length > 6 ? Math.floor(paragraph.length / 3) : 1;
   const {response, newContent} = useFetch(item.id, total);
 
 
@@ -74,14 +80,8 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
 
 
   const newCont = (responses) => {
-    const getTag =  item.content.match(/(<\w+>)/gm)[0];
-    const paragraph = item.content.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);
-    const pattern = /<\w+>(\s|(&nbsp);?)*<\/\w+>/gmi;
-    paragraph.some((e, i ) => {
-      if (pattern.test(e)) {
-        paragraph.splice(i, 1)
-      }
-    });
+    // const getTag =  item.content.match(/(<\w+>)/gm)[0];
+    // const paragraph = item.content.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);
 
     const addReadArray = [];
 
@@ -102,20 +102,21 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       addReadArray.push(addRead);
     }
 
-    if(paragraph.length - 1 === 1){
+    if(paragraph.length === 1){
       return false;
     }
-    else if(paragraph.length - 1 === 2 && addReadArray.length === 1){
+    else if(paragraph.length === 2 && addReadArray.length === 1){
       paragraph.splice(paragraph.length - 1, 0, addReadArray[0]);
     }
-    else if(paragraph.length - 1 >= 3 && paragraph.length - 1 <= 6 && addReadArray.length === 1){
+    else if(paragraph.length >= 3 && paragraph.length <= 6 && addReadArray.length === 1){
       paragraph.splice(2, 0, addReadArray[0]);
     }
     else{
       let addReadArrayIndex = 0;
-      for (let i = 0; i < paragraph.length; i++) {
+      for (let i = 1; i < paragraph.length; i++) {
         if(i % 3 === 0 && i !== 0 && addReadArray[addReadArrayIndex]){
           paragraph.splice(i - 1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
+
           addReadArrayIndex+=1;
         }
       }
