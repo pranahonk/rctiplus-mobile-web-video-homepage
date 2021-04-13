@@ -122,40 +122,6 @@ class Stories extends React.Component {
                                     days: 'days'
                                 }
                             }
-                /* let currentLength = this.state.totalLength + this.props.stories.data.length;
-
-                this.setState({
-                    stories: timelines,
-                    totalLength: currentLength,
-                }, () => {
-                    const currentSkin = this.getCurrentSkin();
-                    this.storiesApi = new this.state.zuckJS("stories-react", {
-                        backButton: false,
-                        backNative: true,
-                        previousTap: true,
-                        skin: currentSkin['name'],
-                        autoFullScreen: currentSkin['params']['autoFullScreen'],
-                        avatars: currentSkin['params']['avatars'],
-                        paginationArrows: currentSkin['params']['paginationArrows'],
-                        list: currentSkin['params']['list'],
-                        cubeEffect: currentSkin['params']['cubeEffect'],
-                        localStorage: true,
-                        stories: this.state.stories,
-                        reactive: true,
-                        callbacks: {
-                            onDataUpdate: function (stories, callback) {
-                                //console.log('DATA UPDATED');
-                                const notSeen = [];
-                                const seen = [];
-
-                                for (const story of stories) {
-                                    if (story.seen) {
-                                        seen.push({...story});
-                                    } else {
-                                        notSeen.push({...story});
-                                    }
-                                }
-                            } */
                         });
                     });
                 })
@@ -448,37 +414,71 @@ class Stories extends React.Component {
             let page = this.state.page + 1;
 			this.setState({ loading: true }, () => {
                 this.props.loadingBar && this.props.loadingBar.continuousStart();
-                this.props.getStories(page, this.state.length)
-                .then(() => {
-                    const buildedStories = [];
-                    const newStories = this.props.stories.data;
+                if (this.props.homepage) {
+                    this.props.getStories(page, this.state.length)
+                    .then(() => {
+                        const buildedStories = [];
+                        const newStories = this.props.stories.data;
 
-                    for (const story of newStories) {
-                        buildedStories.push(this.buildTimeline(story));
-                    }
-
-                    const seen = [];
-                    const notseen = [];
-
-                    for (const story of this.state.stories) {
-                        if (story.seen) {
-                            seen.push({...story});
-                        } else {
-                            notseen.push({...story});
+                        for (const story of newStories) {
+                            buildedStories.push(this.buildTimeline(story));
                         }
-                    }
 
-                    const storiesData = [...notseen, ...buildedStories, ...seen];
-                    let currentLength = this.state.totalLength + this.props.stories.data.length;
+                        const seen = [];
+                        const notseen = [];
 
-                    this.setState({ totalLength: currentLength, stories: storiesData, loading: false, page: page, endpage: this.props.stories.data.length < this.state.length });
-                    this.props.loadingBar && this.props.loadingBar.complete();
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.setState({ loading: false, endpage: true });
-                    this.props.loadingBar && this.props.loadingBar.complete();
-                });
+                        for (const story of this.state.stories) {
+                            if (story.seen) {
+                                seen.push({...story});
+                            } else {
+                                notseen.push({...story});
+                            }
+                        }
+
+                        const storiesData = [...notseen, ...buildedStories, ...seen];
+                        let currentLength = this.state.totalLength + this.props.stories.data.length;
+
+                        this.setState({ totalLength: currentLength, stories: storiesData, loading: false, page: page, endpage: this.props.stories.data.length < this.state.length });
+                        this.props.loadingBar && this.props.loadingBar.complete();
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.setState({ loading: false, endpage: true });
+                        this.props.loadingBar && this.props.loadingBar.complete();
+                    });
+                } else if (this.props.detailCategory) {
+                    this.props.getStoriesCategory(page, this.state.length)
+                    .then(() => {
+                        const buildedStories = [];
+                        const newStories = this.props.stories.data;
+
+                        for (const story of newStories) {
+                            buildedStories.push(this.buildTimeline(story));
+                        }
+
+                        const seen = [];
+                        const notseen = [];
+
+                        for (const story of this.state.stories) {
+                            if (story.seen) {
+                                seen.push({...story});
+                            } else {
+                                notseen.push({...story});
+                            }
+                        }
+
+                        const storiesData = [...notseen, ...buildedStories, ...seen];
+                        let currentLength = this.state.totalLength + this.props.stories.data.length;
+
+                        this.setState({ totalLength: currentLength, stories: storiesData, loading: false, page: page, endpage: this.props.stories.data.length < this.state.length });
+                        this.props.loadingBar && this.props.loadingBar.complete();
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.setState({ loading: false, endpage: true });
+                        this.props.loadingBar && this.props.loadingBar.complete();
+                    });
+                }
             });
         }
     }

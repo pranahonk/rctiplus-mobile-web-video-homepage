@@ -114,8 +114,6 @@ module.exports = (window => {
 							const item = story.items.find(element => element.id == data.itemId);
 
 							item.contentType = data.contentType;
-
-							console.log(item.contentType);
 						}
 						break;
 					case 'play':
@@ -934,6 +932,8 @@ module.exports = (window => {
 								itemId: item.id
 							};
 
+							console.log('init ads')
+
 							//console.log('message string', JSON.stringify(msg))
 							adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
 
@@ -1159,7 +1159,7 @@ module.exports = (window => {
 
 							const storyViewerViewing = query('#zuck-modal .viewing');
 							const adsItem = zuck.data[zuck.internalData['currentStory']].items[zuck.data[zuck.internalData['currentStory']]['currentItem']]
-							console.log('touch End', adsItem.contentType);
+							
 							if (storyViewerViewing && video) {
 								if (storyViewerViewing.classList.contains('muted')) {
 									unmuteVideoItem(video, storyViewerViewing);
