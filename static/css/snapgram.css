@@ -30,3 +30,7 @@
 .stories.snapgram .story.seen > a {
     /* color: #999 !important; */
 }
+
+.stories.snapgram .story.ads {
+    display: none;
+}
