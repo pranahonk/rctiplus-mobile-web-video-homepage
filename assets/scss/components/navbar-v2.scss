@@ -111,10 +111,12 @@
     }
     .btn-nav-menu {
         display: flex;
+        position: relative;
         margin: 0 2px !important;
         border-radius: 20px;
         font-size: 10px;
-        padding: 5px 2px !important;
+        padding: 5px 16px !important;
+        padding-right: 0 !important;
         justify-content: center;
         align-items: center;
         border-color: #3a3a3a !important;
@@ -145,6 +147,13 @@
           margin: 0 !important;
           white-space: nowrap;
           font-size: 10px !important;
+        }
+        .icon-menu-top {
+            position: absolute;
+            left: -4px;
+        }
+        label {
+            margin: 0;
         }
     }
     .img-menu-icon {
