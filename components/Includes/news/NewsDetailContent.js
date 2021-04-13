@@ -38,7 +38,8 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const [platform, setPlatform] = useState(null);
 
   const getTag =  item.content.match(/(<\w+>)/gm)[0];
-  const paragraph = item.content.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#");
+  const paragraph = item.content.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);;
+  console.log(paragraph)
   const total  = paragraph.length - 1 > 6 ? Math.floor(paragraph.length / 3) : 1;
   const {response, newContent} = useFetch(item.id, total);
 
@@ -74,8 +75,8 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
 
 
   const newCont = (responses) => {
-    const getTag =  item.content.match(/(<\w+>)/gm)[0];
-    const paragraph = item.content.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);
+    // const getTag =  item.content.match(/(<\w+>)/gm)[0];
+    // const paragraph = item.content.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);
     const pattern = /<\w+>(\s|(&nbsp);?)*<\/\w+>/gmi;
     paragraph.some((e, i ) => {
       if (pattern.test(e)) {
