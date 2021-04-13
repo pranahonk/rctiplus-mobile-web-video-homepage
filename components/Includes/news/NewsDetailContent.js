@@ -115,7 +115,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       let addReadArrayIndex = 0;
       for (let i = 0; i < paragraph.length; i++) {
         if(i % 3 === 0 && i !== 0 && addReadArray[addReadArrayIndex]){
-          paragraph.splice(i - 1, 0, addReadArray[addReadArrayIndex]);
+          paragraph.splice(i - 1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
           addReadArrayIndex+=1;
         }
       }
