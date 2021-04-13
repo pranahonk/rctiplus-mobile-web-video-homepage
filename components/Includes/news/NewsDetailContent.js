@@ -37,16 +37,27 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
 
-  const getTag =  item.content.match(/(<\w+>)/gm)[0];
-  const paragraph = item.content.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);
-  const pattern = /<\w+>(\s|(&nbsp);?)*<\/\w+>/gmi;
-  paragraph.some((e, i ) => {
-    if (pattern.test(e)) {
-      paragraph.splice(i, 1)
+  const rmAttributes = item.content.replace(/(class|id)="\w+"/gm, '').replace(/\s*>/gmi, '>');
+  const getTag = rmAttributes.match(/(<\w+>)/gm)[0];
+  const paragraph = rmAttributes.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);
+  const index = []
+  paragraph.filter((x, i)=> {
+    const length = x.replace(/<\w+>|<\/\w+>/gmi, '').trim().length;
+    if(length === 0){
+      index.push(i)
     }
   });
+  for (const p of index){
+    if(p === paragraph.length){
+      paragraph.splice(-p, 1)
+    }else{
+      paragraph.splice(p, 1)
+    }
+  }
+
   const total  = paragraph.length > 6 ? Math.floor(paragraph.length / 3) : 1;
   const {response, newContent} = useFetch(item.id, total);
+
 
 
   useEffect(  () => {
@@ -103,10 +114,10 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
     }
 
     if(paragraph.length === 1){
-      return false;
+      return paragraph[0];
     }
     else if(paragraph.length === 2 && addReadArray.length === 1){
-      paragraph.splice(paragraph.length - 1, 0, addReadArray[0]);
+      paragraph.splice(paragraph.length , 0, addReadArray[0]);
     }
     else if(paragraph.length >= 3 && paragraph.length <= 6 && addReadArray.length === 1){
       paragraph.splice(2, 0, addReadArray[0]);
