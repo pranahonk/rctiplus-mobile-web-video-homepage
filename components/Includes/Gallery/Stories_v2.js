@@ -356,6 +356,10 @@ class Stories extends React.Component {
 
                     for (const story of newStories) {
                         buildedStories.push(this.buildTimeline(story));
+
+                        if (story.gpt.length >= 1) {
+                            buildedStories.push(this.buildStoryGPT(story.gpt));
+                        }
                     }
 
                     const seen = [];
