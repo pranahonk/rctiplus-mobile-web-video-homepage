@@ -40,6 +40,10 @@ class Stories extends React.Component {
                 const stories = this.props.stories.data;
                 for (const story of stories) {
                     timelines.push(this.buildTimeline(story));
+
+                    if (story.gpt.length >= 1) {
+                        timelines.push(this.buildStoryGPT(story.gpt));
+                    }
                 }
 
                 let currentLength = this.state.totalLength + this.props.stories.data.length;
@@ -141,6 +145,10 @@ class Stories extends React.Component {
                 const newStories = [];
                 for (const story of this.props.stories.data) {
                     newStories.push(this.buildTimeline(story));
+
+                    if (story.gpt.length >= 1) {
+                        newStories.push(this.buildStoryGPT(story.gpt));
+                    }
                 }
                 this.storiesApi.addStories(newStories, true);
             }
@@ -255,7 +263,48 @@ class Stories extends React.Component {
                 '' // videoType
             ]);
         } */
-        for (const item of story.gpt) {
+        /* for (const item of story.gpt) {
+            items.push([
+                item.id + Math.floor(Math.random() * Math.floor(999999)) + Math.floor(Math.random() * Math.floor(99)), // id
+                'ads', // type
+                5, // durations in string
+                item.path, // item.path src
+                item.div_gpt, // item.div_gpt preview
+                false, // link
+                '', // linkText
+                false, // seen
+                new Date().getTime(), // time
+                '', // title
+                '' // videoType
+            ]);
+        } */
+
+        let programImg = '';
+        if (story.program_img != null) {
+            programImg = this.props.stories.meta.image_path + this.state.resolution  + story.program_img;
+        }
+        else {
+            programImg = 'static/placeholders/placeholder_potrait.png';
+        }
+
+        const timeline = this.state.zuckJS.buildTimelineItem(
+            this.storyId, //id
+            programImg, //photo
+            story.program_title, //name
+            '', //link
+            false, //lastupdated
+            items //items
+        );
+
+        this.storyId = this.storyId + 1;
+
+        return timeline;
+    }
+
+    buildStoryGPT = (gpt) => {
+        const items = [];
+
+        for (const item of gpt) {
             items.push([
                 item.id + Math.floor(Math.random() * Math.floor(999999)) + Math.floor(Math.random() * Math.floor(99)), // id
                 'ads', // type
@@ -271,21 +320,13 @@ class Stories extends React.Component {
             ]);
         }
 
-        let programImg = '';
-        if (story.program_img != null) {
-            programImg = this.props.stories.meta.image_path + this.state.resolution  + story.program_img;
-        }
-        else {
-            programImg = 'static/placeholders/placeholder_potrait.png';
-        }
-
         const timeline = this.state.zuckJS.buildTimelineItem(
-            this.storyId,
-            programImg,
-            story.program_title,
-            '',
-            false,
-            items
+            this.storyId, //id
+            '', //photo
+            'ads', //name
+            '', //link
+            false, //lastupdated
+            items //items
         );
 
         this.storyId = this.storyId + 1;
@@ -350,8 +391,11 @@ class Stories extends React.Component {
             story.items.forEach((storyItem) => {
                 storyItems.push(
                     <li key={storyItem.id} data-id={storyItem.id} data-time={storyItem.time} className={(storyItem.seen ? 'seen' : '')}>
-                        <a href={storyItem.src} data-type={storyItem.type} data-length={storyItem.length} data-link={storyItem.link} data-linktext={storyItem.linkText} data-title={'hh3'}>
-                            <img src={storyItem.preview} />
+                        <a href={storyItem.src} data-type={storyItem.type} data-length={storyItem.length} data-link={storyItem.link} data-linktext={storyItem.linkText} data-title={storyItem.title}>
+                            { storyItem.type != 'ads'
+                                ? <img src={storyItem.preview} />
+                                : <div />
+                            }
                         </a>
                     </li>
                 );
@@ -359,7 +403,7 @@ class Stories extends React.Component {
 
             //let arrayFunc = story.seen ? 'push' : 'unshift';
             timelineItems.push(
-                <div className={(story.seen ? 'story seen' : 'story')} key={story.id} data-id={story.id} data-last-updated={story.lastUpdated} data-photo={story.photo}>
+                <div className={(story.seen ? `story${story.name == 'ads' ? ' ads' : ''} seen` : `story${story.name == 'ads' ? ' ads' : ''}`)} key={story.id} data-id={story.id} data-last-updated={story.lastUpdated} data-photo={story.photo}>
                     <a className="item-link" href={story.link}>
                         <span className="item-preview">
                             <img src={story.photo} />
