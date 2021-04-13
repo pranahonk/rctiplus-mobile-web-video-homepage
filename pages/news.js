@@ -181,7 +181,7 @@ class Trending_v2 extends React.Component {
 
     loadArticles(categoryId, page = 1) {
         this.setState({ is_articles_loading: true }, () => {
-            this.props.getSectionNews(this.props.query.subcategory_id || 15, 1, page).then((resSection) => {
+            this.props.getSectionNews(categoryId, 1, page).then((resSection) => {
             this.props.getNews(categoryId, this.state.articles_length, page)
                 .then(res => {
                     const data = res.data.data
