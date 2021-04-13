@@ -114,14 +114,24 @@ module.exports = (window => {
 							const item = story.items.find(element => element.id == data.itemId);
 
 							item.contentType = data.contentType;
+
+							if (item.contentType == 'image') {
+								const items = storyViewer.querySelectorAll('[data-index].active');
+								const itemPointer = items[0];
+								
+								setVendorVariable(
+									itemPointer.getElementsByTagName('b')[0].style,
+									'AnimationDuration',
+									`5s`
+								);
+							}
 						}
 						break;
 					case 'play':
 						{
 							const items = storyViewer.querySelectorAll('[data-index].active');
 							const itemPointer = items[0];
-
-							console.log(data.duration)
+							
 							setVendorVariable(
 								itemPointer.getElementsByTagName('b')[0].style,
 								'AnimationDuration',
@@ -1110,8 +1120,6 @@ module.exports = (window => {
 											const totalItems = zuck.data[zuck.internalData['currentStory']].items.length - 1;
 											const currentItem = zuck.data[zuck.internalData['currentStory']]['currentItem'];
 											
-											console.log('check item index', totalItems, currentItem)
-											
 											if (parseInt(currentItem) < parseInt(totalItems)) {
 												translate(modalSlider, position.x, 300);
 											} else {
@@ -1167,8 +1175,8 @@ module.exports = (window => {
 							};
 
 							const storyViewerViewing = query('#zuck-modal .viewing');
-							const adsItem = zuck.data[zuck.internalData['currentStory']].items[zuck.data[zuck.internalData['currentStory']]['currentItem']]
-							
+							const adsItem = zuck.data[zuck.internalData['currentStory']].items[zuck.data[zuck.internalData['currentStory']]['currentItem']];
+
 							if (storyViewerViewing && video) {
 								if (storyViewerViewing.classList.contains('muted')) {
 									unmuteVideoItem(video, storyViewerViewing);
@@ -1593,7 +1601,6 @@ module.exports = (window => {
 								};
 	
 								adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
-								console.log('state play')
 							}
 						} else if (adsItem.contentType == 'none') {
 							setTimeout(checkVideoReady, 300)
@@ -1619,7 +1626,6 @@ module.exports = (window => {
 				const currentItem = zuck.data[currentStory]['currentItem'];
 				const adsItem = zuck.data[currentStory].items[currentItem];
 
-				console.log('pause', adsItem.contentType);
 				if (adsItem.type == 'ads' && adsItem.contentType == 'video') {
 					const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
 
