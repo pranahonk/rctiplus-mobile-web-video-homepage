@@ -263,7 +263,7 @@ class Explores extends React.Component {
 		return {
 				title: `Cari konten ${keyword} terbaru - RCTI+`,
 				description: `RCTI+ - Pencarian Kumpulan konten terbaru dan terpercaya | ${keyword}`,
-				keywords: `rctiplus`,
+				keywords: `rcti plus, rcti+`,
 				image: 'https://rctiplus.com/assets/image/elements/logo.b9f35229.png',
 				twitter_img_alt: `Hasil Pencarian ${keyword}`,
 				url: REDIRECT_WEB_DESKTOP + this.props.router.asPath
