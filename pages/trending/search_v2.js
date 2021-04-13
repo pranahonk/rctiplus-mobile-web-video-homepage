@@ -187,7 +187,7 @@ class Search extends React.Component {
                 <div className="result-content">
                     {search_result.map((article, i) => (
                         <div className="item_square-wrapper" key={i + article.title}>
-                            <SquareItem item={article} assets_url={assetsUrl}/>
+                            <SquareItem key={i + article.title} item={article} assets_url={assetsUrl}/>
                         </div>
                     ))}
                 </div>
