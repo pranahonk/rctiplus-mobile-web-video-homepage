@@ -194,14 +194,14 @@ class NavbarDef_v2 extends Component {
                     <div className="nav-menu-container">
                         <ActiveLink activeClassName="active" href="/" activeMenu={'home' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
-                                <img alt="Video+" className="img-menu-icon" src={'/videos.svg'} alt="video" width="10" height="9" />
-                                Video+
+                                <img alt="Video+" className="icon-menu-top" src={'/icons-menu/videoIcon.svg'} alt="video" width="30" height="30" />
+                                <label>Video+</label>
                             </Button>
                         </ActiveLink>
                         <ActiveLink activeClassName="active" href="/news" activeMenu={'news' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
-                                <img className="img-menu-icon" src={'/news.svg'} alt="news" width="10" height="9" />
-                                News+
+                                <img className="icon-menu-top" src={'/icons-menu/newsIcon.svg'} alt="news" width="30" height="30" />
+                                <label>News+</label>
                             </Button>
                         </ActiveLink>
                         {/* <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
@@ -211,16 +211,16 @@ class NavbarDef_v2 extends Component {
                             </Button>
                         </ActiveLink> */}
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_RADIO}?token=${this.state.token}`}>
-                            <img alt="Radio+" className="img-menu-icon" src={'/radio.png'} alt="radio" width="10" height="9" />
-                            Radio+
+                            <img alt="Radio+" className="icon-menu-top" src={'/icons-menu/radioIcon.svg'} alt="radio" width="30" height="30" />
+                            <label>News+</label>
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_HOT}?token=${this.state.token}`}>
-                            <img className="img-menu-icon" src={'/hot-icon.png'} alt="hot" width="10" height="9" />
-                            HOT
+                            <img className="icon-menu-top" src={'/icons-menu/hotIcon.svg'} alt="hot" width="30" height="30" />
+                            <label>HOT</label>
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_GAMES}?token=${this.state.token}`}>
-                            <img className="img-menu-icon" src={'/games.svg'} alt="games" width="10" height="9" />
-                            Games+
+                            <img className="icon-menu-top" src={'/icons-menu/gamesIcon.svg'} alt="games" width="30" height="30" />
+                            <label>Games+</label>
                         </Button>
                     </div>
                 </Navbar>
