@@ -20,6 +20,7 @@ import 'swiper/swiper.scss';
 import TopicLoader from '../Shimmer/TopicLoader';
 
 const ItemTags = ({item, index, ...props}) => {
+  const [show, setShow] = useState(null);
   const router = useRouter()
   const [endChild, setEndChild] = useState(false);
   const [meta, setMeta] = useState([]);
@@ -50,6 +51,15 @@ const ItemTags = ({item, index, ...props}) => {
   //   }
   // }, [endChild]);
   useEffect(() => {
+    if (list.data && show) {
+      list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
+      (props.getListTag(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
+        setShow(null)
+        setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
+      }).catch((err) => console.log(err))) : ''
+    }
+  },[show])
+  useEffect(() => {
     if (index < 4) {
       props.getListTag(item.tag).then((res) => setList(res.data)).catch((err) => console.log(err))
     }
@@ -74,18 +84,17 @@ const ItemTags = ({item, index, ...props}) => {
           width={242}
           height={140}
           onSwiper={(swiper) => console.log(swiper)}
-          onReachEnd={(swiper) => {
-            if (swiper.isEnd) {
-              if (list.data) {
-                list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
-                (props.getListTag(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
-                  setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
-                }).catch((err) => console.log(err))) : ''
-              }
-            }
-          //   swiper.isEnd ? setEndChild(swiper.isEnd)
-          // setEndChild(swiper.isEnd);
-          }}
+          onReachEnd={setShow}
+          // onReachEnd={(swiper) => {
+          //   if (swiper.isEnd) {
+          //     if (list.data) {
+          //       list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
+          //       (props.getListTag(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
+          //         setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
+          //       }).catch((err) => console.log(err))) : ''
+          //     }
+          //   }
+          // }}
           >
             {list?.data?.map((item, index) => {
               return (
