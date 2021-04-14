@@ -20,6 +20,8 @@ class Crs_v2 extends Component {
     }
 
     componentDidMount() {
+        console.log(`ini data dari home category`, this.props.data);
+        console.log(`ini data dari home page`, this.props.contents)
         if(this.props.detailCategory){
             this.setState({
                 banner: this.props.data.banner,
@@ -66,6 +68,7 @@ class Crs_v2 extends Component {
     }
 
     render() {
+        console.log(`ini banner yang mau di looping`, this.state.banner)
         return (
                 <div style={{ 
                     position: 'relative', 
