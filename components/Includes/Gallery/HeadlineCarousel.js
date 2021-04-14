@@ -63,7 +63,7 @@ class HeadlineCarousel extends React.Component {
     render() {
         return (
             <Carousel
-                className="headline-carousel"
+                className={`headline-carousel ${this.props.className}`}
                 autoPlay
                 infiniteLoop
                 interval={5000}
