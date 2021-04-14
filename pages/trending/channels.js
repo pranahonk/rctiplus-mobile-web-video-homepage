@@ -94,7 +94,7 @@ class Channels extends React.Component {
                 });
         }
 
-        
+
     }
 
     fetchData(savedCategoriesNews, isLoggedIn = false) {
@@ -170,7 +170,7 @@ class Channels extends React.Component {
             const res = this.state.categories;
             const removed = res.splice(result.source.index, 1);
             if (removed.length > 0) {
-                res.splice(result.destination.index, 0, removed[0]);    
+                res.splice(result.destination.index, 0, removed[0]);
             }
 
             const categories = res;
@@ -226,6 +226,7 @@ class Channels extends React.Component {
     async addChannel(category, index) {
         this.props.setPageLoader();
         newsAddCategoryChannelClicked(category.name, 'mweb_news_add_category_kanal_clicked');
+        console.log(this.state.channels);
 
         try {
             let decodedToken = { uid: '0' };
@@ -234,9 +235,11 @@ class Channels extends React.Component {
             }
 
             if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
-                let addResponse = await this.props.addCategory(category.id);
+                let addResponse = await this.props.addCategoryV2(category.id);
                 console.log(addResponse);
             }
+
+            console.log(category);
 
             let selectedChannelIds = this.state.selected_channel_ids;
             const addedIndex = selectedChannelIds.indexOf(category.id);

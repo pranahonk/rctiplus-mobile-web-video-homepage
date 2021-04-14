@@ -1,6 +1,6 @@
 import ax from 'axios';
 import { NEWS_API_V2 } from '../../config';
-import { getNewsTokenV2, checkToken, removeAccessToken, getAccessToken } from '../../utils/cookie';
+import { getNewsTokenV2, checkToken, removeAccessToken, getAccessToken, getUserAccessToken } from '../../utils/cookie';
 
 const axios = ax.create({ baseURL: NEWS_API_V2 + '/api' });
 
@@ -168,6 +168,34 @@ const addCategory = categoryId => {
     });
 };
 
+const addCategoryV2 = categoryId => {
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': getUserAccessToken()
+    }
+
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v2/feature/kanal`, {
+                category: categoryId
+            }, {
+                headers: headers
+            });
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
 const deleteCategory = categoryId => {
     return () => new Promise(async (resolve, reject) => {
         try {
@@ -235,7 +263,7 @@ const getSectionNews = (category_id = 16, pageSize = 3, page = 1) => {
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_SECTION_NEWS',
-                    payload: response.data, 
+                    payload: response.data,
                 });
                 resolve(response.data);
             }
@@ -541,6 +569,7 @@ export default {
     setCategory,
     getCategory,
     addCategory,
+    addCategoryV2,
     deleteCategory,
     updateCategoryOrder,
     getTrending,
