@@ -171,6 +171,10 @@ class DefaultNews extends React.Component {
                     ` }}></script>
                     <noscript><img src="https://certify.alexametrics.com/atrk.gif?account=8oNJt1FYxz20cv" style={{ display: 'none' }} height="1" width="1" alt="" /></noscript>
                     {/* <!-- End Alexa Certify Javascript --> */}
+                    
+                    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+
+                    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
 
                 </Head>
 
