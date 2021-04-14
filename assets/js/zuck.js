@@ -115,15 +115,23 @@ module.exports = (window => {
 
 							item.contentType = data.contentType;
 
-							console.log(item.contentType);
+							if (item.contentType == 'image') {
+								const items = storyViewer.querySelectorAll('[data-index].active');
+								const itemPointer = items[0];
+								
+								setVendorVariable(
+									itemPointer.getElementsByTagName('b')[0].style,
+									'AnimationDuration',
+									`5s`
+								);
+							}
 						}
 						break;
 					case 'play':
 						{
 							const items = storyViewer.querySelectorAll('[data-index].active');
 							const itemPointer = items[0];
-
-							console.log(data.duration)
+							
 							setVendorVariable(
 								itemPointer.getElementsByTagName('b')[0].style,
 								'AnimationDuration',
@@ -924,9 +932,9 @@ module.exports = (window => {
 				});
 
 				const initAds = (sID, item) => {
-					const adsFrame = document.querySelector(`#${item.preview} > div > iframe`);
-					if (adsFrame) {
-						setTimeout(function initializingAds() {
+					setTimeout(function initializingAds() {
+						const adsFrame = document.querySelector(`#${item.preview} > div > iframe`);
+						if (adsFrame) {
 							// test post message
 							const msg = {
 								state: 'init',
@@ -934,14 +942,16 @@ module.exports = (window => {
 								itemId: item.id
 							};
 
+							console.log('init ads')
+
 							//console.log('message string', JSON.stringify(msg))
 							adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
 
 							if (item.contentType == 'none') {
 								setTimeout(initializingAds, 300);
 							}
-						}, 300)
-					}
+						}
+					}, 300);
 				}
 
 				const story_id = storyID;
@@ -1107,7 +1117,14 @@ module.exports = (window => {
 											translate(modalSlider, position.x, 300);
 										}
 										else {
-											modal.close();
+											const totalItems = zuck.data[zuck.internalData['currentStory']].items.length - 1;
+											const currentItem = zuck.data[zuck.internalData['currentStory']]['currentItem'];
+											
+											if (parseInt(currentItem) < parseInt(totalItems)) {
+												translate(modalSlider, position.x, 300);
+											} else {
+												modal.close();
+											}
 										}
 										
 									}
@@ -1158,8 +1175,8 @@ module.exports = (window => {
 							};
 
 							const storyViewerViewing = query('#zuck-modal .viewing');
-							const adsItem = zuck.data[zuck.internalData['currentStory']].items[zuck.data[zuck.internalData['currentStory']]['currentItem']]
-							console.log('touch End', adsItem.contentType);
+							const adsItem = zuck.data[zuck.internalData['currentStory']].items[zuck.data[zuck.internalData['currentStory']]['currentItem']];
+
 							if (storyViewerViewing && video) {
 								if (storyViewerViewing.classList.contains('muted')) {
 									unmuteVideoItem(video, storyViewerViewing);
@@ -1347,15 +1364,17 @@ module.exports = (window => {
 					const modalContainer = query('#zuck-modal');
 
 					// destroy all
-					const item = zuck.data[zuck.internalData['currentStory']].items[zuck.data[zuck.internalData['currentStory']]['currentItem']];
-					if (item.type == 'video' && item.videoType == 'mpd') {
-						if (item.mpdPlayer) {
-							item.mpdPlayer.destroy();
+					const items = zuck.data[zuck.internalData['currentStory']].items;
+					each(items, (i, item) => {
+						if (item.type == 'video' && item.videoType == 'mpd') {
+							if (item.mpdPlayer) {
+								item.mpdPlayer.destroy();
+							}
+							item.destroyed = true;
+						} else if (item.type == 'ads') {
+							item.destroyed = googletag.destroySlots([item.adsSlot]);;
 						}
-						item.destroyed = true;
-					} else if (item.type == 'ads') {
-						item.destroyed = googletag.destroySlots([item.adsSlot]);;
-					}
+					})
 
 					const callback = function () {
 						if (option('backNative')) {
@@ -1582,7 +1601,6 @@ module.exports = (window => {
 								};
 	
 								adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
-								console.log('state play')
 							}
 						} else if (adsItem.contentType == 'none') {
 							setTimeout(checkVideoReady, 300)
@@ -1608,7 +1626,6 @@ module.exports = (window => {
 				const currentItem = zuck.data[currentStory]['currentItem'];
 				const adsItem = zuck.data[currentStory].items[currentItem];
 
-				console.log('pause', adsItem.contentType);
 				if (adsItem.type == 'ads' && adsItem.contentType == 'video') {
 					const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
 

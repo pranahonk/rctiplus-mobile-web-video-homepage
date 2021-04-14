@@ -21,6 +21,7 @@ import { Modal } from 'reactstrap';
 const TabPanelLoader = dynamic(() => import('../Shimmer/detailProgramLoader').then((mod) => mod.TabPanelLoader));
 import smoothscroll from 'smoothscroll-polyfill';
 import { isIOS } from 'react-device-detect';
+import BottomScrollListener from 'react-bottom-scroll-listener';
 
 import { 
   programRateEvent, programShareEvent, programContentShareEvent, 
@@ -55,6 +56,9 @@ export const PanelEpisode = forwardRef((props, ref) => {
   };
   return (
       <TabPane tabId="Episodes">
+
+        <BottomScrollListener offset={0} onBottom={props.onShowMore} />
+
         <div className="episode-program">
           <div className="season__program">
             <Dialog onclick={props.onSeason} selected={props.seasonSelected} dataTracking={props.dataTracking}/>
@@ -95,11 +99,14 @@ export const PanelEpisode = forwardRef((props, ref) => {
             );
           }) }
         </div>
-        { props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
-          <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-            <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-          </div>
-        ) : '' }
+        { props.enableShowMore.isLoading ? (<TabPanelLoader />) : null
+        // props.enableShowMore.isNext ? (
+          
+        //   <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
+        //     <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
+        //   </div>
+        // ) : '' 
+        }
       </TabPane>
   );
 });
@@ -121,6 +128,7 @@ export const PanelExtra = (props) => {
   };
   return (
     <TabPane tabId="Extra">
+      <BottomScrollListener offset={0} onBottom={props.onShowMore} />
       <div className="extra-program">
         { props.data.data.map((item,i) => {
           return (
@@ -157,11 +165,13 @@ export const PanelExtra = (props) => {
           );
         }) }
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
-        <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-          <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-        </div>
-      ) : ''}
+      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : null
+      // props.enableShowMore.isNext ? (
+      //   <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
+      //     <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
+      //   </div>
+      // ) : ''
+      }
     </TabPane>
   );
 };
@@ -183,6 +193,7 @@ export const PanelClip = (props) => {
   };
   return (
     <TabPane tabId="Clips">
+      <BottomScrollListener offset={0} onBottom={props.onShowMore} />
       <div className="clip-program">
         { props.data.data.map((item,i) => {
           return (
@@ -219,11 +230,13 @@ export const PanelClip = (props) => {
           );
         }) }
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
-        <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-          <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-        </div>
-      ) : ''}
+      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : null
+      // props.enableShowMore.isNext ? (
+      //   <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
+      //     <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
+      //   </div>
+      // ) : ''
+      }
     </TabPane>
   );
 };

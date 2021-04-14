@@ -181,7 +181,7 @@ class Trending_v2 extends React.Component {
 
     loadArticles(categoryId, page = 1) {
         this.setState({ is_articles_loading: true }, () => {
-            this.props.getSectionNews(this.props.query.subcategory_id || 15, 1, page).then((resSection) => {
+            this.props.getSectionNews(categoryId, 1, page).then((resSection) => {
             this.props.getNews(categoryId, this.state.articles_length, page)
                 .then(res => {
                     const data = res.data.data
@@ -659,7 +659,7 @@ class Trending_v2 extends React.Component {
                                                 return (
                                                 <TabPane key={i} tabId={tab.id.toString()}>
                                                     {(this.state.is_trending_loading ? (<HeadlineLoader />) : (
-                                                        !isEmpty(this.state.trending_articles[tab.id]) ? <HeadlineCarousel articles={this.state.trending_articles[tab.id]} assets_url={this.state.assets_url} /> : null
+                                                        !isEmpty(this.state.trending_articles[tab.id]) ? <HeadlineCarousel className="news-carousel" articles={this.state.trending_articles[tab.id]} assets_url={this.state.assets_url} /> : null
                                                     ))}
                                                     { !isEmpty(this.props.newsv2.data_topic) ? (
                                                         <div className="interest-topic_wrapper">

@@ -493,6 +493,7 @@ class Index extends React.Component {
               link={this.getLinkVideo.bind(this)}
               seasonSelected= { this.props.data.seasonSelected }
               onShowMore={() => {
+                console.log("lagi get show more")
                 this.props.dispatch(fetchEpisode(this.props.router.query.id, 'program-episode',props.data[0].season, pagination.nextPage));
                 onTracking(this.reference, this.props.router.query.id, this.props.server['program-detail']);
                 }}
@@ -738,11 +739,12 @@ class Index extends React.Component {
             { this.switchPanel() }
           </div>
           <div style={ props.router.query.content_id && this.refMainContent !== null ? {
-            height: 'calc(100vh - 260px)',
             overflowX: 'hidden',
-            overflowY: 'scroll'}
+            overflowY: 'scroll'
+          }
             : {height: 'auto'} }>
-            <div className="action__button--wrapper">
+            <div className="title-player">{props.data["data-player"]?.data?.program_title}</div>
+            <div style={{marginTop:"10px"}} className="action__button--wrapper">
                 <ActionMenu
                   onRate={this.toggleRateModal.bind(this)}
                   bookmark={props.data && props.data.bookmark}
