@@ -73,7 +73,31 @@ class Stories extends React.Component {
                                     const notSeen = [];
                                     const seen = [];
 
-                                    for (const story of stories) {
+                                    /* for (let i = 0; i < stories.length; i++) {
+                                        if (stories[i].name.includes('ads')) {
+                                            const [str, storyParentId] = stories[i].name.split('_');
+                                            if (stories[storyParentId].seen) {
+                                                stories[i].seen = true;
+                                            }
+                                        }
+                                    } */
+
+                                    /* for (const story of stories) {
+                                        if (story.seen) {
+                                            seen.push({...story});
+                                        } else {
+                                            notSeen.push({...story});
+                                        }
+                                    } */
+
+                                    for (let i = 0; i < stories.length; i++) {
+                                        const story = stories[i];
+                                        if (stories[i].name.includes('ads')) {
+                                            const [str, storyParentId] = story.name.split('_');
+                                            if (stories[storyParentId].seen) {
+                                                story.seen = true;
+                                            }
+                                        }
                                         if (story.seen) {
                                             seen.push({...story});
                                         } else {
@@ -179,7 +203,31 @@ class Stories extends React.Component {
                                     const notSeen = [];
                                     const seen = [];
 
-                                    for (const story of stories) {
+                                    /* for (let i = 0; i < stories.length; i++) {
+                                        if (stories[i].name.includes('ads')) {
+                                            const [str, storyParentId] = stories[i].name.split('_');
+                                            if (stories[storyParentId].seen) {
+                                                stories[i].seen = true;
+                                            }
+                                        }
+                                    } */
+
+                                    /* for (const story of stories) {
+                                        if (story.seen) {
+                                            seen.push({...story});
+                                        } else {
+                                            notSeen.push({...story});
+                                        }
+                                    } */
+
+                                    for (let i = 0; i < stories.length; i++) {
+                                        const story = stories[i];
+                                        if (stories[i].name.includes('ads')) {
+                                            const [str, storyParentId] = story.name.split('_');
+                                            if (stories[storyParentId].seen) {
+                                                story.seen = true;
+                                            }
+                                        }
                                         if (story.seen) {
                                             seen.push({...story});
                                         } else {
@@ -433,7 +481,7 @@ class Stories extends React.Component {
         const timeline = this.state.zuckJS.buildTimelineItem(
             this.storyId, //id
             '', //photo
-            'ads', //name
+            'ads_' + (this.storyId - 1), //name
             '', //link
             false, //lastupdated
             items //items
@@ -476,11 +524,26 @@ class Stories extends React.Component {
                         const seen = [];
                         const notseen = [];
 
-                        for (const story of this.state.stories) {
+                        /* for (const story of this.state.stories) {
                             if (story.seen) {
                                 seen.push({...story});
                             } else {
                                 notseen.push({...story});
+                            }
+                        } */
+
+                        for (let i = 0; i < this.state.stories.length; i++) {
+                            const story = {...this.state.stories[i]};
+                            if (story.name.includes('ads')) {
+                                const [str, storyParentId] = story.name.split('_');
+                                if (this.state.stories[storyParentId].seen) {
+                                    story.seen = true;
+                                }
+                            }
+                            if (story.seen) {
+                                seen.push({...story});
+                            } else {
+                                notSeen.push({...story});
                             }
                         }
 
@@ -512,11 +575,26 @@ class Stories extends React.Component {
                         const seen = [];
                         const notseen = [];
 
-                        for (const story of this.state.stories) {
+                        /* for (const story of this.state.stories) {
                             if (story.seen) {
                                 seen.push({...story});
                             } else {
                                 notseen.push({...story});
+                            }
+                        } */
+
+                        for (let i = 0; i < this.state.stories.length; i++) {
+                            const story = {...this.state.stories[i]};
+                            if (story.name.includes('ads')) {
+                                const [str, storyParentId] = story.name.split('_');
+                                if (this.state.stories[storyParentId].seen) {
+                                    story.seen = true;
+                                }
+                            }
+                            if (story.seen) {
+                                seen.push({...story});
+                            } else {
+                                notSeen.push({...story});
                             }
                         }
 
@@ -556,7 +634,7 @@ class Stories extends React.Component {
 
             //let arrayFunc = story.seen ? 'push' : 'unshift';
             timelineItems.push(
-                <div className={(story.seen ? `story${story.name == 'ads' ? ' ads' : ''} seen` : `story${story.name == 'ads' ? ' ads' : ''}`)} key={story.id} data-id={story.id} data-last-updated={story.lastUpdated} data-photo={story.photo}>
+                <div className={(story.seen ? `story${story.name.includes('ads') ? ' ads' : ''} seen` : `story${story.name.includes('ads') ? ' ads' : ''}`)} key={story.id} data-id={story.id} data-last-updated={story.lastUpdated} data-photo={story.photo}>
                     <a className="item-link" href={story.link}>
                         <span className="item-preview">
                             <img src={story.photo} />

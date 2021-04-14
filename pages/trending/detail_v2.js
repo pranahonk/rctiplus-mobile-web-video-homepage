@@ -20,6 +20,7 @@ const NavBack = loadable(() => import('../../components/Includes/Navbar/NavTrend
 const NavBackIframe = loadable(() => import('../../components/Includes/Navbar/NavIframe'))
 const AdsBanner = loadable(() => import('../../components/Includes/Banner/Ads'))
 import '../../assets/scss/components/trending_detail.scss';
+import NewsDetailContent from "../../components/Includes/news/NewsDetailContent"
 
 import { FacebookShareButton, TwitterShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
 // import { ListGroup, ListGroupItem } from 'reactstrap';
@@ -89,7 +90,7 @@ class Detail extends React.Component {
                 return { initial: false };
             }
         }
-        
+
         return { initial: data, props_id: programId };
     }
 
@@ -107,7 +108,7 @@ class Detail extends React.Component {
             sticky_share_shown: false,
             listTagByNews: [],
             count: false,
-            countLike: 0, 
+            countLike: 0,
             infographic: initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID
         };
 
@@ -229,7 +230,7 @@ class Detail extends React.Component {
                 Cookie.set('is_like_article', like.map(obj => replaceArray.find(value => value.news_id == obj.news_id || obj)))
                 this.setState({ isLike: !foundLike?.like })
             })
-            return 
+            return
         }
         like.push({ like: !foundLike?.like, news_id: id_news})
         this.props.setLike(id_news, true, device_id).then((res) => {
@@ -316,7 +317,7 @@ class Detail extends React.Component {
                             <i className="fab fa-facebook-f"></i>
                         </FacebookShareButton>
                     )}
-                    
+
                 </div>
                 <a onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
                     {(this.platform) ? (
@@ -340,7 +341,7 @@ class Detail extends React.Component {
                         <WhatsappShareButton title={cdata.title} url={REDIRECT_WEB_DESKTOP + encodeURI(asPath) + UTM_NAME('trending', this.props.router.query.id, 'wa')} separator=" - ">
                             <i className="fab fa-whatsapp"></i>
                         </WhatsappShareButton>
-                    )} 
+                    )}
                 </a>
                 <a onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#4a90e2' }}>
                     {this.platform && this.platform == 'ios' ? (
@@ -367,7 +368,7 @@ class Detail extends React.Component {
                             <i className="fab fa-twitter"></i>
                         </TwitterShareButton>
                     )}
-                    
+
                 </a>
                 <a onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
                     {this.platform && this.platform == 'ios' ? (
@@ -390,7 +391,7 @@ class Detail extends React.Component {
                         <LineShareButton url={REDIRECT_WEB_DESKTOP + encodeURI(asPath) + UTM_NAME('trending', this.props.router.query.id, 'line')} title={cdata.title}>
                             <i className="fab fa-line"></i>
                         </LineShareButton>
-                    )} 
+                    )}
                 </a>
                 {/* <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: scrolledDown ? '#3a3a3a' : '', float: 'right' }}>
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
@@ -528,11 +529,11 @@ class Detail extends React.Component {
                 {this.state.iframe_opened ? (<NavBackIframe closeFunction={() => {
                     this.setState({ iframe_opened: false });
                 }} data={cdata} disableScrollListener />) : (
-                    <NavBack 
-                        pushNotif={this.pushNotif} 
-                        params={`?token=${this.accessToken}&platform=${this.platform}`} 
-                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`} 
-                        data={cdata} 
+                    <NavBack
+                        pushNotif={this.pushNotif}
+                        params={`?token=${this.accessToken}&platform=${this.platform}`}
+                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`}
+                        data={cdata}
                         titleNavbar={cdata.source}/>
                 )}
                 <StickyContainer>
@@ -545,7 +546,7 @@ class Detail extends React.Component {
                                     if (self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: false });
                                     }
-                                
+
                                 }, 300);
                                 return <span></span>;
                             }
@@ -554,7 +555,7 @@ class Detail extends React.Component {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
                                     }
-                                    
+
                                 }, 300);
                                 return (
                                     <div className={`sticky-share-button ${this.state.sticky_share_shown ? 'sticky-share-button-viewed' : ''}`}>
@@ -566,18 +567,18 @@ class Detail extends React.Component {
                                 if (self.state.sticky_share_shown) {
                                     self.setState({ sticky_share_shown: false });
                                 }
-                                
+
                             }, 300);
                             return <span></span>;
                         } }
                     </Sticky>
                 </StickyContainer>
-                
+
                 {this.state.iframe_opened ? (
                     <div className="content-trending-detail" style={{ height: '100vh' }}>
-                        <iframe src={cdata.link} style={{ 
-                            width: '100%', 
-                            height: '100%', 
+                        <iframe src={cdata.link} style={{
+                            width: '100%',
+                            height: '100%',
                             display: 'block',
                             margin: 0,
                             padding: 0
@@ -595,7 +596,7 @@ class Detail extends React.Component {
                                         .catch(error => {
                                             console.log(error);
                                         });
-                                    
+
                                     this.setState({ scrolled_down: true, count: true });
                                 }
                                 else {
@@ -632,7 +633,7 @@ class Detail extends React.Component {
                                             imageNews(cdata.title, cdata.cover, cdata.image, 450, assets_url, 'content-trending-detail-cover')
                                         }
                                     </div>
-                                    <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>
+                                  <NewsDetailContent  item={cdata} />
                                     {/* <Link href="#" as={"#"}>
                                         <a> */}
                                             <div onClick={this.openIframe.bind(this)} style={{ color: '#05b5f5', padding: '0 15px' }}>
@@ -655,10 +656,10 @@ class Detail extends React.Component {
                                         {this.renderActionButton()}
                                     </div>
                                 </div>
-                                { cdata.exclusive === 'yes' ? (<div /> 
+                                { cdata.exclusive === 'yes' ? (<div />
                                 ) : (
                                     <div className="ads-banner__detail_news">
-                                        <AdsBanner 
+                                        <AdsBanner
                                             partner={cdata.source}
                                             path={getPlatformGpt(this.platform)}
                                             size={[300, 250]}
@@ -712,7 +713,7 @@ const getPlatformGpt = (platform) => {
     // webview
       if(platform === 'ios') {
         return process.env.GPT_NEWS_IOS_DETAIL;
-      } 
+      }
       if(platform === 'android') {
         return process.env.GPT_NEWS_ANDROID_DETAIL;
       }
