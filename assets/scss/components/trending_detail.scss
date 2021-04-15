@@ -27,13 +27,13 @@
     .sheet-wrap-right {
     display: flex;
     align-items: center;
-        .total_like { 
+        .total_like {
             background: #282828;
             margin: 0;
             width: 10px;
             height: 10px;
             color: #fff;
-            position: relative; 
+            position: relative;
             span {
                 text-align: right;
                 position: absolute;
@@ -91,6 +91,8 @@
     .content-trending-detail-cover-container {
         width: 100%;
         position: relative;
+        padding:0 15px;
+        margin-top:33px;
         // padding-bottom: 56.25%;
 
         .content-trending-detail-cover {

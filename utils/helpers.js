@@ -93,10 +93,10 @@ export const showConfirmAlert = (text, title, callback, buttonInverse = false, c
     if (title) {
         options['title'] = title;
     }
-    
+
     Swal.fire(options)
         .then(result => {
-            let whichButton = result.value;  
+            let whichButton = result.value;
 
             if (buttonInverse) {
                 whichButton = !result.value;
@@ -151,7 +151,7 @@ export const showSignInAlert = (text, title, callback, buttonInverse = false, co
     if (title) {
         options['title'] = title;
     }
-    
+
     Swal.fire(options)
         .then(result => {
             if (result.value) {
@@ -186,7 +186,7 @@ export const getTruncate = (text = '', clamp = '...', length = 100) => {
 
     var tcText = text.slice(0, length - clamp.length);
     var last = tcText.length - 1;
-    
+
 
     while (last > 0 && tcText[last] !== ' ' && tcText[last] !== clamp[0]) last -= 1;
 
@@ -203,7 +203,7 @@ export const humanizeStr = (str) => {
     for (i=0; i<frags.length; i++) {
         frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
     }
- 
+
     return frags.join(' ');
 }
 
@@ -217,7 +217,7 @@ export const imageNews = (title, source, staticUrl, size = 200, assetsUrl, class
     const imgUrl = imgURL(source, staticUrl, size, assetsUrl);
     let width = size;
     let height = (width*56) / 100;
-    return <Img 
+    return <Img
         className={classCSS}
         alt={title}
         src={[
@@ -228,5 +228,6 @@ export const imageNews = (title, source, staticUrl, size = 200, assetsUrl, class
         height={height}
         loader={<img alt={title} className={classCSS} src={`/static/placeholders/placeholder_${rotation}.png`} />}
         unloader={<img alt={title} className={classCSS} src={`/static/placeholders/placeholder_${rotation}.png`} />}
+        style={{borderRadius: "10px"}}
     />;
 }
