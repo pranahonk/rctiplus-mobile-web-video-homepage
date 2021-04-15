@@ -17,14 +17,18 @@ import '../../assets/scss/components/channels.scss';
 import newsv2Actions from '../../redux/actions/newsv2Actions';
 import pageActions from '../../redux/actions/pageActions';
 import userActions from '../../redux/actions/userActions';
+import newsv2KanalActions from '../../redux/actions/newsv2KanalActions.js';
 import { newsTabChannelClicked, newsAddCategoryChannelClicked, newsRemoveCategoryChannelClicked } from '../../utils/appier';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { setNewsChannels, getNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2 } from '../../utils/cookie';
+import { setNewsChannels, getNewsChannels, setAccessToken, removeAccessToken, getUserAccessToken } from '../../utils/cookie';
 
 import queryString from 'query-string';
+import ax from 'axios';
+import { NEWS_API_V2 } from '../../config';
 
 const jwtDecode = require('jwt-decode');
+const axios = ax.create({ baseURL: NEWS_API_V2 + '/api' });
 
 class Channels extends React.Component {
 
@@ -227,6 +231,7 @@ class Channels extends React.Component {
         this.props.setPageLoader();
         newsAddCategoryChannelClicked(category.name, 'mweb_news_add_category_kanal_clicked');
         console.log(this.state.channels);
+        console.log(this.state.categories)
 
         try {
             let decodedToken = { uid: '0' };
@@ -235,26 +240,31 @@ class Channels extends React.Component {
             }
 
             if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
-                let addResponse = await this.props.addCategoryV2(category.id);
-                console.log(addResponse);
-            }
+              // let addResponse = await this.props.addCategoryV2(category.id);
+              let addResponse = await this.props.addCategoryV2(category.id);
+              console.log(addResponse);
 
-            console.log(category);
+              const test = await this.props.getCategoryV2();
+              console.log(test);
+
+            }
 
             let selectedChannelIds = this.state.selected_channel_ids;
             const addedIndex = selectedChannelIds.indexOf(category.id);
             if (addedIndex == -1) {
                 selectedChannelIds.push(category.id);
-                this.setState({ selected_channel_ids: selectedChannelIds }, () => {
+                this.setState({ selected_channel_ids: selectedChannelIds }, async () => {
                     let channels = this.state.channels;
                     channels.splice(index, 1);
 
-                    let categories = this.state.categories;
-                    categories.push(category);
+
+                    const categories = await this.props.getCategoryV2();
+                    const filter = categories.data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
+
 
                     this.setState({
                         channels: channels,
-                        categories: categories,
+                        categories: filter,
                         active_tab: 'Edit Kanal'
                     }, () => {
 
@@ -434,5 +444,6 @@ class Channels extends React.Component {
 export default connect(state => state, {
     ...newsv2Actions,
     ...pageActions,
-    ...userActions
+    ...userActions,
+  ...newsv2KanalActions,
 })(withRouter(Channels));

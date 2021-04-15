@@ -168,34 +168,6 @@ const addCategory = categoryId => {
     });
 };
 
-const addCategoryV2 = categoryId => {
-    const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': getUserAccessToken()
-    }
-
-    return () => new Promise(async (resolve, reject) => {
-        try {
-            const response = await axios.post(`/v2/feature/kanal`, {
-                category: categoryId
-            }, {
-                headers: headers
-            });
-            if (response.status === 200) {
-                resolve(response);
-            }
-            else {
-                removeAccessToken();
-                reject(response);
-            }
-        }
-        catch (error) {
-            removeAccessToken();
-            reject(error);
-        }
-    });
-};
-
 const deleteCategory = categoryId => {
     return () => new Promise(async (resolve, reject) => {
         try {
@@ -569,7 +541,6 @@ export default {
     setCategory,
     getCategory,
     addCategory,
-    addCategoryV2,
     deleteCategory,
     updateCategoryOrder,
     getTrending,
