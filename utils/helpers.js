@@ -228,6 +228,5 @@ export const imageNews = (title, source, staticUrl, size = 200, assetsUrl, class
         height={height}
         loader={<img alt={title} className={classCSS} src={`/static/placeholders/placeholder_${rotation}.png`} />}
         unloader={<img alt={title} className={classCSS} src={`/static/placeholders/placeholder_${rotation}.png`} />}
-        style={{borderRadius: "10px"}}
     />;
 }
