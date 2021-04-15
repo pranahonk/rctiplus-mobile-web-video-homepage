@@ -418,12 +418,13 @@ class Detail extends React.Component {
                     <span>{this.state.countLike}</span>
                 </div>) : '' }
                 <div onClick={this.setLike.bind(this)} className="sheet-action-button" style={{ background: '#282828', margin: 0 }}>
-                    {this.state.isLike ?
-                     (<img src={`/share-icon/like.svg`} className="img-height" alt="like-image"/>) :
-                     (<img src={`/share-icon/unlike.svg`} className="img-height" alt="unlike-image"/>) }
+                    {/*{this.state.isLike ?*/}
+                    {/* (<img src={`/share-icon/like.svg`} className="img-height" alt="like-image"/>) :*/}
+                    {/* (<img src={`/share-icon/unlike.svg`} className="img-height" alt="unlike-image"/>) }*/}
+                    <img src={`/share-icon/like.svg`} className="img-height" alt="like-image"/>
                 </div>
                 <a className="sheet-wrap-link" onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#282828', marginLeft: 15 }}>
-                    <img src="/share-icon/share.svg" className="img-height" onClick={() => {
+                    <img src="/share-icon/share2.svg" className="img-height" onClick={() => {
                         const cdata = this.state.trending_detail_data;
                         if (this.platform && (this.platform == 'android')) {
                             window.AndroidShareHandler.action(URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'all', 'android'), cdata.title);
