@@ -6,7 +6,7 @@ import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import Head from 'next/head'
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2 } from '../../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2, SITE_NAME } from '../../config';
 
 import newsv2Actions from '../../redux/actions/newsv2Actions';
 import pageActions from '../../redux/actions/pageActions';
@@ -24,6 +24,7 @@ import { Subject } from 'rxjs';
 
 import queryString from 'query-string';
 import isEmpty from 'lodash/isEmpty'
+import isArray from 'lodash/isArray';
 
 const Loading = dynamic(() => import('../../components/Includes/Shimmer/ListTagLoader'))
 const SquareItem = dynamic(() => import('../../components/Includes/news/SquareItem'),{loading: () => <Loading />})
@@ -64,7 +65,28 @@ class Search extends React.Component {
                 return { dataSearch: error_code ? {} : {...data, keyword: q.keyword} }
             }
         }
-        return { dataSearch : {} };
+        const general = await fetch(`${NEWS_API_V2}/api/v2/settings/general`, {
+            method: 'GET',
+            headers: {
+                'Authorization': data_news.data.news_token
+            }
+        });
+        let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
+        let gs = {};
+        const data_general = await general.json();
+        if (!gen_error_code && isArray(data_general.data) && data_general.data.length > 0){
+            const res_gs = data_general.data[0]
+            gs['site_name'] = res_gs.site_name
+            gs['fb_id'] = res_gs.fb_id
+            gs['twitter_creator'] = res_gs.twitter_creator
+            gs['twitter_site'] = res_gs.twitter_site
+            gs['img_logo'] = res_gs.img_logo
+        }
+
+        return {
+            general: gs,
+            dataSearch : {}
+        };
     }
     constructor(props) {
         super(props);
@@ -204,18 +226,18 @@ class Search extends React.Component {
                     <meta name="keywords" content={'rctiplus'} />
                     <meta property="og:title" content={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - News+ on RCTI+`} />
                     <meta property="og:description" content={`RCTI+ - Portal berita terbaru dan terpercaya | ${this.props.dataSearch?.keyword || ''}`} />
-                    <meta property="og:image" itemProp="image" content={'https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png'} />
+                    <meta property="og:image" itemProp="image" content={this.props?.general?.img_logo || 'https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png'} />
                     <meta property="og:url" content={encodeURI(this.props.router.asPath)} />
                     <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={'RCTI+'} />
-                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta property="og:site_name" content={this.props?.general?.site_name || SITE_NAME} />
+                    <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
-                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
-                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-                    <meta name="twitter:image" content={'https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png'} />
+                    <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
+                    <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
+                    <meta name="twitter:image" content={this.props?.general?.img_logo || 'https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png'} />
                     <meta name="twitter:image:alt" content={'News RCTIPlus'} />
                     <meta name="twitter:title" content={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - News+ on RCTI+`} />
                     <meta name="twitter:description" content={`RCTI+ - Portal berita terbaru dan terpercaya | ${this.props.dataSearch?.keyword || ''}`} />
