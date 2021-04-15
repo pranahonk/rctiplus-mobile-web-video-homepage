@@ -35,6 +35,8 @@ import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShare
 import newsv2Actions from '../../redux/actions/newsv2Actions';
 import isEmpty from 'lodash/isEmpty'
 
+import isArray from 'lodash/isArray';
+
 // import ShareIcon from '@material-ui/icons/Share';
 
 import queryString from 'query-string';
@@ -67,6 +69,25 @@ class Detail extends React.Component {
 
         const data_news = await response_news.json();
 
+        const general = await fetch(`${NEWS_API_V2}/api/v2/settings/general`, {
+            method: 'GET',
+            headers: {
+                'Authorization': data_news.data.news_token
+            }
+        });
+        let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
+        let gs = {};
+        const data_general = await general.json();
+        if (!gen_error_code && isArray(data_general.data) && data_general.data.length > 0){
+            const res_gs = data_general.data[0]
+            gs['site_name'] = res_gs.site_name
+            gs['fb_id'] = res_gs.fb_id
+            gs['twitter_creator'] = res_gs.twitter_creator
+            gs['twitter_site'] = res_gs.twitter_site
+            gs['img_logo'] = res_gs.img_logo
+        }
+
+
         const resv2 = await fetch(`${NEWS_API_V2}/api/v2/news/${programId}`, {
             method: 'GET',
             headers: {
@@ -91,7 +112,19 @@ class Detail extends React.Component {
             }
         }
 
-        return { initial: data, props_id: programId };
+        let kanal = {}
+        if (data && data.data && data.data.subcategory_id) {
+            const subCategory = await fetch(`${NEWS_API_V2}/api/v1/subcategory/${data.data.subcategory_id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': data_news.data.news_token
+                }
+            });
+            let error_code_cat = subCategory.statusCode > 200 ? subCategory.statusCode : false;
+            kanal = !error_code_cat ? await subCategory.json() : {}
+        }
+        console.log('kanal >>', kanal)
+        return { initial: data, props_id: programId, general: gs, kanal: kanal };
     }
 
     constructor(props) {
@@ -461,7 +494,7 @@ class Detail extends React.Component {
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
         const newsTitle = cdata.title
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
-        const coverImg = imgURL(cdata.cover, cdata.image, 400, assets_url)
+        const coverImg = imgURL(cdata.cover, cdata.image, 400, assets_url, this.props?.general?.img_logo || null)
         const structuredData = {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
@@ -492,9 +525,9 @@ class Detail extends React.Component {
         return (
             <Layout title={`${newsTitle} - News+ on RCTI+`}>
                 <Head>
-                    <meta name="title" content={`${newsTitle} - News+ on RCTI+`} />
-                    <meta name="keywords" content={newsTitle} />
-                    <meta name="description" content={newsContent} />
+                    <meta name="title" content={newsTitle ? `${newsTitle} - News+ on RCTI+` : this.props?.kanal?.title} />
+                    <meta name="keywords" content={newsTitle ? newsTitle : this.props?.kanal?.keyword} />
+                    <meta name="description" content={newsContent ? newsContent : this.props?.kanal?.description} />
                     <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta property="og:description" content={newsContent} />
                     <meta property="og:image" itemProp="image" content={coverImg} />
@@ -503,11 +536,11 @@ class Detail extends React.Component {
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={SITE_NAME} />
-                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta property="og:site_name" content={this.props?.general?.site_name || SITE_NAME} />
+                    <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
-                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
-                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+                    <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
+                    <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
                     <meta name="twitter:image" content={coverImg} />
                     <meta name="twitter:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta name="twitter:image:alt" content={newsTitle} />
