@@ -64,9 +64,13 @@ class Channels extends React.Component {
         }
     }
 
-    componentDidMount() {
-        const savedCategoriesNews = getNewsChannels();
+  async componentDidMount() {
+        const savedCategories = await this.props.getChannelsv2();
+        const savedCategoriesNews = savedCategories.data.data;
+        console.log(savedCategoriesNews);
+        console.log(this.accessToken);
         if (this.accessToken) {
+            console.log(`Acess Token: ${this.accessToken}`)
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
                 this.setState({ saved_categories: savedCategoriesNews }, () => {
@@ -102,7 +106,7 @@ class Channels extends React.Component {
     }
 
     fetchData(savedCategoriesNews, isLoggedIn = false) {
-        this.props.getChannels()
+        this.props.getChannelsv2()
             .then(response => {
                 let channels = response.data.data;
                 if (!isLoggedIn) {
@@ -114,6 +118,7 @@ class Channels extends React.Component {
                         }
                     }
                 }
+
 
                 this.setState({ channels: channels });
             })
@@ -230,8 +235,6 @@ class Channels extends React.Component {
     async addChannel(category, index) {
         this.props.setPageLoader();
         newsAddCategoryChannelClicked(category.name, 'mweb_news_add_category_kanal_clicked');
-        console.log(this.state.channels);
-        console.log(this.state.categories)
 
         try {
             let decodedToken = { uid: '0' };
@@ -243,9 +246,6 @@ class Channels extends React.Component {
               // let addResponse = await this.props.addCategoryV2(category.id);
               let addResponse = await this.props.addCategoryV2(category.id);
               console.log(addResponse);
-
-              const test = await this.props.getCategoryV2();
-              console.log(test);
 
             }
 
@@ -259,12 +259,12 @@ class Channels extends React.Component {
 
 
                     const categories = await this.props.getCategoryV2();
-                    const filter = categories.data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
+                    const categoriesFilter = categories.data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
 
 
                     this.setState({
                         channels: channels,
-                        categories: filter,
+                        categories: categoriesFilter,
                         active_tab: 'Edit Kanal'
                     }, () => {
 

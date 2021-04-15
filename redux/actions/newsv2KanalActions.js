@@ -1,6 +1,6 @@
 import ax from 'axios';
 import { NEWS_API_V2 } from '../../config';
-import { getNewsTokenV2, checkToken, removeAccessToken, getAccessToken, getUserAccessToken } from '../../utils/cookie';
+import { removeAccessToken, getUserAccessToken } from '../../utils/cookie';
 
 const axios = ax.create({ baseURL: NEWS_API_V2 + '/api' });
 
@@ -92,10 +92,30 @@ const getCategoryV2 = () => {
   });
 };
 
+const getChannelsv2 = () => {
+  return () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`/v2/feature/kanal`);
+      if (response.status === 200) {
+        resolve(response);
+      }
+      else {
+        removeAccessToken();
+        reject(response);
+      }
+    }
+    catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+};
+
 
 export default {
     addCategoryV2,
     deleteCategory,
     updateCategoryOrder,
     getCategoryV2,
+    getChannelsv2,
 };
