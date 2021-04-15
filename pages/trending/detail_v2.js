@@ -123,7 +123,6 @@ class Detail extends React.Component {
             let error_code_cat = subCategory.statusCode > 200 ? subCategory.statusCode : false;
             kanal = !error_code_cat ? await subCategory.json() : {}
         }
-        console.log('kanal >>', kanal)
         return { initial: data, props_id: programId, general: gs, kanal: kanal };
     }
 
@@ -523,11 +522,11 @@ class Detail extends React.Component {
         const canonicalFullUrl = oneSegment['desktop'] + encodeURI(asPath).replace('trending/', 'news/');
 
         return (
-            <Layout title={`${newsTitle} - News+ on RCTI+`}>
+            <Layout title={this.props?.kanal?.title  ? this.props?.kanal?.title : `${newsTitle} - News+ on RCTI+` }>
                 <Head>
-                    <meta name="title" content={newsTitle ? `${newsTitle} - News+ on RCTI+` : this.props?.kanal?.title} />
-                    <meta name="keywords" content={newsTitle ? newsTitle : this.props?.kanal?.keyword} />
-                    <meta name="description" content={newsContent ? newsContent : this.props?.kanal?.description} />
+                    <meta name="title" content={this.props?.kanal?.title ? this.props?.kanal?.title : `${newsTitle} - News+ on RCTI+`} />
+                    <meta name="keywords" content={this.props?.kanal?.keyword ? this.props?.kanal?.keyword : newsTitle} />
+                    <meta name="description" content={this.props?.kanal?.description ? this.props?.kanal?.description : newsContent } />
                     <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta property="og:description" content={newsContent} />
                     <meta property="og:image" itemProp="image" content={coverImg} />
