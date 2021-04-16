@@ -6,7 +6,7 @@ import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import Head from 'next/head'
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2, SITE_NAME } from '../../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2 } from '../../config';
 
 import newsv2Actions from '../../redux/actions/newsv2Actions';
 import pageActions from '../../redux/actions/pageActions';
