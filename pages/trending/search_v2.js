@@ -62,31 +62,29 @@ class Search extends React.Component {
                 const error_code = res.statusCode > 200 ? res.statusCode : false;
                 const data = await res.json();
                 // console.log(data)
-                return { dataSearch: error_code ? {} : {...data, keyword: q.keyword} }
+                const general = await fetch(`${NEWS_API_V2}/api/v2/settings/general`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': data_news.data.news_token
+                    }
+                });
+                let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
+                let gs = {};
+                const data_general = await general.json();
+                if (!gen_error_code && isArray(data_general.data) && data_general.data.length > 0){
+                    const res_gs = data_general.data[0]
+                    gs['site_name'] = res_gs.site_name
+                    gs['fb_id'] = res_gs.fb_id
+                    gs['twitter_creator'] = res_gs.twitter_creator
+                    gs['twitter_site'] = res_gs.twitter_site
+                    gs['img_logo'] = res_gs.img_logo
+                }
+
+                return { dataSearch: error_code ? {} : {...data, keyword: q.keyword, general: gs} }
             }
-        }
-        const general = await fetch(`${NEWS_API_V2}/api/v2/settings/general`, {
-            method: 'GET',
-            headers: {
-                'Authorization': data_news.data.news_token
-            }
-        });
-        let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
-        let gs = {};
-        const data_general = await general.json();
-        if (!gen_error_code && isArray(data_general.data) && data_general.data.length > 0){
-            const res_gs = data_general.data[0]
-            gs['site_name'] = res_gs.site_name
-            gs['fb_id'] = res_gs.fb_id
-            gs['twitter_creator'] = res_gs.twitter_creator
-            gs['twitter_site'] = res_gs.twitter_site
-            gs['img_logo'] = res_gs.img_logo
         }
 
-        return {
-            general: gs,
-            dataSearch : {}
-        };
+        return {dataSearch : {}};
     }
     constructor(props) {
         super(props);
