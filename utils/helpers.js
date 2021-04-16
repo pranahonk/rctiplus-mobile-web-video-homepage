@@ -207,10 +207,12 @@ export const humanizeStr = (str) => {
     return frags.join(' ');
 }
 
-export const imgURL = (source, staticUrl, size = 200, assetsUrl) => {
+export const imgURL = (source, staticUrl, size = 200, assetsUrl, imgDefault = null) => {
     const assets_url_check = !isEmpty(assetsUrl) && assetsUrl !== undefined
     const assets_url = assets_url_check ? assetsUrl : 'https://rstatic.akamaized.net/media/'
-    return !isEmpty(staticUrl) && staticUrl !== '-' && assets_url_check ? `${assets_url}${size}${staticUrl}` : source;
+    return !isEmpty(staticUrl) && staticUrl !== '-' && assets_url_check ? `${assets_url}${size}${staticUrl}` : (
+        imgDefault != null ? imgDefault : source
+    );
 }
 
 export const imageNews = (title, source, staticUrl, size = 200, assetsUrl, classCSS = 'thumbnail', rotation = 'landscape') => {
@@ -229,4 +231,9 @@ export const imageNews = (title, source, staticUrl, size = 200, assetsUrl, class
         loader={<img alt={title} className={classCSS} src={`/static/placeholders/placeholder_${rotation}.png`} />}
         unloader={<img alt={title} className={classCSS} src={`/static/placeholders/placeholder_${rotation}.png`} />}
     />;
+}
+
+export const imagePath = (source, staticUrl, size = 200, assetsUrl, imgDefault) => {
+    const imgUrl = imgURL(source, staticUrl, size, assetsUrl, imgDefault);
+    return imgUrl;
 }

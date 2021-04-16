@@ -20,6 +20,7 @@ const NavBack = loadable(() => import('../../components/Includes/Navbar/NavTrend
 const NavBackIframe = loadable(() => import('../../components/Includes/Navbar/NavIframe'))
 const AdsBanner = loadable(() => import('../../components/Includes/Banner/Ads'))
 import '../../assets/scss/components/trending_detail.scss';
+import NewsDetailContent from "../../components/Includes/news/NewsDetailContent"
 
 import { FacebookShareButton, TwitterShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
 // import { ListGroup, ListGroupItem } from 'reactstrap';
@@ -33,6 +34,8 @@ import { urlRegex } from '../../utils/regex';
 import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
 import newsv2Actions from '../../redux/actions/newsv2Actions';
 import isEmpty from 'lodash/isEmpty'
+
+import isArray from 'lodash/isArray';
 
 // import ShareIcon from '@material-ui/icons/Share';
 
@@ -66,6 +69,25 @@ class Detail extends React.Component {
 
         const data_news = await response_news.json();
 
+        const general = await fetch(`${NEWS_API_V2}/api/v2/settings/general`, {
+            method: 'GET',
+            headers: {
+                'Authorization': data_news.data.news_token
+            }
+        });
+        let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
+        let gs = {};
+        const data_general = await general.json();
+        if (!gen_error_code && isArray(data_general.data) && data_general.data.length > 0){
+            const res_gs = data_general.data[0]
+            gs['site_name'] = res_gs.site_name
+            gs['fb_id'] = res_gs.fb_id
+            gs['twitter_creator'] = res_gs.twitter_creator
+            gs['twitter_site'] = res_gs.twitter_site
+            gs['img_logo'] = res_gs.img_logo
+        }
+
+
         const resv2 = await fetch(`${NEWS_API_V2}/api/v2/news/${programId}`, {
             method: 'GET',
             headers: {
@@ -89,8 +111,19 @@ class Detail extends React.Component {
                 return { initial: false };
             }
         }
-        
-        return { initial: data, props_id: programId };
+
+        let kanal = {}
+        if (data && data.data && data.data.subcategory_id) {
+            const subCategory = await fetch(`${NEWS_API_V2}/api/v1/subcategory/${data.data.subcategory_id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': data_news.data.news_token
+                }
+            });
+            let error_code_cat = subCategory.statusCode > 200 ? subCategory.statusCode : false;
+            kanal = !error_code_cat ? await subCategory.json() : {}
+        }
+        return { initial: data, props_id: programId, general: gs, kanal: kanal };
     }
 
     constructor(props) {
@@ -107,7 +140,7 @@ class Detail extends React.Component {
             sticky_share_shown: false,
             listTagByNews: [],
             count: false,
-            countLike: 0, 
+            countLike: 0,
             infographic: initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID
         };
 
@@ -229,7 +262,7 @@ class Detail extends React.Component {
                 Cookie.set('is_like_article', like.map(obj => replaceArray.find(value => value.news_id == obj.news_id || obj)))
                 this.setState({ isLike: !foundLike?.like })
             })
-            return 
+            return
         }
         like.push({ like: !foundLike?.like, news_id: id_news})
         this.props.setLike(id_news, true, device_id).then((res) => {
@@ -316,7 +349,7 @@ class Detail extends React.Component {
                             <i className="fab fa-facebook-f"></i>
                         </FacebookShareButton>
                     )}
-                    
+
                 </div>
                 <a onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
                     {(this.platform) ? (
@@ -340,7 +373,7 @@ class Detail extends React.Component {
                         <WhatsappShareButton title={cdata.title} url={REDIRECT_WEB_DESKTOP + encodeURI(asPath) + UTM_NAME('trending', this.props.router.query.id, 'wa')} separator=" - ">
                             <i className="fab fa-whatsapp"></i>
                         </WhatsappShareButton>
-                    )} 
+                    )}
                 </a>
                 <a onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#4a90e2' }}>
                     {this.platform && this.platform == 'ios' ? (
@@ -367,7 +400,7 @@ class Detail extends React.Component {
                             <i className="fab fa-twitter"></i>
                         </TwitterShareButton>
                     )}
-                    
+
                 </a>
                 <a onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#75B73B' }}>
                     {this.platform && this.platform == 'ios' ? (
@@ -390,7 +423,7 @@ class Detail extends React.Component {
                         <LineShareButton url={REDIRECT_WEB_DESKTOP + encodeURI(asPath) + UTM_NAME('trending', this.props.router.query.id, 'line')} title={cdata.title}>
                             <i className="fab fa-line"></i>
                         </LineShareButton>
-                    )} 
+                    )}
                 </a>
                 {/* <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: scrolledDown ? '#3a3a3a' : '', float: 'right' }}>
                     <ShareIcon style={{ marginTop: -3 }} onClick={() => {
@@ -460,7 +493,7 @@ class Detail extends React.Component {
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
         const newsTitle = cdata.title
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
-        const coverImg = imgURL(cdata.cover, cdata.image, 400, assets_url)
+        const coverImg = imgURL(cdata.cover, cdata.image, 400, assets_url, this.props?.general?.img_logo || null)
         const structuredData = {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
@@ -487,13 +520,13 @@ class Detail extends React.Component {
             "description": newsContent
         }
         const canonicalFullUrl = oneSegment['desktop'] + encodeURI(asPath).replace('trending/', 'news/');
-
+        console.log('cdata >>', cdata);
         return (
-            <Layout title={`${newsTitle} - News+ on RCTI+`}>
+            <Layout title={this.props?.kanal?.title  ? this.props?.kanal?.title : `${newsTitle} - News+ on RCTI+` }>
                 <Head>
-                    <meta name="title" content={`${newsTitle} - News+ on RCTI+`} />
-                    <meta name="keywords" content={newsTitle} />
-                    <meta name="description" content={newsContent} />
+                    <meta name="title" content={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title} />
+                    <meta name="keywords" content={newsTitle || this.props?.kanal?.keyword} />
+                    <meta name="description" content={newsContent || this.props?.kanal?.description} />
                     <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta property="og:description" content={newsContent} />
                     <meta property="og:image" itemProp="image" content={coverImg} />
@@ -502,11 +535,11 @@ class Detail extends React.Component {
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={SITE_NAME} />
-                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta property="og:site_name" content={this.props?.general?.site_name || SITE_NAME} />
+                    <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
-                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
-                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+                    <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
+                    <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
                     <meta name="twitter:image" content={coverImg} />
                     <meta name="twitter:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta name="twitter:image:alt" content={newsTitle} />
@@ -528,11 +561,11 @@ class Detail extends React.Component {
                 {this.state.iframe_opened ? (<NavBackIframe closeFunction={() => {
                     this.setState({ iframe_opened: false });
                 }} data={cdata} disableScrollListener />) : (
-                    <NavBack 
-                        pushNotif={this.pushNotif} 
-                        params={`?token=${this.accessToken}&platform=${this.platform}`} 
-                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`} 
-                        data={cdata} 
+                    <NavBack
+                        pushNotif={this.pushNotif}
+                        params={`?token=${this.accessToken}&platform=${this.platform}`}
+                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`}
+                        data={cdata}
                         titleNavbar={cdata.source}/>
                 )}
                 <StickyContainer>
@@ -545,7 +578,7 @@ class Detail extends React.Component {
                                     if (self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: false });
                                     }
-                                
+
                                 }, 300);
                                 return <span></span>;
                             }
@@ -554,7 +587,7 @@ class Detail extends React.Component {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
                                     }
-                                    
+
                                 }, 300);
                                 return (
                                     <div className={`sticky-share-button ${this.state.sticky_share_shown ? 'sticky-share-button-viewed' : ''}`}>
@@ -566,18 +599,18 @@ class Detail extends React.Component {
                                 if (self.state.sticky_share_shown) {
                                     self.setState({ sticky_share_shown: false });
                                 }
-                                
+
                             }, 300);
                             return <span></span>;
                         } }
                     </Sticky>
                 </StickyContainer>
-                
+
                 {this.state.iframe_opened ? (
                     <div className="content-trending-detail" style={{ height: '100vh' }}>
-                        <iframe src={cdata.link} style={{ 
-                            width: '100%', 
-                            height: '100%', 
+                        <iframe src={cdata.link} style={{
+                            width: '100%',
+                            height: '100%',
                             display: 'block',
                             margin: 0,
                             padding: 0
@@ -595,7 +628,7 @@ class Detail extends React.Component {
                                         .catch(error => {
                                             console.log(error);
                                         });
-                                    
+
                                     this.setState({ scrolled_down: true, count: true });
                                 }
                                 else {
@@ -632,7 +665,7 @@ class Detail extends React.Component {
                                             imageNews(cdata.title, cdata.cover, cdata.image, 450, assets_url, 'content-trending-detail-cover')
                                         }
                                     </div>
-                                    <div className="content-trending-detail-text" dangerouslySetInnerHTML={{ __html: `${cdata.content}` }}></div>
+                                  <NewsDetailContent  item={cdata} />
                                     {/* <Link href="#" as={"#"}>
                                         <a> */}
                                             <div onClick={this.openIframe.bind(this)} style={{ color: '#05b5f5', padding: '0 15px' }}>
@@ -655,10 +688,10 @@ class Detail extends React.Component {
                                         {this.renderActionButton()}
                                     </div>
                                 </div>
-                                { cdata.exclusive === 'yes' ? (<div /> 
+                                { cdata.exclusive === 'yes' ? (<div />
                                 ) : (
                                     <div className="ads-banner__detail_news">
-                                        <AdsBanner 
+                                        <AdsBanner
                                             partner={cdata.source}
                                             path={getPlatformGpt(this.platform)}
                                             size={[300, 250]}
@@ -712,7 +745,7 @@ const getPlatformGpt = (platform) => {
     // webview
       if(platform === 'ios') {
         return process.env.GPT_NEWS_IOS_DETAIL;
-      } 
+      }
       if(platform === 'android') {
         return process.env.GPT_NEWS_ANDROID_DETAIL;
       }
