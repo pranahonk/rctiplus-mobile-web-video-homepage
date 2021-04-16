@@ -91,9 +91,6 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
 
 
   const newCont = (responses) => {
-    // const getTag =  item.content.match(/(<\w+>)/gm)[0];
-    // const paragraph = item.content.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);
-
     const addReadArray = [];
 
     for (const response of responses) {
