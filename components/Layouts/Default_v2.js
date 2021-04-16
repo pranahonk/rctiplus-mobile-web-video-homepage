@@ -11,6 +11,7 @@ import chatsActions from '../../redux/actions/chats';
 
 import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
+import { getUidAppier } from '../../utils/appier';
 
 import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GRAPH_SITEMAP, SHARE_BASE_URL, GTM_AUTH, MODE, APPIER_ID } from '../../config';
 import { Spinner } from 'reactstrap';
@@ -53,6 +54,9 @@ class Default_v2 extends React.Component {
 
     componentDidMount() {
         this.props.initializeFirebase();
+        // identify appier
+        qg('identify', {user_id: getUidAppier()});
+        // end identify appier
         // console.log('User added to home screen');
         if (typeof window !== 'undefined') {
             window.addEventListener('beforeinstallprompt', async e => {
