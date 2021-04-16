@@ -12,6 +12,7 @@ import chatsActions from '../../redux/actions/chats';
 
 const Footer = loadable(() => import('../../components/Includes/Footer/Default'))
 const Footer_v2 = loadable(() => import('../../components/Includes/Footer/Default_v2'))
+import { getUidAppier } from '../../utils/appier';
 
 import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GTM_AUTH, SHARE_BASE_URL, MODE, APPIER_ID } from '../../config';
 
@@ -49,6 +50,10 @@ class DefaultNews extends React.Component {
     
     componentDidMount() {
         this.props.initializeFirebase();
+        // identify appier
+        qg('identify', {user_id: getUidAppier()});
+        // end identify appier
+    
         // console.log('User added to home screen');
         if(!Cookie.get('uid_ads')) {
             Cookie.set('uid_ads', new DeviceUUID().get())
