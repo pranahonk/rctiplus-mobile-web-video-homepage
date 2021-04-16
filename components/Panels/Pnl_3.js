@@ -39,7 +39,7 @@ class Pnl_3 extends React.Component {
 	}
 
 	link(data) {
-		console.log('PANEL 3', data);
+		
 		switch (data.content_type) {
 			case 'special':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
@@ -130,6 +130,7 @@ class Pnl_3 extends React.Component {
 	}
 
 	render() {
+		console.log(`ini horizontal `, this.props.title, this.state.contents)
 		return (
 			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className="homepage-content pnl_horizontal">
 				<h2 className="content-title">{this.props.title}</h2>

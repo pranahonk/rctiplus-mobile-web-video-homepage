@@ -50,8 +50,6 @@ const getStoriesCategory = (page = 1, length = 6, category_id) => {
                     data: data,
                     meta: response.data.meta,
                     status: response.data.status
-                    /* image_path: response.data.meta.image_path,
-                    video_path: response.data.meta.video_path */
                 });
                 resolve(data);
             }
