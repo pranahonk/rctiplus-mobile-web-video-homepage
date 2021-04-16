@@ -528,9 +528,9 @@ class Detail extends React.Component {
         return (
             <Layout title={this.props?.kanal?.title ? this.props?.kanal?.title : `${newsTitle} - News+ on RCTI+` }>
                 <Head>
-                    <meta name="title" content={cdata && cdata.meta_title ? cdata.meta_title : (this.props?.kanal?.title || `${newsTitle} - News+ on RCTI+`)} />
-                    <meta name="keywords" content={cdata && cdata.meta_keyword ? cdata && cdata.meta_keyword : (this.props?.kanal?.keyword || newsTitle)} />
-                    <meta name="description" content={cdata && cdata.meta_description ? cdata.meta_description : (this.props?.kanal?.description || newsContent)} />
+                    <meta name="title" content={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title} />
+                    <meta name="keywords" content={newsTitle || this.props?.kanal?.keyword} />
+                    <meta name="description" content={newsContent || this.props?.kanal?.description} />
                     <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta property="og:description" content={newsContent} />
                     <meta property="og:image" itemProp="image" content={cdata.cover} />

@@ -127,7 +127,7 @@ export const setVisitorToken = async () => {
                 }));
                 return JSON.parse(cookieDataToken);
             }
-        } 
+        }
         else {
             visitorToken = JSON.parse(cookie.get('VISITOR_TOKEN'));
             const dayDiff = (Date.now() - new Date(visitorToken['CREATED_AT']).getTime()) / (1000 * 60 * 60 * 24);
@@ -141,7 +141,7 @@ export const setVisitorToken = async () => {
                     }));
                     return JSON.parse(visitorToken);
                 }
-            } 
+            }
             else {
                 return JSON.parse(visitorToken);
             }
@@ -253,7 +253,7 @@ export const setNewsTokenV2 = async () => {
     try {
         let newsToken = cookie.get('NEWS_TOKEN_V2');
         let visitorToken = getCookie('ACCESS_TOKEN') ? getCookie('ACCESS_TOKEN') : getVisitorToken();
-        
+
         if (!newsToken) {
             const response = await axios.post(`/v1/token`, {
                 merchantName: 'rcti+',
@@ -320,6 +320,10 @@ export const setAccessToken = token => {
 
 export const getAccessToken = () => {
     return getCookie('GLOBAL_ACCESS_TOKEN');
+};
+
+export const getUserAccessToken = () => {
+    return getCookie('ACCESS_TOKEN');
 };
 
 export const removeAccessToken = () => {

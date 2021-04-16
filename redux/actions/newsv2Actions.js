@@ -1,6 +1,6 @@
 import ax from 'axios';
 import { NEWS_API_V2 } from '../../config';
-import { getNewsTokenV2, checkToken, removeAccessToken, getAccessToken } from '../../utils/cookie';
+import { getNewsTokenV2, checkToken, removeAccessToken, getAccessToken, getUserAccessToken } from '../../utils/cookie';
 
 const axios = ax.create({ baseURL: NEWS_API_V2 + '/api' });
 
@@ -235,7 +235,7 @@ const getSectionNews = (category_id = 16, pageSize = 3, page = 1) => {
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_SECTION_NEWS',
-                    payload: response.data, 
+                    payload: response.data,
                 });
                 resolve(response.data);
             }

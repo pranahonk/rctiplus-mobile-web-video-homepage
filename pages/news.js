@@ -31,6 +31,7 @@ import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeA
 import '../assets/scss/components/trending_v2.scss';
 
 import newsv2Actions from '../redux/actions/newsv2Actions';
+import newsv2KanalActions from '../redux/actions/newsv2KanalActions';
 import userActions from '../redux/actions/userActions';
 import { showSignInAlert, humanizeStr, imageNews, imagePath } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
@@ -376,9 +377,9 @@ class Trending_v2 extends React.Component {
         const savedCategoriesNews = getNewsChannels();
         params['saved_tabs'] = savedCategoriesNews;
         this.setState(params, () => {
-            this.props.getCategory()
+            this.props.getCategoryV2()
                 .then(response => {
-                    let categories = response.data.data;
+                    let categories = response.data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
                     let sortedCategories = categories;
                     let savedCategories = savedCategoriesNews;
                     for (let i = 0; i < savedCategories.length; i++) {
@@ -461,7 +462,6 @@ class Trending_v2 extends React.Component {
                         }
                     }
 
-                    console.log(error);
                     this.setState({
                         is_tabs_loading: false,
                         is_articles_loading: false,
@@ -746,7 +746,7 @@ class Trending_v2 extends React.Component {
                                                                         </ListGroup>
                                                                     </li>
                                                                     </>
-                                                                )  : 
+                                                                )  :
                                                                 (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
                                                                     <SquareItem item={article} assets_url={this.state.assets_url} />
                                                                 </ListGroupItem>)
@@ -770,4 +770,5 @@ class Trending_v2 extends React.Component {
 export default connect(state => state, {
     ...newsv2Actions,
     ...userActions,
+    ...newsv2KanalActions,
 })(withRouter(Trending_v2));
