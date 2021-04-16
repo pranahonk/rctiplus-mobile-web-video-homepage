@@ -143,6 +143,10 @@ module.exports = (window => {
 						{
 							if (storyViewer) {
 								storyViewer.classList.remove('paused');
+
+								if (storyViewer.classList.contains('muted')) {
+									storyViewer.classList.remove('muted');
+								}
 							}
 						}
 						break;
@@ -168,11 +172,12 @@ module.exports = (window => {
 						break;
 					case 'onmute':
 						{
-							if (data.muted) {
+							// TEMP FIX
+							/* if (data.muted) {
 								storyViewer.classList.add('muted');
 							} else {
 								storyViewer.classList.remove('muted');
-							}
+							} */
 						}
 						break;
 				}
