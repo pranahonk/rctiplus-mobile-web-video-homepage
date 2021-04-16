@@ -127,6 +127,7 @@ class Pnl_2 extends React.Component {
 	}
 
 	render() {
+		console.log(`ini horizontal landscape `, this.props.title, this.state.contents)
 		return (
 			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className="homepage-content pnl_horizontal_landscape" id="pnl_horizontal_landscape" style={{ marginBottom: 20 }}>
 				<h2 className="content-title">{this.props.title}</h2>

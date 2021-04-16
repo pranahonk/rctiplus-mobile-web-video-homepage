@@ -99,14 +99,8 @@ export const PanelEpisode = forwardRef((props, ref) => {
             );
           }) }
         </div>
-        { props.enableShowMore.isLoading ? (<TabPanelLoader />) : null
-        // props.enableShowMore.isNext ? (
-          
-        //   <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-        //     <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-        //   </div>
-        // ) : '' 
-        }
+
+        {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
       </TabPane>
   );
 });
@@ -165,13 +159,8 @@ export const PanelExtra = (props) => {
           );
         }) }
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : null
-      // props.enableShowMore.isNext ? (
-      //   <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-      //     <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-      //   </div>
-      // ) : ''
-      }
+
+      {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
   );
 };
@@ -230,13 +219,8 @@ export const PanelClip = (props) => {
           );
         }) }
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : null
-      // props.enableShowMore.isNext ? (
-      //   <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-      //     <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-      //   </div>
-      // ) : ''
-      }
+
+     {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
   );
 };
@@ -267,11 +251,12 @@ export const PanelPhoto = (props) => {
           </div>
         </div>
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
+      {/* {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
         <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
           <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
         </div>
-      ) : ''}
+      ) : ''} */}
+      {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
   );
 };
