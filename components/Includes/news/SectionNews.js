@@ -20,7 +20,7 @@ import 'swiper/swiper.scss';
 import TopicLoader from '../Shimmer/TopicLoader';
 
 const ItemTags = ({...props}) => {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(null);
   const [list, setList] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false)
   const [accessToken, setAccessToken] = useState(null);
@@ -31,13 +31,23 @@ const ItemTags = ({...props}) => {
       setAccessToken(query.accessToken);
       setPlatform(query.platform);
     }
-    console.log('section ke: ', props.article)
+    // console.log('section ke: ', props.article)
     if(!isEmpty(props.article?.section)) {
       props.getSectionArticle(props.article?.section?.id).then((res) => {
         setList(res.data)
       })
     }
   },[]);
+  useEffect(() => {
+    if (list.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show) {
+      setLoadingMore(true)
+      props.getSectionArticle(props.article?.section?.id, list?.meta?.pagination?.current_page + 1).then((res) => {
+        setLoadingMore(false)
+        setShow(null)
+        setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
+      }).catch((err) => console.log(err))
+    }
+  }, [show])
   let assetUrl = list.meta && list.meta.assets_url ? list.meta.assets_url : null;
   const _goToDetail = (article) => {
     let category = ''
@@ -59,18 +69,7 @@ const ItemTags = ({...props}) => {
                 spaceBetween={10}
                 width={242}
                 height={140}
-                onSwiper={(swiper) => console.log(swiper)}
-                onReachEnd={(swiper) => {
-                  if (swiper.isEnd) {
-                    if (list.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page)) {
-                      setLoadingMore(true)
-                      props.getSectionArticle(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
-                        setLoadingMore(false)
-                        setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
-                      }).catch((err) => console.log(err))
-                    }
-                  }
-                }}
+                onReachEnd={setShow}
                 >
                   {list?.data?.map((item, index) => {
                     return (

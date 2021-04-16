@@ -11,6 +11,7 @@ import chatsActions from '../../redux/actions/chats';
 
 import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
+import { getUidAppier } from '../../utils/appier';
 
 import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GTM_AUTH, SHARE_BASE_URL, MODE, APPIER_ID } from '../../config';
 
@@ -48,6 +49,9 @@ class DefaultNews extends React.Component {
 
     componentDidMount() {
         this.props.initializeFirebase();
+        // identify appier
+        qg('identify', {user_id: getUidAppier()});
+        // end identify appier
     
         // console.log('User added to home screen');
         if(!Cookie.get('uid_ads')) {
@@ -171,6 +175,10 @@ class DefaultNews extends React.Component {
                     ` }}></script>
                     <noscript><img src="https://certify.alexametrics.com/atrk.gif?account=8oNJt1FYxz20cv" style={{ display: 'none' }} height="1" width="1" alt="" /></noscript>
                     {/* <!-- End Alexa Certify Javascript --> */}
+                    
+                    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+
+                    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
 
                 </Head>
 
