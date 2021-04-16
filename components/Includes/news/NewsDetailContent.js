@@ -38,7 +38,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const [platform, setPlatform] = useState(null);
 
   const rmAttributes = item.content.replace(/(class|id|<!--\s*([a-zA-Z0-9_ ]*)\s*-->)="\w+"/gm, '').replace(/\s*>/gmi, '>').replace(/(<!--\s*([a-zA-Z0-9_ ]*)\s*-->)/gm, '');
-  const getTag = rmAttributes.match(/(<\w+>)/gm)[0];
+  const getTag = rmAttributes.match(/(<\w+>)/gm) ? rmAttributes.match(/(<\w+>)/gm)[0]: null;
   const paragraph = rmAttributes.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);
   const index = []
   paragraph.filter((x, i)=> {
