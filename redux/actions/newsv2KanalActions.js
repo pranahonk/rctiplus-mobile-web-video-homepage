@@ -1,12 +1,19 @@
 import ax from 'axios';
 import { NEWS_API_V2 } from '../../config';
-import { removeAccessToken, getUserAccessToken } from '../../utils/cookie';
+import {removeAccessToken, getUserAccessToken, getVisitorToken, checkToken, getNewsTokenV2} from '../../utils/cookie';
 
 const axios = ax.create({ baseURL: NEWS_API_V2 + '/api' });
 
 axios.interceptors.request.use(async (request) => {
     const accessToken = getUserAccessToken();
-    request.headers['Authorization'] = accessToken;
+    if (!accessToken) {
+      removeAccessToken();
+      await checkToken();
+      request.headers['Authorization'] = getVisitorToken();
+    }
+    else {
+      request.headers['Authorization'] = accessToken;
+  }
 
     return request;
 });
@@ -32,10 +39,10 @@ const addCategoryV2 = categoryId => {
     });
 };
 
-const deleteCategory = categoryId => {
+const deleteCategoryV2 = categoryId => {
     return () => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.delete(`/v1/kanal/${categoryId}`);
+            const response = await axios.delete(`/v2/feature/kanal/${categoryId}`);
             if (response.status === 200) {
                 resolve(response);
             }
@@ -51,10 +58,10 @@ const deleteCategory = categoryId => {
     });
 };
 
-const updateCategoryOrder = (categoryId, sorting) => {
+const updateCategoryOrderV2 = (categoryId, sorting) => {
     return () => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v1/update_kanal`, {
+            const response = await axios.post(`/v2/feature/update_kanal`, {
                 category: categoryId,
                 sorting: sorting
             });
@@ -114,8 +121,8 @@ const getChannelsv2 = () => {
 
 export default {
     addCategoryV2,
-    deleteCategory,
-    updateCategoryOrder,
+    deleteCategoryV2,
+    updateCategoryOrderV2,
     getCategoryV2,
     getChannelsv2,
 };

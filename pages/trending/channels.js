@@ -65,12 +65,9 @@ class Channels extends React.Component {
     }
 
   async componentDidMount() {
-        const savedCategories = await this.props.getChannelsv2();
+        const savedCategories = await this.props.getCategoryV2();
         const savedCategoriesNews = savedCategories.data.data;
-        console.log(savedCategoriesNews);
-        console.log(this.accessToken);
         if (this.accessToken) {
-            console.log(`Acess Token: ${this.accessToken}`)
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
                 this.setState({ saved_categories: savedCategoriesNews }, () => {
@@ -86,7 +83,6 @@ class Channels extends React.Component {
         else {
             this.props.getUserData()
                 .then(response => {
-                    console.log(response);
                     this.setState({
                         saved_categories: savedCategoriesNews,
                         user_data: response.data.data
@@ -126,10 +122,10 @@ class Channels extends React.Component {
                 console.log(error);
             });
 
-        this.props.getCategory()
+        this.props.getCategoryV2()
             .then(response => {
                 let selectedChannelIds = [];
-                let categories = response.data.data;
+                let categories = response.data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
                 for (let i = 0; i < categories.length; i++) {
                     if (categories[i].label != 'priority') {
                         selectedChannelIds.push(categories[i].id);
@@ -193,10 +189,9 @@ class Channels extends React.Component {
                     this.props.setPageLoader();
                     let promises = [];
                     for (let i = 3; i < this.state.categories.length; i++) {
-                        promises.push(this.props.updateCategoryOrder(this.state.categories[i].id, this.state.categories.length - i));
+                        promises.push(this.props.updateCategoryOrderV2(this.state.categories[i].id, this.state.categories.length - i));
                     }
                     const responses = await Promise.all(promises);
-                    console.log(responses);
                     this.props.unsetPageLoader();
                 }
                 else {
@@ -245,7 +240,6 @@ class Channels extends React.Component {
             if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
               // let addResponse = await this.props.addCategoryV2(category.id);
               let addResponse = await this.props.addCategoryV2(category.id);
-              console.log(addResponse);
 
             }
 
@@ -298,8 +292,7 @@ class Channels extends React.Component {
             }
 
             if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
-                let deleteResponse = await this.props.deleteCategory(category.id);
-                console.log(deleteResponse);
+                let deleteResponse = await this.props.deleteCategoryV2(category.id);
             }
 
             let selectedChannelIds = this.state.selected_channel_ids;
