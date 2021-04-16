@@ -520,9 +520,8 @@ class Detail extends React.Component {
             "description": newsContent
         }
         const canonicalFullUrl = oneSegment['desktop'] + encodeURI(asPath).replace('trending/', 'news/');
-        console.log('cdata >>', cdata);
         return (
-            <Layout title={this.props?.kanal?.title  ? this.props?.kanal?.title : `${newsTitle} - News+ on RCTI+` }>
+            <Layout title={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title}>
                 <Head>
                     <meta name="title" content={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title} />
                     <meta name="keywords" content={newsTitle || this.props?.kanal?.keyword} />
