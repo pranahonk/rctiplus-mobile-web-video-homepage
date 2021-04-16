@@ -37,7 +37,6 @@ class NavbarTrendingSearch extends Component {
         this.accessToken = null;
         this.platform = null;
         const segments = this.props.router.asPath.split(/\?/);
-        console.log('segments >>', segments)
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
