@@ -212,7 +212,7 @@ class NavbarDef_v2 extends Component {
                         </ActiveLink> */}
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_RADIO}?token=${this.state.token}`}>
                             <img alt="Radio+" className="icon-menu-top" src={'/icons-menu/radioIcon.svg'} alt="radio" width="30" height="30" />
-                            <label>News+</label>
+                            <label>Radio+</label>
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_HOT}?token=${this.state.token}`}>
                             <img className="icon-menu-top" src={'/icons-menu/hotIcon.svg'} alt="hot" width="30" height="30" />
