@@ -95,7 +95,7 @@
                 padding: 4px 8px;
                 font-size: 10px;
                 color: white;
-                border-bottom-right-radius: 3px;
+                border-bottom-right-radius: 5px;
                 font-family: Helvetica;
             }
         }
@@ -107,7 +107,12 @@
         max-width: 45%;
         min-width: 45%;
         height: 135px;
-        border-radius: 3px;
+        border-radius: 5px;
+
+    }
+    img {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
     }
 }
 
@@ -136,9 +141,6 @@
     img {
         border-radius: 5px;
         object-fit: cover;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        -ms-border-radius: 5px;
-        -o-border-radius: 5px;
-}
+
+    }
 }
