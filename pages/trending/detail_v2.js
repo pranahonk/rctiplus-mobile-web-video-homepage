@@ -139,7 +139,7 @@ class Detail extends React.Component {
             listTagByNews: [],
             count: false,
             countLike: 0,
-            infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID
+            infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID,
         };
 
         // this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
@@ -321,7 +321,7 @@ class Detail extends React.Component {
         const cdata = this.state.trending_detail_data;
         let hashtags = ['rcti', 'rctinews'];
         return (
-            <div className="sheet-action-button-container">
+            <div className="sheet-action-button-container" style={{padding: '10px 20px'}}>
               <div className="sheet-wrap-left">
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#034ea1' }}>
                     {this.platform && this.platform == 'ios' ? (
@@ -476,6 +476,11 @@ class Detail extends React.Component {
         );
     }
 
+    shareButtonPosition = el =>{
+      console.log(`${window.innerHeight}`)
+      console.log(el.getBoundingClientRect().top);
+    }
+
     render() {
         const cdata = this.state.trending_detail_data;
         const assets_url = this.state.assets_url;
@@ -576,6 +581,9 @@ class Detail extends React.Component {
                     <Sticky bottomOffset={100}>
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
+                            console.log(`distance from top: ${distanceFromTop}`);
+                            console.log(`distance from bottom: ${distanceFromBottom}`);
+                            // console.log(`distance from top: ${document.getElementsByClassName('sheet-action-button-container')[1].getBoundingClientRect().top}`);
                             {/* console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight) */}
                             if (distanceFromTop < -650) {
                                 setTimeout(() => {
@@ -586,7 +594,7 @@ class Detail extends React.Component {
                                 }, 300);
                                 return <span></span>;
                             }
-                            if (distanceFromTop < -100) {
+                            if (distanceFromTop < -100 || distanceFromBottom > -8161) {
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
@@ -688,7 +696,7 @@ class Detail extends React.Component {
                                             )
                                         }) }
                                     </div>
-                                    <div style={{display: !this.state.sticky_share_shown ? 'block' : 'none', transition: 'all 0.3s ease-in-out'}}>
+                                    <div style={{display: !this.state.sticky_share_shown ? 'block' : 'none', transition: 'all 0.3s ease-in-out'}} ref={this.shareButtonPosition}>
                                         {this.renderActionButton()}
                                     </div>
                                 </div>

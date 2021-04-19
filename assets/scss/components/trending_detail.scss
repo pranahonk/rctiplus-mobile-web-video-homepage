@@ -88,6 +88,9 @@
       }
       &-content{
         margin-left: 14px;
+        a {
+          color: #04A9E5;
+        }
       }
     }
 
@@ -340,5 +343,5 @@
 
 .content-trending-detail-text > div.position-relative{
   margin-bottom: 1rem;
-
+  margin-left: 5px;
 }
