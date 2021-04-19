@@ -77,6 +77,20 @@
     font-family: Helvetica!important;
     color: #fff;
 
+    &-baca{
+      &-juga{
+        position: absolute;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background-color: #04A9E5;
+        border-radius: 7px;
+      }
+      &-content{
+        margin-left: 14px;
+      }
+    }
+
     .content-trending-detail-title{
         font-weight: 1.5em!important;
         font-size: 18px;
@@ -319,6 +333,12 @@
 }
 
 
+
 .content-trending-detail-text h1, .content-trending-detail-text h2, .content-trending-detail-text h3, .content-trending-detail-text h4 {
     font-size: 1.1rem;
+}
+
+.content-trending-detail-text > div.position-relative > span.font-weight-bold, .content-trending-detail-text > div.position-relative > a{
+  margin-left: 10px;
+
 }

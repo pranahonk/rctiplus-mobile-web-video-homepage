@@ -39,21 +39,26 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
 
   const rmAttributes = item.content.replace(/(class|id)="\w+"/gm, '').replace(/\s*>/gmi, '>').replace(/(<!--\s*([a-zA-Z0-9_ ]*)\s*-->)/gm, '');
   const getTag = rmAttributes.match(/(<\w+>)/gm) ? rmAttributes.match(/(<\w+>)/gm)[0]: null;
-  const paragraph = rmAttributes.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);
-  const index = []
-  paragraph.filter((x, i)=> {
+  const getParagraphLength = rmAttributes.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);
+  const index = [];
+  const paragraph = [];
+  getParagraphLength.filter((x, i)=> {
     const length = x.replace(/<\w+>|<\/\w+>/gmi, '').trim().length;
     if(length === 0){
       index.push(i)
     }
   });
-  for (const p of index){
-    if(p === paragraph.length){
-      paragraph.splice(-p, 1)
+
+  let emptyTag = 0;
+  for (let i = 0; i < getParagraphLength.length; i++) {
+    if(i === index[emptyTag]){
+      emptyTag !== index.length ? emptyTag++ : emptyTag+=0;
     }else{
-      paragraph.splice(p, 1)
+      paragraph.push(getParagraphLength[i]);
     }
   }
+
+
 
   const total  = paragraph.length > 6 ? Math.floor(paragraph.length / 5) : 1;
   const {response, newContent} = useFetch(item.id, total);
@@ -87,7 +92,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
           paragraph.splice(i, 1);
         }
       }
-      const addRead = ReactDOMServer.renderToStaticMarkup(<p> Baca juga: <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`}>{response.title }</a></p>);
+      const addRead = ReactDOMServer.renderToStaticMarkup(<div class="position-relative"><div class="content-trending-detail-baca-juga"></div> <div class="content-trending-detail-baca-content"><span className="font-weight-bold">Baca juga:</span> <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`}>{response.title}</a></div></div>);
       addReadArray.push(addRead);
     }
 
