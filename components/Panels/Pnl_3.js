@@ -130,7 +130,7 @@ class Pnl_3 extends React.Component {
 	}
 
 	render() {
-		console.log(`ini horizontal `, this.props.title, this.state.contents)
+		
 		return (
 			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className="homepage-content pnl_horizontal">
 				<h2 className="content-title">{this.props.title}</h2>

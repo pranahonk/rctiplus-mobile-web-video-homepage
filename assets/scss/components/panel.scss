@@ -122,7 +122,8 @@
         
         img {
             width: 100%; 
-            height: 100%;
+            height: 184px;
+            // height: 100%;
         }
     }
 }
@@ -140,7 +141,33 @@
 
     img {
         border-radius: 5px;
-        object-fit: cover;
+        // object-fit: cover;
 
     }
 }
+
+@media only screen and (max-width: 400px) {
+    .pnl_horizontal {
+        .swiper-slide {
+            max-width: 31%;
+            
+            img {
+                width: 100%; 
+                height: 162px;
+            }
+        }
+    }
+  }
+
+  @media only screen and (max-width: 340px) {
+    .pnl_horizontal {
+        .swiper-slide {
+            max-width: 31%;
+            
+            img {
+                width: 100%; 
+                height: 145px;
+            }
+        }
+    }
+  }
