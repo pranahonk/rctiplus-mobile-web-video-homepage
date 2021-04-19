@@ -20,7 +20,7 @@ class Stories extends React.Component {
             stories: [],
             resolution: RESOLUTION_IMG,
             page: 1,
-            length: 4,
+            length: 6,
             totalLength: 0,
             loading: false,
             endpage: false,
@@ -63,6 +63,72 @@ class Stories extends React.Component {
                             localStorage: true,
                             stories: this.state.stories,
                             reactive: true,
+                            callbacks: {
+                                onDataUpdate: function (stories, callback) {
+                                    //console.log('DATA UPDATED');
+                                    const notSeen = [];
+                                    const seen = [];
+
+                                    /* for (let i = 0; i < stories.length; i++) {
+                                        if (stories[i].name.includes('ads')) {
+                                            const [str, storyParentId] = stories[i].name.split('_');
+                                            if (stories[storyParentId].seen) {
+                                                stories[i].seen = true;
+                                            }
+                                        }
+                                    } */
+
+                                    /* for (const story of stories) {
+                                        if (story.seen) {
+                                            seen.push({...story});
+                                        } else {
+                                            notSeen.push({...story});
+                                        }
+                                    } */
+
+                                    for (let i = 0; i < stories.length; i++) {
+                                        const story = stories[i];
+                                        if (stories[i].name.includes('ads')) {
+                                            const [str, storyParentId] = story.name.split('_');
+                                            if (stories[storyParentId].seen) {
+                                                story.seen = true;
+                                            }
+                                        }
+                                        if (story.seen) {
+                                            seen.push({...story});
+                                        } else {
+                                            notSeen.push({...story});
+                                        }
+                                    }
+
+                                    const storiesData = [...notSeen, ...seen];
+
+                                    this.setState(state => {
+                                        state.stories = storiesData;
+                                        return state;
+                                    }, () => {
+                                        callback();
+                                    });
+                                    // console.log('onDataUpdate', stories)
+                                    callback();
+                                }.bind(this),
+                                onOpen: function (storyId, callback) {
+                                    console.log('OPEN');
+                                    document.body.style.overflow = 'hidden'; // disable scroll when opening a story
+                                    callback();
+                                },
+                                onView: function (storyId) {
+                                    console.log('VIEW');
+                                    if (parseInt(storyId) >= (this.state.stories.length - 3)) {
+                                        this.loadMore();
+                                    }
+                                }.bind(this),
+                                onClose: function (storyId, callback) {
+                                    console.log('CLOSED');
+                                    document.body.style.overflow = 'unset'; // enable scroll after closing the story
+                                    callback();
+                                }
+                            },
                             language: { // if you need to translate :)
                                 unmute: 'Touch to unmute',
                                 keyboardTip: 'Press space to see next',
@@ -128,7 +194,31 @@ class Stories extends React.Component {
                                     const notSeen = [];
                                     const seen = [];
 
-                                    for (const story of stories) {
+                                    /* for (let i = 0; i < stories.length; i++) {
+                                        if (stories[i].name.includes('ads')) {
+                                            const [str, storyParentId] = stories[i].name.split('_');
+                                            if (stories[storyParentId].seen) {
+                                                stories[i].seen = true;
+                                            }
+                                        }
+                                    } */
+
+                                    /* for (const story of stories) {
+                                        if (story.seen) {
+                                            seen.push({...story});
+                                        } else {
+                                            notSeen.push({...story});
+                                        }
+                                    } */
+
+                                    for (let i = 0; i < stories.length; i++) {
+                                        const story = stories[i];
+                                        if (stories[i].name.includes('ads')) {
+                                            const [str, storyParentId] = story.name.split('_');
+                                            if (stories[storyParentId].seen) {
+                                                story.seen = true;
+                                            }
+                                        }
                                         if (story.seen) {
                                             seen.push({...story});
                                         } else {
@@ -204,6 +294,10 @@ class Stories extends React.Component {
                 const newStories = [];
                 for (const story of this.props.stories.data) {
                     newStories.push(this.buildTimeline(story));
+
+                    if (story.gpt.length >= 1) {
+                        newStories.push(this.buildStoryGPT(story.gpt));
+                    }
                 }
                 this.storiesApi.addStories(newStories, true);
             }
@@ -277,6 +371,7 @@ class Stories extends React.Component {
         };
     }
 
+    
     buildTimeline = (story) => {
         const items = [];
 
@@ -287,13 +382,52 @@ class Stories extends React.Component {
                 10,
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
-                item.swipe_type == 'link' ? (item.swipe_value) : false, 'Click Here',
+                item.swipe_type == 'link' ? (item.swipe_value) : false,
+                'Click Here',
                 false,
                 item.release_date,
                 item.title,
                 item.link_video != null ? item.link_video.split('.').pop() : ''
             ]);
         }
+
+        // Add GPT
+        //console.log('story gpt', story.gpt)
+        //for (const item of story.gpt) {
+        /**
+         * Ukuran Avatar 40x40 margin left 15px
+         * font size title 16px margin left 15px
+         */
+        /* if (this.storyId == 0) {
+            items.push([
+                Math.floor(Math.random() * Math.floor(999999)), // id
+                'ads', // type
+                500, // durations in string
+                '/21865661642/RC_MOBILE_INSERTION-STORIES', // item.path src
+                'div-gpt-ad-1596100730972-0', // item.div_gpt preview
+                false, // link
+                '', // linkText
+                false, // seen
+                new Date().getTime(), // time
+                '', // title
+                '' // videoType
+            ]);
+        } */
+        /* for (const item of story.gpt) {
+            items.push([
+                item.id + Math.floor(Math.random() * Math.floor(999999)) + Math.floor(Math.random() * Math.floor(99)), // id
+                'ads', // type
+                5, // durations in string
+                item.path, // item.path src
+                item.div_gpt, // item.div_gpt preview
+                false, // link
+                '', // linkText
+                false, // seen
+                new Date().getTime(), // time
+                '', // title
+                '' // videoType
+            ]);
+        } */
 
         let programImg = '';
         if (story.program_img != null) {
@@ -304,12 +438,45 @@ class Stories extends React.Component {
         }
 
         const timeline = this.state.zuckJS.buildTimelineItem(
-            this.storyId,
-            programImg,
-            story.program_title,
-            '',
-            false,
-            items
+            this.storyId, //id
+            programImg, //photo
+            story.program_title, //name
+            '', //link
+            false, //lastupdated
+            items //items
+        );
+
+        this.storyId = this.storyId + 1;
+
+        return timeline;
+    }
+
+    buildStoryGPT = (gpt) => {
+        const items = [];
+
+        for (const item of gpt) {
+            items.push([
+                item.id + Math.floor(Math.random() * Math.floor(999999)) + Math.floor(Math.random() * Math.floor(99)), // id
+                'ads', // type
+                5, // durations in string
+                item.path, // item.path src
+                item.div_gpt, // item.div_gpt preview
+                false, // link
+                '', // linkText
+                false, // seen
+                new Date().getTime(), // time
+                '', // title
+                '' // videoType
+            ]);
+        }
+
+        const timeline = this.state.zuckJS.buildTimelineItem(
+            this.storyId, //id
+            '', //photo
+            'ads_' + (this.storyId - 1), //name
+            '', //link
+            false, //lastupdated
+            items //items
         );
 
         this.storyId = this.storyId + 1;
@@ -323,13 +490,7 @@ class Stories extends React.Component {
         const scrollOffset = totalStoriesW - screenW;
 
         if (document.getElementById('stories-react').scrollLeft >= scrollOffset) {
-            // this.loadMore()
-            if(this.props.homepage) {
-                this.loadMore();
-            }
-            else {
-                this.loadMoreHomeCategory()
-            }
+            this.loadMore()
         }
     }
 
@@ -338,78 +499,104 @@ class Stories extends React.Component {
             let page = this.state.page + 1;
 			this.setState({ loading: true }, () => {
                 this.props.loadingBar && this.props.loadingBar.continuousStart();
-                this.props.getStories(page, this.state.length)
-                // this.props.homepage ? this.props.getStories(page, this.state.length) : this.props.getStoriesCategory(page, this.state.length, this.props.id)
-                .then(() => {
+                
+                if (this.props.homepage) {  
+                    this.props.getStories(page, this.state.length)
+                    .then(() => {
                     const buildedStories = [];
                     const newStories = this.props.stories.data;
 
-                    for (const story of newStories) {
-                        buildedStories.push(this.buildTimeline(story));
-                    }
+                        for (const story of newStories) {
+                            buildedStories.push(this.buildTimeline(story));
 
-                    const seen = [];
-                    const notseen = [];
-
-                    for (const story of this.state.stories) {
-                        if (story.seen) {
-                            seen.push({...story});
-                        } else {
-                            notseen.push({...story});
+                            if (story.gpt.length >= 1) {
+                                buildedStories.push(this.buildStoryGPT(story.gpt));
+                            }
                         }
-                    }
 
-                    const storiesData = [...notseen, ...buildedStories, ...seen];
-                    let currentLength = this.state.totalLength + this.props.stories.data.length;
+                        const seen = [];
+                        const notseen = [];
 
-                    this.setState({ totalLength: currentLength, stories: storiesData, loading: false, page: page, endpage: this.props.stories.data.length < this.state.length });
-                    this.props.loadingBar && this.props.loadingBar.complete();
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.setState({ loading: false, endpage: true });
-                    this.props.loadingBar && this.props.loadingBar.complete();
-                });
-            });
-        }
-    }
+                        // for (const story of this.state.stories) {
+                        //     if (story.seen) {
+                        //         seen.push({...story});
+                        //     } else {
+                        //         notseen.push({...story});
+                        //     }
+                        // } 
 
-    loadMoreHomeCategory = () => {
-        if (!this.state.loading && !this.state.endpage) {
-            let page = this.state.page + 1;
-			this.setState({ loading: true }, () => {
-                this.props.loadingBar && this.props.loadingBar.continuousStart();
-                this.props.getStoriesCategory(page, this.state.length, this.props.id)
-                .then(() => {
-                    const buildedStories = [];
-                    const newStories = this.props.stories.data;
-
-                    for (const story of newStories) {
-                        buildedStories.push(this.buildTimeline(story));
-                    }
-
-                    const seen = [];
-                    const notseen = [];
-
-                    for (const story of this.state.stories) {
-                        if (story.seen) {
-                            seen.push({...story});
-                        } else {
-                            notseen.push({...story});
+                        for (let i = 0; i < this.state.stories.length; i++) {
+                            const story = {...this.state.stories[i]};
+                            console.log(`ini data story`, story)
+                            if (story.name.includes('ads')) {
+                                const [str, storyParentId] = story.name.split('_');
+                                if (this.state.stories[storyParentId].seen) {
+                                    story.seen = true;
+                                }
+                            }
+                            if (story.seen) {
+                                seen.push({...story});
+                            } else {
+                                notseen.push({...story});
+                            }
                         }
-                    }
 
-                    const storiesData = [...notseen, ...buildedStories, ...seen];
-                    let currentLength = this.state.totalLength + this.props.stories.data.length;
+                        const storiesData = [...notseen, ...buildedStories, ...seen];
+                        let currentLength = this.state.totalLength + this.props.stories.data.length;
 
-                    this.setState({ totalLength: currentLength, stories: storiesData, loading: false, page: page, endpage: this.props.stories.data.length < this.state.length });
-                    this.props.loadingBar && this.props.loadingBar.complete();
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.setState({ loading: false, endpage: true });
-                    this.props.loadingBar && this.props.loadingBar.complete();
-                });
+                        this.setState({ totalLength: currentLength, stories: storiesData, loading: false, page: page, endpage: this.props.stories.data.length < this.state.length });
+                        this.props.loadingBar && this.props.loadingBar.complete();
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.setState({ loading: false, endpage: true });
+                        this.props.loadingBar && this.props.loadingBar.complete();
+                    });
+                } else if (this.props.detailCategory) {
+                    console.log(`ini dariii category`, this.props.detailCategory)
+                    this.props.getStoriesCategory(page, this.state.length, this.props.id)
+                    .then(() => {
+                        const buildedStories = [];
+                        const newStories = this.props.stories.data;
+
+                        for (const story of newStories) {
+                            buildedStories.push(this.buildTimeline(story));
+
+                            if (story.gpt.length >= 1) {
+                                buildedStories.push(this.buildStoryGPT(story.gpt));
+                            }
+                        }
+
+                        const seen = [];
+                        const notseen = [];
+
+                        for (let i = 0; i < this.state.stories.length; i++) {
+                            const story = {...this.state.stories[i]};
+                            if (story.name.includes('ads')) {
+                                const [str, storyParentId] = story.name.split('_');
+                                if (this.state.stories[storyParentId].seen) {
+                                    story.seen = true;
+                                }
+                            }
+                            if (story.seen) {
+                                seen.push({...story});
+                            } else {
+                                notseen.push({...story});
+                            }
+                        }
+
+                        const storiesData = [...notseen, ...buildedStories, ...seen];
+                        let currentLength = this.state.totalLength + this.props.stories.data.length;
+
+                        this.setState({ totalLength: currentLength, stories: storiesData, loading: false, page: page, endpage: this.props.stories.data.length < this.state.length });
+                        this.props.loadingBar && this.props.loadingBar.complete();
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.setState({ loading: false, endpage: true });
+                        this.props.loadingBar && this.props.loadingBar.complete();
+                    });
+                }
             });
         }
     }
@@ -422,8 +609,11 @@ class Stories extends React.Component {
             story.items.forEach((storyItem) => {
                 storyItems.push(
                     <li key={storyItem.id} data-id={storyItem.id} data-time={storyItem.time} className={(storyItem.seen ? 'seen' : '')}>
-                        <a href={storyItem.src} data-type={storyItem.type} data-length={storyItem.length} data-link={storyItem.link} data-linktext={storyItem.linkText} data-title={'hh3'}>
-                            <img src={storyItem.preview} />
+                        <a href={storyItem.src} data-type={storyItem.type} data-length={storyItem.length} data-link={storyItem.link} data-linktext={storyItem.linkText} data-title={storyItem.title}>
+                            { storyItem.type != 'ads'
+                                ? <img src={storyItem.preview} />
+                                : <div />
+                            }
                         </a>
                     </li>
                 );
@@ -431,7 +621,7 @@ class Stories extends React.Component {
 
             //let arrayFunc = story.seen ? 'push' : 'unshift';
             timelineItems.push(
-                <div className={(story.seen ? 'story seen' : 'story')} key={story.id} data-id={story.id} data-last-updated={story.lastUpdated} data-photo={story.photo}>
+                <div className={(story.seen ? `story${story.name.includes('ads') ? ' ads' : ''} seen` : `story${story.name.includes('ads') ? ' ads' : ''}`)} key={story.id} data-id={story.id} data-last-updated={story.lastUpdated} data-photo={story.photo}>
                     <a className="item-link" href={story.link}>
                         <span className="item-preview">
                             <img src={story.photo} />
@@ -447,11 +637,13 @@ class Stories extends React.Component {
                     </ul>
                 </div>
             );
+            
         });
 
         return (
             <div style={{paddingTop: 55, paddingLeft: 14}} >
                 <Head>
+                    <script src="/static/js/dash.js"></script>
                     <link rel="stylesheet" href="static/css/zuck.css?v=2" />
                     <link rel="stylesheet" href="static/css/snapgram.css?v=2" />
                 </Head>

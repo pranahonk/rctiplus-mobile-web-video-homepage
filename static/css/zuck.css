@@ -428,6 +428,16 @@ and open the template in the editor.
   #zuck-modal-content .story-viewer .head .right .close {
     display: none;
   }
+
+  #zuck-modal-content .story-viewer.with-close-button .head .right .close {
+    display: block;
+    opacity: 1 !important;
+  }
+
+  /* Story Ads */
+  #zuck-modal-content .story-viewer .head.story-ads-content .left {
+    display: none !important;
+  }
 }
 
 /* timeline */
