@@ -51,6 +51,7 @@ export const getUserId = () => {
 
 export const homeGeneralClicked = (event = 'mweb_homepage_logo_clicked') => {
     console.log(event);
+    qg('identify', {user_id: getUidAppier()});
     qg('event', event,
     {
         users_id: getUidAppier(),
