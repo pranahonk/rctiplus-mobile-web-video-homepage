@@ -20,7 +20,7 @@ class Stories extends React.Component {
             stories: [],
             resolution: RESOLUTION_IMG,
             page: 1,
-            length: 4,
+            length: 6,
             totalLength: 0,
             loading: false,
             endpage: false,
@@ -381,6 +381,7 @@ class Stories extends React.Component {
         };
     }
 
+    
     buildTimeline = (story) => {
         const items = [];
 
@@ -499,13 +500,7 @@ class Stories extends React.Component {
         const scrollOffset = totalStoriesW - screenW;
 
         if (document.getElementById('stories-react').scrollLeft >= scrollOffset) {
-            // this.loadMore()
-            if(this.props.homepage) {
-                this.loadMore();
-            }
-            else {
-                this.loadMoreHomeCategory()
-            }
+            this.loadMore()
         }
     }
 
@@ -515,10 +510,9 @@ class Stories extends React.Component {
 			this.setState({ loading: true }, () => {
                 this.props.loadingBar && this.props.loadingBar.continuousStart();
                 
-                if (this.props.homepage) {
+                if (this.props.homepage) {  
                     this.props.getStories(page, this.state.length)
-                // this.props.homepage ? this.props.getStories(page, this.state.length) : this.props.getStoriesCategory(page, this.state.length, this.props.id)
-                .then(() => {
+                    .then(() => {
                     const buildedStories = [];
                     const newStories = this.props.stories.data;
 
@@ -533,16 +527,17 @@ class Stories extends React.Component {
                         const seen = [];
                         const notseen = [];
 
-                        /* for (const story of this.state.stories) {
-                            if (story.seen) {
-                                seen.push({...story});
-                            } else {
-                                notseen.push({...story});
-                            }
-                        } */
+                        // for (const story of this.state.stories) {
+                        //     if (story.seen) {
+                        //         seen.push({...story});
+                        //     } else {
+                        //         notseen.push({...story});
+                        //     }
+                        // } 
 
                         for (let i = 0; i < this.state.stories.length; i++) {
                             const story = {...this.state.stories[i]};
+                            console.log(`ini data story`, story)
                             if (story.name.includes('ads')) {
                                 const [str, storyParentId] = story.name.split('_');
                                 if (this.state.stories[storyParentId].seen) {
@@ -552,7 +547,7 @@ class Stories extends React.Component {
                             if (story.seen) {
                                 seen.push({...story});
                             } else {
-                                notSeen.push({...story});
+                                notseen.push({...story});
                             }
                         }
 
@@ -568,7 +563,8 @@ class Stories extends React.Component {
                         this.props.loadingBar && this.props.loadingBar.complete();
                     });
                 } else if (this.props.detailCategory) {
-                    this.props.getStoriesCategory(page, this.state.length)
+                    console.log(`ini dariii category`, this.props.detailCategory)
+                    this.props.getStoriesCategory(page, this.state.length, this.props.id)
                     .then(() => {
                         const buildedStories = [];
                         const newStories = this.props.stories.data;
@@ -584,14 +580,6 @@ class Stories extends React.Component {
                         const seen = [];
                         const notseen = [];
 
-                        /* for (const story of this.state.stories) {
-                            if (story.seen) {
-                                seen.push({...story});
-                            } else {
-                                notseen.push({...story});
-                            }
-                        } */
-
                         for (let i = 0; i < this.state.stories.length; i++) {
                             const story = {...this.state.stories[i]};
                             if (story.name.includes('ads')) {
@@ -603,7 +591,7 @@ class Stories extends React.Component {
                             if (story.seen) {
                                 seen.push({...story});
                             } else {
-                                notSeen.push({...story});
+                                notseen.push({...story});
                             }
                         }
 
@@ -619,46 +607,6 @@ class Stories extends React.Component {
                         this.props.loadingBar && this.props.loadingBar.complete();
                     });
                 }
-            });
-        }
-    }
-
-    loadMoreHomeCategory = () => {
-        if (!this.state.loading && !this.state.endpage) {
-            let page = this.state.page + 1;
-			this.setState({ loading: true }, () => {
-                this.props.loadingBar && this.props.loadingBar.continuousStart();
-                this.props.getStoriesCategory(page, this.state.length, this.props.id)
-                .then(() => {
-                    const buildedStories = [];
-                    const newStories = this.props.stories.data;
-
-                    for (const story of newStories) {
-                        buildedStories.push(this.buildTimeline(story));
-                    }
-
-                    const seen = [];
-                    const notseen = [];
-
-                    for (const story of this.state.stories) {
-                        if (story.seen) {
-                            seen.push({...story});
-                        } else {
-                            notseen.push({...story});
-                        }
-                    }
-
-                    const storiesData = [...notseen, ...buildedStories, ...seen];
-                    let currentLength = this.state.totalLength + this.props.stories.data.length;
-
-                    this.setState({ totalLength: currentLength, stories: storiesData, loading: false, page: page, endpage: this.props.stories.data.length < this.state.length });
-                    this.props.loadingBar && this.props.loadingBar.complete();
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.setState({ loading: false, endpage: true });
-                    this.props.loadingBar && this.props.loadingBar.complete();
-                });
             });
         }
     }
@@ -699,6 +647,7 @@ class Stories extends React.Component {
                     </ul>
                 </div>
             );
+            
         });
 
         return (

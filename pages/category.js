@@ -33,7 +33,7 @@ const Category = () => {
         dispatch(getSubCategory(category_id));
         dispatch(getBannerCategoryActive(category_id));
         dispatch(getHomepageCategory(1, 21, category_id));
-        dispatch(getStoriesCategory(category_id));
+        // dispatch(getStoriesCategory(category_id));
     }, [category_id]);
 
     useEffect(() => {
@@ -56,10 +56,12 @@ const Category = () => {
             {isShimmer ? <HomeLoader /> : 
             <div style={{marginTop: "56px"}}>
                 <Header title={category_title} />
-
-                <Carousel detailCategory={true} data={{banner: subBanner?.data, meta: subBanner?.meta}} >
-                    {subCategory && subCategory?.data?.length >= 3 && <GridMenu contents={subCategory} />}
-                </Carousel>
+                
+                <div style={{marginTop: -3}}>
+                    <Carousel detailCategory={true} data={{banner: subBanner?.data, meta: subBanner?.meta}} >
+                        {subCategory && subCategory?.data?.length >= 3 && <GridMenu contents={subCategory} />}
+                    </Carousel>
+                </div>
 
                 <div style={subCategory === null ? { marginTop: -110 } : {}}>
                     <Stories loadingBar={ref.current} detailCategory={true} id={category_id} />

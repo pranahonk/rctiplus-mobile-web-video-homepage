@@ -41,10 +41,12 @@ const getStories = (page = 1, length = 6) => {
 const getStoriesCategory = (page = 1, length = 6, category_id) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
+            
             await checkToken();
             const response = await axios.get(`/v2/stories/category/${category_id}?page=${page}&length=${length}`);
             if (response.data.status.code === 0) {
                 const data = response.data.data;
+
                 dispatch({ 
                     type: 'STORIES', 
                     data: data,
