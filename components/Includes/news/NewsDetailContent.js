@@ -55,7 +55,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
     }
   }
 
-  const total  = paragraph.length > 6 ? Math.floor(paragraph.length / 3) : 1;
+  const total  = paragraph.length > 6 ? Math.floor(paragraph.length / 4) : 1;
   const {response, newContent} = useFetch(item.id, total);
 
 
@@ -121,12 +121,14 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
     }
     else{
       let addReadArrayIndex = 0;
+      let indexInserted = 3;
       for (let i = 1; i < paragraph.length; i++) {
-        if(i % 3 === 0 && i !== 0 && addReadArray[addReadArrayIndex]){
-          paragraph.splice(i - 1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
-
+        if(i === indexInserted && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
+          paragraph.splice(i === 3 ? i - 1 : i, 0, addReadArray[addReadArrayIndex]);
+          indexInserted+=5;
           addReadArrayIndex+=1;
         }
+
       }
     }
 
