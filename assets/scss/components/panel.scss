@@ -34,17 +34,24 @@
     font-size: 10px;
     text-align: left;
     padding-left: 10px;
-    max-height: 49px;
-    min-height: 49px;
+    max-height: 42.2px;
+    min-height: 42.2px;
     overflow: hidden;
     white-space: normal;
 
     .txt-slider-panel-title {
         font-size: 12px;
+        font-weight: bold;
     }
 
     p {
         margin-bottom: 0;
+        font-size: 9px;
+        font-weight: 300;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
     }
 }
 
@@ -119,7 +126,7 @@
     .swiper-slide {
         max-width: 45%;
         min-width: 45%;
-        height: 135px;
+        height: 137px;
         border-radius: 5px;
 
     }
