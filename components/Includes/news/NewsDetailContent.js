@@ -124,12 +124,12 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       let indexInserted = 3;
       for (let i = 1; i < paragraph.length; i++) {
         if(i === indexInserted && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
-          paragraph.splice(i === 3 ? i - 1 : i, 0, addReadArray[addReadArrayIndex]);
+          paragraph.splice(i -1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
           indexInserted+=5;
           addReadArrayIndex+=1;
         }
-
       }
+      console.log(paragraph);
     }
 
     return paragraph.join('');
