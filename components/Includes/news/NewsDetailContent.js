@@ -71,29 +71,10 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   },[]);
 
 
-  const _goToDetail = (article) => {
-    let category = ''
-    if (article.subcategory_name.length < 1) {
-      category = 'berita-utama';
-    } else {
-      category = urlRegex(article.subcategory_name)
-    }
-    if(isIndexKey) {
-      if ((redirectToPublisherIndex.indexOf(indexKey) != -1) && platform !== 'ios') {
-        return window.open(article.link, '_blank');
-      }
-      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
-    }
-    else {
-      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
-    }
-  };
-
-
   const newCont = (responses) => {
     const addReadArray = [];
 
-    for (const response of responses) {
+    for (const response of responses.slice(0, total)) {
       let category = '';
       if (response.subcategory_name.length < 1) {
         category = 'berita-utama';
