@@ -55,7 +55,9 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
     }
   }
 
-  const total  = paragraph.length > 6 ? Math.floor(paragraph.length / 4) : 1;
+  const total  = paragraph.length > 6 ? Math.floor(paragraph.length / 5) : 1;
+  console.log(paragraph.length);
+  console.log(Math.floor(paragraph.length / 4))
   const {response, newContent} = useFetch(item.id, total);
 
 
@@ -129,7 +131,6 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
           addReadArrayIndex+=1;
         }
       }
-      console.log(paragraph);
     }
 
     return paragraph.join('');
