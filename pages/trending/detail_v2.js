@@ -184,7 +184,8 @@ class Detail extends React.Component {
 
     componentDidMount() {
         const {initial: {data = null}, router: {asPath = null}} = this.props;
-        if ((asPath.split('/').length < 6) && (!isEmpty(data) && !isEmpty(data.subcategory_name) && !isEmpty(data.id) && !isEmpty(data.title))) {
+        const condition = (!isEmpty(data) && !isEmpty(data.subcategory_name) && !isEmpty(data.title));
+        if ((asPath.split('/').length < 6) && condition) {
             location.replace(`${SHARE_BASE_URL}/news/detail/${urlRegex(data.subcategory_name)}/${data.id}/${encodeURI(urlRegex(data.title))}`);
         }
 
