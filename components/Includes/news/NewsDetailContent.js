@@ -37,9 +37,9 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
 
-  const rmAttributes = item.content.replace(/(class|id)="\w+"/gm, '').replace(/\s*>/gmi, '>').replace(/(<!--\s*([a-zA-Z0-9_ ]*)\s*-->)/gm, '');
+  const rmAttributes = item.content.replace(/(class|id|style)="\w+"/gm, '').replace(/\s*>/gmi, '>').replace(/(<!--\s*([a-zA-Z0-9_ ]*)\s*-->)/gm, '');
   const getTag = rmAttributes.match(/(<\w+>)/gm) ? rmAttributes.match(/(<\w+>)/gm)[0]: null;
-  const getParagraphLength = rmAttributes.replace(new RegExp(getTag,"gi"), `#${getTag}`).split("#").filter((x)=> x);
+  const getParagraphLength = rmAttributes.replace(new RegExp(getTag,"gi"), `++#${getTag}`).split("++#").filter((x)=> x);
   const index = [];
   const paragraph = [];
   getParagraphLength.filter((x, i)=> {
@@ -60,7 +60,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
 
 
 
-  const total  = paragraph.length > 6 ? Math.floor(paragraph.length / 5) : 1;
+  const total  = paragraph.length > 6 ? Math.floor(paragraph.length / 4) : 1;
   const {response, newContent} = useFetch(item.id, total);
 
 
@@ -92,7 +92,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
           paragraph.splice(i, 1);
         }
       }
-      const addRead = ReactDOMServer.renderToStaticMarkup(<div class="position-relative"><div class="content-trending-detail-baca-juga"></div> <div class="content-trending-detail-baca-content"><span className="font-weight-bold">Baca juga:</span><br /> <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`} dangerouslySetInnerHTML={{ __html: `${response.title}` }}></a></div></div>);
+      const addRead = ReactDOMServer.renderToStaticMarkup(<div class="position-relative" style={{marginBottom: "1rem"}}><div class="content-trending-detail-baca-juga"></div> <div class="content-trending-detail-baca-content"><span className="font-weight-bold">Baca juga:</span><br /> <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`} dangerouslySetInnerHTML={{ __html: `${response.title}` }}></a></div></div>);
       addReadArray.push(addRead);
     }
 
@@ -109,7 +109,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       let addReadArrayIndex = 0;
       let indexInserted = 3;
       for (let i = 1; i < paragraph.length; i++) {
-        if(i === indexInserted && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
+        if(i === indexInserted && paragraph.length > indexInserted && addReadArray[addReadArrayIndex] && i + 1 !== paragraph.length){
           paragraph.splice(i -1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
           indexInserted+=5;
           addReadArrayIndex+=1;

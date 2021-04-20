@@ -587,7 +587,7 @@ class Detail extends React.Component {
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
                             {/* console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight) */}
-                            if (distanceFromTop < -650 && this.state.relatedArticlePosition > 950) {
+                            if (this.state.relatedArticlePosition < 1941 && this.state.relatedArticlePosition > 950) {
                                 setTimeout(() => {
                                     if (self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: false });
@@ -596,7 +596,20 @@ class Detail extends React.Component {
                                 }, 300);
                                 return <span></span>;
                             }
-                            if (distanceFromTop < -100) {
+                            // if (distanceFromTop < -100) {
+                            //     setTimeout(() => {
+                            //         if (!self.state.sticky_share_shown) {
+                            //             self.setState({ sticky_share_shown: true });
+                            //         }
+                            //
+                            //     }, 300);
+                            //     return (
+                            //         <div className={`sticky-share-button ${this.state.sticky_share_shown ? 'sticky-share-button-viewed' : ''}`}>
+                            //             {this.renderActionButton(true)}
+                            //         </div>
+                            //     );
+                            // }
+                            if (this.state.relatedArticlePosition > 1941 && distanceFromTop < -100 && this.state.relatedArticlePosition) {
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
