@@ -483,16 +483,7 @@ class Detail extends React.Component {
         this.setState({
           relatedArticlePosition: position,
         })
-        // console.log(this.state.sticky_share_shown);
-        // console.log(`el with top = ${position}`);
-        // if (!this.state.sticky_share_shown && position < 650 ) {
-        //   this.setState({ sticky_share_shown: true });
-        // }
-
-      })
-      // console.log(`${window.innerHeight}`)
-      // console.log(el.offsetTop);
-
+      });
     }
 
     render() {
@@ -595,12 +586,8 @@ class Detail extends React.Component {
                     <Sticky bottomOffset={100}>
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
-                            // console.log(`distance from top: ${distanceFromTop}`);
-                            // console.log(`distance from bottom: ${distanceFromBottom}`);
-                            // console.log(`distance from top: ${document.getElementsByClassName('sheet-action-button-container')[1].getBoundingClientRect().top}`);
                             {/* console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight) */}
                             if (distanceFromTop < -650 && this.state.relatedArticlePosition > 650) {
-                                // console.log(`masuk if A`)
                                 setTimeout(() => {
                                     if (self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: false });
@@ -610,7 +597,6 @@ class Detail extends React.Component {
                                 return <span></span>;
                             }
                             if (distanceFromTop < -100) {
-                                // console.log(`masuk if B`)
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
@@ -624,7 +610,6 @@ class Detail extends React.Component {
                                 );
                             }
                             if (this.state.relatedArticlePosition < 650) {
-                                // console.log(`masuk if C`)
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
@@ -638,7 +623,6 @@ class Detail extends React.Component {
                                 );
                             }
                             setTimeout(() => {
-                                // console.log(`masuk ke default`)
                                 if (self.state.sticky_share_shown) {
                                     self.setState({ sticky_share_shown: false });
                                 }
