@@ -479,10 +479,10 @@ class Detail extends React.Component {
 
     shareButtonPosition = el =>{
       window.addEventListener('scroll',()=>{
-        const position =  el.getBoundingClientRect().bottom + window.screen.height;
+        const position =  el.getBoundingClientRect().top + window.screen.height;
         this.setState({
           relatedArticlePosition: position,
-        })
+        });
       });
     }
 
@@ -505,7 +505,7 @@ class Detail extends React.Component {
         };
 
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
-        const newsTitle = cdata.title
+        const newsTitle = cdata.title.replace(/<\w+>|<\/\w+>/gmi, '');
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
         const coverImg = imgURL(cdata.cover, cdata.image, 400, assets_url, this.props?.general?.img_logo || null)
         const structuredData = {
@@ -587,7 +587,7 @@ class Detail extends React.Component {
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
                             {/* console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight) */}
-                            if (distanceFromTop < -650 && this.state.relatedArticlePosition > 650) {
+                            if (distanceFromTop < -650 && this.state.relatedArticlePosition > 950) {
                                 setTimeout(() => {
                                     if (self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: false });
@@ -609,7 +609,7 @@ class Detail extends React.Component {
                                     </div>
                                 );
                             }
-                            if (this.state.relatedArticlePosition < 650) {
+                            if (this.state.relatedArticlePosition < 950 && this.state.relatedArticlePosition) {
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
@@ -717,7 +717,7 @@ class Detail extends React.Component {
                                 </div>
                                 { cdata.exclusive === 'yes' ? (<div />
                                 ) : (
-                                    <div className="ads-banner__detail_news">
+                                    <div className="ads-banner__detail_news" ref={this.shareButtonPosition}>
                                         <AdsBanner
                                             partner={cdata.source}
                                             path={getPlatformGpt(this.platform)}
@@ -728,7 +728,7 @@ class Detail extends React.Component {
                                     </div>
                                 ) }
                                 <div className="content-trending-detail-related">
-                                    <p className="related-title" ref={this.shareButtonPosition}><strong>Related Articles</strong></p>
+                                    <p className="related-title"><strong>Related Articles</strong></p>
                                     <div className="item_square-wrapper">
                                         {this.state.trending_related.map((item, index) => {
                                             if(index < 4) {

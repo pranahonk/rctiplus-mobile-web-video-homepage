@@ -92,7 +92,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
           paragraph.splice(i, 1);
         }
       }
-      const addRead = ReactDOMServer.renderToStaticMarkup(<div class="position-relative"><div class="content-trending-detail-baca-juga"></div> <div class="content-trending-detail-baca-content"><span className="font-weight-bold">Baca juga:</span><br /> <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`}>{response.title}</a></div></div>);
+      const addRead = ReactDOMServer.renderToStaticMarkup(<div class="position-relative"><div class="content-trending-detail-baca-juga"></div> <div class="content-trending-detail-baca-content"><span className="font-weight-bold">Baca juga:</span><br /> <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`} dangerouslySetInnerHTML={{ __html: `${response.title}` }}></a></div></div>);
       addReadArray.push(addRead);
     }
 
