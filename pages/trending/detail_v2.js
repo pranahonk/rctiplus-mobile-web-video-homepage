@@ -183,10 +183,10 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
-        const {initial, router: {asPath = null}} = this.props;
-
-        if (asPath.split('/').length < 6) {
-            location.replace(`${SHARE_BASE_URL}/news/detail/${urlRegex(initial.subcategory_name)}/${initial.id}/${encodeURI(urlRegex(initial.title))}`);
+        const {initial: {data = null}, router: {asPath = null}} = this.props;
+        const condition = (!isEmpty(data) && !isEmpty(data.subcategory_name) && !isEmpty(data.title));
+        if ((asPath.split('/').length < 6) && condition) {
+            location.replace(`${SHARE_BASE_URL}/news/detail/${urlRegex(data.subcategory_name)}/${data.id}/${encodeURI(urlRegex(data.title))}`);
         }
 
         if(!Cookie.get('uid_ads')) {
@@ -536,11 +536,11 @@ class Detail extends React.Component {
         const canonicalFullUrl = oneSegment['desktop'] + encodeURI(asPath).replace('trending/', 'news/');
 
         return (
-            <Layout title={this.props?.kanal?.title ? this.props?.kanal?.title : `${newsTitle} - News+ on RCTI+` }>
+            <Layout title={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title}>
                 <Head>
-                    <meta name="title" content={cdata && cdata.meta_title ? cdata.meta_title : (this.props?.kanal?.title || `${newsTitle} - News+ on RCTI+`)} />
-                    <meta name="keywords" content={cdata && cdata.meta_keyword ? cdata && cdata.meta_keyword : (this.props?.kanal?.keyword || newsTitle)} />
-                    <meta name="description" content={cdata && cdata.meta_description ? cdata.meta_description : (this.props?.kanal?.description || newsContent)} />
+                    <meta name="title" content={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title} />
+                    <meta name="keywords" content={newsTitle || this.props?.kanal?.keyword} />
+                    <meta name="description" content={newsContent || this.props?.kanal?.description} />
                     <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta property="og:description" content={newsContent} />
                     <meta property="og:image" itemProp="image" content={cdata.cover} />

@@ -31,6 +31,7 @@ import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeA
 import '../assets/scss/components/trending_v2.scss';
 
 import newsv2Actions from '../redux/actions/newsv2Actions';
+import newsv2KanalActions from '../redux/actions/newsv2KanalActions';
 import userActions from '../redux/actions/userActions';
 import { showSignInAlert, humanizeStr, imageNews, imagePath } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
@@ -376,9 +377,9 @@ class Trending_v2 extends React.Component {
         const savedCategoriesNews = getNewsChannels();
         params['saved_tabs'] = savedCategoriesNews;
         this.setState(params, () => {
-            this.props.getCategory()
+            this.props.getCategoryV2()
                 .then(response => {
-                    let categories = response.data.data;
+                    let categories = response.data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
                     let sortedCategories = categories;
                     let savedCategories = savedCategoriesNews;
                     for (let i = 0; i < savedCategories.length; i++) {
@@ -461,7 +462,6 @@ class Trending_v2 extends React.Component {
                         }
                     }
 
-                    console.log(error);
                     this.setState({
                         is_tabs_loading: false,
                         is_articles_loading: false,
@@ -713,8 +713,7 @@ class Trending_v2 extends React.Component {
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => {
                                                             return(((j+1) % 7  === 0) ?
-                                                                (<>
-                                                                    <li className="listItems" key={j + article.title}>
+                                                                (<li className="listItems" key={j + article.title}>
                                                                         <ListGroup className="groupNews">
                                                                             <ListGroupItem className="">
                                                                                 <iframe
@@ -742,11 +741,26 @@ class Trending_v2 extends React.Component {
                                                                                   display: 'none',
                                                                                 }} />
                                                                             </ListGroupItem>
-                                                                            <SectionNews  article={article}/>
+                                                                            {
+                                                                                article && isArray(article.section) && article.section.length > 0 ? <SectionNews  article={article}/> : <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
+                                                                                    <div className="article-description">
+                                                                                        <div className="article-thumbnail-container-full-width">
+                                                                                            {
+                                                                                                imageNews(article.title, article.cover, article.image, 400, this.state.assets_url, 'article-thumbnail-full-width')
+                                                                                            }
+                                                                                        </div>
+                                                                                        <div className="article-title-container">
+                                                                                            <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
+                                                                                            <div className="article-source">
+                                                                                                <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
+                                                                                                <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </ListGroupItem>
+                                                                            }
                                                                         </ListGroup>
-                                                                    </li>
-                                                                    </>
-                                                                )  : 
+                                                                </li>)  :
                                                                 (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
                                                                     <SquareItem item={article} assets_url={this.state.assets_url} />
                                                                 </ListGroupItem>)
@@ -770,4 +784,5 @@ class Trending_v2 extends React.Component {
 export default connect(state => state, {
     ...newsv2Actions,
     ...userActions,
+    ...newsv2KanalActions,
 })(withRouter(Trending_v2));
