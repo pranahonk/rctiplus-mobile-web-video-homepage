@@ -140,6 +140,7 @@ class Detail extends React.Component {
             count: false,
             countLike: 0,
             infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID,
+            relatedArticlePosition: null,
         };
 
         // this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
@@ -477,8 +478,21 @@ class Detail extends React.Component {
     }
 
     shareButtonPosition = el =>{
-      console.log(`${window.innerHeight}`)
-      console.log(el.getBoundingClientRect().top);
+      window.addEventListener('scroll',()=>{
+        const position =  el.getBoundingClientRect().bottom + window.screen.height;
+        this.setState({
+          relatedArticlePosition: position,
+        })
+        // console.log(this.state.sticky_share_shown);
+        // console.log(`el with top = ${position}`);
+        // if (!this.state.sticky_share_shown && position < 650 ) {
+        //   this.setState({ sticky_share_shown: true });
+        // }
+
+      })
+      // console.log(`${window.innerHeight}`)
+      // console.log(el.offsetTop);
+
     }
 
     render() {
@@ -581,11 +595,12 @@ class Detail extends React.Component {
                     <Sticky bottomOffset={100}>
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
-                            console.log(`distance from top: ${distanceFromTop}`);
-                            console.log(`distance from bottom: ${distanceFromBottom}`);
+                            // console.log(`distance from top: ${distanceFromTop}`);
+                            // console.log(`distance from bottom: ${distanceFromBottom}`);
                             // console.log(`distance from top: ${document.getElementsByClassName('sheet-action-button-container')[1].getBoundingClientRect().top}`);
                             {/* console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight) */}
-                            if (distanceFromTop < -650) {
+                            if (distanceFromTop < -650 && this.state.relatedArticlePosition > 650) {
+                                // console.log(`masuk if A`)
                                 setTimeout(() => {
                                     if (self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: false });
@@ -594,7 +609,22 @@ class Detail extends React.Component {
                                 }, 300);
                                 return <span></span>;
                             }
-                            if (distanceFromTop < -100 || distanceFromBottom > -8161) {
+                            if (distanceFromTop < -100) {
+                                // console.log(`masuk if B`)
+                                setTimeout(() => {
+                                    if (!self.state.sticky_share_shown) {
+                                        self.setState({ sticky_share_shown: true });
+                                    }
+
+                                }, 300);
+                                return (
+                                    <div className={`sticky-share-button ${this.state.sticky_share_shown ? 'sticky-share-button-viewed' : ''}`}>
+                                        {this.renderActionButton(true)}
+                                    </div>
+                                );
+                            }
+                            if (this.state.relatedArticlePosition < 650) {
+                                // console.log(`masuk if C`)
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
@@ -608,6 +638,7 @@ class Detail extends React.Component {
                                 );
                             }
                             setTimeout(() => {
+                                // console.log(`masuk ke default`)
                                 if (self.state.sticky_share_shown) {
                                     self.setState({ sticky_share_shown: false });
                                 }
@@ -696,7 +727,7 @@ class Detail extends React.Component {
                                             )
                                         }) }
                                     </div>
-                                    <div style={{display: !this.state.sticky_share_shown ? 'block' : 'none', transition: 'all 0.3s ease-in-out'}} ref={this.shareButtonPosition}>
+                                    <div style={{display: !this.state.sticky_share_shown ? 'block' : 'none', transition: 'all 0.3s ease-in-out'}}>
                                         {this.renderActionButton()}
                                     </div>
                                 </div>
@@ -713,7 +744,7 @@ class Detail extends React.Component {
                                     </div>
                                 ) }
                                 <div className="content-trending-detail-related">
-                                    <p className="related-title"><strong>Related Articles</strong></p>
+                                    <p className="related-title" ref={this.shareButtonPosition}><strong>Related Articles</strong></p>
                                     <div className="item_square-wrapper">
                                         {this.state.trending_related.map((item, index) => {
                                             if(index < 4) {
