@@ -70,11 +70,12 @@ class NavTrendingSearch extends Component {
                                     if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0) {
                                         newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
                                     }
-                                    if (this.props.router.asPath.indexOf('utm_source') > -1) {
-                                        let Isplatform = this.props.router.asPath.indexOf('RplusaOsApp') > -1 ? `?platform=${platform}` : '';
-                                        // Router.push(`/news${Isplatform}`);
-                                        Router.push(`/news?${this.props.params}`)
-                                    } else {
+                                    // if (this.props.router.asPath.indexOf('utm_source') > -1) {
+                                    //     let Isplatform = this.props.router.asPath.indexOf('RplusaOsApp') > -1 ? `?platform=${platform}` : '';
+                                    //     // Router.push(`/news${Isplatform}`);
+                                    //     Router.push(`/news?${this.props.params}`)
+                                    // }
+                                    else {
                                         document.referrer.length === 0 || document.referrer.indexOf(Router.router.query.id) > -1 ? Router.push(`/news?${this.props.params}`): Router.back()
                                     }
                                 }} style={{color: 'white'}}>
