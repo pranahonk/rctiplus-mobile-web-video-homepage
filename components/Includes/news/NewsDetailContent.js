@@ -90,9 +90,10 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const newCont = (responses) => {
     const addReadArray = [];
 
-    for (const response of responses.slice(0, total)) {
+    for (const response of responses) {
       let category = '';
       if (response.subcategory_name.length < 1) {
+        category = 'berita-utama';
       } else {
         category = urlRegex(response.subcategory_name);
       }
