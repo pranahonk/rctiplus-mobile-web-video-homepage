@@ -38,9 +38,12 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const [platform, setPlatform] = useState(null);
 
 
+
   const rmAttributes = item.content.replace(/(class|id|style)="\w+"/gm, '').replace(/\s*>/gmi, '>').replace(/(<!--\s*([a-zA-Z0-9_ ]*)\s*-->)/gm, '');
-  const countTag = {}
-  rmAttributes.match(/(<\w+>)/gm).forEach(function(i) { countTag[i] = (countTag[i]||0) + 1;});
+  const countTag = {};
+  if(rmAttributes.match(/(<\w+>)/gm).length > 0){
+      rmAttributes.match(/(<\w+>)/gm).forEach(function(i) { countTag[i] = (countTag[i]||0) + 1;});
+  }
 
   const getTag = rmAttributes.match(/(<\w+>)/gm) ? Object.keys(countTag).find(key => countTag[key] === Math.max.apply(null, Object.values(countTag))) : null;
   const excludedTag = ['<ul>', '<li>', '<strong>', '<a>'];
@@ -87,7 +90,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const newCont = (responses) => {
     const addReadArray = [];
 
-    for (const response of responses.slice(0, total)) {
+    for (const response of responses) {
       let category = '';
       if (response.subcategory_name.length < 1) {
         category = 'berita-utama';
@@ -95,7 +98,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
         category = urlRegex(response.subcategory_name);
       }
 
-      const addRead = ReactDOMServer.renderToStaticMarkup(<div className={"position-relative"} style={{marginBottom: "1rem"}}><div class="content-trending-detail-baca-juga"></div> <div class="content-trending-detail-baca-content"><span className="font-weight-bold">Baca juga:</span><br /> <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`} dangerouslySetInnerHTML={{ __html: `${response.title}` }}></a></div></div>);
+      const addRead = ReactDOMServer.renderToStaticMarkup(<div className={"position-relative"} style={{marginBottom: "1rem"}}><div className={"content-trending-detail-baca-juga"}></div> <div className={"content-trending-detail-baca-content"}><span className={"font-weight-bold"}>Baca juga:</span><br /> <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`} dangerouslySetInnerHTML={{ __html: `${response.title}` }}></a></div></div>);
       addReadArray.push(addRead);
     }
 
