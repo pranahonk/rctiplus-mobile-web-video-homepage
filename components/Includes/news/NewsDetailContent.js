@@ -48,7 +48,6 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const getTag = rmAttributes.match(/(<\w+>)/gm) ? Object.keys(countTag).find(key => countTag[key] === Math.max.apply(null, Object.values(countTag))) : null;
   const excludedTag = ['<ul>', '<li>', '<strong>', '<a>'];
   const getParagraphLength = rmAttributes.replace(new RegExp(excludedTag.indexOf(getTag) > -1 ? null : getTag,"gi"), `++#${getTag}`).split("++#").filter((x)=> x);
-  // console.log(getParagraphLength)
   const index = [];
   const paragraph = [];
   getParagraphLength.filter((x, i)=> {
@@ -106,22 +105,35 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
     else if(paragraph.length === 2 && addReadArray.length === 1){
       paragraph.splice(paragraph.length , 0, addReadArray[0]);
     }
-    else if(paragraph.length >= 3 && paragraph.length <= 5 && addReadArray.length === 1){
+    else if(paragraph.length >= 3 && paragraph.length < 5 && addReadArray.length === 1){
       paragraph.splice(2, 0, addReadArray[0]);
     }
     else{
       let addReadArrayIndex = 0;
       let indexInserted = 5;
-      for (let i = 1; i < paragraph.length; i++) {
-        if(i === indexInserted && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
-          if(typeof paragraph[i - 1 + addReadArrayIndex] !== 'undefined'){
-            paragraph.splice(i - 1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
-            indexInserted+=5;
-            addReadArrayIndex+=1;
+      const getEveryLength = paragraph.map(x => x.replace(/<\w+>|<\/\w+>/gmi, '').trim().length);
+      let wordsLength = 530;
+      let thisLength = 0;
+      for (let i = 0; i < getEveryLength.length; i++) {
+        thisLength += getEveryLength[i];
+        if(thisLength >= wordsLength  && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
+          if(typeof paragraph[i - 1 + addReadArrayIndex] !== 'undefined') {
+            paragraph.splice(i, 0, addReadArray[addReadArrayIndex]);
           }
-
+          wordsLength+=530;
         }
       }
+
+      // for (let i = 1; i < paragraph.length; i++) {
+      //   if(i === indexInserted && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
+      //     if(typeof paragraph[i - 1 + addReadArrayIndex] !== 'undefined'){
+      //       paragraph.splice(i - 1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
+      //       indexInserted+=5;
+      //       addReadArrayIndex+=1;
+      //     }
+      //
+      //   }
+      // }
     }
 
     return paragraph.join('');
