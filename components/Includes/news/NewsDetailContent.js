@@ -41,7 +41,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
 
   const rmAttributes = item.content.replace(/(class|id|style)="\w+"/gm, '').replace(/\s*>/gmi, '>').replace(/(<!--\s*([a-zA-Z0-9_ ]*)\s*-->)/gm, '');
   const countTag = {};
-  if(rmAttributes.match(/(<\w+>)/gm).length > 0){
+  if(rmAttributes.match(/(<\w+>)/gm) && rmAttributes.match(/(<\w+>)/gm).length > 0){
       rmAttributes.match(/(<\w+>)/gm).forEach(function(i) { countTag[i] = (countTag[i]||0) + 1;});
   }
 
@@ -66,8 +66,6 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       paragraph.push(getParagraphLength[i]);
     }
   }
-
-
 
 
 
@@ -108,17 +106,20 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
     else if(paragraph.length === 2 && addReadArray.length === 1){
       paragraph.splice(paragraph.length , 0, addReadArray[0]);
     }
-    else if(paragraph.length >= 3 && paragraph.length <= 6 && addReadArray.length === 1){
+    else if(paragraph.length >= 3 && paragraph.length <= 5 && addReadArray.length === 1){
       paragraph.splice(2, 0, addReadArray[0]);
     }
     else{
       let addReadArrayIndex = 0;
-      let indexInserted = 3;
+      let indexInserted = 5;
       for (let i = 1; i < paragraph.length; i++) {
-        if(i === indexInserted && paragraph.length > indexInserted && addReadArray[addReadArrayIndex] && i + 1 !== paragraph.length){
-          paragraph.splice(i -1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
-          indexInserted+=5;
-          addReadArrayIndex+=1;
+        if(i === indexInserted && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
+          if(typeof paragraph[i - 1 + addReadArrayIndex] !== 'undefined'){
+            paragraph.splice(i - 1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
+            indexInserted+=5;
+            addReadArrayIndex+=1;
+          }
+
         }
       }
     }
