@@ -37,9 +37,15 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
 
+
   const rmAttributes = item.content.replace(/(class|id|style)="\w+"/gm, '').replace(/\s*>/gmi, '>').replace(/(<!--\s*([a-zA-Z0-9_ ]*)\s*-->)/gm, '');
-  const getTag = rmAttributes.match(/(<\w+>)/gm) ? rmAttributes.match(/(<\w+>)/gm)[0]: null;
-  const getParagraphLength = rmAttributes.replace(new RegExp(getTag,"gi"), `++#${getTag}`).split("++#").filter((x)=> x);
+  const countTag = {}
+  rmAttributes.match(/(<\w+>)/gm).forEach(function(i) { countTag[i] = (countTag[i]||0) + 1;});
+
+  const getTag = rmAttributes.match(/(<\w+>)/gm) ? Object.keys(countTag).find(key => countTag[key] === Math.max.apply(null, Object.values(countTag))) : null;
+  const excludedTag = ['<ul>', '<li>', '<strong>', '<a>'];
+  const getParagraphLength = rmAttributes.replace(new RegExp(excludedTag.indexOf(getTag) > -1 ? null : getTag,"gi"), `++#${getTag}`).split("++#").filter((x)=> x);
+  // console.log(getParagraphLength)
   const index = [];
   const paragraph = [];
   getParagraphLength.filter((x, i)=> {
@@ -57,6 +63,8 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       paragraph.push(getParagraphLength[i]);
     }
   }
+
+
 
 
 
@@ -87,12 +95,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
         category = urlRegex(response.subcategory_name);
       }
 
-      for (let i = 0; i < paragraph.length; i++) {
-        if(paragraph[i].match(/(<a href)/gm)){
-          paragraph.splice(i, 1);
-        }
-      }
-      const addRead = ReactDOMServer.renderToStaticMarkup(<div class="position-relative" style={{marginBottom: "1rem"}}><div class="content-trending-detail-baca-juga"></div> <div class="content-trending-detail-baca-content"><span className="font-weight-bold">Baca juga:</span><br /> <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`} dangerouslySetInnerHTML={{ __html: `${response.title}` }}></a></div></div>);
+      const addRead = ReactDOMServer.renderToStaticMarkup(<div className={"position-relative"} style={{marginBottom: "1rem"}}><div class="content-trending-detail-baca-juga"></div> <div class="content-trending-detail-baca-content"><span className="font-weight-bold">Baca juga:</span><br /> <a href={`/news/detail/${category}/${response.id}/${encodeURI(urlRegex(response.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`} dangerouslySetInnerHTML={{ __html: `${response.title}` }}></a></div></div>);
       addReadArray.push(addRead);
     }
 
