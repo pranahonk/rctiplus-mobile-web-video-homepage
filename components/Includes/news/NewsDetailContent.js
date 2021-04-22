@@ -114,7 +114,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       const getEveryLength = paragraph.map(x => x.replace(/<\w+>|<\/\w+>/gmi, '').trim().length);
       let wordsLength = 1150;
       let thisLength = 0;
-      console.log(getEveryLength);
+      // console.log(getEveryLength);
       for (let i = 0; i < getEveryLength.length; i++) {
         thisLength += getEveryLength[i];
         if(thisLength >= wordsLength  && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
