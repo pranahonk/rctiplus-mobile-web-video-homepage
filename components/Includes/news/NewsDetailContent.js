@@ -81,7 +81,8 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
 
 
   const totalWords = paragraph.map(x => x.replace(/<\w+>|<\/\w+>|<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '').trim().length).reduce((a, b) => a + b, 0);
-  const total  = paragraph.length > 5  ? Math.floor(totalWords / 1150) : 1;
+  const countTotal = Math.floor(totalWords / 1150) > 0 ? Math.floor(totalWords / 1150) : 1;
+  const total  = paragraph.length > 5  ? countTotal : 1;
   const {response, newContent} = useFetch(item.id, total);
 
 
