@@ -112,21 +112,26 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       let addReadArrayIndex = 0;
       let indexInserted = 5;
       const getEveryLength = paragraph.map(x => x.replace(/<\w+>|<\/\w+>/gmi, '').trim().length);
-      let wordsLength = 530;
+      let wordsLength = 1150;
       let thisLength = 0;
-      // console.log(getEveryLength);
+      console.log(getEveryLength);
       for (let i = 0; i < getEveryLength.length; i++) {
         thisLength += getEveryLength[i];
         if(thisLength >= wordsLength  && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
           // console.log(`Words length ${thisLength}`);
           // console.log(`total length ${wordsLength}`);
           // console.log(`index ${i}`);
-          // console.log(`paragraph length ${paragraph.length}`);
+          // console.log(`Every paragraph length ${getEveryLength.length}`);
+          paragraph.map(x => {
+            x.replace(/<\w+>|<\/\w+>/gmi, '').trim()
+            // console.log(x.replace(/<\w+>|<\/\w+>/gmi, '').trim());
+            // console.log(x.replace(/<\w+>|<\/\w+>/gmi, '').trim().length)
+          });
           if(typeof paragraph[i - 1 + addReadArrayIndex] !== 'undefined') {
             paragraph.splice(i - 1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
             addReadArrayIndex++;
           }
-          wordsLength+=530;
+          wordsLength+=1150;
         }
       }
 
