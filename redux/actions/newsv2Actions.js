@@ -529,6 +529,26 @@ const incrementCountTag = tagName => {
     });
 };
 
+const addCategoryVisitorV2 = (categoryId, device_id) => {
+  return () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.post(`/api/v2/kanal/add`, {
+        category: categoryId,
+        device_id: device_id,
+      });
+      if (response.status === 200) {
+        resolve(response);
+      } else {
+        removeAccessToken();
+        reject(response);
+      }
+    } catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+};
+
 const setSection = () => dispatch => dispatch({ type: "ADD_SECTION" })
 
 
@@ -560,5 +580,6 @@ export default {
     incrementCountTag,
     readAlso,
     getSectionNews,
-    setSection
+    setSection,
+    addCategoryVisitorV2,
 };
