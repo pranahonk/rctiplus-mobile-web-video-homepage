@@ -136,7 +136,7 @@ export const getStoriesCategory = (category_id, page = 1, length= 6) => {
     });
 }
 
-export const getHomepageCategory = (page=1, length=21, category_id) => {
+export const getHomepageCategory = (page=1, length=6, category_id) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v2/homepage/category/${category_id}?platform=mweb&page=${page}&length=${length}`);
