@@ -79,7 +79,9 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   }
 
 
-  const total  = paragraph.length > 6 ? Math.floor(paragraph.length / 4) : 1;
+
+  const totalWords = paragraph.map(x => x.replace(/<\w+>|<\/\w+>|<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '').trim().length).reduce((a, b) => a + b, 0);
+  const total  = paragraph.length > 5  ? Math.floor(totalWords / 1150) : 1;
   const {response, newContent} = useFetch(item.id, total);
 
 
@@ -122,19 +124,21 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
     else{
       let addReadArrayIndex = 0;
       let indexInserted = 5;
-      const getEveryLength = paragraph.map(x => x.replace(/<\w+>|<\/\w+>/gmi, '').trim().length);
+      const getEveryLength = paragraph.map(x => x.replace(/<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '').trim().length);
       let wordsLength = 1150;
       let thisLength = 0;
       // console.log(getEveryLength);
       for (let i = 0; i < getEveryLength.length; i++) {
         thisLength += getEveryLength[i];
+        // console.log(paragraph.map(x => x.replace(/<\w+>|<\/\w+>|<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '')))
+        // console.log(paragraph.map(x => x.replace(/<\w+>|<\/\w+>|<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '').trim().length));
         if(thisLength >= wordsLength  && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
           // console.log(`Words length ${thisLength}`);
           // console.log(`total length ${wordsLength}`);
           // console.log(`index ${i}`);
           // console.log(`Every paragraph length ${getEveryLength.length}`);
           if(typeof paragraph[i - 1 + addReadArrayIndex] !== 'undefined') {
-            paragraph.splice(i - 1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
+            paragraph.splice(i + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
             addReadArrayIndex++;
           }
           wordsLength+=1150;
