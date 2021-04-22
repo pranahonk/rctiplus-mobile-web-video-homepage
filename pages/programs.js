@@ -730,6 +730,7 @@ class Index extends React.Component {
   // }
   render() {
     const { props, state } = this;
+   
     return (
       <Layout>
         <HeadMeta data={props.seo_content}
@@ -743,8 +744,9 @@ class Index extends React.Component {
             overflowY: 'scroll'
           }
             : {height: 'auto'} }>
-            <div className="title-player">{props.data["data-player"]?.data?.program_title}</div>
-            <div style={{marginTop:"10px"}} className="action__button--wrapper">
+            <div className="title-player">{props.data["data-player"]?.data?.content_name}</div>
+
+            <div className="action__button--wrapper">
                 <ActionMenu
                   onRate={this.toggleRateModal.bind(this)}
                   bookmark={props.data && props.data.bookmark}
