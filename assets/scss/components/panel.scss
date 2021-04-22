@@ -28,30 +28,41 @@
 
 .txt-slider-panel {
     color: #fff;
-    border-left: 1px solid #DB2828;
-    border-left-width: 2px;
+    // border-left: 1px solid #DB2828;
+    // border-left-width: 2px;
     margin: 10px;
     font-size: 10px;
     text-align: left;
-    padding-left: 10px;
-    max-height: 42.1px;
-    min-height: 42.1px;
+    // padding-left: 10px;
+    max-height: 59px;
+    min-height: 59px;
     overflow: hidden;
     white-space: normal;
 
-    .txt-slider-panel-title {
-        font-size: 12px;
-        font-weight: bold;
+    .line-red{
+        width: 1px;
+        height: 30px;
+        margin-right: 6px;
+        border: solid 1px #fa262f;
     }
 
-    p {
-        margin-bottom: 0;
-        font-size: 9px;
-        font-weight: 300;
-        font-stretch: normal;
-        font-style: normal;
-        line-height: normal;
-        letter-spacing: normal;
+    .txt-slider-panel-cont {
+
+        .txt-slider-panel-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 1px;
+        }
+    
+        p {
+            margin-top: -3px;
+            font-size: 9px;
+            font-weight: 300;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: normal;
+        }
     }
 }
 
