@@ -41,11 +41,23 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
 
   const rmAttributes = item.content.replace(/(class|id|style)="\w+"/gm, '').replace(/\s*>/gmi, '>').replace(/(<!--\s*([a-zA-Z0-9_ ]*)\s*-->)/gm, '');
   const countTag = {};
-  if(rmAttributes.match(/(<\w+>)/gm) && rmAttributes.match(/(<\w+>)/gm).length > 0){
-      rmAttributes.match(/(<\w+>)/gm).forEach(function(i) { countTag[i] = (countTag[i]||0) + 1;});
-  }
 
-  const getTag = rmAttributes.match(/(<\w+>)/gm) ? Object.keys(countTag).find(key => countTag[key] === Math.max.apply(null, Object.values(countTag))) : null;
+
+
+  const chooseTag = () => {
+
+    if(rmAttributes.match(/(<\w+>)/gm) && rmAttributes.match(/(<\w+>)/gm).length > 0){
+      rmAttributes.match(/(<\w+>)/gm).forEach(function(i) { countTag[i] = (countTag[i]||0) + 1;});
+    }
+
+    if(rmAttributes.match(/(<\w+>)/gm)[0] === '<p>'){
+      return rmAttributes.match(/(<\w+>)/gm)[0];
+    }else {
+      return Object.keys(countTag).find(key => countTag[key] === Math.max.apply(null, Object.values(countTag)));
+    }
+  };
+
+  const getTag = chooseTag();
   const excludedTag = ['<ul>', '<li>', '<strong>', '<a>'];
   const getParagraphLength = rmAttributes.replace(new RegExp(excludedTag.indexOf(getTag) > -1 ? null : getTag,"gi"), `++#${getTag}`).split("++#").filter((x)=> x);
   const index = [];
@@ -65,7 +77,6 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       paragraph.push(getParagraphLength[i]);
     }
   }
-
 
 
   const total  = paragraph.length > 6 ? Math.floor(paragraph.length / 4) : 1;
@@ -122,11 +133,6 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
           // console.log(`total length ${wordsLength}`);
           // console.log(`index ${i}`);
           // console.log(`Every paragraph length ${getEveryLength.length}`);
-          paragraph.map(x => {
-            x.replace(/<\w+>|<\/\w+>/gmi, '').trim()
-            // console.log(x.replace(/<\w+>|<\/\w+>/gmi, '').trim());
-            // console.log(x.replace(/<\w+>|<\/\w+>/gmi, '').trim().length)
-          });
           if(typeof paragraph[i - 1 + addReadArrayIndex] !== 'undefined') {
             paragraph.splice(i - 1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
             addReadArrayIndex++;
