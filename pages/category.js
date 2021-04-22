@@ -1,7 +1,9 @@
 import React, {useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { useSelector, useDispatch} from "react-redux"
+import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
+import ax from 'axios';
 import { getSubCategory, getBannerCategoryActive, getHomepageCategory, getStoriesCategory } from "../redux/actions/homeCategoryActions";
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import Layout from '../components/Layouts/Default_v2';
@@ -14,8 +16,18 @@ import Panel2 from '../components/Panels/Pnl_2';
 import Panel3 from '../components/Panels/Pnl_3';
 import Panel4 from '../components/Panels/Pnl_4';
 
-import { RESOLUTION_IMG } from '../config';
-import { getCookie, getVisitorToken } from '../utils/cookie';
+import { DEV_API } from '../config';
+import { RESOLUTION_IMG,  } from '../config';
+import {getCookie, getVisitorToken, checkToken } from '../utils/cookie';
+
+const axios = ax.create({ baseURL: DEV_API + '/api' });
+
+axios.interceptors.request.use(async (request) => {
+    await checkToken();
+    const accessToken = getCookie('ACCESS_TOKEN');
+    request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : accessToken;
+    return request;
+});
 
 const Category = () => {
     const dispatch = useDispatch()
@@ -27,12 +39,87 @@ const Category = () => {
     const [token, setToken] = useState("")
     const [isShimmer, setIsShimmer] = useState(true);
     const [contents, setContents] = useState([]);
-    const [meta, setMeta] = useState()
+    const [meta, setMeta] = useState();
+    const [fetchAllowed, setFetchAllowed] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [page, setPage] = useState(1)
+
+    const bottomScrollFetch = () => {
+        console.log(`melakukan fetch ulang kontent`)
+        const pageCurrent = page + 1;
+        if(fetchAllowed && !isLoading){
+            console.log(`harusnya melakukan fetch lagi`)
+            setIsLoading(true);
+            ref.current.continuousStart();
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const response = await axios.get(`/v2/homepage/category/${category_id}?platform=mweb&page=${pageCurrent}&length=6`);
+        
+                    let contentData = [];
+                    if (response.data.status.code === 0) {
+                        const data = response.data.data;
+                        let selectedData = [];
+                        let promises = [];
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i].total_content > 0) {
+                                promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?platform=mweb&page=1&length=7`)
+                                .catch((err) => {
+                                    console.log('err', err);
+                                }));
+                                selectedData.push(data[i]);
+                            }
+                            else if (data[i].type === 'custom' && data[i].api) {
+                                promises.push(axios.get(data[i].api)
+                                .catch((err) => {
+                                    console.log('err', err);
+                                }));
+                                selectedData.push(data[i]);
+                            }
+                        }
+                        
+                        const results = await Promise.all(promises);
+                        for (let i = 0; i < results.length; i++) {
+                            if (!results[i]) {
+                                continue;
+                            }
+                            
+                            let content = {}
+                            if (results[i] && results[i].status === 200 && results[i].data && results[i].data.status.code === 0) {
+                                content = {
+                                    content: results[i].data.data,
+                                    ...selectedData[i]
+                                };
+                            }
+                            else if (results[i].data.status.code === 13) {
+                                if (!getCookie('SIGNIN_POPUP_SHOWN')) setSigninPopupFlag(true);
+                            }
+                            contentData.push(content);
+                        }
+                        // dispatch({ type: 'HOMEPAGE_CATEGORY', data: contents, meta: response.data.meta });
+                        console.log(`ini adalah content selanjutnya`, contentData)
+                        setContents([...contents, ...contentData])
+                        setPage(pageCurrent);
+                        setFetchAllowed(pageCurrent != meta.pagination.total_page);
+                        setIsLoading(false)
+                        setMeta(response.data.meta)
+                    }
+                    resolve(response);
+                    ref.current.complete()
+                }
+                catch (error) {
+                    reject(error);
+                    ref.current.complete()
+                    setIsLoading(false)
+                }
+            });
+        }
+         
+    }
 
     useEffect(() => {
         dispatch(getSubCategory(category_id));
         dispatch(getBannerCategoryActive(category_id));
-        dispatch(getHomepageCategory(1, 21, category_id));
+        dispatch(getHomepageCategory(1, 6, category_id));
         // dispatch(getStoriesCategory(category_id));
     }, [category_id]);
 
@@ -52,6 +139,7 @@ const Category = () => {
     return (
         <Layout >
             <LoadingBar progress={0} height={3} color={'#fff'} ref={ref} />
+            <BottomScrollListener offset={150} onBottom={bottomScrollFetch} />
 
             {isShimmer ? <HomeLoader /> : 
             <div style={{marginTop: "56px"}}>
