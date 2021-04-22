@@ -39,7 +39,8 @@ class Channels extends React.Component {
         saved_categories: [],
         channels: [],
         selected_channel_ids: [],
-        user_data: null
+        user_data: null,
+        device_id: null,
     };
 
     constructor(props) {
@@ -65,6 +66,9 @@ class Channels extends React.Component {
     }
 
   async componentDidMount() {
+        this.setState({
+          device_id: new DeviceUUID().get(),
+        });
         const savedCategories = await this.props.getCategoryV2();
         const savedCategoriesNews = savedCategories.data.data;
         if (this.accessToken) {
@@ -241,6 +245,8 @@ class Channels extends React.Component {
               // let addResponse = await this.props.addCategoryV2(category.id);
               let addResponse = await this.props.addCategoryV2(category.id);
 
+            }else{
+              let addResponse = await this.props.addCategoryVisitorV2(category.id, this.state.device_id);
             }
 
             let selectedChannelIds = this.state.selected_channel_ids;
