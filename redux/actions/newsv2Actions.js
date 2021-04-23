@@ -352,6 +352,25 @@ const getChannels = () => {
     });
 };
 
+const getChannelsVisitor = (device_id) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/kanal?visitor=${device_id}`);
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
 const incrementCount = newsId => {
     return () => new Promise(async (resolve, reject) => {
         try {
@@ -569,6 +588,7 @@ export default {
     getArticle,
     getRelatedArticles,
     getChannels,
+    getChannelsVisitor,
     getPopularSearch,
     incrementCount,
     getTagTrending,

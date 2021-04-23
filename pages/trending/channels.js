@@ -106,25 +106,54 @@ class Channels extends React.Component {
     }
 
     fetchData(savedCategoriesNews, isLoggedIn = false) {
+      this.props.getChannelsVisitor(this.state.device_id)
+        .then((res) => console.log(res))
+        .catch((err) => console.error(err));
+
+
+      if(isLoggedIn){
         this.props.getChannelsv2()
-            .then(response => {
-                let channels = response.data.data;
-                if (!isLoggedIn) {
-                    let savedChannels = savedCategoriesNews;
-                    for (let i = 0; i < channels.length; i++) {
-                        if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
-                            channels.splice(i, 1);
-                            i--;
-                        }
-                    }
+          .then(response => {
+            let channels = response.data.data;
+            if (!isLoggedIn) {
+              let savedChannels = savedCategoriesNews;
+              for (let i = 0; i < channels.length; i++) {
+                if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
+                  channels.splice(i, 1);
+                  i--;
                 }
+              }
+            }
 
 
-                this.setState({ channels: channels });
-            })
-            .catch(error => {
-                console.log(error);
-            });
+            this.setState({ channels: channels });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+
+      }else{
+        this.props.getChannelsVisitor(this.state.device_id)
+          .then(response => {
+            let channels = response.data.data;
+            if (!isLoggedIn) {
+              let savedChannels = savedCategoriesNews;
+              for (let i = 0; i < channels.length; i++) {
+                if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
+                  channels.splice(i, 1);
+                  i--;
+                }
+              }
+            }
+
+
+            this.setState({ channels: channels });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+
+      }
 
         this.props.getCategoryV2()
             .then(response => {
