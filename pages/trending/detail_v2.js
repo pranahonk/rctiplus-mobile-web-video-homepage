@@ -141,6 +141,7 @@ class Detail extends React.Component {
             countLike: 0,
             infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID,
             relatedArticlePosition: null,
+            documentHeight: null,
         };
 
         // this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
@@ -225,6 +226,11 @@ class Detail extends React.Component {
             .catch(error => {
                 console.log(error);
             });
+        setTimeout(()=>{
+            this.setState({
+                documentHeight: document.documentElement.scrollHeight,
+            })
+        }, 750);
     }
 
     getRandom(arr, n) {
@@ -480,6 +486,7 @@ class Detail extends React.Component {
     shareButtonPosition = el =>{
       window.addEventListener('scroll',()=>{
         const position =  el.getBoundingClientRect().top + window.screen.height;
+        // console.log(position);
         this.setState({
           relatedArticlePosition: position,
         });
@@ -586,8 +593,13 @@ class Detail extends React.Component {
                     <Sticky bottomOffset={100}>
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
-                            {/* console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight) */}
-                            if (this.state.relatedArticlePosition < 1941 && this.state.relatedArticlePosition > 950) {
+                            const hideStickyRatio = cdata.exclusive === 'yes' ?  570 : 950;
+                            // console.log(this.state.documentHeight)
+                            // const documentHeight = document.body.scrollHeight - 200;
+                            // console.log(hideStickyRatio)
+                            // console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight)
+                            if (this.state.relatedArticlePosition < 1400 && this.state.relatedArticlePosition > hideStickyRatio) {
+                                // console.log('masuk kondisi if A')
                                 setTimeout(() => {
                                     if (self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: false });
@@ -596,20 +608,22 @@ class Detail extends React.Component {
                                 }, 300);
                                 return <span></span>;
                             }
-                            // if (distanceFromTop < -100) {
-                            //     setTimeout(() => {
-                            //         if (!self.state.sticky_share_shown) {
-                            //             self.setState({ sticky_share_shown: true });
-                            //         }
-                            //
-                            //     }, 300);
-                            //     return (
-                            //         <div className={`sticky-share-button ${this.state.sticky_share_shown ? 'sticky-share-button-viewed' : ''}`}>
-                            //             {this.renderActionButton(true)}
-                            //         </div>
-                            //     );
-                            // }
-                            if (this.state.relatedArticlePosition > 1941 && distanceFromTop < -100 && this.state.relatedArticlePosition) {
+                            if (this.state.relatedArticlePosition < hideStickyRatio && this.state.relatedArticlePosition) {
+                              // console.log('masuk kondisi if B+')
+                                setTimeout(() => {
+                                    if (!self.state.sticky_share_shown) {
+                                        self.setState({ sticky_share_shown: true });
+                                    }
+
+                                }, 300);
+                                return (
+                                    <div className={`sticky-share-button ${this.state.sticky_share_shown ? 'sticky-share-button-viewed' : ''}`}>
+                                        {this.renderActionButton(true)}
+                                    </div>
+                                );
+                            }
+                            if (this.state.relatedArticlePosition < this.state.documentHeight - 200 && distanceFromTop < -100 && this.state.relatedArticlePosition > 1400 && this.state.relatedArticlePosition) {
+                              // console.log('masuk kondisi if B')
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
@@ -623,6 +637,7 @@ class Detail extends React.Component {
                                 );
                             }
                             if (this.state.relatedArticlePosition < 950 && this.state.relatedArticlePosition) {
+                              // console.log('masuk kondisi if C')
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
@@ -636,6 +651,7 @@ class Detail extends React.Component {
                                 );
                             }
                             setTimeout(() => {
+                                // console.log('masuk kondisi if Default')
                                 if (self.state.sticky_share_shown) {
                                     self.setState({ sticky_share_shown: false });
                                 }
@@ -730,7 +746,7 @@ class Detail extends React.Component {
                                 </div>
                                 { cdata.exclusive === 'yes' ? (<div />
                                 ) : (
-                                    <div className="ads-banner__detail_news" ref={this.shareButtonPosition}>
+                                    <div className="ads-banner__detail_news">
                                         <AdsBanner
                                             partner={cdata.source}
                                             path={getPlatformGpt(this.platform)}
@@ -740,7 +756,7 @@ class Detail extends React.Component {
                                         {/* <span>partner: { cdata.source }</span> */}
                                     </div>
                                 ) }
-                                <div className="content-trending-detail-related">
+                                <div className="content-trending-detail-related" ref={this.shareButtonPosition}>
                                     <p className="related-title"><strong>Related Articles</strong></p>
                                     <div className="item_square-wrapper">
                                         {this.state.trending_related.map((item, index) => {
