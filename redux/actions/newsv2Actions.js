@@ -532,9 +532,10 @@ const incrementCountTag = tagName => {
 const addCategoryVisitorV2 = (categoryId, device_id) => {
   return () => new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.post(`/api/v2/kanal/add`, {
-        category: categoryId,
+      const response = await axios.post(`/v2/kanal/add`, {
+        category_id: categoryId,
         device_id: device_id,
+        sorting: 1
       });
       if (response.status === 200) {
         resolve(response);
