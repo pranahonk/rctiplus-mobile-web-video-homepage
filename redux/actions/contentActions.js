@@ -19,10 +19,11 @@ const setSigninPopupFlag = flag => {
 const getContents = (page = 1, length = 20, platform = 'mweb') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/homepage?page=${page}&length=${length}`);
+            const response = await axios.get(`/v2/homepage?page=${page}&length=${length}`);
             let contents = [];
             if (response.data.status.code === 0) {
                 const data = response.data.data;
+                console.log(`ini data home page`, data)
                 let selectedData = [];
                 let promises = [];
                 for (let i = 0; i < data.length; i++) {
