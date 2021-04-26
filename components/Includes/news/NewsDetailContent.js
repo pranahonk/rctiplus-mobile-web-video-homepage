@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import {useRouter, withRouter} from 'next/router'
-import { getTruncate, imageNews } from '../../../utils/helpers';
-import { formatDateWordID } from '../../../utils/dateHelpers';
-import { urlRegex } from '../../../utils/regex';
+import React, {useEffect, useState} from 'react';
+import {useRouter} from 'next/router'
+import {urlRegex} from '../../../utils/regex';
 import queryString from 'query-string';
 import '../../../assets/scss/components/trending_v2.scss';
-import newsv2Actions from '../../../redux/actions/newsv2Actions';
-import {connect} from "react-redux";
 import {NEWS_API_V2} from "../../../config";
-import { getNewsTokenV2 } from '../../../utils/cookie';
+import {getNewsTokenV2} from '../../../utils/cookie';
 import axios from 'axios';
 import ReactDOMServer from 'react-dom/server';
 
@@ -50,9 +46,9 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       rmAttributes.match(/(<\w+>)/gm).forEach(function(i) { countTag[i] = (countTag[i]||0) + 1;});
     }
 
-    if(rmAttributes.match(/(<\w+>)/gm)[0] === '<p>'){
+    if (rmAttributes.match(/(<\w+>)/gm) && rmAttributes.match(/(<\w+>)/gm)[0] === '<p>') {
       return rmAttributes.match(/(<\w+>)/gm)[0];
-    }else {
+    } else {
       return Object.keys(countTag).find(key => countTag[key] === Math.max.apply(null, Object.values(countTag)));
     }
   };
@@ -113,16 +109,16 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       addReadArray.push(addRead);
     }
 
-    if(paragraph.length === 1){
+
+    if (paragraph.length === 1) {
       return paragraph[0];
-    }
-    else if(paragraph.length === 2 && addReadArray.length === 1){
-      paragraph.splice(paragraph.length , 0, addReadArray[0]);
-    }
-    else if(paragraph.length >= 3 && paragraph.length < 5 && addReadArray.length === 1){
+    } else if (paragraph.length === 2) {
+      // console.log(`masuk elif b`);
+      paragraph.splice(paragraph.length, 0, addReadArray[0]);
+    } else if (paragraph.length >= 3 && paragraph.length < 5) {
+      // console.log(`masuk elif c`);
       paragraph.splice(2, 0, addReadArray[0]);
-    }
-    else{
+    } else {
       let addReadArrayIndex = 0;
       let indexInserted = 5;
       const getEveryLength = paragraph.map(x => x.replace(/<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '').trim().length);
@@ -131,6 +127,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       // console.log(getEveryLength);
       for (let i = 0; i < getEveryLength.length; i++) {
         thisLength += getEveryLength[i];
+        // console.log(thisLength);
         // console.log(paragraph.map(x => x.replace(/<\w+>|<\/\w+>|<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '')))
         // console.log(paragraph.map(x => x.replace(/<\w+>|<\/\w+>|<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '').trim().length));
         if(thisLength >= wordsLength  && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
@@ -145,17 +142,6 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
           wordsLength+=1150;
         }
       }
-
-      // for (let i = 1; i < paragraph.length; i++) {
-      //   if(i === indexInserted && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
-      //     if(typeof paragraph[i - 1 + addReadArrayIndex] !== 'undefined'){
-      //       paragraph.splice(i - 1 + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
-      //       indexInserted+=5;
-      //       addReadArrayIndex+=1;
-      //     }
-      //
-      //   }
-      // }
     }
 
     return paragraph.join('');
