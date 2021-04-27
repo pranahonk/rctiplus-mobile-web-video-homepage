@@ -130,7 +130,8 @@ class Trending_v2 extends React.Component {
         articles_length: 10,
         is_load_more: false,
         user_data: null,
-        sticky_category_shown: false
+        sticky_category_shown: false,
+        is_ads_rendered: false,
     };
 
     constructor(props) {
@@ -663,7 +664,7 @@ class Trending_v2 extends React.Component {
                                                                             </Link>
                                                                         </Col>
                                                                         );
-                                                                    })}
+                                                                    })};
                                                                 </Row>
                                                             </div>
                                                         </div>
@@ -674,7 +675,7 @@ class Trending_v2 extends React.Component {
                                                                 return(
                                                                     <li key={j} className="listItems">
                                                                         <ListGroup className="groupNews">
-                                                                            <ListGroupItem className="listNewsAdds">
+                                                                            <ListGroupItem className={`listNewsAdds ${!this.state.is_ads_rendered ? 'blank-space' : ''}`}>
                                                                               <iframe
                                                                                 onLoad={() => {
                                                                                   window.addEventListener('scroll', () => {
@@ -683,12 +684,15 @@ class Trending_v2 extends React.Component {
                                                                                     const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
                                                                                     const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
                                                                                     if(adsFrame.contentWindow.document && iframeAdsID){
-                                                                                      adsFrame.style.display = 'block'
+                                                                                      adsFrame.style.display = 'block';
+                                                                                      this.setState({
+                                                                                        is_ads_rendered: true,
+                                                                                      })
 
                                                                                     }else if(element && element.style.display === 'none' || element_2 || !element){
-                                                                                      adsFrame.style.display = 'none'
+                                                                                      adsFrame.style.display = 'none';
                                                                                     }else{
-                                                                                      adsFrame.style.display = 'none'
+                                                                                      adsFrame.style.display = 'none';
                                                                                     }
                                                                                   })
                                                                                 }}
