@@ -53,6 +53,10 @@ class Trending_v2 extends React.Component {
 
     static async getInitialProps(ctx) {
         // console.log(isEmpty(ctx.query))
+        console.log(ctx.query.id);
+        if(ctx.query.id, ctx.query.title, ctx.query.category){
+          ctx.res.redirect('/news/detail/' + ctx.query.category + '/' + ctx.query.id + '/' + ctx.query.title + '/isRedirect');
+        }
         const queryId = isEmpty(ctx.query) ? 15 : ctx.query.subcategory_id
         const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
          if (response_visitor.statusCode === 200) {
@@ -762,7 +766,7 @@ class Trending_v2 extends React.Component {
                                                                                 </ListGroupItem>
                                                                             }
                                                                         </ListGroup>
-                                                                </li>)  : 
+                                                                </li>)  :
                                                                 (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
                                                                     <SquareItem item={article}/>
                                                                 </ListGroupItem>)
