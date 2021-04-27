@@ -32,7 +32,7 @@ import '../assets/scss/components/trending_v2.scss';
 
 import newsv2Actions from '../redux/actions/newsv2Actions';
 import userActions from '../redux/actions/userActions';
-import { showSignInAlert, humanizeStr, imageNews, imagePath } from '../utils/helpers';
+import { showSignInAlert, humanizeStr, imageNews, imagePath, readMore } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
 // import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
@@ -768,6 +768,7 @@ class Trending_v2 extends React.Component {
                                                                                         </div>
                                                                                         <div className="article-title-container">
                                                                                             <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
+                                                                                            <p style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: readMore(article.content) }}></p>
                                                                                             <div className="article-source">
                                                                                                 <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
                                                                                                 <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
