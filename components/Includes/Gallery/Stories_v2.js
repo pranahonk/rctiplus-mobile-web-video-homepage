@@ -52,7 +52,8 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
-                            backNative: true,
+                            backButton: true,
+                            backNative: false,
                             previousTap: true,
                             skin: currentSkin['name'],
                             autoFullScreen: currentSkin['params']['autoFullScreen'],
@@ -177,7 +178,8 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
-                            backNative: true,
+                            backButton: true,
+                            backNative: false,
                             previousTap: true,
                             skin: currentSkin['name'],
                             autoFullScreen: currentSkin['params']['autoFullScreen'],
