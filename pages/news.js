@@ -716,8 +716,7 @@ class Trending_v2 extends React.Component {
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => {
                                                             return(((j+1) % 7  === 0) ?
-                                                                (<>
-                                                                    <li className="listItems" key={j + article.title}>
+                                                                (<li className="listItems" key={j + article.title}>
                                                                         <ListGroup className="groupNews">
                                                                             <ListGroupItem className={`listNewsAdds ${!this.state.is_ads_rendered ? 'blank-space' : ''}`}>
                                                                                 <iframe
@@ -759,11 +758,26 @@ class Trending_v2 extends React.Component {
                                                                                   display: 'none',
                                                                                 }} />
                                                                             </ListGroupItem>
-                                                                            <SectionNews  article={article}/>
+                                                                            {
+                                                                                article && isArray(article.section) && article.section.length > 0 ? <SectionNews  article={article}/> : <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
+                                                                                    <div className="article-description">
+                                                                                        <div className="article-thumbnail-container-full-width">
+                                                                                            {
+                                                                                                imageNews(article.title, article.cover, article.image, 400, this.state.assets_url, 'article-thumbnail-full-width')
+                                                                                            }
+                                                                                        </div>
+                                                                                        <div className="article-title-container">
+                                                                                            <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
+                                                                                            <div className="article-source">
+                                                                                                <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
+                                                                                                <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </ListGroupItem>
+                                                                            }
                                                                         </ListGroup>
-                                                                    </li>
-                                                                    </>
-                                                                )  :
+                                                                </li>)  :
                                                                 (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
                                                                     <SquareItem item={article}/>
                                                                 </ListGroupItem>)
@@ -788,3 +802,4 @@ export default connect(state => state, {
     ...newsv2Actions,
     ...userActions,
 })(withRouter(Trending_v2));
+

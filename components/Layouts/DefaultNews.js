@@ -50,9 +50,6 @@ class DefaultNews extends React.Component {
     
     componentDidMount() {
         this.props.initializeFirebase();
-        // identify appier
-        qg('identify', {user_id: getUidAppier()});
-        // end identify appier
     
         // console.log('User added to home screen');
         if(!Cookie.get('uid_ads')) {
@@ -149,7 +146,7 @@ class DefaultNews extends React.Component {
                     <script src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
                     <script dangerouslySetInnerHTML={{ __html: `
                         AIQUA.init({
-                            appId: '${APPIER_ID}',
+                            appId: 'c63c2960bf562e9ec2de',
                             timeout: 5000
                         });
                     `}}>
@@ -161,11 +158,6 @@ class DefaultNews extends React.Component {
                     ` }}></script>
                     <noscript><img alt="Share" src="https://b.scorecardresearch.com/p?c1=2&amp;c2=9013027&amp;cv=2.0&amp;cj=1" /></noscript>
                     {/* End Comscore */}
-
-                    {/* <!-- Google Tag Manager (noscript) --> */}
-                    <noscript key="gtm-noscript"><iframe src={`https://www.googletagmanager.com/ns.html?id=GTM-WJNRTJP&gtm_auth=${GTM_AUTH}&gtm_preview=${GTM}&gtm_cookies_win=x`}
-                    height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript>
-                    {/* <!-- End Google Tag Manager (noscript) --> */}
 
                     {/* <!-- Start Alexa Certify Javascript --> */}
                     <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
@@ -180,9 +172,12 @@ class DefaultNews extends React.Component {
                     <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
 
                 </Head>
+                {/* <!-- Google Tag Manager (noscript) --> */}
+                <noscript key="gtm-noscript"><iframe src={`https://www.googletagmanager.com/ns.html?id=GTM-WJNRTJP&gtm_auth=${GTM_AUTH}&gtm_preview=${GTM}&gtm_cookies_win=x`} height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript>
+                {/* <!-- End Google Tag Manager (noscript) --> */}
 
                 {/* <!-- DO NOT touch the following DIV --> */}
-                {MODE === 'DEVELOPMENT' ? (
+                {/* {MODE === 'DEVELOPMENT' ? (
                     <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
                     !function(q,g,r,a,p,h,js) {
                         if(q.qg)return;
@@ -206,7 +201,20 @@ class DefaultNews extends React.Component {
                         h.parentNode.insertBefore(p,h);
                     } (window,document,'script','https://cdn.qgr.ph/qgraph.3be8515a1c2359442dfd.js');
                 ` }}></script>
-                )}
+                )} */}
+
+                <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
+                    !function(q,g,r,a,p,h,js) {
+                        if(q.qg)return;
+                        js = q.qg = function() {
+                        js.callmethod ? js.callmethod.call(js, arguments) : js.queue.push(arguments);
+                        };
+                        js.queue = [];
+                        p=g.createElement(r);p.async=!0;p.src=a;h=g.getElementsByTagName(r)[0];
+                        h.parentNode.insertBefore(p,h);
+                    } (window,document,'script','https://cdn.qgr.ph/qgraph.3be8515a1c2359442dfd.js');
+                ` }}></script>
+                
 
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>

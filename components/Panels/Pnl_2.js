@@ -127,8 +127,9 @@ class Pnl_2 extends React.Component {
 	}
 
 	render() {
+		console.log(`ini horizontal landscape `, this.props.title, this.state.contents)
 		return (
-			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className="homepage-content pnl_horizontal_landscape" id="pnl_horizontal_landscape" style={{ marginBottom: 20 }}>
+			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className=" pnl_horizontal_landscape" id="pnl_horizontal_landscape" style={{ marginBottom: 20 }}>
 				<h2 className="content-title">{this.props.title}</h2>
 				<BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
 					{scrollRef => (
@@ -164,9 +165,13 @@ class Pnl_2 extends React.Component {
 										</div>
 
 										{c.display_type == 'hide_url' ? null : (
-											<div className="txt-slider-panel">
-												<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
-												<p>{c.content_title}</p>
+											<div style={{display: "flex"}} className="txt-slider-panel">
+												<div className="line-red" />
+												<div className="txt-slider-panel-cont">
+													<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
+													<p>{c.content_title}</p>
+												</div>
+												
 											</div>
 										)}
 

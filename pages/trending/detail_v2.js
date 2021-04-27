@@ -14,8 +14,8 @@ import loadable from '@loadable/component'
 import { DEV_API, BASE_URL, NEWS_API_V2, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, UTM_NAME, SHARE_BASE_URL } from '../../config';
 
 
-const Layout = loadable(() => import('../../components/Layouts/DefaultNews'))
-// import Layout from '../../components/Layouts/Default_v2';
+// const Layout = loadable(() => import('../../components/Layouts/DefaultNews'))
+import Layout from '../../components/Layouts/Default_v2';
 const NavBack = loadable(() => import('../../components/Includes/Navbar/NavTrendingDetail'))
 const NavBackIframe = loadable(() => import('../../components/Includes/Navbar/NavIframe'))
 const AdsBanner = loadable(() => import('../../components/Includes/Banner/Ads'))
@@ -520,9 +520,8 @@ class Detail extends React.Component {
             "description": newsContent
         }
         const canonicalFullUrl = oneSegment['desktop'] + encodeURI(asPath).replace('trending/', 'news/');
-        console.log('cdata >>', cdata);
         return (
-            <Layout title={this.props?.kanal?.title  ? this.props?.kanal?.title : `${newsTitle} - News+ on RCTI+` }>
+            <Layout title={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title}>
                 <Head>
                     <meta name="title" content={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title} />
                     <meta name="keywords" content={newsTitle || this.props?.kanal?.keyword} />

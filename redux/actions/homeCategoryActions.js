@@ -110,10 +110,10 @@ export const getBannerCategoryActive = (category_id) => {
     });
 }
 
-export const getStoriesCategory = (category_id) => {
+export const getStoriesCategory = (category_id, page = 1, length= 6) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v2/stories/category/${category_id}`);
+            const response = await axios.get(`/v2/stories/category/${category_id}?page=${page}&length=${length}`);
             console.log(response.data)
             if (response.data.status.code === 0) {
                 console.log(`ini stories category haha`, response.data)
@@ -136,10 +136,10 @@ export const getStoriesCategory = (category_id) => {
     });
 }
 
-export const getHomepageCategory = (category_id) => {
+export const getHomepageCategory = (page=1, length=6, category_id) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v2/homepage/category/${category_id}`);
+            const response = await axios.get(`/v2/homepage/category/${category_id}?platform=mweb&page=${page}&length=${length}`);
 
             let contents = [];
             if (response.data.status.code === 0) {
@@ -148,7 +148,7 @@ export const getHomepageCategory = (category_id) => {
                 let promises = [];
                 for (let i = 0; i < data.length; i++) {
                     if (data[i].total_content > 0) {
-                        promises.push(axios.get(`/v1/homepage/${data[i].id}/contents`)
+                        promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?platform=mweb&page=1&length=7`)
                         .catch((err) => {
                             console.log('err', err);
                         }));
