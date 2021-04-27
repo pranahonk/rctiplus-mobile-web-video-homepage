@@ -80,7 +80,7 @@ const UIVersion = '2.0';
         title: req.params.title,
         type: req.params.content_type,
         content_id: req.params.content_id,
-        content_title: req.params.content_title
+        content_title: req.params.content_title,
       });
     });
 
@@ -133,7 +133,7 @@ const UIVersion = '2.0';
     server.get('/tv/:id/:title', (req, res) => {
       return app.render(req, res, '/live-event', {
         id: req.params.id,
-        title: req.params.title
+        title: req.params.title,
       });
     });
 
@@ -141,8 +141,8 @@ const UIVersion = '2.0';
       return app.render(req, res, '/tv', {
         channel: req.params.channel,
         epg_id: req.params.epg_id,
-        epg_title: req.params.epg_title
-      })
+        epg_title: req.params.epg_title,
+      });
     });
 
     server.get('/tv-2/:channel', (req, res) => {
@@ -153,40 +153,35 @@ const UIVersion = '2.0';
       return app.render(req, res, '/tv-2', {
         channel: req.params.channel,
         epg_id: req.params.epg_id,
-        epg_title: req.params.epg_title
-      })
+        epg_title: req.params.epg_title,
+      });
     });
     server.get('/news/:subcategory_id/:subcategory_title', (req, res) => {
       return app.render(req, res, '/news', {
         subcategory_id: req.params.subcategory_id,
-        subcategory_title: req.params.subcategory_title
+        subcategory_title: req.params.subcategory_title,
       });
     });
 
     server.get('/news/detail/:id/:title', (req, res) => {
       return app.render(req, res, '/trending/detail_v2', {
         id: req.params.id,
-        title: req.params.title
-      })
+        title: req.params.title,
+      });
     });
 
     server.get('/news/topic/tag/:title_tag', (req, res) => {
       return app.render(req, res, '/trending/list-tags', {
         title_tag: req.params.title_tag,
-      })
+      });
     });
 
     server.get('/news/detail/:category/:id/:title', (req, res, next) => {
-      console.log(req.originalUrl.includes('utm_source'))
-      console.log(req.originalUrl);
-      if(req.originalUrl.includes('utm_source')){
-        return app.redirect('/news');
-      }
       return app.render(req, res, '/trending/detail_v2', {
         id: req.params.id,
         title: req.params.title,
         category: req.params.category,
-      })
+      });
     });
 
     server.get('/news/search', (req, res) => {
@@ -244,27 +239,27 @@ const UIVersion = '2.0';
 
     server.get('/exclusive/:category', (req, res) => {
       return app.render(req, res, '/exclusive', {
-        category: req.params.category
-      })
+        category: req.params.category,
+      });
     });
 
     server.get('/explores/search', (req, res) => {
       return app.render(req, res, '/searchLibrary', {
-        id: req.params.id
-      })
-    })
+        id: req.params.id,
+      });
+    });
     server.get('/explores/keyword', (req, res) => {
       return app.render(req, res, '/searchLibrary', {
         id: req.params.id,
-        q: req.query.q
-      })
-    })
+        q: req.query.q,
+      });
+    });
     server.get('/explores/:id/:genre_name', (req, res) => {
       return app.render(req, res, '/explores', {
         id: req.params.id,
-        genre_name: req.params.genre_name
-      })
-    })
+        genre_name: req.params.genre_name,
+      });
+    });
 
     // server.get('/trending/:subcategory_id/:subcategory_title', (req, res) => {
     //   return app.render(req, res, '/trending', {
@@ -279,13 +274,13 @@ const UIVersion = '2.0';
     server.get('/live-event/:id/:title', (req, res) => {
       return app.render(req, res, '/live-events/live-event', {
         id: req.params.id,
-        title: req.params.title
+        title: req.params.title,
       });
     });
     server.get('/missed-event/:id/:title', (req, res) => {
       return app.render(req, res, '/live-events/live-event', {
         id: req.params.id,
-        title: req.params.title
+        title: req.params.title,
       });
     });
     // server.get('/past-event/:id/:title', (req, res) => {
@@ -310,7 +305,6 @@ const UIVersion = '2.0';
     });
 
 
-
     server.listen(port, err => {
       if (err) {
         throw err;
@@ -320,8 +314,8 @@ const UIVersion = '2.0';
       console.log(`
           =====================================================
           -> Server (${chalk.bgBlue(
-            'NextJS PWA',
-          )}) 🏃 (running) on ${chalk.green(ipAdress)}:${chalk.green(`${port}`)}
+        'NextJS PWA',
+      )}) 🏃 (running) on ${chalk.green(ipAdress)}:${chalk.green(`${port}`)}
           =====================================================
         `);
       /* eslint-enable no-console */
