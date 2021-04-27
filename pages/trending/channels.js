@@ -1,6 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'next/router';
+import {connect} from 'react-redux';
+import {withRouter} from 'next/router';
 import classnames from 'classnames';
 
 import Layout from '../../components/Layouts/Default_v2';
@@ -8,7 +8,18 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 
 import ListItemLoader from '../../components/Includes/Shimmer/ListItemLoader';
 
-import { Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Button } from 'reactstrap';
+import {
+  Button,
+  ListGroup,
+  ListGroupItem,
+  ListGroupItemHeading,
+  ListGroupItemText,
+  Nav,
+  NavItem,
+  NavLink,
+  TabContent,
+  TabPane
+} from 'reactstrap';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 
@@ -18,17 +29,21 @@ import newsv2Actions from '../../redux/actions/newsv2Actions';
 import pageActions from '../../redux/actions/pageActions';
 import userActions from '../../redux/actions/userActions';
 import newsv2KanalActions from '../../redux/actions/newsv2KanalActions.js';
-import { newsTabChannelClicked, newsAddCategoryChannelClicked, newsRemoveCategoryChannelClicked } from '../../utils/appier';
+import {
+  newsAddCategoryChannelClicked,
+  newsRemoveCategoryChannelClicked,
+  newsTabChannelClicked
+} from '../../utils/appier';
 
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { setNewsChannels, getNewsChannels, setAccessToken, removeAccessToken, getUserAccessToken } from '../../utils/cookie';
+import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
+import {removeAccessToken, setAccessToken, setNewsChannels} from '../../utils/cookie';
 
 import queryString from 'query-string';
 import ax from 'axios';
-import { NEWS_API_V2 } from '../../config';
+import {NEWS_API_V2} from '../../config';
 
 const jwtDecode = require('jwt-decode');
-const axios = ax.create({ baseURL: NEWS_API_V2 + '/api' });
+const axios = ax.create({baseURL: NEWS_API_V2 + '/api'});
 
 class Channels extends React.Component {
 
@@ -66,50 +81,48 @@ class Channels extends React.Component {
     }
 
   async componentDidMount() {
-        this.setState({
-          device_id: new DeviceUUID().get(),
+    this.setState({
+      device_id: '716bda64-d656-4ba4-b79e-19dbab43c310',
+    });
+    const savedCategories = this.accessToken ? await this.props.getCategoryV2() : await this.props.getSelectedChannelsVisitor('716bda64-d656-4ba4-b79e-19dbab43c310');
+    const savedCategoriesNews = savedCategories.data.data;
+    console.log(this.accessToken);
+    console.log(new DeviceUUID().get());
+    console.log(savedCategoriesNews);
+    if (this.accessToken) {
+      const decodedToken = jwtDecode(this.accessToken);
+      if (decodedToken && decodedToken.uid != '0') {
+        this.setState({saved_categories: savedCategoriesNews}, () => {
+          this.fetchData(savedCategoriesNews, true);
         });
-        const savedCategories = await this.props.getCategoryV2();
-        const savedCategoriesNews = savedCategories.data.data;
-        if (this.accessToken) {
-            const decodedToken = jwtDecode(this.accessToken);
-            if (decodedToken && decodedToken.uid != '0') {
-                this.setState({ saved_categories: savedCategoriesNews }, () => {
-                    this.fetchData(savedCategoriesNews, true);
-                });
-            }
-            else {
-                this.setState({ saved_categories: savedCategoriesNews }, () => {
-                    this.fetchData(savedCategoriesNews);
+      } else {
+        this.setState({saved_categories: savedCategoriesNews}, () => {
+          this.fetchData(savedCategoriesNews);
                 });
             }
         }
-        else {
-            this.props.getUserData()
-                .then(response => {
-                    this.setState({
-                        saved_categories: savedCategoriesNews,
-                        user_data: response.data.data
-                    }, () => {
-                        this.fetchData(savedCategoriesNews, true);
-                    });
-                })
-                .catch(error => {
+    else {
+      console.log('masuk else')
+      this.props.getUserData()
+        .then(response => {
+          this.setState({
+            saved_categories: savedCategoriesNews,
+            user_data: response.data.data
+          }, () => {
+            this.fetchData(savedCategoriesNews, false);
+          });
+        })
+        .catch(error => {
                     console.log(error);
-                    this.setState({ saved_categories: savedCategoriesNews }, () => {
-                        this.fetchData(savedCategoriesNews);
-                    });
+          this.setState({saved_categories: savedCategoriesNews}, () => {
+            this.fetchData(savedCategoriesNews);
+          });
+          console.log(this.state.saved_categories);
                 });
         }
-
-
     }
 
     fetchData(savedCategoriesNews, isLoggedIn = false) {
-      this.props.getChannelsVisitor(this.state.device_id)
-        .then((res) => console.log(res))
-        .catch((err) => console.error(err));
-
 
       if(isLoggedIn){
         this.props.getChannelsv2()
@@ -138,13 +151,15 @@ class Channels extends React.Component {
             let channels = response.data.data;
             if (!isLoggedIn) {
               let savedChannels = savedCategoriesNews;
+              console.log(savedChannels);
               for (let i = 0; i < channels.length; i++) {
-                if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
+                if (savedChannels.findIndex(s => s.id == channels[i].id) != -1 || channels.id !== 15 || channels.id !== 12 || channels.id !== 1) {
                   channels.splice(i, 1);
                   i--;
                 }
               }
             }
+            console.log(channels);
 
 
             this.setState({ channels: channels });
@@ -228,7 +243,14 @@ class Channels extends React.Component {
                     this.props.unsetPageLoader();
                 }
                 else {
-                    setNewsChannels(this.state.categories);
+                    this.props.setPageLoader();
+                    let promises = [];
+                    for (let i = 3; i < this.state.categories.length; i++) {
+                      promises.push( this.props.updateCategoryOrderVisitor(this.state.categories[i].id, this.state.categories.length - i, this.state.device_id));
+                    }
+                    const responses = await Promise.all(promises);
+                    this.props.unsetPageLoader();
+                    // setNewsChannels(this.state.categories);
                 }
 
                 // if (!this.state.user_data || (this.accessToken && decodedToken.uid == '0')) {
@@ -283,19 +305,23 @@ class Channels extends React.Component {
             if (addedIndex == -1) {
                 selectedChannelIds.push(category.id);
                 this.setState({ selected_channel_ids: selectedChannelIds }, async () => {
-                    let channels = this.state.channels;
-                    channels.splice(index, 1);
+                  let channels = this.state.channels;
+                  channels.splice(index, 1);
 
 
-                    const categories = await this.props.getCategoryV2();
-                    const categoriesFilter = categories.data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
+                  const categories = this.state.user_data || (this.accessToken && decodedToken.uid != '0') ? await this.props.getCategoryV2() : await this.props.getChannelsVisitor();
+                  console.log(categories);
+                  console.log(this.state.user_data)
+                  console.log(this.accessToken)
+
+                  const categoriesFilter = categories.data.data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
 
-                    this.setState({
-                        channels: channels,
-                        categories: categoriesFilter,
-                        active_tab: 'Edit Kanal'
-                    }, () => {
+                  this.setState({
+                    channels: channels,
+                    categories: categoriesFilter,
+                    active_tab: 'Edit Kanal'
+                  }, () => {
 
                         if (!this.state.user_data || (this.accessToken && decodedToken.uid == '0')) {
                             setNewsChannels(this.state.categories);
@@ -328,7 +354,10 @@ class Channels extends React.Component {
 
             if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
                 let deleteResponse = await this.props.deleteCategoryV2(category.id);
+            }else{
+              let deleteResponse =  await this.props.deleteCategoryVisitors(category.id, this.state.device_id);
             }
+            console.log(this.state.user_data || (this.accessToken && decodedToken.uid != '0'))
 
             let selectedChannelIds = this.state.selected_channel_ids;
             const removedIndex = selectedChannelIds.indexOf(category.id);
