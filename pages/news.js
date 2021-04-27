@@ -716,7 +716,7 @@ class Trending_v2 extends React.Component {
                                                             return(((j+1) % 7  === 0) ?
                                                                 (<li className="listItems" key={j + article.title}>
                                                                         <ListGroup className="groupNews">
-                                                                            <ListGroupItem className="">
+                                                                          <ListGroupItem className={`listNewsAdds ${!this.state.is_ads_rendered ? 'blank-space' : ''}`}>
                                                                                 <iframe
                                                                                 onLoad={() => {
                                                                                   window.addEventListener('scroll', () => {
