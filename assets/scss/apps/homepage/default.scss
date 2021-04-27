@@ -796,6 +796,49 @@ h5 {
                 position: relative;
                 max-width: 58% !important;
             }
+
+            .blank-space {
+                display: none !important;
+                + .article-full-width {
+                    max-width: 100% !important;
+                    position: relative;
+                    margin: 0;
+                    .article-description {
+                        display: table !important;
+                        width: 100%;
+                        margin: 0;
+                        padding: 0;
+                        &:after {
+                            content: "";
+                            display: block;
+                            clear: both;
+                        }
+                    }
+                    .article-thumbnail-container-full-width {
+                        max-width: 40%;
+                        float: left;
+                        position: relative;
+                        padding: 0;
+                        height: auto !important;
+                    }
+                    .article-title-container {
+                        max-width: 57%;
+                        float: right;
+                        display: block !important;
+                        > p {
+                            display: block !important;
+                            max-height: none;
+                            padding: 1rem 0 0;
+                        }
+                    }
+                    .article-title {
+                        font-size: 1.2rem !important;
+                    }
+                    .article-source {
+                        display: block;
+                    }
+                }
+            }
         }
         .list-group-item {
             max-width: 42%;
@@ -822,7 +865,7 @@ h5 {
             padding: 0;
         }
         .center-cropped {
-            height: 11rem !important;
+            height: 12.1rem !important;
             min-height: 1rem;
         }
         .carousel {
@@ -835,5 +878,25 @@ h5 {
         .caption .description {
             color: #abe9ff;
         }
+    }
+    .list_tags_thumb .lt_content h2 {
+        font-size: 0.9rem !important;
+        line-height: normal !important;
+        max-height: 3.4rem;
+        overflow: hidden;
+    }
+    
+    .list_tags_thumb h5, .list_tags_thumb h6 {
+        font-size: 0.8rem !important;
+    }
+    
+    .interest-topic_wrapper .interest-topic_list a {
+        font-size: 0.9rem !important;
+    }
+    
+    .logo-top {
+        max-width: 50%;
+        margin: auto;
+        display: block;
     }
 }
