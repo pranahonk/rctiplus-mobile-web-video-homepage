@@ -509,7 +509,7 @@
         
    }
    .nav-trending-detail {
-        padding: 0.4rem 0;
+        padding: 0.4rem 0 !important;
     }
  
     .navbar-brand svg.MuiSvgIcon-root {
@@ -518,6 +518,6 @@
     }
 
     .navbar-interest__topic h1 {
-       font-size: 1.3rem;
+       font-size: 1.3rem !important;
     }
 }
