@@ -31,18 +31,21 @@ import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeA
 import '../assets/scss/components/trending_v2.scss';
 
 import newsv2Actions from '../redux/actions/newsv2Actions';
+import newsv2KanalActions from '../redux/actions/newsv2KanalActions';
 import userActions from '../redux/actions/userActions';
-import { showSignInAlert, humanizeStr, imageNews } from '../utils/helpers';
+import { showSignInAlert, humanizeStr, imageNews, imagePath } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
 // import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 const Loading = dynamic(() => import('../components/Includes/Shimmer/ListTagLoader'))
+const SectionNews = dynamic(() => import('../components/Includes/news/SectionNews'))
 const SquareItem = dynamic(() => import('../components/Includes/news/SquareItem'),{loading: () => <Loading />})
 
 import queryString from 'query-string';
 
 import isEmpty from 'lodash/isEmpty';
+import isArray from 'lodash/isArray';
 import remove from 'lodash/remove'
 
 const jwtDecode = require('jwt-decode');
@@ -106,10 +109,36 @@ class Trending_v2 extends React.Component {
             return item.id == queryId;
             });
         }
+
+        const general = await fetch(`${NEWS_API_V2}/api/v2/settings/general`, {
+            method: 'GET',
+            headers: {
+                'Authorization': data_news.data.news_token
+            }
+        });
+        let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
+        let gs = {};
+        const data_general = await general.json();
+        if (!gen_error_code && isArray(data_general.data) && data_general.data.length > 0){
+            const res_gs = data_general.data[0]
+            gs['site_name'] = res_gs.site_name
+            gs['fb_id'] = res_gs.fb_id
+            gs['twitter_creator'] = res_gs.twitter_creator
+            gs['twitter_site'] = res_gs.twitter_site
+            gs['img_logo'] = res_gs.img_logo
+        }
+
+        let newsData = {}
+        if (!error_code && isArray(data.data) && data.data.length > 0){
+            newsData = data.data[0]
+            newsData['cover'] = imagePath(newsData.cover, newsData.image, 600, data.meta.assets_url, gs['img_logo'])
+        }
         return {
-            query: ctx.query, metaOg: error_code ? {} : data.data[0],
+            query: ctx.query,
+            metaOg: newsData,
             data_category: error_code_category || error_code_kanal ? [] : dataCategory,
-            metaSeo: metaSeo[0] || {}
+            metaSeo: metaSeo[0] || {},
+            general: gs
         };
     }
 
@@ -131,6 +160,7 @@ class Trending_v2 extends React.Component {
         is_load_more: false,
         user_data: null,
         sticky_category_shown: false,
+        section: 1,
         is_ads_rendered: false,
     };
 
@@ -158,11 +188,11 @@ class Trending_v2 extends React.Component {
     bottomScrollFetch() {
         if (!this.state.is_load_more && this.state.load_more_allowed[this.state.active_tab]) {
             this.setState({ is_load_more: true }, () => {
+                // this.props.getSectionNews(this.state.active_tab, 3, this.state.pages[this.state.active_tab])
                 this.loadArticles(this.state.active_tab, this.state.pages[this.state.active_tab]);
             });
         }
     }
-
     toggleTab(tab, tabData) {
         newsTabClicked(tabData.name, 'mweb_news_tab_clicked');
         if (this.state.active_tab != tab) {
@@ -172,16 +202,22 @@ class Trending_v2 extends React.Component {
                 }
             });
             this.loadContents(tabData.id);
-            const href = `/news?subcategory_id=${tabData.id}&subcategory_title=${tabData.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}` : ''}`;
-            const as = `/news/${tabData.id}/${tabData.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`;
+            const href = `/news?subcategory_id=${tabData.id}&subcategory_title=${tabData.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `&token=${this.accessToken}&platform=${this.platform}&page=home` : ''}`;
+            const as = `/news/${tabData.id}/${tabData.name.toLowerCase().replace(/ +/g, '-')}${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&page=home` : ''}`;
             Router.push(href, as)
         }
     }
 
     loadArticles(categoryId, page = 1) {
         this.setState({ is_articles_loading: true }, () => {
+            this.props.getSectionNews(categoryId, 1, page).then((resSection) => {
             this.props.getNews(categoryId, this.state.articles_length, page)
                 .then(res => {
+                    const data = res.data.data
+                    const pageSection = res.data.meta.pagination.current_page
+                    // if(data.length > 6) {
+                    //     data[6].section = page
+                    // }
                     let articles = this.state.articles;
                     let pages = this.state.pages;
                     let loadMoreAllowed = this.state.load_more_allowed;
@@ -189,20 +225,27 @@ class Trending_v2 extends React.Component {
                     const assets_url = res.data.meta.assets_url
 
                     if (articles[categoryId.toString()]) {
-                        articles[categoryId.toString()].push.apply(articles[categoryId.toString()], res.data.data);
+                        articles[categoryId.toString()].push.apply(articles[categoryId.toString()], data);
                         pages[categoryId.toString()] = page + 1;
                     }
                     else {
-                        articles[categoryId.toString()] = res.data.data;
+                        articles[categoryId.toString()] = data;
                         pages[categoryId.toString()] = 2;
                     }
+
+                    articles[categoryId.toString()].forEach((item, i) => {
+                        if(((i+1) % 7  === 0) && !item.section) {
+                            item.section = resSection.data[0] || []
+                        }
+                    })
                     // console.log(this.state.tabs, articles['20']);
                     this.setState({
                         is_articles_loading: false,
                         articles: articles,
                         load_more_allowed: loadMoreAllowed,
                         is_load_more: false,
-                        assets_url: assets_url
+                        assets_url: assets_url,
+                        section: pageSection
                     });
                 })
                 .catch(error => {
@@ -212,6 +255,7 @@ class Trending_v2 extends React.Component {
                         is_load_more: false
                     });
                 });
+            })
         });
     }
 
@@ -286,7 +330,6 @@ class Trending_v2 extends React.Component {
         // }
     }
     componentDidMount() {
-        console.log(this.props.metaSeo)
         // window.addEventListener('scroll', (event) => {
         //     if(this.isInViewport(document.getElementById('9'))) {
         //         console.log('YESSS')
@@ -335,9 +378,9 @@ class Trending_v2 extends React.Component {
         const savedCategoriesNews = getNewsChannels();
         params['saved_tabs'] = savedCategoriesNews;
         this.setState(params, () => {
-            this.props.getCategory()
+            this.props.getCategoryV2()
                 .then(response => {
-                    let categories = response.data.data;
+                    let categories = response.data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
                     let sortedCategories = categories;
                     let savedCategories = savedCategoriesNews;
                     for (let i = 0; i < savedCategories.length; i++) {
@@ -420,7 +463,6 @@ class Trending_v2 extends React.Component {
                         }
                     }
 
-                    console.log(error);
                     this.setState({
                         is_tabs_loading: false,
                         is_articles_loading: false,
@@ -481,18 +523,18 @@ class Trending_v2 extends React.Component {
                     <meta name="keywords" content={this.props?.metaSeo?.keyword} />
                     <meta property="og:title" content={this.props.metaOg?.title || ''} />
                     <meta property="og:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
-                    <meta property="og:image" itemProp="image" content={this.props.metaOg?.cover|| ''} />
+                    <meta property="og:image" itemProp="image" content={this.props.metaOg?.cover || this.props?.general?.img_logo} />
                     <meta property="og:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={SITE_NAME} />
-                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta property="og:site_name" content={this.props?.general?.site_name || SITE_NAME} />
+                    <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
-                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
-                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-                    <meta name="twitter:image" content={this.props.metaOg?.cover|| ''} />
+                    <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
+                    <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
+                    <meta name="twitter:image" content={this.props.metaOg?.cover || this.props?.general?.img_logo} />
                     <meta name="twitter:image:alt" content={this.props.metaOg?.title || ''} />
                     <meta name="twitter:title" content={this.props.metaOg?.title || ''} />
                     <meta name="twitter:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
@@ -645,7 +687,7 @@ class Trending_v2 extends React.Component {
                                                 return (
                                                 <TabPane key={i} tabId={tab.id.toString()}>
                                                     {(this.state.is_trending_loading ? (<HeadlineLoader />) : (
-                                                        !isEmpty(this.state.trending_articles[tab.id]) ? <HeadlineCarousel articles={this.state.trending_articles[tab.id]} assets_url={this.state.assets_url} /> : null
+                                                        !isEmpty(this.state.trending_articles[tab.id]) ? <HeadlineCarousel className="news-carousel" articles={this.state.trending_articles[tab.id]} assets_url={this.state.assets_url} /> : null
                                                     ))}
                                                     { !isEmpty(this.props.newsv2.data_topic) ? (
                                                         <div className="interest-topic_wrapper">
@@ -671,12 +713,11 @@ class Trending_v2 extends React.Component {
                                                     ) : '' }
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => {
-                                                            if((j + 1) % 5 === 0) {
-                                                                return(
-                                                                    <li key={j} className="listItems">
+                                                            return(((j+1) % 7  === 0) ?
+                                                                (<li className="listItems" key={j + article.title}>
                                                                         <ListGroup className="groupNews">
-                                                                            <ListGroupItem className={`listNewsAdds ${!this.state.is_ads_rendered ? 'blank-space' : ''}`}>
-                                                                              <iframe
+                                                                            <ListGroupItem className="">
+                                                                                <iframe
                                                                                 onLoad={() => {
                                                                                   window.addEventListener('scroll', () => {
                                                                                     const adsFrame = document.getElementById(article.id);
@@ -703,35 +744,32 @@ class Trending_v2 extends React.Component {
                                                                                   width: '100%',
                                                                                   display: 'none',
                                                                                 }} />
-
                                                                             </ListGroupItem>
-                                                                            <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
-                                                                                <div className="article-description">
-                                                                                    <div className="article-thumbnail-container-full-width">
-                                                                                        {
-                                                                                            imageNews(article.title, article.cover, article.image, 355, this.state.assets_url, 'article-thumbnail-full-width')
-                                                                                        }
-                                                                                    </div>
-                                                                                    <div className="article-title-container">
-                                                                                        <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
-                                                                                        <div className="article-source">
-                                                                                            <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
-                                                                                            <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                            {
+                                                                                article && isArray(article.section) && article.section.length > 0 ? <SectionNews  article={article}/> : <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
+                                                                                    <div className="article-description">
+                                                                                        <div className="article-thumbnail-container-full-width">
+                                                                                            {
+                                                                                                imageNews(article.title, article.cover, article.image, 400, this.state.assets_url, 'article-thumbnail-full-width')
+                                                                                            }
+                                                                                        </div>
+                                                                                        <div className="article-title-container">
+                                                                                            <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
+                                                                                            <div className="article-source">
+                                                                                                <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
+                                                                                                <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                            </ListGroupItem>
+                                                                                </ListGroupItem>
+                                                                            }
                                                                         </ListGroup>
-                                                                    </li>
-                                                                )
-                                                            } else {
-                                                                return(
-                                                                    <li className="item_square-wrapper" key={j + article.title}>
-                                                                        <SquareItem item={article} assets_url={this.state.assets_url} />
-                                                                    </li>
-                                                                )
-                                                            }
-                                                        })}
+                                                                </li>)  :
+                                                                (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
+                                                                    <SquareItem item={article} assets_url={this.state.assets_url} />
+                                                                </ListGroupItem>)
+
+                                                            )})}
                                                     </ListGroup>
                                                     {this.state.is_articles_loading ? (<ArticleLoader />) : null}
                                                 </TabPane>
@@ -750,4 +788,5 @@ class Trending_v2 extends React.Component {
 export default connect(state => state, {
     ...newsv2Actions,
     ...userActions,
+    ...newsv2KanalActions,
 })(withRouter(Trending_v2));

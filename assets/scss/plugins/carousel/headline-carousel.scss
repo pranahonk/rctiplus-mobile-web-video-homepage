@@ -68,3 +68,34 @@
         }
     }
 }
+.news-carousel {
+    margin: 0 10px;
+    margin-top: 15px;
+    border-radius: 7px;
+    overflow: hidden;
+    .caption {
+        background: #171717;
+        height: auto;
+        padding: 10px;
+        border-bottom-left-radius: 7px;
+        border-bottom-right-radius: 7px;
+        p {
+            margin: 0;
+        }
+    }
+    .control-dots {
+        display: flex;
+        justify-content: flex-end;
+        bottom: 33% !important;
+        padding-right: 10px;
+        .dot {
+            margin: 0 3px !important;
+            transition: width .3s cubic-bezier(.075, .82, .165, 1);
+            &.selected {
+                transform: scaleX(1);
+                width: 20px;
+                transition: width .3s cubic-bezier(.075, .82, .165, 1);
+            }
+        }
+    }
+}

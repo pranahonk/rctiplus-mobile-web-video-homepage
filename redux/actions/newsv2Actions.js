@@ -1,6 +1,6 @@
 import ax from 'axios';
 import { NEWS_API_V2 } from '../../config';
-import { getNewsTokenV2, checkToken, removeAccessToken, getAccessToken } from '../../utils/cookie';
+import { getNewsTokenV2, checkToken, removeAccessToken, getAccessToken, getUserAccessToken } from '../../utils/cookie';
 
 const axios = ax.create({ baseURL: NEWS_API_V2 + '/api' });
 
@@ -213,6 +213,47 @@ const getTrending = (category = 1, pageSize = 5, page = 1) => {
     return () => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/news/trending?category=${category}&page=${page}&pageSize=${pageSize}`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
+const getSectionNews = (category_id = 16, pageSize = 3, page = 1) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/section?category_id=${category_id}&page=${page}&pageSize=${pageSize}`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_SECTION_NEWS',
+                    payload: response.data,
+                });
+                resolve(response.data);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+const getSectionArticle = (section_id = 1, page = 1, pageSize = 6) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/section/${section_id}/content?page=${page}&pageSize=${pageSize}`);
             if (response.status === 200 && response.data.status.code === 0) {
                 resolve(response);
             }
@@ -488,6 +529,8 @@ const incrementCountTag = tagName => {
     });
 };
 
+const setSection = () => dispatch => dispatch({ type: "ADD_SECTION" })
+
 
 export default {
     clearSearch,
@@ -509,10 +552,13 @@ export default {
     incrementCount,
     getTagTrending,
     getListTag,
+    getSectionArticle,
     getMorePage,
     setLike,
     getTagByNews,
     getSearchFromServer,
     incrementCountTag,
     readAlso,
+    getSectionNews,
+    setSection
 };

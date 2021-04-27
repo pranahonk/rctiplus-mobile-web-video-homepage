@@ -27,13 +27,13 @@
     .sheet-wrap-right {
     display: flex;
     align-items: center;
-        .total_like { 
+        .total_like {
             background: #282828;
             margin: 0;
             width: 10px;
             height: 10px;
             color: #fff;
-            position: relative; 
+            position: relative;
             span {
                 text-align: right;
                 position: absolute;
@@ -77,6 +77,23 @@
     font-family: Helvetica!important;
     color: #fff;
 
+    &-baca{
+      &-juga{
+        position: absolute;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background-color: #04A9E5;
+        border-radius: 7px;
+      }
+      &-content{
+        margin-left: 14px;
+        a {
+          color: #04A9E5;
+        }
+      }
+    }
+
     .content-trending-detail-title{
         font-weight: 1.5em!important;
         font-size: 18px;
@@ -91,6 +108,8 @@
     .content-trending-detail-cover-container {
         width: 100%;
         position: relative;
+        padding:0 15px;
+        margin-top:33px;
         // padding-bottom: 56.25%;
 
         .content-trending-detail-cover {
@@ -98,6 +117,7 @@
             // height: 100%;
             // position: absolute;
             object-fit: cover;
+            border-radius: 10px;
         }
     }
     .content-trending-detail-title-src-auth{
@@ -188,7 +208,7 @@
 
     .content-trending-detail-related {
         // margin: 10px;
-        // padding-bottom: 45px;
+        padding-bottom: 25px;
 
         .related-title {
             // background-color: #171717;
@@ -316,6 +336,11 @@
 }
 
 
+
 .content-trending-detail-text h1, .content-trending-detail-text h2, .content-trending-detail-text h3, .content-trending-detail-text h4 {
     font-size: 1.1rem;
+}
+
+.content-trending-detail-text > div.position-relative{
+  margin-left: 5px;
 }

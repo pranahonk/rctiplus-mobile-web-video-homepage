@@ -333,27 +333,29 @@ class Exclusive extends React.Component {
 	}
 
 	render() {
+		const seoSitemap = SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`]
 		return (
-			<Layout title={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].title}>
+			<Layout title={seoSitemap?.title}>
 				<Head>
-					<meta name="description" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].description}/>
-					<meta name="keywords" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].keywords}/>
-					<meta property="og:title" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].title} />
-					<meta property="og:description" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].description} />
-					<meta property="og:image" itemProp="image" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].image} />
+					<meta name="description" content={seoSitemap?.description}/>
+					<meta name="keywords" content={seoSitemap?.keywords}/>
+					<meta property="og:title" content={seoSitemap?.title} />
+					<meta property="og:description" content={seoSitemap?.description} />
+					<meta property="og:image" itemProp="image" content={seoSitemap?.image} />
 					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
 					<meta property="og:image:height" content="315" />
 					<meta property="og:site_name" content={SITE_NAME} />
+					<meta property="og:type" content="article" />
 					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
 					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
 					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-					<meta name="twitter:image" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].image} />
-					<meta name="twitter:image:alt" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].title} />
-					<meta name="twitter:title" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].title} />
-					<meta name="twitter:description" content={SITEMAP[`exclusive_${this.props.category ? this.props.category.replace(/ |-+/g, '_').toLowerCase() : 'all'}`].description} />
+					<meta name="twitter:image" content={seoSitemap?.image} />
+					<meta name="twitter:image:alt" content="Exclusive RCTIPlus" />
+					<meta name="twitter:title" content={seoSitemap?.title} />
+					<meta name="twitter:description" content={seoSitemap?.description} />
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
