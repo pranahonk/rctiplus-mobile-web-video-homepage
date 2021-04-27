@@ -53,10 +53,6 @@ class Trending_v2 extends React.Component {
 
     static async getInitialProps(ctx) {
         // console.log(isEmpty(ctx.query))
-        console.log(ctx.query.id);
-        if(ctx.query.id, ctx.query.title, ctx.query.category){
-          ctx.res.redirect('/news/detail/' + ctx.query.category + '/' + ctx.query.id + '/' + ctx.query.title + '/isRedirect');
-        }
         const queryId = isEmpty(ctx.query) ? 15 : ctx.query.subcategory_id
         const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
          if (response_visitor.statusCode === 200) {
@@ -344,6 +340,10 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
+        if(this.props.query.category && this.props.query.id && this.props.query.title){
+          Router.push('/news/detail/' + this.props.query.category + '/' + this.props.query.id + '/' + this.props.query.title)
+        }
+
         if (this.accessToken !== null &&  this.accessToken !== undefined) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
