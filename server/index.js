@@ -177,17 +177,11 @@ const UIVersion = '2.0';
     });
 
     server.get('/news/detail/:category/:id/:title', (req, res, next) => {
-        res.redirect('/news')
-        return app.render(req, res, '/trending/detail_v2', {
+      return app.render(req, res, '/trending/detail_v2', {
         id: req.params.id,
         title: req.params.title,
         category: req.params.category,
-      });
-      // return app.render(req, res, '/trending/detail_v2', {
-      //   id: req.params.id,
-      //   title: req.params.title,
-      //   category: req.params.category,
-      // })
+      })
     });
 
     server.get('/news/search', (req, res) => {
