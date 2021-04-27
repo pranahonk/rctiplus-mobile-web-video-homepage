@@ -162,6 +162,7 @@ class Trending_v2 extends React.Component {
         user_data: null,
         sticky_category_shown: false,
         section: 1,
+        is_ads_rendered: false,
     };
 
     constructor(props) {
@@ -718,24 +719,38 @@ class Trending_v2 extends React.Component {
                                                                 (<>
                                                                     <li className="listItems" key={j + article.title}>
                                                                         <ListGroup className="groupNews">
-                                                                            <ListGroupItem className="">
+                                                                            <ListGroupItem className={`listNewsAdds ${!this.state.is_ads_rendered ? 'blank-space' : ''}`}>
                                                                                 <iframe
-                                                                                onLoad={() => {
-                                                                                  window.addEventListener('scroll', () => {
-                                                                                    const adsFrame = document.getElementById(article.id);
-                                                                                    const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
-                                                                                    const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
-                                                                                    const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
-                                                                                    if(adsFrame.contentWindow.document && iframeAdsID){
-                                                                                      adsFrame.style.display = 'block'
+                                                                                  onLoad={() => {
 
-                                                                                    }else if(element && element.style.display === 'none' || element_2 || !element){
-                                                                                      adsFrame.style.display = 'none'
-                                                                                    }else{
-                                                                                      adsFrame.style.display = 'none'
-                                                                                    }
-                                                                                  })
-                                                                                }}
+                                                                                    window.addEventListener('scroll', () => {
+
+                                                                                      const adsFrame = document.getElementById(article.id);
+
+                                                                                      const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
+
+                                                                                      const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
+
+                                                                                      const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
+
+                                                                                      if(adsFrame.contentWindow.document && iframeAdsID){
+                                                                                        adsFrame.style.display = 'block';
+
+                                                                                        this.setState({
+
+                                                                                          is_ads_rendered: true,
+
+                                                                                        })
+
+
+                                                                                      }else if(element && element.style.display === 'none' || element_2 || !element){
+                                                                                        adsFrame.style.display = 'none';
+
+                                                                                      }else{
+                                                                                        adsFrame.style.display = 'none';
+                                                                                      }
+                                                                                    })
+                                                                                  }}
                                                                                 id={article.id} src={`/dfp?platform=${this.platform}`}
                                                                                 frameBorder="0"
                                                                                 style={{
@@ -748,7 +763,7 @@ class Trending_v2 extends React.Component {
                                                                         </ListGroup>
                                                                     </li>
                                                                     </>
-                                                                )  : 
+                                                                )  :
                                                                 (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
                                                                     <SquareItem item={article}/>
                                                                 </ListGroupItem>)
