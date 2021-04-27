@@ -32,7 +32,7 @@ import '../assets/scss/components/trending_v2.scss';
 
 import newsv2Actions from '../redux/actions/newsv2Actions';
 import userActions from '../redux/actions/userActions';
-import { showSignInAlert, humanizeStr, imageNews, imagePath } from '../utils/helpers';
+import { showSignInAlert, humanizeStr, imageNews, imagePath, readMore } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
 // import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
@@ -162,6 +162,7 @@ class Trending_v2 extends React.Component {
         user_data: null,
         sticky_category_shown: false,
         section: 1,
+        is_ads_rendered: false,
     };
 
     constructor(props) {
@@ -721,24 +722,38 @@ class Trending_v2 extends React.Component {
                                                             return(((j+1) % 7  === 0) ?
                                                                 (<li className="listItems" key={j + article.title}>
                                                                         <ListGroup className="groupNews">
-                                                                            <ListGroupItem className="">
+                                                                            <ListGroupItem className={`listNewsAdds ${!this.state.is_ads_rendered ? 'blank-space' : ''}`}>
                                                                                 <iframe
-                                                                                onLoad={() => {
-                                                                                  window.addEventListener('scroll', () => {
-                                                                                    const adsFrame = document.getElementById(article.id);
-                                                                                    const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
-                                                                                    const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
-                                                                                    const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
-                                                                                    if(adsFrame.contentWindow.document && iframeAdsID){
-                                                                                      adsFrame.style.display = 'block'
+                                                                                  onLoad={() => {
 
-                                                                                    }else if(element && element.style.display === 'none' || element_2 || !element){
-                                                                                      adsFrame.style.display = 'none'
-                                                                                    }else{
-                                                                                      adsFrame.style.display = 'none'
-                                                                                    }
-                                                                                  })
-                                                                                }}
+                                                                                    window.addEventListener('scroll', () => {
+
+                                                                                      const adsFrame = document.getElementById(article.id);
+
+                                                                                      const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
+
+                                                                                      const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
+
+                                                                                      const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
+
+                                                                                      if(adsFrame.contentWindow.document && iframeAdsID){
+                                                                                        adsFrame.style.display = 'block';
+
+                                                                                        this.setState({
+
+                                                                                          is_ads_rendered: true,
+
+                                                                                        })
+
+
+                                                                                      }else if(element && element.style.display === 'none' || element_2 || !element){
+                                                                                        adsFrame.style.display = 'none';
+
+                                                                                      }else{
+                                                                                        adsFrame.style.display = 'none';
+                                                                                      }
+                                                                                    })
+                                                                                  }}
                                                                                 id={article.id} src={`/dfp?platform=${this.platform}`}
                                                                                 frameBorder="0"
                                                                                 style={{
@@ -757,6 +772,7 @@ class Trending_v2 extends React.Component {
                                                                                         </div>
                                                                                         <div className="article-title-container">
                                                                                             <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
+                                                                                            <p style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: readMore(article.content) }}></p>
                                                                                             <div className="article-source">
                                                                                                 <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
                                                                                                 <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
@@ -791,3 +807,4 @@ export default connect(state => state, {
     ...newsv2Actions,
     ...userActions,
 })(withRouter(Trending_v2));
+

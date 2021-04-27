@@ -36,7 +36,7 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
     }
   }
   return(
-    <div className="list_tags_thumb">
+    <div className={`list_tags_thumb ${indexKey%2 == 0 ? '' : 'tagsItems'}`}>
       <div className="lt_img">
           <div className="lt_img_wrap">
             <a onClick={(e) => {

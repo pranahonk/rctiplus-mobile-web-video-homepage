@@ -237,3 +237,9 @@ export const imagePath = (source, staticUrl, size = 200, assetsUrl, imgDefault) 
     const imgUrl = imgURL(source, staticUrl, size, assetsUrl, imgDefault);
     return imgUrl;
 }
+
+export const readMore = (content) => {
+    let paragraph = content.split('<p>')
+    paragraph = paragraph.length > 1 ? paragraph[1] : paragraph[0]
+    return paragraph.substring(0, 200).replace(/<\/?[^>]+(>|$)/g, "") + "...."
+}
