@@ -341,6 +341,10 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
+        if(this.props.query.category && this.props.query.id && this.props.query.title){
+          Router.push('/news/detail/' + this.props.query.category + '/' + this.props.query.id + '/' + this.props.query.title)
+        }
+
         if (this.accessToken !== null &&  this.accessToken !== undefined) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {

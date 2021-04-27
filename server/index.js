@@ -63,8 +63,8 @@ const UIVersion = '2.0';
     });
 
     server.get('/programs/:id/:title/:content_type?/:content_id?/:content_title?/:tab?', (req, res) => {
-      return app.render(req, res, '/programs', { 
-        id: req.params.id, 
+      return app.render(req, res, '/programs', {
+        id: req.params.id,
         title: req.params.title,
         tab: req.params.tab,
         content_type: req.params.content_type,
@@ -75,12 +75,12 @@ const UIVersion = '2.0';
 
 
     server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
-      return app.render(req, res, '/detail/content', { 
-        id: req.params.id, 
+      return app.render(req, res, '/detail/content', {
+        id: req.params.id,
         title: req.params.title,
         type: req.params.content_type,
         content_id: req.params.content_id,
-        content_title: req.params.content_title 
+        content_title: req.params.content_title
       });
     });
 
@@ -176,7 +176,16 @@ const UIVersion = '2.0';
       })
     });
 
-    server.get('/news/detail/:category/:id/:title', (req, res) => {
+    server.get('/news/detail/:category/:id/:title', (req, res, next) => {
+      console.log(req.originalUrl.includes('utm_source'))
+      console.log(req.originalUrl);
+      if(req.originalUrl.includes('utm_source')){
+        return app.render(req, res, '/news', {
+          id: req.params.id,
+          title: req.params.title,
+          category: req.params.category,
+        })
+      }
       return app.render(req, res, '/trending/detail_v2', {
         id: req.params.id,
         title: req.params.title,
@@ -203,7 +212,7 @@ const UIVersion = '2.0';
     //     subcategory_title: req.params.subcategory_title
     //   });
     // });
-    
+
     // server.get('/trending/detail/:id/:title', (req, res) => {
     //   return app.render(req, res, '/trending/detail', {
     //     id: req.params.id,
@@ -304,7 +313,7 @@ const UIVersion = '2.0';
       return handle(req, res);
     });
 
-    
+
 
     server.listen(port, err => {
       if (err) {
