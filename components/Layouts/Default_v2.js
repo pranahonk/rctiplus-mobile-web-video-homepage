@@ -56,9 +56,6 @@ class Default_v2 extends React.Component {
 
     componentDidMount() {
         this.props.initializeFirebase();
-        // identify appier
-        qg('identify', {user_id: getUidAppier()});
-        // end identify appier
         // console.log('User added to home screen');
         if(!Cookie.get('uid_ads')) {
             Cookie.set('uid_ads', new DeviceUUID().get())
@@ -227,7 +224,7 @@ class Default_v2 extends React.Component {
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
                 {/* <!-- DO NOT touch the following DIV --> */}
-                  {MODE === 'DEVELOPMENT' ? (
+                  {/* {MODE === 'DEVELOPMENT' ? (
                     <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
                     !function(q,g,r,a,p,h,js) {
                         if(q.qg)return;
@@ -251,7 +248,18 @@ class Default_v2 extends React.Component {
                         h.parentNode.insertBefore(p,h);
                     } (window,document,'script','https://cdn.qgr.ph/qgraph.3be8515a1c2359442dfd.js');
                 ` }}></script>
-                )}
+                )} */}
+                <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
+                    !function(q,g,r,a,p,h,js) {
+                        if(q.qg)return;
+                        js = q.qg = function() {
+                        js.callmethod ? js.callmethod.call(js, arguments) : js.queue.push(arguments);
+                        };
+                        js.queue = [];
+                        p=g.createElement(r);p.async=!0;p.src=a;h=g.getElementsByTagName(r)[0];
+                        h.parentNode.insertBefore(p,h);
+                    } (window,document,'script','https://cdn.qgr.ph/qgraph.3be8515a1c2359442dfd.js');
+                ` }}></script>
 
                 {this.props.pages.loading ? (
                     <div className={'default-loader ' + (this.props.pages.fade ? 'loader-fade' : '')}>

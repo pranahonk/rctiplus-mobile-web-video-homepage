@@ -20,7 +20,7 @@ class Stories extends React.Component {
             stories: [],
             resolution: RESOLUTION_IMG,
             page: 1,
-            length: 4,
+            length: 6,
             totalLength: 0,
             loading: false,
             endpage: false,
@@ -34,6 +34,7 @@ class Stories extends React.Component {
             this.setState({
                 zuckJS: require('../../../assets/js/zuck')
             }, () => {
+
                 this.props.getStoriesCategory(this.state.page, this.state.length, this.props.id)
                 .then(() => {
                     const timelines = [];
@@ -41,10 +42,6 @@ class Stories extends React.Component {
                     const stories = this.props.stories.data;
                     for (const story of stories) {
                         timelines.push(this.buildTimeline(story));
-
-                        if (story.gpt.length >= 1) {
-                            timelines.push(this.buildStoryGPT(story.gpt));
-                        }
                     }
 
                     let currentLength = this.state.totalLength + this.props.stories.data.length;
@@ -55,8 +52,8 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
-                            backButton: false,
-                            backNative: true,
+                            backButton: true,
+                            backNative: false,
                             previousTap: true,
                             skin: currentSkin['name'],
                             autoFullScreen: currentSkin['params']['autoFullScreen'],
@@ -171,10 +168,6 @@ class Stories extends React.Component {
                     const stories = this.props.stories.data;
                     for (const story of stories) {
                         timelines.push(this.buildTimeline(story));
-
-                        if (story.gpt.length >= 1) {
-                            timelines.push(this.buildStoryGPT(story.gpt));
-                        }
                     }
 
                     let currentLength = this.state.totalLength + this.props.stories.data.length;
@@ -185,8 +178,8 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
-                            backButton: false,
-                            backNative: true,
+                            backButton: true,
+                            backNative: false,
                             previousTap: true,
                             skin: currentSkin['name'],
                             autoFullScreen: currentSkin['params']['autoFullScreen'],
@@ -380,6 +373,7 @@ class Stories extends React.Component {
         };
     }
 
+    
     buildTimeline = (story) => {
         const items = [];
 
@@ -498,7 +492,7 @@ class Stories extends React.Component {
         const scrollOffset = totalStoriesW - screenW;
 
         if (document.getElementById('stories-react').scrollLeft >= scrollOffset) {
-            this.loadMore();
+            this.loadMore()
         }
     }
 
@@ -507,11 +501,12 @@ class Stories extends React.Component {
             let page = this.state.page + 1;
 			this.setState({ loading: true }, () => {
                 this.props.loadingBar && this.props.loadingBar.continuousStart();
-                if (this.props.homepage) {
+                
+                if (this.props.homepage) {  
                     this.props.getStories(page, this.state.length)
                     .then(() => {
-                        const buildedStories = [];
-                        const newStories = this.props.stories.data;
+                    const buildedStories = [];
+                    const newStories = this.props.stories.data;
 
                         for (const story of newStories) {
                             buildedStories.push(this.buildTimeline(story));
@@ -524,16 +519,17 @@ class Stories extends React.Component {
                         const seen = [];
                         const notseen = [];
 
-                        /* for (const story of this.state.stories) {
-                            if (story.seen) {
-                                seen.push({...story});
-                            } else {
-                                notseen.push({...story});
-                            }
-                        } */
+                        // for (const story of this.state.stories) {
+                        //     if (story.seen) {
+                        //         seen.push({...story});
+                        //     } else {
+                        //         notseen.push({...story});
+                        //     }
+                        // } 
 
                         for (let i = 0; i < this.state.stories.length; i++) {
                             const story = {...this.state.stories[i]};
+                            console.log(`ini data story`, story)
                             if (story.name.includes('ads')) {
                                 const [str, storyParentId] = story.name.split('_');
                                 if (this.state.stories[storyParentId].seen) {
@@ -543,7 +539,7 @@ class Stories extends React.Component {
                             if (story.seen) {
                                 seen.push({...story});
                             } else {
-                                notSeen.push({...story});
+                                notseen.push({...story});
                             }
                         }
 
@@ -559,7 +555,8 @@ class Stories extends React.Component {
                         this.props.loadingBar && this.props.loadingBar.complete();
                     });
                 } else if (this.props.detailCategory) {
-                    this.props.getStoriesCategory(page, this.state.length)
+                    console.log(`ini dariii category`, this.props.detailCategory)
+                    this.props.getStoriesCategory(page, this.state.length, this.props.id)
                     .then(() => {
                         const buildedStories = [];
                         const newStories = this.props.stories.data;
@@ -575,14 +572,6 @@ class Stories extends React.Component {
                         const seen = [];
                         const notseen = [];
 
-                        /* for (const story of this.state.stories) {
-                            if (story.seen) {
-                                seen.push({...story});
-                            } else {
-                                notseen.push({...story});
-                            }
-                        } */
-
                         for (let i = 0; i < this.state.stories.length; i++) {
                             const story = {...this.state.stories[i]};
                             if (story.name.includes('ads')) {
@@ -594,7 +583,7 @@ class Stories extends React.Component {
                             if (story.seen) {
                                 seen.push({...story});
                             } else {
-                                notSeen.push({...story});
+                                notseen.push({...story});
                             }
                         }
 
@@ -615,7 +604,7 @@ class Stories extends React.Component {
     }
 
     render() {
-
+        console.log(`ini adalah storiesss`, this.state.stories);
         const timelineItems = []
         this.state.stories.forEach((story, storyId) => {
             const storyItems = [];
@@ -650,6 +639,7 @@ class Stories extends React.Component {
                     </ul>
                 </div>
             );
+            
         });
 
         return (
@@ -674,4 +664,4 @@ class Stories extends React.Component {
     }
 }
 
-export default connect(state => state, storiesActions)(Stories);
+export default connect(state => state, storiesActions, )(Stories);

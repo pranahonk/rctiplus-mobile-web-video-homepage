@@ -54,6 +54,7 @@ class Index extends React.Component {
   static async getInitialProps(ctx) {
     // console.log('on server')
     const programId = ctx.query.id;
+    console.log(`ini program id`, programId)
     const accessToken = getCookie('ACCESS_TOKEN');
     const res = await fetch(`${DEV_API}/api/v1/program/${programId}/detail`, {
         method: 'GET',
@@ -730,6 +731,8 @@ class Index extends React.Component {
   // }
   render() {
     const { props, state } = this;
+    const content = props.seo_content_detail?.data
+   
     return (
       <Layout>
         <HeadMeta data={props.seo_content}
@@ -741,10 +744,13 @@ class Index extends React.Component {
           <div style={ props.router.query.content_id && this.refMainContent !== null ? {
             overflowX: 'hidden',
             overflowY: 'scroll'
-          }
-            : {height: 'auto'} }>
-            <div className="title-player">{props.data["data-player"]?.data?.program_title}</div>
-            <div style={{marginTop:"10px"}} className="action__button--wrapper">
+          } : {height: 'auto'} }>
+
+            {props.seo_content_detail && 
+              <div className="title-player">{content?.episode ? <span>{`E${(content?.episode < 10 ? '0'+content?.episode : ''+content?.episode).slice(0)}:S${(content?.season < 10 ? '0'+content?.season : ''+content?.season).slice(0)} - ${content?.title}`}</span> : <span>{content?.title}</span> }</div>
+            }
+
+            <div className="action__button--wrapper">
                 <ActionMenu
                   onRate={this.toggleRateModal.bind(this)}
                   bookmark={props.data && props.data.bookmark}

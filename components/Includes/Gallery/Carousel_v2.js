@@ -20,6 +20,8 @@ class Crs_v2 extends Component {
     }
 
     componentDidMount() {
+        console.log(`ini data dari home category`, this.props.data);
+        console.log(`ini data dari home page`, this.props.contents)
         if(this.props.detailCategory){
             this.setState({
                 banner: this.props.data.banner,
@@ -66,6 +68,7 @@ class Crs_v2 extends Component {
     }
 
     render() {
+        console.log(`ini banner yang mau di looping`, this.state.banner)
         return (
                 <div style={{ 
                     position: 'relative', 
@@ -104,7 +107,7 @@ class Crs_v2 extends Component {
                             ))}
                     </Carousel>
                     {this.props.children}
-                    <div style={{ position: 'absolute', bottom: "-2px", backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 0%,#282828)', width: '100%', height: 200 }}></div>
+                    <div style={{ position: 'absolute', bottom: "-2px", backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 0%,#282828)', width: '100%', height: 135 }}></div>
                 </div>
                 );
     }

@@ -82,7 +82,7 @@ export const PanelEpisode = forwardRef((props, ref) => {
                 </Link>
               </div>
               <div className="thumb-detail__content">
-                <h3>{ `E${('0'+item.episode).slice(-2)}:S${('0'+item.season).slice(-2)} ${item.title}` }</h3>
+                <h3>{ `E${(item.episode < 10 ? '0'+item.episode : ''+item.episode).slice(0)}:S${(item.season < 10 ? '0'+item.season : ''+item.season).slice(0)} ${item.title}` }</h3>
                 <div className="action-button__content ">
                   { bookmark(props.bookmark && props.bookmark.data, item, 'episode', props, 'content_bookmark') }
                   <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
@@ -99,14 +99,8 @@ export const PanelEpisode = forwardRef((props, ref) => {
             );
           }) }
         </div>
-        { props.enableShowMore.isLoading ? (<TabPanelLoader />) : null
-        // props.enableShowMore.isNext ? (
-          
-        //   <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-        //     <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-        //   </div>
-        // ) : '' 
-        }
+
+        {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
       </TabPane>
   );
 });
@@ -165,13 +159,8 @@ export const PanelExtra = (props) => {
           );
         }) }
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : null
-      // props.enableShowMore.isNext ? (
-      //   <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-      //     <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-      //   </div>
-      // ) : ''
-      }
+
+      {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
   );
 };
@@ -230,13 +219,8 @@ export const PanelClip = (props) => {
           );
         }) }
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : null
-      // props.enableShowMore.isNext ? (
-      //   <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-      //     <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-      //   </div>
-      // ) : ''
-      }
+
+     {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
   );
 };
@@ -267,11 +251,12 @@ export const PanelPhoto = (props) => {
           </div>
         </div>
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
+      {/* {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
         <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
           <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
         </div>
-      ) : ''}
+      ) : ''} */}
+      {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
   );
 };
