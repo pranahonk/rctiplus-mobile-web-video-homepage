@@ -180,11 +180,7 @@ const UIVersion = '2.0';
       console.log(req.originalUrl.includes('utm_source'))
       console.log(req.originalUrl);
       if(req.originalUrl.includes('utm_source')){
-        return app.render(req, res, '/news', {
-          id: req.params.id,
-          title: req.params.title,
-          category: req.params.category,
-        })
+        return app.redirect('/news');
       }
       return app.render(req, res, '/trending/detail_v2', {
         id: req.params.id,
