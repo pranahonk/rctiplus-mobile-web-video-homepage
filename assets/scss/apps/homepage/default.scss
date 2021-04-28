@@ -738,7 +738,56 @@ h5 {
       margin: 0;
   }
 
-  @media (min-width: 750px) and (max-width: 1024px) {
+@media (min-width: 750px) and (max-width: 1024px) {
+    .wrapper .nav-home-container-v2 {
+        .middle-top {
+            width: auto;
+            position: relative;
+            float: right;
+            padding: 1rem 0 0;
+            .search-input {
+                border-radius: 0;
+                padding: 0;
+                margin: 0;
+                line-height: normal;
+                display: block;
+                background-color: transparent;
+                .search-input-placeholder {
+                    display: none;
+                }
+            }
+        }
+    
+        .nav-container {
+            display: table;
+            width: 100%;
+            margin: auto;
+            &:after {
+                content: '';
+                display: block;
+                clear: both;
+                margin: 0;
+            }
+        }
+    }
+
+    .sticky-menu-category-active.false {
+        margin-top: 11rem !important;
+    }
+
+    .main-content {
+        margin-top: 4.5rem !important;
+        .navigation-container.sticky-menu-category {
+            top: 3.1rem !important;
+        }
+    }
+
+    .nav-menu-container {
+        float: left;
+        max-width: 75%;
+        padding: 0.5rem 0 0;
+    }
+
     .tab-content {
         .headline-carousel {
             max-width: 50%;
@@ -896,5 +945,62 @@ h5 {
         max-width: 50%;
         margin: auto;
         display: block;
+    }
+    .news-interest_wrapper {
+        .news-interest_tags li > span, .news-interest_tags li > a {
+            font-size: 1.2rem;
+        }
+    
+        .news-interest_thumbnail-wrapper .news-interest_thumbnail-title {
+            height: auto;
+            h1 {
+                font-size: 0.8rem;
+                margin-bottom: 0.5rem;
+            }
+            h2 {
+                font-size: 0.8rem;
+            }
+        }
+    }
+
+    .list_tags_wrapper {
+        .list_tags_thumb {
+            width: 48%;
+            float: left;
+            display: block;
+            margin-bottom: 1rem;
+            &.tagsItems {
+                float: right;
+                &:after {
+                    clear: right;
+                }
+            }
+            .lt_img {
+                width: 100%;
+                display: block;
+                min-height: 13rem !important;
+                height: auto !important;
+            }
+            .lt_content {
+                padding: 0;
+                width: auto;
+                display: block;
+                h2 {
+                    font-size: 1.4rem !important;
+                    overflow: hidden;
+                    max-height: 6rem;
+                    min-height: 6rem;
+                    line-height: 2rem !important;
+                }
+                a {
+                    display: block;
+                    margin: 1rem 0 0;
+                    height: auto !important;
+                }
+            }
+        }
+        .item_square-wrapper {
+            padding: 2rem;
+        }
     }
 }
