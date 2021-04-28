@@ -428,9 +428,12 @@
             font-size: 1rem !important;
         }
         
-        .content-trending-detail-related .related-title {
-            font-size: 1.3rem;
-            padding: 1rem 2rem 0.2rem;
+        .content-trending-detail-related {
+            clear: both;
+            .related-title {
+                font-size: 1.3rem;
+                padding: 1rem 2rem 0.2rem;
+            }
         }
 
         .ads-banner__detail_news {
@@ -551,5 +554,11 @@
 
     .navbar-interest__topic h1 {
        font-size: 1.3rem !important;
+    }
+    .content-trending-detail .content-trending-detail-text p, .content-trending-detail .content-trending-detail-text span{
+        font-size: 1.3rem !important;
+    }
+    .sticky-share-button-viewed {
+        background-color: #282828 !important;
     }
 }
