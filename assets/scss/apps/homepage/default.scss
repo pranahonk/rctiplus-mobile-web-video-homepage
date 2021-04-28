@@ -899,4 +899,20 @@ h5 {
         margin: auto;
         display: block;
     }
+    .news-interest_wrapper {
+        .news-interest_tags li > span, .news-interest_tags li > a {
+            font-size: 1.2rem;
+        }
+    
+        .news-interest_thumbnail-wrapper .news-interest_thumbnail-title {
+            height: auto;
+            h1 {
+                font-size: 0.8rem;
+                margin-bottom: 0.5rem;
+            }
+            h2 {
+                font-size: 0.8rem;
+            }
+        }
+    }
 }
