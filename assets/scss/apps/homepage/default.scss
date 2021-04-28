@@ -739,8 +739,7 @@ h5 {
       margin: 0;
   }
 
-
-@media (min-width: 750px) and (max-width: 1024px) {
+  @media (min-width: 750px) and (max-width: 1024px) {
     .wrapper .nav-home-container-v2 {
         .middle-top {
             width: auto;
@@ -774,7 +773,8 @@ h5 {
     }
 
     .sticky-menu-category-active.false {
-        margin-top: 11rem !important;
+        // margin-top: 11rem !important;
+        margin-top: 7rem !important;
     }
 
     .main-content {
@@ -947,6 +947,7 @@ h5 {
         max-width: 50%;
         margin: auto;
         display: block;
+        height: auto;
     }
     .news-interest_wrapper {
         .news-interest_tags li > span, .news-interest_tags li > a {
@@ -1003,6 +1004,45 @@ h5 {
         }
         .item_square-wrapper {
             padding: 2rem;
+        }
+    }
+
+    .result-content {
+        .list_tags_thumb .lt_img {
+            width: 20rem;
+            height: 11rem;
+        }
+        .list_tags_thumb h2{
+            font-size: 1.3rem !important;
+            max-height: none;
+        }
+        .list_tags_thumb h5 {
+            font-size: 1.2rem !important;
+        }
+        .lt_content-info h6 {
+            font-size: 1.1rem !important;
+        }
+    }
+    .nav-search .middle-top .search-input {
+        font-size: 1.2rem !important;
+    }
+
+    .navbar-brand svg.MuiSvgIcon-root {
+        width: 2rem;
+        height: 2rem;
+    }
+    
+    .result-content {
+        padding: 2rem 1rem;
+        position: relative;
+        width: 100%;
+        display: block;
+        .list_tags_thumb {
+            padding-top: 0px;
+        }
+        .item_square-wrapper {
+            margin-bottom: 3rem;
+            padding: 0;
         }
     }
 }
