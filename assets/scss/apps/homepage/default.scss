@@ -741,6 +741,51 @@ h5 {
 
 
 @media (min-width: 750px) and (max-width: 1024px) {
+    .wrapper .nav-home-container-v2 {
+        .middle-top {
+            width: auto;
+            position: relative;
+            float: right;
+            padding: 1rem 0 0;
+            .search-input {
+                border-radius: 0;
+                padding: 0;
+                margin: 0;
+                line-height: normal;
+                display: block;
+                background-color: transparent;
+                .search-input-placeholder {
+                    display: none;
+                }
+            }
+        }
+    
+        .nav-container {
+            display: table;
+            width: 100%;
+            margin: auto;
+            &:after {
+                content: '';
+                display: block;
+                clear: both;
+                margin: 0;
+            }
+        }
+    }
+
+    .main-content {
+        margin-top: 4.5rem !important;
+        .navigation-container.sticky-menu-category {
+            top: 3.1rem !important;
+        }
+    }
+
+    .nav-menu-container {
+        float: left;
+        max-width: 75%;
+        padding: 0.5rem 0 0;
+    }
+
     .tab-content {
         .headline-carousel {
             max-width: 50%;

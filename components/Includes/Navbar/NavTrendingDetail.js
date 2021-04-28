@@ -69,6 +69,9 @@ class NavTrendingSearch extends Component {
                                     let platform = isIOS ? 'ios' : isAndroid ? 'android' : 'mweb';
                                     if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0) {
                                         newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
+                                        setTimeout(() => {
+                                            Router.back()
+                                        }, 1000)
                                     }
                                     // if (this.props.router.asPath.indexOf('utm_source') > -1) {
                                     //     let Isplatform = this.props.router.asPath.indexOf('RplusaOsApp') > -1 ? `?platform=${platform}` : '';
