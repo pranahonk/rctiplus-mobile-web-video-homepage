@@ -82,9 +82,9 @@ class Channels extends React.Component {
 
   async componentDidMount() {
     this.setState({
-      device_id: '716bda64-d656-4ba4-b79e-19dbab43c310',
+      device_id: new DeviceUUID().get(),
     });
-    const savedCategories = this.accessToken ? await this.props.getCategoryV2() : await this.props.getSelectedChannelsVisitor('716bda64-d656-4ba4-b79e-19dbab43c310');
+    const savedCategories = this.accessToken ? await this.props.getCategoryV2() : await this.props.getSelectedChannelsVisitor(new DeviceUUID().get());
     const savedCategoriesNews = savedCategories.data.data;
     console.log(this.accessToken);
     console.log(new DeviceUUID().get());
@@ -113,16 +113,17 @@ class Channels extends React.Component {
           });
         })
         .catch(error => {
-                    console.log(error);
+          console.log(error);
           this.setState({saved_categories: savedCategoriesNews}, () => {
             this.fetchData(savedCategoriesNews);
           });
           console.log(this.state.saved_categories);
-                });
-        }
+        });
+    }
     }
 
     fetchData(savedCategoriesNews, isLoggedIn = false) {
+      console.log(`is logged in: ${isLoggedIn}`);
 
       if(isLoggedIn){
         this.props.getChannelsv2()
@@ -148,16 +149,19 @@ class Channels extends React.Component {
       }else{
         this.props.getChannelsVisitor(this.state.device_id)
           .then(response => {
-            let channels = response.data.data;
+            let channels = response.data.data.filter(x => x.id !== 15 && x.id !== 12 && x.id !== 1);
+            console.log(`channels`);
+            console.log(channels);
             if (!isLoggedIn) {
               let savedChannels = savedCategoriesNews;
               console.log(savedChannels);
               for (let i = 0; i < channels.length; i++) {
-                if (savedChannels.findIndex(s => s.id == channels[i].id) != -1 || channels.id !== 15 || channels.id !== 12 || channels.id !== 1) {
+                if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
                   channels.splice(i, 1);
                   i--;
                 }
               }
+
             }
             console.log(channels);
 
@@ -308,18 +312,18 @@ class Channels extends React.Component {
                   let channels = this.state.channels;
                   channels.splice(index, 1);
 
-
-                  const categories = this.state.user_data || (this.accessToken && decodedToken.uid != '0') ? await this.props.getCategoryV2() : await this.props.getChannelsVisitor();
+                  const categories = this.state.user_data || (this.accessToken && decodedToken.uid != '0') ? await this.props.getCategoryV2() : await this.props.getSelectedChannelsVisitor(this.state.device_id);
                   console.log(categories);
                   console.log(this.state.user_data)
-                  console.log(this.accessToken)
+                  console.log(this.accessToken);
+                  this.fetchData(categories.data.data, this.state.user_data || (this.accessToken && decodedToken.uid != '0'))
 
-                  const categoriesFilter = categories.data.data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+                  // const categoriesFilter = categories.data.data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
 
                   this.setState({
                     channels: channels,
-                    categories: categoriesFilter,
+                    // categories: categoriesFilter,
                     active_tab: 'Edit Kanal'
                   }, () => {
 
