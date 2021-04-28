@@ -964,4 +964,45 @@ h5 {
             }
         }
     }
+
+    .list_tags_wrapper {
+        .list_tags_thumb {
+            width: 48%;
+            float: left;
+            display: block;
+            margin-bottom: 1rem;
+            &.tagsItems {
+                float: right;
+                &:after {
+                    clear: right;
+                }
+            }
+            .lt_img {
+                width: 100%;
+                display: block;
+                min-height: 13rem !important;
+                height: auto !important;
+            }
+            .lt_content {
+                padding: 0;
+                width: auto;
+                display: block;
+                h2 {
+                    font-size: 1.4rem !important;
+                    overflow: hidden;
+                    max-height: 6rem;
+                    min-height: 6rem;
+                    line-height: 2rem !important;
+                }
+                a {
+                    display: block;
+                    margin: 1rem 0 0;
+                    height: auto !important;
+                }
+            }
+        }
+        .item_square-wrapper {
+            padding: 2rem;
+        }
+    }
 }
