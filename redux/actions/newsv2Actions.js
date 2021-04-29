@@ -186,6 +186,28 @@ const deleteCategory = categoryId => {
         }
     });
 };
+const deleteCategoryVisitors = (categoryId, device_id) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.delete(`/v2/kanal/delete/${categoryId}`,{
+              data: {
+                device_id: device_id,
+              }
+            });
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
 
 const updateCategoryOrder = (categoryId, sorting) => {
     return () => new Promise(async (resolve, reject) => {
@@ -193,6 +215,29 @@ const updateCategoryOrder = (categoryId, sorting) => {
             const response = await axios.post(`/v1/update_kanal`, {
                 category: categoryId,
                 sorting: sorting
+            });
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
+const updateCategoryOrderVisitor = (categoryId, sorting, device_id) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v2/kanal/update`, {
+                category_id: categoryId,
+                sorting: sorting,
+                device_id: device_id
             });
             if (response.status === 200) {
                 resolve(response);
@@ -337,6 +382,44 @@ const getChannels = () => {
     return () => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/kanal`);
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
+const getChannelsVisitor = (device_id) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/kanal?visitor=${device_id}`);
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
+const getSelectedChannelsVisitor = (device_id) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/kanal/list?visitor=${device_id}`);
             if (response.status === 200) {
                 resolve(response);
             }
@@ -529,6 +612,27 @@ const incrementCountTag = tagName => {
     });
 };
 
+const addCategoryVisitorV2 = (categoryId, device_id) => {
+  return () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.post(`/v2/kanal/add`, {
+        category_id: categoryId,
+        device_id: device_id,
+        sorting: 1
+      });
+      if (response.status === 200) {
+        resolve(response);
+      } else {
+        removeAccessToken();
+        reject(response);
+      }
+    } catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+};
+
 const setSection = () => dispatch => dispatch({ type: "ADD_SECTION" })
 
 
@@ -548,6 +652,7 @@ export default {
     getArticle,
     getRelatedArticles,
     getChannels,
+    getChannelsVisitor,
     getPopularSearch,
     incrementCount,
     getTagTrending,
@@ -560,5 +665,9 @@ export default {
     incrementCountTag,
     readAlso,
     getSectionNews,
-    setSection
+    setSection,
+    addCategoryVisitorV2,
+    getSelectedChannelsVisitor,
+    updateCategoryOrderVisitor,
+    deleteCategoryVisitors,
 };
