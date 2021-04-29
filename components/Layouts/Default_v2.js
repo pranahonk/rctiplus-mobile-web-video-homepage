@@ -27,6 +27,7 @@ import '../../node_modules/videojs-ima/dist/videojs.ima.css';
 import '../../assets/scss/videojs.scss';
 
 import '../../assets/scss/apps/homepage/default.scss';
+import '../../assets/scss/responsive.scss';
 import Cookie from 'js-cookie';
 
 class Default_v2 extends React.Component {
