@@ -38,6 +38,13 @@
 
     .main-content {
         margin-top: 4.5rem !important;
+        .article-list .article .article-source .source {
+            font-size: 1rem;
+            + p {
+                font-size: 0.8rem;
+                line-height: 25px;
+            }
+        }
         .navigation-container {
             &.sticky-menu-category {
                 top: 3.1rem !important;
@@ -161,7 +168,7 @@
                             .source {
                                 font-size: 1rem;
                                 + p {
-                                    color: 0.9rem !important;
+                                    font-size: 0.9rem !important;
                                 }
                             }
                         }
@@ -212,7 +219,7 @@
             }
         }
         .caption .description {
-            color: #abe9ff;
+            font-size: 0.8rem !important;
         }
     }
     .list_tags_thumb .lt_content h2 {
@@ -341,8 +348,8 @@
         margin: auto !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
-        font-size: 1.6rem !important;
-        line-height: 2rem !important;
+        font-size: 2rem !important;
+        line-height: 2.6rem !important;
     }
     
     .content-trending-detail-create {
@@ -554,7 +561,9 @@
     .navbar-interest__topic h1 {
        font-size: 1.3rem !important;
     }
-    .content-trending-detail .content-trending-detail-text p, .content-trending-detail .content-trending-detail-text p span{
+    .content-trending-detail .content-trending-detail-text p,
+    .content-trending-detail .content-trending-detail-text p span,
+    .content-trending-detail .content-trending-detail-text .content-trending-detail-baca-content > span{
         font-size: 1.3rem !important;
     }
     .sticky-share-button-viewed {
