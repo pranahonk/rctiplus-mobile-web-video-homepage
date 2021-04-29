@@ -1,5 +1,4 @@
-
-  @media (min-width: 750px) and (max-width: 1024px) {
+@media (min-width: 750px) and (max-width: 1024px) {
     .wrapper .nav-home-container-v2 {
         .middle-top {
             width: auto;
@@ -155,6 +154,13 @@
                             display: block !important;
                             max-height: none;
                             padding: 1rem 0 0;
+                            font-size: 1rem;
+                        }
+                        .article-source {
+                            padding: 0.9rem 0;
+                            .source {
+                                font-size: 1rem;
+                            }
                         }
                     }
                     .article-title {
