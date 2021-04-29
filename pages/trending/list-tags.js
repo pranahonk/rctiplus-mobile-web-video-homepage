@@ -117,7 +117,7 @@ const ListTags = (props) => {
               ) : 
               props.contents.data_tag?.data?.map((item, index) => {
                 return (
-                  <SquareItem key={index + item.title} item={item} assets_url={props.contents.data_tag?.meta?.assets_url} />
+                  <SquareItem key={index + item.title} indexKey={index} item={item} assets_url={props.contents.data_tag?.meta?.assets_url} />
                 );
               })
             }
