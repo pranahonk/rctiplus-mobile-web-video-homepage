@@ -162,6 +162,7 @@ class Trending_v2 extends React.Component {
         sticky_category_shown: false,
         section: 1,
         is_ads_rendered: false,
+        device_id: null,
     };
 
     constructor(props) {
@@ -340,6 +341,9 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
+        this.setState({
+          device_id: new DeviceUUID().get(),
+        });
         if (this.accessToken !== null &&  this.accessToken !== undefined) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -380,7 +384,7 @@ class Trending_v2 extends React.Component {
         this.setState(params, () => {
             this.props.getCategoryV2()
                 .then(response => {
-                    let categories = response.data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
+                    let categories = response.data.data;
                     let sortedCategories = categories;
                     let savedCategories = savedCategoriesNews;
                     for (let i = 0; i < savedCategories.length; i++) {
@@ -400,6 +404,15 @@ class Trending_v2 extends React.Component {
                                 sortedCategories.push(savedCategories[i]);
                             }
                         }
+
+                        this.props.getSelectedChannelsVisitor(this.state.device_id)
+                          .then((res) =>{
+                            response = [...sortedCategories, ...res.data.data]
+                            sortedCategories = [...response]
+                          })
+                          .catch((err) =>{
+                              console.error(err)
+                          })
                     }
 
 
