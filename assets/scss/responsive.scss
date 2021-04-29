@@ -160,6 +160,9 @@
                             padding: 0.9rem 0;
                             .source {
                                 font-size: 1rem;
+                                + p {
+                                    color: 0.9rem !important;
+                                }
                             }
                         }
                     }
@@ -379,11 +382,22 @@
         
         .content-trending-detail-cover-container .content-trending-detail-cover {
             border-radius: 0px !important;
+            -moz-border-radius: 0px !important;
+            -khtml-border-radius: 0px !important;
+            -webkit-border-radius: 0px !important;
+            height: 27rem;
         }
         
-        div .content-trending-detail-text p, div .content-trending-detail-text{
-            font-size: 1.4rem !important;
-            line-height: 2.2rem!important;
+        div {
+            .content-trending-detail-text p, .content-trending-detail-text{
+                font-size: 1.4rem !important;
+                line-height: 2.2rem!important;
+            }
+
+            .content-trending-detail-text h5, .content-trending-detail-text h4, .content-trending-detail-text h3, .content-trending-detail-text h2, .content-trending-detail-text h1 {
+                font-size: 1.6rem;
+                line-height: 2rem;
+            }
         }
         
         .content-trending-detail-wrapper .content-trending-detail-cover-container + div + div {
@@ -540,10 +554,50 @@
     .navbar-interest__topic h1 {
        font-size: 1.3rem !important;
     }
-    .content-trending-detail .content-trending-detail-text p, .content-trending-detail .content-trending-detail-text span{
+    .content-trending-detail .content-trending-detail-text p, .content-trending-detail .content-trending-detail-text p span{
         font-size: 1.3rem !important;
     }
     .sticky-share-button-viewed {
         background-color: #282828 !important;
+    }
+
+    nav.nav-container.nav-shadow.navbar.navbar-expand-md {
+        padding: 0.8rem 2rem;
+    }
+
+    .channels-content {
+        margin-top: 6rem !important;
+        .navigation-tabs {
+            .active .item-link {
+                font-size: 1.4rem !important;
+            }
+            .navigation-tabs-item {
+                padding: 0 0 1.4rem !important;
+                .item-link {
+                    font-size: 1.4rem !important;
+                }
+            }
+        }
+        .tab-content .tab-pane {
+            .add-channel-list .list-group-item {
+                .text-container .list-group-item-heading {
+                    font-size: 1.3rem !important;
+                    margin-bottom: 0.6rem !important;
+                }
+                .text-container .list-group-item-text {
+                    font-size: 1.2rem !important;
+                    line-height: normal;
+                }
+                .button-container .add-button {
+                    padding: 1rem !important;
+                    height: auto !important;
+                    font-size: 1.4rem !important;
+                    margin: 2rem 0 0 !important;
+                }
+            }
+            .edit-channel-list .list-group-item .list-group-item-heading {
+                font-size: 1.4rem !important;
+            }
+        }
     }
 }
