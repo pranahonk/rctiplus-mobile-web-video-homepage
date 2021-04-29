@@ -18,6 +18,7 @@ import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 import NavBackIframe from '../../components/Includes/Navbar/NavIframe';
 import AdsBanner from '../../components/Includes/Banner/Ads';
 import '../../assets/scss/components/trending_detail.scss';
+import '../../assets/scss/responsive.scss';
 import NewsDetailContent from "../../components/Includes/news/NewsDetailContent"
 
 import { FacebookShareButton, TwitterShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
