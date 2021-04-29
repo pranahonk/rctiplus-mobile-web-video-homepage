@@ -9,6 +9,7 @@ import { getCookie, removeCookie } from '../../../utils/cookie';
 import { newsArticleBackClicked } from '../../../utils/appier';
 
 import '../../../assets/scss/components/navbar_trending_detail.scss';
+import '../../../assets/scss/responsive.scss';
 
 import { Navbar, NavbarBrand, Col, Row } from 'reactstrap';
 

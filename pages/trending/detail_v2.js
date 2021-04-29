@@ -20,6 +20,7 @@ const NavBack = loadable(() => import('../../components/Includes/Navbar/NavTrend
 const NavBackIframe = loadable(() => import('../../components/Includes/Navbar/NavIframe'))
 const AdsBanner = loadable(() => import('../../components/Includes/Banner/Ads'))
 import '../../assets/scss/components/trending_detail.scss';
+import '../../assets/scss/responsive.scss';
 import NewsDetailContent from "../../components/Includes/news/NewsDetailContent"
 
 import { FacebookShareButton, TwitterShareButton, LineShareButton, WhatsappShareButton } from 'react-share';
