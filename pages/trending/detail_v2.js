@@ -32,6 +32,7 @@ import { urlRegex } from '../../utils/regex';
 import { newsRelatedArticleClicked, newsOriginalArticleClicked, newsArticleShareClicked } from '../../utils/appier';
 import newsv2Actions from '../../redux/actions/newsv2Actions';
 import isEmpty from 'lodash/isEmpty'
+import isArray from 'lodash/isArray';
 
 // import ShareIcon from '@material-ui/icons/Share';
 
@@ -65,6 +66,24 @@ class Detail extends React.Component {
 
         const data_news = await response_news.json();
 
+        const general = await fetch(`${NEWS_API_V2}/api/v2/settings/general`, {
+            method: 'GET',
+            headers: {
+                'Authorization': data_news.data.news_token
+            }
+        });
+        let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
+        let gs = {};
+        const data_general = await general.json();
+        if (!gen_error_code && isArray(data_general.data) && data_general.data.length > 0){
+            const res_gs = data_general.data[0]
+            gs['site_name'] = res_gs.site_name
+            gs['fb_id'] = res_gs.fb_id
+            gs['twitter_creator'] = res_gs.twitter_creator
+            gs['twitter_site'] = res_gs.twitter_site
+            gs['img_logo'] = res_gs.img_logo
+        }
+
         const res = await fetch(`${NEWS_API_V2}/api/v2/news/${programId}?page1&pageSize=6`, {
             method: 'GET',
             headers: {
@@ -90,7 +109,19 @@ class Detail extends React.Component {
         if (error_code_read_also) {
             return { read_also: false };
         }
-        return { initial: data, props_id: programId, read_also: read_also };
+
+        let kanal = {}
+        if (data && data.data && data.data.subcategory_id) {
+            const subCategory = await fetch(`${NEWS_API_V2}/api/v1/subcategory/${data.data.subcategory_id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': data_news.data.news_token
+                }
+            });
+            let error_code_cat = subCategory.statusCode > 200 ? subCategory.statusCode : false;
+            kanal = !error_code_cat ? await subCategory.json() : {}
+        }
+        return { initial: data, props_id: programId, read_also: read_also, general: gs, kanal: kanal };
     }
 
     constructor(props) {
@@ -108,7 +139,9 @@ class Detail extends React.Component {
             listTagByNews: [],
             count: false,
             countLike: 0,
-            infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID
+            infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID,
+            relatedArticlePosition: null,
+            documentHeight: null,
         };
 
         // this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
@@ -151,10 +184,10 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
-        const {initial, router: {asPath = null}} = this.props;
-
-        if (asPath.split('/').length < 6) {
-            location.replace(`${SHARE_BASE_URL}/news/detail/${urlRegex(initial.subcategory_name)}/${initial.id}/${encodeURI(urlRegex(initial.title))}`);
+        const {initial: {data = null}, router: {asPath = null}} = this.props;
+        const condition = (!isEmpty(data) && !isEmpty(data.subcategory_name) && !isEmpty(data.title));
+        if ((asPath.split('/').length < 6) && condition) {
+            location.replace(`${SHARE_BASE_URL}/news/detail/${urlRegex(data.subcategory_name)}/${data.id}/${encodeURI(urlRegex(data.title))}`);
         }
 
         if(!Cookie.get('uid_ads')) {
@@ -193,6 +226,11 @@ class Detail extends React.Component {
             .catch(error => {
                 console.log(error);
             });
+        setTimeout(()=>{
+            this.setState({
+                documentHeight: document.documentElement.scrollHeight,
+            })
+        }, 750);
     }
 
     getRandom(arr, n) {
@@ -290,7 +328,7 @@ class Detail extends React.Component {
         const cdata = this.state.trending_detail_data;
         let hashtags = ['rcti', 'rctinews'];
         return (
-            <div className="sheet-action-button-container">
+            <div className="sheet-action-button-container" style={{padding: '10px 20px'}}>
               <div className="sheet-wrap-left">
                 <div onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#034ea1' }}>
                     {this.platform && this.platform == 'ios' ? (
@@ -418,12 +456,13 @@ class Detail extends React.Component {
                     <span>{this.state.countLike}</span>
                 </div>) : '' }
                 <div onClick={this.setLike.bind(this)} className="sheet-action-button" style={{ background: '#282828', margin: 0 }}>
-                    {this.state.isLike ?
-                     (<img src={`/share-icon/like.svg`} className="img-height" alt="like-image"/>) :
-                     (<img src={`/share-icon/unlike.svg`} className="img-height" alt="unlike-image"/>) }
+                    {/*{this.state.isLike ?*/}
+                    {/* (<img src={`/share-icon/like.svg`} className="img-height" alt="like-image"/>) :*/}
+                    {/* (<img src={`/share-icon/unlike.svg`} className="img-height" alt="unlike-image"/>) }*/}
+                    <img src={`/share-icon/like.svg`} className="img-height" alt="like-image"/>
                 </div>
                 <a className="sheet-wrap-link" onClick={this.newsArticleShareClicked.bind(this)} className="sheet-action-button" style={{ background: '#282828', marginLeft: 15 }}>
-                    <img src="/share-icon/share.svg" className="img-height" onClick={() => {
+                    <img src="/share-icon/share2.svg" className="img-height" onClick={() => {
                         const cdata = this.state.trending_detail_data;
                         if (this.platform && (this.platform == 'android')) {
                             window.AndroidShareHandler.action(URL_SHARE + UTM_NAME('trending', this.props.router.query.id, 'all', 'android'), cdata.title);
@@ -442,6 +481,16 @@ class Detail extends React.Component {
               </div>
             </div>
         );
+    }
+
+    shareButtonPosition = el =>{
+      window.addEventListener('scroll',()=>{
+        const position =  el.getBoundingClientRect().top + window.screen.height;
+        // console.log(position);
+        this.setState({
+          relatedArticlePosition: position,
+        });
+      });
     }
 
     render() {
@@ -463,9 +512,9 @@ class Detail extends React.Component {
         };
 
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
-        const newsTitle = cdata.title
+        const newsTitle = cdata.title.replace(/<\w+>|<\/\w+>/gmi, '');
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
-        const coverImg = imgURL(cdata.cover, cdata.image, 400, assets_url)
+        const coverImg = imgURL(cdata.cover, cdata.image, 400, assets_url, this.props?.general?.img_logo || null)
         const structuredData = {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
@@ -494,11 +543,11 @@ class Detail extends React.Component {
         const canonicalFullUrl = oneSegment['desktop'] + encodeURI(asPath).replace('trending/', 'news/');
 
         return (
-            <Layout title={`${newsTitle} - News+ on RCTI+`}>
+            <Layout title={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title}>
                 <Head>
-                    <meta name="title" content={`${newsTitle} - News+ on RCTI+`} />
-                    <meta name="keywords" content={newsTitle} />
-                    <meta name="description" content={newsContent} />
+                    <meta name="title" content={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title} />
+                    <meta name="keywords" content={newsTitle || this.props?.kanal?.keyword} />
+                    <meta name="description" content={newsContent || this.props?.kanal?.description} />
                     <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta property="og:description" content={newsContent} />
                     <meta property="og:image" itemProp="image" content={cdata.cover} />
@@ -507,11 +556,11 @@ class Detail extends React.Component {
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={SITE_NAME} />
-                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta property="og:site_name" content={this.props?.general?.site_name || SITE_NAME} />
+                    <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
-                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
-                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+                    <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
+                    <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
                     <meta name="twitter:image" content={cdata.cover} />
                     <meta name="twitter:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta name="twitter:image:alt" content={newsTitle} />
@@ -544,8 +593,13 @@ class Detail extends React.Component {
                     <Sticky bottomOffset={100}>
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
-                            {/* console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight) */}
-                            if (distanceFromTop < -650) {
+                            const hideStickyRatio = cdata.exclusive === 'yes' ?  570 : 950;
+                            // console.log(this.state.documentHeight)
+                            // const documentHeight = document.body.scrollHeight - 200;
+                            // console.log(hideStickyRatio)
+                            // console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight)
+                            if (this.state.relatedArticlePosition < 1400 && this.state.relatedArticlePosition > hideStickyRatio) {
+                                // console.log('masuk kondisi if A')
                                 setTimeout(() => {
                                     if (self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: false });
@@ -554,7 +608,36 @@ class Detail extends React.Component {
                                 }, 300);
                                 return <span></span>;
                             }
-                            if (distanceFromTop < -100) {
+                            if (this.state.relatedArticlePosition < hideStickyRatio && this.state.relatedArticlePosition) {
+                              // console.log('masuk kondisi if B+')
+                                setTimeout(() => {
+                                    if (!self.state.sticky_share_shown) {
+                                        self.setState({ sticky_share_shown: true });
+                                    }
+
+                                }, 300);
+                                return (
+                                    <div className={`sticky-share-button ${this.state.sticky_share_shown ? 'sticky-share-button-viewed' : ''}`}>
+                                        {this.renderActionButton(true)}
+                                    </div>
+                                );
+                            }
+                            if (this.state.relatedArticlePosition < this.state.documentHeight - 200 && distanceFromTop < -100 && this.state.relatedArticlePosition > 1400 && this.state.relatedArticlePosition) {
+                              // console.log('masuk kondisi if B')
+                                setTimeout(() => {
+                                    if (!self.state.sticky_share_shown) {
+                                        self.setState({ sticky_share_shown: true });
+                                    }
+
+                                }, 300);
+                                return (
+                                    <div className={`sticky-share-button ${this.state.sticky_share_shown ? 'sticky-share-button-viewed' : ''}`}>
+                                        {this.renderActionButton(true)}
+                                    </div>
+                                );
+                            }
+                            if (this.state.relatedArticlePosition < 950 && this.state.relatedArticlePosition) {
+                              // console.log('masuk kondisi if C')
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
@@ -568,6 +651,7 @@ class Detail extends React.Component {
                                 );
                             }
                             setTimeout(() => {
+                                // console.log('masuk kondisi if Default')
                                 if (self.state.sticky_share_shown) {
                                     self.setState({ sticky_share_shown: false });
                                 }
@@ -672,7 +756,7 @@ class Detail extends React.Component {
                                         {/* <span>partner: { cdata.source }</span> */}
                                     </div>
                                 ) }
-                                <div className="content-trending-detail-related">
+                                <div className="content-trending-detail-related" ref={this.shareButtonPosition}>
                                     <p className="related-title"><strong>Related Articles</strong></p>
                                     <div className="item_square-wrapper">
                                         {this.state.trending_related.map((item, index) => {

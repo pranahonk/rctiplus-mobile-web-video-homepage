@@ -93,10 +93,10 @@ export const showConfirmAlert = (text, title, callback, buttonInverse = false, c
     if (title) {
         options['title'] = title;
     }
-    
+
     Swal.fire(options)
         .then(result => {
-            let whichButton = result.value;  
+            let whichButton = result.value;
 
             if (buttonInverse) {
                 whichButton = !result.value;
@@ -151,7 +151,7 @@ export const showSignInAlert = (text, title, callback, buttonInverse = false, co
     if (title) {
         options['title'] = title;
     }
-    
+
     Swal.fire(options)
         .then(result => {
             if (result.value) {
@@ -186,7 +186,7 @@ export const getTruncate = (text = '', clamp = '...', length = 100) => {
 
     var tcText = text.slice(0, length - clamp.length);
     var last = tcText.length - 1;
-    
+
 
     while (last > 0 && tcText[last] !== ' ' && tcText[last] !== clamp[0]) last -= 1;
 
@@ -203,21 +203,23 @@ export const humanizeStr = (str) => {
     for (i=0; i<frags.length; i++) {
         frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
     }
- 
+
     return frags.join(' ');
 }
 
-export const imgURL = (source, staticUrl, size = 200, assetsUrl) => {
+export const imgURL = (source, staticUrl, size = 200, assetsUrl, imgDefault = null) => {
     const assets_url_check = !isEmpty(assetsUrl) && assetsUrl !== undefined
     const assets_url = assets_url_check ? assetsUrl : 'https://rstatic.akamaized.net/media/'
-    return !isEmpty(staticUrl) && staticUrl !== '-' && assets_url_check ? `${assets_url}${size}${staticUrl}` : source;
+    return !isEmpty(staticUrl) && staticUrl !== '-' && assets_url_check ? `${assets_url}${size}${staticUrl}` : (
+        imgDefault != null ? imgDefault : source
+    );
 }
 
 export const imageNews = (title, source, staticUrl, size = 200, assetsUrl, classCSS = 'thumbnail', rotation = 'landscape') => {
     const imgUrl = imgURL(source, staticUrl, size, assetsUrl);
     let width = size;
     let height = (width*56) / 100;
-    return <Img 
+    return <Img
         className={classCSS}
         alt={title}
         src={[
@@ -229,4 +231,15 @@ export const imageNews = (title, source, staticUrl, size = 200, assetsUrl, class
         loader={<img alt={title} className={classCSS} src={`/static/placeholders/placeholder_${rotation}.png`} />}
         unloader={<img alt={title} className={classCSS} src={`/static/placeholders/placeholder_${rotation}.png`} />}
     />;
+}
+
+export const imagePath = (source, staticUrl, size = 200, assetsUrl, imgDefault) => {
+    const imgUrl = imgURL(source, staticUrl, size, assetsUrl, imgDefault);
+    return imgUrl;
+}
+
+export const readMore = (content) => {
+    let paragraph = content.split('<p>')
+    paragraph = paragraph.length > 1 ? paragraph[1] : paragraph[0]
+    return paragraph.substring(0, 200).replace(/<\/?[^>]+(>|$)/g, "") + "...."
 }

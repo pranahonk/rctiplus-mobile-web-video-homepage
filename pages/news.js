@@ -33,7 +33,7 @@ import '../assets/scss/components/trending_v2.scss';
 import newsv2Actions from '../redux/actions/newsv2Actions';
 import newsv2KanalActions from '../redux/actions/newsv2KanalActions';
 import userActions from '../redux/actions/userActions';
-import { showSignInAlert, humanizeStr, imageNews } from '../utils/helpers';
+import { showSignInAlert, humanizeStr, imageNews, imagePath, readMore } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
 // import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
@@ -45,6 +45,7 @@ const SquareItem = dynamic(() => import('../components/Includes/news/SquareItem'
 import queryString from 'query-string';
 
 import isEmpty from 'lodash/isEmpty';
+import isArray from 'lodash/isArray';
 import remove from 'lodash/remove'
 
 const jwtDecode = require('jwt-decode');
@@ -108,10 +109,36 @@ class Trending_v2 extends React.Component {
             return item.id == queryId;
             });
         }
+
+        const general = await fetch(`${NEWS_API_V2}/api/v2/settings/general`, {
+            method: 'GET',
+            headers: {
+                'Authorization': data_news.data.news_token
+            }
+        });
+        let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
+        let gs = {};
+        const data_general = await general.json();
+        if (!gen_error_code && isArray(data_general.data) && data_general.data.length > 0){
+            const res_gs = data_general.data[0]
+            gs['site_name'] = res_gs.site_name
+            gs['fb_id'] = res_gs.fb_id
+            gs['twitter_creator'] = res_gs.twitter_creator
+            gs['twitter_site'] = res_gs.twitter_site
+            gs['img_logo'] = res_gs.img_logo
+        }
+
+        let newsData = {}
+        if (!error_code && isArray(data.data) && data.data.length > 0){
+            newsData = data.data[0]
+            newsData['cover'] = imagePath(newsData.cover, newsData.image, 600, data.meta.assets_url, gs['img_logo'])
+        }
         return {
-            query: ctx.query, metaOg: error_code ? {} : data.data[0],
+            query: ctx.query,
+            metaOg: newsData,
             data_category: error_code_category || error_code_kanal ? [] : dataCategory,
-            metaSeo: metaSeo[0] || {}
+            metaSeo: metaSeo[0] || {},
+            general: gs
         };
     }
 
@@ -134,6 +161,7 @@ class Trending_v2 extends React.Component {
         user_data: null,
         sticky_category_shown: false,
         section: 1,
+        is_ads_rendered: false,
         device_id: null,
     };
 
@@ -508,18 +536,18 @@ class Trending_v2 extends React.Component {
                     <meta name="keywords" content={this.props?.metaSeo?.keyword} />
                     <meta property="og:title" content={this.props.metaOg?.title || ''} />
                     <meta property="og:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
-                    <meta property="og:image" itemProp="image" content={this.props.metaOg?.cover|| ''} />
+                    <meta property="og:image" itemProp="image" content={this.props.metaOg?.cover || this.props?.general?.img_logo} />
                     <meta property="og:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={SITE_NAME} />
-                    <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
+                    <meta property="og:site_name" content={this.props?.general?.site_name || SITE_NAME} />
+                    <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
-                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
-                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-                    <meta name="twitter:image" content={this.props.metaOg?.cover|| ''} />
+                    <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
+                    <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
+                    <meta name="twitter:image" content={this.props.metaOg?.cover || this.props?.general?.img_logo} />
                     <meta name="twitter:image:alt" content={this.props.metaOg?.title || ''} />
                     <meta name="twitter:title" content={this.props.metaOg?.title || ''} />
                     <meta name="twitter:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
@@ -691,7 +719,7 @@ class Trending_v2 extends React.Component {
                                                                             </Link>
                                                                         </Col>
                                                                         );
-                                                                    })}
+                                                                    })};
                                                                 </Row>
                                                             </div>
                                                         </div>
@@ -699,10 +727,9 @@ class Trending_v2 extends React.Component {
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => {
                                                             return(((j+1) % 7  === 0) ?
-                                                                (<>
-                                                                    <li className="listItems" key={j + article.title}>
+                                                                (<li className="listItems" key={j + article.title}>
                                                                         <ListGroup className="groupNews">
-                                                                            <ListGroupItem className="">
+                                                                          <ListGroupItem className={`listNewsAdds ${!this.state.is_ads_rendered ? 'blank-space' : ''}`}>
                                                                                 <iframe
                                                                                 onLoad={() => {
                                                                                   window.addEventListener('scroll', () => {
@@ -711,12 +738,15 @@ class Trending_v2 extends React.Component {
                                                                                     const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
                                                                                     const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
                                                                                     if(adsFrame.contentWindow.document && iframeAdsID){
-                                                                                      adsFrame.style.display = 'block'
+                                                                                      adsFrame.style.display = 'block';
+                                                                                      this.setState({
+                                                                                        is_ads_rendered: true,
+                                                                                      })
 
                                                                                     }else if(element && element.style.display === 'none' || element_2 || !element){
-                                                                                      adsFrame.style.display = 'none'
+                                                                                      adsFrame.style.display = 'none';
                                                                                     }else{
-                                                                                      adsFrame.style.display = 'none'
+                                                                                      adsFrame.style.display = 'none';
                                                                                     }
                                                                                   })
                                                                                 }}
@@ -728,11 +758,27 @@ class Trending_v2 extends React.Component {
                                                                                   display: 'none',
                                                                                 }} />
                                                                             </ListGroupItem>
-                                                                            <SectionNews  article={article}/>
+                                                                            {
+                                                                                article && isArray(article.section) && article.section.length > 0 ? <SectionNews  article={article}/> : <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
+                                                                                    <div className="article-description">
+                                                                                        <div className="article-thumbnail-container-full-width">
+                                                                                            {
+                                                                                                imageNews(article.title, article.cover, article.image, 400, this.state.assets_url, 'article-thumbnail-full-width')
+                                                                                            }
+                                                                                        </div>
+                                                                                        <div className="article-title-container">
+                                                                                            <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
+                                                                                            <p style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: readMore(article.content) }}></p>
+                                                                                            <div className="article-source">
+                                                                                                <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
+                                                                                                <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </ListGroupItem>
+                                                                            }
                                                                         </ListGroup>
-                                                                    </li>
-                                                                    </>
-                                                                )  :
+                                                                </li>)  :
                                                                 (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
                                                                     <SquareItem item={article} assets_url={this.state.assets_url} />
                                                                 </ListGroupItem>)
