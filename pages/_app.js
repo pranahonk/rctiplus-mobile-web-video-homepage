@@ -7,6 +7,7 @@ import { setVisitorTokenNews, setNewsTokenV2, setNewsToken, setVisitorToken, get
 
 import 'sweetalert2/src/sweetalert2.scss';
 import '../assets/scss/apps/homepage/default.scss';
+import '../assets/scss/responsive.scss';
 
 import '../assets/scss/components/alert.scss';
 import queryString from 'query-string';
