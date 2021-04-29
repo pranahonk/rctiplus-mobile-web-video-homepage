@@ -162,6 +162,8 @@ class Trending_v2 extends React.Component {
         sticky_category_shown: false,
         section: 1,
         is_ads_rendered: false,
+        device_id: null,
+        not_logged_in_category: [],
     };
 
     constructor(props) {
@@ -329,7 +331,7 @@ class Trending_v2 extends React.Component {
         //     return (<div>lalala</div>)
         // }
     }
-    componentDidMount() {
+    async componentDidMount() {
         // window.addEventListener('scroll', (event) => {
         //     if(this.isInViewport(document.getElementById('9'))) {
         //         console.log('YESSS')
@@ -340,6 +342,19 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
+        await this.setState({
+          device_id: new DeviceUUID().get(),
+        });
+
+        await this.props.getSelectedChannelsVisitor(this.state.device_id)
+          .then((res) =>{
+            this.setState({
+              not_logged_in_category: res.data.data,
+            });
+          })
+          .catch((err) =>{
+            console.error(err)
+          })
         if (this.accessToken !== null &&  this.accessToken !== undefined) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -373,14 +388,15 @@ class Trending_v2 extends React.Component {
         // console.log($('#iframe-ads-1').contents().find($('div-gpt-ad-1591240670591-0')).css('display'))
     }
 
-    fetchData(isLoggedIn = false) {
+    async fetchData(isLoggedIn = false) {
+        console.log('masuk fetch data lagi')
         let params = {};
         const savedCategoriesNews = getNewsChannels();
         params['saved_tabs'] = savedCategoriesNews;
-        this.setState(params, () => {
+        await this.setState(params, () => {
             this.props.getCategoryV2()
                 .then(response => {
-                    let categories = response.data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
+                    let categories = response.data.data;
                     let sortedCategories = categories;
                     let savedCategories = savedCategoriesNews;
                     for (let i = 0; i < savedCategories.length; i++) {
@@ -400,6 +416,19 @@ class Trending_v2 extends React.Component {
                                 sortedCategories.push(savedCategories[i]);
                             }
                         }
+
+                      const notLoginResponse = [...sortedCategories, ...this.state.not_logged_in_category]
+                      sortedCategories = [...notLoginResponse].filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);;
+
+                       // this.props.getSelectedChannelsVisitor(this.state.device_id)
+                       //    .then((res) =>{
+                       //      response = [...sortedCategories, ...res.data.data]
+                       //       sortedCategories = [...response]
+                       //    })
+                       //    .catch((err) =>{
+                       //        console.error(err)
+                       //    })
+                        console.log(this.state.not_logged_in_category);
                     }
 
 
