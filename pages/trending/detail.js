@@ -11,6 +11,8 @@ import newsContentActions from '../../redux/actions/trending/content';
 import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavTrendingDetail';
 import '../../assets/scss/components/trending_detail.scss';
+import '../../assets/scss/responsive.scss';
+
 
 import { imageNews } from '../../utils/helpers';
 
