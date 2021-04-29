@@ -354,7 +354,7 @@ class Trending_v2 extends React.Component {
           })
           .catch((err) =>{
             console.error(err)
-          })
+          });
         if (this.accessToken !== null &&  this.accessToken !== undefined) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -375,7 +375,6 @@ class Trending_v2 extends React.Component {
                     this.fetchData();
                 });
         }
-
 
     }
 
@@ -417,7 +416,9 @@ class Trending_v2 extends React.Component {
                         }
 
                       const notLoginResponse = [...sortedCategories, ...this.state.not_logged_in_category]
-                      sortedCategories = [...notLoginResponse].filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);;
+                      this.getUpdate();
+                      sortedCategories = [...notLoginResponse].filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
+
 
                     }
 
@@ -527,6 +528,26 @@ class Trending_v2 extends React.Component {
                 ogImage: '',
                 ogDescription: '',
             }
+    }
+
+    getUpdate(){
+      setTimeout(()=>{
+         this.props.getSelectedChannelsVisitor(this.state.device_id)
+          .then((res) =>{
+            const data = res.data.data;
+            const tabs = this.state.tabs.filter(x => x.id === 15 || x.id === 12 || x.id === 1);
+            if(tabs.length !== data.length){
+              const combine  = [...tabs, ...data];
+              this.setState({
+                tabs: combine
+              })
+            }
+          })
+          .catch((err) =>{
+            console.error(err)
+          });
+
+      }, 2000)
     }
 
     render() {
