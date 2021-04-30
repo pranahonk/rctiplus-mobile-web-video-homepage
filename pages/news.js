@@ -376,7 +376,12 @@ class Trending_v2 extends React.Component {
                     this.fetchData();
                 });
         }
-        this.forceUpdateHandler();
+
+        if(window.performance.getEntriesByType("navigation")[0]){
+          if(window.performance.getEntriesByType("navigation")[0].type === "back_forward"){
+            this.forceUpdateHandler();
+          }
+        }
 
     }
 
