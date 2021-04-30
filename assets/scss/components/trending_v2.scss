@@ -66,10 +66,10 @@
                     border: transparent;
                 }
             }
-    
+
             .active {
                 border-bottom: 3px solid #fa262f;
-                
+
                 .item-link {
                     color: white;
                 }
@@ -110,7 +110,7 @@
         a:hover {
             text-decoration: none;
         }
-        
+
         .article {
             min-height: 120px;
             padding-left: 10px;
@@ -432,12 +432,12 @@
         position: relative;
         width: calc(100% - 10px);
         height: 154px;
-        margin: 10px;
+        margin: 17px 10px 10px 10px;
         border-radius: 10px;
         box-sizing: border-box;
         overflow: hidden;
         box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, 0.5);
-        
+
         .news-interest_thumbnail-title {
             content: '';
             display: flex;
