@@ -362,7 +362,8 @@ class Trending_v2 extends React.Component {
                     this.fetchData();
                 });
         }
-
+        console.log(Router.query, Router.asPath);
+        this.getAndSetRedirect();
 
     }
 
@@ -373,6 +374,19 @@ class Trending_v2 extends React.Component {
         // let elemnt = $('#iframe-ads-1').contents().find($('div-gpt-ad-1591240670591-0'))
         // console.log(elemnt.css('display'))
         // console.log($('#iframe-ads-1').contents().find($('div-gpt-ad-1591240670591-0')).css('display'))
+    }
+
+    getAndSetRedirect(){
+      if(Router.query && Router.query.id && Router.query.title && Router.query.category){
+        localStorage.setItem('url-full', `${Router.query.id/Router.query.category/Router.query.title}`);
+        Router.push('/news');
+        setTimeout(()=>{
+          console.log(localStorage.getItem('url-full'));
+          Router.push(localStorage.getItem('url-full'));
+          localStorage.removeItem('url-full');
+        }, 1500)
+
+      }
     }
 
     fetchData(isLoggedIn = false) {
