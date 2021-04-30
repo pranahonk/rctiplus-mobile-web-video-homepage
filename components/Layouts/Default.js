@@ -7,6 +7,7 @@ import { withRouter } from 'next/router';
 //import '../../assets/scss/global.scss';
 import 'sweetalert2/src/sweetalert2.scss';
 // import '../../assets/scss/apps/homepage/default.scss';
+// import '../../assets/scss/responsive.scss';
 
 import '../../assets/scss/components/alert.scss';
 
