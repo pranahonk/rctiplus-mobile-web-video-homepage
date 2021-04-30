@@ -208,7 +208,7 @@
 
     .content-trending-detail-related {
         // margin: 10px;
-        padding-bottom: 25px;
+        padding-bottom: calc(25px + 5px);
 
         .related-title {
             // background-color: #171717;
