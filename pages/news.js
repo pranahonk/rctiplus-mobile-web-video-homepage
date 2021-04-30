@@ -536,7 +536,8 @@ class Trending_v2 extends React.Component {
           .then((res) =>{
             const data = res.data.data;
             const tabs = this.state.tabs.filter(x => x.id === 15 || x.id === 12 || x.id === 1);
-            if(tabs.length !== data.length){
+            const tabs_not_required = this.state.tabs.filter(x => x.id !== 15 && x.id !== 12 && x.id !== 1);
+            if(tabs.length !== tabs_not_required.length){
               const combine  = [...tabs, ...data];
               this.setState({
                 tabs: combine
