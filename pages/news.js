@@ -559,7 +559,7 @@ class Trending_v2 extends React.Component {
     }
 
     forceUpdateHandler(){
-      this.forceUpdate();
+      Router.reload(window.location.pathname);
     };
 
     render() {
