@@ -324,10 +324,9 @@ class Detail extends React.Component {
         newsArticleShareClicked(cdata.id, cdata.title, cdata.category_source, 'mweb_news_share_article_clicked');
     }
 
-  forceUpdateHandler(){
-      console.log('ini di update')
-      this.forceUpdate();
-  };
+    forceUpdateHandler(){
+        this.forceUpdate();
+    };
 
     renderActionButton(scrolledDown) {
         const asPath = this.props.router.asPath;

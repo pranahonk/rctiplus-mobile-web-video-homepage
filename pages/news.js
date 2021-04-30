@@ -184,7 +184,8 @@ class Trending_v2 extends React.Component {
         else {
             removeAccessToken();
         }
-        this.iframeAds = React.createRef()
+        this.iframeAds = React.createRef();
+        this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
     }
 
     bottomScrollFetch() {
@@ -375,6 +376,7 @@ class Trending_v2 extends React.Component {
                     this.fetchData();
                 });
         }
+        this.forceUpdateHandler();
 
     }
 
@@ -537,7 +539,7 @@ class Trending_v2 extends React.Component {
             const data = res.data.data;
             const tabs = this.state.tabs.filter(x => x.id === 15 || x.id === 12 || x.id === 1);
             const tabs_not_required = this.state.tabs.filter(x => x.id !== 15 && x.id !== 12 && x.id !== 1);
-            if(tabs.length !== tabs_not_required.length){
+            if(tabs_not_required.length !== data.length){
               const combine  = [...tabs, ...data];
               this.setState({
                 tabs: combine
@@ -548,8 +550,12 @@ class Trending_v2 extends React.Component {
             console.error(err)
           });
 
-      }, 2000)
+      }, 2500);
     }
+
+    forceUpdateHandler(){
+      this.forceUpdate();
+    };
 
     render() {
         // const metadata = this.getMetadata();
