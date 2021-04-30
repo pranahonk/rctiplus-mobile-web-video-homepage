@@ -182,6 +182,8 @@ class Detail extends React.Component {
         else {
             removeAccessToken();
         }
+
+      this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
     }
 
     componentDidMount() {
@@ -232,6 +234,7 @@ class Detail extends React.Component {
                 documentHeight: document.documentElement.scrollHeight,
             })
         }, 750);
+      this.forceUpdateHandler();
     }
 
     getRandom(arr, n) {
@@ -320,6 +323,11 @@ class Detail extends React.Component {
         const cdata = this.state.trending_detail_data;
         newsArticleShareClicked(cdata.id, cdata.title, cdata.category_source, 'mweb_news_share_article_clicked');
     }
+
+  forceUpdateHandler(){
+      console.log('ini di update')
+      this.forceUpdate();
+  };
 
     renderActionButton(scrolledDown) {
         const asPath = this.props.router.asPath;
