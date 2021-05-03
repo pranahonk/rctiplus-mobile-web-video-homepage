@@ -34,18 +34,39 @@ class Crs_v2 extends Component {
     goToProgram(program) {
         homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + this.state.resolution + program.portrait_image, this.state.meta.image_path + this.state.resolution + program.landscape_image, 'mweb_homepage_banner_clicked');
         switch (program.type) {
+                case 'live_streaming' :
+                    let channel = 'rcti'
+                    if(program?.type_value === '1') {
+                        channel = 'rcti'
+                    }
+                    if(program?.type_value === '2') {
+                        channel = 'mnctv'
+                    }
+                    if(program?.type_value === '3') {
+                        channel = 'gtv'
+                    }
+                    if(program?.type_value === '4') {
+                        channel = 'inews'
+                    }
+                    Router.push(`/tv/${channel}`);
+                break;
+            case 'news_detail' :
+            case 'news_category':
+                window.open(program.type_value, '_parent');
+                break;
             case 'url':
                 window.open(program.type_value, '_blank');
                 break;
             case 'episode':
-                if (program.type_value) {
-                    this.props.getContentShareLink(program.type_value, program.type)
-                        .then(response => {
-                            window.location.href = response.data.data.share_link;
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        });
+                if(program.type_value && program.program_id) {
+                    const title = program.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
+                    Router.push(`/programs/${program.program_id}/${title}/episode/${program.type_value}/${title}`)
+                }
+                break;
+            case 'catchup':
+                if(program.type_value && program.channel && program.catchup_date) {
+                    const title = program.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
+                    Router.push(`/tv/${program.channel}/${program.type_value}/${title}?date=${program.catchup_date}`)
                 }
                 break;
             case 'live_event':
@@ -55,7 +76,7 @@ class Crs_v2 extends Component {
                 break;
             case 'program':
                 Router.push(`/programs/${program.type_value}/${program.title.replace(/ +/g, '-')}`);
-                break;
+                break;  
         }        
     }
 
