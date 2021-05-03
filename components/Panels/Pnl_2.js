@@ -3,6 +3,7 @@ import Img from 'react-image';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
+import TextLength from "../../utils/textLength"
 
 import contentActions from '../../redux/actions/contentActions';
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../utils/appier';
@@ -135,7 +136,7 @@ class Pnl_2 extends React.Component {
 					{scrollRef => (
 						<div ref={scrollRef} className="swiper-container">
 							{this.state.contents.map(c => (
-									<div onClick={() => this.link(c)}  key={`${this.props.contentId}-${c.content_id}`} className="swiper-slide">
+									<div onClick={() => this.link(c)}  key={`${this.props.contentId}-${c.content_id}`} style={{backgroundColor: "#171717"}} className="swiper-slide">
 										<div style={{position: 'relative'}}>
 										{c?.premium ? (
 											<>
@@ -165,7 +166,7 @@ class Pnl_2 extends React.Component {
 												<div className="line-red" />
 												<div className="txt-slider-panel-cont">
 													<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
-													<p>{c.content_title}</p>
+													<p>{c.content_title }</p>
 												</div>
 												
 											</div>

@@ -136,6 +136,7 @@ class Pnl_1 extends React.Component {
 	}
 
 	render() {
+		console.log(`ini type banner horizontal`,this.state.contents )
 		return (
 			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className="homepage-content horizontal_landscape_large">
 				<h2 className="content-title">{this.props.title}</h2>
@@ -161,9 +162,9 @@ class Pnl_1 extends React.Component {
 											) : (<div></div>)}
 									</div>
 									{c.display_type == 'hide_url' ? null : (
-										<div className="txt-slider-panel no-bg">
-											<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
-											<p>{c.content_title}</p>
+										<div style={{minHeight: "50px", maxHeight: "50px"}} className="txt-slider-panel no-bg">
+											<h3 style={{fontSize: "14px", fontWeight: 600, marginTop: 1}} className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
+											<p style={{fontSize: "14px", fontWeight: 300}}>{c.content_title}</p>
 										</div>
 									)}
 								</div>
