@@ -208,9 +208,14 @@
 
     .content-trending-detail-related {
         // margin: 10px;
-        padding-bottom: calc(25px + 5px);
       @supports (-webkit-touch-callout: none) {
-          padding-bottom: calc(25px + 0px);
+        /* CSS specific to iOS devices */
+        padding-bottom: calc(25px + 0px);
+      }
+
+      @supports not (-webkit-touch-callout: none) {
+        /* CSS for other than iOS devices */
+        padding-bottom: calc(25px + 5px);
       }
 
         .related-title {
