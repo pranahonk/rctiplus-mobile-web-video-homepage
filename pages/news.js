@@ -382,6 +382,7 @@ class Trending_v2 extends React.Component {
           }
         });
 
+      this.getAndSetRedirect();
 
     }
 
@@ -557,6 +558,23 @@ class Trending_v2 extends React.Component {
 
       }, 2500);
     }
+
+  getAndSetRedirect() {
+    if (Router.query && Router.query.id && Router.query.title && Router.query.category) {
+      localStorage.setItem('url-full', `${Router.asPath.split('?')[0]}`);
+      window.location.href = '/news';
+    }
+
+    if (localStorage.getItem('url-full')) {
+      this.props.setPageLoader();
+      setTimeout(() => {
+        window.location.href = localStorage.getItem('url-full');
+        localStorage.removeItem('url-full');
+        this.props.unsetPageLoader();
+      }, 1500);
+
+    }
+  }
 
 
     render() {
