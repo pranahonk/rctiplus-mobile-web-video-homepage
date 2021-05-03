@@ -185,7 +185,6 @@ class Trending_v2 extends React.Component {
             removeAccessToken();
         }
         this.iframeAds = React.createRef();
-        this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
     }
 
     bottomScrollFetch() {
@@ -377,11 +376,12 @@ class Trending_v2 extends React.Component {
                 });
         }
 
-        if(window.performance.getEntriesByType("navigation")[0]){
-          if(window.performance.getEntriesByType("navigation")[0].type === "back_forward"){
-            this.forceUpdateHandler();
+        window.addEventListener('pageshow', function(event) {
+          if (event.persisted) {
+            Router.reload(window.location.pathname);
           }
-        }
+        });
+
 
     }
 
@@ -558,9 +558,6 @@ class Trending_v2 extends React.Component {
       }, 2500);
     }
 
-    forceUpdateHandler(){
-      Router.reload(window.location.pathname);
-    };
 
     render() {
         // const metadata = this.getMetadata();
