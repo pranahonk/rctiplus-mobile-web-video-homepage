@@ -30,18 +30,18 @@
     color: #fff;
     // border-left: 1px solid #DB2828;
     // border-left-width: 2px;
-    margin: 10px;
-    font-size: 10px;
+    margin: 8px 10px;
+    font-size: 11px;
     text-align: left;
     // padding-left: 10px;
-    max-height: 59px;
-    min-height: 59px;
+    max-height: 73px;
+    min-height: 73px;
     overflow: hidden;
     white-space: normal;
 
     .line-red{
         width: 1px;
-        height: 30px;
+        height: 35px;
         margin-right: 6px;
         border: solid 1px #fa262f;
         background-color: #fa262f;
@@ -50,18 +50,33 @@
     .txt-slider-panel-cont {
 
         .txt-slider-panel-title {
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 600;
             margin-top: 1px;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1; /* number of lines to show */
+            -webkit-box-orient: vertical;
         }
     
         p {
-            font-size: 9px;
+            margin-top: -4px;
+            font-size: 11px;
             font-weight: 300;
             font-stretch: normal;
             font-style: normal;
             line-height: normal;
             letter-spacing: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* number of lines to show */
+            -webkit-box-orient: vertical;
         }
     }
 }
@@ -75,10 +90,13 @@
 
 .pnl_horizontal_landscape, .pnl_horizontal, .pnl_vertical, .horizontal_landscape_large {
     .content-title{
-        font-family: Open Sans;
+        // font-family: Open Sans;
+        font-stretch: normal;
         font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
         font-weight: bold;
-        font-size: 14px;
+        font-size: 16px;
         line-height: 19px;
         padding-left: 4px !important;
         /* identical to box height */
@@ -96,7 +114,7 @@
             margin: 2px;
             position: relative;
             text-align: center;
-            background: #171717;
+            // background: #171717;
             display: inline-block;
             vertical-align: top;
 
@@ -113,7 +131,7 @@
                 padding: 4px 8px;
                 font-size: 10px;
                 color: white;
-                border-bottom-right-radius: 5px;
+                border-bottom-right-radius: 7px;
                 font-family: Helvetica;
             }
             .new-label {
@@ -135,15 +153,15 @@
 
 .pnl_horizontal_landscape {
     .swiper-slide {
-        max-width: 45%;
-        min-width: 45%;
+        max-width: 45.5%;
+        min-width: 45.5%;
         height: 137px;
         border-radius: 5px;
 
     }
     img {
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
+        border-top-left-radius: 7px;
+        border-top-right-radius: 7px;
     }
 }
 
@@ -159,22 +177,33 @@
     }
 }
 
-.horizontal_landscape_large {
-    .swiper-container {
+.pnl_vertical{
+    .swiper-container{
         .swiper-slide {
-            // background: transparent;
+            .txt-slider-panel{
+                txt-slider-panel-title{
+                    font-size: 14px;
+                }
+            }
         }
     }
 }
+
+// .horizontal_landscape_large {
+//     .swiper-container {
+//         .swiper-slide {
+//             // background: transparent;
+//         }
+//     }
+// }
 
 .homepage-content {
     margin-bottom: 20px;
 
     img {
-        border-radius: 5px;
-        // object-fit: cover;
-
-    }
+        border-radius: 7px;
+        //object-fit: cover;
+}
 }
 
 @media only screen and (max-width: 400px) {

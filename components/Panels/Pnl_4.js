@@ -136,12 +136,7 @@ class Pnl_4 extends React.Component {
 					{scrollRef => (
 						<div ref={scrollRef} className="swiper-container">
 							{this.props.content.map((c, i) => (
-								<div onClick={() => this.link(c)}  key={`${this.props.contentId}-${i}`} className="swiper-slide">
-                {c?.label && c?.label != '' ? (
-                  <div className="new-label">
-                    {c.label}
-                  </div>
-                ) : ''}
+								<div onClick={() => this.link(c)}  key={`${this.props.contentId}-${i}`} style={{width: "96%"}} className="swiper-slide">
 									<div>
 										<Img
 											alt={c.program_title || c.content_title}
@@ -151,8 +146,8 @@ class Pnl_4 extends React.Component {
 										{/* <PlayCircleOutlineIcon className="play-btn-4" /> */}
 									</div>
 									<div className="txt-slider-panel">
-										<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
-										<p>{c.content_title}</p>
+										<h3 style={{fontSize: "14px", fontWeight: 600, marginTop: 1}} className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
+										<p style={{fontSize: "14px", fontWeight: 300}}>{c.content_title}</p>
 									</div>
 								</div>
 							))}
