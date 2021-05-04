@@ -658,7 +658,7 @@ class Stories extends React.Component {
     }
 
     render() {
-        console.log(`ini adalah storiesss`, this.state.stories);
+      
         const timelineItems = []
         this.state.stories.forEach((story, storyId) => {
             const storyItems = [];
@@ -697,7 +697,7 @@ class Stories extends React.Component {
         });
 
         return (
-            <div style={{paddingTop: 55, paddingLeft: 14}} >
+            <div style={{paddingTop: 35}} >
                 <Head>
                     <script src="/static/js/dash.js"></script>
                     <link rel="stylesheet" href="static/css/zuck.css?v=2" />
@@ -710,7 +710,7 @@ class Stories extends React.Component {
                         </div>
                     )}
                 </BottomScrollListener> */}
-                <div ref={node => this.storiesElement = node} id="stories-react" className="storiesWrapper">
+                <div style={{paddingLeft: "14px"}} ref={node => this.storiesElement = node} id="stories-react" className="storiesWrapper">
                     {timelineItems}
                 </div>
             </div>

@@ -8,7 +8,7 @@ import '../../../assets/scss/components/home-category-menu.scss';
 const CategoryMenu = ({contents}) => {
     const size = 150;
     const dispatch = useDispatch();
-    const [listMenu, setListMenu] = useState({})
+    const [listMenu, setListMenu] = useState([{}])
     const {listMenuHomeCategory} = useSelector(state => state.homeCategory);
 
     useEffect(() => {
@@ -23,7 +23,7 @@ const CategoryMenu = ({contents}) => {
 
     return (
         <div className="h-category-container">
-            <div style={listMenu?.data?.length <= 4 ? {display: "flex", justifyContent: "center", borderRadius: "20px"} : {width: "100%", maxWidth: "700px"}} className="grid-h-category-container">
+            <div style={listMenu?.data?.length <= 4 ? {display: "flex", justifyContent: "center", borderRadius: "20px"} : {width: "100%", maxWidth: "1200px"}} className="grid-h-category-container">
                 
                 {listMenu?.data && 
                 listMenu.data.map((val, ind) => (

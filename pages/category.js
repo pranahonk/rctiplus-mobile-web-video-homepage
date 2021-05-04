@@ -120,7 +120,7 @@ const Category = () => {
         dispatch(getSubCategory(category_id));
         dispatch(getBannerCategoryActive(category_id));
         dispatch(getHomepageCategory(1, 6, category_id));
-        // dispatch(getStoriesCategory(category_id));
+        dispatch(getStoriesCategory(category_id));
     }, [category_id]);
 
     useEffect(() => {
@@ -155,22 +155,28 @@ const Category = () => {
                     <Stories loadingBar={ref.current} detailCategory={true} id={category_id} />
                 </div>
 
-                <div style={subCategory === null && listStoriesCategory === null ? {marginBottom: 40, marginTop: 60, paddingLeft: 12} : {marginBottom: 40, paddingLeft: 12, marginTop: 20}}>
-                    {contents && contents.length > 0 && contents.map((content, i) => {
-                        switch (content.display_type) {
-                            case 'horizontal_landscape_large':
-                                return <Panel1 token={token} loadingBar={ref.current} type={content.type} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                <div style={subCategory === null && listStoriesCategory === null ? 
+                    { marginBottom: 40, marginTop: 100,  paddingLeft: 12 } 
+                    : { marginBottom: 40, paddingLeft: 12}}
+                >
 
-                            case 'horizontal_landscape':
-                                return <Panel2 token={token} loadingBar={ref.current} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                    <div style={listStoriesCategory === null ? { marginTop: 30 } : {}}>
+                        {contents && contents.length > 0 && contents.map((content, i) => {
+                            switch (content.display_type) {
+                                case 'horizontal_landscape_large':
+                                    return <Panel1 token={token} loadingBar={ref.current} type={content.type} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
-                            case 'horizontal':
-                                return <Panel3 token={token} loadingBar={ref.current} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                case 'horizontal_landscape':
+                                    return <Panel2 token={token} loadingBar={ref.current} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
-                            case 'vertical':
-                                return <Panel4 token={token} loadingBar={ref.current} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
-                        }
-                    })}
+                                case 'horizontal':
+                                    return <Panel3 token={token} loadingBar={ref.current} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+
+                                case 'vertical':
+                                    return <Panel4 token={token} loadingBar={ref.current} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                            }
+                        })}
+                    </div>
                 </div>
                 
             </div>}  
