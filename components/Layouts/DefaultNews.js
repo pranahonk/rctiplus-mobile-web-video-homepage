@@ -23,6 +23,7 @@ import '../../assets/scss/apps/homepage/default.scss';
 import '../../assets/scss/responsive.scss';
 
 import Cookie from 'js-cookie';
+import { Spinner } from 'reactstrap';
 
 class DefaultNews extends React.Component {
 
@@ -51,7 +52,7 @@ class DefaultNews extends React.Component {
 
     componentDidMount() {
         this.props.initializeFirebase();
-    
+
         // console.log('User added to home screen');
         if(!Cookie.get('uid_ads')) {
             Cookie.set('uid_ads', new DeviceUUID().get())
@@ -169,7 +170,7 @@ class DefaultNews extends React.Component {
                     ` }}></script>
                     <noscript><img src="https://certify.alexametrics.com/atrk.gif?account=8oNJt1FYxz20cv" style={{ display: 'none' }} height="1" width="1" alt="" /></noscript>
                     {/* <!-- End Alexa Certify Javascript --> */}
-                    
+
                     <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
 
                     <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
@@ -218,7 +219,14 @@ class DefaultNews extends React.Component {
                         h.parentNode.insertBefore(p,h);
                     } (window,document,'script','https://cdn.qgr.ph/qgraph.3be8515a1c2359442dfd.js');
                 ` }}></script>
-                
+
+                {this.props.pages.loading ? (
+                  <div className={'default-loader ' + (this.props.pages.fade ? 'loader-fade' : '')}>
+                    <div className={'loader'}>
+                      <Spinner color="danger" />
+                    </div>
+                  </div>
+                ) : <div></div>}
 
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
