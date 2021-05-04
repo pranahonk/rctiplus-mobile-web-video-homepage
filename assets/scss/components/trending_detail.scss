@@ -208,15 +208,6 @@
 
     .content-trending-detail-related {
         // margin: 10px;
-      @supports (-webkit-touch-callout: none) {
-        /* CSS specific to iOS devices */
-        padding-bottom: calc(25px + 0px);
-      }
-
-      @supports not (-webkit-touch-callout: none) {
-        /* CSS for other than iOS devices */
-        padding-bottom: calc(25px + 5px);
-      }
 
         .related-title {
             // background-color: #171717;
@@ -351,4 +342,19 @@
 
 .content-trending-detail-text > div.position-relative{
   margin-left: 5px;
+}
+
+
+@supports (-webkit-touch-callout: none) {
+  /* CSS specific to iOS devices */
+  .content-trending-detail-related{
+    padding-bottom: 25px;
+  }
+}
+
+@supports not (-webkit-touch-callout: none) {
+  /* CSS for other than iOS devices */
+  .content-trending-detail-related{
+    padding-bottom: calc(25px + 5px);
+  }
 }
