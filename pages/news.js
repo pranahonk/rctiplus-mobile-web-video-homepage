@@ -33,6 +33,7 @@ import '../assets/scss/components/trending_v2.scss';
 import newsv2Actions from '../redux/actions/newsv2Actions';
 import newsv2KanalActions from '../redux/actions/newsv2KanalActions';
 import userActions from '../redux/actions/userActions';
+import pageActions from '../redux/actions/pageActions';
 import { showSignInAlert, humanizeStr, imageNews, imagePath, readMore } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
 // import AdsBanner from '../components/Includes/Banner/Ads';
@@ -582,6 +583,7 @@ class Trending_v2 extends React.Component {
         // const ogMetaData = this.getOgMetaData();
         const asPath = this.props.router.asPath;
         const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') > -1 ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
+        const mobilePlatform = (this.platform !== null) ? 'mobilePlatform' : '';
         return (
             <Layout title={this.props?.metaSeo?.title}>
                 <Head>
@@ -857,4 +859,5 @@ export default connect(state => state, {
     ...newsv2Actions,
     ...userActions,
     ...newsv2KanalActions,
+    ...pageActions,
 })(withRouter(Trending_v2));
