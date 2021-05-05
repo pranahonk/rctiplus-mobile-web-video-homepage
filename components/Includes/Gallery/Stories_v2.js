@@ -104,7 +104,7 @@ class Stories extends React.Component {
                             }
                         },
                         language: { // if you need to translate :)
-                            unmute: 'Touch to unmute',
+                            // unmute: 'Touch to unmute',
                             keyboardTip: 'Press space to see next',
                             visitLink: 'Visit link',
                             time: {
@@ -223,7 +223,8 @@ class Stories extends React.Component {
                 10,
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
-                item.swipe_type == 'link' ? (item.swipe_value) : false, 'Click Here',
+                this.handleActionClick(item), 
+                'Click Here',
                 false,
                 item.release_date,
                 item.title,
@@ -261,6 +262,57 @@ class Stories extends React.Component {
         if (document.getElementById('stories-react').scrollLeft >= scrollOffset) {
             this.loadMore();
         }
+    }
+    handleActionClick(program) {
+        // console.log('action click', program)
+        switch (program?.swipe_type) {
+            case 'live_streaming' :
+                let channel = 'rcti'
+                if(program?.swipe_value === '1') {
+                    channel = 'rcti'
+                }
+                if(program?.swipe_value === '2') {
+                    channel = 'mnctv'
+                }
+                if(program?.swipe_value === '3') {
+                    channel = 'gtv'
+                }
+                if(program?.swipe_value === '4') {
+                    channel = 'inews'
+                }
+                return `/tv/${channel}`;
+            case 'news_detail' :
+            case 'news_category':
+                return program.swipe_value
+            case 'link':
+                if(program.swipe_value) {
+                    return `${program.share_link}`;
+                }
+                break;
+            case 'program':
+            case 'extra':
+            case 'clip':
+            case 'episode':
+                if(program.swipe_value && program.share_link) {
+                    return `${program.share_link}`;
+                }
+                break;
+            case 'catchup':
+                if(program.swipe_value && program.channel && program.catchup_date) {
+                    const title = program.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
+                    return `/tv/${program.channel}/${program.swipe_type}/${title}?date=${program.catchup_date}`
+                }
+                break;
+            case 'live_event':
+                if (program.swipe_value) {
+                    return `/live-event/${program.swipe_value}/${program.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`
+                }
+                break;
+            case 'program':
+                return `/programs/${program.swipe_value}/${program.title.replace(/ +/g, '-')}`;
+            default:
+                return "/"
+        }        
     }
 
     loadMore = () => {
