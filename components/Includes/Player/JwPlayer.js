@@ -74,7 +74,7 @@ const JwPlayer = (props) => {
           isPlayer: false,
           isError03: true,
         });
-        return false;
+        // return false;
       }
     if (props.geoblockStatus) {
       setStatus({
