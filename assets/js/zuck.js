@@ -522,7 +522,7 @@ module.exports = (window => {
   
                       ${
 												get(item, 'link')
-												? `<a id="${`link-${item.id}`}" class="tip link" href="${get(item, 'link')}" rel="noopener" target="_blank">
+												? `<a id="${`link-${item.id}`}" class="tip link link-move" href="${get(item, 'link')}" rel="noopener" target="_parent">
 													${!get(item, 'linkText') || get(item, 'linkText') === '' ? option('language', 'visitLink') : get(item, 'linkText')}
 													</a>`
 												: ``
@@ -900,12 +900,11 @@ module.exports = (window => {
 				}
 				
 
-				let linkElement = storyViewer.querySelector('.slides a[target="_blank"]');
+				let linkElement = storyViewer.querySelector('.slides a[target="_parent"]');
 				if (linkElement) {
 					linkElement.onclick = function() {
 						const currentItem = storyData.currentItem || 0;
 						const item = storyData.items[currentItem];
-						
 						homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_here', 'N/A'); // TODO: story ads type
 					};
 				}

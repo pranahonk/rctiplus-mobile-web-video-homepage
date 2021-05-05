@@ -569,3 +569,6 @@ and open the template in the editor.
 .stories.list .story > .items {
   display: none;
 }
+.link-move {
+  margin-bottom: 40px !important;
+}

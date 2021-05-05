@@ -85,6 +85,8 @@ class Crs_v2 extends Component {
             case 'program':
                 Router.push(`/programs/${program.type_value}/${program.title.replace(/ +/g, '-')}`);
                 break;  
+            default:
+                return Router.push(`/tv/rcti`);
         }        
     }
 
