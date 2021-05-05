@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Head from 'next/head';
 import PropTypes from 'prop-types';
 import { convivaJwPlayer} from '../../../utils/conviva';
 import { getUserId } from '../../../utils/appier';
 import { onTrackingClick } from '../program-detail/programDetail';
 import { isIOS } from 'react-device-detect';
 import Wrench from '../Common/Wrench';
-// import { Offline, Online } from 'react-detect-offline';
 import '../../../assets/scss/jwplayer.scss';
-import _ from 'lodash'
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -50,7 +49,7 @@ const JwPlayer = (props) => {
     hlsjsdefault: true,
     aspectratio: '16:9',
     displaytitle: true,
-    setFullscreen: true,
+    // setFullscreen: true,
     stretching: 'uniform',
     height: 180,
     advertising: {
@@ -69,13 +68,6 @@ const JwPlayer = (props) => {
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
     // console.log('EFFECT INIT 1', props);
-    if(_.isEmpty(props?.data?.url)) {
-        setStatus({
-          isPlayer: false,
-          isError03: true,
-        });
-        // return false;
-      }
     if (props.geoblockStatus) {
       setStatus({
         isPlayer: false,
@@ -115,10 +107,12 @@ const JwPlayer = (props) => {
     // console.log('PLAYER GET DATA: ',props, player);
     if (player !== null) {
       player.on('ready', (event) => {
-        if (props.isFullscreen) {
+        /* if (props.isFullscreen) {
           player.setFullscreen(true);
           setPlayerFullscreen(true);
-        }
+        } */
+        setPlayerFullscreen(props.isFullscreen);
+
         const playerContainer = player.getContainer();
         const fowardContainer = playerContainer.querySelector('.jw-icon-next');
         const backwardContainer = playerContainer.querySelector('.jw-icon-rewind');
@@ -269,7 +263,7 @@ const JwPlayer = (props) => {
         }
       });
       player.on('fullscreen', (event) => {
-        if (event.fullscreen) {
+        /* if (event.fullscreen) {
           if (!playerFullscreen) {
             setPlayerFullscreen(true);
           }
@@ -277,7 +271,8 @@ const JwPlayer = (props) => {
           if (playerFullscreen) {
             setPlayerFullscreen(false);
           }
-        }
+        } */
+        setPlayerFullscreen(player.getFullscreen());
       });
       // ads event
       player.on('adImpression', (event) => {
@@ -309,13 +304,13 @@ const JwPlayer = (props) => {
           document.querySelector('.ads_wrapper').style.bottom = '5px';
         }
       });
-      window.addEventListener('resize', (event) => {
+      /* window.addEventListener('resize', (event) => {
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'idle' || adsStatus === 'close') {
             setAdStatus('restart');
           }
         }
-      });
+      }); */
     }
   },);
 
@@ -346,14 +341,6 @@ const JwPlayer = (props) => {
       });
       player.on('setupError', (event) => {
         // console.log('PLAYER SETUP ERROR', event);
-        if(event.code === 102630) {
-          setStatus({
-            isPlayer: false,
-            isError03: true,
-          });
-          player.remove();
-          return false;
-        }
         const convivaTracker = convivaJwPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
@@ -429,6 +416,7 @@ const JwPlayer = (props) => {
       }
     }
   }, [props.geoblockStatus]);
+  
   // Conviva Tracker
   useEffect(() => {
     if (props.data) {
@@ -519,7 +507,7 @@ const JwPlayer = (props) => {
   // ads overlay
   useEffect(() => {
     if (player !== null) {
-      let windowWidth = document.documentElement.clientWidth;
+      // let windowWidth = document.documentElement.clientWidth;
       let slotName = props.data.gpt.path != null && props.data.gpt.path != undefined ? props.data.gpt.path : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
       let slotDiv = props.data.gpt.div_gpt != null && props.data.gpt.div_gpt != undefined ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
       let intervalTime = props.data.gpt.interval_gpt != null && props.data.gpt.interval_gpt != undefined ? props.data.gpt.interval_gpt : props.adsOverlayData.reloadDuration;
@@ -527,6 +515,7 @@ const JwPlayer = (props) => {
       let maxWidth = props.data.gpt.size_width_2 != null && props.data.gpt.size_width_2 != undefined ? props.data.gpt.size_width_2 : 468;
       let minHeight = props.data.gpt.size_height_1 != null && props.data.gpt.size_height_1 != undefined ? props.data.gpt.size_height_1 : 50;
       let maxHeight = props.data.gpt.size_height_2 != null && props.data.gpt.size_height_2 != undefined ? props.data.gpt.size_height_2 : 60;
+      let custParams = props.data.gpt.cust_params != null && props.data.gpt.cust_params != undefined ? props.data.gpt.cust_params : null;
 
       if (adsStatus === 'start') {
         clearTimeout(pubAdsRefreshInterval.timeObject);
@@ -539,13 +528,22 @@ const JwPlayer = (props) => {
 
             googletag.defineSlot(slotName, [[maxWidth, maxHeight], [minWidth, minHeight]], slotDiv)
             .defineSizeMapping(mappingSlot)
-            .addService(googletag.pubads())
-            .setTargeting('logged_in', props.customData && props.customData.isLogin.toString())
+            .addService(googletag.pubads());
+            /* .setTargeting('logged_in', props.customData && props.customData.isLogin.toString())
             .setTargeting('channel_id', props.data && props.data.id)
             .setTargeting('program_title', props.type === 'live tv' ?
             tempId(props.data && props.data.id)[1] :
             props.type === 'live event' || props.type === 'missed event' ?
-            props.data && props.data.assets_name : 'NOT_SET');
+            props.data && props.data.assets_name : 'NOT_SET'); */
+
+            // TODO: looping targeting value
+            if (custParams != null) {
+              for (const custParam of custParams) {
+                console.log(custParam.name, custParam.value);
+                googletag.pubads().setTargeting(custParam.name, custParam.value);
+              }
+            }
+
             googletag.pubads().enableSingleRequest();
             googletag.pubads().collapseEmptyDivs();
             googletag.pubads().disableInitialLoad();
@@ -559,32 +557,19 @@ const JwPlayer = (props) => {
       } else if (adsStatus === 'restart') {
         if (document.querySelector('.ads_wrapper')) {
           if (document.querySelector('.adsContainer').style.display != 'none') {
-            //const adsIFrame = document.getElementById(slotDiv).children[0].children[0];
-            //const adsImage = adsIFrame.contentWindow.document.querySelector('amp-img');
-            if (windowWidth >= (maxWidth + 12)) {
-              /* adsIFrame.width = maxWidth;
-              adsIFrame.height = maxHeight;
-
-              adsImage.style.width = maxWidth + 'px';
-              adsImage.style.height = maxHeight + 'px'; */
-
-              if (prevWidth != windowWidth) {
-                setPrevWidth(windowWidth);
-                googletag.pubads().refresh();
-                document.querySelector('.ads_wrapper').classList.add('adsBigBox');
-              }
-            } else {
-              /* adsIFrame.width = minWidth;
-              adsIFrame.height = minHeight;
-
-              adsImage.style.width = minWidth + 'px';
-              adsImage.style.height = minHeight + 'px'; */
-              
-              if (prevWidth != windowWidth) {
-                setPrevWidth(windowWidth);
-                googletag.pubads().refresh();
-                document.querySelector('.ads_wrapper').classList.remove('adsBigBox');
-              }
+            const adsIFrame = document.getElementById(slotDiv).children[0].children[0];
+            if (adsIFrame) {
+              setTimeout(() => {
+                if (document.querySelector('.fullscreen-player')) {
+                  if (adsIFrame.width != maxWidth) {
+                    googletag.pubads().refresh();
+                  }
+                } else {
+                  if (adsIFrame.width != minWidth) {
+                    googletag.pubads().refresh();
+                  }
+                }
+              }, 100);
             }
           }
         }
@@ -635,7 +620,7 @@ const JwPlayer = (props) => {
             } else {
               refreshCounter = 0
             }
-            console.log('CALL CALL')
+            // console.log('CALL CALL')
             setTimeout(() => {
               if (document.querySelector('.ads_wrapper')) {
                 if (document.querySelector('.adsContainer').style.display != 'none') {
@@ -670,24 +655,6 @@ const JwPlayer = (props) => {
                       }
                     }
 
-                    if (windowWidth >= (maxWidth + 12)) {
-                      /* adsIFrame.width = maxWidth;
-                      adsIFrame.height = maxHeight;
-
-                      adsImage.style.width = maxWidth + 'px';
-                      adsImage.style.height = maxHeight + 'px'; */
-
-                      document.querySelector('.ads_wrapper').classList.add('adsBigBox');
-                    } else {
-                      /* adsIFrame.width = minWidth;
-                      adsIFrame.height = minHeight;
-
-                      adsImage.style.width = minWidth + 'px';
-                      adsImage.style.height = minHeight + 'px'; */
-
-                      document.querySelector('.ads_wrapper').classList.remove('adsBigBox');
-                    }
-
                     document.querySelector('.ads_wrapper').style.display = 'block';
 
                     pubAdsRefreshInterval.timeStart = 0;
@@ -715,16 +682,18 @@ const JwPlayer = (props) => {
 
   return (
     // <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
-    <div className="rplus-jw-container">
-      { getPlayer(status.isError01 , status.isError02, status.isError03 ) }
-      {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
-    </div>
+    <>
+      <div className="rplus-jw-container">
+        { getPlayer(status.isError01 , status.isError02 ) }
+        {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
+      </div>
+    </>
   );
 };
 
 export default JwPlayer;
 
-const getPlayer = (error1, error2, error3) => {
+const getPlayer = (error1, error2) => {
   if (error1) {
     console.log('GEO')
     return error(msgError01)
@@ -732,9 +701,6 @@ const getPlayer = (error1, error2, error3) => {
   if (error2) {
     console.log('ERRORRRRR P')
     return error()
-  }
-  if (error3) {
-    return error(msgError03)
   }
   return (<div id="jwplayer-rctiplus" />)
 }
@@ -906,18 +872,9 @@ const msgError01 = () => {
 const msgError02 = () => {
   return(
     <div>
-      <strong style={{ fontSize: 14 }}>Video Errror</strong><br />
-      <span style={{ fontSize: 12 }}>Sorry, Error has occurred,</span><br />
-      <span style={{ fontSize: 12 }}>Please try again later.</span>
-    </div>
-  )
-}
-const msgError03 = () => {
-  return(
-    <div>
-      <strong style={{ fontSize: 14 }}>Video Errror</strong><br />
-      <span style={{ fontSize: 12 }}>Sorry, Video is not available,</span><br />
-      <span style={{ fontSize: 12 }}>You can watch other video below</span>
+      <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+      <span style={{ fontSize: 12 }}>Please try again later,</span><br />
+      <span style={{ fontSize: 12 }}>we are working to fix the problem</span>
     </div>
   )
 }
