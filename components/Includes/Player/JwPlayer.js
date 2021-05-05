@@ -6,9 +6,7 @@ import { getUserId } from '../../../utils/appier';
 import { onTrackingClick } from '../program-detail/programDetail';
 import { isIOS } from 'react-device-detect';
 import Wrench from '../Common/Wrench';
-// import { Offline, Online } from 'react-detect-offline';
 import '../../../assets/scss/jwplayer.scss';
-import _ from 'lodash'
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -70,13 +68,6 @@ const JwPlayer = (props) => {
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
     // console.log('EFFECT INIT 1', props);
-    if(_.isEmpty(props?.data?.url)) {
-        setStatus({
-          isPlayer: false,
-          isError03: true,
-        });
-        // return false;
-      }
     if (props.geoblockStatus) {
       setStatus({
         isPlayer: false,
@@ -350,14 +341,6 @@ const JwPlayer = (props) => {
       });
       player.on('setupError', (event) => {
         // console.log('PLAYER SETUP ERROR', event);
-        if(event.code === 102630) {
-          setStatus({
-            isPlayer: false,
-            isError03: true,
-          });
-          player.remove();
-          return false;
-        }
         const convivaTracker = convivaJwPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
@@ -555,8 +538,9 @@ const JwPlayer = (props) => {
 
             // TODO: looping targeting value
             if (custParams != null) {
-              for (let i = 0; i < custParams.length; i++) {
-                googletag.pubads().setTargeting(custParams[i].name, custParams[i].value);
+              for (const custParam of custParams) {
+                console.log(custParam.name, custParam.value);
+                googletag.pubads().setTargeting(custParam.name, custParam.value);
               }
             }
 
@@ -709,7 +693,7 @@ const JwPlayer = (props) => {
 
 export default JwPlayer;
 
-const getPlayer = (error1, error2, error3) => {
+const getPlayer = (error1, error2) => {
   if (error1) {
     console.log('GEO')
     return error(msgError01)
@@ -717,9 +701,6 @@ const getPlayer = (error1, error2, error3) => {
   if (error2) {
     console.log('ERRORRRRR P')
     return error()
-  }
-  if (error3) {
-    return error(msgError03)
   }
   return (<div id="jwplayer-rctiplus" />)
 }
@@ -891,18 +872,9 @@ const msgError01 = () => {
 const msgError02 = () => {
   return(
     <div>
-      <strong style={{ fontSize: 14 }}>Video Errror</strong><br />
-      <span style={{ fontSize: 12 }}>Sorry, Error has occurred,</span><br />
-      <span style={{ fontSize: 12 }}>Please try again later.</span>
-    </div>
-  )
-}
-const msgError03 = () => {
-  return(
-    <div>
-      <strong style={{ fontSize: 14 }}>Video Errror</strong><br />
-      <span style={{ fontSize: 12 }}>Sorry, Video is not available,</span><br />
-      <span style={{ fontSize: 12 }}>You can watch other video below</span>
+      <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+      <span style={{ fontSize: 12 }}>Please try again later,</span><br />
+      <span style={{ fontSize: 12 }}>we are working to fix the problem</span>
     </div>
   )
 }
