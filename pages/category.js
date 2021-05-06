@@ -151,7 +151,7 @@ const Category = () => {
                     </Carousel>
                 </div>
 
-                <div style={subCategory === null ? { marginTop: -110 } : {}}>
+                <div style={subCategory === null ? { marginTop: -110 } : {marginTop: "25px"}}>
                     <Stories loadingBar={ref.current} detailCategory={true} id={category_id} />
                 </div>
 
@@ -160,7 +160,7 @@ const Category = () => {
                     : { marginBottom: 45}}
                 >
 
-                    <div style={listStoriesCategory === null ? { marginTop: 30 } : {}}>
+                    <div style={listStoriesCategory === null ? { marginTop: 5 } : {}}>
                         {contents && contents.length > 0 && contents.map((content, i) => {
                             switch (content.display_type) {
                                 case 'horizontal_landscape_large':
