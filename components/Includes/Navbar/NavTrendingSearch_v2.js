@@ -61,7 +61,7 @@ class NavbarTrendingSearch extends Component {
         //         if (this.props.newsv2.query) {
         //             searchKeywordEvent(this.props.newsv2.query, 'mweb_search_keyword');
         //         }
-                
+
         //         this.props.searchNews(this.props.newsv2.query, 1, this.state.length)
         //             .then(responses => {
         //                 console.log(responses);
@@ -135,6 +135,10 @@ class NavbarTrendingSearch extends Component {
             this.search()
         }
     }
+  handleFocusParent = (e) =>{
+      this.props.isChildFocus(true)
+      e.preventDefault();
+  }
 
     render() {
         return (
@@ -162,7 +166,8 @@ class NavbarTrendingSearch extends Component {
                             value={this.props.newsv2.query}
                             onKeyPress={this.handleKeyPress}
                             id="search-news-input"
-                            className="search-input" />
+                            className="search-input"
+                            onFocus={this.handleFocusParent}/>
                     </div>
                     <div className="right-top-link">
                         <div className="btn-link-top-nav">

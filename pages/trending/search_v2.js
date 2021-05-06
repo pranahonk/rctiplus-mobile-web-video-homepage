@@ -93,6 +93,7 @@ class Search extends React.Component {
             search_history: null,
             q: '',
             user_recommendations: [],
+            is_child_focus: false,
         };
 
         this.subject = new Subject();
@@ -220,6 +221,12 @@ class Search extends React.Component {
         }
     }
 
+    handleChildFocus = (e) =>{
+      this.setState({
+        is_child_focus: e,
+      });
+    }
+
     render() {
         return (
             <Layout title={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - News+ on RCTI+`}>
@@ -249,10 +256,19 @@ class Search extends React.Component {
                 </Head>
                 <BottomScrollListener offset={80} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
-                <NavBack subject={'ronaldo'}/>
+                <NavBack isChildFocus={this.handleChildFocus} subject={'ronaldo'}/>
                 <main className="content-trending-search">
                     {this.renderContent()}
                 </main>
+                {
+                  this.state.is_child_focus &&
+                  <div>
+                    <div className="popular-search">
+                      Popular Search
+                    </div>
+                  </div>
+
+                }
             </Layout>
         );
     }
