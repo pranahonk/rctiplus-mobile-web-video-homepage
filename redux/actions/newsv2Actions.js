@@ -633,6 +633,23 @@ const addCategoryVisitorV2 = (categoryId, device_id) => {
   });
 };
 
+const userRecomendation = (categoryId, device_id) => {
+  return () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`/v2/recommendation`);
+      if (response.status === 200) {
+        resolve(response);
+      } else {
+        removeAccessToken();
+        reject(response);
+      }
+    } catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+};
+
 const setSection = () => dispatch => dispatch({ type: "ADD_SECTION" })
 
 
@@ -670,4 +687,5 @@ export default {
     getSelectedChannelsVisitor,
     updateCategoryOrderVisitor,
     deleteCategoryVisitors,
+    userRecomendation,
 };

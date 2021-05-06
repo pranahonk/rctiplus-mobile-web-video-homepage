@@ -91,7 +91,8 @@ class Search extends React.Component {
         this.state = {
             length: 10,
             search_history: null,
-            q: ''
+            q: '',
+            user_recommendations: [],
         };
 
         this.subject = new Subject();
@@ -113,13 +114,17 @@ class Search extends React.Component {
         }
     }
 
-    componentDidMount() {
+   async componentDidMount() {
         this.props.setQuery(this.props.dataSearch?.keyword || '');
         this.props.getSearchFromServer(this.props.dataSearch)
         const searchHistory = getCookie('SEARCH_HISTORY');
         if (searchHistory) {
             this.setState({ search_history: JSON.parse(searchHistory) });
         }
+        const user_recommendation = await this.props.userRecomendation();
+        this.setState({
+          user_recommendations: [...user_recommendation.data.data]
+        })
     }
 
     link(article) {
@@ -187,7 +192,7 @@ class Search extends React.Component {
                             <Col xs={6} style={{ textAlign: 'right', paddingRight: 15 }}><CloseIcon onClick={() => this.deleteSearchHistory(i)}/></Col>
                         </Row>
                     ))}
-                    
+
                 </div>
             );
         }
