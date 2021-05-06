@@ -309,17 +309,23 @@ class Exclusive extends React.Component {
 	}
 
 	goToDetail(program, type = '') {
-		switch (type) {
-			case 'profile':
-				exclusiveProfileProgramEvent(program.id, program.title, this.state.active_tab_name, 'mweb_exclusive_profile_program_clicked');
-				break;
+		// switch (type) {
+		// 	case 'profile':
+		// 		exclusiveProfileProgramEvent(program.id, program.title, this.state.active_tab_name, 'mweb_exclusive_profile_program_clicked');
+		// 		break;
 
-			case 'title':
-				exclusiveTitleProgramEvent(program.id, program.title, this.state.active_tab_name, 'mweb_exclusive_title_program_clicked');
-				break;
-		}
+		// 	case 'title':
+		// 		exclusiveTitleProgramEvent(program.id, program.title, this.state.active_tab_name, 'mweb_exclusive_title_program_clicked');
+		// 		break;
+		// }
 		// console.log(program)
-		Router.push(`/programs/${program.program_id}/${urlRegex(program.program_title)}/${program.type}/${program.id}/${urlRegex(program.title)}?ref=exclusive`);
+
+		if(type === "thumbnail") {
+			Router.push(`/programs/${program.program_id}/${urlRegex(program.program_title)}/${program.type}/${program.id}/${urlRegex(program.title)}?ref=exclusive`);
+		}else{
+			Router.push(`/programs/${program.program_id}/${urlRegex(program.program_title)}?ref=exclusive&exclusive_title=${program.program_title}`);
+			exclusiveProfileProgramEvent(program.id, program.title, this.state.active_tab_name, 'mweb_exclusive_profile_program_clicked');
+		}
 	}
 
 	getImageFileName(url) {
@@ -490,7 +496,7 @@ class Exclusive extends React.Component {
 															</Carousel>)
 															:
 															(
-																<div onClick={this.goToDetail.bind(this, feed)}>
+																<div onClick={this.goToDetail.bind(this, feed, "thumbnail")}>
 																	<Img 
 																		alt={feed.title} 
 																		className="program-thumbnail" 
