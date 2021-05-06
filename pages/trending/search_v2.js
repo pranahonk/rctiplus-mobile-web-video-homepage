@@ -15,6 +15,7 @@ import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavTrendingSearch_v2';
 
 import { Row, Col } from 'reactstrap';
+import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import '../../assets/scss/components/trending_search.scss';
 import { urlRegex } from '../../utils/regex';
@@ -266,6 +267,16 @@ class Search extends React.Component {
                     <div className="popular-search">
                       Popular Search
                     </div>
+                    {
+                      this.state.user_recommendations.map((rec, i)=>{
+                        return(
+                          <div className="popular-search__wrapper" key={i}>
+                            <SearchIcon className="popular-search__icon" />
+                            <span className="popular-search__text">{rec.keyword}</span>
+                          </div>
+                        )
+                      })
+                    }
                   </div>
 
                 }
