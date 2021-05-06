@@ -74,25 +74,32 @@ class NavbarTrendingSearch extends Component {
         //                 this.props.toggleIsSearching(false);
         //             });
         //     });
+      this.props.onRef(this);
     }
 
-    saveSearchHistory(q) {
+  componentWillUnmount() {
+      this.props.onRef(undefined);
+  }
+
+
+  saveSearchHistory(q) {
         let searchHistory = getCookie('SEARCH_HISTORY');
+        console.log(q);
         if (!searchHistory) {
-            setCookie('SEARCH_HISTORY', [q.toLowerCase()]);
+            setCookie('SEARCH_HISTORY', [q]);
         }
         else {
             searchHistory = JSON.parse(searchHistory);
-            if (searchHistory.indexOf(q.toLowerCase()) === -1) {
+            if (searchHistory.indexOf(q) === -1) {
                 if (searchHistory.length >= 5) {
                     searchHistory.pop();
                 }
             }
             else {
-                searchHistory.splice(searchHistory.indexOf(q.toLowerCase()), 1);
+                searchHistory.splice(searchHistory.indexOf(q), 1);
             }
 
-            searchHistory.unshift(q.toLowerCase());
+            searchHistory.unshift(q);
             setCookie('SEARCH_HISTORY', searchHistory);
         }
     }
@@ -141,6 +148,7 @@ class NavbarTrendingSearch extends Component {
   }
 
     render() {
+        const { forwardedRef } = this.props;
         return (
             <div className="nav-home-container nav-fixed-top">
                 <Navbar style={{ backgroundColor: '#171717' }} expand="md" className={'nav-container nav-shadow nav-search'}>
@@ -167,7 +175,9 @@ class NavbarTrendingSearch extends Component {
                             onKeyPress={this.handleKeyPress}
                             id="search-news-input"
                             className="search-input"
-                            onFocus={this.handleFocusParent}/>
+                            onFocus={this.handleFocusParent}
+                            ref={forwardedRef}
+                        />
                     </div>
                     <div className="right-top-link">
                         <div className="btn-link-top-nav">

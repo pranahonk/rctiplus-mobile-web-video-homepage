@@ -35,6 +35,7 @@ class Search extends React.Component {
        const findQueryString = ctx.asPath.split(/\?/);
         if (findQueryString.length > 1) {
             const q = queryString.parse(findQueryString[1]);
+
             if(q.keyword) {
                 const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
                 if (response_visitor.statusCode === 200) {
@@ -54,7 +55,7 @@ class Search extends React.Component {
                 }
                 const data_news = await response_news.json();
 
-                const res = await fetch(`${NEWS_API_V2}/api/v1/search?q=${q.keyword}&page=1&pageSize=10`, {
+                const res = await fetch(`${NEWS_API_V2}/api/v1/search?q=${encodeURIComponent(q.keyword)}&page=1&pageSize=10`, {
                     method: 'GET',
                     headers: {
                         'Authorization': data_news.data.news_token
@@ -62,7 +63,6 @@ class Search extends React.Component {
                 });
                 const error_code = res.statusCode > 200 ? res.statusCode : false;
                 const data = await res.json();
-                // console.log(data)
                 const general = await fetch(`${NEWS_API_V2}/api/v2/settings/general`, {
                     method: 'GET',
                     headers: {
@@ -114,6 +114,7 @@ class Search extends React.Component {
         else {
             removeAccessToken();
         }
+
     }
 
    async componentDidMount() {
@@ -178,14 +179,14 @@ class Search extends React.Component {
                 <div style={{ fontSize: 14 }} className="search-history">
                     <Row>
                         <Col xs={6}>
-                            Search History
+                            {/*Search History*/}
                         </Col>
-                        <Col xs={6} style={{ textAlign: 'right', paddingRight: 15 }}>
-                            Clear History
+                        <Col xs={6} style={{ textAlign: 'right', paddingRight: 15, fontSize: 12, color: '#6e6e6e' }}>
+                            Clear All History
                         </Col>
                     </Row>
                     {searchHistory.map((h, i) => (
-                        <Row key={i} style={{ marginTop: 10, opacity: 0.5 }}>
+                        <Row key={i} style={{ marginTop: 14, opacity: 0.5 }}>
                             <Col xs={6} onClick={() => {
                                 this.props.setPageLoader();
                                 // TODO:
@@ -199,11 +200,11 @@ class Search extends React.Component {
             );
         }
 
-        return (
-            <div className="not-found-message">
-                There is no search history
-            </div>
-        );
+        // return (
+        //     <div className="not-found-message">
+        //         There is no search history
+        //     </div>
+        // );
     }
 
     renderContent() {
@@ -227,6 +228,13 @@ class Search extends React.Component {
         is_child_focus: e,
       });
     }
+
+   handleUserClick = async(data) => {
+    this.props.setQuery(data.keyword);
+    this.navBack.initSearch(encodeURIComponent(data.keyword));
+    await this.props.saveUserRecomendation(data.keyword);
+    this.navBack.saveSearchHistory(data.keyword);
+  }
 
     render() {
         return (
@@ -257,20 +265,23 @@ class Search extends React.Component {
                 </Head>
                 <BottomScrollListener offset={80} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
-                <NavBack isChildFocus={this.handleChildFocus} subject={'ronaldo'}/>
+                <NavBack onRef={ref => (this.navBack = ref)} isChildFocus={this.handleChildFocus} subject={'ronaldo'}/>
                 <main className="content-trending-search">
                     {this.renderContent()}
                 </main>
                 {
                   this.state.is_child_focus &&
                   <div>
+                    {
+                      this.renderSearchHistory()
+                    }
                     <div className="popular-search">
                       Popular Search
                     </div>
                     {
                       this.state.user_recommendations.map((rec, i)=>{
                         return(
-                          <div className="popular-search__wrapper" key={i}>
+                          <div className="popular-search__wrapper" key={i} onClick={() => this.handleUserClick(rec)}>
                             <SearchIcon className="popular-search__icon" />
                             <span className="popular-search__text">{rec.keyword}</span>
                           </div>

@@ -633,10 +633,29 @@ const addCategoryVisitorV2 = (categoryId, device_id) => {
   });
 };
 
-const userRecomendation = (categoryId, device_id) => {
+const userRecomendation = () => {
   return () => new Promise(async (resolve, reject) => {
     try {
       const response = await axios.get(`/v2/recommendation`);
+      if (response.status === 200) {
+        resolve(response);
+      } else {
+        removeAccessToken();
+        reject(response);
+      }
+    } catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+};
+
+const saveUserRecomendation = (userSearch) => {
+  return () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.post(`/v2/recommendation/search`, {
+        "qry": userSearch
+      });
       if (response.status === 200) {
         resolve(response);
       } else {
@@ -688,4 +707,5 @@ export default {
     updateCategoryOrderVisitor,
     deleteCategoryVisitors,
     userRecomendation,
+    saveUserRecomendation,
 };
