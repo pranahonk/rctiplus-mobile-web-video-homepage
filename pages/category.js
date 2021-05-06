@@ -156,8 +156,8 @@ const Category = () => {
                 </div>
 
                 <div style={subCategory === null && listStoriesCategory === null ? 
-                    { marginBottom: 40, marginTop: 100,   } 
-                    : { marginBottom: 40}}
+                    { marginBottom: 45, marginTop: 100,   } 
+                    : { marginBottom: 45}}
                 >
 
                     <div style={listStoriesCategory === null ? { marginTop: 30 } : {}}>

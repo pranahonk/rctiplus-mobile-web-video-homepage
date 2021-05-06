@@ -154,6 +154,7 @@ class Pnl_2 extends React.Component {
 											</>
 											) : ''}
 											<Img 
+												className={c.display_type == 'hide_url' ? "img-text-desc" : ""}
 												alt={c.program_title || c.content_title} 
 												unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
