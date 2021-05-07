@@ -4,9 +4,10 @@ import { GPT_NEWS_LINK_LIST, GPT_NEWS_LINK_DETAIL } from '../../../config'
 // import $ from 'jquery';
 // import { useSelector, useDispatch } from 'react-redux';
 
-const AdsBanner = ({path, size, idGpt, style, partner}) => {
+const AdsBanner = ({path, size, idGpt, style, partner, setTarget}) => {
   const [ads, setAds] = useState(null);
   const [url, setUrl] = useState(null);
+  console.log(setTarget)
   // const toggleAds = useSelector(state => state.ads)
   // const dispatch = useDispatch();
   useEffect(() => {
@@ -15,8 +16,16 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
     googletag?.cmd?.push(function() {
         let  defineSlot;
         if (partner) {
+          console.log('masuk A');
           defineSlot = googletag.defineSlot(path, size, idGpt).setTargeting('partner_name', partner);
-        } else {
+        }
+        else if(setTarget){
+          console.log('masuk B');
+          console.log(setTarget.name)
+          defineSlot = googletag.defineSlot(path, size, idGpt).setTargeting(setTarget.name, setTarget.value);
+        }
+        else {
+          console.log('masuk C');
           defineSlot = googletag.defineSlot(path, size, idGpt);
         }
         defineSlot.addService(googletag.pubads());
