@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useSelector, useDispatch} from "react-redux"
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
+import { StickyContainer, Sticky } from 'react-sticky';
 import ax from 'axios';
 import { getSubCategory, getBannerCategoryActive, getHomepageCategory, getStoriesCategory } from "../redux/actions/homeCategoryActions";
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
@@ -11,6 +12,7 @@ import Header from "../components/Includes/HomeCategory/DetailCategory/Header"
 import Carousel from '../components/Includes/Gallery/Carousel_v2';
 import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import Stories from '../components/Includes/Gallery/Stories_v2';
+import StickyAds from '../components/Includes/Banner/StickyAds';
 import Panel1 from '../components/Panels/Pnl_1';
 import Panel2 from '../components/Panels/Pnl_2';
 import Panel3 from '../components/Panels/Pnl_3';
@@ -35,6 +37,7 @@ const Category = () => {
     const ref = useRef(null)
     const {category_id, category_title} = router.query;
     const {subCategory, subBanner, homepageCategory, listStoriesCategory} = useSelector(state => state.homeCategory);
+    const { ads_displayed } = useSelector(state => state.ads)
 
     const [token, setToken] = useState("")
     const [isShimmer, setIsShimmer] = useState(true);
@@ -42,13 +45,12 @@ const Category = () => {
     const [meta, setMeta] = useState();
     const [fetchAllowed, setFetchAllowed] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
-    const [page, setPage] = useState(1)
+    const [page, setPage] = useState(1);
+    const [sticky_ads_closed, setSticky_ads_closed] = useState(false)
 
     const bottomScrollFetch = () => {
-        console.log(`melakukan fetch ulang kontent`)
         const pageCurrent = page + 1;
         if(fetchAllowed && !isLoading){
-            console.log(`harusnya melakukan fetch lagi`)
             setIsLoading(true);
             ref.current.continuousStart();
             return new Promise(async (resolve, reject) => {
@@ -96,7 +98,7 @@ const Category = () => {
                             contentData.push(content);
                         }
                         // dispatch({ type: 'HOMEPAGE_CATEGORY', data: contents, meta: response.data.meta });
-                        console.log(`ini adalah content selanjutnya`, contentData)
+
                         setContents([...contents, ...contentData])
                         setPage(pageCurrent);
                         setFetchAllowed(pageCurrent != meta.pagination.total_page);
@@ -133,7 +135,8 @@ const Category = () => {
 
     useEffect(() => {
         const accessToken = getCookie('ACCESS_TOKEN');
-        setToken(accessToken == undefined ? getVisitorToken() : accessToken)
+        setToken(accessToken == undefined ? getVisitorToken() : accessToken);
+        
     }, [])
 
     return (
@@ -155,12 +158,50 @@ const Category = () => {
                     <Stories loadingBar={ref.current} detailCategory={true} id={category_id} />
                 </div>
 
+                    <StickyContainer>
+                        <Sticky disableHardwareAcceleration>
+                            { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
+                                const topDistance = 40;
+                                if (distanceFromTop < topDistance) {
+                                    if (!ads_displayed) {
+                                        return (
+                                            <div {...rest} >
+                                                <StickyAds/>
+                                            </div>
+                                        );
+                                    }
+                                    const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
+                                    if (adsContents.length > 0) {
+                                        if (adsContents[0].tagName == 'SCRIPT') {
+                                            const stickyAds = document.getElementById('sticky-ads-container');
+                                            if (stickyAds) {
+                                                stickyAds.style.display = 'none'
+                                            }
+                                        }
+                                    }
+                                    return (
+                                        <div {...rest} >
+                                            <StickyAds sticky/>
+                                        </div>
+                                    );
+                                }
+                                return (
+                                    <div {...rest} >
+                                        <StickyAds id='div-gpt-ad-1584677577539-0'/>
+                                    </div>
+                                );
+                            } }
+                        </Sticky>
+                    </StickyContainer>
+
+                <div />
+
                 <div style={subCategory === null && listStoriesCategory === null ? 
-                    { marginBottom: 45, marginTop: 100,   } 
+                    { marginBottom: 45, marginTop: 80  } 
                     : { marginBottom: 45}}
                 >
 
-                    <div style={listStoriesCategory === null ? { marginTop: 5 } : {}}>
+                    <div style={listStoriesCategory === null ? { marginTop: 15 } : {marginTop: 10}}>
                         {contents && contents.length > 0 && contents.map((content, i) => {
                             switch (content.display_type) {
                                 case 'horizontal_landscape_large':
