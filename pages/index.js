@@ -167,7 +167,7 @@ class Index_v2 extends React.Component {
                     <Carousel showStickyInstall={this.state.show_sticky_install} >
                         <GridMenu />
                     </Carousel>
-                    <div style={{marginTop: "20px"}}>
+                    <div style={{marginTop: "25px"}}>
                         <Stories loadingBar={this.LoadingBar} homepage={true}/>
                     </div>
                     
