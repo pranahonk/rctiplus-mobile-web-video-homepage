@@ -211,6 +211,7 @@ class Search extends React.Component {
     renderContent() {
         const {search_result, meta = null} = this.props.newsv2
         const assetsUrl = !isEmpty(meta) ? meta.assets_url : null
+        console.log(search_result.length);
         if (search_result.length > 0) {
             return (
                 <div className="result-content">
@@ -221,6 +222,15 @@ class Search extends React.Component {
                     ))}
                 </div>
             );
+        }
+        else{
+          return (
+            <div className="search-result">
+              <div className="search-result__title">Result</div>
+              <div className="search-result__desc">Your search for “dsgasdfggh” did not match any articles.</div>
+              <Img className="search-result__image" alt="Not Found News" src={`/static/group-2.svg`} />
+            </div>
+          )
         }
     }
 

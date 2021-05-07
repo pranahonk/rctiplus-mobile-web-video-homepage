@@ -104,3 +104,26 @@
         }
     }
 }
+
+.search-result{
+  margin: 0 0 0 16px;
+  color: #ffffff;
+
+  &__title{
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  &__desc{
+    font-size: 12px;
+    line-height: 1.83;
+    margin-bottom: 35px;
+  }
+
+  &__image{
+    margin: 0 auto;
+    display: flex;
+  }
+
+}
