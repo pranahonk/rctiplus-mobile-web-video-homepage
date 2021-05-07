@@ -166,14 +166,15 @@ class Search extends React.Component {
     clearSearchHistory() {
         removeCookie('SEARCH_HISTORY');
         this.setState({ search_history: [] });
+        this.renderSearchHistory()
     }
 
     renderSearchHistory() {
         const searchHistory = this.state.search_history;
         if (searchHistory && searchHistory.length > 0) {
-            if (this.props.newsv2.search_result.length <= 0 && this.props.newsv2.query.length > 0 && !this.props.newsv2.is_searching) {
-                return (<div className="not-found-message">No results found</div>);
-            }
+            // if (this.props.newsv2.search_result.length <= 0 && this.props.newsv2.query.length > 0 && !this.props.newsv2.is_searching) {
+            //     return (<div className="not-found-message">No results found</div>);
+            // }
 
             return (
                 <div style={{ fontSize: 14 }} className="search-history">
@@ -181,7 +182,7 @@ class Search extends React.Component {
                         <Col xs={6}>
                             {/*Search History*/}
                         </Col>
-                        <Col xs={6} style={{ textAlign: 'right', paddingRight: 15, fontSize: 12, color: '#6e6e6e' }}>
+                        <Col xs={6} onClick={() => {this.clearSearchHistory();}} style={{ textAlign: 'right', paddingRight: 15, fontSize: 12, color: '#6e6e6e' }}>
                             Clear All History
                         </Col>
                     </Row>

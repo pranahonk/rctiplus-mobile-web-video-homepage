@@ -84,7 +84,6 @@ class NavbarTrendingSearch extends Component {
 
   saveSearchHistory(q) {
         let searchHistory = getCookie('SEARCH_HISTORY');
-        console.log(q);
         if (!searchHistory) {
             setCookie('SEARCH_HISTORY', [q]);
         }
@@ -139,7 +138,8 @@ class NavbarTrendingSearch extends Component {
 
     handleKeyPress = (event) => {
         if(event.key === 'Enter'){
-            this.search()
+            this.search();
+            this.saveSearchHistory(this.props.newsv2.query);
         }
     }
   handleFocusParent = (e) =>{
