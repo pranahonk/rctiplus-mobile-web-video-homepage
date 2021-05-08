@@ -93,7 +93,7 @@ class Crs_v2 extends Component {
     }
 
     render() {
-        console.log(`ini banner yang mau di looping`, this.state.banner)
+        
         return (
                 <div style={{ 
                     position: 'relative', 
@@ -132,7 +132,7 @@ class Crs_v2 extends Component {
                             ))}
                     </Carousel>
                     {this.props.children}
-                    <div style={{ position: 'absolute', bottom: "-2px", backgroundImage: 'linear-gradient(180deg,rgba(40,40,40,0) 0,rgba(40,40,40,0) 0%,#282828)', width: '100%', height: 135 }}></div>
+                    <div style={{ position: 'absolute', bottom: -1.5, background: 'linear-gradient(180deg, #282828 9.89%, rgba(0, 0, 0, 0.0001) 100%)', transform: 'matrix(1, 0, 0, -1, 0, 0)', width: '100%', height: 136 }}></div>
                 </div>
                 );
     }
