@@ -281,8 +281,11 @@ class Stories extends React.Component {
                     channel = 'inews'
                 }
                 return `/tv/${channel}`;
+            case 'homepage_news':
+				return "/news"
             case 'news_detail' :
             case 'news_category':
+            case 'news_tags' :
                 return program.swipe_value
             case 'link':
                 if(program.swipe_value) {
