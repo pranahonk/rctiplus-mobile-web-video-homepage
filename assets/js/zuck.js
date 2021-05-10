@@ -706,8 +706,14 @@ module.exports = (window => {
 
 						if (items) {
 							const storyViewer = query(`#zuck-modal .story-viewer[data-story-id="${currentStory}"]`);
-
 							playVideoItem(storyViewer, [items[0], items[1]], true);
+						}
+
+						const storyName = zuck.data[storyId].name;
+						if (!storyName.includes('ads')) {
+							createStoryTouchEvents(modalSlider);
+						} else {
+							
 						}
 
 						option('callbacks', 'onView')(zuck.internalData['currentStory']);
@@ -911,6 +917,12 @@ module.exports = (window => {
 
 				// Story Ads
 				setTimeout(() => {
+					if (className === 'viewing') {
+						const storyName = get(storyData, 'name');
+						if (!storyName.includes('ads')) {
+							createStoryTouchEvents(modalSlider);
+						}
+					}
 					createStoryViewerAds(storyId, storyItems);
 				}, 150);
 			};
@@ -980,6 +992,8 @@ module.exports = (window => {
 				const enableMouseEvents = true;
 
 				const modalSlider = modalSliderElement;
+				const touchElement = query(`#zuck-modal .story-viewer[data-story-id="${zuck.internalData['currentStory']}"]`);
+				console.log(touchElement)
 
 				let position = {};
 				let touchOffset = void 0;
@@ -1030,12 +1044,17 @@ module.exports = (window => {
 						delta = {};
 
 						if (enableMouseEvents) {
-							modalSlider.addEventListener('mousemove', touchMove);
+							/* modalSlider.addEventListener('mousemove', touchMove);
 							modalSlider.addEventListener('mouseup', touchEnd);
-							modalSlider.addEventListener('mouseleave', touchEnd);
+							modalSlider.addEventListener('mouseleave', touchEnd); */
+							touchElement.addEventListener('mousemove', touchMove);
+							touchElement.addEventListener('mouseup', touchEnd);
+							touchElement.addEventListener('mouseleave', touchEnd);
 						}
-						modalSlider.addEventListener('touchmove', touchMove);
-						modalSlider.addEventListener('touchend', touchEnd);
+						/* modalSlider.addEventListener('touchmove', touchMove);
+						modalSlider.addEventListener('touchend', touchEnd); */
+						touchElement.addEventListener('touchmove', touchMove);
+						touchElement.addEventListener('touchend', touchEnd);
 
 						if (storyViewer) {
 							storyViewer.classList.add('paused');
@@ -1142,12 +1161,17 @@ module.exports = (window => {
 							touchOffset = undefined;
 
 							if (enableMouseEvents) {
-								modalSlider.removeEventListener('mousemove', touchMove);
+								/* modalSlider.removeEventListener('mousemove', touchMove);
 								modalSlider.removeEventListener('mouseup', touchEnd);
-								modalSlider.removeEventListener('mouseleave', touchEnd);
+								modalSlider.removeEventListener('mouseleave', touchEnd); */
+								touchElement.removeEventListener('mousemove', touchMove);
+								touchElement.removeEventListener('mouseup', touchEnd);
+								touchElement.removeEventListener('mouseleave', touchEnd);
 							}
-							modalSlider.removeEventListener('touchmove', touchMove);
-							modalSlider.removeEventListener('touchend', touchEnd);
+							/* modalSlider.removeEventListener('touchmove', touchMove);
+							modalSlider.removeEventListener('touchend', touchEnd); */
+							touchElement.removeEventListener('touchmove', touchMove);
+							touchElement.removeEventListener('touchend', touchEnd);
 						}
 
 						const video = zuck.internalData['currentVideoElement'];
@@ -1212,9 +1236,11 @@ module.exports = (window => {
 					}
 				};
 
-				modalSlider.addEventListener('touchstart', touchStart);
+				//modalSlider.addEventListener('touchstart', touchStart);
+				touchElement.addEventListener('touchstart', touchStart);
 				if (enableMouseEvents) {
-					modalSlider.addEventListener('mousedown', touchStart);
+					//modalSlider.addEventListener('mousedown', touchStart);
+					touchElement.addEventListener('mousedown', touchStart);
 				}
 			};
 
@@ -1232,7 +1258,7 @@ module.exports = (window => {
 						const storyData = zuck.data[storyId];
 						const currentItem = storyData['currentItem'] || 0;
 						const modalSlider = query(`#zuck-modal-slider-${id}`);
-						createStoryTouchEvents(modalSlider);
+						//createStoryTouchEvents(modalSlider);
 
 						zuck.internalData['currentStory'] = storyId;
 						storyData['currentItem'] = currentItem;

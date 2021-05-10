@@ -42,6 +42,10 @@ class Stories extends React.Component {
                     const stories = this.props.stories.data;
                     for (const story of stories) {
                         timelines.push(this.buildTimeline(story));
+
+                        if (story.gpt.length >= 1) {
+                            timelines.push(this.buildStoryGPT(story.gpt));
+                        }
                     }
 
                     let currentLength = this.state.totalLength + this.props.stories.data.length;
@@ -168,6 +172,10 @@ class Stories extends React.Component {
                     const stories = this.props.stories.data;
                     for (const story of stories) {
                         timelines.push(this.buildTimeline(story));
+                        
+                        if (story.gpt.length >= 1) {
+                            timelines.push(this.buildStoryGPT(story.gpt));
+                        }
                     }
 
                     let currentLength = this.state.totalLength + this.props.stories.data.length;
