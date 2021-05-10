@@ -119,11 +119,11 @@ module.exports = (window => {
 								const items = storyViewer.querySelectorAll('[data-index].active');
 								const itemPointer = items[0];
 								
-								setVendorVariable(
+								/* setVendorVariable(
 									itemPointer.getElementsByTagName('b')[0].style,
 									'AnimationDuration',
 									`5s`
-								);
+								); */
 							}
 						}
 						break;
@@ -655,7 +655,7 @@ module.exports = (window => {
 									}
 									item.destroyed = true;
 								} else if (item.type == 'ads') {
-									item.destroyed = googletag.destroySlots([item.adsSlot]);;
+									item.destroyed = googletag.destroySlots([item.adsSlot]);
 								}
 							});
 
@@ -706,8 +706,14 @@ module.exports = (window => {
 
 						if (items) {
 							const storyViewer = query(`#zuck-modal .story-viewer[data-story-id="${currentStory}"]`);
-
 							playVideoItem(storyViewer, [items[0], items[1]], true);
+						}
+
+						const storyName = zuck.data[storyId].name;
+						if (!storyName.includes('ads')) {
+							createStoryTouchEvents(modalSlider);
+						} else {
+							createStoryViewerAds(currentStory, zuck.data[currentStory].items);
 						}
 
 						option('callbacks', 'onView')(zuck.internalData['currentStory']);
@@ -729,6 +735,7 @@ module.exports = (window => {
 				let pointerItems = '';
 
 				const storyId = get(storyData, 'id');
+				const isStoryAds = get(storyData, 'name').includes('ads');
 				const slides = document.createElement('div');
 				const currentItem = get(storyData, 'currentItem') || 0;
 				const exists = query(`#zuck-modal .story-viewer[data-story-id="${storyId}"]`);
@@ -775,74 +782,76 @@ module.exports = (window => {
 					}
 				});
 
-				const video = slides.querySelector('video');
-				if (video) {
-					const item = storyData.items[currentItem];
+				if (!isStoryAds) {
+					const video = slides.querySelector('video');
+					if (video) {
+						const item = storyData.items[currentItem];
 
-					const addMuted = function (video) {
-						const muted = item.videoType == 'mpd' ? video.isMuted() : video.muted;
-						if (muted) {
-							storyViewer.classList.add('muted');
+						const addMuted = function (video) {
+							const muted = item.videoType == 'mpd' ? video.isMuted() : video.muted;
+							if (muted) {
+								storyViewer.classList.add('muted');
+							} else {
+								storyViewer.classList.remove('muted');
+							}
+						};
+
+						if (item.videoType != 'mpd') {
+							video.onwaiting = e => {
+								if (video.paused) {
+									storyViewer.classList.add('paused');
+									storyViewer.classList.add('loading');
+								}
+							};
+
+							video.onplay = () => {
+								addMuted(video);
+
+								storyViewer.classList.remove('stopped');
+								storyViewer.classList.remove('paused');
+								storyViewer.classList.remove('loading');
+							};
+
+							video.onload = video.onplaying = video.oncanplay = () => {
+								addMuted(video);
+
+								storyViewer.classList.remove('loading');
+							};
+
+							video.onvolumechange = () => {
+								addMuted(video);
+							};
 						} else {
-							storyViewer.classList.remove('muted');
-						}
-					};
+							item.mpdPlayer.preload();
 
-					if (item.videoType != 'mpd') {
-						video.onwaiting = e => {
-							if (video.paused) {
-								storyViewer.classList.add('paused');
-								storyViewer.classList.add('loading');
+							item.mpdPlayer.on('playbackWaiting', () => {
+								if (item.mpdPlayer.isPaused()) {
+									storyViewer.classList.add('paused');
+									storyViewer.classList.add('loading');
+								}
+							});
+
+							item.mpdPlayer.getVideoElement().onplay = () => {
+								addMuted(item.mpdPlayer);
+
+								storyViewer.classList.remove('stopped');
+								storyViewer.classList.remove('paused');
+								storyViewer.classList.remove('loading');
 							}
-						};
 
-						video.onplay = () => {
-							addMuted(video);
+							item.mpdPlayer.on('playbackPlaying', () => {
+								addMuted(item.mpdPlayer);
+								storyViewer.classList.remove('loading');
+							});
 
-							storyViewer.classList.remove('stopped');
-							storyViewer.classList.remove('paused');
-							storyViewer.classList.remove('loading');
-						};
+							item.mpdPlayer.on('canPlay', () => {
+								addMuted(item.mpdPlayer);
+								storyViewer.classList.remove('loading');
+							});
 
-						video.onload = video.onplaying = video.oncanplay = () => {
-							addMuted(video);
-
-							storyViewer.classList.remove('loading');
-						};
-
-						video.onvolumechange = () => {
-							addMuted(video);
-						};
-					} else {
-						item.mpdPlayer.preload();
-
-						item.mpdPlayer.on('playbackWaiting', () => {
-							if (item.mpdPlayer.isPaused()) {
-								storyViewer.classList.add('paused');
-								storyViewer.classList.add('loading');
+							item.mpdPlayer.getVideoElement().onvolumechange = () => {
+								addMuted(item.mpdPlayer);
 							}
-						});
-
-						item.mpdPlayer.getVideoElement().onplay = () => {
-							addMuted(item.mpdPlayer);
-
-							storyViewer.classList.remove('stopped');
-							storyViewer.classList.remove('paused');
-							storyViewer.classList.remove('loading');
-						}
-
-						item.mpdPlayer.on('playbackPlaying', () => {
-							addMuted(item.mpdPlayer);
-							storyViewer.classList.remove('loading');
-						});
-
-						item.mpdPlayer.on('canPlay', () => {
-							addMuted(item.mpdPlayer);
-							storyViewer.classList.remove('loading');
-						});
-
-						item.mpdPlayer.getVideoElement().onvolumechange = () => {
-							addMuted(item.mpdPlayer);
 						}
 					}
 				}
@@ -899,20 +908,38 @@ module.exports = (window => {
 					}
 				}
 				
-
-				let linkElement = storyViewer.querySelector('.slides a[target="_parent"]');
-				if (linkElement) {
-					linkElement.onclick = function() {
-						const currentItem = storyData.currentItem || 0;
-						const item = storyData.items[currentItem];
-						homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_here', 'N/A'); // TODO: story ads type
-					};
+				if (!isStoryAds) {
+					let linkElement = storyViewer.querySelector('.slides a[target="_parent"]');
+					if (linkElement) {
+						linkElement.onclick = function() {
+							const currentItem = storyData.currentItem || 0;
+							const item = storyData.items[currentItem];
+							homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_here', 'N/A'); // TODO: story ads type
+						};
+					}
 				}
 
 				// Story Ads
 				setTimeout(() => {
-					createStoryViewerAds(storyId, storyItems);
+					if (className === 'viewing') {
+						const storyName = get(storyData, 'name');
+						if (!storyName.includes('ads')) {
+							createStoryTouchEvents(modalSlider);
+						}
+					}
 				}, 150);
+
+				if (isStoryAds) {
+					if (className === 'viewing') {
+						setTimeout(function compileAds() {
+							if (document.querySelector('#' + storyItems[0].preview)) {
+								createStoryViewerAds(storyId, storyItems);
+							} else {
+								setTimeout(compileAds, 100);
+							}
+						}, 100);
+					}
+				}
 			};
 
 			// Story Ads
@@ -946,8 +973,6 @@ module.exports = (window => {
 								itemId: item.id
 							};
 
-							console.log('init ads')
-
 							//console.log('message string', JSON.stringify(msg))
 							adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
 
@@ -980,6 +1005,8 @@ module.exports = (window => {
 				const enableMouseEvents = true;
 
 				const modalSlider = modalSliderElement;
+				const touchElement = query(`#zuck-modal .story-viewer[data-story-id="${zuck.internalData['currentStory']}"]`);
+				console.log(touchElement)
 
 				let position = {};
 				let touchOffset = void 0;
@@ -1030,12 +1057,17 @@ module.exports = (window => {
 						delta = {};
 
 						if (enableMouseEvents) {
-							modalSlider.addEventListener('mousemove', touchMove);
+							/* modalSlider.addEventListener('mousemove', touchMove);
 							modalSlider.addEventListener('mouseup', touchEnd);
-							modalSlider.addEventListener('mouseleave', touchEnd);
+							modalSlider.addEventListener('mouseleave', touchEnd); */
+							touchElement.addEventListener('mousemove', touchMove);
+							touchElement.addEventListener('mouseup', touchEnd);
+							touchElement.addEventListener('mouseleave', touchEnd);
 						}
-						modalSlider.addEventListener('touchmove', touchMove);
-						modalSlider.addEventListener('touchend', touchEnd);
+						/* modalSlider.addEventListener('touchmove', touchMove);
+						modalSlider.addEventListener('touchend', touchEnd); */
+						touchElement.addEventListener('touchmove', touchMove);
+						touchElement.addEventListener('touchend', touchEnd);
 
 						if (storyViewer) {
 							storyViewer.classList.add('paused');
@@ -1142,12 +1174,17 @@ module.exports = (window => {
 							touchOffset = undefined;
 
 							if (enableMouseEvents) {
-								modalSlider.removeEventListener('mousemove', touchMove);
+								/* modalSlider.removeEventListener('mousemove', touchMove);
 								modalSlider.removeEventListener('mouseup', touchEnd);
-								modalSlider.removeEventListener('mouseleave', touchEnd);
+								modalSlider.removeEventListener('mouseleave', touchEnd); */
+								touchElement.removeEventListener('mousemove', touchMove);
+								touchElement.removeEventListener('mouseup', touchEnd);
+								touchElement.removeEventListener('mouseleave', touchEnd);
 							}
-							modalSlider.removeEventListener('touchmove', touchMove);
-							modalSlider.removeEventListener('touchend', touchEnd);
+							/* modalSlider.removeEventListener('touchmove', touchMove);
+							modalSlider.removeEventListener('touchend', touchEnd); */
+							touchElement.removeEventListener('touchmove', touchMove);
+							touchElement.removeEventListener('touchend', touchEnd);
 						}
 
 						const video = zuck.internalData['currentVideoElement'];
@@ -1212,9 +1249,11 @@ module.exports = (window => {
 					}
 				};
 
-				modalSlider.addEventListener('touchstart', touchStart);
+				//modalSlider.addEventListener('touchstart', touchStart);
+				touchElement.addEventListener('touchstart', touchStart);
 				if (enableMouseEvents) {
-					modalSlider.addEventListener('mousedown', touchStart);
+					//modalSlider.addEventListener('mousedown', touchStart);
+					touchElement.addEventListener('mousedown', touchStart);
 				}
 			};
 
@@ -1232,7 +1271,7 @@ module.exports = (window => {
 						const storyData = zuck.data[storyId];
 						const currentItem = storyData['currentItem'] || 0;
 						const modalSlider = query(`#zuck-modal-slider-${id}`);
-						createStoryTouchEvents(modalSlider);
+						//createStoryTouchEvents(modalSlider);
 
 						zuck.internalData['currentStory'] = storyId;
 						storyData['currentItem'] = currentItem;
@@ -1376,7 +1415,7 @@ module.exports = (window => {
 							}
 							item.destroyed = true;
 						} else if (item.type == 'ads') {
-							item.destroyed = googletag.destroySlots([item.adsSlot]);;
+							item.destroyed = googletag.destroySlots();
 						}
 					})
 
