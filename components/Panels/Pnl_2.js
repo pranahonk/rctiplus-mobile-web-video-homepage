@@ -72,6 +72,7 @@ class Pnl_2 extends React.Component {
 				break;
 				case 'news_detail' :
 				case 'news_category':
+				case 'news_tags' :
 						window.open(program.link, '_parent');
 						break;
 				case 'episode':
