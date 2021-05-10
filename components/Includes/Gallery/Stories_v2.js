@@ -52,7 +52,7 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
-                            backButton: true,
+                            backButton: false,
                             backNative: false,
                             previousTap: true,
                             skin: currentSkin['name'],
@@ -178,7 +178,7 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
-                            backButton: true,
+                            backButton: false,
                             backNative: false,
                             previousTap: true,
                             skin: currentSkin['name'],
