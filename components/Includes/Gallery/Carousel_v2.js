@@ -59,6 +59,8 @@ class Crs_v2 extends Component {
                     Router.push(`/tv/${channel}`);
                 break;
             case 'news_detail' :
+            case 'news_tags' :
+            case 'homepage_news' :
             case 'news_category':
                 window.open(program.type_value, '_parent');
                 break;
