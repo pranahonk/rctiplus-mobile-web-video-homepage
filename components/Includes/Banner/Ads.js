@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { GPT_NEWS_LINK_LIST, GPT_NEWS_LINK_DETAIL } from '../../../config'
+import {GPT_NEWS_LINK_LIST, GPT_NEWS_LINK_DETAIL, DEV_API} from '../../../config';
+import {connect} from 'react-redux';
+import adsActions from '../../../redux/actions/adsActions';
+import ax from "axios";
+import { getUidAppier } from '../../../utils/appier';
 // import $ from 'jquery';
 // import { useSelector, useDispatch } from 'react-redux';
 
-const AdsBanner = ({path, size, idGpt, style, partner}) => {
+
+const axios = ax.create({ baseURL: DEV_API });
+const AdsBanner = ({path, size, idGpt, style, partner, setTarget}) => {
   const [ads, setAds] = useState(null);
   const [url, setUrl] = useState(null);
   // const toggleAds = useSelector(state => state.ads)
@@ -14,9 +20,23 @@ const AdsBanner = ({path, size, idGpt, style, partner}) => {
     window.googletag = window.googletag || {cmd: []};
     googletag?.cmd?.push(function() {
         let  defineSlot;
-        if (partner) {
+        if (setTarget && partner) {
+          defineSlot = googletag.defineSlot(path, size, idGpt).addService(googletag.pubads());
+          axios.get(`/ads/v1/cust-params?platform=mweb&aid=${getUidAppier()}`)
+            .then((res) => {
+              googletag.pubads().setTargeting('partner_name', partner)
+              if (res.data.length > 0) {
+                 for (const custParam of res.data) {
+                  googletag.pubads().setTargeting(custParam.name, custParam.value);
+                }
+              }
+            })
+            .catch((err) => console.error(err));
+        }
+        else if (partner) {
           defineSlot = googletag.defineSlot(path, size, idGpt).setTargeting('partner_name', partner);
-        } else {
+        }
+        else {
           defineSlot = googletag.defineSlot(path, size, idGpt);
         }
         defineSlot.addService(googletag.pubads());

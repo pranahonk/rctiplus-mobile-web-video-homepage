@@ -5,6 +5,9 @@ import { GPT_ID_LIST, GPT_NEWS_ANDROID_LIST, GPT_NEWS_IOS_LIST, GPT_NEWS_MWEB_LI
 // import Layout from '../components/Layouts/Default_v2';
 import queryString from 'query-string';
 import { withRouter } from 'next/router';
+import { connect } from 'react-redux';
+import newsv2Actions from '../redux/actions/newsv2Actions';
+import adsActions from '../redux/actions/adsActions.js';
 
 class Dfp extends React.Component {
   constructor(props) {
@@ -22,13 +25,15 @@ class Dfp extends React.Component {
   render() {
     return(
       <div>
-        <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} />
+        <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} setTarget={true} />
       </div>
     )
   }
 }
-
-export default withRouter(Dfp);
+export default connect(state => state, {
+  ...adsActions,
+  ...newsv2Actions,
+})(withRouter(Dfp));
 
 const getPlatformGpt = (platform) => {
   // webview
