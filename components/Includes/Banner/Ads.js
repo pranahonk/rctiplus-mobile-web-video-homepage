@@ -107,14 +107,6 @@ const AdsBanner = ({path, size, idGpt, style, partner, setTarget}) => {
   );
 };
 
-AdsBanner.getInitialProps = async ({ req }) => {
-  const res = await axios.get(`/ads/v1/cust-params?platform=mweb&aid=${getUidAppier()}`);
-  console.log(res);
-  // return { stars: json.stargazers_count }
-}
-
-
-
 export default AdsBanner;
 
 AdsBanner.propTypes = {
