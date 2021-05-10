@@ -20,24 +20,12 @@ class Dfp extends React.Component {
             this.platform = q.platform;
         }
     }
-
-    this.state = {
-      setTarget : null,
-    };
-  }
-
-  async componentDidMount() {
-    const setTarget = await this.props.fetchTargetingAds();
-    this.setState({
-      setTarget: setTarget[0],
-    });
-    console.log(this.state.setTarget)
   }
 
   render() {
     return(
       <div>
-        <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} setTarget={this.state.setTarget} />
+        <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} setTarget={true} />
       </div>
     )
   }
