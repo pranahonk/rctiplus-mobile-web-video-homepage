@@ -321,6 +321,7 @@ and open the template in the editor.
   overflow: hidden;
   background: #000;
 }
+/* need to disable when story-viewer is ads */
 #zuck-modal-content .story-viewer .slides .item:before {
   z-index: 4;
   background: transparent;

@@ -119,11 +119,11 @@ module.exports = (window => {
 								const items = storyViewer.querySelectorAll('[data-index].active');
 								const itemPointer = items[0];
 								
-								setVendorVariable(
+								/* setVendorVariable(
 									itemPointer.getElementsByTagName('b')[0].style,
 									'AnimationDuration',
 									`5s`
-								);
+								); */
 							}
 						}
 						break;
@@ -655,7 +655,7 @@ module.exports = (window => {
 									}
 									item.destroyed = true;
 								} else if (item.type == 'ads') {
-									item.destroyed = googletag.destroySlots([item.adsSlot]);;
+									item.destroyed = googletag.destroySlots([item.adsSlot]);
 								}
 							});
 
@@ -713,7 +713,7 @@ module.exports = (window => {
 						if (!storyName.includes('ads')) {
 							createStoryTouchEvents(modalSlider);
 						} else {
-							
+							createStoryViewerAds(currentStory, zuck.data[currentStory].items);
 						}
 
 						option('callbacks', 'onView')(zuck.internalData['currentStory']);
@@ -735,6 +735,7 @@ module.exports = (window => {
 				let pointerItems = '';
 
 				const storyId = get(storyData, 'id');
+				const isStoryAds = get(storyData, 'name').includes('ads');
 				const slides = document.createElement('div');
 				const currentItem = get(storyData, 'currentItem') || 0;
 				const exists = query(`#zuck-modal .story-viewer[data-story-id="${storyId}"]`);
@@ -781,74 +782,76 @@ module.exports = (window => {
 					}
 				});
 
-				const video = slides.querySelector('video');
-				if (video) {
-					const item = storyData.items[currentItem];
+				if (!isStoryAds) {
+					const video = slides.querySelector('video');
+					if (video) {
+						const item = storyData.items[currentItem];
 
-					const addMuted = function (video) {
-						const muted = item.videoType == 'mpd' ? video.isMuted() : video.muted;
-						if (muted) {
-							storyViewer.classList.add('muted');
+						const addMuted = function (video) {
+							const muted = item.videoType == 'mpd' ? video.isMuted() : video.muted;
+							if (muted) {
+								storyViewer.classList.add('muted');
+							} else {
+								storyViewer.classList.remove('muted');
+							}
+						};
+
+						if (item.videoType != 'mpd') {
+							video.onwaiting = e => {
+								if (video.paused) {
+									storyViewer.classList.add('paused');
+									storyViewer.classList.add('loading');
+								}
+							};
+
+							video.onplay = () => {
+								addMuted(video);
+
+								storyViewer.classList.remove('stopped');
+								storyViewer.classList.remove('paused');
+								storyViewer.classList.remove('loading');
+							};
+
+							video.onload = video.onplaying = video.oncanplay = () => {
+								addMuted(video);
+
+								storyViewer.classList.remove('loading');
+							};
+
+							video.onvolumechange = () => {
+								addMuted(video);
+							};
 						} else {
-							storyViewer.classList.remove('muted');
-						}
-					};
+							item.mpdPlayer.preload();
 
-					if (item.videoType != 'mpd') {
-						video.onwaiting = e => {
-							if (video.paused) {
-								storyViewer.classList.add('paused');
-								storyViewer.classList.add('loading');
+							item.mpdPlayer.on('playbackWaiting', () => {
+								if (item.mpdPlayer.isPaused()) {
+									storyViewer.classList.add('paused');
+									storyViewer.classList.add('loading');
+								}
+							});
+
+							item.mpdPlayer.getVideoElement().onplay = () => {
+								addMuted(item.mpdPlayer);
+
+								storyViewer.classList.remove('stopped');
+								storyViewer.classList.remove('paused');
+								storyViewer.classList.remove('loading');
 							}
-						};
 
-						video.onplay = () => {
-							addMuted(video);
+							item.mpdPlayer.on('playbackPlaying', () => {
+								addMuted(item.mpdPlayer);
+								storyViewer.classList.remove('loading');
+							});
 
-							storyViewer.classList.remove('stopped');
-							storyViewer.classList.remove('paused');
-							storyViewer.classList.remove('loading');
-						};
+							item.mpdPlayer.on('canPlay', () => {
+								addMuted(item.mpdPlayer);
+								storyViewer.classList.remove('loading');
+							});
 
-						video.onload = video.onplaying = video.oncanplay = () => {
-							addMuted(video);
-
-							storyViewer.classList.remove('loading');
-						};
-
-						video.onvolumechange = () => {
-							addMuted(video);
-						};
-					} else {
-						item.mpdPlayer.preload();
-
-						item.mpdPlayer.on('playbackWaiting', () => {
-							if (item.mpdPlayer.isPaused()) {
-								storyViewer.classList.add('paused');
-								storyViewer.classList.add('loading');
+							item.mpdPlayer.getVideoElement().onvolumechange = () => {
+								addMuted(item.mpdPlayer);
 							}
-						});
-
-						item.mpdPlayer.getVideoElement().onplay = () => {
-							addMuted(item.mpdPlayer);
-
-							storyViewer.classList.remove('stopped');
-							storyViewer.classList.remove('paused');
-							storyViewer.classList.remove('loading');
-						}
-
-						item.mpdPlayer.on('playbackPlaying', () => {
-							addMuted(item.mpdPlayer);
-							storyViewer.classList.remove('loading');
-						});
-
-						item.mpdPlayer.on('canPlay', () => {
-							addMuted(item.mpdPlayer);
-							storyViewer.classList.remove('loading');
-						});
-
-						item.mpdPlayer.getVideoElement().onvolumechange = () => {
-							addMuted(item.mpdPlayer);
 						}
 					}
 				}
@@ -905,14 +908,15 @@ module.exports = (window => {
 					}
 				}
 				
-
-				let linkElement = storyViewer.querySelector('.slides a[target="_parent"]');
-				if (linkElement) {
-					linkElement.onclick = function() {
-						const currentItem = storyData.currentItem || 0;
-						const item = storyData.items[currentItem];
-						homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_here', 'N/A'); // TODO: story ads type
-					};
+				if (!isStoryAds) {
+					let linkElement = storyViewer.querySelector('.slides a[target="_parent"]');
+					if (linkElement) {
+						linkElement.onclick = function() {
+							const currentItem = storyData.currentItem || 0;
+							const item = storyData.items[currentItem];
+							homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_click_here', 'N/A'); // TODO: story ads type
+						};
+					}
 				}
 
 				// Story Ads
@@ -923,8 +927,19 @@ module.exports = (window => {
 							createStoryTouchEvents(modalSlider);
 						}
 					}
-					createStoryViewerAds(storyId, storyItems);
 				}, 150);
+
+				if (isStoryAds) {
+					if (className === 'viewing') {
+						setTimeout(function compileAds() {
+							if (document.querySelector('#' + storyItems[0].preview)) {
+								createStoryViewerAds(storyId, storyItems);
+							} else {
+								setTimeout(compileAds, 100);
+							}
+						}, 100);
+					}
+				}
 			};
 
 			// Story Ads
@@ -957,8 +972,6 @@ module.exports = (window => {
 								storyId: sID,
 								itemId: item.id
 							};
-
-							console.log('init ads')
 
 							//console.log('message string', JSON.stringify(msg))
 							adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
@@ -1402,7 +1415,7 @@ module.exports = (window => {
 							}
 							item.destroyed = true;
 						} else if (item.type == 'ads') {
-							item.destroyed = googletag.destroySlots([item.adsSlot]);;
+							item.destroyed = googletag.destroySlots();
 						}
 					})
 
