@@ -26,7 +26,7 @@ import AddIcon from '@material-ui/icons/Add';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2, BASE_URL, SHARE_BASE_URL } from '../config';
 import { formatDateWordID } from '../utils/dateHelpers';
-import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2 } from '../utils/cookie';
+import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2, getUserAccessToken } from '../utils/cookie';
 
 import '../assets/scss/components/trending_v2.scss';
 
@@ -348,15 +348,18 @@ class Trending_v2 extends React.Component {
           device_id: new DeviceUUID().get(),
         });
 
-        await this.props.getSelectedChannelsVisitor(this.state.device_id)
-          .then((res) =>{
-            this.setState({
-              not_logged_in_category: res.data.data,
+        if(getUserAccessToken()){
+          await this.props.getSelectedChannelsVisitor(this.state.device_id)
+            .then((res) =>{
+              this.setState({
+                not_logged_in_category: res.data.data,
+              });
+            })
+            .catch((err) =>{
+              console.error(err)
             });
-          })
-          .catch((err) =>{
-            console.error(err)
-          });
+        }
+
         if (this.accessToken !== null &&  this.accessToken !== undefined) {
             const decodedToken = jwtDecode(this.accessToken);
             if (decodedToken && decodedToken.uid != '0') {
@@ -369,7 +372,7 @@ class Trending_v2 extends React.Component {
         else {
             this.props.getUserData()
                 .then(response => {
-                    console.log(response);
+                    // console.log(response);
                     this.fetchData(true);
                 })
                 .catch(error => {
