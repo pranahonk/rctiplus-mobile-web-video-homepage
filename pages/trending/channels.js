@@ -36,7 +36,7 @@ import {
 } from '../../utils/appier';
 
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
-import {removeAccessToken, setAccessToken, setNewsChannels} from '../../utils/cookie';
+import {removeAccessToken, setAccessToken, setNewsChannels, getUserAccessToken} from '../../utils/cookie';
 
 import queryString from 'query-string';
 import ax from 'axios';
@@ -74,6 +74,9 @@ class Channels extends React.Component {
             if (q.platform) {
                 this.platform = q.platform;
             }
+        }
+        else if(getUserAccessToken()){
+          this.accessToken = getUserAccessToken();
         }
         else {
             removeAccessToken();
@@ -146,7 +149,6 @@ class Channels extends React.Component {
             let channels = response.data.data.filter(x => x.id !== 15 && x.id !== 12 && x.id !== 1);
             if (!isLoggedIn) {
               let savedChannels = savedCategoriesNews;
-              // console.log(savedChannels);
               for (let i = 0; i < channels.length; i++) {
                 if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
                   channels.splice(i, 1);
