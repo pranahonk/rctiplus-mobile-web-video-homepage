@@ -124,6 +124,15 @@ module.exports = (window => {
 									'AnimationDuration',
 									`5s`
 								); */
+							} else {
+								const storyId = zuck.internalData['currentStory'];
+								let items = query(`#zuck-modal [data-story-id="${storyId}"]`);
+								items = items.querySelectorAll('[data-index].active');
+
+								if (items) {
+									const storyViewer = query(`#zuck-modal .story-viewer[data-story-id="${storyId}"]`);
+									playVideoItem(storyViewer, [items[0], items[1]], false);
+								}
 							}
 						}
 						break;
@@ -929,7 +938,7 @@ module.exports = (window => {
 					}
 				}, 150);
 
-				if (isStoryAds) {
+				/* if (isStoryAds) {
 					if (className === 'viewing') {
 						setTimeout(function compileAds() {
 							if (document.querySelector('#' + storyItems[0].preview)) {
@@ -939,7 +948,7 @@ module.exports = (window => {
 							}
 						}, 100);
 					}
-				}
+				} */
 			};
 
 			// Story Ads

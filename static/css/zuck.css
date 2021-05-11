@@ -332,6 +332,9 @@ and open the template in the editor.
   bottom: 0;
   top: 0;
 }
+#zuck-modal-content .story-viewer .slides .item[data-type=ads]:before {
+  display: none;
+}
 #zuck-modal-content .story-viewer .slides .item > .media {
   height: 100%;
   position: absolute;
