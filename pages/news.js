@@ -370,7 +370,7 @@ class Trending_v2 extends React.Component {
         else {
             this.props.getUserData()
                 .then(response => {
-                    console.log(response);
+                    // console.log(response);
                     this.fetchData(true);
                 })
                 .catch(error => {
@@ -419,7 +419,6 @@ class Trending_v2 extends React.Component {
                     }
 
                     if (!isLoggedIn) {
-                      console.log('masuk')
                         for (let i = 0; i < savedCategories.length; i++) {
                             if (categories.findIndex(c => c.id == savedCategories[i].id) == -1) {
                                 sortedCategories.push(savedCategories[i]);
