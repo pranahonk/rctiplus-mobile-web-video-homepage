@@ -32,6 +32,7 @@ class Crs_v2 extends Component {
     }
 
     goToProgram(program) {
+        console.log(program)
         homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + this.state.resolution + program.portrait_image, this.state.meta.image_path + this.state.resolution + program.landscape_image, 'mweb_homepage_banner_clicked');
         switch (program.type) {
                 case 'live_streaming' :
@@ -52,9 +53,11 @@ class Crs_v2 extends Component {
                 break;
             case 'news_detail' :
             case 'news_tags' :
-            case 'homepage_news' :
             case 'news_category':
                 window.open(program.type_value, '_parent');
+                break;
+            case 'homepage_news':
+                Router.push(`/news`)
                 break;
             case 'url':
                 window.open(program.type_value, '_blank');
