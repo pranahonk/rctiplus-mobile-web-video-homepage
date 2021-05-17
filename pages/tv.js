@@ -773,11 +773,11 @@ class Tv extends React.Component {
 		const twitter_img_alt = SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.twitter_img_alt
 		channel = channel === 'globaltv' ? 'gtv' : channel
 		return {
-			title: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel?.toUpperCase()} - RCTI+` : titleChannel,
+			title: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel == 'inews' ? 'iNEWS' : channel?.toUpperCase()} - RCTI+` : titleChannel,
 			image: titleEpg ? SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image_catchup : SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image,
-			description: titleEpg ? `Nonton streaming ${titleEpg} - ${paramsDate}  online tanpa buffering dan acara favorit lainnya 7 hari kemarin. Dapatkan juga jadwal acara ${channel?.toUpperCase()} terbaru hanya di RCTI+` : descriptionChannel,
+			description: titleEpg ? `Nonton streaming ${titleEpg} - ${paramsDate}  online tanpa buffering dan acara favorit lainnya 7 hari kemarin. Dapatkan juga jadwal acara ${channel == 'inews' ? 'iNEWS' : channel?.toUpperCase()} terbaru hanya di RCTI+` : descriptionChannel,
 			keywords: titleEpg ? `streaming ${channel}, live streaming ${channel}, ${channel} live, ${channel} streaming, ${channel} live streaming. ${titleEpg}, ${paramsDate}` : keywordsChannel,
-			twitter_img_alt: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel?.toUpperCase()} - RCTI+` : twitter_img_alt,
+			twitter_img_alt: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel == 'inews' ? 'iNEWS' : channel?.toUpperCase()} - RCTI+` : twitter_img_alt,
 		}
 	}
 	// _onClickEpg() {

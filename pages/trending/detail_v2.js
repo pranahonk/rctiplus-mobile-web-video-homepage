@@ -324,10 +324,9 @@ class Detail extends React.Component {
         newsArticleShareClicked(cdata.id, cdata.title, cdata.category_source, 'mweb_news_share_article_clicked');
     }
 
-  forceUpdateHandler(){
-      console.log('ini di update')
-      this.forceUpdate();
-  };
+    forceUpdateHandler(){
+        this.forceUpdate();
+    };
 
     renderActionButton(scrolledDown) {
         const asPath = this.props.router.asPath;
@@ -753,6 +752,16 @@ class Detail extends React.Component {
                                         {this.renderActionButton()}
                                     </div>
                                 </div>
+                                <div className="ads-banner__detail_news">
+                                  <AdsBanner
+                                    partner={cdata.source}
+                                    path={getPlatformGpt(this.platform)}
+                                    size={[300, 250]}
+                                    idGpt={process.env.GPT_ID_DETAIL}
+                                    setTarget={true}
+                                  />
+                                  {/* <span>partner: { cdata.source }</span> */}
+                                </div>
                                 { cdata.exclusive === 'yes' ? (<div />
                                 ) : (
                                     <div className="ads-banner__detail_news">
@@ -761,6 +770,7 @@ class Detail extends React.Component {
                                             path={getPlatformGpt(this.platform)}
                                             size={[300, 250]}
                                             idGpt={process.env.GPT_ID_DETAIL}
+                                            setTarget={true}
                                             />
                                         {/* <span>partner: { cdata.source }</span> */}
                                     </div>
