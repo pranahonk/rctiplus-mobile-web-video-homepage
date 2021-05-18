@@ -36,11 +36,11 @@ import {
 } from '../../utils/appier';
 
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
-import {removeAccessToken, setAccessToken, setNewsChannels} from '../../utils/cookie';
+import { removeAccessToken, setAccessToken, setNewsChannels, getUserAccessToken, checkToken } from '../../utils/cookie';
 
 import queryString from 'query-string';
 import ax from 'axios';
-import {NEWS_API_V2} from '../../config';
+import {NEWS_API_V2, DEV_API} from '../../config';
 
 const jwtDecode = require('jwt-decode');
 const axios = ax.create({baseURL: NEWS_API_V2 + '/api'});
@@ -56,6 +56,7 @@ class Channels extends React.Component {
         selected_channel_ids: [],
         user_data: null,
         device_id: null,
+        is_login: false,
     };
 
     constructor(props) {
@@ -75,6 +76,9 @@ class Channels extends React.Component {
                 this.platform = q.platform;
             }
         }
+        else if(getUserAccessToken()){
+          this.accessToken = getUserAccessToken();
+        }
         else {
             removeAccessToken();
         }
@@ -84,41 +88,70 @@ class Channels extends React.Component {
     this.setState({
       device_id: new DeviceUUID().get(),
     });
-    const savedCategories = this.accessToken ? await this.props.getCategoryV2() : await this.props.getSelectedChannelsVisitor(new DeviceUUID().get());
-    const savedCategoriesNews = savedCategories.data.data;
-    if (this.accessToken) {
-      const decodedToken = jwtDecode(this.accessToken);
-      if (decodedToken && decodedToken.uid != '0') {
-        this.setState({saved_categories: savedCategoriesNews}, () => {
-          this.fetchData(savedCategoriesNews, true);
+
+    this.props.getUserData()
+      .then(response => {
+        this.setState({
+          is_login: true,
         });
-      } else {
-        this.setState({saved_categories: savedCategoriesNews}, () => {
-          this.fetchData(savedCategoriesNews);
-                });
-            }
-        }
-    else {
-      this.props.getUserData()
-        .then(response => {
-          this.setState({
-            saved_categories: savedCategoriesNews,
-            user_data: response.data.data
-          }, () => {
-            this.fetchData(savedCategoriesNews, false);
-          });
+        this.props.getCategoryV2()
+        .then((savedCategories)=> {
+          const savedCategoriesNews = savedCategories.data.data;
+          this.recheckLogin(savedCategoriesNews);
         })
-        .catch(error => {
-          console.log(error);
+          .catch((err)=>{
+            console.log(err)
+          });
+      })
+      .catch(error => {
+        this.setState({
+          is_login: false,
+        });
+        this.props.getSelectedChannelsVisitor(new DeviceUUID().get())
+          .then((savedCategories)=> {
+            const savedCategoriesNews = savedCategories.data.data;
+            this.recheckLogin(savedCategoriesNews);
+          })
+          .catch((err)=>{
+            console.log(err)
+          });
+      });
+    }
+
+
+    recheckLogin(savedCategoriesNews){
+      if (this.accessToken && this.state.is_login) {
+        const decodedToken = jwtDecode(this.accessToken);
+        if (decodedToken && decodedToken.uid != '0') {
+          this.setState({saved_categories: savedCategoriesNews}, () => {
+            this.fetchData(savedCategoriesNews, true);
+          });
+        } else {
           this.setState({saved_categories: savedCategoriesNews}, () => {
             this.fetchData(savedCategoriesNews);
           });
-        });
-    }
+        }
+      }
+      else {
+        this.props.getUserData()
+          .then(response => {
+            this.setState({
+              saved_categories: savedCategoriesNews,
+              user_data: response.data.data
+            }, () => {
+              this.fetchData(savedCategoriesNews, false);
+            });
+          })
+          .catch(error => {
+            console.log(error);
+            this.setState({saved_categories: savedCategoriesNews}, () => {
+              this.fetchData(savedCategoriesNews);
+            });
+          });
+      }
     }
 
     fetchData(savedCategoriesNews, isLoggedIn = false) {
-
       if(isLoggedIn){
         this.props.getChannelsv2()
           .then(response => {
@@ -146,7 +179,6 @@ class Channels extends React.Component {
             let channels = response.data.data.filter(x => x.id !== 15 && x.id !== 12 && x.id !== 1);
             if (!isLoggedIn) {
               let savedChannels = savedCategoriesNews;
-              // console.log(savedChannels);
               for (let i = 0; i < channels.length; i++) {
                 if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
                   channels.splice(i, 1);
@@ -224,7 +256,7 @@ class Channels extends React.Component {
             const categories = res;
             this.setState({ categories }, async () => {
                 let decodedToken = { uid: '0' };
-                if (this.accessToken) {
+                if (this.accessToken && this.state.is_login) {
                     decodedToken = jwtDecode(this.accessToken);
                 }
 
@@ -283,7 +315,7 @@ class Channels extends React.Component {
 
         try {
             let decodedToken = { uid: '0' };
-            if (this.accessToken) {
+            if (this.accessToken && this.state.is_login) {
                 decodedToken = jwtDecode(this.accessToken);
             }
 
@@ -338,7 +370,7 @@ class Channels extends React.Component {
 
         try {
             let decodedToken = { uid: '0' };
-            if (this.accessToken) {
+            if (this.accessToken && this.state.is_login) {
                 decodedToken = jwtDecode(this.accessToken);
             }
 
@@ -364,11 +396,11 @@ class Channels extends React.Component {
                     active_tab: 'Add Kanal'
                 }, () => {
                     let decodedToken = { uid: '0' };
-                    if (this.accessToken) {
+                    if (this.accessToken && this.state.is_login) {
                         decodedToken = jwtDecode(this.accessToken);
                     }
 
-                    if (!this.state.user_data || (this.accessToken && decodedToken.uid == '0')) {
+                    if (!this.state.user_data || (this.accessToken  && decodedToken.uid == '0')) {
                         setNewsChannels(this.state.categories);
                     }
                 });

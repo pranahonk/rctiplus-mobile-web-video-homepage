@@ -26,7 +26,7 @@ import AddIcon from '@material-ui/icons/Add';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2, BASE_URL, SHARE_BASE_URL } from '../config';
 import { formatDateWordID } from '../utils/dateHelpers';
-import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2 } from '../utils/cookie';
+import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2, getUserAccessToken } from '../utils/cookie';
 
 import '../assets/scss/components/trending_v2.scss';
 
@@ -117,6 +117,7 @@ class Trending_v2 extends React.Component {
                 'Authorization': data_news.data.news_token
             }
         });
+        console.log('hello general >>', general)
         let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
         let gs = {};
         const data_general = await general.json();
@@ -165,6 +166,7 @@ class Trending_v2 extends React.Component {
         is_ads_rendered: false,
         device_id: null,
         not_logged_in_category: [],
+        is_login: false,
     };
 
     constructor(props) {
@@ -347,35 +349,23 @@ class Trending_v2 extends React.Component {
           device_id: new DeviceUUID().get(),
         });
 
-        await this.props.getSelectedChannelsVisitor(this.state.device_id)
-          .then((res) =>{
-            this.setState({
-              not_logged_in_category: res.data.data,
-            });
+        this.props.getUserData()
+          .then(response => {
+            this.checkIsLogin()
           })
-          .catch((err) =>{
-            console.error(err)
-          });
-        if (this.accessToken !== null &&  this.accessToken !== undefined) {
-            const decodedToken = jwtDecode(this.accessToken);
-            if (decodedToken && decodedToken.uid != '0') {
-                this.fetchData(true);
-            }
-            else {
-                this.fetchData();
-            }
-        }
-        else {
-            this.props.getUserData()
-                .then(response => {
-                    console.log(response);
-                    this.fetchData(true);
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.fetchData();
+          .catch(error => {
+             this.props.getSelectedChannelsVisitor(this.state.device_id)
+              .then((res) =>{
+                this.setState({
+                  not_logged_in_category: res.data.data,
                 });
-        }
+              })
+              .catch((err) =>{
+                console.error(err)
+              });
+              this.checkIsLogin()
+          });
+
 
         window.addEventListener('pageshow', function(event) {
           if (event.persisted) {
@@ -513,6 +503,30 @@ class Trending_v2 extends React.Component {
         Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
     }
 
+    checkIsLogin(){
+      if (this.accessToken !== null &&  this.accessToken !== undefined) {
+        const decodedToken = jwtDecode(this.accessToken);
+        if (decodedToken && decodedToken.uid != '0') {
+          this.fetchData(true);
+        }
+        else {
+          this.fetchData();
+        }
+      }
+      else {
+        this.props.getUserData()
+          .then(response => {
+            // console.log(response);
+            this.fetchData(true);
+          })
+          .catch(error => {
+            console.log(error);
+            this.fetchData();
+          });
+      }
+
+    }
+
     getMetadata() {
         if (Object.keys(this.props.query).length > 0) {
             const name = this.props && this.props.query && this.props.query.subcategory_title && this.props.query.subcategory_title.toLowerCase().replace(/-/g, '_');
@@ -584,10 +598,12 @@ class Trending_v2 extends React.Component {
         const asPath = this.props.router.asPath;
         const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') > -1 ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
         const mobilePlatform = (this.platform !== null) ? 'mobilePlatform' : '';
+        const site_name = this.props?.general?.site_name || SITE_NAME
+        const title = (this.props?.metaSeo?.title) + ' - ' + (site_name)
         return (
-            <Layout title={this.props?.metaSeo?.title}>
+            <Layout title={title}>
                 <Head>
-                    <meta name="title" content={this.props?.metaSeo?.title} />
+                    <meta name="title" content={title} />
                     <meta name="description" content={this.props?.metaSeo?.description} />
                     <meta name="keywords" content={this.props?.metaSeo?.keyword} />
                     <meta property="og:title" content={this.props.metaOg?.title || ''} />
@@ -598,7 +614,7 @@ class Trending_v2 extends React.Component {
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={this.props?.general?.site_name || SITE_NAME} />
+                    <meta property="og:site_name" content={site_name} />
                     <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
                     <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />

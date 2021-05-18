@@ -15,6 +15,8 @@ export const GTM_AUTH = process.env.GTM_AUTH;
 
 export const DEV_API = process.env.DEV_API;
 
+export const API_V2 = process.env.API_V2 || process.env.DEV_API;
+
 export const CHAT_API = process.env.CHAT_API;
 export const LINK_RADIO = process.env.LINK_RADIO;
 export const LINK_GAMES = process.env.LINK_GAMES;
@@ -107,7 +109,7 @@ export const SITEMAP = {
         title: `${SITE_NAME} - Satu Aplikasi, Semua Hiburan`,
         description: 'Nonton Film & Live Streaming TV Online di RCTI Plus. Satu Aplikasi, Semua Hiburan: Video, Berita, Radio, Podcast, Games, dan Ajang Pencarian Bakat. Download sekarang.',
         keywords: `rcti plus, rcti+, tv online, streaming tv, live streaming, nonton film`,
-        image: `http://rstatic.akamaized.net/assets/metaimages/HOME-RCTI+.png`
+        image: `https://rstatic.akamaized.net/media/600/files/fta_rcti/metaimages/Home-RCTIPlus-compress.jpg`
     },
     terms_and_conditions: {
         title: `Terms and Conditions - ${SITE_NAME}`,
