@@ -387,7 +387,12 @@ class Trending_v2 extends React.Component {
           }
         });
 
-      this.getAndSetRedirect();
+        window.addEventListener('scroll', ()=>{
+          const lastKnownScrollPosition = window.scrollY;
+          console.log(lastKnownScrollPosition);
+        });
+
+        this.getAndSetRedirect();
 
     }
 
