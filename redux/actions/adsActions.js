@@ -3,7 +3,7 @@ import { DEV_API } from '../../config';
 import { getUidAppier } from '../../utils/appier';
 import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
 
-const axios = ax.create({ baseURL: DEV_API });
+const axios = ax.create({ baseURL: API_V2 });
 axios.interceptors.request.use(async (request) => {
     await checkToken();
     const accessToken = getCookie('ACCESS_TOKEN');
