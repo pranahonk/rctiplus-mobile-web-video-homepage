@@ -36,11 +36,11 @@ import {
 } from '../../utils/appier';
 
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
-import {removeAccessToken, setAccessToken, setNewsChannels, getUserAccessToken} from '../../utils/cookie';
+import { removeAccessToken, setAccessToken, setNewsChannels, getUserAccessToken, checkToken } from '../../utils/cookie';
 
 import queryString from 'query-string';
 import ax from 'axios';
-import {NEWS_API_V2} from '../../config';
+import {NEWS_API_V2, DEV_API} from '../../config';
 
 const jwtDecode = require('jwt-decode');
 const axios = ax.create({baseURL: NEWS_API_V2 + '/api'});
@@ -56,6 +56,7 @@ class Channels extends React.Component {
         selected_channel_ids: [],
         user_data: null,
         device_id: null,
+        is_login: false,
     };
 
     constructor(props) {
@@ -87,9 +88,22 @@ class Channels extends React.Component {
     this.setState({
       device_id: new DeviceUUID().get(),
     });
-    const savedCategories = this.accessToken ? await this.props.getCategoryV2() : await this.props.getSelectedChannelsVisitor(new DeviceUUID().get());
+
+    await this.props.getUserData()
+      .then(response => {
+        this.setState({
+          is_login: true,
+        });
+      })
+      .catch(error => {
+        this.setState({
+          is_login: false,
+        });
+      });
+
+    const savedCategories = (this.accessToken && this.is_login) ? await this.props.getCategoryV2() : await this.props.getSelectedChannelsVisitor(new DeviceUUID().get());
     const savedCategoriesNews = savedCategories.data.data;
-    if (this.accessToken) {
+    if (this.accessToken && this.is_login) {
       const decodedToken = jwtDecode(this.accessToken);
       if (decodedToken && decodedToken.uid != '0') {
         this.setState({saved_categories: savedCategoriesNews}, () => {
@@ -226,7 +240,7 @@ class Channels extends React.Component {
             const categories = res;
             this.setState({ categories }, async () => {
                 let decodedToken = { uid: '0' };
-                if (this.accessToken) {
+                if (this.accessToken && this.is_login) {
                     decodedToken = jwtDecode(this.accessToken);
                 }
 
@@ -285,7 +299,7 @@ class Channels extends React.Component {
 
         try {
             let decodedToken = { uid: '0' };
-            if (this.accessToken) {
+            if (this.accessToken && this.is_login) {
                 decodedToken = jwtDecode(this.accessToken);
             }
 
@@ -340,7 +354,7 @@ class Channels extends React.Component {
 
         try {
             let decodedToken = { uid: '0' };
-            if (this.accessToken) {
+            if (this.accessToken && this.is_login) {
                 decodedToken = jwtDecode(this.accessToken);
             }
 
@@ -366,11 +380,11 @@ class Channels extends React.Component {
                     active_tab: 'Add Kanal'
                 }, () => {
                     let decodedToken = { uid: '0' };
-                    if (this.accessToken) {
+                    if (this.accessToken && this.is_login) {
                         decodedToken = jwtDecode(this.accessToken);
                     }
 
-                    if (!this.state.user_data || (this.accessToken && decodedToken.uid == '0')) {
+                    if (!this.state.user_data || (this.accessToken  && decodedToken.uid == '0')) {
                         setNewsChannels(this.state.categories);
                     }
                 });
