@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useCallback } from 'react';
 import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import LoadingBar from 'react-top-loading-bar';
@@ -22,6 +22,7 @@ import { debounceTime } from 'rxjs/operators';
 
 import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked, newsSearchClicked } from '../../../utils/appier';
 import { getCookie, setCookie, removeAccessToken, setAccessToken } from '../../../utils/cookie';
+import _debounce from 'lodash/debounce';
 
 
 class NavbarTrendingSearch extends Component {
@@ -104,7 +105,16 @@ class NavbarTrendingSearch extends Component {
     }
 
     onChangeQuery(e) {
-        this.changeQuery(e.target.value);
+      this.changeQuery(e.target.value);
+      // _debounce(, 500)
+      // console.log(e.target.value);
+      // this.props.searchSuggest(e.target.value)
+      //   .then((response)=>{
+      //     console.log(response);
+      //   })
+      //   .catch(e=>{
+      //     console.error(e);
+      //   })
     }
 
     changeQuery(q) {

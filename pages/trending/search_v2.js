@@ -166,7 +166,7 @@ class Search extends React.Component {
     clearSearchHistory() {
         removeCookie('SEARCH_HISTORY');
         this.setState({ search_history: [] });
-        this.renderSearchHistory()
+        this.renderSearchHistory();
     }
 
     renderSearchHistory() {
@@ -209,9 +209,8 @@ class Search extends React.Component {
     }
 
     renderContent() {
-        const {search_result, meta = null} = this.props.newsv2
-        const assetsUrl = !isEmpty(meta) ? meta.assets_url : null
-        console.log(search_result.length);
+        const {search_result, meta = null} = this.props.newsv2;
+        const assetsUrl = !isEmpty(meta) ? meta.assets_url : null;
         if (search_result.length > 0) {
             return (
                 <div className="result-content">

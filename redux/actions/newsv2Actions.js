@@ -43,6 +43,26 @@ const searchNews = (q, page = 1, pageSize = 10) => {
     });
 };
 
+const searchSuggest =  (q, item = 1, itemSize = 10) => {
+  return dispatch => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`/v2/recommendation/suggest?item=${item}&itemSize=${itemSize}&query=${q}`);
+      if (response.status === 200) {
+        resolve(response);
+      }
+      else {
+        removeAccessToken();
+        reject(response);
+      }
+    }
+    catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+
+}
+
 const readAlso = (id,page = 1, pageSize = 2) => {
   return dispatch => new Promise(async (resolve, reject) => {
     try {
@@ -708,4 +728,5 @@ export default {
     deleteCategoryVisitors,
     userRecomendation,
     saveUserRecomendation,
+    searchSuggest,
 };
