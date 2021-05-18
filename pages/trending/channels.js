@@ -89,53 +89,69 @@ class Channels extends React.Component {
       device_id: new DeviceUUID().get(),
     });
 
-    await this.props.getUserData()
+    this.props.getUserData()
       .then(response => {
         this.setState({
           is_login: true,
         });
+        this.props.getCategoryV2()
+        .then((savedCategories)=> {
+          const savedCategoriesNews = savedCategories.data.data;
+          this.recheckLogin(savedCategoriesNews);
+        })
+          .catch((err)=>{
+            console.log(err)
+          });
       })
       .catch(error => {
         this.setState({
           is_login: false,
         });
-      });
-
-    const savedCategories = (this.accessToken && this.is_login) ? await this.props.getCategoryV2() : await this.props.getSelectedChannelsVisitor(new DeviceUUID().get());
-    const savedCategoriesNews = savedCategories.data.data;
-    if (this.accessToken && this.is_login) {
-      const decodedToken = jwtDecode(this.accessToken);
-      if (decodedToken && decodedToken.uid != '0') {
-        this.setState({saved_categories: savedCategoriesNews}, () => {
-          this.fetchData(savedCategoriesNews, true);
-        });
-      } else {
-        this.setState({saved_categories: savedCategoriesNews}, () => {
-          this.fetchData(savedCategoriesNews);
-                });
-            }
-        }
-    else {
-      this.props.getUserData()
-        .then(response => {
-          this.setState({
-            saved_categories: savedCategoriesNews,
-            user_data: response.data.data
-          }, () => {
-            this.fetchData(savedCategoriesNews, false);
+        this.props.getSelectedChannelsVisitor(new DeviceUUID().get())
+          .then((savedCategories)=> {
+            const savedCategoriesNews = savedCategories.data.data;
+            this.recheckLogin(savedCategoriesNews);
+          })
+          .catch((err)=>{
+            console.log(err)
           });
-        })
-        .catch(error => {
-          console.log(error);
+      });
+    }
+
+
+    recheckLogin(savedCategoriesNews){
+      if (this.accessToken && this.state.is_login) {
+        const decodedToken = jwtDecode(this.accessToken);
+        if (decodedToken && decodedToken.uid != '0') {
+          this.setState({saved_categories: savedCategoriesNews}, () => {
+            this.fetchData(savedCategoriesNews, true);
+          });
+        } else {
           this.setState({saved_categories: savedCategoriesNews}, () => {
             this.fetchData(savedCategoriesNews);
           });
-        });
-    }
+        }
+      }
+      else {
+        this.props.getUserData()
+          .then(response => {
+            this.setState({
+              saved_categories: savedCategoriesNews,
+              user_data: response.data.data
+            }, () => {
+              this.fetchData(savedCategoriesNews, false);
+            });
+          })
+          .catch(error => {
+            console.log(error);
+            this.setState({saved_categories: savedCategoriesNews}, () => {
+              this.fetchData(savedCategoriesNews);
+            });
+          });
+      }
     }
 
     fetchData(savedCategoriesNews, isLoggedIn = false) {
-
       if(isLoggedIn){
         this.props.getChannelsv2()
           .then(response => {
@@ -240,7 +256,7 @@ class Channels extends React.Component {
             const categories = res;
             this.setState({ categories }, async () => {
                 let decodedToken = { uid: '0' };
-                if (this.accessToken && this.is_login) {
+                if (this.accessToken && this.state.is_login) {
                     decodedToken = jwtDecode(this.accessToken);
                 }
 
@@ -299,7 +315,7 @@ class Channels extends React.Component {
 
         try {
             let decodedToken = { uid: '0' };
-            if (this.accessToken && this.is_login) {
+            if (this.accessToken && this.state.is_login) {
                 decodedToken = jwtDecode(this.accessToken);
             }
 
@@ -354,7 +370,7 @@ class Channels extends React.Component {
 
         try {
             let decodedToken = { uid: '0' };
-            if (this.accessToken && this.is_login) {
+            if (this.accessToken && this.state.is_login) {
                 decodedToken = jwtDecode(this.accessToken);
             }
 
@@ -380,7 +396,7 @@ class Channels extends React.Component {
                     active_tab: 'Add Kanal'
                 }, () => {
                     let decodedToken = { uid: '0' };
-                    if (this.accessToken && this.is_login) {
+                    if (this.accessToken && this.state.is_login) {
                         decodedToken = jwtDecode(this.accessToken);
                     }
 
