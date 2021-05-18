@@ -33,6 +33,7 @@ import '../assets/scss/components/trending_v2.scss';
 import newsv2Actions from '../redux/actions/newsv2Actions';
 import newsv2KanalActions from '../redux/actions/newsv2KanalActions';
 import userActions from '../redux/actions/userActions';
+import pageActions from '../redux/actions/pageActions';
 import { showSignInAlert, humanizeStr, imageNews, imagePath, readMore } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
 // import AdsBanner from '../components/Includes/Banner/Ads';
@@ -116,6 +117,7 @@ class Trending_v2 extends React.Component {
                 'Authorization': data_news.data.news_token
             }
         });
+        console.log('hello general >>', general)
         let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
         let gs = {};
         const data_general = await general.json();
@@ -385,6 +387,7 @@ class Trending_v2 extends React.Component {
           }
         });
 
+      this.getAndSetRedirect();
 
     }
 
@@ -561,16 +564,36 @@ class Trending_v2 extends React.Component {
       }, 2500);
     }
 
+  getAndSetRedirect() {
+    if (Router.query && Router.query.id && Router.query.title && Router.query.category) {
+      localStorage.setItem('url-full', `${Router.asPath.split('?')[0]}`);
+      window.location.href = '/news';
+    }
+
+    if (localStorage.getItem('url-full')) {
+      this.props.setPageLoader();
+      setTimeout(() => {
+        window.location.href = localStorage.getItem('url-full');
+        localStorage.removeItem('url-full');
+        this.props.unsetPageLoader();
+      }, 1500);
+
+    }
+  }
+
 
     render() {
         // const metadata = this.getMetadata();
         // const ogMetaData = this.getOgMetaData();
         const asPath = this.props.router.asPath;
         const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') > -1 ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
+        const mobilePlatform = (this.platform !== null) ? 'mobilePlatform' : '';
+        const site_name = this.props?.general?.site_name || SITE_NAME
+        const title = (this.props?.metaSeo?.title) + ' - ' + (site_name)
         return (
-            <Layout title={this.props?.metaSeo?.title}>
+            <Layout title={title}>
                 <Head>
-                    <meta name="title" content={this.props?.metaSeo?.title} />
+                    <meta name="title" content={title} />
                     <meta name="description" content={this.props?.metaSeo?.description} />
                     <meta name="keywords" content={this.props?.metaSeo?.keyword} />
                     <meta property="og:title" content={this.props.metaOg?.title || ''} />
@@ -581,7 +604,7 @@ class Trending_v2 extends React.Component {
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={this.props?.general?.site_name || SITE_NAME} />
+                    <meta property="og:site_name" content={site_name} />
                     <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
                     <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
@@ -842,4 +865,5 @@ export default connect(state => state, {
     ...newsv2Actions,
     ...userActions,
     ...newsv2KanalActions,
+    ...pageActions,
 })(withRouter(Trending_v2));

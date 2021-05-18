@@ -107,7 +107,7 @@ export const SITEMAP = {
         title: `${SITE_NAME} - Satu Aplikasi, Semua Hiburan`,
         description: 'Nonton Film & Live Streaming TV Online di RCTI Plus. Satu Aplikasi, Semua Hiburan: Video, Berita, Radio, Podcast, Games, dan Ajang Pencarian Bakat. Download sekarang.',
         keywords: `rcti plus, rcti+, tv online, streaming tv, live streaming, nonton film`,
-        image: `http://rstatic.akamaized.net/assets/metaimages/HOME-RCTI+.png`
+        image: `https://rstatic.akamaized.net/media/600/files/fta_rcti/metaimages/Home-RCTIPlus-compress.jpg`
     },
     terms_and_conditions: {
         title: `Terms and Conditions - ${SITE_NAME}`,

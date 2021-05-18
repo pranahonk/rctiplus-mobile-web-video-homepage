@@ -8,22 +8,29 @@ import {getNewsTokenV2} from '../../../utils/cookie';
 import axios from 'axios';
 import ReactDOMServer from 'react-dom/server';
 
-const redirectToPublisherIndex = [0, 1];
 
 const useFetch = (id, total) => {
   const [response, setResponse] = useState([] );
   const [newContent, setNewContent]  = useState(null);
+  const [errorFetchedChecker, setErrorFetchedChecker] = useState(false);
   useEffect( () => {
     async function fetchData(){
-      const result =  await axios.get(`${NEWS_API_V2}/api/v1/readalso/${id}?page=1&pageSize=${total}`,{
-        headers: {
-          'Authorization': getNewsTokenV2(),
-        },
-      });
-      await setResponse(result.data.data);
+      try {
+        const result =  await axios.get(`${NEWS_API_V2}/api/v1/readalso/${id}?page=1&pageSize=${total}`,{
+          headers: {
+            'Authorization': getNewsTokenV2(),
+          },
+        });
+        await setResponse(result.data.data);
+      }
+      catch (e) {
+        console.error(e);
+        setErrorFetchedChecker(c => !c);
+      }
+
     }
     fetchData();
-  }, []);
+  }, [errorFetchedChecker]);
 
   return {response, newContent};
 };
@@ -34,8 +41,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const [platform, setPlatform] = useState(null);
 
 
-
-  const rmAttributes = item.content.replace(/(class|id|style)="\w+"/gm, '').replace(/\s*>/gmi, '>').replace(/(<!--\s*([a-zA-Z0-9_ ]*)\s*-->)/gm, '');
+  const rmAttributes = item.content.replace(/(class|id|style)="\w+"/gm, '').replace(/\s*>/gmi, '>').replace(/(<!--\s*([a-zA-Z0-9_ ]*)\s*-->)/gm, '').replace(/\\|\'/gm, '');
   const countTag = {};
 
 

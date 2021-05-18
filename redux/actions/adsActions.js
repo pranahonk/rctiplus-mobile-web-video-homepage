@@ -28,7 +28,7 @@ const toggleAds = (flag) => {
 const fetchTargetingAds = () => {
     return () => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/ads/v1/cust-params?platform=mweb&appierid=${getUidAppier()}`);
+            const response = await axios.get(`/ads/v1/cust-params?platform=mweb&aid=${getUidAppier()}`);
             if (response.status === 200) {
                 resolve(response.data);
             }

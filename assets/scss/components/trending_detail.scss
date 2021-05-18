@@ -146,7 +146,7 @@
             font-family: 'Open Sans' !important;
             line-height: 1.64 !important;
         }
-        p {
+        p, h1, h2, h3, h4, h5, h6 {
             margin-bottom: 1rem;
             &:last-child {
                 margin-bottom: 0;
@@ -208,7 +208,6 @@
 
     .content-trending-detail-related {
         // margin: 10px;
-        padding-bottom: calc(25px + 5px);
 
         .related-title {
             // background-color: #171717;
@@ -343,4 +342,19 @@
 
 .content-trending-detail-text > div.position-relative{
   margin-left: 5px;
+}
+
+
+@supports (-webkit-touch-callout: none) {
+  /* CSS specific to iOS devices */
+  .content-trending-detail-related{
+    padding-bottom: 0;
+  }
+}
+
+@supports not (-webkit-touch-callout: none) {
+  /* CSS for other than iOS devices */
+  .content-trending-detail-related{
+    padding-bottom: calc(25px + 5px);
+  }
 }
