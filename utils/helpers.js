@@ -243,3 +243,8 @@ export const readMore = (content) => {
     paragraph = paragraph.length > 1 ? paragraph[1] : paragraph[0]
     return paragraph.substring(0, 200).replace(/<\/?[^>]+(>|$)/g, "") + "...."
 }
+
+export const removeElement = (content) => {
+    
+}
+

@@ -58,23 +58,6 @@ class Default_v2 extends React.Component {
     }
 
     componentDidMount() {
-        setTimeout(() => {
-            if (this.isPillarNews) {
-                var element = document.getElementsByTagName("script"), index;
-                for (index = element.length - 1; index >= 0; index--) {
-                    let removeFile = ['tiktok', 'static/chunks/'];
-                    removeFile.forEach((row) => {
-                        console.log('row >>', row);
-                        let attrSrc = element[index].getAttribute("src");
-                        if (!isEmpty(attrSrc) && attrSrc.indexOf(row) !== -1){
-                            console.log(element[index].getAttribute("src"), 'parent Node >>');
-                            element[index].parentNode.removeChild(element[index]);
-                        }
-                    })
-                }
-            }
-        }, 1000)
-
         this.props.initializeFirebase();
         // console.log('User added to home screen');
         if(!Cookie.get('uid_ads')) {
@@ -110,6 +93,23 @@ class Default_v2 extends React.Component {
             if (navbar && navbar.length > 0) {
                 navbar[0].style.display = 'none';
             }
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.isPillarNews) {
+            // remove javascript not used
+            var element = document.getElementsByTagName("script"), index;
+            for (index = element.length - 1; index >= 0; index--) {
+                let removeFile = ['tiktok', 'static/chunks/'];
+                removeFile.forEach((row) => {
+                    let attrSrc = element[index].getAttribute("src");
+                    if (!isEmpty(attrSrc) && attrSrc.indexOf(row) !== -1){
+                        element[index].parentNode.removeChild(element[index]);
+                    }
+                })
+            }
+            // remove css not used       
         }
     }
 
