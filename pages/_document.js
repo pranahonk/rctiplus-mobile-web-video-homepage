@@ -29,7 +29,7 @@ class MyDocument extends Document {
 				<Head>
 					<script src="/static/js/device-uuid.min.js" type="text/javascript"></script>
         			{
-						(dangerousAsPath != '/news') ? <script type="text/javascript" src="/static/js/jwplayer.js"></script> : null
+						((dangerousAsPath != '/news') && !(dangerousAsPath.indexOf('/dfp') !== -1)) ? <script type="text/javascript" src="/static/js/jwplayer.js"></script> : null
 					}
 					{/* <script src="/static/js/ConvivaLivePass_Videojs.min.js"></script> */}
 					<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet"></link>
