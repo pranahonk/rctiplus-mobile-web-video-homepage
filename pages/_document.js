@@ -12,6 +12,7 @@ class MyDocument extends Document {
 	}
 
 	componentDidMount() {
+		console.log('uuid >>');
 		console.log(new DeviceUUID().get());
 		// const appInsights = new ApplicationInsights({ config: {
 		// 	instrumentationKey: '2a8da5df-35c2-4e72-829f-a2fc4ec66f28'
@@ -22,11 +23,14 @@ class MyDocument extends Document {
 	}
 
 	render() {
+		const {dangerousAsPath} = this.props
 		return (
 			<Html lang="id" style={{ height: '100%' }}>
 				<Head>
 					<script src="/static/js/device-uuid.min.js" type="text/javascript"></script>
-        			<script src="/static/js/jwplayer.js"></script>
+        			{
+						(dangerousAsPath != '/news') ? <script type="text/javascript" src="/static/js/jwplayer.js"></script> : null
+					}
 					{/* <script src="/static/js/ConvivaLivePass_Videojs.min.js"></script> */}
 					<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet"></link>
 					<script src="/static/js/conviva-core-sdk.js"></script>
