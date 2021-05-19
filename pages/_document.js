@@ -24,16 +24,13 @@ class MyDocument extends Document {
 
 	render() {
 		const {dangerousAsPath} = this.props
+		const libNonPillaNews = (!(dangerousAsPath.indexOf('/news') !== -1) && !(dangerousAsPath.indexOf('/dfp') !== -1))
 		return (
 			<Html lang="id" style={{ height: '100%' }}>
 				<Head>
 					<script src="/static/js/device-uuid.min.js" type="text/javascript"></script>
-        			{
-						((dangerousAsPath != '/news') && !(dangerousAsPath.indexOf('/dfp') !== -1)) ? <script type="text/javascript" src="/static/js/jwplayer.js"></script> : null
-					}
-					{/* <script src="/static/js/ConvivaLivePass_Videojs.min.js"></script> */}
-					<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet"></link>
-					<script src="/static/js/conviva-core-sdk.js"></script>
+        			{libNonPillaNews ? <script type="text/javascript" src="/static/js/jwplayer.js"></script> : null}
+					{libNonPillaNews ? <script src="/static/js/conviva-core-sdk.js"></script> : null}
 				</Head>
 				<body style={{ height: '100%' }}>
 					<Main style={{ height: '100%' }}/>

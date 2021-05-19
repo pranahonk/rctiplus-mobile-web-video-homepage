@@ -29,13 +29,14 @@ import '../../assets/scss/videojs.scss';
 import '../../assets/scss/apps/homepage/default.scss';
 import '../../assets/scss/responsive.scss';
 import Cookie from 'js-cookie';
-
+import isEmpty from 'lodash/isEmpty'
 class Default_v2 extends React.Component {
 
     constructor(props) {
         super(props);
         this.platform = null;
         this.header = null;
+        this.isPillarNews = null
         const asPath = this.props.router.asPath;
         const segments = asPath.split(/\?/);
 
@@ -49,13 +50,31 @@ class Default_v2 extends React.Component {
                 this.header = q.header;
             }
         }
-        if (asPath.indexOf('/news/detail') > -1 || asPath.indexOf('/trending/detail') > -1) {
+        this.isPillarNews = asPath.indexOf('/news/detail') > -1 || asPath.indexOf('/trending/detail') > -1
+        if (this.isPillarNews) {
             let platform = isIOS ? 'ios' : isAndroid ? 'android' : null;
             this.platform = platform
         }
     }
 
     componentDidMount() {
+        setTimeout(() => {
+            if (this.isPillarNews) {
+                var element = document.getElementsByTagName("script"), index;
+                for (index = element.length - 1; index >= 0; index--) {
+                    let removeFile = ['tiktok', 'static/chunks/'];
+                    removeFile.forEach((row) => {
+                        console.log('row >>', row);
+                        let attrSrc = element[index].getAttribute("src");
+                        if (!isEmpty(attrSrc) && attrSrc.indexOf(row) !== -1){
+                            console.log(element[index].getAttribute("src"), 'parent Node >>');
+                            element[index].parentNode.removeChild(element[index]);
+                        }
+                    })
+                }
+            }
+        }, 1000)
+
         this.props.initializeFirebase();
         // console.log('User added to home screen');
         if(!Cookie.get('uid_ads')) {
@@ -157,8 +176,7 @@ class Default_v2 extends React.Component {
 
 
                     <script src="/static/js/fontawesome.min.js" crossOrigin="anonymous" defer></script>
-
-                    <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>
+                    {!this.isPillarNews ? <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script> : null}
                     {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
                     <script src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
                     <script dangerouslySetInnerHTML={{ __html: `
