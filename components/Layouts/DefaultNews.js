@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import Head from 'next/head';
 import { withRouter } from 'next/router';
 import { connect } from 'react-redux';
@@ -10,8 +10,9 @@ import pageActions from '../../redux/actions/pageActions';
 import userActions from '../../redux/actions/userActions';
 import chatsActions from '../../redux/actions/chats';
 
-const Footer = loadable(() => import('../../components/Includes/Footer/Default'))
-const Footer_v2 = loadable(() => import('../../components/Includes/Footer/Default_v2'))
+const Footer = lazy(() => import('../../components/Includes/Footer/Default'));
+const Footer_v2 = lazy(() => import('../../components/Includes/Footer/Default_v2'));
+
 import { getUidAppier } from '../../utils/appier';
 
 import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GTM_AUTH, SHARE_BASE_URL, MODE, APPIER_ID } from '../../config';
