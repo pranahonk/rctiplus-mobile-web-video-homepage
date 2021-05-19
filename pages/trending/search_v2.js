@@ -28,7 +28,7 @@ import isEmpty from 'lodash/isEmpty'
 import isArray from 'lodash/isArray';
 
 const Loading = dynamic(() => import('../../components/Includes/Shimmer/ListTagLoader'))
-const SquareItem = dynamic(() => import('../../components/Includes/news/SquareItem'),{loading: () => <Loading />})
+const SquareItem = dynamic(() => import('../../components/Includes/news/SquareItem'),{loading: () => <Loading />});
 
 class Search extends React.Component {
     static async getInitialProps(ctx) {
@@ -95,6 +95,11 @@ class Search extends React.Component {
             q: '',
             user_recommendations: [],
             is_child_focus: false,
+            user_autocomplete: [[], []],
+            is_on_typing: false,
+            is_found: false,
+            is_search_render: false,
+            query_search: null
         };
 
         this.subject = new Subject();
@@ -114,7 +119,6 @@ class Search extends React.Component {
         else {
             removeAccessToken();
         }
-
     }
 
    async componentDidMount() {
@@ -127,7 +131,7 @@ class Search extends React.Component {
         const user_recommendation = await this.props.userRecomendation();
         this.setState({
           user_recommendations: [...user_recommendation.data.data]
-        })
+        });
     }
 
     link(article) {
@@ -188,12 +192,12 @@ class Search extends React.Component {
                     </Row>
                     {searchHistory.map((h, i) => (
                         <Row key={i} style={{ marginTop: 14, opacity: 0.5 }}>
-                            <Col xs={6} onClick={() => {
+                            <Col xs={10} onClick={() => {
                                 this.props.setPageLoader();
                                 // TODO:
                                 this.props.setSearch(h, this.subject);
                             }}>{h}</Col>
-                            <Col xs={6} style={{ textAlign: 'right', paddingRight: 15 }}><CloseIcon onClick={() => this.deleteSearchHistory(i)}/></Col>
+                            <Col xs={2} style={{ textAlign: 'right', paddingRight: 15 }}><CloseIcon onClick={() => this.deleteSearchHistory(i)}/></Col>
                         </Row>
                     ))}
 
@@ -223,27 +227,73 @@ class Search extends React.Component {
             );
         }
         else{
-          return (
-            <div className="search-result">
-              <div className="search-result__title">Result</div>
-              <div className="search-result__desc">Your search for “dsgasdfggh” did not match any articles.</div>
-              <Img className="search-result__image" alt="Not Found News" src={`/static/group-2.svg`} />
-            </div>
-          )
+          const queryParams = this.props.router.asPath.split(/\?/)[1].includes("keyword");
+          if(queryParams && !this.state.is_found && !this.state.is_on_typing){
+            return (
+              <div className="search-result">
+                <div className="search-result__title">Result</div>
+                <div className="search-result__desc">Your search for “{this.props.dataSearch?.keyword}” did not match any articles.</div>
+                <Img className="search-result__image" alt="Not Found News" src={`/static/group-2.svg`} />
+              </div>
+            );
+          }
         }
     }
 
     handleChildFocus = (e) =>{
       this.setState({
         is_child_focus: e,
+        is_on_typing: true,
       });
     }
 
+    handleFound = (e) =>{
+      this.setState({
+        is_found: e,
+      });
+    }
+
+    handleChange = async(e) => {
+      if(e.trim() !== null || e.trim() !== ""){
+        await this.setState({
+          is_on_typing: true,
+          query_search: e,
+        });
+
+        this.props.searchSuggest(e)
+          .then((response)=>{
+            if(response.data.data.some(el => !!el)){
+              this.setState({
+                user_autocomplete: [...response.data.data],
+                is_search_render: true,
+              });
+            }
+            else{
+              this.setState({
+                user_autocomplete: [[], []],
+                is_search_render: false,
+              });
+            }
+          })
+          .catch(e=>{
+            console.error(e);
+          });
+
+      }
+    }
+
    handleUserClick = async(data) => {
-    this.props.setQuery(data.keyword);
-    this.navBack.initSearch(encodeURIComponent(data.keyword));
-    await this.props.saveUserRecomendation(data.keyword);
-    this.navBack.saveSearchHistory(data.keyword);
+      const keyword = data.keyword || data;
+      this.props.setQuery(keyword);
+      this.navBack.initSearch(encodeURIComponent(keyword));
+      await this.props.saveUserRecomendation(keyword);
+      this.navBack.saveSearchHistory(keyword);
+  }
+
+  handleColoringText = (text) =>{
+      if(text){
+        return `<span style='color: #04a9e5'>${text.substring(0, this.state.query_search.length)}</span>${text.substring(this.state.query_search.length, text.length)}`;
+      }
   }
 
     render() {
@@ -275,7 +325,7 @@ class Search extends React.Component {
                 </Head>
                 <BottomScrollListener offset={80} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
-                <NavBack onRef={ref => (this.navBack = ref)} isChildFocus={this.handleChildFocus} subject={'ronaldo'}/>
+                <NavBack onRef={ref => (this.navBack = ref)} isChildFocus={this.handleChildFocus} isChildFound={this.handleFound} isChildChange={this.handleChange}  isChildOnChangesubject={'ronaldo'}/>
                 <main className="content-trending-search">
                     {this.renderContent()}
                 </main>
@@ -283,17 +333,42 @@ class Search extends React.Component {
                   this.state.is_child_focus &&
                   <div>
                     {
+                      this.state.user_autocomplete[0].map((rec, i)=>{
+                        return(
+                          <div className="popular-search__wrapper" key={i} onClick={() => this.handleUserClick(rec)}>
+                            <SearchIcon className="popular-search__icon" />
+                            <span className="popular-search__text"dangerouslySetInnerHTML={{ __html: this.handleColoringText(rec)  }}></span>
+                          </div>
+                        )
+                      })
+                    }
+                    {
+                      this.state.user_autocomplete[1].slice(0, 1).map((rec, i)=>{
+                        return(
+                          <div className="popular-search__wrapper" key={i} onClick={() => this.handleUserClick(rec)}>
+                            <SearchIcon className="popular-search__icon" />
+                            <span className="popular-search__text">{rec}</span>
+                          </div>
+                        )
+                      })
+                    }
+                    {
+                      !this.state.is_search_render &&
                       this.renderSearchHistory()
                     }
-                    <div className="popular-search">
-                      Popular Search
-                    </div>
                     {
+                      !this.state.is_search_render &&
+                      <div className="popular-search">
+                        Popular Search
+                      </div>
+                    }
+                    {!this.state.is_search_render &&
                       this.state.user_recommendations.map((rec, i)=>{
                         return(
                           <div className="popular-search__wrapper" key={i} onClick={() => this.handleUserClick(rec)}>
                             <SearchIcon className="popular-search__icon" />
                             <span className="popular-search__text">{rec.keyword}</span>
+                            <span className="popular-search__text">{this.state.is_on_typing}</span>
                           </div>
                         )
                       })

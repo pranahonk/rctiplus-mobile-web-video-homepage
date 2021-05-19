@@ -43,7 +43,7 @@ const searchNews = (q, page = 1, pageSize = 10) => {
     });
 };
 
-const searchSuggest =  (q, item = 1, itemSize = 10) => {
+const searchSuggest =  (q, item = 1, itemSize = 4) => {
   return dispatch => new Promise(async (resolve, reject) => {
     try {
       const response = await axios.get(`/v2/recommendation/suggest?item=${item}&itemSize=${itemSize}&query=${q}`);
@@ -68,11 +68,6 @@ const readAlso = (id,page = 1, pageSize = 2) => {
     try {
       const response = await axios.get(`/news/api/v1/readalso/${id}?page=/${page}&pageSize=${pageSize}`);
       if (response.status === 200) {
-        dispatch({
-          type: 'SEARCH_NEWS_RESULT',
-          result: response.data.data,
-          meta: response && response.data && response.data.meta ? response.data.meta : null,
-        });
         resolve(response);
       }
       else {

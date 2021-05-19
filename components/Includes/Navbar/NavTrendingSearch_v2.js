@@ -30,7 +30,7 @@ class NavbarTrendingSearch extends Component {
         super(props);
         this.state = {
             q: '',
-            length: 10
+            length: 10,
         };
 
         this.subject = this.props.subject;
@@ -106,15 +106,7 @@ class NavbarTrendingSearch extends Component {
 
     onChangeQuery(e) {
       this.changeQuery(e.target.value);
-      // _debounce(, 500)
-      // console.log(e.target.value);
-      // this.props.searchSuggest(e.target.value)
-      //   .then((response)=>{
-      //     console.log(response);
-      //   })
-      //   .catch(e=>{
-      //     console.error(e);
-      //   })
+      this.props.isChildChange(e.target.value)
     }
 
     changeQuery(q) {
@@ -140,10 +132,11 @@ class NavbarTrendingSearch extends Component {
     }
 
     clearKeyword() {
+        this.props.isChildFound(this.props.newsv2.search_result.length > 1)
         this.props.clearSearch();
         this.props.setQuery('');
         searchKeywordEvent(this.props.newsv2.query, 'mweb_search_clear_keyword_clicked');
-        this.initSearch('')
+        this.initSearch('');
     }
 
     handleKeyPress = (event) => {
@@ -153,7 +146,7 @@ class NavbarTrendingSearch extends Component {
         }
     }
   handleFocusParent = (e) =>{
-      this.props.isChildFocus(true)
+      this.props.isChildFocus(true);
       e.preventDefault();
   }
 

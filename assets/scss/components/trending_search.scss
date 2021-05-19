@@ -91,13 +91,17 @@
     &__icon{
         margin: 0 0 0 24px;
         color: #969696;
+        position: absolute;
     }
 
     &__text{
-        margin: 0 0 0 13px;
+        margin: 0 13px 0 13px;
         font-size: 14px;
         letter-spacing: 0.48px;
         color: #969696;
+        display: inline-block;
+        padding-left: 49px;
+        text-indent: -1px;
 
         &:hover{
           color: #dadada;
