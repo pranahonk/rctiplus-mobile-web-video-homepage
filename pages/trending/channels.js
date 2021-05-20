@@ -89,66 +89,71 @@ class Channels extends React.Component {
       device_id: new DeviceUUID().get(),
     });
 
-    this.props.getUserData()
-      .then(response => {
-        this.setState({
-          is_login: true,
-        });
+    if (this.accessToken && this.state.is_login) {
+      const decodedToken = jwtDecode(this.accessToken);
+      if (decodedToken && decodedToken.uid != '0') {
         this.props.getCategoryV2()
-        .then((savedCategories)=> {
-          const savedCategoriesNews = savedCategories.data.data;
-          this.recheckLogin(savedCategoriesNews);
-        })
+          .then((savedCategories)=> {
+            const savedCategoriesNews = savedCategories.data.data;
+            // this.recheckLogin(savedCategoriesNews);
+            this.setState({saved_categories: savedCategoriesNews}, () => {
+              this.fetchData(savedCategoriesNews, true);
+            });
+          })
           .catch((err)=>{
             console.log(err)
           });
-      })
-      .catch(error => {
-        this.setState({
-          is_login: false,
-        });
+
+      } else {
         this.props.getSelectedChannelsVisitor(new DeviceUUID().get())
           .then((savedCategories)=> {
             const savedCategoriesNews = savedCategories.data.data;
-            this.recheckLogin(savedCategoriesNews);
+            // this.recheckLogin(savedCategoriesNews);
+            this.setState({saved_categories: savedCategoriesNews}, () => {
+              this.fetchData(savedCategoriesNews);
+            });
           })
           .catch((err)=>{
             console.log(err)
           });
-      });
+
+      }
     }
-
-
-    recheckLogin(savedCategoriesNews){
-      if (this.accessToken && this.state.is_login) {
-        const decodedToken = jwtDecode(this.accessToken);
-        if (decodedToken && decodedToken.uid != '0') {
-          this.setState({saved_categories: savedCategoriesNews}, () => {
-            this.fetchData(savedCategoriesNews, true);
-          });
-        } else {
-          this.setState({saved_categories: savedCategoriesNews}, () => {
-            this.fetchData(savedCategoriesNews);
-          });
-        }
-      }
-      else {
-        this.props.getUserData()
-          .then(response => {
-            this.setState({
-              saved_categories: savedCategoriesNews,
-              user_data: response.data.data
-            }, () => {
-              this.fetchData(savedCategoriesNews, false);
+    else {
+      this.props.getUserData()
+        .then(response => {
+          this.props.getCategoryV2()
+            .then((savedCategories)=> {
+              const savedCategoriesNews = savedCategories.data.data;
+              // this.recheckLogin(savedCategoriesNews);
+              this.setState({
+                saved_categories: savedCategoriesNews,
+                user_data: response.data.data,
+              }, () => {
+                this.fetchData(savedCategoriesNews, true);
+              });
+            })
+            .catch((err)=>{
+              console.log(err)
             });
-          })
-          .catch(error => {
-            console.log(error);
-            this.setState({saved_categories: savedCategoriesNews}, () => {
-              this.fetchData(savedCategoriesNews);
+
+        })
+        .catch(error => {
+          console.log(error);
+          this.props.getSelectedChannelsVisitor(new DeviceUUID().get())
+            .then((savedCategories)=> {
+              const savedCategoriesNews = savedCategories.data.data;
+              // this.recheckLogin(savedCategoriesNews);
+              this.setState({saved_categories: savedCategoriesNews}, () => {
+                this.fetchData(savedCategoriesNews);
+              });
+            })
+            .catch((err)=>{
+              console.log(err)
             });
-          });
-      }
+
+        });
+    }
     }
 
     fetchData(savedCategoriesNews, isLoggedIn = false) {
