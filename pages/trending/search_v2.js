@@ -307,7 +307,6 @@ class Search extends React.Component {
             return text.replace(replace, match => `<span style="color: #04a9e5">${match}</span>`);
             //return `<span style='color: #04a9e5'>${text.substring(0, 1)} ${text.substring(text.toLowerCase().indexOf(this.state.query_search.toLowerCase()),text.toLowerCase().indexOf(this.state.query_search.toLowerCase()) + this.state.query_search.length)}</span>${text.substring(this.state.query_search.length + 1, text.length)}`;
           }
-          return text;
         }else{
           return `<span style='color: #04a9e5'>${text.substring(0, this.state.query_search.length)}</span>${text.substring(this.state.query_search.length, text.length)}`;
         }
@@ -355,7 +354,7 @@ class Search extends React.Component {
                         return(
                           <div className="popular-search__wrapper" key={i} onClick={() => this.handleUserClick(rec)}>
                             <SearchIcon className="popular-search__icon" />
-                            <span className="popular-search__text" dangerouslySetInnerHTML={{ __html: this.handleColoringText(rec)  }}></span>
+                            <span className="popular-search__text" dangerouslySetInnerHTML={{ __html: this.handleColoringText(rec)}}></span>
                           </div>
                         )
                       })
@@ -386,7 +385,6 @@ class Search extends React.Component {
                           <div className="popular-search__wrapper" key={i} onClick={() => this.handleUserClick(rec)}>
                             <SearchIcon className="popular-search__icon" />
                             <span className="popular-search__text">{rec.keyword}</span>
-                            <span className="popular-search__text">{this.state.is_on_typing}</span>
                           </div>
                         )
                       })
