@@ -15,6 +15,7 @@ import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavTrendingSearch_v2';
 
 import { Row, Col } from 'reactstrap';
+import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import '../../assets/scss/components/trending_search.scss';
 import { urlRegex } from '../../utils/regex';
@@ -27,13 +28,14 @@ import isEmpty from 'lodash/isEmpty'
 import isArray from 'lodash/isArray';
 
 const Loading = dynamic(() => import('../../components/Includes/Shimmer/ListTagLoader'))
-const SquareItem = dynamic(() => import('../../components/Includes/news/SquareItem'),{loading: () => <Loading />})
+const SquareItem = dynamic(() => import('../../components/Includes/news/SquareItem'),{loading: () => <Loading />});
 
 class Search extends React.Component {
     static async getInitialProps(ctx) {
        const findQueryString = ctx.asPath.split(/\?/);
         if (findQueryString.length > 1) {
             const q = queryString.parse(findQueryString[1]);
+
             if(q.keyword) {
                 const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
                 if (response_visitor.statusCode === 200) {
@@ -53,7 +55,7 @@ class Search extends React.Component {
                 }
                 const data_news = await response_news.json();
 
-                const res = await fetch(`${NEWS_API_V2}/api/v1/search?q=${q.keyword}&page=1&pageSize=10`, {
+                const res = await fetch(`${NEWS_API_V2}/api/v1/search?q=${encodeURIComponent(q.keyword)}&page=1&pageSize=10`, {
                     method: 'GET',
                     headers: {
                         'Authorization': data_news.data.news_token
@@ -61,7 +63,6 @@ class Search extends React.Component {
                 });
                 const error_code = res.statusCode > 200 ? res.statusCode : false;
                 const data = await res.json();
-                // console.log(data)
                 const general = await fetch(`${NEWS_API_V2}/api/v2/settings/general`, {
                     method: 'GET',
                     headers: {
@@ -91,7 +92,14 @@ class Search extends React.Component {
         this.state = {
             length: 10,
             search_history: null,
-            q: ''
+            q: '',
+            user_recommendations: [],
+            is_child_focus: false,
+            user_autocomplete: [[], []],
+            is_on_typing: false,
+            is_found: false,
+            is_search_render: false,
+            query_search: null
         };
 
         this.subject = new Subject();
@@ -113,13 +121,17 @@ class Search extends React.Component {
         }
     }
 
-    componentDidMount() {
+   async componentDidMount() {
         this.props.setQuery(this.props.dataSearch?.keyword || '');
         this.props.getSearchFromServer(this.props.dataSearch)
         const searchHistory = getCookie('SEARCH_HISTORY');
         if (searchHistory) {
             this.setState({ search_history: JSON.parse(searchHistory) });
         }
+        const user_recommendation = await this.props.userRecomendation();
+        this.setState({
+          user_recommendations: [...user_recommendation.data.data]
+        });
     }
 
     link(article) {
@@ -158,62 +170,148 @@ class Search extends React.Component {
     clearSearchHistory() {
         removeCookie('SEARCH_HISTORY');
         this.setState({ search_history: [] });
+        this.renderSearchHistory();
     }
 
     renderSearchHistory() {
         const searchHistory = this.state.search_history;
         if (searchHistory && searchHistory.length > 0) {
-            if (this.props.newsv2.search_result.length <= 0 && this.props.newsv2.query.length > 0 && !this.props.newsv2.is_searching) {
-                return (<div className="not-found-message">No results found</div>);
-            }
+            // if (this.props.newsv2.search_result.length <= 0 && this.props.newsv2.query.length > 0 && !this.props.newsv2.is_searching) {
+            //     return (<div className="not-found-message">No results found</div>);
+            // }
 
             return (
                 <div style={{ fontSize: 14 }} className="search-history">
                     <Row>
                         <Col xs={6}>
-                            Search History
+                            {/*Search History*/}
                         </Col>
-                        <Col xs={6} style={{ textAlign: 'right', paddingRight: 15 }}>
-                            Clear History
+                        <Col xs={6} onClick={() => {this.clearSearchHistory();}} style={{ textAlign: 'right', paddingRight: 15, fontSize: 12, color: '#6e6e6e' }}>
+                            Clear All History
                         </Col>
                     </Row>
                     {searchHistory.map((h, i) => (
-                        <Row key={i} style={{ marginTop: 10, opacity: 0.5 }}>
-                            <Col xs={6} onClick={() => {
+                        <Row key={i} style={{ marginTop: 14, opacity: 0.5 }}>
+                            <Col xs={10} onClick={() => {
                                 this.props.setPageLoader();
                                 // TODO:
                                 this.props.setSearch(h, this.subject);
                             }}>{h}</Col>
-                            <Col xs={6} style={{ textAlign: 'right', paddingRight: 15 }}><CloseIcon onClick={() => this.deleteSearchHistory(i)}/></Col>
+                            <Col xs={2} style={{ textAlign: 'right', paddingRight: 15 }}><CloseIcon onClick={() => this.deleteSearchHistory(i)}/></Col>
                         </Row>
                     ))}
-                    
+
                 </div>
             );
         }
 
-        return (
-            <div className="not-found-message">
-                There is no search history
-            </div>
-        );
+        // return (
+        //     <div className="not-found-message">
+        //         There is no search history
+        //     </div>
+        // );
     }
 
     renderContent() {
-        const {search_result, meta = null} = this.props.newsv2
-        const assetsUrl = !isEmpty(meta) ? meta.assets_url : null
+        const {search_result, meta = null} = this.props.newsv2;
+        const assetsUrl = !isEmpty(meta) ? meta.assets_url : null;
         if (search_result.length > 0) {
             return (
                 <div className="result-content">
                     {search_result.map((article, i) => (
                         <div className="item_square-wrapper" key={i + article.title}>
-                            <SquareItem key={i + article.title} item={article} assets_url={assetsUrl}/>
+                            <SquareItem key={i + article.title} item={article} assets_url={assetsUrl} />
                         </div>
                     ))}
                 </div>
             );
         }
+        else{
+          if(this.props.router.asPath.split(/\?/).length > 1 && this.props.router.asPath.split(/\?/)[1].includes("keyword")){
+            const queryParams = this.props.router.asPath.split(/\?/)[1].includes("keyword");
+            if(queryParams && !this.state.is_found && !this.state.is_on_typing){
+              return (
+                <div className="search-result">
+                  <div className="search-result__title">Result</div>
+                  <div className="search-result__desc">Your search for “{this.props.dataSearch?.keyword}” did not match any articles.</div>
+                  <Img className="search-result__image" alt="Not Found News" src={`/static/group-2.svg`} />
+                  <div className="search-result__title">A few suggestions</div>
+                  <ul style={{padding: "0 0 0 15px"}}>
+                    <li>Make sure your words are spelled correctly</li>
+                    <li>Try different keywords</li>
+                    <li>Try more general keywords</li>
+                  </ul>
+                </div>
+              );
+            }
+          }
+
+        }
     }
+
+    handleChildFocus = (e) =>{
+      this.setState({
+        is_child_focus: e,
+        is_on_typing: true,
+      });
+    }
+
+    handleFound = (e) =>{
+      this.setState({
+        is_found: e,
+      });
+    }
+
+    handleChange = async(e) => {
+      if(e.trim() !== null || e.trim() !== ""){
+        await this.setState({
+          is_on_typing: true,
+          query_search: e,
+        });
+
+        this.props.searchSuggest(e)
+          .then((response)=>{
+            if(response.data.data.some(el => !!el)){
+              this.setState({
+                user_autocomplete: [...response.data.data],
+                is_search_render: true,
+              });
+            }
+            else{
+              this.setState({
+                user_autocomplete: [[], []],
+                is_search_render: false,
+              });
+            }
+          })
+          .catch(e=>{
+            console.error(e);
+          });
+
+      }
+    }
+
+   handleUserClick = async(data) => {
+      const keyword = data.keyword || data;
+      this.props.setQuery(keyword);
+      this.navBack.initSearch(encodeURIComponent(keyword));
+      await this.props.saveUserRecomendation(keyword);
+      this.navBack.saveSearchHistory(keyword);
+  }
+
+  handleColoringText = (text) =>{
+      if(text){
+        if(text.substring(0, 1) === '#' && this.state.query_search !== ''){
+          if(text.toLowerCase().includes((this.state.query_search.toLowerCase()))){
+            const replace = new RegExp(this.state.query_search,"ig");
+            return text.replace(replace, match => `<span style="color: #04a9e5">${match}</span>`);
+            //return `<span style='color: #04a9e5'>${text.substring(0, 1)} ${text.substring(text.toLowerCase().indexOf(this.state.query_search.toLowerCase()),text.toLowerCase().indexOf(this.state.query_search.toLowerCase()) + this.state.query_search.length)}</span>${text.substring(this.state.query_search.length + 1, text.length)}`;
+          }
+        }else{
+          return `<span style='color: #04a9e5'>${text.substring(0, this.state.query_search.length)}</span>${text.substring(this.state.query_search.length, text.length)}`;
+        }
+      }
+  }
 
     render() {
         return (
@@ -244,10 +342,56 @@ class Search extends React.Component {
                 </Head>
                 <BottomScrollListener offset={80} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
-                <NavBack subject={'ronaldo'}/>
+                <NavBack onRef={ref => (this.navBack = ref)} isChildFocus={this.handleChildFocus} isChildFound={this.handleFound} isChildChange={this.handleChange}  isChildOnChangesubject={'ronaldo'}/>
                 <main className="content-trending-search">
                     {this.renderContent()}
                 </main>
+                {
+                  this.state.is_child_focus &&
+                  <div>
+                    {
+                      this.state.user_autocomplete[0].map((rec, i)=>{
+                        return(
+                          <div className="popular-search__wrapper" key={i} onClick={() => this.handleUserClick(rec)}>
+                            <SearchIcon className="popular-search__icon" />
+                            <span className="popular-search__text" dangerouslySetInnerHTML={{ __html: this.handleColoringText(rec)}}></span>
+                          </div>
+                        )
+                      })
+                    }
+                    {
+                      this.state.user_autocomplete[1].slice(0, 1).map((rec, i)=>{
+                        return(
+                          <div className="popular-search__wrapper" key={i} onClick={() => this.handleUserClick(rec)}>
+                            <SearchIcon className="popular-search__icon" />
+                            <span className="popular-search__text" dangerouslySetInnerHTML={{ __html: this.handleColoringText(rec)  }}></span>
+                          </div>
+                        )
+                      })
+                    }
+                    {
+                      !this.state.is_search_render &&
+                      this.renderSearchHistory()
+                    }
+                    {
+                      !this.state.is_search_render &&
+                      <div className="popular-search">
+                        Popular Search
+                      </div>
+                    }
+                    {!this.state.is_search_render &&
+                      this.state.user_recommendations.map((rec, i)=>{
+                        return(
+                          <div className="popular-search__wrapper" key={i} onClick={() => this.handleUserClick(rec)}>
+                            <SearchIcon className="popular-search__icon" />
+                            <span className="popular-search__text">{rec.keyword}</span>
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
+
+                }
             </Layout>
         );
     }
@@ -255,5 +399,5 @@ class Search extends React.Component {
 
 export default connect(state => state, {
     ...newsv2Actions,
-    ...pageActions
+    ...pageActions,
 })(withRouter(Search));
