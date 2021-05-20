@@ -13,26 +13,30 @@ const useFetch = (id, total) => {
   const [response, setResponse] = useState([] );
   const [newContent, setNewContent]  = useState(null);
   const [errorFetchedChecker, setErrorFetchedChecker] = useState(false);
-  useEffect( () => {
-    async function fetchData(){
-      try {
-        const result =  await axios.get(`${NEWS_API_V2}/api/v1/readalso/${id}?page=1&pageSize=${total}`,{
-          headers: {
-            'Authorization': getNewsTokenV2(),
-          },
-        });
-        await setResponse(result.data.data);
-      }
-      catch (e) {
-        console.error(e);
-        setErrorFetchedChecker(c => !c);
-      }
 
-    }
-    fetchData();
-  }, [errorFetchedChecker]);
+  if(id !== 0){
+    useEffect( () => {
+      async function fetchData(){
+        try {
+          const result =  await axios.get(`${NEWS_API_V2}/api/v1/readalso/${id}?page=1&pageSize=${total}`,{
+            headers: {
+              'Authorization': getNewsTokenV2(),
+            },
+          });
+          await setResponse(result.data.data);
+        }
+        catch (e) {
+          console.error(e);
+          setErrorFetchedChecker(c => !c);
+        }
 
-  return {response, newContent};
+      }
+      fetchData();
+    }, [errorFetchedChecker]);
+
+    return {response, newContent};
+  }
+
 };
 
 export default function NewsDetailContent({item, indexKey, isIndexKey}) {
