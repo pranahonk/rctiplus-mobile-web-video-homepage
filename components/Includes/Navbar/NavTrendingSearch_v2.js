@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useCallback } from 'react';
 import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import LoadingBar from 'react-top-loading-bar';
@@ -22,6 +22,7 @@ import { debounceTime } from 'rxjs/operators';
 
 import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked, newsSearchClicked } from '../../../utils/appier';
 import { getCookie, setCookie, removeAccessToken, setAccessToken } from '../../../utils/cookie';
+import _debounce from 'lodash/debounce';
 
 
 class NavbarTrendingSearch extends Component {
@@ -29,7 +30,7 @@ class NavbarTrendingSearch extends Component {
         super(props);
         this.state = {
             q: '',
-            length: 10
+            length: 10,
         };
 
         this.subject = this.props.subject;
@@ -61,7 +62,7 @@ class NavbarTrendingSearch extends Component {
         //         if (this.props.newsv2.query) {
         //             searchKeywordEvent(this.props.newsv2.query, 'mweb_search_keyword');
         //         }
-                
+
         //         this.props.searchNews(this.props.newsv2.query, 1, this.state.length)
         //             .then(responses => {
         //                 console.log(responses);
@@ -74,36 +75,43 @@ class NavbarTrendingSearch extends Component {
         //                 this.props.toggleIsSearching(false);
         //             });
         //     });
+      this.props.onRef(this);
     }
 
-    saveSearchHistory(q) {
+  componentWillUnmount() {
+      this.props.onRef(undefined);
+  }
+
+
+  saveSearchHistory(q) {
         let searchHistory = getCookie('SEARCH_HISTORY');
         if (!searchHistory) {
-            setCookie('SEARCH_HISTORY', [q.toLowerCase()]);
+            setCookie('SEARCH_HISTORY', [q]);
         }
         else {
             searchHistory = JSON.parse(searchHistory);
-            if (searchHistory.indexOf(q.toLowerCase()) === -1) {
+            if (searchHistory.indexOf(q) === -1) {
                 if (searchHistory.length >= 5) {
                     searchHistory.pop();
                 }
             }
             else {
-                searchHistory.splice(searchHistory.indexOf(q.toLowerCase()), 1);
+                searchHistory.splice(searchHistory.indexOf(q), 1);
             }
 
-            searchHistory.unshift(q.toLowerCase());
+            searchHistory.unshift(q);
             setCookie('SEARCH_HISTORY', searchHistory);
         }
     }
 
     onChangeQuery(e) {
-        this.changeQuery(e.target.value);
+      this.changeQuery(e.target.value);
+      this.props.isChildChange(e.target.value)
     }
 
-    changeQuery(q) {
+    async changeQuery(q) {
         // this.setState({ q: q });
-        this.props.setQuery(q);
+        await this.props.setQuery(q);
     }
     initSearch(q) {
         if (q) {
@@ -124,19 +132,26 @@ class NavbarTrendingSearch extends Component {
     }
 
     clearKeyword() {
+        this.props.isChildFound(this.props.newsv2.search_result.length > 1)
         this.props.clearSearch();
         this.props.setQuery('');
         searchKeywordEvent(this.props.newsv2.query, 'mweb_search_clear_keyword_clicked');
-        this.initSearch('')
+        this.initSearch('');
     }
 
     handleKeyPress = (event) => {
         if(event.key === 'Enter'){
-            this.search()
+            this.search();
+            this.saveSearchHistory(this.props.newsv2.query);
         }
     }
+  handleFocusParent = (e) =>{
+      this.props.isChildFocus(true);
+      e.preventDefault();
+  }
 
     render() {
+        const { forwardedRef } = this.props;
         return (
             <div className="nav-home-container nav-fixed-top">
                 <Navbar style={{ backgroundColor: '#171717' }} expand="md" className={'nav-container nav-shadow nav-search'}>
@@ -162,7 +177,10 @@ class NavbarTrendingSearch extends Component {
                             value={this.props.newsv2.query}
                             onKeyPress={this.handleKeyPress}
                             id="search-news-input"
-                            className="search-input" />
+                            className="search-input"
+                            onFocus={this.handleFocusParent}
+                            ref={forwardedRef}
+                        />
                     </div>
                     <div className="right-top-link">
                         <div className="btn-link-top-nav">

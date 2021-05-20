@@ -8,7 +8,7 @@ import '../../../assets/scss/components/trending_v2.scss';
 
 const redirectToPublisherIndex = [0, 1];
 export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
-  const router = useRouter()
+  const router = useRouter();
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
   useEffect(() => {
@@ -38,6 +38,16 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
           return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
   }
+  const setColoring = (text) =>{
+    const params = new URLSearchParams(window.location.search) // id=123
+    const keyword = params.get('keyword'); // 123
+    const replace = new RegExp(keyword,"ig");
+    if(keyword){
+      return text.replace(replace, match => `<span style="color: #04a9e5">${match}</span>`);
+    }else{
+      return text;
+    }
+  }
   return(
     <div className={`list_tags_thumb ${indexKey%2 == 0 ? '' : 'tagsItems'}`}>
       <div className="lt_img">
@@ -57,7 +67,7 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
             e.preventDefault()
             _goToDetail(item)
             }}>
-            <h2 dangerouslySetInnerHTML={{ __html: getTruncate(item.title, '...', 100) }}></h2>
+            <h2 dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(item.title, '...', 100)) }}></h2>
           </a>
           <div className="lt_content-info">
           <h5>{item.source}</h5>
