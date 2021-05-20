@@ -141,8 +141,10 @@ class NavbarTrendingSearch extends Component {
 
     handleKeyPress = (event) => {
         if(event.key === 'Enter'){
+          if(this.props.newsv2.query !== undefined){
             this.search();
             this.saveSearchHistory(this.props.newsv2.query);
+          }
         }
     }
   handleFocusParent = (e) =>{
