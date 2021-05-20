@@ -109,9 +109,9 @@ class NavbarTrendingSearch extends Component {
       this.props.isChildChange(e.target.value)
     }
 
-    changeQuery(q) {
+    async changeQuery(q) {
         // this.setState({ q: q });
-        this.props.setQuery(q);
+        await this.props.setQuery(q);
     }
     initSearch(q) {
         if (q) {

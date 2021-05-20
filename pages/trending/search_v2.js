@@ -220,23 +220,32 @@ class Search extends React.Component {
                 <div className="result-content">
                     {search_result.map((article, i) => (
                         <div className="item_square-wrapper" key={i + article.title}>
-                            <SquareItem key={i + article.title} item={article} assets_url={assetsUrl}/>
+                            <SquareItem key={i + article.title} item={article} assets_url={assetsUrl} />
                         </div>
                     ))}
                 </div>
             );
         }
         else{
-          const queryParams = this.props.router.asPath.split(/\?/)[1].includes("keyword");
-          if(queryParams && !this.state.is_found && !this.state.is_on_typing){
-            return (
-              <div className="search-result">
-                <div className="search-result__title">Result</div>
-                <div className="search-result__desc">Your search for “{this.props.dataSearch?.keyword}” did not match any articles.</div>
-                <Img className="search-result__image" alt="Not Found News" src={`/static/group-2.svg`} />
-              </div>
-            );
+          if(this.props.router.asPath.split(/\?/).length > 1 && this.props.router.asPath.split(/\?/)[1].includes("keyword")){
+            const queryParams = this.props.router.asPath.split(/\?/)[1].includes("keyword");
+            if(queryParams && !this.state.is_found && !this.state.is_on_typing){
+              return (
+                <div className="search-result">
+                  <div className="search-result__title">Result</div>
+                  <div className="search-result__desc">Your search for “{this.props.dataSearch?.keyword}” did not match any articles.</div>
+                  <Img className="search-result__image" alt="Not Found News" src={`/static/group-2.svg`} />
+                  <div className="search-result__title">A few suggestions</div>
+                  <ul style={{padding: "0 0 0 15px"}}>
+                    <li>Make sure your words are spelled correctly</li>
+                    <li>Try different keywords</li>
+                    <li>Try more general keywords</li>
+                  </ul>
+                </div>
+              );
+            }
           }
+
         }
     }
 
@@ -292,7 +301,16 @@ class Search extends React.Component {
 
   handleColoringText = (text) =>{
       if(text){
-        return `<span style='color: #04a9e5'>${text.substring(0, this.state.query_search.length)}</span>${text.substring(this.state.query_search.length, text.length)}`;
+        if(text.substring(0, 1) === '#' && this.state.query_search !== ''){
+          if(text.toLowerCase().includes((this.state.query_search.toLowerCase()))){
+            const replace = new RegExp(this.state.query_search,"ig");
+            return text.replace(replace, match => `<span style="color: #04a9e5">${match}</span>`);
+            //return `<span style='color: #04a9e5'>${text.substring(0, 1)} ${text.substring(text.toLowerCase().indexOf(this.state.query_search.toLowerCase()),text.toLowerCase().indexOf(this.state.query_search.toLowerCase()) + this.state.query_search.length)}</span>${text.substring(this.state.query_search.length + 1, text.length)}`;
+          }
+          return text;
+        }else{
+          return `<span style='color: #04a9e5'>${text.substring(0, this.state.query_search.length)}</span>${text.substring(this.state.query_search.length, text.length)}`;
+        }
       }
   }
 
@@ -337,7 +355,7 @@ class Search extends React.Component {
                         return(
                           <div className="popular-search__wrapper" key={i} onClick={() => this.handleUserClick(rec)}>
                             <SearchIcon className="popular-search__icon" />
-                            <span className="popular-search__text"dangerouslySetInnerHTML={{ __html: this.handleColoringText(rec)  }}></span>
+                            <span className="popular-search__text" dangerouslySetInnerHTML={{ __html: this.handleColoringText(rec)  }}></span>
                           </div>
                         )
                       })
@@ -347,7 +365,7 @@ class Search extends React.Component {
                         return(
                           <div className="popular-search__wrapper" key={i} onClick={() => this.handleUserClick(rec)}>
                             <SearchIcon className="popular-search__icon" />
-                            <span className="popular-search__text">{rec}</span>
+                            <span className="popular-search__text" dangerouslySetInnerHTML={{ __html: this.handleColoringText(rec)  }}></span>
                           </div>
                         )
                       })
@@ -383,5 +401,5 @@ class Search extends React.Component {
 
 export default connect(state => state, {
     ...newsv2Actions,
-    ...pageActions
+    ...pageActions,
 })(withRouter(Search));
