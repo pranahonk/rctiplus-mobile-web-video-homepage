@@ -196,6 +196,7 @@ class Search extends React.Component {
                                 this.props.setPageLoader();
                                 // TODO:
                                 this.props.setSearch(h, this.subject);
+                                this.handleUserClick(h);
                             }}>{h}</Col>
                             <Col xs={2} style={{ textAlign: 'right', paddingRight: 15 }}><CloseIcon onClick={() => this.deleteSearchHistory(i)}/></Col>
                         </Row>
@@ -305,7 +306,6 @@ class Search extends React.Component {
           if(text.toLowerCase().includes((this.state.query_search.toLowerCase()))){
             const replace = new RegExp(this.state.query_search,"ig");
             return text.replace(replace, match => `<span style="color: #04a9e5">${match}</span>`);
-            //return `<span style='color: #04a9e5'>${text.substring(0, 1)} ${text.substring(text.toLowerCase().indexOf(this.state.query_search.toLowerCase()),text.toLowerCase().indexOf(this.state.query_search.toLowerCase()) + this.state.query_search.length)}</span>${text.substring(this.state.query_search.length + 1, text.length)}`;
           }
         }else{
           return `<span style='color: #04a9e5'>${text.substring(0, this.state.query_search.length)}</span>${text.substring(this.state.query_search.length, text.length)}`;
