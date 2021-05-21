@@ -760,6 +760,7 @@ class Detail extends React.Component {
                                     size={[300, 250]}
                                     idGpt={process.env.GPT_ID_DETAIL}
                                     setTarget={true}
+                                    platform={this.platform}
                                   />
                                   {/* <span>partner: { cdata.source }</span> */}
                                 </div>
@@ -772,6 +773,7 @@ class Detail extends React.Component {
                                             size={[300, 250]}
                                             idGpt={process.env.GPT_ID_DETAIL}
                                             setTarget={true}
+                                            platform={this.platform}
                                             />
                                         {/* <span>partner: { cdata.source }</span> */}
                                     </div>
