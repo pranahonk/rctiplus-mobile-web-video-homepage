@@ -206,11 +206,6 @@ class Search extends React.Component {
             );
         }
 
-        // return (
-        //     <div className="not-found-message">
-        //         There is no search history
-        //     </div>
-        // );
     }
 
     renderContent() {
@@ -234,7 +229,7 @@ class Search extends React.Component {
               return (
                 <div className="search-result">
                   <div className="search-result__title">Result</div>
-                  <div className="search-result__desc">Your search for “{this.props.dataSearch?.keyword}” did not match any articles.</div>
+                  <div className="search-result__desc">Your search for “{decodeURIComponent(this.props.dataSearch?.keyword)}” did not match any articles.</div>
                   <Img className="search-result__image" alt="Not Found News" src={`/static/group-2.svg`} />
                   <div className="search-result__title">A few suggestions</div>
                   <ul style={{padding: "0 0 0 15px"}}>
@@ -307,8 +302,12 @@ class Search extends React.Component {
             const replace = new RegExp(this.state.query_search,"ig");
             return text.replace(replace, match => `<span style="color: #04a9e5">${match}</span>`);
           }
+          else {
+            return text;
+          }
         }else{
-          return `<span style='color: #04a9e5'>${text.substring(0, this.state.query_search.length)}</span>${text.substring(this.state.query_search.length, text.length)}`;
+          const replace = new RegExp(this.state.query_search,"ig");
+          return text.replace(replace, match => `<span style="color: #04a9e5">${match}</span>`);
         }
       }
   }

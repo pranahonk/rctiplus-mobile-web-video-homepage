@@ -115,7 +115,7 @@ class NavbarTrendingSearch extends Component {
     }
     initSearch(q) {
         if (q) {
-            let queryParams = `keyword=${q || ''}`
+            let queryParams = `keyword=${encodeURIComponent(q) || ''}`
             if (this.accessToken) {
                 queryParams += `&token=${this.accessToken}`
                 queryParams += `&platform=${this.platform}`
@@ -176,7 +176,7 @@ class NavbarTrendingSearch extends Component {
                             onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
                             placeholder="Search"
                             onChange={this.onChangeQuery.bind(this)}
-                            value={this.props.newsv2.query}
+                            value={decodeURIComponent(this.props.newsv2.query)}
                             onKeyPress={this.handleKeyPress}
                             id="search-news-input"
                             className="search-input"
