@@ -648,10 +648,10 @@ const addCategoryVisitorV2 = (categoryId, device_id) => {
   });
 };
 
-const userRecomendation = () => {
+const userRecomendation = (page = 1, pageSize = 4) => {
   return () => new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.get(`/v2/recommendation`);
+      const response = await axios.get(`/v2/recommendation?page=${page}&pageSize=${pageSize}`);
       if (response.status === 200) {
         resolve(response);
       } else {
