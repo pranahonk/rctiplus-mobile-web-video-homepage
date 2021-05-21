@@ -1,11 +1,13 @@
 import ax from 'axios';
 import { NEWS_API_V2 } from '../../config';
-import { removeAccessToken, getUserAccessToken, getVisitorToken, checkToken } from '../../utils/cookie';
+import { removeAccessToken, getUserAccessToken, getVisitorToken, checkToken, setAccessToken } from '../../utils/cookie';
+import queryString from 'query-string';
+import initialize from '../../utils/initialize';
 
 const axios = ax.create({ baseURL: NEWS_API_V2 + '/api' });
-
 axios.interceptors.request.use(async (request) => {
   const accessToken = getUserAccessToken();
+
   if (!accessToken) {
     removeAccessToken();
     await checkToken();
@@ -14,11 +16,15 @@ axios.interceptors.request.use(async (request) => {
     request.headers['Authorization'] = accessToken;
   }
 
+
   return request;
 });
 
 const addCategoryV2 = categoryId => {
   return () => new Promise(async (resolve, reject) => {
+    const urlParams = new URLSearchParams(location.search);
+    const myParam = urlParams.get('token');
+    console.log(myParam);
     try {
       const response = await axios.post(`/v2/feature/kanal`, {
         category: categoryId,
