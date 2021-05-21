@@ -601,10 +601,11 @@ class Detail extends React.Component {
                     <Sticky bottomOffset={100}>
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
-                            const hideStickyRatio = cdata.exclusive === 'yes' ?  570 : 950;
-                            // console.log(this.state.documentHeight)
+                            const hideStickyRatio = cdata.exclusive === 'yes' ?  950 : 570;
+                            // console.log(`document height: ${this.state.documentHeight}`);
                             // const documentHeight = document.body.scrollHeight - 200;
-                            // console.log(hideStickyRatio)
+                            // console.log(`Hide sticky ratio: ${hideStickyRatio}`);
+                            // console.log(`Related article position: ${this.state.relatedArticlePosition}`);
                             // console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight)
                             if (this.state.relatedArticlePosition < 1400 && this.state.relatedArticlePosition > hideStickyRatio) {
                                 // console.log('masuk kondisi if A')
