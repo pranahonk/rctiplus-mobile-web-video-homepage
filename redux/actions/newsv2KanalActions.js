@@ -6,11 +6,11 @@ import initialize from '../../utils/initialize';
 
 const axios = ax.create({ baseURL: NEWS_API_V2 + '/api' });
 axios.interceptors.request.use(async (request) => {
+  await checkToken();
   const accessToken = getUserAccessToken();
 
   if (!accessToken) {
     removeAccessToken();
-    await checkToken();
     request.headers['Authorization'] = getVisitorToken();
   } else {
     request.headers['Authorization'] = accessToken;
