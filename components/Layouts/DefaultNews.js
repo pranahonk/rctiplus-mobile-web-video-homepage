@@ -133,21 +133,9 @@ class DefaultNews extends React.Component {
                         ga('teamTracker.send', 'pageview');
                     ` }}></script>
 
-                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                    <script dangerouslySetInnerHTML={{ __html: `
-                        (adsbygoogle = window.adsbygoogle || []).push({
-                            google_ad_client: "ca-pub-7595624984434758",
-                            enable_page_level_ads: true
-                        });
-                    ` }}></script>
-                    {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
-
-
-                    <script src="/static/js/fontawesome.min.js" crossOrigin="anonymous" defer></script>
-
                     {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
-                    <script src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
-                    <script dangerouslySetInnerHTML={{ __html: `
+                    <script type="text/javascript" src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
+                    <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
                         AIQUA.init({
                             appId: 'c63c2960bf562e9ec2de',
                             timeout: 5000
@@ -156,7 +144,7 @@ class DefaultNews extends React.Component {
                     </script>
 
                     {/* Comscore */}
-                    <script dangerouslySetInnerHTML={{ __html: `
+                    <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
                         var _comscore=_comscore||[];_comscore.push({c1:"2",c2:"9013027"}),function(){var c=document.createElement("script"),e=document.getElementsByTagName("script")[0];c.async=!0,c.src=("https:"==document.location.protocol?"https://sb":"http://b")+".scorecardresearch.com/beacon.js",e.parentNode.insertBefore(c,e)}();
                     ` }}></script>
                     <noscript><img alt="Share" src="https://b.scorecardresearch.com/p?c1=2&amp;c2=9013027&amp;cv=2.0&amp;cj=1" /></noscript>
@@ -170,9 +158,9 @@ class DefaultNews extends React.Component {
                     <noscript><img src="https://certify.alexametrics.com/atrk.gif?account=8oNJt1FYxz20cv" style={{ display: 'none' }} height="1" width="1" alt="" /></noscript>
                     {/* <!-- End Alexa Certify Javascript --> */}
                     
-                    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+                    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
 
-                    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
+                    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
 
                 </Head>
                 {/* <!-- Google Tag Manager (noscript) --> */}
@@ -222,7 +210,20 @@ class DefaultNews extends React.Component {
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
                 {/* {console.log((!(this.platform && (this.platform == 'android' || this.platform == 'ios')) && this.props?.Program?.paid_video?.data?.is_paid === 0 && this.props.router.pathname === '/programs') || this.props?.Program['tracking-program']?.data?.premium === 1) } */}
-                {(this.platform && (this.platform == 'android' || this.platform == 'ios')) || this.props.router.asPath.includes('/news') ? (<script async src="/static/js/fontawesome.min.js" crossOrigin="anonymous"></script>) : (process.env.UI_VERSION == '2.0' ? (this.props.hideFooter || this.props.pages.hide_footer ? null : <Footer_v2 />) : (<Footer />))}
+                {
+                    (
+                    this.platform && (
+                        this.platform == 'android' || this.platform == 'ios')
+                    ) || this.props.router.asPath.includes('/news') ? (
+                        (
+                            this.props.router.asPath.includes('/news/detail') ? <script async src="/static/js/fontawesome.min.js" crossOrigin="anonymous"></script> : null
+                        )
+                    ) : (
+                        process.env.UI_VERSION == '2.0' ? (
+                            this.props.hideFooter || this.props.pages.hide_footer ? null : <Footer_v2 />
+                        ) : (<Footer />)
+                    )
+                }
             </div>
         )
     }
