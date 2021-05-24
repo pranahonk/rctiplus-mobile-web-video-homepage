@@ -226,19 +226,21 @@ class Search extends React.Component {
           if(this.props.router.asPath.split(/\?/).length > 1 && this.props.router.asPath.split(/\?/)[1].includes("keyword")){
             const queryParams = this.props.router.asPath.split(/\?/)[1].includes("keyword");
             if(queryParams && !this.state.is_found && !this.state.is_on_typing){
-              return (
-                <div className="search-result">
-                  <div className="search-result__title">Result</div>
-                  <div className="search-result__desc">Your search for “{decodeURIComponent(this.props.dataSearch?.keyword)}” did not match any articles.</div>
-                  <Img className="search-result__image" alt="Not Found News" src={`/static/group-2.svg`} />
-                  <div className="search-result__title">A few suggestions</div>
-                  <ul style={{padding: "0 0 0 15px"}}>
-                    <li>Make sure your words are spelled correctly</li>
-                    <li>Try different keywords</li>
-                    <li>Try more general keywords</li>
-                  </ul>
-                </div>
-              );
+              setTimeout(()=>{
+                return (
+                  <div className="search-result">
+                    <div className="search-result__title">Result</div>
+                    <div className="search-result__desc">Your search for “{decodeURIComponent(this.props.dataSearch?.keyword)}” did not match any articles.</div>
+                    <Img className="search-result__image" alt="Not Found News" src={`/static/group-2.svg`} />
+                    <div className="search-result__title">A few suggestions</div>
+                    <ul style={{padding: "0 0 0 15px"}}>
+                      <li>Make sure your words are spelled correctly</li>
+                      <li>Try different keywords</li>
+                      <li>Try more general keywords</li>
+                    </ul>
+                  </div>
+                );
+              }, 750)
             }
           }
 
