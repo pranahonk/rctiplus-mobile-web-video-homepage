@@ -609,7 +609,7 @@ class Detail extends React.Component {
                             // console.log(`Related article position: ${this.state.relatedArticlePosition}`);
                             // console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight)
                             if (this.state.relatedArticlePosition < 1400 && this.state.relatedArticlePosition > hideStickyRatio) {
-                                console.log('masuk kondisi if A')
+                                // console.log('masuk kondisi if A')
                                 setTimeout(() => {
                                     if (self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: false });
@@ -619,7 +619,7 @@ class Detail extends React.Component {
                                 return <span></span>;
                             }
                             if (this.state.relatedArticlePosition < hideStickyRatio && this.state.relatedArticlePosition) {
-                              console.log('masuk kondisi if B+')
+                              // console.log('masuk kondisi if B+')
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
@@ -634,7 +634,7 @@ class Detail extends React.Component {
                             }
 
                             if (this.state.relatedArticlePosition < this.state.documentHeight && distanceFromTop < -100 && this.state.relatedArticlePosition > 1400 && this.state.relatedArticlePosition) {
-                              console.log('masuk kondisi if B')
+                              // console.log('masuk kondisi if B')
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
@@ -648,7 +648,7 @@ class Detail extends React.Component {
                                 );
                             }
                             if (this.state.relatedArticlePosition < 950 && this.state.relatedArticlePosition) {
-                              console.log('masuk kondisi if C')
+                              // console.log('masuk kondisi if C')
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
                                         self.setState({ sticky_share_shown: true });
