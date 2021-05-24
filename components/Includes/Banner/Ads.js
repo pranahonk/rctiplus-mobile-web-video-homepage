@@ -11,6 +11,10 @@ import { getUidAppier } from '../../../utils/appier';
 
 const axios = ax.create({ baseURL: DEV_API });
 const AdsBanner = ({path, size, idGpt, style, partner, setTarget, platform}) => {
+  console.log(path);
+  console.log(size);
+  console.log(idGpt);
+  console.log(typeof platform);
   const [ads, setAds] = useState(null);
   const [url, setUrl] = useState(null);
   // const toggleAds = useSelector(state => state.ads)

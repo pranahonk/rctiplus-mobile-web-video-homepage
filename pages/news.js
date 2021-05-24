@@ -166,6 +166,7 @@ class Trending_v2 extends React.Component {
         is_ads_rendered: false,
         device_id: null,
         not_logged_in_category: [],
+        is_login: false,
     };
 
     constructor(props) {
@@ -348,8 +349,16 @@ class Trending_v2 extends React.Component {
           device_id: new DeviceUUID().get(),
         });
 
-        if(getUserAccessToken()){
-          await this.props.getSelectedChannelsVisitor(this.state.device_id)
+
+
+      if (this.accessToken !== null &&  this.accessToken !== undefined) {
+        const decodedToken = jwtDecode(this.accessToken);
+        if (decodedToken && decodedToken.uid != '0') {
+          this.fetchData(true);
+        }
+        else {
+          this.fetchData();
+          this.props.getSelectedChannelsVisitor(this.state.device_id)
             .then((res) =>{
               this.setState({
                 not_logged_in_category: res.data.data,
@@ -359,27 +368,28 @@ class Trending_v2 extends React.Component {
               console.error(err)
             });
         }
-
-        if (this.accessToken !== null &&  this.accessToken !== undefined) {
-            const decodedToken = jwtDecode(this.accessToken);
-            if (decodedToken && decodedToken.uid != '0') {
-                this.fetchData(true);
-            }
-            else {
-                this.fetchData();
-            }
-        }
-        else {
-            this.props.getUserData()
-                .then(response => {
-                    // console.log(response);
-                    this.fetchData(true);
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.fetchData();
+      }
+      else {
+        this.props.getUserData()
+          .then(response => {
+            // console.log(response);
+            this.fetchData(true);
+          })
+          .catch(error => {
+            console.log(error);
+            this.fetchData();
+            this.props.getSelectedChannelsVisitor(this.state.device_id)
+              .then((res) =>{
+                this.setState({
+                  not_logged_in_category: res.data.data,
                 });
-        }
+              })
+              .catch((err) =>{
+                console.error(err)
+              });
+          });
+      }
+
 
         window.addEventListener('pageshow', function(event) {
           if (event.persisted) {
