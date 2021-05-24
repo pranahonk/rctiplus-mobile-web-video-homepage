@@ -41,6 +41,7 @@ import ErrorPlayer from '../../components/Includes/Player/ErrorPlayer';
 import Toast from '../../components/Includes/Common/Toast';
 import ErrorIcon from '../../components/Includes/Common/ErrorLiveEvent';
 import JsonLDVideo from '../../components/Seo/JsonLDVideo';
+import LiveChats from "../../components/Includes/LiveChat"
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -473,6 +474,22 @@ class LiveEvent extends React.Component {
 													chatInput.style.height = `100%`;
 												});
 											}
+											else {
+												if (firstLoadChat) {
+													chats.unshift(change.doc.data());
+												}
+												else {
+													chats.push(change.doc.data());
+												}
+											}
+
+											this.setState({ chats: chats }, () => {
+												// const chatBox = document.getElementById('chat-messages');
+												// chatBox.scrollTop = chatBox.scrollHeight;
+
+												const chatInput = document.getElementById('chat-input');
+												chatInput.style.height = `100%`;
+											});
 										}
 									});
 	
@@ -1236,7 +1253,10 @@ class LiveEvent extends React.Component {
 							</div>
 						</div>
         	</Offline>
-				</div>
+					</div>
+					{ this.props.router.asPath.match('/missed-event/') || this.state.selected_tab === 'missed-event'  ? (<div />) :
+						<LiveChats dataChats={ this.state.chats} handleHeightChat={() => `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`} />
+						}
 			</Layout>
 		);
 	}
