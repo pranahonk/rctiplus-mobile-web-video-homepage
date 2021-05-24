@@ -176,7 +176,7 @@ class NavbarTrendingSearch extends Component {
                             onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
                             placeholder="Search"
                             onChange={this.onChangeQuery.bind(this)}
-                            value={decodeURIComponent(this.props.newsv2.query)}
+                            value={this.props.newsv2.query ? decodeURIComponent(this.props.newsv2.query) : this.props.newsv2.query}
                             onKeyPress={this.handleKeyPress}
                             id="search-news-input"
                             className="search-input"

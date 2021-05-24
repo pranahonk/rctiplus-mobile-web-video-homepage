@@ -290,7 +290,7 @@ class Search extends React.Component {
    handleUserClick = async(data) => {
       const keyword = data.keyword || data;
       this.props.setQuery(keyword);
-      this.navBack.initSearch(encodeURIComponent(keyword));
+      this.navBack.initSearch(keyword);
       await this.props.saveUserRecomendation(keyword);
       this.navBack.saveSearchHistory(keyword);
   }
