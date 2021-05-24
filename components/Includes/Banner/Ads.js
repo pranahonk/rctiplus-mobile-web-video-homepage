@@ -69,7 +69,7 @@ const AdsBanner = ({path, size, idGpt, style, partner, setTarget, platform}) => 
   };
 
   useEffect(() => {
-    axios.get(`/ads/v1/cust-params?platform=${platform === "null" ? 'mweb' : platform}&aid=${platform === 'ios' ? "idfa" : getUidAppier()}`)
+    axios.get(`/ads/v1/cust-params?platform=${platform ? platform : 'mweb'}&aid=${platform === 'ios' ? "idfa" : getUidAppier()}`)
       .then(response => {
         showAds(response.data);
       })
