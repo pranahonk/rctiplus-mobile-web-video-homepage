@@ -38,6 +38,7 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 import ErrorPlayer from '../../components/Includes/Player/ErrorPlayer';
 import Toast from '../../components/Includes/Common/Toast';
 import JsonLDVideo from '../../components/Seo/JsonLDVideo';
+import LiveChats from "../../components/Includes/LiveChat"
 
 import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
@@ -424,8 +425,8 @@ class LiveEvent extends React.Component {
 											}
 
 											this.setState({ chats: chats }, () => {
-												const chatBox = document.getElementById('chat-messages');
-												chatBox.scrollTop = chatBox.scrollHeight;
+												// const chatBox = document.getElementById('chat-messages');
+												// chatBox.scrollTop = chatBox.scrollHeight;
 
 												const chatInput = document.getElementById('chat-input');
 												chatInput.style.height = `100%`;
@@ -1449,85 +1450,87 @@ class LiveEvent extends React.Component {
 						</div>
 					</div>
 					{ this.props.router.asPath.match('/missed-event/') || this.state.selected_tab === 'missed-event'  ? (<div />) :
-					 (<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
-						{height: `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
-						: null}>
-						<div className="btn-chat">
-							<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
-								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
-							</Button>
-							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
-						</div>
-						<div className="box-chat" id="chat-input">
-							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
-								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
-									<div>
-										<MuteChat className="icon-block__chat" />
-										<p>Sorry, you cannot send the message</p>
-										<span>{this.state.block_user.message}</span>
-									</div>
-								</div>
-							</div>
-							<div className="chat-messages" id="chat-messages">
-								{this.state.chats.map((chat, i) => (
-									<Row key={i} className="chat-line">
-										<Col xs={2}>
-											<Img
-												loader={<PersonOutlineIcon className="chat-avatar" />}
-												unloader={<PersonOutlineIcon className="chat-avatar" />}
-												className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
-										</Col>
-										<Col className="chat-message" xs={10}>
-											{/* {chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span> */}
-											<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />{' '}
-												<span className="username">
-													{chat.u}
-												</span> 
-												<span className="message">
-													{chat.m}
-												</span>
-										</Col>
-									</Row>
-								))}
-							</div>
-							<div className="chat-input-box">
-								<div className="chat-box">
-									<Row>
-										<Col xs={1}>
-											<Button className="emoji-button">
-												{this.state.emoji_picker_open ? (<KeyboardIcon onClick={this.toggleEmoji.bind(this)} />) : (<SentimenVerySatifiedIcon onClick={this.toggleEmoji.bind(this)} />)}
-											</Button>
-										</Col>
-										<Col xs={9}>
-											<Input
-												onKeyDown={this.handleChatEnter.bind(this)}
-												onChange={this.onChangeChatInput.bind(this)}
-												onClick={this.checkLogin.bind(this)}
-												value={this.state.chat}
-												type="textarea"
-												id="chat-input"
-												placeholder="Start Chatting"
-												className="chat-input"
-												maxLength={250}
-												rows={1} />
-										</Col>
-										<Col xs={1}>
-											<Button className="send-button" onClick={this.sendChat.bind(this)}>
-												<SendIcon />
-											</Button>
-										</Col>
-									</Row>
-								</div>
-								<Picker
-									onSelect={emoji => {
-										this.onSelectEmoji();
-									}}
-									showPreview={false}
-									darkMode
-									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
-							</div>
-						</div>
-					</div>)}
+						<LiveChats dataChats={ this.state.chats} handleHeightChat={() => `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`} />
+					//  (<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
+					// 	{height: `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
+					// 	: null}>
+					// 	<div className="btn-chat">
+					// 		<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
+					// 			<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
+					// 		</Button>
+					// 		{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
+					// 	</div>
+					// 	<div className="box-chat" id="chat-input">
+					// 		<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
+					// 			<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
+					// 				<div>
+					// 					<MuteChat className="icon-block__chat" />
+					// 					<p>Sorry, you cannot send the message</p>
+					// 					<span>{this.state.block_user.message}</span>
+					// 				</div>
+					// 			</div>
+					// 		</div>
+					// 		<div className="chat-messages" id="chat-messages">
+					// 			{this.state.chats.map((chat, i) => (
+					// 				<Row key={i} className="chat-line">
+					// 					<Col xs={2}>
+					// 						<Img
+					// 							loader={<PersonOutlineIcon className="chat-avatar" />}
+					// 							unloader={<PersonOutlineIcon className="chat-avatar" />}
+					// 							className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
+					// 					</Col>
+					// 					<Col className="chat-message" xs={10}>
+					// 						{/* {chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span> */}
+					// 						<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />{' '}
+					// 							<span className="username">
+					// 								{chat.u}
+					// 							</span> 
+					// 							<span className="message">
+					// 								{chat.m}
+					// 							</span>
+					// 					</Col>
+					// 				</Row>
+					// 			))}
+					// 		</div>
+					// 		<div className="chat-input-box">
+					// 			<div className="chat-box">
+					// 				<Row>
+					// 					<Col xs={1}>
+					// 						<Button className="emoji-button">
+					// 							{this.state.emoji_picker_open ? (<KeyboardIcon onClick={this.toggleEmoji.bind(this)} />) : (<SentimenVerySatifiedIcon onClick={this.toggleEmoji.bind(this)} />)}
+					// 						</Button>
+					// 					</Col>
+					// 					<Col xs={9}>
+					// 						<Input
+					// 							onKeyDown={this.handleChatEnter.bind(this)}
+					// 							onChange={this.onChangeChatInput.bind(this)}
+					// 							onClick={this.checkLogin.bind(this)}
+					// 							value={this.state.chat}
+					// 							type="textarea"
+					// 							id="chat-input"
+					// 							placeholder="Start Chatting"
+					// 							className="chat-input"
+					// 							maxLength={250}
+					// 							rows={1} />
+					// 					</Col>
+					// 					<Col xs={1}>
+					// 						<Button className="send-button" onClick={this.sendChat.bind(this)}>
+					// 							<SendIcon />
+					// 						</Button>
+					// 					</Col>
+					// 				</Row>
+					// 			</div>
+					// 			<Picker
+					// 				onSelect={emoji => {
+					// 					this.onSelectEmoji();
+					// 				}}
+					// 				showPreview={false}
+					// 				darkMode
+					// 				style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
+					// 		</div>
+					// 	</div>
+					// </div>)
+					}
 				</div>
 			</Layout>
 		);
