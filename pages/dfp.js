@@ -25,7 +25,7 @@ class Dfp extends React.Component {
   render() {
     return(
       <div>
-        <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} setTarget={true} />
+        <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} setTarget={true} platform={this.platform} />
       </div>
     )
   }
