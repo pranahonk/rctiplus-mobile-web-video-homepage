@@ -73,7 +73,7 @@ const AdsBanner = ({path, size, idGpt, style, partner, setTarget, platform}) => 
   };
 
   useEffect(() => {
-    axios.get(`/ads/v1/cust-params?platform=${platform === "null" ? 'mweb' : platform}&aid=${getUidAppier()}`)
+    axios.get(`/ads/v1/cust-params?platform=${platform === null ? 'mweb' : platform}&aid=${platform === 'ios' ? "idfa" : getUidAppier()}`)
       .then(response => {
         showAds(response.data);
       })
@@ -83,6 +83,13 @@ const AdsBanner = ({path, size, idGpt, style, partner, setTarget, platform}) => 
         }
       );
   },[]);
+
+  // useEffect(() => {
+  //   if(ads !== null) {
+  //     console.log('PROPS: ',toggleAds)
+
+  //   }
+  // })
 
 
   return (
