@@ -13,7 +13,6 @@ const axios = ax.create({ baseURL: DEV_API });
 const AdsBanner = ({path, size, idGpt, style, partner, setTarget, platform = "mweb"}) => {
   const [ads, setAds] = useState(null);
   const [url, setUrl] = useState(null);
-  console.log(typeof platform)
   // const toggleAds = useSelector(state => state.ads)
   // const dispatch = useDispatch();
 
@@ -70,7 +69,7 @@ const AdsBanner = ({path, size, idGpt, style, partner, setTarget, platform = "mw
   };
 
   useEffect(() => {
-    axios.get(`/ads/v1/cust-params?platform=${platform === null || platform !== "null" ? 'mweb' : platform}&aid=${platform === 'ios' ? "idfa" : getUidAppier()}`)
+    axios.get(`/ads/v1/cust-params?platform=${platform === null || platform === "null" ? 'mweb' : platform}&aid=${platform === 'ios' ? "idfa" : getUidAppier()}`)
       .then(response => {
         showAds(response.data);
       })
