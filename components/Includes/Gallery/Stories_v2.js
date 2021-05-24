@@ -303,7 +303,7 @@ class Stories extends React.Component {
             case 'catchup':
                 if(program.swipe_value && program.channel && program.catchup_date) {
                     const title = program.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
-                    return `/tv/${program.channel}/${program.swipe_type}/${title}?date=${program.catchup_date}`
+                    return `/tv/${program.channel}/${program.swipe_value}/${title}?date=${program.catchup_date}`
                 }
                 break;
             case 'live_event':
