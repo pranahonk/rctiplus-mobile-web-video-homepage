@@ -115,7 +115,7 @@ class NavbarTrendingSearch extends Component {
     }
     initSearch(q) {
         if (q) {
-            let queryParams = `keyword=${q || ''}`
+            let queryParams = `keyword=${encodeURIComponent(q) || ''}`
             if (this.accessToken) {
                 queryParams += `&token=${this.accessToken}`
                 queryParams += `&platform=${this.platform}`
@@ -141,8 +141,10 @@ class NavbarTrendingSearch extends Component {
 
     handleKeyPress = (event) => {
         if(event.key === 'Enter'){
+          if(this.props.newsv2.query !== undefined){
             this.search();
             this.saveSearchHistory(this.props.newsv2.query);
+          }
         }
     }
   handleFocusParent = (e) =>{
@@ -174,7 +176,7 @@ class NavbarTrendingSearch extends Component {
                             onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
                             placeholder="Search"
                             onChange={this.onChangeQuery.bind(this)}
-                            value={this.props.newsv2.query}
+                            value={this.props.newsv2.query ? decodeURIComponent(this.props.newsv2.query) : this.props.newsv2.query}
                             onKeyPress={this.handleKeyPress}
                             id="search-news-input"
                             className="search-input"
