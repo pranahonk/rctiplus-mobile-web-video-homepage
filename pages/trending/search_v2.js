@@ -6,13 +6,23 @@ import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import Head from 'next/head'
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2 } from '../../config';
+import {
+  SITEMAP,
+  SITE_NAME,
+  GRAPH_SITEMAP,
+  DEV_API,
+  NEWS_API_V2,
+  GPT_ID_LIST,
+  GPT_NEWS_MWEB_SEARCH,
+  GPT_NEWS_IOS_SEARCH, GPT_NEWS_ANDROID_SEARCH, GPT_ID_SEARCH
+} from '../../config';
 
 import newsv2Actions from '../../redux/actions/newsv2Actions';
 import pageActions from '../../redux/actions/pageActions';
 
 import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavTrendingSearch_v2';
+import AdsBanner from '../../components/Includes/Banner/Ads';
 
 import { Row, Col } from 'reactstrap';
 import SearchIcon from '@material-ui/icons/Search';
@@ -99,7 +109,8 @@ class Search extends React.Component {
             is_on_typing: false,
             is_found: false,
             is_search_render: false,
-            query_search: null
+            query_search: null,
+            is_show: false,
         };
 
         this.subject = new Subject();
@@ -132,6 +143,12 @@ class Search extends React.Component {
         this.setState({
           user_recommendations: [...user_recommendation.data.data]
         });
+
+        window.addEventListener('load', ()=>{
+          this.setState({
+            is_show: true,
+          });
+        });
     }
 
     link(article) {
@@ -142,6 +159,56 @@ class Search extends React.Component {
           category = urlRegex(article.subcategory_name)
         }
         Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+    }
+
+    getPlatformGpt = (platform) => {
+      // webview
+      if(platform === 'ios') {
+        return GPT_NEWS_IOS_SEARCH;
+      }
+      else if(platform === 'android') {
+        return GPT_NEWS_ANDROID_SEARCH;
+      }
+      else {
+        return  GPT_NEWS_MWEB_SEARCH;
+      }
+    }
+
+    renderAds(index, article){
+      if((index + 1) % 7 === 0){
+        return(
+          <div>
+            <iframe
+              onLoad={() => {
+                window.addEventListener('scroll', () => {
+                  const adsFrame = document.getElementById(article.id);
+                  const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
+                  const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
+                  const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
+                  if(adsFrame.contentWindow.document && iframeAdsID){
+                    adsFrame.style.display = 'block';
+                    adsFrame.style.paddingTop = '17px';
+                    this.setState({
+                      is_ads_rendered: true,
+                    })
+
+                  }else if(element && element.style.display === 'none' || element_2 || !element){
+                    adsFrame.style.display = 'none';
+                  }else{
+                    adsFrame.style.display = 'none';
+                  }
+                })
+              }}
+              id={article.id} src={`/dfp?platform=${this.platform}`}
+              frameBorder="0"
+              style={{
+                height: '250px',
+                width: '100%',
+                display: 'none',
+              }} />
+          </div>
+        )
+      }
     }
 
     bottomScrollFetch() {
@@ -217,6 +284,9 @@ class Search extends React.Component {
                     {search_result.map((article, i) => (
                         <div className="item_square-wrapper" key={i + article.title}>
                             <SquareItem key={i + article.title} item={article} assets_url={assetsUrl} />
+                          {
+                            this.renderAds(i, article)
+                          }
                         </div>
                     ))}
                 </div>
@@ -225,22 +295,20 @@ class Search extends React.Component {
         else{
           if(this.props.router.asPath.split(/\?/).length > 1 && this.props.router.asPath.split(/\?/)[1].includes("keyword")){
             const queryParams = this.props.router.asPath.split(/\?/)[1].includes("keyword");
-            if(queryParams && !this.state.is_found && !this.state.is_on_typing){
-              setTimeout(()=>{
-                return (
-                  <div className="search-result">
-                    <div className="search-result__title">Result</div>
-                    <div className="search-result__desc">Your search for “{decodeURIComponent(this.props.dataSearch?.keyword)}” did not match any articles.</div>
-                    <Img className="search-result__image" alt="Not Found News" src={`/static/group-2.svg`} />
-                    <div className="search-result__title">A few suggestions</div>
-                    <ul style={{padding: "0 0 0 15px"}}>
-                      <li>Make sure your words are spelled correctly</li>
-                      <li>Try different keywords</li>
-                      <li>Try more general keywords</li>
-                    </ul>
-                  </div>
-                );
-              }, 750)
+            if(queryParams && !this.state.is_found && !this.state.is_on_typing && this.state.is_show){
+              return (
+                <div className="search-result">
+                  <div className="search-result__title">Result</div>
+                  <div className="search-result__desc">Your search for “{decodeURIComponent(this.props.dataSearch?.keyword)}” did not match any articles.</div>
+                  <Img className="search-result__image" alt="Not Found News" src={`/static/group-2.svg`} />
+                  <div className="search-result__title">A few suggestions</div>
+                  <ul style={{padding: "0 0 0 15px"}}>
+                    <li>Make sure your words are spelled correctly</li>
+                    <li>Try different keywords</li>
+                    <li>Try more general keywords</li>
+                  </ul>
+                </div>
+              );
             }
           }
 
@@ -345,7 +413,9 @@ class Search extends React.Component {
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
                 <NavBack onRef={ref => (this.navBack = ref)} isChildFocus={this.handleChildFocus} isChildFound={this.handleFound} isChildChange={this.handleChange}  isChildOnChangesubject={'ronaldo'}/>
                 <main className="content-trending-search">
-                    {this.renderContent()}
+                    {
+                      this.renderContent()
+                    }
                 </main>
                 {
                   this.state.is_child_focus &&
