@@ -452,6 +452,8 @@ class Trending_v2 extends React.Component {
                       const notLoginResponse = [...sortedCategories, ...this.state.not_logged_in_category]
                       this.getUpdate((this.accessToken && decodedToken.uid != '0') ? this.state.user_id : this.state.device_id);
                       sortedCategories = [...notLoginResponse].filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
+
+
                     }
 
 
@@ -582,9 +584,6 @@ class Trending_v2 extends React.Component {
 
       }, 2500);
     }
-
-
-
 
   getAndSetRedirect() {
     if (Router.query && Router.query.id && Router.query.title && Router.query.category) {
