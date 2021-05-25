@@ -166,7 +166,7 @@ class Trending_v2 extends React.Component {
         is_ads_rendered: false,
         device_id: null,
         not_logged_in_category: [],
-        is_login: false,
+        user_id: null,
     };
 
     constructor(props) {
@@ -354,7 +354,16 @@ class Trending_v2 extends React.Component {
       if (this.accessToken !== null &&  this.accessToken !== undefined) {
         const decodedToken = jwtDecode(this.accessToken);
         if (decodedToken && decodedToken.uid != '0') {
-          this.fetchData(true);
+          this.props.getUserData()
+            .then(response => {
+              this.setState({
+                user_id: response.data.data.id,
+              });
+              this.fetchData(true);
+            })
+            .catch(error => {
+              console.log(error);
+            });
         }
         else {
           this.fetchData();
@@ -431,7 +440,9 @@ class Trending_v2 extends React.Component {
                         }
                     }
 
-                    if (!isLoggedIn) {
+                    const decodedToken = jwtDecode(this.accessToken);
+
+                    if (!isLoggedIn || (this.accessToken && decodedToken.uid != '0')) {
                         for (let i = 0; i < savedCategories.length; i++) {
                             if (categories.findIndex(c => c.id == savedCategories[i].id) == -1) {
                                 sortedCategories.push(savedCategories[i]);
@@ -439,7 +450,7 @@ class Trending_v2 extends React.Component {
                         }
 
                       const notLoginResponse = [...sortedCategories, ...this.state.not_logged_in_category]
-                      this.getUpdate();
+                      this.getUpdate((this.accessToken && decodedToken.uid != '0') ? this.state.user_id : this.state.device_id);
                       sortedCategories = [...notLoginResponse].filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
 
 
@@ -553,9 +564,9 @@ class Trending_v2 extends React.Component {
             }
     }
 
-    getUpdate(){
+    getUpdate(id){
       setTimeout(()=>{
-         this.props.getSelectedChannelsVisitor(this.state.device_id)
+         this.props.getSelectedChannelsVisitor(id)
           .then((res) =>{
             const data = res.data.data;
             const tabs = this.state.tabs.filter(x => x.id === 15 || x.id === 12 || x.id === 1);
@@ -573,6 +584,9 @@ class Trending_v2 extends React.Component {
 
       }, 2500);
     }
+
+
+
 
   getAndSetRedirect() {
     if (Router.query && Router.query.id && Router.query.title && Router.query.category) {
