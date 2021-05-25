@@ -33,7 +33,7 @@ export default function HorizontalItem({item, indexKey, isIndexKey, assets_url})
       }
           return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
-    else { 
+    else {
           return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
   }
@@ -48,7 +48,7 @@ export default function HorizontalItem({item, indexKey, isIndexKey, assets_url})
         }
         <div className="news-interest_thumbnail-title" >
             <h1>{getTruncate(item.title, '...', 100)}</h1>
-            <h2>{item.subcategory_name} <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
+            <h2><span dangerouslySetInnerHTML={{__html: `${item.subcategory_name}`}}></span><span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
         </div>
         </div>
       </a>
