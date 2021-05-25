@@ -426,7 +426,6 @@ class Trending_v2 extends React.Component {
         await this.setState(params, () => {
             this.props.getCategoryV2()
                 .then(response => {
-                  console.log(response)
                     let categories = response.data.data;
                     let sortedCategories = categories;
                     let savedCategories = savedCategoriesNews;
@@ -586,9 +585,6 @@ class Trending_v2 extends React.Component {
 
       }, 2500);
     }
-
-
-
 
   getAndSetRedirect() {
     if (Router.query && Router.query.id && Router.query.title && Router.query.category) {

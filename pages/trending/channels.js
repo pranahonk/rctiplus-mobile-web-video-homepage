@@ -56,7 +56,6 @@ class Channels extends React.Component {
         selected_channel_ids: [],
         user_data: null,
         device_id: null,
-        user_id: null,
     };
 
     constructor(props) {
@@ -92,32 +91,23 @@ class Channels extends React.Component {
     if (this.accessToken) {
       const decodedToken = jwtDecode(this.accessToken);
       if (decodedToken && decodedToken.uid != '0') {
-        this.props.getUserData()
-          .then(response => {
-            this.props.getSelectedChannelsVisitor(response.data.data.id)
-              .then((savedCategories)=> {
-                const savedCategoriesNews = savedCategories.data.data;
-                this.setState({
-                  saved_categories: savedCategoriesNews,
-                  user_data: response.data.data,
-                  user_id: response.data.data.id
-                }, () => {
-                  this.fetchData(savedCategoriesNews, true);
-                });
-              })
-              .catch((err)=>{
-                console.log(err)
-              });
-
+        this.props.getCategoryV2()
+          .then((savedCategories)=> {
+            const savedCategoriesNews = savedCategories.data.data;
+            // this.recheckLogin(savedCategoriesNews);
+            this.setState({saved_categories: savedCategoriesNews}, () => {
+              this.fetchData(savedCategoriesNews, true);
+            });
           })
-          .catch(error => {
-            console.log(error);
+          .catch((err)=>{
+            console.log(err)
           });
 
       } else {
         this.props.getSelectedChannelsVisitor(new DeviceUUID().get())
           .then((savedCategories)=> {
             const savedCategoriesNews = savedCategories.data.data;
+            // this.recheckLogin(savedCategoriesNews);
             this.setState({saved_categories: savedCategoriesNews}, () => {
               this.fetchData(savedCategoriesNews);
             });
@@ -165,56 +155,50 @@ class Channels extends React.Component {
     }
     }
 
-  getChannelsVisitor(id, isLoggedIn){
-    this.props.getChannelsVisitor(id)
-      .then(response => {
-        let channels = response.data.data.filter(x => x.id !== 15 && x.id !== 12 && x.id !== 1);
-        if (!isLoggedIn) {
-          let savedChannels = savedCategoriesNews;
-          for (let i = 0; i < channels.length; i++) {
-            if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
-              channels.splice(i, 1);
-              i--;
-            }
-          }
-
-        }
-        this.setState({ channels: channels });
-      })
-      .catch(error => {
-        console.log(error);
-      });
-
-  }
-
     fetchData(savedCategoriesNews, isLoggedIn = false) {
       if(isLoggedIn){
-        console.log(this.accessToken);
-        if(this.accessToken){
-          this.getChannelsVisitor(this.state.user_id, isLoggedIn);
-        }
-        else{
-          this.props.getChannelsv2()
-            .then(response => {
-              let channels = response.data.data;
-              if (!isLoggedIn) {
-                let savedChannels = savedCategoriesNews;
-                for (let i = 0; i < channels.length; i++) {
-                  if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
-                    channels.splice(i, 1);
-                    i--;
-                  }
+        this.props.getChannelsv2()
+          .then(response => {
+            let channels = response.data.data;
+            if (!isLoggedIn) {
+              let savedChannels = savedCategoriesNews;
+              for (let i = 0; i < channels.length; i++) {
+                if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
+                  channels.splice(i, 1);
+                  i--;
                 }
               }
-              this.setState({ channels: channels });
-            })
-            .catch(error => {
-              console.log(error);
-            });
-        }
+            }
+
+
+            this.setState({ channels: channels });
+          })
+          .catch(error => {
+            console.log(error);
+          });
 
       }else{
-        this.getChannelsVisitor(this.state.device_id, isLoggedIn);
+        this.props.getChannelsVisitor(this.state.device_id)
+          .then(response => {
+            let channels = response.data.data.filter(x => x.id !== 15 && x.id !== 12 && x.id !== 1);
+            if (!isLoggedIn) {
+              let savedChannels = savedCategoriesNews;
+              for (let i = 0; i < channels.length; i++) {
+                if (savedChannels.findIndex(s => s.id == channels[i].id) != -1) {
+                  channels.splice(i, 1);
+                  i--;
+                }
+              }
+
+            }
+
+
+            this.setState({ channels: channels });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+
       }
 
         this.props.getCategoryV2()
@@ -247,6 +231,7 @@ class Channels extends React.Component {
                         }
                     }
                 }
+
                 this.setState({
                     is_category_loading: false,
                     categories: sortedCategories,
@@ -282,17 +267,9 @@ class Channels extends React.Component {
                 if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
                     this.props.setPageLoader();
                     let promises = [];
-                    if((this.accessToken && decodedToken.uid != '0')){
-                      for (let i = 3; i < this.state.categories.length; i++) {
-                        promises.push( this.props.updateCategoryOrderVisitor(this.state.categories[i].id, this.state.categories.length - i, this.state.user_id));
-                      }
-
-                    }else{
-                      for (let i = 3; i < this.state.categories.length; i++) {
+                    for (let i = 3; i < this.state.categories.length; i++) {
                         promises.push(this.props.updateCategoryOrderV2(this.state.categories[i].id, this.state.categories.length - i));
-                      }
                     }
-
                     const responses = await Promise.all(promises);
                     this.props.unsetPageLoader();
                 }
@@ -306,6 +283,20 @@ class Channels extends React.Component {
                     this.props.unsetPageLoader();
                     // setNewsChannels(this.state.categories);
                 }
+
+                // if (!this.state.user_data || (this.accessToken && decodedToken.uid == '0')) {
+                //     setNewsChannels(this.state.categories);
+                // }
+                // else {
+                //     this.props.setPageLoader();
+                //     let promises = [];
+                //     for (let i = 3; i < this.state.categories.length; i++) {
+                //         promises.push(this.props.updateCategoryOrder(this.state.categories[i].id, this.state.categories.length - i));
+                //     }
+                //     const responses = await Promise.all(promises);
+                //     console.log(responses);
+                //     this.props.unsetPageLoader();
+                // }
             });
         }
         catch (error) {
@@ -334,14 +325,10 @@ class Channels extends React.Component {
 
             if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
               // let addResponse = await this.props.addCategoryV2(category.id);
-              if((this.accessToken && decodedToken.uid != '0')){
-                const addResponse = await this.props.addCategoryVisitorV2(category.id, this.state.user_id);
-              }else{
-                const addResponse = await this.props.addCategoryV2(category.id);
-              }
+              let addResponse = await this.props.addCategoryV2(category.id);
 
             }else{
-              const addResponse = await this.props.addCategoryVisitorV2(category.id, this.state.device_id);
+              let addResponse = await this.props.addCategoryVisitorV2(category.id, this.state.device_id);
             }
 
             let selectedChannelIds = this.state.selected_channel_ids;
@@ -392,14 +379,9 @@ class Channels extends React.Component {
             }
 
             if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
-              if((this.accessToken && decodedToken.uid != '0')){
-                const deleteResponse =  await this.props.deleteCategoryVisitors(category.id, this.state.user_id);
-              }else{
-                const deleteResponse = await this.props.deleteCategoryV2(category.id);
-              }
-
+                let deleteResponse = await this.props.deleteCategoryV2(category.id);
             }else{
-              const deleteResponse =  await this.props.deleteCategoryVisitors(category.id, this.state.device_id);
+              let deleteResponse =  await this.props.deleteCategoryVisitors(category.id, this.state.device_id);
             }
 
             let selectedChannelIds = this.state.selected_channel_ids;
