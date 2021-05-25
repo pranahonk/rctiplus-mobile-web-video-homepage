@@ -426,6 +426,7 @@ class Trending_v2 extends React.Component {
         await this.setState(params, () => {
             this.props.getCategoryV2()
                 .then(response => {
+                  console.log(response)
                     let categories = response.data.data;
                     let sortedCategories = categories;
                     let savedCategories = savedCategoriesNews;
@@ -440,18 +441,19 @@ class Trending_v2 extends React.Component {
                         }
                     }
 
-                    const decodedToken = jwtDecode(this.accessToken);
 
-                    if (!isLoggedIn || (this.accessToken && decodedToken.uid != '0')) {
+
+                    if (!isLoggedIn || this.accessToken) {
                         for (let i = 0; i < savedCategories.length; i++) {
                             if (categories.findIndex(c => c.id == savedCategories[i].id) == -1) {
                                 sortedCategories.push(savedCategories[i]);
                             }
                         }
+                        const decodedToken = jwtDecode(this.accessToken);
 
-                      const notLoginResponse = [...sortedCategories, ...this.state.not_logged_in_category]
-                      this.getUpdate((this.accessToken && decodedToken.uid != '0') ? this.state.user_id : this.state.device_id);
-                      sortedCategories = [...notLoginResponse].filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
+                        const notLoginResponse = [...sortedCategories, ...this.state.not_logged_in_category]
+                        this.getUpdate((this.accessToken && decodedToken.uid != '0') ? this.state.user_id : this.state.device_id);
+                        sortedCategories = [...notLoginResponse].filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
 
 
                     }
