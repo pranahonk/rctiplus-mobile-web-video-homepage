@@ -174,7 +174,7 @@ class NavbarTrendingSearch extends Component {
                         <Input
                             style={{ backgroundColor: '#171717 !important', borderBottom: '1px solid white !important', borderRadius: '0 !important' }}
                             onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
-                            placeholder="Search"
+                            placeholder="Search for News, Hashtags"
                             onChange={this.onChangeQuery.bind(this)}
                             value={this.props.newsv2.query ? decodeURIComponent(this.props.newsv2.query) : this.props.newsv2.query}
                             onKeyPress={this.handleKeyPress}
