@@ -441,8 +441,6 @@ class Trending_v2 extends React.Component {
                       const notLoginResponse = [...sortedCategories, ...this.state.not_logged_in_category]
                       this.getUpdate();
                       sortedCategories = [...notLoginResponse].filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
-
-
                     }
 
 
