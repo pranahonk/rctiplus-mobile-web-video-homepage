@@ -192,6 +192,7 @@ class Channels extends React.Component {
       console.log(this.accessToken);
       if(this.accessToken){
         this.getChannelsVisitor(this.state.user_id, isLoggedIn);
+        console.log('masuk 195')
       }
       else{
         this.props.getChannelsv2()

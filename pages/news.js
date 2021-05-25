@@ -184,6 +184,9 @@ class Trending_v2 extends React.Component {
                 this.platform = q.platform;
             }
         }
+        else if(getUserAccessToken()){
+          this.accessToken = getUserAccessToken();
+        }
         else {
             removeAccessToken();
         }
