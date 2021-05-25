@@ -176,8 +176,6 @@ class Search extends React.Component {
 
     renderAds(index, article){
       if((index + 1) % 7 === 0){
-        console.log('masuk');
-        console.log(article);
         return(
           <div>
             <iframe

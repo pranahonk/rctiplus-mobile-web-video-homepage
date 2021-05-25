@@ -16,10 +16,6 @@ const AdsBanner = ({path, size, idGpt, style, partner, setTarget}) => {
   // const toggleAds = useSelector(state => state.ads)
   // const dispatch = useDispatch();
 
-  console.log(path);
-  console.log(size);
-  console.log(idGpt);
-
 
   const showAds = (custParams) =>{
     const googletag = window.googletag || {};
