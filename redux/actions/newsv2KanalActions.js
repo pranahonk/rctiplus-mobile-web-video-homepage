@@ -1,22 +1,21 @@
 import ax from 'axios';
 import { NEWS_API_V2 } from '../../config';
-import { removeAccessToken, getUserAccessToken, getVisitorToken, checkToken, setAccessToken } from '../../utils/cookie';
+import {
+  removeAccessToken,
+  getUserAccessToken,
+  getVisitorToken,
+  checkToken,
+  setAccessToken,
+  getCookie
+} from '../../utils/cookie';
 import queryString from 'query-string';
 import initialize from '../../utils/initialize';
 
 const axios = ax.create({ baseURL: NEWS_API_V2 + '/api' });
 axios.interceptors.request.use(async (request) => {
   await checkToken();
-  const accessToken = getUserAccessToken();
-
-  if (!accessToken) {
-    removeAccessToken();
-    request.headers['Authorization'] = getVisitorToken();
-  } else {
-    request.headers['Authorization'] = accessToken;
-  }
-
-
+  const accessToken = getCookie('ACCESS_TOKEN');
+  request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : accessToken;
   return request;
 });
 
