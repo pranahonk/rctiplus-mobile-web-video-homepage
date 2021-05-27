@@ -167,6 +167,7 @@ class Trending_v2 extends React.Component {
         device_id: null,
         not_logged_in_category: [],
         is_login: false,
+        last_scroll: null,
     };
 
     constructor(props) {
@@ -335,16 +336,19 @@ class Trending_v2 extends React.Component {
         // }
     }
     async componentDidMount() {
-        // window.addEventListener('scroll', (event) => {
-        //     if(this.isInViewport(document.getElementById('9'))) {
-        //         console.log('YESSS')
-        //         return ReactDOM.createPortal(<div>dsada</div>, document.getElementById('9'))
-        //     } else {
-        //         console.log('NOOOOO')
-        //     }
-        //     console.log('scrolll')
-        // }, false)
-        // console.log(props)
+        window.addEventListener('scroll', (event) => {
+            // if(this.isInViewport(document.getElementById('9'))) {
+            //     console.log('YESSS')
+            //     return ReactDOM.createPortal(<div>dsada</div>, document.getElementById('9'))
+            // } else {
+            //     console.log('NOOOOO')
+            // }
+            const scroll = document.body.getBoundingClientRect().top;
+            this.setState({
+              last_scroll: scroll,
+            })
+            console.log(scroll);
+        }, false)
         await this.setState({
           device_id: new DeviceUUID().get(),
         });
