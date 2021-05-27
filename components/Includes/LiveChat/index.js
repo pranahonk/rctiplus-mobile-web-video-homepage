@@ -253,7 +253,7 @@ class Tv extends React.Component {
 
 	handleScroll() {
 		const chatBox = document.getElementById('chat-messages');
-		if(chatBox.scrollHeight - chatBox.scrollTop === chatBox.clientHeight){
+		if((chatBox.scrollHeight - chatBox.scrollTop) - chatBox.clientHeight <= 25){
 			this.setState({ chat_box: false, total_newChat: []})
 		}else{
 			this.setState({ chat_box: true})	
@@ -868,7 +868,7 @@ class Tv extends React.Component {
 			
 			<div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ? { height: this.props.handleHeightChat() } : null}>
 				<div className="btn-chat">
-					<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
+					<Button className="shadow-none" id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
 					    <ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
 					</Button>
 					{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
