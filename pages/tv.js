@@ -322,10 +322,10 @@ class Tv extends React.Component {
 												}
 											}
 											
-											if(!this.state.chat_box && this.state.total_newChat.length > 0){
-												const chatBox = document.getElementById('chat-messages');
-												chatBox.scrollTop = chatBox.scrollHeight;
-											}
+											// if(!this.state.chat_box && this.state.total_newChat.length > 0){
+											// 	const chatBox = document.getElementById('chat-messages');
+											// 	chatBox.scrollTop = chatBox.scrollHeight;
+											// }
 
 											this.setState({ chats: chats }, () => {
 												const chatInput = document.getElementById('chat-input');
@@ -956,22 +956,22 @@ class Tv extends React.Component {
 						<Row>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=rcti" as="/tv/rcti">
-									<Button size="sm" color="link" className={this.state.selected_index === 0 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 0)}><h1 className="heading-rplus">RCTI</h1></Button>
+									<Button size="sm" color="link" className={this.state.selected_index === 0 ? 'selected shadow-none' : 'shadow-none'} onClick={this.selectChannel.bind(this, 0)}><h1 className="heading-rplus">RCTI</h1></Button>
 								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=mnctv" as="/tv/mnctv">
-									<Button size="sm" color="link" className={this.state.selected_index === 1 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 1)}><h1 className="heading-rplus">MNCTV</h1></Button>
+									<Button size="sm" color="link" className={this.state.selected_index === 1 ? 'selected shadow-none' : 'shadow-none'} onClick={this.selectChannel.bind(this, 1)}><h1 className="heading-rplus">MNCTV</h1></Button>
 								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=gtv" as="/tv/gtv">
-									<Button size="sm" color="link" className={this.state.selected_index === 2 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 2)}><h1 className="heading-rplus">GTV</h1></Button>
+									<Button size="sm" color="link" className={this.state.selected_index === 2 ? 'selected shadow-none' : 'shadow-none'} onClick={this.selectChannel.bind(this, 2)}><h1 className="heading-rplus">GTV</h1></Button>
 								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=inews" as="/tv/inews">
-									<Button size="sm" color="link" className={this.state.selected_index === 3 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 3)}><h1 className="heading-rplus">INEWS</h1></Button>
+									<Button size="sm" color="link" className={this.state.selected_index === 3 ? 'selected shadow-none' : 'shadow-none'} onClick={this.selectChannel.bind(this, 3)}><h1 className="heading-rplus">INEWS</h1></Button>
 								</Link>
 							</Col>
 						</Row>
