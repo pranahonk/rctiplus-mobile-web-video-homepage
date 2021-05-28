@@ -162,7 +162,6 @@ class NavbarTrendingSearch extends Component {
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
                             <NavbarBrand onClick={() => {
-                                console.log(document.referrer)
                                 if (this.props.router.asPath.indexOf('/explores') === 0) {
                                     searchBackClicked(this.props.newsv2.query, 'mweb_search_back_clicked');
                                 }else if (this.props.router.asPath.indexOf('keyword')){
@@ -181,7 +180,7 @@ class NavbarTrendingSearch extends Component {
                             onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
                             placeholder="Search for News, Hashtags"
                             onChange={this.onChangeQuery.bind(this)}
-                            value={this.props.newsv2.query ? decodeURIComponent(this.props.newsv2.query) : this.props.newsv2.query}
+                            value={this.props.newsv2.query ? decodeURIComponent(this.props.newsv2.query.replace(/<[^>]*>/gm, "")) : this.props.newsv2.query}
                             onKeyPress={this.handleKeyPress}
                             id="search-news-input"
                             className="search-input"
@@ -193,7 +192,7 @@ class NavbarTrendingSearch extends Component {
                         <div className="btn-link-top-nav">
                             <NavbarBrand style={{ color: 'white' }}>
                                 <CloseIcon style={{ fontSize: 20, marginRight: 10, visibility: (this.props.newsv2.query?.length > 0 ? 'visible' : 'hidden') }} onClick={this.clearKeyword.bind(this)}/>
-                                <SearchIcon style={{ fontSize: 20 }} onClick={() => this.search()} />
+                                <SearchIcon style={{ fontSize: 20 }} onClick={() => this.handleKeyPress({key: 'Enter'})} />
                             </NavbarBrand>
                         </div>
                     </div>

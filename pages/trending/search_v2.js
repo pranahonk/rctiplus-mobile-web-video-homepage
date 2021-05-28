@@ -243,9 +243,6 @@ class Search extends React.Component {
     renderSearchHistory() {
         const searchHistory = this.state.search_history;
         if (searchHistory && searchHistory.length > 0) {
-            // if (this.props.newsv2.search_result.length <= 0 && this.props.newsv2.query.length > 0 && !this.props.newsv2.is_searching) {
-            //     return (<div className="not-found-message">No results found</div>);
-            // }
 
             return (
                 <div style={{ fontSize: 14 }} className="search-history">
@@ -262,8 +259,8 @@ class Search extends React.Component {
                             <Col xs={10} onClick={() => {
                                 this.props.setPageLoader();
                                 // TODO:
-                                this.props.setSearch(h, this.subject);
-                                this.handleUserClick(h);
+                                this.props.setSearch(h.replace(/<[^>]*>/gm, ""), this.subject);
+                                this.handleUserClick(h.replace(/<[^>]*>/gm, ""));
                             }}>{h}</Col>
                             <Col xs={2} style={{ textAlign: 'right', paddingRight: 15 }}><CloseIcon onClick={() => this.deleteSearchHistory(i)}/></Col>
                         </Row>
@@ -360,9 +357,8 @@ class Search extends React.Component {
    handleUserClick = async(data) => {
       const keyword = data.keyword || data;
       this.props.setQuery(keyword);
-      this.navBack.initSearch(keyword);
       await this.props.saveUserRecomendation(keyword);
-      this.navBack.saveSearchHistory(keyword);
+      this.navBack.handleKeyPress({key: 'Enter'});
   }
 
   handleColoringText = (text) =>{
@@ -455,7 +451,7 @@ class Search extends React.Component {
                         return(
                           <div className="popular-search__wrapper" key={i} onClick={() => this.handleUserClick(rec)}>
                             <SearchIcon className="popular-search__icon" />
-                            <span className="popular-search__text">{rec.keyword}</span>
+                            <span className="popular-search__text">{rec.keyword.replace(/<[^>]*>/gm, "")}</span>
                           </div>
                         )
                       })
