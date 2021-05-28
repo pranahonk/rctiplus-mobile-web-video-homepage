@@ -23,6 +23,7 @@ import { debounceTime } from 'rxjs/operators';
 import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked, newsSearchClicked } from '../../../utils/appier';
 import { getCookie, setCookie, removeAccessToken, setAccessToken } from '../../../utils/cookie';
 import _debounce from 'lodash/debounce';
+import {urlRegex} from "../../../utils/regex";
 
 
 class NavbarTrendingSearch extends Component {
@@ -161,10 +162,14 @@ class NavbarTrendingSearch extends Component {
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
                             <NavbarBrand onClick={() => {
+                                console.log(document.referrer)
                                 if (this.props.router.asPath.indexOf('/explores') === 0) {
                                     searchBackClicked(this.props.newsv2.query, 'mweb_search_back_clicked');
+                                }else if (this.props.router.asPath.indexOf('keyword')){
+                                  Router.push('/news');
+                                }else{
+                                  Router.back();
                                 }
-                                Router.back();
                             }} style={{ color: 'white' }}>
                                 <ArrowBackIcon />
                             </NavbarBrand>
