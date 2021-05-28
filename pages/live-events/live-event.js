@@ -70,6 +70,7 @@ import { convivaVideoJs } from '../../utils/conviva';
 import { triggerQualityButtonClick } from '../../utils/player';
 
 import ax from 'axios';
+import cookies from 'next-cookies'
 
 // import videojs from 'video.js';
 // import 'videojs-contrib-ads';
@@ -112,13 +113,13 @@ class LiveEvent extends React.Component {
 		if (ctx.asPath.match('/missed-event/') || ctx.asPath.match('/past-event/')) {
 			res = await Promise.all([
 				fetch(`${DEV_API}/api/v1/missed-event/${id}`, options),
-				fetch(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${getUidAppier(ctx)}`, options)
+				fetch(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${cookies(ctx)?.QGUserId || getUidAppier()}`, options)
 			]);
 		}
 		else {
 			res = await Promise.all([
 				fetch(`${DEV_API}/api/v1/live-event/${id}`, options),
-				fetch(`${DEV_API}/api/v1/live-event/${id}/url?appierid=${getUidAppier(ctx)}`, options)
+				fetch(`${DEV_API}/api/v1/live-event/${id}/url?appierid=${cookies(ctx)?.QGUserId || getUidAppier()}`, options)
 			]);
 		}
 
@@ -1033,10 +1034,10 @@ class LiveEvent extends React.Component {
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					<div ref={ this.playerContainerRef }  className="rplus-player-container">
 					<NavBack navPlayer={true} stylePos="absolute"/>
-					<Online>
+					{/* <Online> */}
 						{this.renderPlayer()}
-					</Online>
-					<Offline>
+					{/* </Online> */}
+					{/* <Offline>
 						<ErrorPlayer
 							iconError={<StreamVideoIcon />}
 							title="No Internet Connection"
@@ -1044,7 +1045,7 @@ class LiveEvent extends React.Component {
 							content2="you seem to be offline."
 							status={ 500 }
 							statusCode={ 500 } />
-					</Offline>
+					</Offline> */}
 						{/* {this.renderPlayer()} */}
 						{/* <JwPlayer
 							data={ selected_event_url && selected_event_url.data }
@@ -1103,7 +1104,7 @@ class LiveEvent extends React.Component {
 							<ShareIcon />
 						</div>
 					</div>
-					<Online>
+					{/* <Online> */}
 					<div className="live-event-content-wrap">
 						<Nav tabs className="tab-wrap">
 								{liveEvent?.data?.now_playing_event?.data.length > 0 ? 
@@ -1225,7 +1226,7 @@ class LiveEvent extends React.Component {
 							</div>
 						</div>
 						</div>)}
-        	</Online>
+        	{/* </Online>
 					<Offline>
 						<div className="live-event-content-wrap" style={{height: `calc(100vh - ${this.playerContainerRef?.current?.clientHeight + this.titleRef?.current?.clientHeight}px - 50px)`}}>
 						<Nav tabs className="tab-wrap">
@@ -1252,11 +1253,8 @@ class LiveEvent extends React.Component {
 								{ this.errorEvent() }
 							</div>
 						</div>
-        	</Offline>
-					</div>
-					{ this.props.router.asPath.match('/missed-event/') || this.state.selected_tab === 'missed-event'  ? (<div />) :
-						<LiveChats dataChats={ this.state.chats} handleHeightChat={() => `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`} />
-						}
+        	</Offline> */}
+				</div>
 			</Layout>
 		);
 	}
