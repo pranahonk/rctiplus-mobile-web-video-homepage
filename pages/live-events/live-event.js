@@ -66,6 +66,7 @@ import { convivaVideoJs } from '../../utils/conviva';
 import { triggerQualityButtonClick } from '../../utils/player';
 
 import ax from 'axios';
+import cookies from 'next-cookies'
 
 // import videojs from 'video.js';
 // import 'videojs-contrib-ads';
@@ -108,13 +109,13 @@ class LiveEvent extends React.Component {
 		if (ctx.asPath.match('/missed-event/')) {
 			res = await Promise.all([
 				fetch(`${DEV_API}/api/v1/missed-event/${id}`, options),
-				fetch(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${getUidAppier()}`, options)
+				fetch(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${cookies(ctx)?.QGUserId || getUidAppier()}`, options)
 			]);
 		}
 		else {
 			res = await Promise.all([
 				fetch(`${DEV_API}/api/v1/live-event/${id}`, options),
-				fetch(`${DEV_API}/api/v1/live-event/${id}/url?appierid=${getUidAppier()}`, options)
+				fetch(`${DEV_API}/api/v1/live-event/${id}/url?appierid=${cookies(ctx)?.QGUserId || getUidAppier()}`, options)
 			]);
 		}
 
