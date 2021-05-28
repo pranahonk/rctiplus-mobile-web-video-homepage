@@ -809,7 +809,7 @@ class Trending_v2 extends React.Component {
                                                                                     const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
                                                                                     const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
                                                                                     const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
-                                                                                    if(adsFrame.contentWindow.document && iframeAdsID){
+                                                                                    if(adsFrame.contentWindow.document && iframeAdsID && iframeAdsID.style.display !== "none"){
                                                                                       adsFrame.style.display = 'block';
                                                                                       this.setState({
                                                                                         is_ads_rendered: true,

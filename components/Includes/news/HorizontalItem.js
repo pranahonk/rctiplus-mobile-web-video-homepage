@@ -33,9 +33,12 @@ export default function HorizontalItem({item, indexKey, isIndexKey, assets_url})
       }
           return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
-    else { 
+    else {
           return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
+  }
+  const replaceBackSlash = (text) =>{
+    return text.replace(/\\|\'/gm, '');
   }
   return(
       <a onClick={(e) => {
@@ -47,8 +50,8 @@ export default function HorizontalItem({item, indexKey, isIndexKey, assets_url})
           imageNews(item.title, item.cover, item.image, 237, assets_url, 'news-interest_thumbnail')
         }
         <div className="news-interest_thumbnail-title" >
-            <h1>{getTruncate(item.title, '...', 100)}</h1>
-            <h2>{item.subcategory_name} <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
+            <h1 dangerouslySetInnerHTML={{__html: `${getTruncate(replaceBackSlash(item.title), '...', 100)}`}}></h1>
+            <h2><span dangerouslySetInnerHTML={{__html: `${item.subcategory_name}`}}></span><span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
         </div>
         </div>
       </a>
