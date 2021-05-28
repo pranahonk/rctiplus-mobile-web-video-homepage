@@ -30,7 +30,7 @@ class MyDocument extends Document {
 				<Head>
 					<script src="/static/js/device-uuid.min.js" type="text/javascript"></script>
         			{libNonPillaNews ? <script type="text/javascript" src="/static/js/jwplayer.js"></script> : null}
-					{libNonPillaNews ? <script src="/static/js/conviva-core-sdk.js"></script> : null}
+					{libNonPillaNews ? <script type="text/javascript" src="/static/js/conviva-core-sdk.js"></script> : null}
 				</Head>
 				<body style={{ height: '100%' }}>
 					<Main style={{ height: '100%' }}/>
