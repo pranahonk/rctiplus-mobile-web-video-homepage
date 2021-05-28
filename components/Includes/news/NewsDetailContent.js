@@ -134,17 +134,9 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       const getEveryLength = paragraph.map(x => x.replace(/<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '').trim().length);
       let wordsLength = 1150;
       let thisLength = 0;
-      // console.log(getEveryLength);
       for (let i = 0; i < getEveryLength.length; i++) {
         thisLength += getEveryLength[i];
-        // console.log(thisLength);
-        // console.log(paragraph.map(x => x.replace(/<\w+>|<\/\w+>|<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '')))
-        // console.log(paragraph.map(x => x.replace(/<\w+>|<\/\w+>|<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '').trim().length));
         if(thisLength >= wordsLength  && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
-          // console.log(`Words length ${thisLength}`);
-          // console.log(`total length ${wordsLength}`);
-          // console.log(`index ${i}`);
-          // console.log(`Every paragraph length ${getEveryLength.length}`);
           if(typeof paragraph[i - 1 + addReadArrayIndex] !== 'undefined') {
             paragraph.splice(i + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
             addReadArrayIndex++;
