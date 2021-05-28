@@ -125,7 +125,7 @@ class Index extends React.Component {
         {/* <div className="le-absolute-center">
             <ErrorIcon />
         </div> */}
-        <Online>
+        {/* <Online> */}
         {
           this.props.liveEvent?.loading_live_event ? (<div />) :
           this.props.liveEvent?.error_live_event ? (<div className="le-full__error">{ this.errorEvent() }</div>) : (<div />)
@@ -166,12 +166,12 @@ class Index extends React.Component {
             </Container>
           </section>
         ) : (<div />)}
-        </Online>
+        {/* </Online>
         <Offline>
           <div className="le-absolute-center">
             { this.errorEvent() }
           </div>
-        </Offline>
+        </Offline> */}
         </div>
       </Layout>
     );
