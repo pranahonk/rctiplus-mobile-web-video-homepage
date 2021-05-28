@@ -91,6 +91,7 @@
     "moment": "^2.29.1",
     "morgan": "^1.9.1",
     "next": "latest",
+    "next-cookies": "^2.0.3",
     "next-offline": "^4.0.2",
     "next-redux-wrapper": "^3.0.0-alpha.3",
     "nextjs-sitemap-generator": "^0.4.1",
