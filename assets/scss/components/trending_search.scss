@@ -13,12 +13,12 @@
             padding-left: 10px;
             margin-bottom: 1.2rem;
         }
-    
+
         .col-6 {
             padding: 6px;
             height: 100%;
         }
-    
+
         .list-item-thumbnail {
             width: 100%;
             height: 100%;
@@ -29,7 +29,7 @@
                         0 3px 1px -2px rgba(0, 0, 0, 0.12);
             background-color: #171717;
         }
-    
+
         .item-title {
             font-size: 15px;
             line-height: 1.2rem;
@@ -39,7 +39,7 @@
             min-height: 2rem;
             height: auto;
         }
-    
+
         .item-subtitle {
             line-height: 1rem;
             margin-bottom: 0.5rem;
@@ -48,11 +48,7 @@
         }
     }
 
-    .search-history {
-        .row {
-            margin-left: 0;
-        }
-    }
+
 
     .not-found-message {
         display: flex;
@@ -61,4 +57,77 @@
         height: calc(100vh - 100px);
         opacity: 0.3;
     }
+}
+
+.search-history {
+    font-size: 14px;
+    margin: 0 23px;
+    font-weight: 400;
+    letter-spacing: 0.48px;
+    color: #969696;
+
+    .row {
+        margin-left: 0;
+    }
+}
+
+.popular-search{
+      margin:10px 0 0 13px;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.48px;
+      color:  #dadada;
+      display: flex;
+
+    &__wrapper{
+        margin: 10px 0;
+        cursor: pointer;
+
+        &:hover{
+          color: #dadada;
+        }
+    }
+
+    &__icon{
+        margin: 0 0 0 24px;
+        color: #969696;
+        position: absolute;
+    }
+
+    &__text{
+        margin: 0 13px 0 13px;
+        font-size: 14px;
+        letter-spacing: 0.48px;
+        color: #969696;
+        display: inline-block;
+        padding-left: 49px;
+        text-indent: -1px;
+
+        &:hover{
+          color: #dadada;
+        }
+    }
+}
+
+.search-result{
+  margin: 0 0 0 16px;
+  color: #ffffff;
+
+  &__title{
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  &__desc{
+    font-size: 12px;
+    line-height: 1.83;
+    margin-bottom: 35px;
+  }
+
+  &__image{
+    margin: 0 auto;
+    display: flex;
+  }
+
 }

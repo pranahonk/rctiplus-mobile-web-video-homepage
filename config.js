@@ -15,6 +15,8 @@ export const GTM_AUTH = process.env.GTM_AUTH;
 
 export const DEV_API = process.env.DEV_API;
 
+export const API_V2 = process.env.API_V2 || process.env.DEV_API;
+
 export const CHAT_API = process.env.CHAT_API;
 export const LINK_RADIO = process.env.LINK_RADIO;
 export const LINK_GAMES = process.env.LINK_GAMES;
@@ -53,7 +55,13 @@ export const GPT_NEWS_IOS_DETAIL = process.env.GPT_NEWS_IOS_DETAIL
 export const GPT_NEWS_ANDROID_DETAIL = process.env.GPT_NEWS_ANDROID_DETAIL
 export const GPT_NEWS_LINK_DETAIL = process.env.GPT_NEWS_LINK_DETAIL
 
+export const GPT_NEWS_MWEB_SEARCH = process.env.GPT_NEWS_MWEB_SEARCH
+export const GPT_NEWS_IOS_SEARCH = process.env.GPT_NEWS_IOS_SEARCH
+export const GPT_NEWS_ANDROID_SEARCH = process.env.GPT_NEWS_ANDROID_SEARCH
+
 export const GPT_ID_LIST = process.env.GPT_ID_LIST
+
+export const GPT_ID_SEARCH = process.env.GPT_ID_SEARCH
 
 export const GPT_ID_DETAIL = process.env.GPT_ID_DETAIL
 
@@ -286,7 +294,7 @@ export const SITEMAP = {
         twitter_img_alt: 'streaming gtv'
     },
     live_tv_inews: {
-        title: `Nonton Live Streaming iNews TV - Berita Terkini Terbaru Hari Ini - ${SITE_NAME}`, 
+        title: `Nonton Live Streaming iNews TV - Berita Terkini Terbaru Hari Ini - ${SITE_NAME}`,
         description: `Berita terkini terbaru hari ini dan program favorit lainnya disajikan iNews TV. Nonton online live streaming di RCTI+.`,
         keywords: `inews, inews tv, streaming inews, live streaming inews, inews tv online, inews live, streaming inews tv, berita terkini, berita terbaru`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_INEWS-min.png`,
@@ -408,13 +416,13 @@ export const SITEMAP = {
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
     trending_seleb: {
-        title: `Berita Selebritis dan Gosip  Berita, Foto, Video TerHOT di Indonesia dan Dunia Terbaru - ${SITE_NAME_NEWS}`, 
+        title: `Berita Selebritis dan Gosip  Berita, Foto, Video TerHOT di Indonesia dan Dunia Terbaru - ${SITE_NAME_NEWS}`,
         description: `Baca Info berita selebritis gosip, foto, video terHot di dunia di berbagai industri, meliputi film, musik, dan hiburan terbaru hari ini eksklusif hanya di rctiplus.com`,
         keywords: `berita selebritis, hot, selebriti, artis, foto, video, entertainment, showbiz`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
     trending_gaya_hidup: {
-        title: `Informasi Gaya Hidup, Lifestyle, dan Fashion Terkini - ${SITE_NAME_NEWS}`, 
+        title: `Informasi Gaya Hidup, Lifestyle, dan Fashion Terkini - ${SITE_NAME_NEWS}`,
         description: `Baca kumpulan berita dan artikel gaya hidup, lifestyle, fashional, kesehatan, travel keluarga dari artis serta publik figure nasional dan internasional terkini di Indonesia eksklusif hanya di rctiplus.com `,
         keywords: `berita lifestyle, berita gaya hidup, lifestyle, lifestyle rctiplus, berita lifestyle, berita gaya hidup, panduan wisata, tour dan travel, tips wirausaha, menu masakan kuliner, voucher belanja, promo produk, dekorasi`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
