@@ -10,7 +10,7 @@ import { getUidAppier } from '../../../utils/appier';
 
 
 const axios = ax.create({ baseURL: DEV_API });
-const AdsBanner = ({path, size, idGpt, style, partner, setTarget, platform}) => {
+const AdsBanner = ({path, size, idGpt, style, partner, setTarget, platform, idfa}) => {
   const [ads, setAds] = useState(null);
   const [url, setUrl] = useState(null);
   // const toggleAds = useSelector(state => state.ads)
@@ -69,7 +69,7 @@ const AdsBanner = ({path, size, idGpt, style, partner, setTarget, platform}) => 
   };
 
   useEffect(() => {
-    axios.get(`/ads/v1/cust-params?platform=${platform === null ? 'mweb' : platform}&aid=${platform === 'ios' ? "idfa" : getUidAppier()}`)
+    axios.get(`/ads/v1/cust-params?platform=${platform === null ? 'mweb' : platform}&aid=${platform === 'ios' ? idfa : getUidAppier()}`)
       .then(response => {
         showAds(response.data);
       })
