@@ -167,6 +167,7 @@ class Trending_v2 extends React.Component {
         device_id: null,
         not_logged_in_category: [],
         is_login: false,
+        idfa: null
     };
 
     constructor(props) {
@@ -398,6 +399,10 @@ class Trending_v2 extends React.Component {
         });
 
       this.getAndSetRedirect();
+      const params = new URLSearchParams(window.location.search);
+      this.setState({
+        idfa:  params.get('idfa') ? params.get('idfa') : null,
+      });
 
     }
 
@@ -822,7 +827,7 @@ class Trending_v2 extends React.Component {
                                                                                     }
                                                                                   })
                                                                                 }}
-                                                                                id={article.id} src={`/dfp?platform=${this.platform}`}
+                                                                                id={article.id} src={`/dfp?platform=${this.platform}&idfa=${this.state.idfa}`}
                                                                                 frameBorder="0"
                                                                                 style={{
                                                                                   height: '250px',

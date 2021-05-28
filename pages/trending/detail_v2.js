@@ -601,12 +601,6 @@ class Detail extends React.Component {
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
                             const hideStickyRatio =  950;
-                            // console.log(`document height: ${this.state.documentHeight}`);
-                            // const documentHeight = document.body.scrollHeight - 200;
-                            // console.log(cdata.exclusive);
-                            // console.log(`Hide sticky ratio: ${hideStickyRatio}`);
-                            // console.log(`Related article position: ${this.state.relatedArticlePosition}`);
-                            // console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight)
                             if (this.state.relatedArticlePosition < 1400 && this.state.relatedArticlePosition > hideStickyRatio) {
                                 // console.log('masuk kondisi if A')
                                 setTimeout(() => {
@@ -775,6 +769,7 @@ class Detail extends React.Component {
                                             idGpt={process.env.GPT_ID_DETAIL}
                                             setTarget={true}
                                             platform={this.platform}
+                                            idfa={this.state.idfa}
                                             />
                                         {/* <span>partner: { cdata.source }</span> */}
                                     </div>
