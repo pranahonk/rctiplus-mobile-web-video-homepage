@@ -133,7 +133,7 @@ class NavbarTrendingSearch extends Component {
     }
 
     clearKeyword() {
-        this.props.isChildFound(this.props.newsv2.search_result.length > 1)
+        this.props.isChildFound(this.props.newsv2.search_result.length > 0);
         this.props.clearSearch();
         this.props.setQuery('');
         searchKeywordEvent(this.props.newsv2.query, 'mweb_search_clear_keyword_clicked');
