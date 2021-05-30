@@ -116,7 +116,7 @@ class NavbarTrendingSearch extends Component {
     }
     initSearch(q) {
         if (q) {
-            let queryParams = `keyword=${encodeURIComponent(q) || ''}`
+            let queryParams = `keyword=${encodeURIComponent(q.replace(/<[^>]*>/gm, "")) || ''}`
             if (this.accessToken) {
                 queryParams += `&token=${this.accessToken}`
                 queryParams += `&platform=${this.platform}`

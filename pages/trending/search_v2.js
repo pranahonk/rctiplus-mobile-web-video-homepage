@@ -261,7 +261,7 @@ class Search extends React.Component {
                                 // TODO:
                                 this.props.setSearch(h.replace(/<[^>]*>/gm, ""), this.subject);
                                 this.handleUserClick(h.replace(/<[^>]*>/gm, ""));
-                            }}>{h}</Col>
+                            }}>{h.replace(/<[^>]*>/gm, "")}</Col>
                             <Col xs={2} style={{ textAlign: 'right', paddingRight: 15 }}><CloseIcon onClick={() => this.deleteSearchHistory(i)}/></Col>
                         </Row>
                     ))}
