@@ -494,7 +494,6 @@ class Detail extends React.Component {
     shareButtonPosition = el =>{
       window.addEventListener('scroll',()=>{
         const position =  el.getBoundingClientRect().top + window.screen.height;
-        // console.log(position);
         this.setState({
           relatedArticlePosition: position,
         });
@@ -601,11 +600,7 @@ class Detail extends React.Component {
                     <Sticky bottomOffset={100}>
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
-                            const hideStickyRatio = cdata.exclusive === 'yes' ?  570 : 950;
-                            // console.log(this.state.documentHeight)
-                            // const documentHeight = document.body.scrollHeight - 200;
-                            // console.log(hideStickyRatio)
-                            // console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight)
+                            const hideStickyRatio =  950;
                             if (this.state.relatedArticlePosition < 1400 && this.state.relatedArticlePosition > hideStickyRatio) {
                                 // console.log('masuk kondisi if A')
                                 setTimeout(() => {
@@ -630,7 +625,8 @@ class Detail extends React.Component {
                                     </div>
                                 );
                             }
-                            if (this.state.relatedArticlePosition < this.state.documentHeight - 200 && distanceFromTop < -100 && this.state.relatedArticlePosition > 1400 && this.state.relatedArticlePosition) {
+
+                            if (this.state.relatedArticlePosition < this.state.documentHeight && distanceFromTop < -100 && this.state.relatedArticlePosition > 1400 && this.state.relatedArticlePosition) {
                               // console.log('masuk kondisi if B')
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
@@ -658,13 +654,13 @@ class Detail extends React.Component {
                                     </div>
                                 );
                             }
-                            setTimeout(() => {
-                                // console.log('masuk kondisi if Default')
-                                if (self.state.sticky_share_shown) {
-                                    self.setState({ sticky_share_shown: false });
-                                }
-
-                            }, 300);
+                            // setTimeout(() => {
+                            //     console.log('masuk kondisi if Default')
+                            //     if (self.state.sticky_share_shown) {
+                            //         self.setState({ sticky_share_shown: false });
+                            //     }
+                            //
+                            // }, 300);
                             return <span></span>;
                         } }
                     </Sticky>
@@ -759,6 +755,7 @@ class Detail extends React.Component {
                                     size={[300, 250]}
                                     idGpt={process.env.GPT_ID_DETAIL}
                                     setTarget={true}
+                                    platform={this.platform}
                                   />
                                   {/* <span>partner: { cdata.source }</span> */}
                                 </div>
@@ -771,6 +768,8 @@ class Detail extends React.Component {
                                             size={[300, 250]}
                                             idGpt={process.env.GPT_ID_DETAIL}
                                             setTarget={true}
+                                            platform={this.platform}
+                                            idfa={this.state.idfa}
                                             />
                                         {/* <span>partner: { cdata.source }</span> */}
                                     </div>

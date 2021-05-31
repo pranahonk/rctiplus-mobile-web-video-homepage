@@ -175,40 +175,43 @@ class Search extends React.Component {
     }
 
     renderAds(index, article){
-      if((index + 1) % 7 === 0){
-        return(
-          <div>
-            <iframe
-              onLoad={() => {
-                window.addEventListener('scroll', () => {
-                  const adsFrame = document.getElementById(article.id);
-                  const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
-                  const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
-                  const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
-                  if(adsFrame.contentWindow.document && iframeAdsID){
-                    adsFrame.style.display = 'block';
-                    adsFrame.style.paddingTop = '17px';
-                    this.setState({
-                      is_ads_rendered: true,
-                    })
+      if(article){
+        if((index + 1) % 7 === 0){
+          return(
+            <div>
+              <iframe
+                onLoad={() => {
+                  window.addEventListener('scroll', () => {
+                    const adsFrame = document.getElementById(article.id);
+                    const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
+                    const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
+                    const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page');
+                    if(adsFrame.contentWindow.document && iframeAdsID && iframeAdsID.style.display !== "none"){
+                      adsFrame.style.display = 'block';
+                      adsFrame.style.paddingTop = '17px';
+                      this.setState({
+                        is_ads_rendered: true,
+                      })
 
-                  }else if(element && element.style.display === 'none' || element_2 || !element){
-                    adsFrame.style.display = 'none';
-                  }else{
-                    adsFrame.style.display = 'none';
-                  }
-                })
-              }}
-              id={article.id} src={`/dfp?platform=${this.platform}`}
-              frameBorder="0"
-              style={{
-                height: '250px',
-                width: '100%',
-                display: 'none',
-              }} />
-          </div>
-        )
+                    }else if(element && element.style.display === 'none' || element_2 || !element){
+                      adsFrame.style.display = 'none';
+                    }else{
+                      adsFrame.style.display = 'none';
+                    }
+                  })
+                }}
+                id={article.id} src={`/dfp?platform=${this.platform}`}
+                frameBorder="0"
+                style={{
+                  height: '250px',
+                  width: '100%',
+                  display: 'none',
+                }} />
+            </div>
+          )
+        }
       }
+
     }
 
     bottomScrollFetch() {

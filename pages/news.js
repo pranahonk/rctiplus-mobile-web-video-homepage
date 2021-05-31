@@ -167,6 +167,7 @@ class Trending_v2 extends React.Component {
         device_id: null,
         not_logged_in_category: [],
         is_login: false,
+        idfa: null
     };
 
     constructor(props) {
@@ -349,12 +350,36 @@ class Trending_v2 extends React.Component {
           device_id: new DeviceUUID().get(),
         });
 
+
+
+      if (this.accessToken !== null &&  this.accessToken !== undefined) {
+        const decodedToken = jwtDecode(this.accessToken);
+        if (decodedToken && decodedToken.uid != '0') {
+          this.fetchData(true);
+        }
+        else {
+          this.fetchData();
+          this.props.getSelectedChannelsVisitor(this.state.device_id)
+            .then((res) =>{
+              this.setState({
+                not_logged_in_category: res.data.data,
+              });
+            })
+            .catch((err) =>{
+              console.error(err)
+            });
+        }
+      }
+      else {
         this.props.getUserData()
           .then(response => {
-            this.checkIsLogin()
+            // console.log(response);
+            this.fetchData(true);
           })
           .catch(error => {
-             this.props.getSelectedChannelsVisitor(this.state.device_id)
+            console.log(error);
+            this.fetchData();
+            this.props.getSelectedChannelsVisitor(this.state.device_id)
               .then((res) =>{
                 this.setState({
                   not_logged_in_category: res.data.data,
@@ -363,8 +388,8 @@ class Trending_v2 extends React.Component {
               .catch((err) =>{
                 console.error(err)
               });
-              this.checkIsLogin()
           });
+      }
 
 
         window.addEventListener('pageshow', function(event) {
@@ -374,6 +399,10 @@ class Trending_v2 extends React.Component {
         });
 
       this.getAndSetRedirect();
+      const params = new URLSearchParams(window.location.search);
+      this.setState({
+        idfa:  params.get('idfa') ? params.get('idfa') : null,
+      });
 
     }
 
@@ -501,30 +530,6 @@ class Trending_v2 extends React.Component {
         }
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
         Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
-    }
-
-    checkIsLogin(){
-      if (this.accessToken !== null &&  this.accessToken !== undefined) {
-        const decodedToken = jwtDecode(this.accessToken);
-        if (decodedToken && decodedToken.uid != '0') {
-          this.fetchData(true);
-        }
-        else {
-          this.fetchData();
-        }
-      }
-      else {
-        this.props.getUserData()
-          .then(response => {
-            // console.log(response);
-            this.fetchData(true);
-          })
-          .catch(error => {
-            console.log(error);
-            this.fetchData();
-          });
-      }
-
     }
 
     getMetadata() {
@@ -809,7 +814,7 @@ class Trending_v2 extends React.Component {
                                                                                     const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
                                                                                     const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
                                                                                     const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
-                                                                                    if(adsFrame.contentWindow.document && iframeAdsID){
+                                                                                    if(adsFrame.contentWindow.document && iframeAdsID && iframeAdsID.style.display !== "none"){
                                                                                       adsFrame.style.display = 'block';
                                                                                       this.setState({
                                                                                         is_ads_rendered: true,
@@ -822,7 +827,7 @@ class Trending_v2 extends React.Component {
                                                                                     }
                                                                                   })
                                                                                 }}
-                                                                                id={article.id} src={`/dfp?platform=${this.platform}`}
+                                                                                id={article.id} src={`/dfp?platform=${this.platform}&idfa=${this.state.idfa}`}
                                                                                 frameBorder="0"
                                                                                 style={{
                                                                                   height: '250px',
