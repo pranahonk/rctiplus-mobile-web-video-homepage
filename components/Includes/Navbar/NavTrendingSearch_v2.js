@@ -186,6 +186,7 @@ class NavbarTrendingSearch extends Component {
                             className="search-input"
                             onFocus={this.handleFocusParent}
                             ref={forwardedRef}
+                            autocomplete="off"
                         />
                     </div>
                     <div className="right-top-link">
