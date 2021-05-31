@@ -116,7 +116,7 @@ class NavbarTrendingSearch extends Component {
     }
     initSearch(q) {
         if (q) {
-            let queryParams = `keyword=${encodeURIComponent(q) || ''}`
+            let queryParams = `keyword=${encodeURIComponent(q.replace(/<[^>]*>/gm, "")) || ''}`
             if (this.accessToken) {
                 queryParams += `&token=${this.accessToken}`
                 queryParams += `&platform=${this.platform}`
@@ -133,7 +133,7 @@ class NavbarTrendingSearch extends Component {
     }
 
     clearKeyword() {
-        this.props.isChildFound(this.props.newsv2.search_result.length > 1)
+        this.props.isChildFound(this.props.newsv2.search_result.length > 0);
         this.props.clearSearch();
         this.props.setQuery('');
         searchKeywordEvent(this.props.newsv2.query, 'mweb_search_clear_keyword_clicked');
