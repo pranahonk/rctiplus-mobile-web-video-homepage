@@ -255,7 +255,8 @@ class Tv extends React.Component {
 		const chatBox = document.getElementById('chat-messages');
 		if((chatBox.scrollHeight - chatBox.scrollTop) - chatBox.clientHeight <= 25){
 			this.setState({ chat_box: false, total_newChat: []})
-		}else{
+		}
+		else{
 			this.setState({ chat_box: true})	
 		}
 	}
