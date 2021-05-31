@@ -93,7 +93,13 @@ class Detail extends React.Component {
         });
         const error_code = res.statusCode > 200 ? res.statusCode : false;
         const data = await res.json();
-        // console.log(data);
+        if (data.status.message_client !== "Success") { // server
+          ctx.res.writeHead(302, {
+            Location: '/not-found',
+          });
+
+          ctx.res.end();
+        }
         const res_read_also = await fetch(`${NEWS_API_V2}/api/v1/readalso/${programId}?page1&pageSize=6`, {
             method: 'GET',
             headers: {
