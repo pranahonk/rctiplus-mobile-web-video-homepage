@@ -40,10 +40,6 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
     }
   }
 
-  String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-  }
-
   const setColoring = (text, tags) =>{
     const params = new URLSearchParams(window.location.search) // id=123
     const keyword = params.get('keyword'); // 123
@@ -52,7 +48,7 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
       if (text.toLowerCase().includes(keyword.toLowerCase())) {
         return text.replace(replace, match => `<span style='color: #04a9e5'>${match}</span>`);
       } else {
-        return `#<span style='color: #04a9e5'>${keyword.capitalize()}</span> - ${text} `;
+        return `#<span style='color: #04a9e5'>${keyword}</span> - ${text} `;
       }
     }
     else{
