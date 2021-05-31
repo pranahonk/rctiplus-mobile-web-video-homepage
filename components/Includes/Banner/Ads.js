@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {GPT_NEWS_LINK_LIST, GPT_NEWS_LINK_DETAIL, DEV_API} from '../../../config';
+import { GPT_NEWS_LINK_LIST, GPT_NEWS_LINK_DETAIL, API_V2 } from '../../../config';
 import {connect} from 'react-redux';
 import adsActions from '../../../redux/actions/adsActions';
 import ax from "axios";
@@ -9,8 +9,8 @@ import { getUidAppier } from '../../../utils/appier';
 // import { useSelector, useDispatch } from 'react-redux';
 
 
-const axios = ax.create({ baseURL: DEV_API });
-const AdsBanner = ({path, size, idGpt, style, partner, setTarget, platform = "mweb", idfa}) => {
+const axios = ax.create({ baseURL: API_V2 });
+const AdsBanner = ({path, size, idGpt,  style, partner, setTarget, platform = "mweb", idfa}) => {
   const [ads, setAds] = useState(null);
   const [url, setUrl] = useState(null);
   // const toggleAds = useSelector(state => state.ads)
@@ -70,7 +70,6 @@ const AdsBanner = ({path, size, idGpt, style, partner, setTarget, platform = "mw
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    console.log(params.get('idfa'));
     axios.get(`/ads/v1/cust-params?platform=${platform === null || platform === "null" ? 'mweb' : platform}&aid=${platform === 'ios' ? params.get('idfa') || idfa : getUidAppier()}`)
       .then(response => {
         showAds(response.data);
