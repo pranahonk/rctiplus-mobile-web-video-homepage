@@ -134,7 +134,7 @@ class Search extends React.Component {
 
    async componentDidMount() {
         this.props.setQuery(this.props.dataSearch?.keyword || '');
-        this.props.getSearchFromServer(this.props.dataSearch)
+        this.props.getSearchFromServer(this.props.dataSearch);
         const searchHistory = getCookie('SEARCH_HISTORY');
         if (searchHistory) {
             this.setState({ search_history: JSON.parse(searchHistory) });

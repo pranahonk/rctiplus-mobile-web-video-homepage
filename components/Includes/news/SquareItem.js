@@ -13,7 +13,6 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
   const [platform, setPlatform] = useState(null);
   useEffect(() => {
     const query = queryString.parse(location.search);
-    console.log(query);
     if (query.token || query.platform) {
       setAccessToken(query.token);
       setPlatform(query.platform);
@@ -48,7 +47,7 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
       if (text.toLowerCase().includes(keyword.toLowerCase())) {
         return text.replace(replace, match => `<span style='color: #04a9e5'>${match}</span>`);
       } else {
-        return `#<span style='color: #04a9e5'>${keyword}</span> - ${text} `;
+        return `#<span style='color: #04a9e5'>${keyword.replace("#", "")}</span> - ${text} `;
       }
     }
     else{

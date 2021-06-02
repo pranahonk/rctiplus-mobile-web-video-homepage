@@ -106,6 +106,7 @@ class NavbarTrendingSearch extends Component {
     }
 
     onChangeQuery(e) {
+      this.props.clearSearch();
       this.changeQuery(e.target.value);
       this.props.isChildChange(e.target.value)
     }
@@ -186,7 +187,7 @@ class NavbarTrendingSearch extends Component {
                             className="search-input"
                             onFocus={this.handleFocusParent}
                             ref={forwardedRef}
-                            autocomplete="off"
+                            autoComplete="off"
                         />
                     </div>
                     <div className="right-top-link">
