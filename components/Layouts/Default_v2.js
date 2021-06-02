@@ -120,7 +120,7 @@ class Default_v2 extends React.Component {
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         window.dataLayer = window.dataLayer || [];
-                        let wDL = this.isNews ? 'video' : 'news';
+                        let wDL = !this.isNews ? 'video' : 'news';
                         window.dataLayer.push({
                             'pillar' : wDL
                         });
@@ -136,7 +136,7 @@ class Default_v2 extends React.Component {
                         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
                         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-                        let ua = this.isNews ? 'UA-145455301-17' : 'UA-145455301-9';
+                        let ua = !this.isNews ? 'UA-145455301-17' : 'UA-145455301-9';
                         ga('create', ua, 'auto', 'teamTracker');
                         ga('teamTracker.send', 'pageview');
                     ` }}></script>
