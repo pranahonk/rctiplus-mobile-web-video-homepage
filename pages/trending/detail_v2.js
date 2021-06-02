@@ -95,7 +95,7 @@ class Detail extends React.Component {
         const data = await res.json();
         if (data.status.message_client !== "Success") { // server
           ctx.res.writeHead(302, {
-            Location: '/not-found',
+            Location: '/news',
           });
 
           ctx.res.end();
