@@ -18,13 +18,9 @@ class Dfp extends React.Component {
             this.platform = q.platform;
         }
     }
-}
+  }
   render() {
-    return(
-      <div>
-        <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} />
-      </div>
-    )
+    return <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} />
   }
 }
 

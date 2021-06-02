@@ -179,6 +179,20 @@ module.exports = (window => {
 							}
 						}
 						break;
+					case 'touchNext':
+					{
+						// console.log("anung touchNext", zuck)
+						// modal.next();
+						zuck.nextItem(false, true)
+						// console.log(zuck)
+					}
+					break;
+					case 'touchPrev':
+					{
+						// console.log("anung touchPrev", zuck)
+						zuck.navigateItem('previous', true)
+					}
+					break;
 					case 'onmute':
 						{
 							// TEMP FIX
@@ -877,6 +891,7 @@ module.exports = (window => {
 				each(storyViewer.querySelectorAll('.close, .back'), (i, el) => {
 					el.onclick = e => {
 						e.preventDefault();
+						console.log("test")
 						const currentItem = storyData.currentItem || 0;
 						const item = storyData.items[currentItem];
 						homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_close_button_clicked');

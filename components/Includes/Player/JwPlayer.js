@@ -44,6 +44,7 @@ const JwPlayer = (props) => {
     mute: false,
     floating: false,
     file: props.data && props.data.url,
+    // file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
     primary: 'html5',
     width: '100%',
     hlsjsdefault: true,
@@ -557,7 +558,7 @@ const JwPlayer = (props) => {
       } else if (adsStatus === 'restart') {
         if (document.querySelector('.ads_wrapper')) {
           if (document.querySelector('.adsContainer').style.display != 'none') {
-            const adsIFrame = document.getElementById(slotDiv).children[0].children[0];
+            const adsIFrame = document.getElementById(slotDiv)?.children[0]?.children[0];
             if (adsIFrame) {
               setTimeout(() => {
                 if (document.querySelector('.fullscreen-player')) {

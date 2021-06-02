@@ -1,5 +1,5 @@
 import ax from 'axios';
-import { DEV_API } from '../../config';
+import { DEV_API, API_V2 } from '../../config';
 import { getUidAppier } from '../../utils/appier';
 import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
 
