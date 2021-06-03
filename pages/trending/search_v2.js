@@ -299,7 +299,7 @@ class Search extends React.Component {
               return (
                 <div className="search-result">
                   <div className="search-result__title">Result</div>
-                  <div className="search-result__desc">Your search for â€œ{decodeURIComponent(this.props.dataSearch?.keyword)}â€ did not match any articles.</div>
+                  <div className="search-result__desc">Your search for “{decodeURIComponent(this.props.dataSearch?.keyword)}” did not match any articles.</div>
                   <Img className="search-result__image" alt="Not Found News" src={`/static/group-2.svg`} />
                   <div className="search-result__title">A few suggestions</div>
                   <ul style={{padding: "0 0 0 15px"}}>
