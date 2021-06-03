@@ -527,7 +527,7 @@ class Detail extends React.Component {
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
         const newsTitle = cdata.title.replace(/<\w+>|<\/\w+>/gmi, '');
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
-        const coverImg = imgURL(cdata.cover, cdata.image, 400, assets_url, this.props?.general?.img_logo || null)
+        const coverImg = imgURL(cdata.cover, cdata.image, 100, assets_url, this.props?.general?.img_logo || null)
         const structuredData = {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
@@ -563,7 +563,7 @@ class Detail extends React.Component {
                     <meta name="description" content={newsContent || this.props?.kanal?.description} />
                     <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta property="og:description" content={newsContent} />
-                    <meta property="og:image" itemProp="image" content={cdata.cover} />
+                    <meta property="og:image" itemProp="image" content={coverImg} />
                     <meta property="og:type" content="website" />
                     <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta property="og:image:type" content="image/jpeg" />
