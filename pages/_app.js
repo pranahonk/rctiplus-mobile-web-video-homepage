@@ -7,8 +7,11 @@ import { setVisitorTokenNews, setNewsTokenV2, setNewsToken, setVisitorToken, get
 
 import 'sweetalert2/src/sweetalert2.scss';
 import '../assets/scss/apps/homepage/default.scss';
+import '../assets/scss/responsive.scss';
 
 import '../assets/scss/components/alert.scss';
+import queryString from 'query-string';
+import isEmpty from 'lodash/isEmpty'
 
 export default withRedux(initStore, { debug: false })(
     class MyApp extends App {
@@ -21,22 +24,41 @@ export default withRedux(initStore, { debug: false })(
         }
 
         async componentDidMount() {
-            if(screen.width < 500 ||
-                navigator.userAgent.match(/Android/i) ||
-                navigator.userAgent.match(/webOS/i) ||
-                navigator.userAgent.match(/iPhone/i) ||
-                navigator.userAgent.match(/iPod/i) || 
-                navigator.userAgent.match(/iPad/i)) {
-            } 
-            else {
-                window.location.href = process.env.REDIRECT_WEB_DESKTOP + window.location.pathname;
+            const segments = this.props.router.asPath;
+            let params = {}
+            if (segments.length > 1) {
+                let qParams = segments.split(/\?/)
+                qParams.forEach((row) => {
+                    params = {...queryString.parse(row)}
+                 });
+            }
+            let condition = (
+                screen.width < 500 || (
+                    navigator.userAgent.match(/Android/i) ||
+                    navigator.userAgent.match(/webOS/i) ||
+                    navigator.userAgent.match(/iPhone/i) ||
+                    navigator.userAgent.match(/iPod/i) ||
+                    navigator.userAgent.match(/iPad/i)
+                ) || (
+                    !isEmpty(params.device) &&
+                    params.device === 'ipad'
+                ) || (
+                    !isEmpty(params.token)
+                ) || (
+                    !isEmpty(params.platform) &&
+                    params.platform !== 'null' &&
+                    params.platform === 'ios'
+                )
+            )
+            if(!condition) {
+                window.location.href = process.env.REDIRECT_WEB_DESKTOP + window.location.pathname + window.location.search;
             }
 
             console.log('WILL MOUNT -> SET TOKEN');
 
             const visitorTokenNews = getVisitorTokenNews();
             const visitorToken = getVisitorToken();
-            
+
             let promises = [];
             if (visitorToken == null) {
                 promises.push(setVisitorToken());
@@ -57,9 +79,9 @@ export default withRedux(initStore, { debug: false })(
             if (newsTokenV2 == null) {
                 promises.push(setNewsTokenV2());
             }
-            
+
             await Promise.all(promises);
-            
+
             // setVisitorToken();
             // setNewsToken();
 
@@ -93,7 +115,7 @@ export default withRedux(initStore, { debug: false })(
             // }
 
             // console.log('conviva integrated');
-            
+
             // switch (process.env.MODE) {
             //     case 'DEVELOPMENT':
             //         console.log(Conviva.Constants.GATEWAY_URL)
@@ -119,7 +141,7 @@ export default withRedux(initStore, { debug: false })(
             //         Conviva.Analytics.init('ff84ae928c3b33064b76dec08f12500465e59a6f');
             //         break;
             // }
-            
+
 
             register();
         }

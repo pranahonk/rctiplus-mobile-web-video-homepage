@@ -26,13 +26,15 @@ import AddIcon from '@material-ui/icons/Add';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, DEV_API, NEWS_API_V2, BASE_URL, SHARE_BASE_URL } from '../config';
 import { formatDateWordID } from '../utils/dateHelpers';
-import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2 } from '../utils/cookie';
+import { removeCookie, getNewsChannels, setNewsChannels, setAccessToken, removeAccessToken, getNewsTokenV2, getUserAccessToken } from '../utils/cookie';
 
 import '../assets/scss/components/trending_v2.scss';
 
 import newsv2Actions from '../redux/actions/newsv2Actions';
+import newsv2KanalActions from '../redux/actions/newsv2KanalActions';
 import userActions from '../redux/actions/userActions';
-import { showSignInAlert, humanizeStr, imageNews, imagePath } from '../utils/helpers';
+import pageActions from '../redux/actions/pageActions';
+import { showSignInAlert, humanizeStr, imageNews, imagePath, readMore } from '../utils/helpers';
 import { urlRegex } from '../utils/regex';
 // import AdsBanner from '../components/Includes/Banner/Ads';
 import { newsTabClicked, newsArticleClicked, newsAddChannelClicked } from '../utils/appier';
@@ -115,6 +117,7 @@ class Trending_v2 extends React.Component {
                 'Authorization': data_news.data.news_token
             }
         });
+        console.log('hello general >>', general)
         let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
         let gs = {};
         const data_general = await general.json();
@@ -160,6 +163,11 @@ class Trending_v2 extends React.Component {
         user_data: null,
         sticky_category_shown: false,
         section: 1,
+        is_ads_rendered: false,
+        device_id: null,
+        not_logged_in_category: [],
+        is_login: false,
+        idfa: null
     };
 
     constructor(props) {
@@ -180,7 +188,7 @@ class Trending_v2 extends React.Component {
         else {
             removeAccessToken();
         }
-        this.iframeAds = React.createRef()
+        this.iframeAds = React.createRef();
     }
 
     bottomScrollFetch() {
@@ -327,7 +335,7 @@ class Trending_v2 extends React.Component {
         //     return (<div>lalala</div>)
         // }
     }
-    componentDidMount() {
+    async componentDidMount() {
         // window.addEventListener('scroll', (event) => {
         //     if(this.isInViewport(document.getElementById('9'))) {
         //         console.log('YESSS')
@@ -338,27 +346,63 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
-        if (this.accessToken !== null &&  this.accessToken !== undefined) {
-            const decodedToken = jwtDecode(this.accessToken);
-            if (decodedToken && decodedToken.uid != '0') {
-                this.fetchData(true);
-            }
-            else {
-                this.fetchData();
-            }
+        await this.setState({
+          device_id: new DeviceUUID().get(),
+        });
+
+
+
+      if (this.accessToken !== null &&  this.accessToken !== undefined) {
+        const decodedToken = jwtDecode(this.accessToken);
+        if (decodedToken && decodedToken.uid != '0') {
+          this.fetchData(true);
         }
         else {
-            this.props.getUserData()
-                .then(response => {
-                    console.log(response);
-                    this.fetchData(true);
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.fetchData();
-                });
+          this.fetchData();
+          this.props.getSelectedChannelsVisitor(this.state.device_id)
+            .then((res) =>{
+              this.setState({
+                not_logged_in_category: res.data.data,
+              });
+            })
+            .catch((err) =>{
+              console.error(err)
+            });
         }
+      }
+      else {
+        this.props.getUserData()
+          .then(response => {
+            // console.log(response);
+            this.fetchData(true);
+          })
+          .catch(error => {
+            console.log(error);
+            this.fetchData();
+            this.props.getSelectedChannelsVisitor(this.state.device_id)
+              .then((res) =>{
+                this.setState({
+                  not_logged_in_category: res.data.data,
+                });
+              })
+              .catch((err) =>{
+                console.error(err)
+              });
+          });
+      }
 
+
+        window.addEventListener('pageshow', function(event) {
+          if (event.persisted) {
+            Router.reload(window.location.pathname);
+          }
+        });
+
+      this.getAndSetRedirect();
+      const params = new URLSearchParams(window.location.search);
+      this.setState({
+        idfa:  params.get('idfa') ? params.get('idfa') : null,
+      });
 
     }
 
@@ -371,12 +415,12 @@ class Trending_v2 extends React.Component {
         // console.log($('#iframe-ads-1').contents().find($('div-gpt-ad-1591240670591-0')).css('display'))
     }
 
-    fetchData(isLoggedIn = false) {
+    async fetchData(isLoggedIn = false) {
         let params = {};
         const savedCategoriesNews = getNewsChannels();
         params['saved_tabs'] = savedCategoriesNews;
-        this.setState(params, () => {
-            this.props.getCategory()
+        await this.setState(params, () => {
+            this.props.getCategoryV2()
                 .then(response => {
                     let categories = response.data.data;
                     let sortedCategories = categories;
@@ -398,6 +442,12 @@ class Trending_v2 extends React.Component {
                                 sortedCategories.push(savedCategories[i]);
                             }
                         }
+
+                      const notLoginResponse = [...sortedCategories, ...this.state.not_logged_in_category]
+                      this.getUpdate();
+                      sortedCategories = [...notLoginResponse].filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
+
+
                     }
 
 
@@ -461,7 +511,6 @@ class Trending_v2 extends React.Component {
                         }
                     }
 
-                    console.log(error);
                     this.setState({
                         is_tabs_loading: false,
                         is_articles_loading: false,
@@ -509,15 +558,57 @@ class Trending_v2 extends React.Component {
             }
     }
 
+    getUpdate(){
+      setTimeout(()=>{
+         this.props.getSelectedChannelsVisitor(this.state.device_id)
+          .then((res) =>{
+            const data = res.data.data;
+            const tabs = this.state.tabs.filter(x => x.id === 15 || x.id === 12 || x.id === 1);
+            const tabs_not_required = this.state.tabs.filter(x => x.id !== 15 && x.id !== 12 && x.id !== 1);
+            if(tabs_not_required.length !== data.length){
+              const combine  = [...tabs, ...data];
+              this.setState({
+                tabs: combine
+              })
+            }
+          })
+          .catch((err) =>{
+            console.error(err)
+          });
+
+      }, 2500);
+    }
+
+  getAndSetRedirect() {
+    if (Router.query && Router.query.id && Router.query.title && Router.query.category) {
+      localStorage.setItem('url-full', `${Router.asPath.split('?')[0]}`);
+      window.location.href = '/news';
+    }
+
+    if (localStorage.getItem('url-full')) {
+      this.props.setPageLoader();
+      setTimeout(() => {
+        window.location.href = localStorage.getItem('url-full');
+        localStorage.removeItem('url-full');
+        this.props.unsetPageLoader();
+      }, 1500);
+
+    }
+  }
+
+
     render() {
         // const metadata = this.getMetadata();
         // const ogMetaData = this.getOgMetaData();
         const asPath = this.props.router.asPath;
         const oneSegment = SHARE_BASE_URL.indexOf('//dev-') > -1 ? 'https://dev-webd.rctiplus.com' : SHARE_BASE_URL.indexOf('//rc-') > -1 ? 'https://rc-webd.rctiplus.com' : 'https://www.rctiplus.com';
+        const mobilePlatform = (this.platform !== null) ? 'mobilePlatform' : '';
+        const site_name = this.props?.general?.site_name || SITE_NAME
+        const title = (this.props?.metaSeo?.title) + ' - ' + (site_name)
         return (
-            <Layout title={this.props?.metaSeo?.title}>
+            <Layout title={title}>
                 <Head>
-                    <meta name="title" content={this.props?.metaSeo?.title} />
+                    <meta name="title" content={title} />
                     <meta name="description" content={this.props?.metaSeo?.description} />
                     <meta name="keywords" content={this.props?.metaSeo?.keyword} />
                     <meta property="og:title" content={this.props.metaOg?.title || ''} />
@@ -528,7 +619,7 @@ class Trending_v2 extends React.Component {
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={this.props?.general?.site_name || SITE_NAME} />
+                    <meta property="og:site_name" content={site_name} />
                     <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
                     <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
@@ -705,7 +796,7 @@ class Trending_v2 extends React.Component {
                                                                             </Link>
                                                                         </Col>
                                                                         );
-                                                                    })}
+                                                                    })};
                                                                 </Row>
                                                             </div>
                                                         </div>
@@ -713,10 +804,9 @@ class Trending_v2 extends React.Component {
                                                     <ListGroup className="article-list">
                                                         {this.state.articles[tab.id.toString()] && this.state.articles[tab.id.toString()].map((article, j) => {
                                                             return(((j+1) % 7  === 0) ?
-                                                                (<>
-                                                                    <li className="listItems" key={j + article.title}>
+                                                                (<li className="listItems" key={j + article.title}>
                                                                         <ListGroup className="groupNews">
-                                                                            <ListGroupItem className="">
+                                                                          <ListGroupItem className={`listNewsAdds ${!this.state.is_ads_rendered ? 'blank-space' : ''}`}>
                                                                                 <iframe
                                                                                 onLoad={() => {
                                                                                   window.addEventListener('scroll', () => {
@@ -724,17 +814,20 @@ class Trending_v2 extends React.Component {
                                                                                     const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
                                                                                     const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
                                                                                     const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
-                                                                                    if(adsFrame.contentWindow.document && iframeAdsID){
-                                                                                      adsFrame.style.display = 'block'
+                                                                                    if(adsFrame.contentWindow.document && iframeAdsID && iframeAdsID.style.display !== "none"){
+                                                                                      adsFrame.style.display = 'block';
+                                                                                      this.setState({
+                                                                                        is_ads_rendered: true,
+                                                                                      })
 
                                                                                     }else if(element && element.style.display === 'none' || element_2 || !element){
-                                                                                      adsFrame.style.display = 'none'
+                                                                                      adsFrame.style.display = 'none';
                                                                                     }else{
-                                                                                      adsFrame.style.display = 'none'
+                                                                                      adsFrame.style.display = 'none';
                                                                                     }
                                                                                   })
                                                                                 }}
-                                                                                id={article.id} src={`/dfp?platform=${this.platform}`}
+                                                                                id={article.id} src={`/dfp?platform=${this.platform}&idfa=${this.state.idfa}`}
                                                                                 frameBorder="0"
                                                                                 style={{
                                                                                   height: '250px',
@@ -742,11 +835,27 @@ class Trending_v2 extends React.Component {
                                                                                   display: 'none',
                                                                                 }} />
                                                                             </ListGroupItem>
-                                                                            <SectionNews  article={article}/>
+                                                                            {
+                                                                                article && isArray(article.section) && article.section.length > 0 ? <SectionNews  article={article}/> : <ListGroupItem className="article article-full-width article-no-border" onClick={() => this.goToDetail(article)}>
+                                                                                    <div className="article-description">
+                                                                                        <div className="article-thumbnail-container-full-width">
+                                                                                            {
+                                                                                                imageNews(article.title, article.cover, article.image, 400, this.state.assets_url, 'article-thumbnail-full-width')
+                                                                                            }
+                                                                                        </div>
+                                                                                        <div className="article-title-container">
+                                                                                            <h4 className="article-title" dangerouslySetInnerHTML={{ __html: article.title.replace(/\\/g, '') }}></h4>
+                                                                                            <p style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: readMore(article.content) }}></p>
+                                                                                            <div className="article-source">
+                                                                                                <p className="source"><strong>{article.source}</strong>&nbsp;&nbsp;</p>
+                                                                                                <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </ListGroupItem>
+                                                                            }
                                                                         </ListGroup>
-                                                                    </li>
-                                                                    </>
-                                                                )  : 
+                                                                </li>)  :
                                                                 (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
                                                                     <SquareItem item={article} assets_url={this.state.assets_url} />
                                                                 </ListGroupItem>)
@@ -770,4 +879,6 @@ class Trending_v2 extends React.Component {
 export default connect(state => state, {
     ...newsv2Actions,
     ...userActions,
+    ...newsv2KanalActions,
+    ...pageActions,
 })(withRouter(Trending_v2));

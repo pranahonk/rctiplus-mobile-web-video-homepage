@@ -15,7 +15,8 @@ export const getUidAppier = () => {
 
 export const getUserId = () => {
     const accessToken = getCookie(TOKEN_KEY);
-    let userId = new DeviceUUID().get();
+    // let userId = new DeviceUUID().get();
+    let userId = getUidAppier();
     if (accessToken) {
         try {
             userId = jwtDecode(accessToken).vid;
@@ -30,6 +31,7 @@ export const getUserId = () => {
 
 export const homeGeneralClicked = (event = 'mweb_homepage_logo_clicked') => {
     console.log(event);
+    qg('identify', {user_id: getUidAppier()});
     qg('event', event,
     {
         users_id: getUidAppier(),

@@ -26,6 +26,7 @@ import '../../node_modules/videojs-ima/dist/videojs.ima.css';
 import '../../assets/scss/videojs.scss';
 
 import '../../assets/scss/apps/homepage/default.scss';
+import '../../assets/scss/responsive.scss';
 
 class Default_v2 extends React.Component {
 
@@ -33,6 +34,7 @@ class Default_v2 extends React.Component {
         super(props);
         this.platform = null;
         this.header = null;
+        this.isNews = false;
         const asPath = this.props.router.asPath;
         const segments = asPath.split(/\?/);
 
@@ -46,17 +48,15 @@ class Default_v2 extends React.Component {
                 this.header = q.header;
             }
         }
-        if (asPath.indexOf('/news/detail') > -1 || asPath.indexOf('/trending/detail') > -1) {
+        if (asPath.indexOf('/news/detail') > -1 || asPath.indexOf('/trending/detail') > -1 || asPath.indexOf('/trending/') > -1 || asPath.indexOf('/news/') > -1) {
             let platform = isIOS ? 'ios' : isAndroid ? 'android' : null;
             this.platform = platform
+            this.isNews = true
         }
     }
 
     componentDidMount() {
         this.props.initializeFirebase();
-        // identify appier
-        qg('identify', {user_id: getUidAppier()});
-        // end identify appier
         // console.log('User added to home screen');
         if (typeof window !== 'undefined') {
             window.addEventListener('beforeinstallprompt', async e => {
@@ -120,8 +120,9 @@ class Default_v2 extends React.Component {
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         window.dataLayer = window.dataLayer || [];
+                        let wDL = !this.isNews ? 'video' : 'news';
                         window.dataLayer.push({
-                            'pillar' : 'video'
+                            'pillar' : wDL
                         });
                         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -135,9 +136,8 @@ class Default_v2 extends React.Component {
                         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
                         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-                        ga('create', 'UA-145455301-17', 'auto', 'teamTracker');
-
+                        let ua = !this.isNews ? 'UA-145455301-17' : 'UA-145455301-9';
+                        ga('create', ua, 'auto', 'teamTracker');
                         ga('teamTracker.send', 'pageview');
                     ` }}></script>
 
@@ -220,7 +220,7 @@ class Default_v2 extends React.Component {
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
                 {/* <!-- DO NOT touch the following DIV --> */}
-                  {MODE === 'DEVELOPMENT' ? (
+                  {/* {MODE === 'DEVELOPMENT' ? (
                     <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
                     !function(q,g,r,a,p,h,js) {
                         if(q.qg)return;
@@ -244,7 +244,18 @@ class Default_v2 extends React.Component {
                         h.parentNode.insertBefore(p,h);
                     } (window,document,'script','https://cdn.qgr.ph/qgraph.3be8515a1c2359442dfd.js');
                 ` }}></script>
-                )}
+                )} */}
+                <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
+                    !function(q,g,r,a,p,h,js) {
+                        if(q.qg)return;
+                        js = q.qg = function() {
+                        js.callmethod ? js.callmethod.call(js, arguments) : js.queue.push(arguments);
+                        };
+                        js.queue = [];
+                        p=g.createElement(r);p.async=!0;p.src=a;h=g.getElementsByTagName(r)[0];
+                        h.parentNode.insertBefore(p,h);
+                    } (window,document,'script','https://cdn.qgr.ph/qgraph.3be8515a1c2359442dfd.js');
+                ` }}></script>
 
                 {this.props.pages.loading ? (
                     <div className={'default-loader ' + (this.props.pages.fade ? 'loader-fade' : '')}>

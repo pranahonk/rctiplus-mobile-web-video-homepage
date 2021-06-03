@@ -5,8 +5,17 @@ import { GPT_ID_LIST, GPT_NEWS_ANDROID_LIST, GPT_NEWS_IOS_LIST, GPT_NEWS_MWEB_LI
 // import Layout from '../components/Layouts/Default_v2';
 import queryString from 'query-string';
 import { withRouter } from 'next/router';
+import { connect } from 'react-redux';
+import newsv2Actions from '../redux/actions/newsv2Actions';
+import adsActions from '../redux/actions/adsActions.js';
+import {getNewsChannels} from "../utils/cookie";
 
 class Dfp extends React.Component {
+  state = {
+    idfa: null,
+  };
+
+
   constructor(props) {
     super(props);
     this.platform = null;
@@ -19,27 +28,36 @@ class Dfp extends React.Component {
     }
   }
 
+  componentDidMount() {
+    const params = new URLSearchParams(window.location.search);
+    this.setState({
+      idfa:  params.get('idfa') ? params.get('idfa') : null,
+    });
+  }
+
   render() {
-    return(
+    return (
       <div>
-        <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} />
+        <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} setTarget={true} platform={this.platform} idfa={this.state.idfa}  />
       </div>
-    )
+    );
   }
 }
-
-export default withRouter(Dfp);
+export default connect(state => state, {
+  ...adsActions,
+  ...newsv2Actions,
+})(withRouter(Dfp));
 
 const getPlatformGpt = (platform) => {
   // webview
-  if(platform === 'ios') {
+  if (platform === 'ios') {
     return GPT_NEWS_IOS_LIST;
   }
-  else if(platform === 'android') {
+  else if (platform === 'android') {
     return GPT_NEWS_ANDROID_LIST;
   }
   else {
     return  GPT_NEWS_MWEB_LIST;
   }
-}
+};
 

@@ -1,6 +1,6 @@
 import ax from 'axios';
 import { NEWS_API_V2 } from '../../config';
-import { getNewsTokenV2, checkToken, removeAccessToken, getAccessToken } from '../../utils/cookie';
+import { getNewsTokenV2, checkToken, removeAccessToken, getAccessToken, getUserAccessToken } from '../../utils/cookie';
 
 const axios = ax.create({ baseURL: NEWS_API_V2 + '/api' });
 
@@ -43,16 +43,31 @@ const searchNews = (q, page = 1, pageSize = 10) => {
     });
 };
 
+const searchSuggest =  (q, item = 1, itemSize = 4) => {
+  return dispatch => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`/v2/recommendation/suggest?item=${item}&itemSize=${itemSize}&query=${q}`);
+      if (response.status === 200) {
+        resolve(response);
+      }
+      else {
+        removeAccessToken();
+        reject(response);
+      }
+    }
+    catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+
+}
+
 const readAlso = (id,page = 1, pageSize = 2) => {
   return dispatch => new Promise(async (resolve, reject) => {
     try {
       const response = await axios.get(`/news/api/v1/readalso/${id}?page=/${page}&pageSize=${pageSize}`);
       if (response.status === 200) {
-        dispatch({
-          type: 'SEARCH_NEWS_RESULT',
-          result: response.data.data,
-          meta: response && response.data && response.data.meta ? response.data.meta : null,
-        });
         resolve(response);
       }
       else {
@@ -186,6 +201,28 @@ const deleteCategory = categoryId => {
         }
     });
 };
+const deleteCategoryVisitors = (categoryId, device_id) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.delete(`/v2/kanal/delete/${categoryId}`,{
+              data: {
+                device_id: device_id,
+              }
+            });
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
 
 const updateCategoryOrder = (categoryId, sorting) => {
     return () => new Promise(async (resolve, reject) => {
@@ -193,6 +230,29 @@ const updateCategoryOrder = (categoryId, sorting) => {
             const response = await axios.post(`/v1/update_kanal`, {
                 category: categoryId,
                 sorting: sorting
+            });
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
+const updateCategoryOrderVisitor = (categoryId, sorting, device_id) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.post(`/v2/kanal/update`, {
+                category_id: categoryId,
+                sorting: sorting,
+                device_id: device_id
             });
             if (response.status === 200) {
                 resolve(response);
@@ -235,7 +295,7 @@ const getSectionNews = (category_id = 16, pageSize = 3, page = 1) => {
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_SECTION_NEWS',
-                    payload: response.data, 
+                    payload: response.data,
                 });
                 resolve(response.data);
             }
@@ -337,6 +397,44 @@ const getChannels = () => {
     return () => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/kanal`);
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
+const getChannelsVisitor = (device_id) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/kanal?visitor=${device_id}`);
+            if (response.status === 200) {
+                resolve(response);
+            }
+            else {
+                removeAccessToken();
+                reject(response);
+            }
+        }
+        catch (error) {
+            removeAccessToken();
+            reject(error);
+        }
+    });
+};
+
+const getSelectedChannelsVisitor = (device_id) => {
+    return () => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/kanal/list?visitor=${device_id}`);
             if (response.status === 200) {
                 resolve(response);
             }
@@ -529,6 +627,63 @@ const incrementCountTag = tagName => {
     });
 };
 
+const addCategoryVisitorV2 = (categoryId, device_id) => {
+  return () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.post(`/v2/kanal/add`, {
+        category_id: categoryId,
+        device_id: device_id,
+        sorting: 1
+      });
+      if (response.status === 200) {
+        resolve(response);
+      } else {
+        removeAccessToken();
+        reject(response);
+      }
+    } catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+};
+
+const userRecomendation = (page = 1, pageSize = 4) => {
+  return () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`/v2/recommendation?page=${page}&pageSize=${pageSize}`);
+      if (response.status === 200) {
+        resolve(response);
+      } else {
+        removeAccessToken();
+        reject(response);
+      }
+    } catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+};
+
+const saveUserRecomendation = (userSearch) => {
+  return () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.post(`/v2/recommendation/search`, {
+        "qry": userSearch
+      });
+      if (response.status === 200) {
+        resolve(response);
+      } else {
+        removeAccessToken();
+        reject(response);
+      }
+    } catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+};
+
 const setSection = () => dispatch => dispatch({ type: "ADD_SECTION" })
 
 
@@ -548,6 +703,7 @@ export default {
     getArticle,
     getRelatedArticles,
     getChannels,
+    getChannelsVisitor,
     getPopularSearch,
     incrementCount,
     getTagTrending,
@@ -560,5 +716,12 @@ export default {
     incrementCountTag,
     readAlso,
     getSectionNews,
-    setSection
+    setSection,
+    addCategoryVisitorV2,
+    getSelectedChannelsVisitor,
+    updateCategoryOrderVisitor,
+    deleteCategoryVisitors,
+    userRecomendation,
+    saveUserRecomendation,
+    searchSuggest,
 };

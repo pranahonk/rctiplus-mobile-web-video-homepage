@@ -1,9 +1,9 @@
 import ax from 'axios';
-import { DEV_API } from '../../config';
+import { API_V2 } from '../../config';
 import { getUidAppier } from '../../utils/appier';
 import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
 
-const axios = ax.create({ baseURL: DEV_API });
+const axios = ax.create({ baseURL: API_V2 });
 axios.interceptors.request.use(async (request) => {
     await checkToken();
     const accessToken = getCookie('ACCESS_TOKEN');
@@ -28,7 +28,7 @@ const toggleAds = (flag) => {
 const fetchTargetingAds = () => {
     return () => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/ads/v1/cust-params?platform=mweb&appierid=${getUidAppier()}`);
+            const response = await axios.get(`/ads/v1/cust-params?platform=mweb&aid=${getUidAppier()}`);
             if (response.status === 200) {
                 resolve(response.data);
             }

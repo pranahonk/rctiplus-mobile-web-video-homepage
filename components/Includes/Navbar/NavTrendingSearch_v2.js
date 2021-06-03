@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useCallback } from 'react';
 import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import LoadingBar from 'react-top-loading-bar';
@@ -22,6 +22,8 @@ import { debounceTime } from 'rxjs/operators';
 
 import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked, newsSearchClicked } from '../../../utils/appier';
 import { getCookie, setCookie, removeAccessToken, setAccessToken } from '../../../utils/cookie';
+import _debounce from 'lodash/debounce';
+import {urlRegex} from "../../../utils/regex";
 
 
 class NavbarTrendingSearch extends Component {
@@ -29,7 +31,7 @@ class NavbarTrendingSearch extends Component {
         super(props);
         this.state = {
             q: '',
-            length: 10
+            length: 10,
         };
 
         this.subject = this.props.subject;
@@ -37,7 +39,6 @@ class NavbarTrendingSearch extends Component {
         this.accessToken = null;
         this.platform = null;
         const segments = this.props.router.asPath.split(/\?/);
-        console.log('segments >>', segments)
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
@@ -62,7 +63,7 @@ class NavbarTrendingSearch extends Component {
         //         if (this.props.newsv2.query) {
         //             searchKeywordEvent(this.props.newsv2.query, 'mweb_search_keyword');
         //         }
-                
+
         //         this.props.searchNews(this.props.newsv2.query, 1, this.state.length)
         //             .then(responses => {
         //                 console.log(responses);
@@ -75,40 +76,48 @@ class NavbarTrendingSearch extends Component {
         //                 this.props.toggleIsSearching(false);
         //             });
         //     });
+      this.props.onRef(this);
     }
 
-    saveSearchHistory(q) {
+  componentWillUnmount() {
+      this.props.onRef(undefined);
+  }
+
+
+  saveSearchHistory(q) {
         let searchHistory = getCookie('SEARCH_HISTORY');
         if (!searchHistory) {
-            setCookie('SEARCH_HISTORY', [q.toLowerCase()]);
+            setCookie('SEARCH_HISTORY', [q]);
         }
         else {
             searchHistory = JSON.parse(searchHistory);
-            if (searchHistory.indexOf(q.toLowerCase()) === -1) {
+            if (searchHistory.indexOf(q) === -1) {
                 if (searchHistory.length >= 5) {
                     searchHistory.pop();
                 }
             }
             else {
-                searchHistory.splice(searchHistory.indexOf(q.toLowerCase()), 1);
+                searchHistory.splice(searchHistory.indexOf(q), 1);
             }
 
-            searchHistory.unshift(q.toLowerCase());
+            searchHistory.unshift(q);
             setCookie('SEARCH_HISTORY', searchHistory);
         }
     }
 
     onChangeQuery(e) {
-        this.changeQuery(e.target.value);
+      this.props.clearSearch();
+      this.changeQuery(e.target.value);
+      this.props.isChildChange(e.target.value)
     }
 
-    changeQuery(q) {
+    async changeQuery(q) {
         // this.setState({ q: q });
-        this.props.setQuery(q);
+        await this.props.setQuery(q);
     }
     initSearch(q) {
         if (q) {
-            let queryParams = `keyword=${q || ''}`
+            let queryParams = `keyword=${encodeURIComponent(q.replace(/<[^>]*>/gm, "")) || ''}`
             if (this.accessToken) {
                 queryParams += `&token=${this.accessToken}`
                 queryParams += `&platform=${this.platform}`
@@ -125,19 +134,28 @@ class NavbarTrendingSearch extends Component {
     }
 
     clearKeyword() {
+        this.props.isChildFound(this.props.newsv2.search_result.length > 0);
         this.props.clearSearch();
         this.props.setQuery('');
         searchKeywordEvent(this.props.newsv2.query, 'mweb_search_clear_keyword_clicked');
-        this.initSearch('')
+        this.initSearch('');
     }
 
     handleKeyPress = (event) => {
         if(event.key === 'Enter'){
-            this.search()
+          if(this.props.newsv2.query !== undefined){
+            this.search();
+            this.saveSearchHistory(this.props.newsv2.query);
+          }
         }
     }
+  handleFocusParent = (e) =>{
+      this.props.isChildFocus(true);
+      e.preventDefault();
+  }
 
     render() {
+        const { forwardedRef } = this.props;
         return (
             <div className="nav-home-container nav-fixed-top">
                 <Navbar style={{ backgroundColor: '#171717' }} expand="md" className={'nav-container nav-shadow nav-search'}>
@@ -147,8 +165,11 @@ class NavbarTrendingSearch extends Component {
                             <NavbarBrand onClick={() => {
                                 if (this.props.router.asPath.indexOf('/explores') === 0) {
                                     searchBackClicked(this.props.newsv2.query, 'mweb_search_back_clicked');
+                                }else if (this.props.router.asPath.indexOf('keyword')){
+                                  Router.push('/news');
+                                }else{
+                                  Router.back();
                                 }
-                                Router.back();
                             }} style={{ color: 'white' }}>
                                 <ArrowBackIcon />
                             </NavbarBrand>
@@ -158,18 +179,22 @@ class NavbarTrendingSearch extends Component {
                         <Input
                             style={{ backgroundColor: '#171717 !important', borderBottom: '1px solid white !important', borderRadius: '0 !important' }}
                             onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
-                            placeholder="Search"
+                            placeholder="Search for News, Hashtags"
                             onChange={this.onChangeQuery.bind(this)}
-                            value={this.props.newsv2.query}
+                            value={this.props.newsv2.query ? decodeURIComponent(this.props.newsv2.query.replace(/<[^>]*>/gm, "")) : this.props.newsv2.query}
                             onKeyPress={this.handleKeyPress}
                             id="search-news-input"
-                            className="search-input" />
+                            className="search-input"
+                            onFocus={this.handleFocusParent}
+                            ref={forwardedRef}
+                            autoComplete="off"
+                        />
                     </div>
                     <div className="right-top-link">
                         <div className="btn-link-top-nav">
                             <NavbarBrand style={{ color: 'white' }}>
                                 <CloseIcon style={{ fontSize: 20, marginRight: 10, visibility: (this.props.newsv2.query?.length > 0 ? 'visible' : 'hidden') }} onClick={this.clearKeyword.bind(this)}/>
-                                <SearchIcon style={{ fontSize: 20 }} onClick={() => this.search()} />
+                                <SearchIcon style={{ fontSize: 20 }} onClick={() => this.handleKeyPress({key: 'Enter'})} />
                             </NavbarBrand>
                         </div>
                     </div>

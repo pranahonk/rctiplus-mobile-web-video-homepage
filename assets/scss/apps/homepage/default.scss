@@ -208,7 +208,7 @@ body {
     background-color: $primary-bg-color;
     position: relative;
     display: block;
-    padding: 0.75rem 1.25rem;
+    padding: 17px 0 0 0;
     margin-bottom: -1px;
     border: 0 none transparent;
     &.listNewsAdds {
@@ -495,7 +495,7 @@ h5 {
     .title-paid-video {
         padding: 4px 5px;
         padding-right: 23px;
-    }   
+    }
     .icon-paid-video {
         display: flex;
         justify-content: center;
@@ -515,7 +515,7 @@ h5 {
             width: 12px !important;
             height: 10px !important;
         }
-    }   
+    }
 }
 .bg-overlay-paid__video {
     position: fixed;
@@ -558,7 +558,7 @@ h5 {
         font-stretch: normal;
         font-style: normal;
         line-height: normal;
-        letter-spacing: normal;      
+        letter-spacing: normal;
     }
 }
 .paid__video-wrapper {
@@ -696,7 +696,7 @@ h5 {
     align-items: center;
     justify-content: center;
   }
-  
+
   .action-btn:after {
     content: ' ';
     display: block;
@@ -705,13 +705,13 @@ h5 {
     width: 20%;
     border-radius: 50%;
   }
-  
+
   .bg > img {
     width: 100%;
     margin: 0;
     display: block;
   }
-  
+
   .sheet {
     z-index: 100;
     position: fixed;
@@ -722,7 +722,7 @@ h5 {
     background: #fff;
     touch-action: none;
   }
-  
+
   .sheet > div {
     height: 60px;
     border-bottom: 1px solid #eee;
@@ -737,4 +737,3 @@ h5 {
       font-size: 1em;
       margin: 0;
   }
-  
