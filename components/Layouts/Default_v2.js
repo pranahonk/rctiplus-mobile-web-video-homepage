@@ -120,7 +120,7 @@ class Default_v2 extends React.Component {
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         window.dataLayer = window.dataLayer || [];
-                        let wDL = !this.isNews ? 'video' : 'news';
+                        let wDL = (document.URL.indexOf('/news/detail') > -1 || document.URL.indexOf('/trending/detail') > -1 || document.URL.indexOf('/trending/') > -1 || document.URL.indexOf('/news/') > -1) ? 'news' : 'video';
                         window.dataLayer.push({
                             'pillar' : wDL
                         });
@@ -136,7 +136,7 @@ class Default_v2 extends React.Component {
                         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
                         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-                        let ua = !this.isNews ? 'UA-145455301-17' : 'UA-145455301-9';
+                        let ua = (document.URL.indexOf('/news/detail') > -1 || document.URL.indexOf('/trending/detail') > -1 || document.URL.indexOf('/trending/') > -1 || document.URL.indexOf('/news/') > -1) ? 'UA-145455301-9' : 'UA-145455301-17';
                         ga('create', ua, 'auto', 'teamTracker');
                         ga('teamTracker.send', 'pageview');
                     ` }}></script>
