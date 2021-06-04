@@ -176,14 +176,7 @@ const UIVersion = '2.0';
       })
     });
 
-    server.get('/news/detail/:category/:id/:title', (req, res, next) => {
-      if(req.originalUrl.includes('utm_source')){
-        return app.render(req, res, '/news', {
-          id: req.params.id,
-          title: req.params.title,
-          category: req.params.category,
-        });
-      }
+    server.get('/news/detail/:category/:id/:title', (req, res) => {
       return app.render(req, res, '/trending/detail_v2', {
         id: req.params.id,
         title: req.params.title,
