@@ -346,6 +346,7 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
+        console.log(this.props);
         await this.setState({
           device_id: new DeviceUUID().get(),
         });
@@ -398,7 +399,6 @@ class Trending_v2 extends React.Component {
           }
         });
 
-      this.getAndSetRedirect();
       const params = new URLSearchParams(window.location.search);
       this.setState({
         idfa:  params.get('idfa') ? params.get('idfa') : null,
@@ -578,23 +578,6 @@ class Trending_v2 extends React.Component {
 
       }, 2500);
     }
-
-  getAndSetRedirect() {
-    if (Router.query && Router.query.id && Router.query.title && Router.query.category) {
-      localStorage.setItem('url-full', `${Router.asPath.split('?')[0]}`);
-      window.location.href = '/news';
-    }
-
-    if (localStorage.getItem('url-full')) {
-      this.props.setPageLoader();
-      setTimeout(() => {
-        window.location.href = localStorage.getItem('url-full');
-        localStorage.removeItem('url-full');
-        this.props.unsetPageLoader();
-      }, 1500);
-
-    }
-  }
 
 
     render() {
