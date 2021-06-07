@@ -36,6 +36,7 @@ const rootReducer = combineReducers({
     searches: searchReducer,
     quizzes: quizReducer,
     chats: liveAndChatReducer,
+    live_event: liveAndChatReducer,
     notification: notificationReducer,
     feeds: feedReducer,
     likes: likeReducer,

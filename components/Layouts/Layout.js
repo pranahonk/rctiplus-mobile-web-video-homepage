@@ -1,10 +1,14 @@
 import { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
+import { Spinner } from 'reactstrap';
 import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GRAPH_SITEMAP, SHARE_BASE_URL, GTM_AUTH, MODE, APPIER_ID } from '../../config';
 
 import Head from "next/head"
 
 const Layout = ({children, ...props}) => {
+    
+  const { pages: { loading, fade } } = useSelector(state => state)
+
   return(
     <>
       <Head>
@@ -108,6 +112,13 @@ const Layout = ({children, ...props}) => {
       </Head>
 
           {children}
+          {loading && (
+            <div className={'default-loader ' + (fade ? 'loader-fade' : '')}>
+                <div className={'loader'}>
+                    <Spinner color="danger" />
+                </div>
+            </div>
+          )}
     </>
   )
 }

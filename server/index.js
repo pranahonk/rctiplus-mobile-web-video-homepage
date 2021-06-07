@@ -142,20 +142,20 @@ const UIVersion = '2.0';
     //   });
     // });
 
+    // server.get('/tv/:channel/:epg_id/:epg_title', (req, res) => {
+    //   return app.render(req, res, '/tv', {
+    //     channel: req.params.channel,
+    //     epg_id: req.params.epg_id,
+    //     epg_title: req.params.epg_title
+    //   })
+    // });
+
+    server.get('/tv/:channel', (req, res) => {
+      return app.render(req, res, '/tv_v2', { channel: req.params.channel });
+    });
+
     server.get('/tv/:channel/:epg_id/:epg_title', (req, res) => {
-      return app.render(req, res, '/tv', {
-        channel: req.params.channel,
-        epg_id: req.params.epg_id,
-        epg_title: req.params.epg_title,
-      });
-    });
-
-    server.get('/tv-2/:channel', (req, res) => {
-      return app.render(req, res, '/tv-2', { channel: req.params.channel });
-    });
-
-    server.get('/tv-2/:channel/:epg_id/:epg_title', (req, res) => {
-      return app.render(req, res, '/tv-2', {
+      return app.render(req, res, '/tv_v2', {
         channel: req.params.channel,
         epg_id: req.params.epg_id,
         epg_title: req.params.epg_title,
