@@ -36,6 +36,7 @@ class Default_v2 extends React.Component {
         super(props);
         this.platform = null;
         this.header = null;
+        this.isNews = false;
         this.isPillarNews = null
         const asPath = this.props.router.asPath;
         const segments = asPath.split(/\?/);
@@ -50,10 +51,11 @@ class Default_v2 extends React.Component {
                 this.header = q.header;
             }
         }
-        this.isPillarNews = asPath.indexOf('/news/detail') > -1 || asPath.indexOf('/trending/detail') > -1
+        this.isPillarNews = asPath.indexOf('/news/detail') > -1 || asPath.indexOf('/trending/detail') > -1  || asPath.indexOf('/trending/') > -1 || asPath.indexOf('/news/') > -1
         if (this.isPillarNews) {
             let platform = isIOS ? 'ios' : isAndroid ? 'android' : null;
             this.platform = platform
+            this.isNews = true
         }
     }
 
@@ -143,8 +145,9 @@ class Default_v2 extends React.Component {
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         window.dataLayer = window.dataLayer || [];
+                        let wDL = !this.isNews ? 'video' : 'news';
                         window.dataLayer.push({
-                            'pillar' : 'video'
+                            'pillar' : wDL
                         });
 
                         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -160,7 +163,8 @@ class Default_v2 extends React.Component {
                         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
                         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-                        ga('create', 'UA-145455301-17', 'auto', 'teamTracker');
+                        let ua = !this.isNews ? 'UA-145455301-17' : 'UA-145455301-9';
+                        ga('create', ua, 'auto', 'teamTracker');
 
                         ga('teamTracker.send', 'pageview');
                     ` }}></script>
