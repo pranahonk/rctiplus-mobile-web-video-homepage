@@ -588,6 +588,8 @@ class Trending_v2 extends React.Component {
         const mobilePlatform = (this.platform !== null) ? 'mobilePlatform' : '';
         const site_name = this.props?.general?.site_name || SITE_NAME
         const title = (this.props?.metaSeo?.title) + ' - ' + (site_name)
+        const widthImg = 600;
+        const heightImg = (widthImg*56) / 100;
         return (
             <Layout title={title}>
                 <Head>
@@ -600,8 +602,8 @@ class Trending_v2 extends React.Component {
                     <meta property="og:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
-                    <meta property="og:image:width" content="600" />
-                    <meta property="og:image:height" content="315" />
+                    <meta property="og:image:width" content={widthImg} />
+                    <meta property="og:image:height" content={heightImg} />
                     <meta property="og:site_name" content={site_name} />
                     <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
