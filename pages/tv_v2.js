@@ -85,8 +85,9 @@ class TV_V2 extends React.Component {
     let idChannel = 1
     if(channelMain === 'rcti') idChannel = 1
     if(channelMain === 'mnctv') idChannel = 2
-    if(channelMain === 'globaltv' || item.query?.channel === 'gtv') idChannel = 3
+    if(channelMain === 'globaltv' || channelMain === 'gtv') idChannel = 3
     if(channelMain === 'inews') idChannel = 4
+    console.log(idChannel)
     const handleMeta = () => {
       const [titleChannel, titleEpg] = [SITEMAP[`live_tv_${channelMain?.toLowerCase()}`]?.title, router.query.epg_title?.replace(/-/gi, ' ')]
       let [descriptionChannel, channel] = [SITEMAP[`live_tv_${channelMain?.toLowerCase()}`]?.description , channelMain]
