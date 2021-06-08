@@ -174,12 +174,16 @@ class Trending_v2 extends React.Component {
         super(props);
         this.accessToken = null;
         this.platform = null;
+        this.core_token = null;
         const segments = this.props.router.asPath.split(/\?/);
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
                 this.accessToken = q.token;
                 setAccessToken(q.token);
+            }
+            if(q.core_token){
+              this.core_token = q.core_token;
             }
             if (q.platform) {
                 this.platform = q.platform;
@@ -346,7 +350,6 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
-        console.log(this.props);
         await this.setState({
           device_id: new DeviceUUID().get(),
         });
@@ -420,7 +423,7 @@ class Trending_v2 extends React.Component {
         const savedCategoriesNews = getNewsChannels();
         params['saved_tabs'] = savedCategoriesNews;
         await this.setState(params, () => {
-            this.props.getCategoryV2()
+            this.props.getCategoryV2(this.core_token)
                 .then(response => {
                     let categories = response.data.data;
                     let sortedCategories = categories;
