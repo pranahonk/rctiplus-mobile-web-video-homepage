@@ -62,6 +62,8 @@ class TV_V2 extends React.Component {
     this.listContainer = React.createRef();
     this.channelContainer = React.createRef();
     this.listRef = React.createRef();
+    this.playerContainerRef = React.createRef();
+    this.tvTabRef = React.createRef();
     this.state={heightList: 390}
 	}
 
@@ -70,6 +72,11 @@ class TV_V2 extends React.Component {
       this.setState({heightList: this.channelContainer?.current?.clientHeight})
     }
   }
+
+  setHeightChatBox() {
+		let heightPlayer = this.playerContainerRef.current.clientHeight + this.tvTabRef.current.clientHeight;
+		return `calc(100% - ${heightPlayer}px)`;	
+	}
   
 
   render() {
@@ -100,7 +107,6 @@ class TV_V2 extends React.Component {
         url: REDIRECT_WEB_DESKTOP + router.asPath
       }
     }
-    console.log(handleMeta())
     return(
       <>
         <HeadMetaTv meta={handleMeta()}/>
@@ -108,9 +114,13 @@ class TV_V2 extends React.Component {
           <TvProvider>
             <div id="tv-v2" className="tv_wrapper">
               <div ref={this.channelContainer}>
-                <PlayerTv />
-                <ChannelList />
-                <WeekList />
+                <div ref={ this.playerContainerRef }>
+                  <PlayerTv />
+                </div>
+                <div ref={ this.tvTabRef }>
+                  <ChannelList />
+                  <WeekList />
+                </div>
               </div>
               <div ref={this.listRef} style={{height: `calc(100vh - ${this.state.heightList + 70}px)`, width: "100%", overflow: "scroll"}}>
                 <ListItem />
