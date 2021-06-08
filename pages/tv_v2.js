@@ -61,6 +61,7 @@ class TV_V2 extends React.Component {
 		super(props);
     this.listContainer = React.createRef();
     this.channelContainer = React.createRef();
+    this.listRef = React.createRef();
     this.state={heightList: 390}
 	}
 
@@ -74,6 +75,11 @@ class TV_V2 extends React.Component {
   render() {
     const router = this.props.router
     const channelMain = router?.query?.channel || null
+    let idChannel = 1
+    if(channelMain === 'rcti') idChannel = 1
+    if(channelMain === 'mnctv') idChannel = 2
+    if(channelMain === 'globaltv' || item.query?.channel === 'gtv') idChannel = 3
+    if(channelMain === 'inews') idChannel = 4
     const handleMeta = () => {
       const [titleChannel, titleEpg] = [SITEMAP[`live_tv_${channelMain?.toLowerCase()}`]?.title, router.query.epg_title?.replace(/-/gi, ' ')]
       let [descriptionChannel, channel] = [SITEMAP[`live_tv_${channelMain?.toLowerCase()}`]?.description , channelMain]
@@ -106,7 +112,7 @@ class TV_V2 extends React.Component {
                 <ChannelList />
                 <WeekList />
               </div>
-              <div style={{height: `calc(100vh - ${this.state.heightList + 70}px)`, width: "100%", overflow: "scroll"}}>
+              <div ref={this.listRef} style={{height: `calc(100vh - ${this.state.heightList + 70}px)`, width: "100%", overflow: "scroll"}}>
                 <ListItem />
               </div>
             </div>
