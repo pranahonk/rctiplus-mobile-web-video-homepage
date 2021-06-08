@@ -1,20 +1,13 @@
 import { useState, useEffect, useContext } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useRouter } from "next/router"
-
-import liveAndChatActions from '../../../redux/actions/liveAndChatActions';
 import { TvContext } from "../../../utils/contexts/tvContext"
+import { liveTvCatchupScheduleClicked } from '../../../utils/appier';
 
 import * as dayjs from "dayjs"
+import liveAndChatActions from '../../../redux/actions/liveAndChatActions';
 
-const weeks = [
-    {name: "SU", tab: "Sun"},
-    {name: "MO", tab: "Mon"}, 
-    {name: "TU", tab: "Tue"}, 
-    {name: "WE", tab: "Wed"}, 
-    {name: "TH", tab: "Thu"}, 
-    {name: "FR", tab: "Fri"}, 
-    {name: "SA", tab: "Sat"}]
+const channelMain = ["RCTI", "MNCTV", "GTV", "iNEWS"]
 export default function WeekList() {
   const { tab, setTab, selectDate, setSelectDate } = useContext(TvContext)
   const { live_event: { data_epg_v2 } } = useSelector(state => state)
@@ -27,6 +20,11 @@ export default function WeekList() {
 
   const handleDate = (index, day) => {
     // dispatch(getEPG(dateChange, channel))
+    channelMain.map((item, index) => {
+      if(item.toLowerCase() === channel) {
+        liveTvCatchupScheduleClicked(index+1, channel)
+      }
+    })
     setTab(day)
   }
 

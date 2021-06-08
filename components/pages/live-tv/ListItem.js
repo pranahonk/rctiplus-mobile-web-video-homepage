@@ -5,7 +5,6 @@ import { CirclePauseIcon, CircleTimeIcon, CirclePlayIcon, ShareIcon } from "../.
 import { TvContext } from "../../../utils/contexts/tvContext"
 
 
-
 import cookies from "js-cookie"
 import slug from "slugify"
 
@@ -20,7 +19,7 @@ const listChannel = [
 ]
 export default function ListItem({activeItem, activePlayCatchup, activePlayTv, activePause}) {
   const { getLiveEvent, getLiveEventDetail, getEPG, getLiveEventUrl } = liveAndChatActions
-  const { tab, selectItem, setSelectItem, selectDate, setSelectDate } = useContext(TvContext)
+  const { tab, selectItem, setSelectItem, selectDate, setSelectDate, liveContent, setLiveContent, shareContent, setShareContent, toggleActionSheet, handleShare } = useContext(TvContext)
   const { live_event: { detail_live, data_live, data_epg, channel_code, data_epg_v2 } } = useSelector(state => state)
   const [list, setList] = useState(null)
 
@@ -48,24 +47,18 @@ export default function ListItem({activeItem, activePlayCatchup, activePlayTv, a
   }, [tab, data_epg_v2])
 
 
-const Description = ({item, selected}) => {
-  const today = tab === dayjs().format("ddd") || tab === dayjs().day()
-  const e = item.e < dayjs().format('HH:mm')
-  const s = item.s > dayjs().format('HH:mm')
-  const itemLive = !e && !s
-  let active = false
-  if(itemLive && today) {
-    active = true
-  }
+const Description = ({item, selected, onClick}) => {
   return(
     <>
       <div className={`item-title-icon ${selected ? "active-item" : ""}`}>
-        <div className="item-title_wrap">
+        <div className="item-title_wrap" onClick={onClick}>
           <h2 className="item-title">{item.title}</h2>
           <span className="item_time_title">{item.s} - {item.e}</span>
         </div>
         <div className="item-icon">
-          <ShareIcon color={`${selected ? "#3a3a3a" : "#ffffff"}`}/>
+          <button className="btn-share" onClick={() => handleShare(item)}>
+            <ShareIcon color={`${selected ? "#3a3a3a" : "#ffffff"}`}/>
+          </button>
         </div>
       </div>
     </>
@@ -92,6 +85,9 @@ const Description = ({item, selected}) => {
     let activePlay = false 
     const activeSelected = selectItem.id == item.id || false
     if(item.live && item.type === "live") {
+      if(item.live) {
+        setLiveContent(item)
+      }
       if(!selectItem) {
         activeItem = true
         icon =  <CirclePauseIcon circleColor="#FA262F" color="#ffffff"/>
@@ -135,8 +131,8 @@ const Description = ({item, selected}) => {
             {icon}
           </IconStatus>
         </div>
-        <div className="item-right-section" onClick={() => handleClickItem(item, activePlay)}>
-          <Description item={item} selected={activeItem}/>
+        <div className="item-right-section">
+          <Description item={item} selected={activeItem} onClick={() => handleClickItem(item, activePlay)}/>
         </div>
       </div>
     )
