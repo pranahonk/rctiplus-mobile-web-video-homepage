@@ -314,14 +314,23 @@ const getEPG = (date, channel = 'rcti') => {
 const getAllEpg = (channel = 'rcti') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
+            dispatch({ type: 'FADE', fade: false });
+            dispatch({ type: 'SET_PAGE_LOADER' });
             const response = await axios.get(`/v2/epg?channel=${channel === 'gtv' ? 'globaltv' : channel}`)
-            dispatch({
-                type: "GET_EPG_V2",
-                data: response.data.data,
-                meta: response.data.meta,
-                status: response.data.status,
-            })
-            resolve(response)
+            if(response.status === 200) {
+                dispatch({ type: 'FADE', fade: true });
+                dispatch({ type: 'UNSET_PAGE_LOADER' });
+                dispatch({
+                    type: "GET_EPG_V2",
+                    data: response.data.data,
+                    meta: response.data.meta,
+                    status: response.data.status,
+                })
+                resolve(response)
+            }
+            else {
+                reject(err)
+            }
         } 
         catch (err) {
             reject(err)
