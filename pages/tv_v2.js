@@ -4,6 +4,7 @@ import { withRouter } from 'next/router';
 import { HeadMetaTv } from "../components/pages/live-tv"
 import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 import { formatDate, formatDateWord, getFormattedDateBefore, formatMonthEngToID } from '../utils/dateHelpers';
+import { ChevronUpIcon } from "../components/IconComponents"
 
 import dynamic from "next/dynamic"
 import Layout from "../components/Layouts/Default_v2"
@@ -15,6 +16,7 @@ const ChannelList = dynamic(() => import("../components/pages/live-tv").then(mod
 const WeekList = dynamic(() => import("../components/pages/live-tv").then(mod => mod.WeekList))
 const ListItem = dynamic(() => import("../components/pages/live-tv").then(mod => mod.ListItem))
 const PlayerTv = dynamic(() => import("../components/pages/live-tv").then(mod => mod.PlayerTv))
+const Chat = dynamic(() => import("../components/Includes/Chat/LiveChat"))
 
 import "../assets/scss/components/tv-v2.scss"
 
@@ -64,7 +66,7 @@ class TV_V2 extends React.Component {
     this.listRef = React.createRef();
     this.playerContainerRef = React.createRef();
     this.tvTabRef = React.createRef();
-    this.state={heightList: 390}
+    this.state={heightList: 390, openChat: false}
 	}
 
   componentDidMount() {
@@ -78,6 +80,9 @@ class TV_V2 extends React.Component {
 		return `calc(100% - ${heightPlayer}px)`;	
 	}
   
+  handleChat() {
+    this.setState({openChat: !this.state.openChat})
+  }
 
   render() {
     const router = this.props.router
@@ -126,6 +131,21 @@ class TV_V2 extends React.Component {
               <div ref={this.listRef} style={{height: `calc(100vh - ${this.state.heightList + 70}px)`, width: "100%", overflow: "scroll"}}>
                 <ListItem />
               </div>
+              <div className="chat-container" onClick={() => this.handleChat(this)}>
+                <div className="chat-wrapper">
+                  <ChevronUpIcon />
+                  <label className="chat-text">
+                    Live Chat
+                    <span  className="circle-chat"/>
+                  </label>
+                </div>
+              </div>
+              {
+                this.state.openChat &&
+               (<div className="chat-component__wrapper">
+                  <Chat />
+                </div>)
+              }
             </div>
           </TvProvider>
         </Layout>
