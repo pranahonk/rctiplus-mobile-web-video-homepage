@@ -37,9 +37,8 @@ export default function ListItem({activeItem, activePlayCatchup, activePlayTv, a
     dispatch(getAllEpg(channel))
     dispatch(getAdsDuration())
     if(cookies.get("ACCESS_TOKEN")) {
-      if (accessToken) {
         try {
-          const id = jwtDecode(accessToken)?.vid;
+          const id = jwtDecode(ACCESS_TOKEN)?.vid;
           if(id > 0) {
             setStatusLogin(true)
           }
@@ -47,7 +46,6 @@ export default function ListItem({activeItem, activePlayCatchup, activePlayTv, a
         catch (e) {
             console.log(e);
         }
-      }
     }
   }, [router.query?.channel])
 
