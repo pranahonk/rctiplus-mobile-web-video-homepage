@@ -123,8 +123,8 @@ class TV_V2 extends React.Component {
                 <div ref={ this.playerContainerRef }>
                   <PlayerTv />
                 </div>
+                <ChannelList />
                 <div ref={ this.tvTabRef }>
-                  <ChannelList />
                   <WeekList />
                 </div>
               </div>
@@ -142,8 +142,8 @@ class TV_V2 extends React.Component {
               </div>
               {
                 this.state.openChat &&
-               (<div className="chat-component__wrapper">
-                  <Chat />
+               (<div className="chat-component__wrapper" style={this.state.openChat ? {height: `calc(100vh - ${this.state.heightList - this.tvTabRef.current.clientHeight - 15 }px)`} : null}>
+                  <Chat toggle={() => this.handleChat(this)} />
                 </div>)
               }
             </div>
