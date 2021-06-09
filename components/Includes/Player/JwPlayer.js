@@ -43,7 +43,8 @@ const JwPlayer = (props) => {
     autostart: true,
     mute: false,
     floating: false,
-    file: props.data && props.data.url,
+    // file: props.data && props.data.url,
+    file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     primary: 'html5',
     width: '100%',
     hlsjsdefault: true,
@@ -64,10 +65,33 @@ const JwPlayer = (props) => {
     },
   };
 
+  // Miniplayer hooks functions
+  // Please mind the sequence of the line of the logic!!
+  useEffect(() => {
+    let playerWidth = options.width,
+      playerHeight = options.height
+
+    const miniPlayerActive = props.scrolling && !props.isStopped
+    
+    if (!player) return
+
+    if (miniPlayerActive) {
+      playerWidth = "30%"
+      playerHeight = 80
+    }
+
+    if (props.isStopped) player.stop()
+
+    player.play()
+    if (props.isPaused) player.pause()
+
+    player.resize(playerWidth, playerHeight)
+
+  }, [player, props.scrolling, props.isStopped, props.isPaused])
+
   // Initial Setup
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
-    // console.log('EFFECT INIT 1', props);
     if (props.geoblockStatus) {
       setStatus({
         isPlayer: false,
@@ -82,7 +106,6 @@ const JwPlayer = (props) => {
     }
     return () => {
       if (player !== null) {
-        // console.log('DISPOSEEEEEE');
         jwplayer.remove();
       }
     };
@@ -91,20 +114,15 @@ const JwPlayer = (props) => {
   // Update Setup
   useEffect(() => {
 
-    // console.log('EFFECT INIT 2');
     if (player !== null) {
       setIsConviva(Math.random());
       setIsCustomSetup(Math.random());
       player.setup(options);
-      // console.log('PLAYERRRR : ',props.data)
-      // console.log('ISLOGIN : ', props.customData && props.customData.isLogin)
     }
   }, [props.data && props.data.url, props.data && props.data.vmap]);
 
   // Costum Setup
   useEffect(() => {
-    // console.log('EFFECT INIT 3');
-    // console.log('PLAYER GET DATA: ',props, player);
     if (player !== null) {
       player.on('ready', (event) => {
         /* if (props.isFullscreen) {
@@ -124,7 +142,6 @@ const JwPlayer = (props) => {
           forwardElement.innerHTML = foward10;
           // const iconForward = document.querySelector('.icon-forward');
           forwardElement.addEventListener('dblclick', (ev) => {
-            // console.log('TOUCH:', ev);
             // iconForward.classList.add('animated', 'fadeInRight', 'go');
             setTimeout(() => {
               // iconForward.classList.remove('animated', 'fadeInRight', 'go');
@@ -133,7 +150,6 @@ const JwPlayer = (props) => {
           });
           playerContainer.append(forwardElement);
         }
-        // console.log('LIVEEE', isLiveContainer);
         if (props.type !== 'live tv' || props.type !== 'live event') {
           fowardContainer.innerHTML = foward10Icon;
           backwardContainer.innerHTML = backward10Icon;
@@ -227,8 +243,8 @@ const JwPlayer = (props) => {
           }
         }
       });
-      player.on('play', () =>{
-        // console.log('PLAYING');
+      
+      player.on('play', (event) =>{
         convivaJwPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
           if (document.querySelector('.ads_wrapper').style.display == 'none') {
@@ -239,7 +255,12 @@ const JwPlayer = (props) => {
             }
           }
         }
+        
+        // This is to modify isStopped on the parent
+        // isStopped is a state to tell whether jwplayer is stopped or playing
+        props.handlePlaying(false)
       });
+
       player.on('pause', () =>{
         // console.log('EFFECT INIT 4 CONTINUE WATCHING PAUSE', test)
         // console.log('PAUSE');
@@ -314,7 +335,7 @@ const JwPlayer = (props) => {
     }
   },);
 
-
+  // Error handling functions
   useEffect(() => {
     const containerElement = document.getElementsByClassName('rplus-jw-container');
     if (player !== null) {
@@ -323,7 +344,7 @@ const JwPlayer = (props) => {
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
-        console.log('ERRORR',props.data.url)
+
         if (props.data.url === 'error') {
           setStatus({
             isPlayer: false,
@@ -337,8 +358,14 @@ const JwPlayer = (props) => {
           isError01: false,
           isError02: true,
         });
+
+        
+        // When error has fired, remove player and cancel miniplayer onscroll event
+        // by passing true parameter to stop the event
+        props.handlePlaying(true)
         player.remove();
       });
+
       player.on('setupError', (event) => {
         // console.log('PLAYER SETUP ERROR', event);
         const convivaTracker = convivaJwPlayer();
@@ -358,6 +385,10 @@ const JwPlayer = (props) => {
           isError01: false,
           isError02: true,
         });
+
+        // When error has fired, remove player and cancel miniplayer onscroll event
+        // by passing true parameter to stop the event
+        props.handlePlaying(true)
         player.remove();
       });
     }
@@ -539,7 +570,6 @@ const JwPlayer = (props) => {
             // TODO: looping targeting value
             if (custParams != null) {
               for (const custParam of custParams) {
-                console.log(custParam.name, custParam.value);
                 googletag.pubads().setTargeting(custParam.name, custParam.value);
               }
             }
@@ -695,11 +725,9 @@ export default JwPlayer;
 
 const getPlayer = (error1, error2) => {
   if (error1) {
-    console.log('GEO')
     return error(msgError01)
   }
   if (error2) {
-    console.log('ERRORRRRR P')
     return error()
   }
   return (<div id="jwplayer-rctiplus" />)
