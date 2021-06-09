@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react"
 import { useRouter } from "next/router"
 import { useDispatch, useSelector } from "react-redux"
-import { CirclePauseIcon, CircleTimeIcon, CirclePlayIcon, ShareIcon } from "../../Icons"
+import { CirclePauseIcon, CircleTimeIcon, CirclePlayIcon, ShareIcon } from "../../IconComponents"
 import { TvContext } from "../../../utils/contexts/tvContext"
 
 
