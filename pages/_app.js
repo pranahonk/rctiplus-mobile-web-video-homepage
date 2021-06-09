@@ -37,7 +37,7 @@ export default withRedux(initStore, { debug: false })(
                     navigator.userAgent.match(/Android/i) ||
                     navigator.userAgent.match(/webOS/i) ||
                     navigator.userAgent.match(/iPhone/i) ||
-                    navigator.userAgent.match(/iPod/i) || 
+                    navigator.userAgent.match(/iPod/i) ||
                     navigator.userAgent.match(/iPad/i)
                 ) || (
                     !isEmpty(params.device) &&
@@ -51,14 +51,14 @@ export default withRedux(initStore, { debug: false })(
                 )
             )
             if(!condition) {
-                window.location.href = process.env.REDIRECT_WEB_DESKTOP + window.location.pathname;
+                window.location.href = process.env.REDIRECT_WEB_DESKTOP + window.location.pathname + window.location.search;
             }
 
             console.log('WILL MOUNT -> SET TOKEN');
 
             const visitorTokenNews = getVisitorTokenNews();
             const visitorToken = getVisitorToken();
-            
+
             let promises = [];
             if (visitorToken == null) {
                 promises.push(setVisitorToken());
@@ -79,9 +79,9 @@ export default withRedux(initStore, { debug: false })(
             if (newsTokenV2 == null) {
                 promises.push(setNewsTokenV2());
             }
-            
+
             await Promise.all(promises);
-            
+
             // setVisitorToken();
             // setNewsToken();
 
@@ -115,7 +115,7 @@ export default withRedux(initStore, { debug: false })(
             // }
 
             // console.log('conviva integrated');
-            
+
             // switch (process.env.MODE) {
             //     case 'DEVELOPMENT':
             //         console.log(Conviva.Constants.GATEWAY_URL)
@@ -141,7 +141,7 @@ export default withRedux(initStore, { debug: false })(
             //         Conviva.Analytics.init('ff84ae928c3b33064b76dec08f12500465e59a6f');
             //         break;
             // }
-            
+
 
             register();
         }

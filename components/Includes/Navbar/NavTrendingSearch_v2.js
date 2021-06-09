@@ -106,6 +106,7 @@ class NavbarTrendingSearch extends Component {
     }
 
     onChangeQuery(e) {
+      this.props.clearSearch();
       this.changeQuery(e.target.value);
       this.props.isChildChange(e.target.value)
     }
@@ -116,7 +117,7 @@ class NavbarTrendingSearch extends Component {
     }
     initSearch(q) {
         if (q) {
-            let queryParams = `keyword=${encodeURIComponent(q) || ''}`
+            let queryParams = `keyword=${encodeURIComponent(q.replace(/<[^>]*>/gm, "")) || ''}`
             if (this.accessToken) {
                 queryParams += `&token=${this.accessToken}`
                 queryParams += `&platform=${this.platform}`
@@ -133,7 +134,7 @@ class NavbarTrendingSearch extends Component {
     }
 
     clearKeyword() {
-        this.props.isChildFound(this.props.newsv2.search_result.length > 1)
+        this.props.isChildFound(this.props.newsv2.search_result.length > 0);
         this.props.clearSearch();
         this.props.setQuery('');
         searchKeywordEvent(this.props.newsv2.query, 'mweb_search_clear_keyword_clicked');
@@ -162,7 +163,6 @@ class NavbarTrendingSearch extends Component {
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
                             <NavbarBrand onClick={() => {
-                                console.log(document.referrer)
                                 if (this.props.router.asPath.indexOf('/explores') === 0) {
                                     searchBackClicked(this.props.newsv2.query, 'mweb_search_back_clicked');
                                 }else if (this.props.router.asPath.indexOf('keyword')){
@@ -181,19 +181,20 @@ class NavbarTrendingSearch extends Component {
                             onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
                             placeholder="Search for News, Hashtags"
                             onChange={this.onChangeQuery.bind(this)}
-                            value={this.props.newsv2.query ? decodeURIComponent(this.props.newsv2.query) : this.props.newsv2.query}
+                            value={this.props.newsv2.query ? decodeURIComponent(this.props.newsv2.query.replace(/<[^>]*>/gm, "")) : this.props.newsv2.query}
                             onKeyPress={this.handleKeyPress}
                             id="search-news-input"
                             className="search-input"
                             onFocus={this.handleFocusParent}
                             ref={forwardedRef}
+                            autoComplete="off"
                         />
                     </div>
                     <div className="right-top-link">
                         <div className="btn-link-top-nav">
                             <NavbarBrand style={{ color: 'white' }}>
                                 <CloseIcon style={{ fontSize: 20, marginRight: 10, visibility: (this.props.newsv2.query?.length > 0 ? 'visible' : 'hidden') }} onClick={this.clearKeyword.bind(this)}/>
-                                <SearchIcon style={{ fontSize: 20 }} onClick={() => this.search()} />
+                                <SearchIcon style={{ fontSize: 20 }} onClick={() => this.handleKeyPress({key: 'Enter'})} />
                             </NavbarBrand>
                         </div>
                     </div>

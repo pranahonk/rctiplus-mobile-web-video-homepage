@@ -93,7 +93,13 @@ class Detail extends React.Component {
         });
         const error_code = res.statusCode > 200 ? res.statusCode : false;
         const data = await res.json();
-        // console.log(data);
+        if (data.status.message_client !== "Success") { // server
+          ctx.res.writeHead(302, {
+            Location: '/news',
+          });
+
+          ctx.res.end();
+        }
         const res_read_also = await fetch(`${NEWS_API_V2}/api/v1/readalso/${programId}?page1&pageSize=6`, {
             method: 'GET',
             headers: {
@@ -521,7 +527,9 @@ class Detail extends React.Component {
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
         const newsTitle = cdata.title.replace(/<\w+>|<\/\w+>/gmi, '');
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
-        const coverImg = imgURL(cdata.cover, cdata.image, 400, assets_url, this.props?.general?.img_logo || null)
+        const widthImg = 600;
+        const coverImg = imgURL(cdata.cover, cdata.image, widthImg, assets_url, this.props?.general?.img_logo || null)
+        const heightImg = (widthImg*56) / 100;
         const structuredData = {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
@@ -557,18 +565,18 @@ class Detail extends React.Component {
                     <meta name="description" content={newsContent || this.props?.kanal?.description} />
                     <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta property="og:description" content={newsContent} />
-                    <meta property="og:image" itemProp="image" content={cdata.cover} />
+                    <meta property="og:image" itemProp="image" content={coverImg} />
                     <meta property="og:type" content="website" />
                     <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta property="og:image:type" content="image/jpeg" />
-                    <meta property="og:image:width" content="600" />
-                    <meta property="og:image:height" content="315" />
+                    <meta property="og:image:width" content={widthImg} />
+                    <meta property="og:image:height" content={heightImg} />
                     <meta property="og:site_name" content={this.props?.general?.site_name || SITE_NAME} />
                     <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
                     <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
                     <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
-                    <meta name="twitter:image" content={cdata.cover} />
+                    <meta name="twitter:image" content={coverImg} />
                     <meta name="twitter:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta name="twitter:image:alt" content={newsTitle} />
                     <meta name="twitter:description" content={newsContent} />

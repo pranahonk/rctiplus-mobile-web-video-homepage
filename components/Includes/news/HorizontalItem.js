@@ -51,7 +51,7 @@ export default function HorizontalItem({item, indexKey, isIndexKey, assets_url})
         }
         <div className="news-interest_thumbnail-title" >
             <h1 dangerouslySetInnerHTML={{__html: `${getTruncate(replaceBackSlash(item.title), '...', 100)}`}}></h1>
-            <h2><span dangerouslySetInnerHTML={{__html: `${item.subcategory_name}`}}></span><span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
+            <h2><span dangerouslySetInnerHTML={{__html: `${item.subcategory_name}`}}></span>  <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
         </div>
         </div>
       </a>

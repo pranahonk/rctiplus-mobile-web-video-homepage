@@ -38,13 +38,19 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
           return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
   }
-  const setColoring = (text) =>{
+
+  const setColoring = (text, tags) =>{
     const params = new URLSearchParams(window.location.search) // id=123
     const keyword = params.get('keyword'); // 123
     const replace = new RegExp(keyword,"ig");
-    if(keyword){
-      return text.replace(replace, match => `<span style="color: #04a9e5">${match}</span>`);
-    }else{
+    if(keyword) {
+      if (text.toLowerCase().includes(keyword.toLowerCase())) {
+        return text.replace(replace, match => `<span style='color: #04a9e5'>${match}</span>`);
+      } else {
+        return `#<span style='color: #04a9e5'>${keyword.replace("#", "")}</span> - ${text} `;
+      }
+    }
+    else{
       return text;
     }
   }
@@ -67,7 +73,7 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
             e.preventDefault()
             _goToDetail(item)
             }}>
-            <h2 dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(item.title, '...', 100)) }}></h2>
+            <h2 dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(item.title, '...', 100), item.tags) }}></h2>
           </a>
           <div className="lt_content-info">
           <h5>{item.source}</h5>
