@@ -175,9 +175,12 @@ class Trending_v2 extends React.Component {
         this.accessToken = null;
         this.platform = null;
         this.core_token = null;
+        this.query_params = null;
         const segments = this.props.router.asPath.split(/\?/);
+        this.segments = segments
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
+            this.query_params = segments;
             if (q.token) {
                 this.accessToken = q.token;
                 setAccessToken(q.token);
@@ -815,7 +818,7 @@ class Trending_v2 extends React.Component {
                                                                                     }
                                                                                   })
                                                                                 }}
-                                                                                id={article.id} src={`/dfp?platform=${this.platform}&idfa=${this.state.idfa}`}
+                                                                                id={article.id} src={`/dfp?${this.segments.length > 1 ? this.query_params[1] : ''}`}
                                                                                 frameBorder="0"
                                                                                 style={{
                                                                                   height: '250px',
