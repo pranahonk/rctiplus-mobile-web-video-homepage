@@ -818,7 +818,7 @@ class Trending_v2 extends React.Component {
                                                                                     }
                                                                                   })
                                                                                 }}
-                                                                                id={article.id} src={`/dfp?${this.segments.length > 1 ? this.query_params[1] : ''}`}
+                                                                                id={article.id} src={`/dfp?platform=${this.platform}&idfa=${this.state.idfa}`}
                                                                                 frameBorder="0"
                                                                                 style={{
                                                                                   height: '250px',
