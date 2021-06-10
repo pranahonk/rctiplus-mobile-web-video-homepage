@@ -38,6 +38,10 @@
 
     .main-content {
         margin-top: 4.5rem !important;
+        &.sticky-menu-category-active.apps-mode .navigation-container.sticky-menu-category{
+            margin-top: 0px !important;
+            top: 0 !important;
+        }
         .article-list .article .article-source .source {
             font-size: 1rem;
             + p {
