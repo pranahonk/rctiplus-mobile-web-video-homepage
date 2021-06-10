@@ -180,7 +180,7 @@ class NavbarTrendingSearch extends Component {
                                 if (this.props.router.asPath.indexOf('/explores') === 0) {
                                     searchBackClicked(this.props.newsv2.query, 'mweb_search_back_clicked');
                                 }else if (this.props.router.asPath.indexOf('keyword')){
-                                  Router.push('/news/search', `/news/search?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}`)
+                                  Router.push('/news', `/news?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}`)
                                 }else{
                                   Router.back();
                                 }
