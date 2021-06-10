@@ -54,8 +54,8 @@ class NavbarDef_v2 extends Component {
     }
 
     goToExplore(e) {
-        if(e === '/news') {
-            Router.push('/news/search');
+        if(e.includes('/news')) {
+            Router.push('/news/search' + window.location.search);
         } else {
             Router.push('/explores/search');
         }
