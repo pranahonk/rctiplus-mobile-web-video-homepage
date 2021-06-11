@@ -182,15 +182,6 @@ const UIVersion = '2.0';
     });
 
     server.get('/news/detail/:category/:id/:title', (req, res, next) => {
-      console.log(req.originalUrl.includes('utm_source'))
-      console.log(req.originalUrl);
-      if(req.originalUrl.includes('utm_source')){
-        return app.render(req, res, '/news', {
-          id: req.params.id,
-          title: req.params.title,
-          category: req.params.category,
-        });
-      }
       return app.render(req, res, '/trending/detail_v2', {
         id: req.params.id,
         title: req.params.title,
@@ -210,46 +201,6 @@ const UIVersion = '2.0';
     server.get('/news/channels', (req, res) => {
       return app.render(req, res, '/trending/channels');
     });
-
-    // server.get('/trending/:subcategory_id/:subcategory_title', (req, res) => {
-    //   return app.render(req, res, '/trending_old', {
-    //     subcategory_id: req.params.subcategory_id,
-    //     subcategory_title: req.params.subcategory_title
-    //   });
-    // });
-
-    // server.get('/trending/detail/:id/:title', (req, res) => {
-    //   return app.render(req, res, '/trending/detail', {
-    //     id: req.params.id,
-    //     title: req.params.title
-    //   })
-    // });
-
-    // server.get('/trending/detail/:id/:title', (req, res) => {
-    //   return app.render(req, res, '/trending/detail_v2', {
-    //     id: req.params.id,
-    //     title: req.params.title
-    //   })
-    // });
-
-    // server.get('/trending/search', (req, res) => {
-    //   return app.render(req, res, '/trending/search_v2');
-    // });
-
-    // server.get('/trending/detail/:id/:title', (req, res) => {
-    //   return app.render(req, res, '/trending/detail', {
-    //     id: req.params.id,
-    //     title: req.params.title
-    //   })
-    // });
-
-    // server.get('/trending/search', (req, res) => {
-    //   return app.render(req, res, '/trending/search');
-    // });
-
-    // server.get('/trending', (req, res) => {
-    //   return app.render(req, res, '/trending_old');
-    // });
 
     server.get('/exclusive/:category', (req, res) => {
       return app.render(req, res, '/exclusive', {
