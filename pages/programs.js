@@ -30,6 +30,7 @@ import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
 import { alertDownload, onTracking, onTrackingClick } from '../components/Includes/program-detail/programDetail';
 import { BASE_URL } from '../config';
 import userActions from '../redux/actions/userActions';
+import miniplayerActions from '../redux/actions/miniplayerActions';
 
 // const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
@@ -181,6 +182,11 @@ class Index extends React.Component {
   }
   
 	componentWillUnmount() {
+    if (!this.state.scrolling) {
+      localStorage.removeItem("miniplayer_data")
+      localStorage.removeItem("miniplayer_last_duration")
+    }
+
 		// if (window.convivaVideoAnalytics) {
 		// 	const convivaTracker = convivaJwPlayer();
 		// 	convivaTracker.cleanUpSession();
@@ -246,8 +252,12 @@ class Index extends React.Component {
     }
 
     // When user went into new url, reset scroll and miniplayer event and
-    // dont forget to update state of router history to the new path 
-    if (this.state.routerHistory !== this.props.router.asPath) {
+    // dont forget to update state of router history to the new path
+    const hasToBeFocusedOnTop = (
+      (this.state.routerHistory !== this.props.router.asPath) &&
+      this.props.router.query.content_id
+    )
+    if (hasToBeFocusedOnTop) {
       this.setState({ routerHistory: this.props.router.asPath })
       this.setState({ scrolling: false })
 
@@ -683,6 +693,7 @@ class Index extends React.Component {
                 isStopped={this.state.isStopped}
                 isPaused={this.state.isPaused}
                 handlePlaying={(e) => this.setState({ isStopped: e })}
+                getVideoLastPosition={(e) => this.props.dispatch(miniplayerActions.setVideoLastDuration(e))}
                 />
               {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
           </div>
@@ -774,7 +785,7 @@ class Index extends React.Component {
     
     let scrolling = false
     this.resetMiniPlayer()
-      
+
     if (parent.scrollTop > 180) {
       changedStyles.forEach(args => {
         playerWrapper.children[0].style[args[0]] = args[1]
@@ -782,6 +793,8 @@ class Index extends React.Component {
       })
       this.miniPlayer.current.style.display = "flex"
       this.miniPlayer.current.style.zIndex = "2"
+
+      this.setMiniplayerItemOnStorage()
       
       scrolling = true
     }
@@ -789,23 +802,36 @@ class Index extends React.Component {
     this.setState({ scrolling })
   }
 
+  setMiniplayerItemOnStorage() {
+    localStorage.setItem("miniplayer_data", JSON.stringify({
+      playerData: this.props.data["data-player"].data,
+      playerDesc: this.props.data["description-player"].data,
+      playerStatus: this.props.data["data-player"].status,
+      playerCustomData: {
+        isLogin: this.props.auth.isAuth, 
+        programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
+        sectionPage: 'VOD',
+      }
+    }))
+  }
+
   closeMiniPlayer(e) {
     e.preventDefault()
 
     this.setState({ isStopped: true })
     this.resetMiniPlayer()
-  }
 
-  togglePlayPause(e) {
-    e.preventDefault()
-
-    this.setState({ isPaused: !this.state.isPaused })
+    localStorage.removeItem("miniplayer_data")
   }
 
   resetMiniPlayer() {
     const parent = this.scrollingElement.current
     const [playerWrapper] = parent.getElementsByClassName("rplus-jw-container")
     const changedStyles = [ "position", "bottom", "z-index" ]
+
+    localStorage.removeItem("miniplayer_data")
+
+    if (!playerWrapper) return
 
     changedStyles.forEach(name => {
       if(playerWrapper.children[0]) {
@@ -863,7 +889,7 @@ class Index extends React.Component {
               <div>
                 <button
                   className="miniplayer__btn"
-                  onClick={(e) => this.togglePlayPause(e)}>
+                  onClick={() => this.setState({ isPaused: !this.state.isPaused })}>
                   {
                     !state.isPaused 
                       ? (
@@ -1007,8 +1033,8 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { Program, user } = state;
-  return { data: Program, auth: user };
+  const { Program, user, miniplayer } = state;
+  return { data: Program, auth: user, miniplayer };
 };
 
 const mapDispatchToProps = (dispatch) => {
