@@ -29,10 +29,6 @@ class Dfp extends React.Component {
     }
   }
 
-  componentDidMount() {
-    alert(this.idfa)
-  }
-
 
   render() {
     return (
