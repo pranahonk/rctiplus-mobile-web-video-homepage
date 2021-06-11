@@ -38,6 +38,8 @@ class NavbarTrendingSearch extends Component {
 
         this.accessToken = null;
         this.platform = null;
+        this.idfa = null
+        this.core_token = null
         const segments = this.props.router.asPath.split(/\?/);
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
@@ -45,6 +47,15 @@ class NavbarTrendingSearch extends Component {
                 this.accessToken = q.token;
                 setAccessToken(q.token);
             }
+
+            if(q.idfa){
+              this.idfa = q.idfa;
+            }
+
+            if(q.core_token){
+              this.core_token = q.core_token;
+            }
+
             if (q.platform) {
                 this.platform = q.platform;
             }
@@ -122,6 +133,9 @@ class NavbarTrendingSearch extends Component {
                 queryParams += `&token=${this.accessToken}`
                 queryParams += `&platform=${this.platform}`
                 queryParams += '&footer=0'
+                queryParams += `&idfa=${this.idfa}`
+                queryParams += `&core_token=${this.core_token}`
+
             }
             Router.push('/news/search', `/news/search?${queryParams}`)
             this.props.clearSearch();
@@ -166,7 +180,7 @@ class NavbarTrendingSearch extends Component {
                                 if (this.props.router.asPath.indexOf('/explores') === 0) {
                                     searchBackClicked(this.props.newsv2.query, 'mweb_search_back_clicked');
                                 }else if (this.props.router.asPath.indexOf('keyword')){
-                                  Router.push('/news');
+                                  Router.push('/news', `/news?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}`)
                                 }else{
                                   Router.back();
                                 }

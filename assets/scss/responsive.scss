@@ -38,16 +38,31 @@
 
     .main-content {
         margin-top: 4.5rem !important;
-        .article-list .article .article-source .source {
-            font-size: 1rem;
-            + p {
-                font-size: 0.8rem;
-                line-height: 25px;
+        &.apps-mode, &.sticky-menu-category-active.apps-mode{
+            margin-top: 2.5rem !important;
+        }
+        &.false {
+            margin-top: 7rem !important;
+            .navigation-container{
+                &.sticky-menu-category {
+                    top: 4rem !important;
+                }
+            }
+            .navigation-container {
+                top: 4rem !important;
             }
         }
         .navigation-container {
-            &.sticky-menu-category {
-                top: 3.1rem !important;
+            position: fixed;
+            top: 0 !important;
+            margin-top: 0 !important;
+            background-color: #282828;
+            z-index: 999;
+            width: 100%;
+            &.sticky-menu-category{
+                margin-top: 0px !important;
+                top: 0 !important;
+                padding-top: 0 !important;
             }
             .navigation-tabs {
                 width: 95% !important;
@@ -59,6 +74,22 @@
                         font-size: 1rem;
                         line-height: 2.2rem;
                     }
+                }
+            }
+        }
+        .article-list {
+            .article-full-width .article-description .article-title-container {
+                height: auto !important;
+                min-height: 0.5rem;
+                .article-title {
+                    margin-bottom: 0.2rem;
+                }
+            }
+            .article .article-source .source {
+                font-size: 1rem;
+                + p {
+                    font-size: 0.8rem;
+                    line-height: 25px;
                 }
             }
         }
@@ -522,6 +553,7 @@
             font-size: 1.4rem !important;
             display: block;
             width: 100% !important;
+            line-height: 1.7rem !important;
         }
     
         .content-trending-detail-related .list_tags_thumb .lt_content {

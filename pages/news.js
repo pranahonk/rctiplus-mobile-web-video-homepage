@@ -167,22 +167,30 @@ class Trending_v2 extends React.Component {
         device_id: null,
         not_logged_in_category: [],
         is_login: false,
-        idfa: null
     };
 
     constructor(props) {
         super(props);
         this.accessToken = null;
         this.platform = null;
+        this.core_token = null;
         const segments = this.props.router.asPath.split(/\?/);
+        this.segments = segments;
+        this.idfa = null;
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
                 this.accessToken = q.token;
                 setAccessToken(q.token);
             }
+            if(q.core_token){
+              this.core_token = q.core_token;
+            }
             if (q.platform) {
                 this.platform = q.platform;
+            }
+            if(q.idfa){
+              this.idfa = q.idfa;
             }
         }
         else {
@@ -346,7 +354,6 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
-        console.log(this.props);
         await this.setState({
           device_id: new DeviceUUID().get(),
         });
@@ -398,12 +405,6 @@ class Trending_v2 extends React.Component {
             Router.reload(window.location.pathname);
           }
         });
-
-      const params = new URLSearchParams(window.location.search);
-      this.setState({
-        idfa:  params.get('idfa') ? params.get('idfa') : null,
-      });
-
     }
 
     componentDidUpdate() {
@@ -420,7 +421,7 @@ class Trending_v2 extends React.Component {
         const savedCategoriesNews = getNewsChannels();
         params['saved_tabs'] = savedCategoriesNews;
         await this.setState(params, () => {
-            this.props.getCategoryV2()
+            this.props.getCategoryV2(this.core_token)
                 .then(response => {
                     let categories = response.data.data;
                     let sortedCategories = categories;
@@ -529,7 +530,7 @@ class Trending_v2 extends React.Component {
           category = urlRegex(article.subcategory_name)
         }
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}` : ''}`);
     }
 
     getMetadata() {
@@ -588,6 +589,8 @@ class Trending_v2 extends React.Component {
         const mobilePlatform = (this.platform !== null) ? 'mobilePlatform' : '';
         const site_name = this.props?.general?.site_name || SITE_NAME
         const title = (this.props?.metaSeo?.title) + ' - ' + (site_name)
+        const widthImg = 600;
+        const heightImg = (widthImg*56) / 100;
         return (
             <Layout title={title}>
                 <Head>
@@ -600,8 +603,8 @@ class Trending_v2 extends React.Component {
                     <meta property="og:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
-                    <meta property="og:image:width" content="600" />
-                    <meta property="og:image:height" content="315" />
+                    <meta property="og:image:width" content={widthImg} />
+                    <meta property="og:image:height" content={heightImg} />
                     <meta property="og:site_name" content={site_name} />
                     <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
@@ -729,10 +732,10 @@ class Trending_v2 extends React.Component {
                                                                                     window.NewsInterface.hideHeader();
                                                                                 }
 
-                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}&core_token=${this.core_token}`);
                                                                             }
                                                                             else {
-                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}&core_token=${this.core_token}`);
                                                                             }
 
                                                                         }
@@ -810,7 +813,7 @@ class Trending_v2 extends React.Component {
                                                                                     }
                                                                                   })
                                                                                 }}
-                                                                                id={article.id} src={`/dfp?platform=${this.platform}&idfa=${this.state.idfa}`}
+                                                                                id={article.id} src={`/dfp?platform=${this.platform}&idfa=${this.idfa}`}
                                                                                 frameBorder="0"
                                                                                 style={{
                                                                                   height: '250px',

@@ -23,12 +23,17 @@ class HeadlineCarousel extends React.Component {
         super(props);
         this.accessToken = null;
         this.platform = null;
+        this.idfa=null;
         const segments = this.props.router.asPath.split(/\?/);
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
                 this.accessToken = q.token;
                 setAccessToken(q.token);
+            }
+
+            if(q.idfa){
+              this.idfa= q.idfa;
             }
 
             if (q.platform) {
@@ -55,7 +60,7 @@ class HeadlineCarousel extends React.Component {
           category = urlRegex(article.subcategory_name)
         }
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}` : ''}`);
     }
 
     render() {

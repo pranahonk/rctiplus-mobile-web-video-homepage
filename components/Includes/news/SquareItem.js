@@ -11,11 +11,15 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
   const router = useRouter();
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
+  const [idfa, setIdfa] = useState(null);
   useEffect(() => {
     const query = queryString.parse(location.search);
     if (query.token || query.platform) {
       setAccessToken(query.token);
       setPlatform(query.platform);
+      if(query.idfa){
+        setIdfa(query.idfa);
+      }
     }
   },[]);
   const _goToDetail = (article) => {
@@ -32,10 +36,10 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
       else if((redirectToPublisherIndex.indexOf(indexKey) != -1) && platform === 'ios'){
         return window.open(article.link, "_self");
       }
-      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
+      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}&idfa=${idfa}` : ''}`);
     }
     else {
-          return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
+          return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}&idfa=${idfa}` : ''}`);
     }
   }
 
