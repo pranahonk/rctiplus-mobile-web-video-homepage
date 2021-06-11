@@ -44,7 +44,6 @@ const JwPlayer = (props) => {
     mute: false,
     floating: false,
     file: props.data && props.data.url,
-    // file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     primary: 'html5',
     width: '100%',
     hlsjsdefault: true,
@@ -67,27 +66,35 @@ const JwPlayer = (props) => {
 
   // Miniplayer hooks functions
   // Please mind the sequence of the line of the logic!!
+  const variableToBeListened = [
+    player,
+    duration,
+    props.scrolling,
+    props.isStopped,
+    props.isPaused,
+    props.seekPosition
+  ]
   useEffect(() => {
-    let playerWidth = options.width,
-      playerHeight = options.height
+    if (!player) return
+    if (props.getVideoLastPosition) props.getVideoLastPosition(duration)
 
     const miniPlayerActive = props.scrolling && !props.isStopped
+    player.resize(
+      miniPlayerActive ? "30%" : options.width,
+      miniPlayerActive ? 80 : options.height
+    )
+
+    if (miniPlayerActive) player.setControls(false)
+    else player.setControls(true)
+
+    if (props.seekPosition) player.seek(props.seekPosition)
     
-    if (!player) return
-
-    if (miniPlayerActive) {
-      playerWidth = "30%"
-      playerHeight = 80
-    }
-
-    if (props.isStopped) player.stop()
-
-    player.play()
     if (props.isPaused) player.pause()
-
-    player.resize(playerWidth, playerHeight)
-
-  }, [player, props.scrolling, props.isStopped, props.isPaused])
+    else player.play()
+    
+    if (props.isStopped) player.stop()
+    
+  }, [...variableToBeListened])
 
   // Initial Setup
   useEffect(() => {
@@ -273,10 +280,11 @@ const JwPlayer = (props) => {
       player.on('adError', (event) => {
         // console.log('ERRRRRORRR', event);
       });
+
       player.on('time', (event) => {
-        // console.log('duration:', event.currentTime);
-        setDuration(player.getPosition());
-      });
+        setDuration(player.getPosition())
+      })
+
       player.on('complete', (event) => {
         const convivaTracker = convivaJwPlayer();
         if (window.convivaVideoAnalytics) {
