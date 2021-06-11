@@ -143,9 +143,10 @@
         }
         .groupNews {
             position: relative;
-            margin: 0;
+            margin: auto;
             display: table;
-            width: 100%;
+            width: 96%;
+            padding: 1rem 0;
             &:after {
                 clear: both;
                 display: block;
@@ -158,6 +159,10 @@
             .article-full-width {
                 position: relative;
                 max-width: 58% !important;
+                margin-top: 1px !important;
+                min-height: 248px !important;
+                height: auto !important;
+                padding-top: 0 !important;
             }
 
             .blank-space {
@@ -195,7 +200,7 @@
                             font-size: 1rem;
                         }
                         .article-source {
-                            padding: 0.9rem 0;
+                            padding: 0;
                             .source {
                                 font-size: 1rem;
                                 + p {
