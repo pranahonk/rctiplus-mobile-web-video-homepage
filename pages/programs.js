@@ -768,7 +768,7 @@ class Index extends React.Component {
     const [playerWrapper] = parent.getElementsByClassName("rplus-jw-container")
     const changedStyles = [
       ["position", "fixed"],
-      ["bottom", "3rem"],
+      ["bottom", "3.75rem"],
       ["z-index", "3"]
     ]
     
