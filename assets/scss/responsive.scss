@@ -77,11 +77,20 @@
                 }
             }
         }
-        .article-list .article .article-source .source {
-            font-size: 1rem;
-            + p {
-                font-size: 0.8rem;
-                line-height: 25px;
+        .article-list {
+            .article-full-width .article-description .article-title-container {
+                height: auto !important;
+                min-height: 0.5rem;
+                .article-title {
+                    margin-bottom: 0.2rem;
+                }
+            }
+            .article .article-source .source {
+                font-size: 1rem;
+                + p {
+                    font-size: 0.8rem;
+                    line-height: 25px;
+                }
             }
         }
     }
@@ -544,6 +553,7 @@
             font-size: 1.4rem !important;
             display: block;
             width: 100% !important;
+            line-height: 1.7rem !important;
         }
     
         .content-trending-detail-related .list_tags_thumb .lt_content {
