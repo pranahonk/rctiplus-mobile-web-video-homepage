@@ -808,7 +808,9 @@ class Index extends React.Component {
     const changedStyles = [ "position", "bottom", "z-index" ]
 
     changedStyles.forEach(name => {
-      playerWrapper.children[0].style[name] = ""
+      if(playerWrapper.children[0]) {
+        playerWrapper.children[0].style[name] = ""
+      }
       this.miniPlayer.current.style[name] = ""
     })
     this.miniPlayer.current.style.display = "none"
