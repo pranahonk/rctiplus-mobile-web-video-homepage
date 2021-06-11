@@ -11,34 +11,33 @@ import adsActions from '../redux/actions/adsActions.js';
 import {getNewsChannels} from "../utils/cookie";
 
 class Dfp extends React.Component {
-  state = {
-    idfa: null,
-  };
 
 
   constructor(props) {
     super(props);
     this.platform = null;
+    this.idfa = null;
     const segments = this.props.router.asPath.split(/\?/);
     if (segments.length > 1) {
-        const q = queryString.parse(segments[1]);
-        if (q.platform) {
-            this.platform = q.platform;
-        }
+      const q = queryString.parse(segments[1]);
+      if (q.platform) {
+        this.platform = q.platform;
+      }
+      if(q.idfa){
+        this.idfa = q.idfa;
+      }
     }
   }
 
   componentDidMount() {
-    const params = new URLSearchParams(window.location.search);
-    this.setState({
-      idfa:  params.get('idfa') ? params.get('idfa') : null,
-    });
+    alert(this.idfa)
   }
+
 
   render() {
     return (
       <div>
-        <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} setTarget={true} platform={this.platform} idfa={this.state.idfa}  />
+        <AdsBanner path={getPlatformGpt(this.platform)} idGpt={GPT_ID_LIST} setTarget={true} platform={this.platform} idfa={this.idfa}  />
       </div>
     );
   }
