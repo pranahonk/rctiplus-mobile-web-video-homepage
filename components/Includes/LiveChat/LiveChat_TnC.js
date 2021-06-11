@@ -2,7 +2,7 @@ import React from 'react'
 import Router from 'next/router';
 import "../../../assets/scss/components/live-chat.scss"
 
-export default function LiveChat_TnC() {
+export default function LiveChat_TnC({toggelUnderstand,toggelSkip}) {
     return (
         <div className="container-nologin">
             <div className="title-nologin">Reminder</div>
@@ -11,9 +11,9 @@ export default function LiveChat_TnC() {
                 <br/> pelanggaran atau spam, maka anda akan di block secara 
                 <br/> otomatis dari pihak RCTI+.
             </p>
-            <button >Understand</button>
+            <button onClick={toggelUnderstand} >Understand</button>
 
-            <div style={{marginTop: "7px", color:"#05B5F5"}}>Skip</div>
+            <div onClick={toggelSkip} style={{marginTop: "7px", color:"#05B5F5"}}>Skip</div>
         </div>
     )
 }
