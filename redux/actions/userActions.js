@@ -167,7 +167,7 @@ const updateUserProfile = (username, dob, gender, location) => {
     });
 };
 
-const getUserData = () => {
+export const getUserData = () => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v3/user`);

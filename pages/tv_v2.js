@@ -16,7 +16,7 @@ const ChannelList = dynamic(() => import("../components/pages/live-tv").then(mod
 const WeekList = dynamic(() => import("../components/pages/live-tv").then(mod => mod.WeekList))
 const ListItem = dynamic(() => import("../components/pages/live-tv").then(mod => mod.ListItem))
 const PlayerTv = dynamic(() => import("../components/pages/live-tv").then(mod => mod.PlayerTv))
-const Chat = dynamic(() => import("../components/Includes/Chat/LiveChat"))
+const Chat = dynamic(() => import("../components/Includes/Chat/LiveChat_v2"))
 
 import "../assets/scss/components/tv-v2.scss"
 
@@ -92,7 +92,7 @@ class TV_V2 extends React.Component {
     if(channelMain === 'mnctv') idChannel = 2
     if(channelMain === 'globaltv' || channelMain === 'gtv') idChannel = 3
     if(channelMain === 'inews') idChannel = 4
-    console.log(idChannel)
+    console.log(`ini id channel`,idChannel)
     const handleMeta = () => {
       const [titleChannel, titleEpg] = [SITEMAP[`live_tv_${channelMain?.toLowerCase()}`]?.title, router.query.epg_title?.replace(/-/gi, ' ')]
       let [descriptionChannel, channel] = [SITEMAP[`live_tv_${channelMain?.toLowerCase()}`]?.description , channelMain]
@@ -143,7 +143,7 @@ class TV_V2 extends React.Component {
               {
                 this.state.openChat &&
                (<div className="chat-component__wrapper" style={this.state.openChat ? {height: `calc(100vh - ${this.state.heightList - this.tvTabRef.current.clientHeight - 15 }px)`} : null}>
-                  <Chat toggle={() => this.handleChat(this)} />
+                  <Chat toggle={() => this.handleChat(this)} id={idChannel} />
                 </div>)
               }
             </div>
