@@ -732,10 +732,10 @@ class Trending_v2 extends React.Component {
                                                                                     window.NewsInterface.hideHeader();
                                                                                 }
 
-                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}&core_token=${this.core_token}`);
+                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&core_token=${this.core_token}` : ''}`);
                                                                             }
                                                                             else {
-                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}&core_token=${this.core_token}`);
+                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&core_token=${this.core_token}` : ''}`);
                                                                             }
 
                                                                         }
