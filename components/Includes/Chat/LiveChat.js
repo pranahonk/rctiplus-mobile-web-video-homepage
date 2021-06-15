@@ -12,6 +12,7 @@ import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { ChevronDownIcon} from "../../../components/IconComponents"
+import NoLogin from "./LiveChatNoLogin"
 
 import chatsActions from '../../../redux/actions/chats';
 
@@ -170,8 +171,7 @@ const Chat = ({...props}) => {
 					<span className="circle-chat" style={{background:"#6DD400"}} />
 				</label>
 			</div>
-
-			
+ 
 			<div  className="box-chat" id="box-chat" >
 				<div className="chat-messages" >
 					{chats.map((val, i) => (
@@ -230,7 +230,6 @@ const Chat = ({...props}) => {
 					/>			
 				</div>
 			</div>
-			
 		</>
   	)
 }
