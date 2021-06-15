@@ -120,9 +120,9 @@ class Default_v2 extends React.Component {
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         window.dataLayer = window.dataLayer || [];
-                        let wDL = (document.URL.indexOf('/news/detail') > -1 || document.URL.indexOf('/trending/detail') > -1 || document.URL.indexOf('/trending/') > -1 || document.URL.indexOf('/news/') > -1) ? 'news' : 'video';
+                        let wDLurl = (document.URL.indexOf('/news/detail') > -1 || document.URL.indexOf('/trending/detail') > -1 || document.URL.indexOf('/trending/') > -1 || document.URL.indexOf('/news/') > -1) ? 'news' : 'video';
                         window.dataLayer.push({
-                            'pillar' : wDL
+                            'pillar' : wDLurl
                         });
                         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -136,8 +136,8 @@ class Default_v2 extends React.Component {
                         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
                         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-                        let ua = (document.URL.indexOf('/news/detail') > -1 || document.URL.indexOf('/trending/detail') > -1 || document.URL.indexOf('/trending/') > -1 || document.URL.indexOf('/news/') > -1) ? 'UA-145455301-9' : 'UA-145455301-17';
-                        ga('create', ua, 'auto', 'teamTracker');
+                        let user_agents = (document.URL.indexOf('/news/detail') > -1 || document.URL.indexOf('/trending/detail') > -1 || document.URL.indexOf('/trending/') > -1 || document.URL.indexOf('/news/') > -1) ? 'UA-145455301-9' : 'UA-145455301-17';
+                        ga('create', user_agents, 'auto', 'teamTracker');
                         ga('teamTracker.send', 'pageview');
                     ` }}></script>
 
