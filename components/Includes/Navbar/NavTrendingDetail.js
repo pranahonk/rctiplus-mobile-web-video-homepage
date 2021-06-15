@@ -72,13 +72,9 @@ class NavTrendingSearch extends Component {
                                     if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0 && this.props.router.asPath.indexOf('utm_source') === -1) {
                                         newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
                                         if(!document.referrer.includes("rctiplus")){
-                                          setTimeout(() => {
-                                            Router.push('/news' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&core_token=${params.get('core_token')}` : ''}`);
-                                          }, 1000);
+                                          Router.push('/news' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&core_token=${params.get('core_token')}` : ''}`);
                                         }else{
-                                          setTimeout(() => {
-                                            Router.back();
-                                          }, 1000);
+                                          Router.back();
                                         }
 
                                     }
