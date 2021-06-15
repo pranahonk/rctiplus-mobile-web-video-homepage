@@ -70,7 +70,7 @@ const AdsBanner = ({path, size, idGpt,  style, partner, setTarget, platform = "m
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    axios.get(`/ads/v1/cust-params?platform=${platform === null || platform === "null" ? 'mweb' : platform}&aid=${platform === 'ios' ? params.get('idfa') || idfa : getUidAppier()}`)
+    axios.get(`/ads/v1/cust-params?platform=${platform === null || platform === "null" ? 'mweb' : platform}&aid=${platform === 'ios' || platform === 'android' ? params.get('idfa') || idfa : getUidAppier()}`)
       .then(response => {
         showAds(response.data);
       })

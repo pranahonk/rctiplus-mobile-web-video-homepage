@@ -116,12 +116,21 @@ class Search extends React.Component {
         this.subject = new Subject();
         this.accessToken = null;
         this.platform = null;
+        this.idfa = null;
+        this.core_token = null;
         const segments = this.props.router.asPath.split(/\?/);
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
                 this.accessToken = q.token;
                 setAccessToken(q.token);
+            }
+            if(q.idfa){
+              this.idfa = q.idfa;
+            }
+
+            if(q.core_token){
+              this.core_token = q.core_token;
             }
             if (q.platform) {
                 this.platform = q.platform;
@@ -200,7 +209,7 @@ class Search extends React.Component {
                     }
                   })
                 }}
-                id={article.id} src={`/dfp?platform=${this.platform}`}
+                id={article.id} src={`/dfp?platform=${this.platform}&token=${this.accessToken}&core_token=${this.core_token}&idfa=${this.idfa}`}
                 frameBorder="0"
                 style={{
                   height: '250px',

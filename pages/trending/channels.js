@@ -63,12 +63,17 @@ class Channels extends React.Component {
         this.onDragEnd = this.onDragEnd.bind(this);
         this.accessToken = null;
         this.platform = null;
+        this.core_token = null;
         const segments = this.props.router.asPath.split(/\?/);
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
                 this.accessToken = q.token;
                 setAccessToken(q.token);
+            }
+
+            if(q.core_token){
+              this.core_token = q.core_token;
             }
 
             if (q.platform) {
@@ -91,10 +96,9 @@ class Channels extends React.Component {
     if (this.accessToken) {
       const decodedToken = jwtDecode(this.accessToken);
       if (decodedToken && decodedToken.uid != '0') {
-        this.props.getCategoryV2()
+        this.props.getCategoryV2(this.core_token)
           .then((savedCategories)=> {
             const savedCategoriesNews = savedCategories.data.data;
-            // this.recheckLogin(savedCategoriesNews);
             this.setState({saved_categories: savedCategoriesNews}, () => {
               this.fetchData(savedCategoriesNews, true);
             });
@@ -107,7 +111,6 @@ class Channels extends React.Component {
         this.props.getSelectedChannelsVisitor(new DeviceUUID().get())
           .then((savedCategories)=> {
             const savedCategoriesNews = savedCategories.data.data;
-            // this.recheckLogin(savedCategoriesNews);
             this.setState({saved_categories: savedCategoriesNews}, () => {
               this.fetchData(savedCategoriesNews);
             });
@@ -121,10 +124,9 @@ class Channels extends React.Component {
     else {
       this.props.getUserData()
         .then(response => {
-          this.props.getCategoryV2()
+          this.props.getCategoryV2(this.core_token)
             .then((savedCategories)=> {
               const savedCategoriesNews = savedCategories.data.data;
-              // this.recheckLogin(savedCategoriesNews);
               this.setState({
                 saved_categories: savedCategoriesNews,
                 user_data: response.data.data,
@@ -157,7 +159,7 @@ class Channels extends React.Component {
 
     fetchData(savedCategoriesNews, isLoggedIn = false) {
       if(isLoggedIn){
-        this.props.getChannelsv2()
+        this.props.getChannelsv2(this.core_token)
           .then(response => {
             let channels = response.data.data;
             if (!isLoggedIn) {
@@ -201,7 +203,7 @@ class Channels extends React.Component {
 
       }
 
-        this.props.getCategoryV2()
+        this.props.getCategoryV2(this.core_token)
             .then(response => {
                 let selectedChannelIds = [];
                 let categories = response.data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
@@ -268,7 +270,7 @@ class Channels extends React.Component {
                     this.props.setPageLoader();
                     let promises = [];
                     for (let i = 3; i < this.state.categories.length; i++) {
-                        promises.push(this.props.updateCategoryOrderV2(this.state.categories[i].id, this.state.categories.length - i));
+                        promises.push(this.props.updateCategoryOrderV2(this.state.categories[i].id, this.state.categories.length - i, this.core_token));
                     }
                     const responses = await Promise.all(promises);
                     this.props.unsetPageLoader();
@@ -283,20 +285,6 @@ class Channels extends React.Component {
                     this.props.unsetPageLoader();
                     // setNewsChannels(this.state.categories);
                 }
-
-                // if (!this.state.user_data || (this.accessToken && decodedToken.uid == '0')) {
-                //     setNewsChannels(this.state.categories);
-                // }
-                // else {
-                //     this.props.setPageLoader();
-                //     let promises = [];
-                //     for (let i = 3; i < this.state.categories.length; i++) {
-                //         promises.push(this.props.updateCategoryOrder(this.state.categories[i].id, this.state.categories.length - i));
-                //     }
-                //     const responses = await Promise.all(promises);
-                //     console.log(responses);
-                //     this.props.unsetPageLoader();
-                // }
             });
         }
         catch (error) {
@@ -325,7 +313,7 @@ class Channels extends React.Component {
 
             if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
               // let addResponse = await this.props.addCategoryV2(category.id);
-              let addResponse = await this.props.addCategoryV2(category.id);
+              let addResponse = await this.props.addCategoryV2(category.id, this.core_token);
 
             }else{
               let addResponse = await this.props.addCategoryVisitorV2(category.id, this.state.device_id);
@@ -379,7 +367,7 @@ class Channels extends React.Component {
             }
 
             if (this.state.user_data || (this.accessToken && decodedToken.uid != '0')) {
-                let deleteResponse = await this.props.deleteCategoryV2(category.id);
+                let deleteResponse = await this.props.deleteCategoryV2(category.id, this.core_token);
             }else{
               let deleteResponse =  await this.props.deleteCategoryVisitors(category.id, this.state.device_id);
             }
@@ -415,9 +403,6 @@ class Channels extends React.Component {
             console.log(error);
             this.props.unsetPageLoader();
         }
-
-
-
     }
 
     render() {
