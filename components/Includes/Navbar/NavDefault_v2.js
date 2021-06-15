@@ -55,8 +55,8 @@ class NavbarDef_v2 extends Component {
 
     goToExplore(e) {
         if(e.includes('/news')) {
-            const params = new URLSearchParams(window.location.search);
-            Router.push('/news/search', `/news/search?&token=${params.get('token')}&platform=${params.get('platform')}&idfa=${params.get('idfa')}&core_token=${params.get('core_token')}`)
+          const params = new URLSearchParams(window.location.search);
+          Router.push('/news/search' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&core_token=${params.get('core_token')}` : ''}`);
         } else {
             Router.push('/explores/search');
         }
