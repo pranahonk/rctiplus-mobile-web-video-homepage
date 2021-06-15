@@ -16,7 +16,7 @@ const ChannelList = dynamic(() => import("../components/pages/live-tv").then(mod
 const WeekList = dynamic(() => import("../components/pages/live-tv").then(mod => mod.WeekList))
 const ListItem = dynamic(() => import("../components/pages/live-tv").then(mod => mod.ListItem))
 const PlayerTv = dynamic(() => import("../components/pages/live-tv").then(mod => mod.PlayerTv))
-const Chat = dynamic(() => import("../components/Includes/Chat/LiveChat_v2"))
+const Chat = dynamic(() => import("../components/Includes/Chat/LiveChat"))
 
 import "../assets/scss/components/tv-v2.scss"
 

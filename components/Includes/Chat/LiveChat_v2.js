@@ -18,6 +18,8 @@ import pageActions from '../../../redux/actions/pageActions';
 import chatsActions from '../../../redux/actions/chats';
 import userActions from '../../../redux/actions/userActions';
 
+import { showSignInAlert } from '../../../utils/helpers';
+
 import '../../../assets/scss/components/tv-v2.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
@@ -58,9 +60,42 @@ class Chat extends React.Component {
 		this.setState({ chat: this.state.chat + emoji.native });
 	}
 
+	onChangeChatInput(e) {
+		if (e.target.value != '\n') {
+			this.setState({ chat: e.target.value });
+		}
+	}
+
+	handleChatEnter(e) {
+		const chatInput = document.getElementById('chat-input');
+		const scrollHeight = chatInput.scrollHeight - 30;
+		chatInput.style.height = `${24 + (24 * (scrollHeight / 24))}px`;
+
+		if (e.key === 'Enter' && !e.shiftKey && this.state.chat && this.state.chat != '\n') {
+			this.sendChat();
+		}
+	}
+
+	handleScroll() {
+		const chatBox = document.getElementById('box-chat');
+		if((chatBox.scrollHeight - chatBox.scrollTop) - chatBox.clientHeight <= 25){
+			this.setState({ chat_box: false, total_newChat: []})
+		}
+		else{
+			this.setState({ chat_box: true})	
+		}
+	}
+
+	handleScrollToBottom  () {
+		const chatBox = document.getElementById('box-chat');
+		chatBox.scrollTop = chatBox.scrollHeight;
+		
+		this.setState({chat_box: false, total_newChat: []})
+	}
+
     loadChatMessages(id) {
 		this.setState({ chats: [] }, () => {
-			const chatBox = document.getElementById('chat-messages');
+			const chatBox = document.getElementById('box-chat');
 			chatBox.scrollTop = chatBox.scrollHeight;
 				let firstLoadChat = true;
 				this.props.listenChatMessages(id)
@@ -70,7 +105,6 @@ class Chat extends React.Component {
 							querySnapshot.docChanges()
 								.map(change => {
 									let chats = this.state.chats;
-									console.log(chats);
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
@@ -97,12 +131,15 @@ class Chat extends React.Component {
 												}
 											}
 											
-											if(!this.state.chat_box && this.state.total_newChat.length > 0){
-												const chatBox = document.getElementById('chat-messages');
-												chatBox.scrollTop = chatBox.scrollHeight;
-											}
+											// if(!this.state.chat_box && this.state.total_newChat.length > 0){
+											// 	const chatBox = document.getElementById('box-chat');
+											// 	chatBox.scrollTop = chatBox.scrollHeight;
+											// }
 
 											this.setState({ chats: chats }, () => {
+												const chatBox = document.getElementById('box-chat');
+												chatBox.scrollTop = chatBox.scrollHeight;
+												
 												const chatInput = document.getElementById('chat-input');
 												chatInput.style.height = `24px`;
 											});
@@ -134,12 +171,10 @@ class Chat extends React.Component {
 					failed: false
 				};
 				let chats = this.state.chats;
-				chats.push(newChat);
+				// chats.push(newChat);
 
 				this.setState({ chats: chats, chat: '', sending_chat: true }, () => {
-					const chatBox = document.getElementById('chat-messages');
-					chatBox.scrollTop = chatBox.scrollHeight;
-
+					
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
 
@@ -149,25 +184,59 @@ class Chat extends React.Component {
 							if (response.status !== 200 || response.data.status.code !== 0) {
 								newChat.failed = true;
 							}
-							chats[chats.length - 1] = newChat;
-							this.setState({ chats: chats, sending_chat: false });
+							chats[chats.length] = newChat;
+							this.setState({ chats: chats, sending_chat: false },
+							() => {
+								const chatBox = document.getElementById('box-chat');
+								chatBox.scrollTop = chatBox.scrollHeight;
+							});
 						})
 						.catch(() => {
 							newChat.sent = true;
 							newChat.failed = true;
-							chats[chats.length - 1] = newChat;
-							this.setState({ chats: chats, sending_chat: false });
+							// chats[chats.length] = newChat;
+							// this.setState({ chats: chats, sending_chat: false });
 						});
 				});
 			}
 		}
 		else {
-			// showSignInAlert(`Please <b>Sign In</b><br/>
-			// Woops! Gonna sign in first!<br/>
-			// Only a click away and you<br/>
-			// can continue to enjoy<br/>
-			// <b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+			showSignInAlert(`Please <b>Sign In</b><br/>
+			Woops! Gonna sign in first!<br/>
+			Only a click away and you<br/>
+			can continue to enjoy<br/>
+			<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
 		}
+	}
+
+	resendChat(index) {
+		let chats = this.state.chats;
+		let lastChat = chats[index];
+		lastChat.sent = false;
+		lastChat.failed = false;
+		chats[index] = lastChat;
+		this.setState({ chats: chats, sending_chat: true }, () => {
+			const userData = this.state.user_data;
+			let user = userData.nickname ? userData.nickname :
+				userData.display_name ? userData.display_name :
+					userData.email ? userData.email.replace(/\d{4}$/, '****') :
+						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
+			this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, lastChat.m, user, this.state.user_data.photo_url)
+				.then(response => {
+					lastChat.sent = true;
+					if (response.status !== 200 || response.data.status.code !== 0) {
+						lastChat.failed = true;
+					}
+					chats[index] = lastChat;
+					this.setState({ chats: chats, sending_chat: false });
+				})
+				.catch(() => {
+					lastChat.sent = true;
+					lastChat.failed = true;
+					chats[index] = lastChat;
+					this.setState({ chats: chats, sending_chat: false });
+				});
+		});
 	}
 
     render(){
@@ -181,7 +250,7 @@ class Chat extends React.Component {
                     </label>
                 </div>
 				
-				<div className="box-chat" >
+				<div className="box-chat" id={"box-chat"} >
 					<div  className="chat-messages" id="chat-messages">
 						{this.state.chats.map((chat, i) => (
 								<Row key={i} className="chat-line">
@@ -208,8 +277,8 @@ class Chat extends React.Component {
                                 </Col>
                                 <Col xs={9}>
                                     <Input
-                                        // onKeyDown={this.handleChatEnter.bind(this)}
-                                        onChange={e => this.setState({chat: e.target.value})}
+                                       	onKeyDown={this.handleChatEnter.bind(this)}
+									   	onChange={this.onChangeChatInput.bind(this)}
                                         // onClick={this.checkLogin.bind(this)}
                                         value={this.state.chat}
                                         type="textarea"

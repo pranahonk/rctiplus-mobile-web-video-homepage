@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect } from "react"
 import { connect } from "react-redux"
 import { Row, Col, Button, Input } from 'reactstrap';
 import { Picker } from 'emoji-mart';
@@ -10,6 +10,7 @@ import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import SentimenVerySatifiedIcon from '@material-ui/icons/SentimentVerySatisfied';
 import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import { ChevronDownIcon} from "../../../components/IconComponents"
 
 import chatsActions from '../../../redux/actions/chats';
@@ -49,6 +50,16 @@ const Chat = ({...props}) => {
 		})
 		.catch(error => console.log(error));
 	}
+
+	const handleChatEnter = (e) =>{
+		const chatInput = document.getElementById('chat-input');
+		const scrollHeight = chatInput.scrollHeight - 30;
+		chatInput.style.height = `${24 + (24 * (scrollHeight / 24))}px`;
+
+		if (e.key === 'Enter' && !e.shiftKey && chat && chat != '\n') {
+			sendChat(props.id);
+		}
+	}
 	
 	const loadChatMessages = (id) => {
 		let firstLoadChat = true;
@@ -62,29 +73,34 @@ const Chat = ({...props}) => {
 							let chatsTemp = chats
 							if (change.type === 'added') {
 								if (!sendingChat) {
-									console.log(`inimi haha`,change.doc.data())
-										if (chatsTemp.length > 0) {
-											let lastChat = chatsTemp
-											let newChat = change.doc.data();
-											if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-												if (firstLoadChat) chatsTemp.unshift(newChat);
-												else {
-													chatsTemp.push(newChat);
-													// this.state.total_newChat.push(newChat)
-												}
-											}
-										}
-										else {
-											if (firstLoadChat) chatsTemp.unshift(change.doc.data());	
+									if (chatsTemp.length > 0) {
+										let lastChat = chatsTemp
+										let newChat = change.doc.data();
+										if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
+											if (firstLoadChat) chatsTemp.unshift(newChat);
 											else {
-												chatsTemp.push(change.doc.data());
-												// this.state.total_newChat.push(change.doc.data())
+												chatsTemp.push(newChat);
+												// this.state.total_newChat.push(newChat)
 											}
 										}
-									console.log(`ini chat temp`, chatsTemp)
-									setChats(chatsTemp);
+									}
+									else {
+										if (firstLoadChat) chatsTemp.unshift(change.doc.data());	
+										else {
+											chatsTemp.push(change.doc.data());
+											// this.state.total_newChat.push(change.doc.data())
+										}
+									}
+
+									setChats([...chatsTemp]);
+									const chatBox = document.getElementById('box-chat');
+									chatBox.scrollTop = chatBox.scrollHeight;
+												
+									const chatInput = document.getElementById('chat-input');
+									chatInput.style.height = `24px`;
 								}
 							}
+							
 						});
 
 						firstLoadChat = false;
@@ -109,7 +125,29 @@ const Chat = ({...props}) => {
 					failed: false
 				};
 				let chatsCurrent = chats;
-				chatsCurrent.push(newChat);
+				// chatsCurrent.push(newChat);
+				setChat("");
+
+				props.setChat(props.id, newChat.m, user, userData.photo_url)
+					.then(response => {
+						newChat.sent = true;
+						if (response.status !== 200 || response.data.status.code !== 0) {
+							newChat.failed = true;
+						}
+						chatsCurrent[chatsCurrent.length] = newChat;
+						
+						setChats(chatsCurrent);
+						setSendingChat(false);
+
+						const chatBox = document.getElementById('box-chat');
+						chatBox.scrollTop = chatBox.scrollHeight;
+					})
+					.catch(() => {
+						newChat.sent = true;
+						newChat.failed = true;
+						// chats[chats.length] = newChat;
+						// this.setState({ chats: chats, sending_chat: false });
+					});
 			}
 		}
 	};
@@ -123,8 +161,6 @@ const Chat = ({...props}) => {
 		loadChatMessages(props.id)
 	}, [props.id])
 
-	console.log(`ini chats`, chats)
-
   	return(
 		<>
 			<div onClick={props.toggle} className="chat-wrapper" style={{borderRadius:"0px", padding: "15px"}}>
@@ -136,7 +172,7 @@ const Chat = ({...props}) => {
 			</div>
 
 			
-				<div  className="box-chat" >
+			<div  className="box-chat" id="box-chat" >
 				<div className="chat-messages" >
 					{chats.map((val, i) => (
 						<Row  className="chat-line">
@@ -148,7 +184,7 @@ const Chat = ({...props}) => {
 							</Col>
 							<Col className="chat-message" xs={10}> 
 								{val?.sent != undefined && val?.failed != undefined ? (val?.sent == true && val?.failed == true ? (<span><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)} 
-								<span className="username">{val?.u}</span> <span className="message">{val?.m}</span>
+								&nbsp;<span className="username">{val?.u}</span> <span className="message">{val?.m}</span>
 							</Col>
 						</Row>
 					))}
@@ -164,7 +200,7 @@ const Chat = ({...props}) => {
 							</Col>
 							<Col xs={9}>
 								<Input
-									// onKeyDown={this.handleChatEnter.bind(this)}
+									onKeyDown={handleChatEnter}
 									onChange={e => setChat(e.target.value)}
 									// onClick={this.checkLogin.bind(this)}
 									value={chat}
@@ -177,7 +213,7 @@ const Chat = ({...props}) => {
 								/>
 							</Col>
 							<Col xs={1}>
-								<Button className="send-button" >
+								<Button onClick={() => sendChat(props.id)} className="send-button" >
 									<SendIcon />
 								</Button>
 							</Col>
