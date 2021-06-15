@@ -781,7 +781,7 @@ class Trending_v2 extends React.Component {
                                                                             </Link>
                                                                         </Col>
                                                                         );
-                                                                    })};
+                                                                    })}
                                                                 </Row>
                                                             </div>
                                                         </div>
