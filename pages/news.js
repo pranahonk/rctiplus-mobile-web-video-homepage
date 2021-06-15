@@ -344,6 +344,9 @@ class Trending_v2 extends React.Component {
         // }
     }
     async componentDidMount() {
+      setTimeout(()=>{
+        console.log(this.props.newsv2.data_topic)
+      }, 20000)
         // window.addEventListener('scroll', (event) => {
         //     if(this.isInViewport(document.getElementById('9'))) {
         //         console.log('YESSS')
