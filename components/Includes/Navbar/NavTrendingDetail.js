@@ -67,6 +67,7 @@ class NavTrendingSearch extends Component {
                         <div className="wr-col-trn-search">
                             <Col xs="12">
                                 <NavbarBrand onClick={() => {
+                                    this.props.setPageLoader();
                                     let platform = isIOS ? 'ios' : isAndroid ? 'android' : 'mweb';
                                     const params = new URLSearchParams(window.location.search);
                                     if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0 && this.props.router.asPath.indexOf('utm_source') === -1) {
