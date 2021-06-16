@@ -354,9 +354,11 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
+
         await this.setState({
           device_id: new DeviceUUID().get(),
         });
+        this.props.unsetPageLoader();
 
 
 
