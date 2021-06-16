@@ -5,7 +5,7 @@ import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import actions from '../redux/actions';
 import initialize from '../utils/initialize';
-import { getCookie } from '../utils/cookie';
+import { getCookie, removeCookie } from '../utils/cookie';
 import LoadingBar from 'react-top-loading-bar';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import countryList from '../redux/actions/othersActions';
@@ -58,7 +58,8 @@ class Signin extends React.Component {
 			if (token) {
 				const query = this.props.router.query;
 				if (query && Object.keys(query).length > 0 && query.referrer) {
-					window.location.href = this.constructReferrerUrl(token);
+					removeCookie('ACCESS_TOKEN')
+					// window.location.href = this.constructReferrerUrl(token);
 				}
 				else {
 					Router.push('/');
