@@ -1,5 +1,6 @@
 import React from 'react'
 import Router from 'next/router';
+import "../../../assets/scss/components/live-chat.scss"
 
 export default function LiveChat_NoLogin({toggleChat}) {
     return (
