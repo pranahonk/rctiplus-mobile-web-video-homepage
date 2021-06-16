@@ -93,7 +93,13 @@ class Detail extends React.Component {
         });
         const error_code = res.statusCode > 200 ? res.statusCode : false;
         const data = await res.json();
-        // console.log(data);
+        if (data.status.message_client !== "Success") { // server
+          ctx.res.writeHead(302, {
+            Location: '/news',
+          });
+
+          ctx.res.end();
+        }
         const res_read_also = await fetch(`${NEWS_API_V2}/api/v1/readalso/${programId}?page1&pageSize=6`, {
             method: 'GET',
             headers: {
@@ -494,7 +500,6 @@ class Detail extends React.Component {
     shareButtonPosition = el =>{
       window.addEventListener('scroll',()=>{
         const position =  el.getBoundingClientRect().top + window.screen.height;
-        // console.log(position);
         this.setState({
           relatedArticlePosition: position,
         });
@@ -522,7 +527,9 @@ class Detail extends React.Component {
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
         const newsTitle = cdata.title.replace(/<\w+>|<\/\w+>/gmi, '');
         const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
-        const coverImg = imgURL(cdata.cover, cdata.image, 400, assets_url, this.props?.general?.img_logo || null)
+        const widthImg = 600;
+        const coverImg = imgURL(cdata.cover, cdata.image, widthImg, assets_url, this.props?.general?.img_logo || null)
+        const heightImg = (widthImg*56) / 100;
         const structuredData = {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
@@ -558,18 +565,18 @@ class Detail extends React.Component {
                     <meta name="description" content={newsContent || this.props?.kanal?.description} />
                     <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta property="og:description" content={newsContent} />
-                    <meta property="og:image" itemProp="image" content={cdata.cover} />
+                    <meta property="og:image" itemProp="image" content={coverImg} />
                     <meta property="og:type" content="website" />
                     <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta property="og:image:type" content="image/jpeg" />
-                    <meta property="og:image:width" content="600" />
-                    <meta property="og:image:height" content="315" />
+                    <meta property="og:image:width" content={widthImg} />
+                    <meta property="og:image:height" content={heightImg} />
                     <meta property="og:site_name" content={this.props?.general?.site_name || SITE_NAME} />
                     <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
                     <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
                     <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
-                    <meta name="twitter:image" content={cdata.cover} />
+                    <meta name="twitter:image" content={coverImg} />
                     <meta name="twitter:title" content={`${newsTitle} - News+ on RCTI+`} />
                     <meta name="twitter:image:alt" content={newsTitle} />
                     <meta name="twitter:description" content={newsContent} />
@@ -601,11 +608,7 @@ class Detail extends React.Component {
                     <Sticky bottomOffset={100}>
                         { ({ isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight }) => {
                             const self = this;
-                            const hideStickyRatio = cdata.exclusive === 'yes' ?  570 : 950;
-                            // console.log(this.state.documentHeight)
-                            // const documentHeight = document.body.scrollHeight - 200;
-                            // console.log(hideStickyRatio)
-                            // console.log(isSticky, wasSticky, distanceFromTop, distanceFromBottom, calculatedHeight)
+                            const hideStickyRatio =  950;
                             if (this.state.relatedArticlePosition < 1400 && this.state.relatedArticlePosition > hideStickyRatio) {
                                 // console.log('masuk kondisi if A')
                                 setTimeout(() => {
@@ -630,7 +633,8 @@ class Detail extends React.Component {
                                     </div>
                                 );
                             }
-                            if (this.state.relatedArticlePosition < this.state.documentHeight - 200 && distanceFromTop < -100 && this.state.relatedArticlePosition > 1400 && this.state.relatedArticlePosition) {
+
+                            if (this.state.relatedArticlePosition < this.state.documentHeight && distanceFromTop < -100 && this.state.relatedArticlePosition > 1400 && this.state.relatedArticlePosition) {
                               // console.log('masuk kondisi if B')
                                 setTimeout(() => {
                                     if (!self.state.sticky_share_shown) {
@@ -658,13 +662,13 @@ class Detail extends React.Component {
                                     </div>
                                 );
                             }
-                            setTimeout(() => {
-                                // console.log('masuk kondisi if Default')
-                                if (self.state.sticky_share_shown) {
-                                    self.setState({ sticky_share_shown: false });
-                                }
-
-                            }, 300);
+                            // setTimeout(() => {
+                            //     console.log('masuk kondisi if Default')
+                            //     if (self.state.sticky_share_shown) {
+                            //         self.setState({ sticky_share_shown: false });
+                            //     }
+                            //
+                            // }, 300);
                             return <span></span>;
                         } }
                     </Sticky>
@@ -759,6 +763,7 @@ class Detail extends React.Component {
                                     size={[300, 250]}
                                     idGpt={process.env.GPT_ID_DETAIL}
                                     setTarget={true}
+                                    platform={this.platform}
                                   />
                                   {/* <span>partner: { cdata.source }</span> */}
                                 </div>
@@ -771,6 +776,8 @@ class Detail extends React.Component {
                                             size={[300, 250]}
                                             idGpt={process.env.GPT_ID_DETAIL}
                                             setTarget={true}
+                                            platform={this.platform}
+                                            idfa={this.state.idfa}
                                             />
                                         {/* <span>partner: { cdata.source }</span> */}
                                     </div>

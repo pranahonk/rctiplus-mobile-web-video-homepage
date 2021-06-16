@@ -13,26 +13,30 @@ const useFetch = (id, total) => {
   const [response, setResponse] = useState([] );
   const [newContent, setNewContent]  = useState(null);
   const [errorFetchedChecker, setErrorFetchedChecker] = useState(false);
-  useEffect( () => {
-    async function fetchData(){
-      try {
-        const result =  await axios.get(`${NEWS_API_V2}/api/v1/readalso/${id}?page=1&pageSize=${total}`,{
-          headers: {
-            'Authorization': getNewsTokenV2(),
-          },
-        });
-        await setResponse(result.data.data);
-      }
-      catch (e) {
-        console.error(e);
-        setErrorFetchedChecker(c => !c);
-      }
 
-    }
-    fetchData();
-  }, [errorFetchedChecker]);
+  if(id !== 0){
+    useEffect( () => {
+      async function fetchData(){
+        try {
+          const result =  await axios.get(`${NEWS_API_V2}/api/v1/readalso/${id}?page=1&pageSize=${total}`,{
+            headers: {
+              'Authorization': getNewsTokenV2(),
+            },
+          });
+          await setResponse(result.data.data);
+        }
+        catch (e) {
+          console.error(e);
+          setErrorFetchedChecker(c => !c);
+        }
 
-  return {response, newContent};
+      }
+      fetchData();
+    }, [errorFetchedChecker]);
+
+    return {response, newContent};
+  }
+
 };
 
 export default function NewsDetailContent({item, indexKey, isIndexKey}) {
@@ -40,8 +44,7 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
 
-
-  const rmAttributes = item.content.replace(/(class|id|style)="\w+"/gm, '').replace(/\s*>/gmi, '>').replace(/(<!--\s*([a-zA-Z0-9_ ]*)\s*-->)/gm, '').replace(/\\|\'/gm, '');
+  const rmAttributes = item.content.replace(/(class|id|style)="\w+"/gm, '').replace(/\s*>/gmi, '>').replace(/(<!--\s*([a-zA-Z0-9_ ]*)\s*-->)/gm, '').replace(/\\|\'/gm, '').replace(/https?:\/\/(www\.)?rctiplus\.com\//gm, 'https://m.rctiplus.com/');
   const countTag = {};
 
 
@@ -130,17 +133,9 @@ export default function NewsDetailContent({item, indexKey, isIndexKey}) {
       const getEveryLength = paragraph.map(x => x.replace(/<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '').trim().length);
       let wordsLength = 1150;
       let thisLength = 0;
-      // console.log(getEveryLength);
       for (let i = 0; i < getEveryLength.length; i++) {
         thisLength += getEveryLength[i];
-        // console.log(thisLength);
-        // console.log(paragraph.map(x => x.replace(/<\w+>|<\/\w+>|<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '')))
-        // console.log(paragraph.map(x => x.replace(/<\w+>|<\/\w+>|<\s*([a-z][a-z0-9]*)\s.*?>/gmi, '').trim().length));
         if(thisLength >= wordsLength  && paragraph.length > indexInserted && addReadArray[addReadArrayIndex]){
-          // console.log(`Words length ${thisLength}`);
-          // console.log(`total length ${wordsLength}`);
-          // console.log(`index ${i}`);
-          // console.log(`Every paragraph length ${getEveryLength.length}`);
           if(typeof paragraph[i - 1 + addReadArrayIndex] !== 'undefined') {
             paragraph.splice(i + addReadArrayIndex, 0, addReadArray[addReadArrayIndex]);
             addReadArrayIndex++;

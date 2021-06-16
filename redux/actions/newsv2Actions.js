@@ -43,16 +43,31 @@ const searchNews = (q, page = 1, pageSize = 10) => {
     });
 };
 
+const searchSuggest =  (q, item = 1, itemSize = 4) => {
+  return dispatch => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`/v2/recommendation/suggest?item=${item}&itemSize=${itemSize}&query=${q}`);
+      if (response.status === 200) {
+        resolve(response);
+      }
+      else {
+        removeAccessToken();
+        reject(response);
+      }
+    }
+    catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+
+}
+
 const readAlso = (id,page = 1, pageSize = 2) => {
   return dispatch => new Promise(async (resolve, reject) => {
     try {
       const response = await axios.get(`/news/api/v1/readalso/${id}?page=/${page}&pageSize=${pageSize}`);
       if (response.status === 200) {
-        dispatch({
-          type: 'SEARCH_NEWS_RESULT',
-          result: response.data.data,
-          meta: response && response.data && response.data.meta ? response.data.meta : null,
-        });
         resolve(response);
       }
       else {
@@ -633,6 +648,42 @@ const addCategoryVisitorV2 = (categoryId, device_id) => {
   });
 };
 
+const userRecomendation = (page = 1, pageSize = 4) => {
+  return () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`/v2/recommendation?page=${page}&pageSize=${pageSize}`);
+      if (response.status === 200) {
+        resolve(response);
+      } else {
+        removeAccessToken();
+        reject(response);
+      }
+    } catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+};
+
+const saveUserRecomendation = (userSearch) => {
+  return () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.post(`/v2/recommendation/search`, {
+        "qry": userSearch
+      });
+      if (response.status === 200) {
+        resolve(response);
+      } else {
+        removeAccessToken();
+        reject(response);
+      }
+    } catch (error) {
+      removeAccessToken();
+      reject(error);
+    }
+  });
+};
+
 const setSection = () => dispatch => dispatch({ type: "ADD_SECTION" })
 
 
@@ -670,4 +721,7 @@ export default {
     getSelectedChannelsVisitor,
     updateCategoryOrderVisitor,
     deleteCategoryVisitors,
+    userRecomendation,
+    saveUserRecomendation,
+    searchSuggest,
 };

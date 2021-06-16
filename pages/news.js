@@ -166,21 +166,31 @@ class Trending_v2 extends React.Component {
         is_ads_rendered: false,
         device_id: null,
         not_logged_in_category: [],
+        is_login: false,
     };
 
     constructor(props) {
         super(props);
         this.accessToken = null;
         this.platform = null;
+        this.core_token = null;
         const segments = this.props.router.asPath.split(/\?/);
+        this.segments = segments;
+        this.idfa = null;
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
                 this.accessToken = q.token;
                 setAccessToken(q.token);
             }
+            if(q.core_token){
+              this.core_token = q.core_token;
+            }
             if (q.platform) {
                 this.platform = q.platform;
+            }
+            if(q.idfa){
+              this.idfa = q.idfa;
             }
         }
         else {
@@ -344,12 +354,22 @@ class Trending_v2 extends React.Component {
         //     console.log('scrolll')
         // }, false)
         // console.log(props)
+
         await this.setState({
           device_id: new DeviceUUID().get(),
         });
+        this.props.unsetPageLoader();
 
-        if(getUserAccessToken()){
-          await this.props.getSelectedChannelsVisitor(this.state.device_id)
+
+
+      if (this.accessToken !== null &&  this.accessToken !== undefined) {
+        const decodedToken = jwtDecode(this.accessToken);
+        if (decodedToken && decodedToken.uid != '0') {
+          this.fetchData(true);
+        }
+        else {
+          this.fetchData();
+          this.props.getSelectedChannelsVisitor(this.state.device_id)
             .then((res) =>{
               this.setState({
                 not_logged_in_category: res.data.data,
@@ -359,41 +379,34 @@ class Trending_v2 extends React.Component {
               console.error(err)
             });
         }
-
-        if (this.accessToken !== null &&  this.accessToken !== undefined) {
-            const decodedToken = jwtDecode(this.accessToken);
-            if (decodedToken && decodedToken.uid != '0') {
-                this.fetchData(true);
-            }
-            else {
-                this.fetchData();
-            }
-        }
-        else {
-            this.props.getUserData()
-                .then(response => {
-                    // console.log(response);
-                    this.fetchData(true);
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.fetchData();
+      }
+      else {
+        this.props.getUserData()
+          .then(response => {
+            // console.log(response);
+            this.fetchData(true);
+          })
+          .catch(error => {
+            console.log(error);
+            this.fetchData();
+            this.props.getSelectedChannelsVisitor(this.state.device_id)
+              .then((res) =>{
+                this.setState({
+                  not_logged_in_category: res.data.data,
                 });
-        }
+              })
+              .catch((err) =>{
+                console.error(err)
+              });
+          });
+      }
+
 
         window.addEventListener('pageshow', function(event) {
           if (event.persisted) {
             Router.reload(window.location.pathname);
           }
         });
-
-        window.addEventListener('scroll', ()=>{
-          const lastKnownScrollPosition = window.scrollY;
-          console.log(lastKnownScrollPosition);
-        });
-
-        this.getAndSetRedirect();
-
     }
 
     componentDidUpdate() {
@@ -410,7 +423,7 @@ class Trending_v2 extends React.Component {
         const savedCategoriesNews = getNewsChannels();
         params['saved_tabs'] = savedCategoriesNews;
         await this.setState(params, () => {
-            this.props.getCategoryV2()
+            this.props.getCategoryV2(this.core_token)
                 .then(response => {
                     let categories = response.data.data;
                     let sortedCategories = categories;
@@ -519,7 +532,7 @@ class Trending_v2 extends React.Component {
           category = urlRegex(article.subcategory_name)
         }
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}` : ''}`);
     }
 
     getMetadata() {
@@ -569,23 +582,6 @@ class Trending_v2 extends React.Component {
       }, 2500);
     }
 
-  getAndSetRedirect() {
-    if (Router.query && Router.query.id && Router.query.title && Router.query.category) {
-      localStorage.setItem('url-full', `${Router.asPath.split('?')[0]}`);
-      window.location.href = '/news';
-    }
-
-    if (localStorage.getItem('url-full')) {
-      this.props.setPageLoader();
-      setTimeout(() => {
-        window.location.href = localStorage.getItem('url-full');
-        localStorage.removeItem('url-full');
-        this.props.unsetPageLoader();
-      }, 1500);
-
-    }
-  }
-
 
     render() {
         // const metadata = this.getMetadata();
@@ -595,6 +591,8 @@ class Trending_v2 extends React.Component {
         const mobilePlatform = (this.platform !== null) ? 'mobilePlatform' : '';
         const site_name = this.props?.general?.site_name || SITE_NAME
         const title = (this.props?.metaSeo?.title) + ' - ' + (site_name)
+        const widthImg = 600;
+        const heightImg = (widthImg*56) / 100;
         return (
             <Layout title={title}>
                 <Head>
@@ -607,8 +605,8 @@ class Trending_v2 extends React.Component {
                     <meta property="og:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
-                    <meta property="og:image:width" content="600" />
-                    <meta property="og:image:height" content="315" />
+                    <meta property="og:image:width" content={widthImg} />
+                    <meta property="og:image:height" content={heightImg} />
                     <meta property="og:site_name" content={site_name} />
                     <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
@@ -736,10 +734,10 @@ class Trending_v2 extends React.Component {
                                                                                     window.NewsInterface.hideHeader();
                                                                                 }
 
-                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&core_token=${this.core_token}` : ''}`);
                                                                             }
                                                                             else {
-                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}` : ''}`);
+                                                                                Router.push('/news/channels' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&core_token=${this.core_token}` : ''}`);
                                                                             }
 
                                                                         }
@@ -786,7 +784,7 @@ class Trending_v2 extends React.Component {
                                                                             </Link>
                                                                         </Col>
                                                                         );
-                                                                    })};
+                                                                    })}
                                                                 </Row>
                                                             </div>
                                                         </div>
@@ -804,7 +802,7 @@ class Trending_v2 extends React.Component {
                                                                                     const iframeAdsID = adsFrame.contentWindow.document.getElementById('div-gpt-ad-1606113572364-0');
                                                                                     const element = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('div-gpt-ad-1591240670591-0')
                                                                                     const element_2 = document.getElementById(article.id).contentWindow && document.getElementById(article.id).contentWindow.document && document.getElementById(article.id).contentWindow.document.getElementById('error__page')
-                                                                                    if(adsFrame.contentWindow.document && iframeAdsID){
+                                                                                    if(adsFrame.contentWindow.document && iframeAdsID && iframeAdsID.style.display !== "none"){
                                                                                       adsFrame.style.display = 'block';
                                                                                       this.setState({
                                                                                         is_ads_rendered: true,
@@ -817,7 +815,7 @@ class Trending_v2 extends React.Component {
                                                                                     }
                                                                                   })
                                                                                 }}
-                                                                                id={article.id} src={`/dfp?platform=${this.platform}`}
+                                                                                id={article.id} src={`/dfp?platform=${this.platform}&idfa=${this.idfa}`}
                                                                                 frameBorder="0"
                                                                                 style={{
                                                                                   height: '250px',
