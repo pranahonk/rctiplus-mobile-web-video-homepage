@@ -1,3 +1,143 @@
 google.com, pub-7595624984434758, DIRECT, f08c47fec0942fa0
 spotxchange.com, 309112, DIRECT, 7842df1d2fe2db34
 spotx.tv, 309112, DIRECT, 7842df1d2fe2db34
+
+#Geniee
+genieesspv.jp,35347,RESELLER
+admixer.co.kr,1370,RESELLER
+Eskimi.com,eas-2020000004,DIRECT
+google.com,pub-4918399563784572,RESELLER
+google.com,pub-1314236495184973,RESELLER
+lemmatechnologies.com,158,DIRECT,7829010c5bebd1fb#LEMMA
+pubmatic.com,156494,DIRECT,5d62403b186f2ace#LEMMA
+e-planning.net,22a908e7e76eee2a,DIRECT,c1ba615865ed87b2#LEMMA
+google.com,pub-5420022833987419,DIRECT,f08c47fec0942fa0#LEMMA
+google.com,pub-7945044863874787,DIRECT,f08c47fec0942fa0
+
+# Managed by ADOP START #
+google.com, pub-5111137191506013, RESELLER, f08c47fec0942fa0
+smaato.com, 1100002271, RESELLER
+openx.com, 537141601, RESELLER, 6a698e2ec38604c6
+appnexus.com, 7418, RESELLER, f5ab79cb980f11d1
+impactify.io, 1328, DIRECT
+google.com, pub-1343218370015870, RESELLER, f08c47fec0942fa0
+spotxchange.com, 176703, RESELLER, 7842df1d2fe2db34
+spotx.tv, 176703, RESELLER, 7842df1d2fe2db34
+yahoo.com, 1761548, RESELLER
+rubiconproject.com, 19688, RESELLER, 0bfd66d529a55807
+console.cmcm.com, 47, RESELLER
+advertising.com, 9516, RESELLER
+freewheel.tv, 282546, RESELLER
+freewheel.tv, 282562, RESELLER
+freewheel.tv, 282578, RESELLER
+freewheel.tv, 282594, RESELLER
+freewheel.tv, 282610, RESELLER
+freewheel.tv, 282626, RESELLER
+freewheel.tv, 282770, RESELLER
+freewheel.tv, 282786, RESELLER
+freewheel.tv, 282802, RESELLER
+freewheel.tv, 282818, RESELLER
+freewheel.tv, 282834, RESELLER
+freewheel.tv, 282850, RESELLER
+appnexus.com, 3703, RESELLER, f5ab79cb980f11d1
+contextweb.com, 560288, RESELLER, 89ff185a4c4e857c
+openx.com, 537149888, RESELLER, 6a698e2ec38604c6
+pubmatic.com, 154037, RESELLER
+pubmatic.com, 156439, RESELLER
+smartadserver.com, 2974, RESELLER
+sovrn.com, 257611, RESELLER, fafdf38b16bf6b2b
+improvedigital.com, 1058, RESELLER
+google.com, pub-4301669675472368, RESELLER, f08c47fec0942fa0
+smaato.com, 1100014037, RESELLER
+ucfunnel.com, par-AA77669DED6B4789C84AD8A2A67434D3, DIRECT
+aralego.com, par-AA77669DED6B4789C84AD8A2A67434D3, DIRECT
+revcontent.com, 87963, RESELLER
+appnexus.com, 7666, RESELLER, f5ab79cb980f11d1
+google.com, pub-7019376976432612, RESELLER
+google.com, pub-9058291854443881, RESELLER
+google.com, pub-5373693997956134, RESELLER, f08c47fec0942fa0
+google.com, pub-4177862836555934, RESELLER, f08c47fec0942fa0
+google.com, pub-1071602463683652, RESELLER, f08c47fec0942fa0
+appnexus.com, 3691, RESELLER
+appnexus.com, 11197, RESELLER, f5ab79cb980f11d1
+google.com, pub-5111137191506013, RESELLER, f08c47fec0942fa0
+# Managed by ADOP END # Create Date : 2020-12-29 17:37:04
+
+#FreakOut
+fout.jp, 1431, DIRECT
+
+#FreakOut Appnexus
+appnexus.com, 7140, DIRECT, f5ab79cb980f11d1
+
+#FreakOut Freewheel
+freewheel.tv, 897697, DIRECT
+freewheel.tv, 897713, RESELLER
+
+#FreakOut Google
+google.com, pub-3004679189235742, DIRECT, f08c47fec0942fa0
+google.com, pub-5812357352335075, DIRECT, f08c47fec0942fa0
+
+#FreakOut Index Exchange
+indexexchange.com, 186266, DIRECT, 50b1c356f2c5c8fc
+indexexchange.com, 186779, DIRECT, 50b1c356f2c5c8fc
+
+#FreakOut LoopMe
+loopme.com, s-2411, DIRECT, 6c8d5f95897a5a3b
+loopme.com, 5918, DIRECT, 6c8d5f95897a5a3b
+
+#FreakOut OpenX
+openx.com, 537149074, DIRECT, 6a698e2ec38604c6
+openx.com, 537145215, DIRECT, 6a698e2ec38604c6
+openx.com, 539195821, DIRECT, 6a698e2ec38604c6
+openx.com, 539872073, DIRECT, 6a698e2ec38604c6
+openx.com, 540099026, DIRECT, 6a698e2ec38604c6
+openx.com, 540553856, DIRECT, 6a698e2ec38604c6
+
+#FreakOut Pubmatic
+pubmatic.com, 158039, DIRECT, 5d62403b186f2ace
+pubmatic.com, 158087,RESELLER,5d62403b186f2ace
+pubmatic.com, 158086,RESELLER,5d62403b186f2ace
+
+#FreakOut RhythmOne
+rhythmone.com, 102973855, DIRECT, a670c89d4a324e47
+
+#FreakOut Rubicon
+rubiconproject.com, 12556, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 18110, DIRECT, 0bfd66d529a55807
+
+#FreakOut Smartclip
+smartclip.net, 6426, DIRECT
+smartclip.net, 390, DIRECT
+smartclip.net, 6793, DIRECT
+
+#FreakOut SpotXchange
+spotx.tv, 71426, DIRECT, 7842df1d2fe2db34
+spotxchange.com, 71426, DIRECT, 7842df1d2fe2db34
+spotxchange.com, 187340, DIRECT, 7842df1d2fe2db34
+
+#FreakOut Sovrn
+sovrn.com, 230297, DIRECT, fafdf38b16bf6b2b
+lijit.com, 230297, DIRECT, fafdf38b16bf6b2b
+appnexus.com, 1360, RESELLER, f5ab79cb980f11d1
+gumgum.com, 11645, RESELLER, ffdef49475d318a9
+openx.com, 538959099, RESELLER, 6a698e2ec38604c6
+openx.com, 539924617, RESELLER, 6a698e2ec38604c6
+pubmatic.com, 137711, RESELLER, 5d62403b186f2ace
+pubmatic.com, 156212, RESELLER, 5d62403b186f2ace
+pubmatic.com, 156700, RESELLER, 5d62403b186f2ace
+rubiconproject.com, 17960, RESELLER, 0bfd66d529a55807
+
+#FreakOut Tremor
+tremorhub.com, bktr2-jjbby, DIRECT, 1a4e959a1b50034a
+
+#FreakOut Yieldmo
+yieldmo.com, 2073946213921227802, DIRECT
+
+#FreakOut Video
+spotxchange.com, 246977, DIRECT, 7842df1d2fe2db34
+spotx.tv, 246977, DIRECT, 7842df1d2fe2db34
+
+
+
+
+
