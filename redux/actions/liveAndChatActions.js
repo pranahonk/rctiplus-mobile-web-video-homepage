@@ -369,7 +369,7 @@ const getAllEpg = (channel = 'rcti') => {
 const getCatchupUrl = catchupId => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/epg/${catchupId}`);
+            const response = await axios.get(`/v1/epg/${catchupId}?appierid=${getUidAppier()}`);
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_CATCHUP_URL',
