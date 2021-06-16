@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, Fragment } from "react"
 import { connect } from "react-redux"
 import { Row, Col, Button, Input } from 'reactstrap';
 import { Picker } from 'emoji-mart';
@@ -35,6 +35,7 @@ axios.interceptors.request.use(async (request) => {
 const Chat = ({...props}) => {
 	const inputChatBoxRef = React.createRef();
 
+	const [isLoading, setIsloading] = useState(false)
 	const [chat, setChat] = useState("");
 	const [chats, setChats] = useState([]);
 	const [userData, setUserData] = useState(null);
@@ -44,12 +45,19 @@ const Chat = ({...props}) => {
   	const handleToggelEmoji = () => setEmojiPickerOpen(!emojiPickerOpen);
 	const onSelectEmoji = (emoji) => setChat(chat+emoji.native);
 
-	const getUser = () =>{
+	const getUser = () => {
+		setIsloading(true)
 		axios.get('/v3/user')
 		.then(response => {
-		  if (response.data.data) setUserData(response.data.data)
+		  	if (response.data.data) {
+				setUserData(response.data.data);
+				setIsloading(false);
+			}
 		})
-		.catch(error => console.log(error));
+		.catch(error => {
+			console.log(error);
+			setIsloading(false);
+		});
 	}
 
 	const handleChatEnter = (e) =>{
@@ -96,9 +104,11 @@ const Chat = ({...props}) => {
 									setChats([...chatsTemp]);
 									const chatBox = document.getElementById('box-chat');
 									chatBox.scrollTop = chatBox.scrollHeight;
-												
-									const chatInput = document.getElementById('chat-input');
-									chatInput.style.height = `24px`;
+									
+									if(userData){
+										const chatInput = document.getElementById('chat-input');
+										chatInput.style.height = `24px`;
+									}
 								}
 							}
 							
@@ -173,62 +183,66 @@ const Chat = ({...props}) => {
 			</div>
  
 			<div  className="box-chat" id="box-chat" >
-				<div className="chat-messages" >
-					{chats.map((val, i) => (
-						<Row  className="chat-line">
-							<Col xs={2}>   
-								<Img
-									loader={<PersonOutlineIcon className="chat-avatar" />}
-									unloader={<PersonOutlineIcon className="chat-avatar" />}
-									className="chat-avatar" src={[val.i, '/static/icons/person-outline.png']} />
-							</Col>
-							<Col className="chat-message" xs={10}> 
-								{val?.sent != undefined && val?.failed != undefined ? (val?.sent == true && val?.failed == true ? (<span><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)} 
-								&nbsp;<span className="username">{val?.u}</span> <span className="message">{val?.m}</span>
-							</Col>
-						</Row>
-					))}
-				</div>
-
-				<div className="chat-input-box">
-					<div ref={inputChatBoxRef} className="chat-box">
-						<Row>
-							<Col xs={1}>
-								<Button className="emoji-button">
-									{emojiPickerOpen ? (<KeyboardIcon onClick={handleToggelEmoji} />) : (<SentimenVerySatifiedIcon onClick={handleToggelEmoji} />)}
-								</Button>
-							</Col>
-							<Col xs={9}>
-								<Input
-									onKeyDown={handleChatEnter}
-									onChange={e => setChat(e.target.value)}
-									// onClick={this.checkLogin.bind(this)}
-									value={chat}
-									type="textarea"
-									id="chat-input"
-									placeholder="Start Chatting"
-									className="chat-input"
-									maxLength={250}
-									rows={1} 
-								/>
-							</Col>
-							<Col xs={1}>
-								<Button onClick={() => sendChat(props.id)} className="send-button" >
-									<SendIcon />
-								</Button>
-							</Col>
-						</Row>
+				{!userData ? <NoLogin toggleChat={props.toggle} /> : 
+				<Fragment>
+					<div className="chat-messages" >
+						{chats.map((val, i) => (
+							<Row  className="chat-line">
+								<Col xs={2}>   
+									<Img
+										loader={<PersonOutlineIcon className="chat-avatar" />}
+										unloader={<PersonOutlineIcon className="chat-avatar" />}
+										className="chat-avatar" src={[val.i, '/static/icons/person-outline.png']} />
+								</Col>
+								<Col className="chat-message" xs={10}> 
+									{val?.sent != undefined && val?.failed != undefined ? (val?.sent == true && val?.failed == true ? (<span><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)} 
+									&nbsp;<span className="username">{val?.u}</span> <span className="message">{val?.m}</span>
+								</Col>
+							</Row>
+						))}
 					</div>
 
-					<Picker
-						onSelect={emoji => {
-							onSelectEmoji(emoji);
-						}}
-						showPreview={false}
-						darkMode
-						style={{ display: emojiPickerOpen ? 'block' : 'none' }} 
-					/>			
-				</div>
+					<div className="chat-input-box">
+						<div ref={inputChatBoxRef} className="chat-box">
+							<Row>
+								<Col xs={1}>
+									<Button className="emoji-button">
+										{emojiPickerOpen ? (<KeyboardIcon onClick={handleToggelEmoji} />) : (<SentimenVerySatifiedIcon onClick={handleToggelEmoji} />)}
+									</Button>
+								</Col>
+								<Col xs={9}>
+									<Input
+										onKeyDown={handleChatEnter}
+										onChange={e => setChat(e.target.value)}
+										// onClick={this.checkLogin.bind(this)}
+										value={chat}
+										type="textarea"
+										id="chat-input"
+										placeholder="Start Chatting"
+										className="chat-input"
+										maxLength={250}
+										rows={1} 
+									/>
+								</Col>
+								<Col xs={1}>
+									<Button onClick={() => sendChat(props.id)} className="send-button" >
+										<SendIcon />
+									</Button>
+								</Col>
+							</Row>
+						</div>
+
+						<Picker
+							onSelect={emoji => {
+								onSelectEmoji(emoji);
+							}}
+							showPreview={false}
+							darkMode
+							style={{ display: emojiPickerOpen ? 'block' : 'none' }} 
+						/>			
+					</div>
+				</Fragment>
+				}
 			</div>
 		</>
   	)
