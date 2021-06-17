@@ -74,7 +74,7 @@ class Trending_v2 extends React.Component {
         }
         const data_news = await response_news.json();
 
-        const res = await fetch(`${NEWS_API_V2}/api/v1/news?subcategory_id=${queryId}&page=1&pageSize=1`, {
+        const res = await fetch(`${NEWS_API_V2}/api/v1/news?subcategory_id=${queryId}&page=1&pageSize=1&visitorId=test`, {
             method: 'GET',
             headers: {
                 'Authorization': data_news.data.news_token
@@ -164,9 +164,9 @@ class Trending_v2 extends React.Component {
         sticky_category_shown: false,
         section: 1,
         is_ads_rendered: false,
-        device_id: null,
         not_logged_in_category: [],
         is_login: false,
+        is_user_read_id: [],
     };
 
     constructor(props) {
@@ -177,6 +177,8 @@ class Trending_v2 extends React.Component {
         const segments = this.props.router.asPath.split(/\?/);
         this.segments = segments;
         this.idfa = null;
+        this.last_scroll = null;
+        this.device_id = null;
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
@@ -227,8 +229,9 @@ class Trending_v2 extends React.Component {
             this.props.getSectionNews(categoryId, 1, page).then((resSection) => {
             this.props.getNews(categoryId, this.state.articles_length, page)
                 .then(res => {
-                    const data = res.data.data
-                    const pageSection = res.data.meta.pagination.current_page
+                    const data = res.data.data;
+                    const pageSection = res.data.meta.pagination.current_page;
+                    console.log(data);
                     // if(data.length > 6) {
                     //     data[6].section = page
                     // }
@@ -353,14 +356,9 @@ class Trending_v2 extends React.Component {
         //     }
         //     console.log('scrolll')
         // }, false)
-        // console.log(props)
 
-        await this.setState({
-          device_id: new DeviceUUID().get(),
-        });
-        this.props.unsetPageLoader();
-
-
+        this.device_id = new DeviceUUID().get();
+        this.props.getUserIsRead(this.device_id);
 
       if (this.accessToken !== null &&  this.accessToken !== undefined) {
         const decodedToken = jwtDecode(this.accessToken);
@@ -406,6 +404,12 @@ class Trending_v2 extends React.Component {
           if (event.persisted) {
             Router.reload(window.location.pathname);
           }
+        });
+
+        window.addEventListener('scroll', ()=>{
+          const lastKnownScrollPosition = window.scrollY;
+          this.last_scroll = lastKnownScrollPosition;
+          console.log(this.last_scroll);
         });
     }
 
@@ -845,7 +849,7 @@ class Trending_v2 extends React.Component {
                                                                         </ListGroup>
                                                                 </li>)  :
                                                                 (<ListGroupItem className="item_square-wrapper" key={j + article.title}>
-                                                                    <SquareItem item={article} assets_url={this.state.assets_url} />
+                                                                    <SquareItem item={article} assets_url={this.state.assets_url}  />
                                                                 </ListGroupItem>)
 
                                                             )})}
