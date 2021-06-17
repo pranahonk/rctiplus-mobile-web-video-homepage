@@ -19,7 +19,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import { json } from 'body-parser';
 import { LINK_RADIO, LINK_GAMES, LINK_HOT } from '../../../config';
 
-
 class NavbarDef_v2 extends Component {
 
     constructor(props) {
@@ -133,8 +132,6 @@ class NavbarDef_v2 extends Component {
     }
 
     componentDidMount() {
-        // console.log(cookie.getJSON('ACCESS_TOKEN'))
-        // console.log(cookie.getJSON('VISITOR_TOKEN').VALUE)
         this.setState({token: this.getToken()});
         if (!this.props.disableScrollListener) {
             document.addEventListener('scroll', () => {
@@ -150,7 +147,6 @@ class NavbarDef_v2 extends Component {
 
     getToken() {
         const accessToken = cookie.getJSON('ACCESS_TOKEN');
-        // const accessToken = cookie.getJSON('ACCESS_TOKEN') && cookie.getJSON('ACCESS_TOKEN').VALUE
         const visitorToken = cookie.getJSON('VISITOR_TOKEN') && cookie.getJSON('VISITOR_TOKEN').VALUE
         return accessToken ? accessToken : visitorToken;
     }
@@ -194,33 +190,24 @@ class NavbarDef_v2 extends Component {
                     <div className="nav-menu-container">
                         <ActiveLink activeClassName="active" href="/" activeMenu={'home' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
-                                <img alt="Video+" className="icon-menu-top" src={'/icons-menu/videoIcon.svg'} alt="video" width="30" height="30" />
-                                <label>Video+</label>
+                                <img src="/static/menu/video+.svg" alt="" />
+                                {/* <img alt="Video+" className="icon-menu-top" src={'/icons-menu/videoIcon.svg'} alt="video" width="30" height="30" />
+                                <label>Video+</label> */}
                             </Button>
                         </ActiveLink>
-                        <ActiveLink activeClassName="active" href="/news" activeMenu={'news' + this.props.router.asPath}>
-                            <Button outline className="btn-nav-menu">
-                                <img className="icon-menu-top" src={'/icons-menu/newsIcon.svg'} alt="news" width="30" height="30" />
-                                <label>News+</label>
-                            </Button>
-                        </ActiveLink>
-                        {/* <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
-                            <Button outline className="btn-nav-menu">
-                                <img className="img-menu-icon" src={'/radio.png'}/>
-                                Radio +
-                            </Button>
-                        </ActiveLink> */}
+                        {/* <ActiveLink activeClassName="active" href="/news" activeMenu={'news' + this.props.router.asPath}> */}
+                        <Button outline className="btn-nav-menu" onClick={() => window.location.href ="/news"}>
+                            <img src="/static/menu/news+.svg" alt="" />
+                        </Button>
+                        {/* </ActiveLink> */}
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_RADIO}?token=${this.state.token}`}>
-                            <img alt="Radio+" className="icon-menu-top" src={'/icons-menu/radioIcon.svg'} alt="radio" width="30" height="30" />
-                            <label>News+</label>
+                            <img src="/static/menu/radio+.svg" alt="" />
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_HOT}?token=${this.state.token}`}>
-                            <img className="icon-menu-top" src={'/icons-menu/hotIcon.svg'} alt="hot" width="30" height="30" />
-                            <label>HOT</label>
+                            <img src="/static/menu/hot+.svg" alt="" />
                         </Button>
                         <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_GAMES}?token=${this.state.token}`}>
-                            <img className="icon-menu-top" src={'/icons-menu/gamesIcon.svg'} alt="games" width="30" height="30" />
-                            <label>Games+</label>
+                            <img src="/static/menu/games+.svg" alt="" />
                         </Button>
                     </div>
                 </Navbar>
