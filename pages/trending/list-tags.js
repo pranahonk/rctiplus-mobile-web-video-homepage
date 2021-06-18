@@ -51,7 +51,7 @@ const ListTags = (props) => {
     }
     props.getListTag(router.query.title_tag);
     props.incrementCountTag(router.query.title_tag);
-    props.getUserIsRead(Cookie.get('uid_ads'))
+    props.getUserIsRead(Cookie.get('uid_ads'));
   },[]);
   const _moreTags = (pagination) => {
     if(pagination?.total > pagination?.current_page && !props.contents.isMorePage) {

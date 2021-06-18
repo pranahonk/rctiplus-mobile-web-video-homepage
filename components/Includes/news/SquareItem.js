@@ -63,10 +63,13 @@ const SquareItem = ({item, indexKey, isIndexKey, assets_url, ...props}) => {
     }
   };
 
-  const isItemIsRead = (item) =>{
+  const isItemRead = (item) =>{
     const itemId = props?.listTopic?.newsIdRead ? props?.listTopic?.newsIdRead : []
     if(itemId.includes(item.id)){
       return 'isRead';
+    }
+    else {
+      return ""
     }
 
   };
@@ -90,7 +93,7 @@ const SquareItem = ({item, indexKey, isIndexKey, assets_url, ...props}) => {
             e.preventDefault()
             _goToDetail(item)
             }}>
-            <h2 className={isItemIsRead( item)} dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(item.title, '...', 100), item.tags) }}></h2>
+            <h2 className={isItemRead(item)} dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(item.title, '...', 100), item.tags) }}></h2>
           </a>
           <div className="lt_content-info">
           <h5>{item.source}</h5>

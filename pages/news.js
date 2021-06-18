@@ -231,7 +231,6 @@ class Trending_v2 extends React.Component {
                 .then(res => {
                     const data = res.data.data;
                     const pageSection = res.data.meta.pagination.current_page;
-                    console.log(data);
                     // if(data.length > 6) {
                     //     data[6].section = page
                     // }
@@ -356,6 +355,7 @@ class Trending_v2 extends React.Component {
         //     }
         //     console.log('scrolll')
         // }, false)
+        this.props.unsetPageLoader();
 
         this.device_id = new DeviceUUID().get();
         this.props.getUserIsRead(this.device_id);
@@ -409,7 +409,9 @@ class Trending_v2 extends React.Component {
         window.addEventListener('scroll', ()=>{
           const lastKnownScrollPosition = window.scrollY;
           this.last_scroll = lastKnownScrollPosition;
-          console.log(this.last_scroll);
+          if(this.last_scroll > 30){
+            window.localStorage.setItem('last_scroll', this.last_scroll);
+          }
         });
     }
 
