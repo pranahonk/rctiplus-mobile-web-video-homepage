@@ -418,6 +418,9 @@
             color: #ffffff;
             margin: 0;
         }
+        h2.isRead {
+            color: #8f8f8f;
+        }
       }
 
       .lt_content-info {
@@ -458,6 +461,10 @@
                 line-height: 1.18;
                 letter-spacing: normal;
                 color: #ffffff;
+            }
+            h1.isRead{
+              color: #4a4a4a;
+              text-shadow: 0 0 #6b6666;
             }
             h2 {
                 margin: 0;

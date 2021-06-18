@@ -7,9 +7,11 @@ import queryString from 'query-string';
 import '../../../assets/scss/components/trending_v2.scss';
 // Import Swiper styles
 import 'swiper/swiper.scss';
+import {connect} from "react-redux";
+import newsAction from "../../../redux/actions/newsv2Actions";
 
 const redirectToPublisherIndex = [0, 1];
-export default function HorizontalItem({item, indexKey, isIndexKey, assets_url}) {
+function HorizontalItem({item, indexKey, isIndexKey, assets_url, ...props}) {
   const router = useRouter()
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
@@ -40,6 +42,17 @@ export default function HorizontalItem({item, indexKey, isIndexKey, assets_url})
   const replaceBackSlash = (text) =>{
     return text.replace(/\\|\'/gm, '');
   }
+  const isItemRead = (item) =>{
+    console.log(props?.listTopic?.newsIdRead);
+    console.log(item.id)
+    const itemId = props?.listTopic?.newsIdRead ? props?.listTopic?.newsIdRead : []
+    if(itemId.includes(item.id)){
+      return 'isRead';
+    }
+    else {
+      return ""
+    }
+  };
   return(
       <a onClick={(e) => {
         e.preventDefault()
@@ -50,10 +63,19 @@ export default function HorizontalItem({item, indexKey, isIndexKey, assets_url})
           imageNews(item.title, item.cover, item.image, 237, assets_url, 'news-interest_thumbnail')
         }
         <div className="news-interest_thumbnail-title" >
-            <h1 dangerouslySetInnerHTML={{__html: `${getTruncate(replaceBackSlash(item.title), '...', 100)}`}}></h1>
+            <h1 className={isItemRead( item)} dangerouslySetInnerHTML={{__html: `${getTruncate(replaceBackSlash(item.title), '...', 100)}`}}></h1>
             <h2><span dangerouslySetInnerHTML={{__html: `${item.subcategory_name}`}}></span>  <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
         </div>
         </div>
       </a>
   )
 }
+
+const mapStateToProps = (state) => {
+  return {
+    listTopic: state.newsv2,
+  };
+};
+
+export default connect(mapStateToProps, {...newsAction})(HorizontalItem);
+

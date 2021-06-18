@@ -25,6 +25,7 @@ const SquareItem = dynamic(() => import('../../components/Includes/news/SquareIt
 
 // Import Swiper styles
 import 'swiper/swiper.scss';
+import Cookie from "js-cookie";
 
 const ListTags = (props) => {
   const [image, setImage] = useState({
@@ -35,7 +36,7 @@ const ListTags = (props) => {
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
   const navbarRef = useRef(null);
-  const router = useRouter()
+  const router = useRouter();
   const _onImageLoaded = () => {
     setImage({...image , loaded: true, test: 'loaded'});
   }
@@ -48,13 +49,14 @@ const ListTags = (props) => {
       setAccessToken(query.accessToken);
       setPlatform(query.platform);
     }
-    props.getListTag(router.query.title_tag)
-    props.incrementCountTag(router.query.title_tag)
+    props.getListTag(router.query.title_tag);
+    props.incrementCountTag(router.query.title_tag);
+    props.getUserIsRead(Cookie.get('uid_ads'));
   },[]);
   const _moreTags = (pagination) => {
-    if(pagination.total > pagination.current_page && !props.contents.isMorePage) {
+    if(pagination?.total > pagination?.current_page && !props.contents.isMorePage) {
       props.getMorePage(true)
-      props.getListTag(router.query.title_tag, pagination.current_page + 1, true)
+      props.getListTag(router.query.title_tag, pagination.current_page + 1, true);
     }
   }
   const _arrayLoading = new Array(10).fill('2')
@@ -114,10 +116,10 @@ const ListTags = (props) => {
           <div className="item_square-wrapper">
             {props.contents.loading ? (
               _arrayLoading.map((item, index) => (<Loading key={index} />))
-              ) : 
+              ) :
               props.contents.data_tag?.data?.map((item, index) => {
                 return (
-                  <SquareItem key={index + item.title} indexKey={index} item={item} assets_url={props.contents.data_tag?.meta?.assets_url} />
+                  <SquareItem key={index + item.title} indexKey={index} item={item} assets_url={props.contents.data_tag?.meta?.assets_url}/>
                 );
               })
             }
