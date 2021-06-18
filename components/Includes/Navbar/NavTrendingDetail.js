@@ -81,7 +81,7 @@ class NavTrendingSearch extends Component {
                                     }
                                     else if (this.props.router.asPath.indexOf('utm_source') > -1) {
                                         let Isplatform = this.props.router.asPath.indexOf('RplusaOsApp') > -1 ? `?platform=${platform}` : '';
-                                        Router.push(`/news + \`${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&core_token=${params.get('core_token')}` : ''}`);
+                                        Router.push('/news' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&core_token=${params.get('core_token')}` : ''}`);
                                     }
                                     else {
                                         Router.back();
