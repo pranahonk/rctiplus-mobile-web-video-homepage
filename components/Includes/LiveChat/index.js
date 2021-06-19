@@ -33,6 +33,9 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import PauseIcon from '../../../components/Includes/Common/PauseIcon';
 import ax from 'axios';
 
+import NoLogin from "../../../components/Includes/LiveChat/LiveChat_NoLogin"
+import LiveChatTnC from "../../../components/Includes/LiveChat/LiveChat_TnC"
+
 import { DEV_API} from '../../../config';
 
 import '../../../assets/scss/components/live-tv.scss';
@@ -133,10 +136,13 @@ class Tv extends React.Component {
 			chats: [],
 			ads_data: null,
 			isAds: false,
+			isLogin: false,
 			chat: '',
 			total_newChat : [],
 			lastScroll: 0,
 			user_data: null,
+			isStatusTnC: true,
+			showTnC: false,
 			snapshots: [],
 			sending_chat: false,
 			block_user: {
@@ -173,12 +179,20 @@ class Tv extends React.Component {
 		if (this.convivaTracker) {
 			this.convivaTracker.cleanUpSession();
 		}
+		
+	}
+
+	componentDidUpdate(){
+		if(!this.state.isStatusTnC){
+			setTimeout(() => console.log(`hahahahahahhahahahahahahahahahahahhhhhhhhhhhhhhhhhhhhhhhhhhhhhh`), 10000)
+		}
 	}
 
 
 	componentDidMount() {
-		
+
 		initGA();
+		this.getStatusTCN()
 		this.props.setPageLoader();
 		this.props.getLiveEvent('on air')
 			.then(response => {
@@ -210,24 +224,47 @@ class Tv extends React.Component {
 				console.log(error);
 			});
 
-    // this.refreshPubAds();
+    	// this.refreshPubAds();
 
-    axios.get('/v1/get-ads-duration')
-    .then(response => {
-      //console.log('ads duration res', response.data);
-      if (response.data.data) {
-        this.setState({
-          adsOverlayDuration: {
-            refreshDuration: response.data.data[0].duration,
-            reloadDuration: response.data.data[1].duration
-          }
-        })
-      }
-    })
-    .catch(error => {
-      console.log(error);
-    });
+		axios.get('/v1/get-ads-duration')
+		.then(response => {
+		//console.log('ads duration res', response.data);
+		if (response.data.data) {
+			this.setState({
+			adsOverlayDuration: {
+				refreshDuration: response.data.data[0].duration,
+				reloadDuration: response.data.data[1].duration
+			}
+			})
+		}
+		})
+		.catch(error => {
+		console.log(error);
+		});
 	}
+
+	getStatusTCN(){
+		if(this.checkLogin){
+			axios.get('/v1/agreement/live-chat/status')
+				.then(response => {
+					if (response?.data?.data) {
+						this.setState({isStatusTnC: response?.data?.data?.is_signed})
+					}
+				})
+				.catch(error => console.log(error))	
+		}
+	}
+
+	setStatusTCN(){
+		axios.get('/v1/agreement/live-chat/sign')
+			.then(response => {
+				if (response?.data?.data) {
+					this.setState({isStatusTnC: true})
+				}
+			})
+			.catch(error => console.log(error))	
+	}
+
 	setHeightChatBox() {
 		// let heightPlayer = this.props.playerContainer + this.props.tvTabRef
 		// return `calc(100% - ${heightPlayer}px)`;	
@@ -534,26 +571,28 @@ class Tv extends React.Component {
 	}
 
 	toggleChat() {
-		if (this.checkLogin()) {
-			this.setState({ chat_open: !this.state.chat_open }, () => {
-				if (this.state.chat_open && !this.state.isAds) {
-					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
-						this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
-					}
+		this.setState({ chat_open: !this.state.chat_open }, () => {
+			if (this.state.chat_open && !this.state.isAds) {
+				if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+					this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
 				}
-				if (!this.state.chat_open) {
-					this.setState((state,props) => ({
-						ads_data: null,
-					}));
-				}
-				this.props.toggleFooter(this.state.chat_open);
-				if (this.state.chat_open) {
-					liveTvLiveChatClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_livechat_clicked');
-				}
-				const chatBox = document.getElementById('chat-messages');
-				chatBox.scrollTop = chatBox.scrollHeight;
-			});
-		}
+			}
+			if (!this.state.chat_open) {
+				this.setState((state,props) => ({
+					ads_data: null,
+				}));
+			}
+			this.props.toggleFooter(this.state.chat_open);
+			if (this.state.chat_open) {
+				liveTvLiveChatClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_livechat_clicked');
+			}
+			const chatBox = document.getElementById('chat-messages');
+			chatBox.scrollTop = chatBox.scrollHeight;
+		});
+
+		if (this.checkLogin()) this.setState({isLogin: true})
+		else this.setState({isLogin: false})
+		
 	}
 
 	toggleEmoji() {
@@ -589,11 +628,12 @@ class Tv extends React.Component {
 
 	checkLogin() {
 		if (!this.state.user_data) {
-			showSignInAlert(`Please <b>Sign In</b><br/>
-				Woops! Gonna sign in first!<br/>
-				Only a click away and you<br/>
-				can continue to enjoy<br/>
-				<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true, 'popup-action-signup', 'popup-action-signin');
+			// console.log(`belum login`)
+			// showSignInAlert(`Please <b>Sign In</b><br/>
+			// 	Woops! Gonna sign in first!<br/>
+			// 	Only a click away and you<br/>
+			// 	can continue to enjoy<br/>
+			// 	<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true, 'popup-action-signup', 'popup-action-signin');
 			return false;
 		}
 		return true;
@@ -644,11 +684,11 @@ class Tv extends React.Component {
 			}
 		}
 		else {
-			showSignInAlert(`Please <b>Sign In</b><br/>
-			Woops! Gonna sign in first!<br/>
-			Only a click away and you<br/>
-			can continue to enjoy<br/>
-			<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+			// showSignInAlert(`Please <b>Sign In</b><br/>
+			// Woops! Gonna sign in first!<br/>
+			// Only a click away and you<br/>
+			// can continue to enjoy<br/>
+			// <b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
 		}
 	}
 
@@ -784,13 +824,7 @@ class Tv extends React.Component {
 	}
     
 	render() {
-		const { props, state } = this
-		// const contentData = {
-		// 	asPath: props.router.asPath,
-		// 	title: props.context_data?.epg_title || props.context_data?.channel,
-		// 	thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image
-		// }
-		console.log(`ini chats props`, this.props.dataChats)
+		
 		let playerRef = (<div></div>);
 		if (this.state.error) {
 			playerRef = (
@@ -876,7 +910,7 @@ class Tv extends React.Component {
 				</div>
 					
 				<div onScroll={this.handleScroll.bind(this)}  className="box-chat">
-					<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
+					{/* <div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
 						<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
 							<div>
 							    <MuteChat className="icon-block__chat" />
@@ -884,64 +918,75 @@ class Tv extends React.Component {
 								<span>{this.state.block_user.message}</span>
 							</div>
 						</div>
-					</div>
+					</div> */}
 
-					<div  className="chat-messages" id="chat-messages">
-						{this.props.dataChats.map((chat, i) => (
-							<Row key={i} className="chat-line">
-								<Col xs={2}>
-									<Img
-										loader={<PersonOutlineIcon className="chat-avatar" />}
-										unloader={<PersonOutlineIcon className="chat-avatar" />}
-										className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
-								</Col>
-								<Col className="chat-message" xs={10}>
-									{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
-								</Col>
-							</Row>
-						))}
+							<div  className="chat-messages" id="chat-messages">
+								{this.state.isLogin ? 
+									
+									<Fragment> 
+										{!this.state.isStatusTnC ? <LiveChatTnC toggelUnderstand={this.setStatusTCN.bind(this)} toggelSkip={() => this.setState({isStatusTnC:true})} /> :
+											<Fragment>
+												{this.props.dataChats.map((chat, i) => (
+													<Row key={i} className="chat-line">
+														<Col xs={2}>
+															<Img
+																loader={<PersonOutlineIcon className="chat-avatar" />}
+																unloader={<PersonOutlineIcon className="chat-avatar" />}
+																className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
+														</Col>
+														<Col className="chat-message" xs={10}>
+															{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
+														</Col>
+													</Row>
+												))}
 
-						{this.state.chat_open && this.state.chat_box && this.state.total_newChat.length > 0 &&  <div onClick={this.handleScrollToBottom.bind(this)} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "105px", right: "10px"}}> {this.state.total_newChat.length} </div>}
-						{this.state.chat_open && this.state.chat_box &&  <div onClick={this.handleScrollToBottom.bind(this)} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "65px", right: "10px"}}> <ExpandMoreIcon /> </div>}
-					</div>
+												{this.state.chat_open && this.state.chat_box && this.state.total_newChat.length > 0 &&  <div onClick={this.handleScrollToBottom.bind(this)} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "105px", right: "10px"}}> {this.state.total_newChat.length} </div>}
+												{this.state.chat_open && this.state.chat_box &&  <div onClick={this.handleScrollToBottom.bind(this)} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "65px", right: "10px"}}> <ExpandMoreIcon /> </div>}
+											</Fragment>
+										}
+									</Fragment> 
+								: 
+									<NoLogin toggleChat={this.toggleChat.bind(this)} />}
+							</div>
 
-					<div className="chat-input-box">
-						<div ref={ this.inputChatBoxRef } className="chat-box">
-							<Row>
-								<Col xs={1}>
-									<Button className="emoji-button">
-										{this.state.emoji_picker_open ? (<KeyboardIcon onClick={this.toggleEmoji.bind(this)} />) : (<SentimenVerySatifiedIcon onClick={this.toggleEmoji.bind(this)} />)}
-									</Button>
-								</Col>
-								<Col xs={9}>
-									<Input
-										onKeyDown={this.handleChatEnter.bind(this)}
-										onChange={this.onChangeChatInput.bind(this)}
-										onClick={this.checkLogin.bind(this)}
-										value={this.state.chat}
-										type="textarea"
-										id="chat-input"
-										placeholder="Start Chatting"
-										className="chat-input"
-										maxLength={250}
-										rows={1} />
-								</Col>
-								<Col xs={1}>
-									<Button className="send-button" onClick={this.sendChat.bind(this)}>
-										<SendIcon />
-									</Button>
-								</Col>
-							</Row>
-						</div>
-								
-                        <Picker
-							onSelect={emoji => {
-								this.onSelectEmoji(emoji);
-							}}
-							showPreview={false}
-							darkMode
-							style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
-					</div>
+							<div style={{ display: this.state.isLogin ? 'block' : 'none' }} className="chat-input-box">
+								<div ref={ this.inputChatBoxRef } className="chat-box">
+									<Row>
+										<Col xs={1}>
+											<Button className="emoji-button">
+												{this.state.emoji_picker_open ? (<KeyboardIcon onClick={this.toggleEmoji.bind(this)} />) : (<SentimenVerySatifiedIcon onClick={this.toggleEmoji.bind(this)} />)}
+											</Button>
+										</Col>
+										<Col xs={9}>
+											<Input
+												onKeyDown={this.handleChatEnter.bind(this)}
+												onChange={this.onChangeChatInput.bind(this)}
+												onClick={this.checkLogin.bind(this)}
+												value={this.state.chat}
+												type="textarea"
+												id="chat-input"
+												placeholder="Start Chatting"
+												className="chat-input"
+												maxLength={250}
+												rows={1} />
+										</Col>
+										<Col xs={1}>
+											<Button className="send-button" onClick={this.sendChat.bind(this)}>
+												<SendIcon />
+											</Button>
+										</Col>
+									</Row>
+								</div>
+										
+								<Picker
+									onSelect={emoji => {
+										this.onSelectEmoji(emoji);
+									}}
+									showPreview={false}
+									darkMode
+									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
+							</div>
+	
 				</div>
 			</div>
 			

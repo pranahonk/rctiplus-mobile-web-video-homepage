@@ -7,7 +7,7 @@ export default function LiveChat_NoLogin({toggleChat}) {
         <div className="container-nologin">
             <div className="title-nologin">Please Log In</div>
             <p>Anda harus log in terdahulu <br/> sebelum menggunakan fitur live chat</p>
-            <button onClick={() => {Router.push('/login');}}>Log In / Register</button>
+            <button onClick={() => {Router.push('/login'); toggleChat()}}>Log In / Register</button>
         </div>
     )
 }

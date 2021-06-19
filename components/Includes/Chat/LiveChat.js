@@ -12,7 +12,8 @@ import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { ChevronDownIcon} from "../../../components/IconComponents"
-import NoLogin from "./LiveChatNoLogin"
+import NoLogin from "./LiveChatNoLogin";
+import LiveChatTnc from "./LiveChatTnC"
 
 import chatsActions from '../../../redux/actions/chats';
 
