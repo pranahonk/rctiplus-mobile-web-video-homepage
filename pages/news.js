@@ -344,7 +344,6 @@ class Trending_v2 extends React.Component {
         // }
     }
     async componentDidMount() {
-        alert(document.URL);
         // window.addEventListener('scroll', (event) => {
         //     if(this.isInViewport(document.getElementById('9'))) {
         //         console.log('YESSS')
