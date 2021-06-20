@@ -599,8 +599,8 @@ class Detail extends React.Component {
                 }} data={cdata} disableScrollListener />) : (
                     <NavBack
                         pushNotif={this.pushNotif}
-                        params={`?token=${this.accessToken}&platform=${this.platform}`}
-                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`}
+                        params={`?token=${this.accessToken}&platform=${this.platform}&page=home`}
+                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}&page=home`}
                         data={cdata}
                         titleNavbar={cdata?.source}/>
                 )}
