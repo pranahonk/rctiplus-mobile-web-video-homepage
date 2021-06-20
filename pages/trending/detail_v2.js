@@ -149,7 +149,6 @@ class Detail extends React.Component {
             infographic: this.props.initial.subcategory_id == process.env.NEXT_PUBLIC_INFOGRAPHIC_ID,
             relatedArticlePosition: null,
             documentHeight: null,
-            is_user_read_id: [],
         };
 
         // this.redirectToPublisherIndex = this.getRandom([1, 2, 3, 4], 2);
@@ -157,7 +156,6 @@ class Detail extends React.Component {
         this.accessToken = null;
         this.platform = null;
         this.pushNotif = null;
-        this.device_id = null;
         const segments = this.props.router.asPath.split(/\?/);
         const segments2 = this.props.router.asPath.split(/\#/);
         if (segments.length > 1) {
@@ -190,10 +188,11 @@ class Detail extends React.Component {
         else {
             removeAccessToken();
         }
-      }
+
+      this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
+    }
 
     componentDidMount() {
-        this.device_id =new DeviceUUID().get();
         const {initial: {data = null}, router: {asPath = null}} = this.props;
         const condition = (!isEmpty(data) && !isEmpty(data.subcategory_name) && !isEmpty(data.title));
         if ((asPath.split('/').length < 6) && condition) {
@@ -241,7 +240,7 @@ class Detail extends React.Component {
                 documentHeight: document.documentElement.scrollHeight,
             })
         }, 750);
-        this.props.getUserIsRead(this.device_id)
+      this.forceUpdateHandler();
     }
 
     getRandom(arr, n) {
@@ -331,6 +330,9 @@ class Detail extends React.Component {
         newsArticleShareClicked(cdata.id, cdata.title, cdata.category_source, 'mweb_news_share_article_clicked');
     }
 
+    forceUpdateHandler(){
+        this.forceUpdate();
+    };
 
     renderActionButton(scrolledDown) {
         const asPath = this.props.router.asPath;
@@ -497,7 +499,7 @@ class Detail extends React.Component {
 
     shareButtonPosition = el =>{
       window.addEventListener('scroll',()=>{
-        const position =  el?.getBoundingClientRect()?.top + window.screen.height;
+        const position =  el.getBoundingClientRect().top + window.screen.height;
         this.setState({
           relatedArticlePosition: position,
         });
@@ -686,7 +688,7 @@ class Detail extends React.Component {
                         if (percentage > 0.32) {
                             if (!this.state.scrolled_down) {
                                 if (!this.state.count) {
-                                    this.props.incrementCount(Number(this.state.trending_detail_id), this.device_id)
+                                    this.props.incrementCount(Number(this.state.trending_detail_id))
                                         .then(response => {
                                             console.log(response);
                                         })

@@ -37,7 +37,7 @@ const ItemTags = ({item, index, ...props}) => {
   // useEffect(() => {
   //   if (endChild) {
   //     if (list.data) {
-  //       list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ?
+  //       list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
   //       (props.getListTag(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
   //         const resultRes = {...list, data: [...list.data, ...res.data.data], meta: res.data.meta}
   //         setList(resultRes)
@@ -45,14 +45,14 @@ const ItemTags = ({item, index, ...props}) => {
   //     }
   //     // if (list.length > 0) {
   //     //   console.log([...list, ...list])
-  //       // list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ?
+  //       // list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
   //       // (props.getListTag(item.tag).then((res) => setList([...list, ...list])).catch((err) => console.log(err))) : ''
   //     // }
   //   }
   // }, [endChild]);
   useEffect(() => {
     if (list.data && show) {
-      list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ?
+      list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
       (props.getListTag(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
         setShow(null)
         setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
@@ -88,7 +88,7 @@ const ItemTags = ({item, index, ...props}) => {
           // onReachEnd={(swiper) => {
           //   if (swiper.isEnd) {
           //     if (list.data) {
-          //       list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ?
+          //       list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page ? 
           //       (props.getListTag(item.tag, list?.meta?.pagination?.current_page + 1).then((res) => {
           //         setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
           //       }).catch((err) => console.log(err))) : ''
@@ -125,7 +125,7 @@ const ItemTags = ({item, index, ...props}) => {
       {` ${index + 1}. #${item.tag} `}
     </Link>
   </li>);
-}
+} 
 
 const mapStateToProps = (state) => {
   return {

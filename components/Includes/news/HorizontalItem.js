@@ -40,12 +40,6 @@ export default function HorizontalItem({item, indexKey, isIndexKey, assets_url})
   const replaceBackSlash = (text) =>{
     return text.replace(/\\|\'/gm, '');
   }
-  const isItemIsRead = (item) =>{
-    const itemId = props?.listTopic?.newsIdRead ? props?.listTopic?.newsIdRead : []
-    if(itemId.includes(item.id)){
-      return 'isRead';
-    }
-  };
   return(
       <a onClick={(e) => {
         e.preventDefault()
@@ -56,7 +50,7 @@ export default function HorizontalItem({item, indexKey, isIndexKey, assets_url})
           imageNews(item.title, item.cover, item.image, 237, assets_url, 'news-interest_thumbnail')
         }
         <div className="news-interest_thumbnail-title" >
-            <h1 className={isItemIsRead( item)} dangerouslySetInnerHTML={{__html: `${getTruncate(replaceBackSlash(item.title), '...', 100)}`}}></h1>
+            <h1 dangerouslySetInnerHTML={{__html: `${getTruncate(replaceBackSlash(item.title), '...', 100)}`}}></h1>
             <h2><span dangerouslySetInnerHTML={{__html: `${item.subcategory_name}`}}></span>  <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
         </div>
         </div>

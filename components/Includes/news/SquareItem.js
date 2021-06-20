@@ -5,17 +5,13 @@ import { formatDateWordID } from '../../../utils/dateHelpers';
 import { urlRegex } from '../../../utils/regex';
 import queryString from 'query-string';
 import '../../../assets/scss/components/trending_v2.scss';
-import {connect} from "react-redux";
-import newsAction from "../../../redux/actions/newsv2Actions";
-
 
 const redirectToPublisherIndex = [0, 1];
-const SquareItem = ({item, indexKey, isIndexKey, assets_url, ...props}) => {
+export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
   const router = useRouter();
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
   const [idfa, setIdfa] = useState(null);
-
   useEffect(() => {
     const query = queryString.parse(location.search);
     if (query.token || query.platform) {
@@ -61,16 +57,7 @@ const SquareItem = ({item, indexKey, isIndexKey, assets_url, ...props}) => {
     else{
       return text;
     }
-  };
-
-  const isItemIsRead = (item) =>{
-    const itemId = props?.listTopic?.newsIdRead ? props?.listTopic?.newsIdRead : []
-    if(itemId.includes(item.id)){
-      return 'isRead';
-    }
-
-  };
-
+  }
   return(
     <div className={`list_tags_thumb ${indexKey%2 == 0 ? '' : 'tagsItems'}`}>
       <div className="lt_img">
@@ -90,7 +77,7 @@ const SquareItem = ({item, indexKey, isIndexKey, assets_url, ...props}) => {
             e.preventDefault()
             _goToDetail(item)
             }}>
-            <h2 className={isItemIsRead( item)} dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(item.title, '...', 100), item.tags) }}></h2>
+            <h2 dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(item.title, '...', 100), item.tags) }}></h2>
           </a>
           <div className="lt_content-info">
           <h5>{item.source}</h5>
@@ -98,13 +85,5 @@ const SquareItem = ({item, indexKey, isIndexKey, assets_url, ...props}) => {
           </div>
       </div>
     </div>
-  );
+  )
 }
-
-const mapStateToProps = (state) => {
-  return {
-    listTopic: state.newsv2,
-  };
-}
-
-export default connect(mapStateToProps, {...newsAction})(SquareItem);
