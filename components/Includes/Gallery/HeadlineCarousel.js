@@ -14,7 +14,6 @@ import '../../../assets/scss/plugins/carousel/headline-carousel.scss';
 import { urlRegex } from '../../../utils/regex';
 
 import queryString from 'query-string';
-import newsv2Actions from "../../../redux/actions/newsv2Actions";
 
 class HeadlineCarousel extends React.Component {
 
@@ -25,7 +24,6 @@ class HeadlineCarousel extends React.Component {
         this.accessToken = null;
         this.platform = null;
         this.idfa=null;
-        this.device_id=null;
         const segments = this.props.router.asPath.split(/\?/);
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
@@ -45,8 +43,6 @@ class HeadlineCarousel extends React.Component {
         else {
             removeAccessToken();
         }
-        this.device_id = new DeviceUUID().get();
-        this.props.getUserIsRead(this.device_id);
     }
 
     renderTitle(title) {
@@ -67,16 +63,6 @@ class HeadlineCarousel extends React.Component {
         Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}` : ''}`);
     }
 
-    isItemRead(article){
-      const itemId = this.props?.newsv2?.newsIdRead ? this.props?.newsv2?.newsIdRead : []
-      if(itemId.includes(article.id)){
-        return 'isRead';
-      }
-      else {
-        return ""
-      }
-    }
-
     render() {
         return (
             <Carousel
@@ -95,7 +81,7 @@ class HeadlineCarousel extends React.Component {
                             }
                         </div>
                         <div className="caption">
-                            <h2 className={`title ${this.isItemRead(article)}`} dangerouslySetInnerHTML={{ __html: this.renderTitle(article.title).replace(/\\/g, '') }}></h2>
+                            <h2 className="title" dangerouslySetInnerHTML={{ __html: this.renderTitle(article.title).replace(/\\/g, '') }}></h2>
                             <div className="description">
                                 <p><strong>{article.source}</strong>&nbsp;&nbsp;</p>
                                 <p>{formatDateWordID(new Date(article.pubDate * 1000))}</p>
@@ -109,4 +95,4 @@ class HeadlineCarousel extends React.Component {
 
 }
 
-export default connect(state => state, { ...newsv2Actions})(withRouter(HeadlineCarousel));
+export default connect(state => state, {})(withRouter(HeadlineCarousel));

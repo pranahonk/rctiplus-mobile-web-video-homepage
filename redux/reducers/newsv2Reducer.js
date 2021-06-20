@@ -15,7 +15,6 @@ const initialState = {
     loading: true,
     isMorePage: false,
     countSection: 0,
-    newsIdRead: [],
 };
 
 export default function NewsReducer (state = initialState, action) {
@@ -31,8 +30,6 @@ export default function NewsReducer (state = initialState, action) {
             }}
         case 'GET_LIST_TAG_LOADING':
             return Object.assign({}, state, { loading: action.loading });
-        case 'GET_NEWS_ID_READ':
-          return Object.assign({}, state, { newsIdRead: action.data });
         case 'GET_TRENDING_CONTENT':
             return Object.assign({}, state, { data: action.data });
         case 'GET_TOPIC':
@@ -55,7 +52,7 @@ export default function NewsReducer (state = initialState, action) {
             action.subject.next();
             return Object.assign({}, state, { query: action.q });
         case 'CLEAR_SEARCH':
-            return Object.assign({}, state, {
+            return Object.assign({}, state, {  
                 search_result: [],
                 meta: null,
                 search_show_more_allowed: false,
