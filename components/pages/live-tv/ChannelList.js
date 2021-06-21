@@ -5,7 +5,7 @@ import { TvContext } from "../../../utils/contexts/tvContext"
 import { liveTvChannelClicked } from '../../../utils/appier';
 
 const channel = ["RCTI", "MNCTV", "GTV", "iNEWS"]
-export default function ChannelList() {
+export default function ChannelList({toggle}) {
   const router = useRouter()
   const channelCode = router.query.channel || "RCTI"
   const [tabChannel, setTabChannel] = useState(channelCode)
@@ -15,6 +15,7 @@ export default function ChannelList() {
     liveTvChannelClicked(id , channel, liveContent?.title, 'mweb_livetv_channel_clicked');
     setTabChannel(channel)
     router.push(`tv_v2?channel=${channel.toLowerCase()}`, `tv/${channel.toLowerCase()}`)
+    toggle()
   }
 
   return(
