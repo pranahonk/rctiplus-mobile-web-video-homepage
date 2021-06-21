@@ -92,7 +92,7 @@ class TV_V2 extends React.Component {
     if(channelMain === 'mnctv') idChannel = 2
     if(channelMain === 'globaltv' || channelMain === 'gtv') idChannel = 3
     if(channelMain === 'inews') idChannel = 4
-    console.log(`ini id channel`,idChannel)
+
     const handleMeta = () => {
       const [titleChannel, titleEpg] = [SITEMAP[`live_tv_${channelMain?.toLowerCase()}`]?.title, router.query.epg_title?.replace(/-/gi, ' ')]
       let [descriptionChannel, channel] = [SITEMAP[`live_tv_${channelMain?.toLowerCase()}`]?.description , channelMain]
@@ -123,7 +123,7 @@ class TV_V2 extends React.Component {
                 <div ref={ this.playerContainerRef }>
                   <PlayerTv />
                 </div>
-                <ChannelList />
+                <ChannelList toggle={() => this.handleChat(this)} />
                 <div ref={ this.tvTabRef }>
                   <WeekList />
                 </div>
@@ -143,7 +143,7 @@ class TV_V2 extends React.Component {
               {
                 this.state.openChat &&
                (<div className="chat-component__wrapper" style={this.state.openChat ? {height: `calc(100vh - ${this.state.heightList - this.tvTabRef.current.clientHeight - 15 }px)`} : null}>
-                  <Chat toggle={() => this.handleChat(this)} id={idChannel} />
+                  <Chat toggle={() => this.handleChat(this)} openChat={this.state.openChat} id={idChannel} />
                 </div>)
               }
             </div>
