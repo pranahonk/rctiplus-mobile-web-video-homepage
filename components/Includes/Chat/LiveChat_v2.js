@@ -130,12 +130,7 @@ class Chat extends React.Component {
 													this.state.total_newChat.push(change.doc.data())
 												}
 											}
-											
-											// if(!this.state.chat_box && this.state.total_newChat.length > 0){
-											// 	const chatBox = document.getElementById('box-chat');
-											// 	chatBox.scrollTop = chatBox.scrollHeight;
-											// }
-
+										
 											this.setState({ chats: chats }, () => {
 												const chatBox = document.getElementById('box-chat');
 												chatBox.scrollTop = chatBox.scrollHeight;

@@ -16,12 +16,11 @@ import { ChevronDownIcon} from "../../../components/IconComponents"
 import NoLogin from "./LiveChatNoLogin";
 import LiveChatTnc from "./LiveChatTnC"
 
-import chatsActions from '../../../redux/actions/chats';
-
 import '../../../assets/scss/components/tv-v2.scss';
 import 'emoji-mart/css/emoji-mart.css';
 import ax from 'axios';
 
+import chatsActions from '../../../redux/actions/chats';
 import { initGA } from '../../../utils/firebaseTracking';
 import { getCookie, getVisitorToken, checkToken } from '../../../utils/cookie';
 import { DEV_API} from '../../../config';
@@ -37,7 +36,6 @@ axios.interceptors.request.use(async (request) => {
 const Chat = ({...props}) => {
 	const inputChatBoxRef = React.createRef();
 
-	const [isLoading, setIsloading] = useState(false);
 	const [chat, setChat] = useState("");
 	const [chats, setChats] = useState([]);
 	const [totalNewChat, setTotalNewChat] = useState([]);
@@ -47,6 +45,7 @@ const Chat = ({...props}) => {
   	const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
 	const [sendingChat, setSendingChat] = useState(false);
 	const [btnToBottom, setBtnToBottom] = useState(false);
+	const [isLoading, setIsloading] = useState(false);
 
   	const handleToggelEmoji = () => setEmojiPickerOpen(!emojiPickerOpen);
 	const onSelectEmoji = (emoji) => setChat(chat+emoji.native);
@@ -71,10 +70,14 @@ const Chat = ({...props}) => {
 
 		if (e.key === 'Enter' && !e.shiftKey && chat && chat != '\n') sendChat(props.id);
 	}
+	
+	const scrollToBottom = () => {
+		const chatBox = document.getElementById('box-chat');
+		chatBox.scrollTop = chatBox.scrollHeight;
+	}
  
 	const handleScroll = () => {
 		const chatBox = document.getElementById('box-chat');
-
 		if((chatBox.scrollHeight - chatBox.scrollTop) - chatBox.clientHeight <= 25)	{
 			setBtnToBottom(false);
 			setTotalNewChat([]);
@@ -83,10 +86,8 @@ const Chat = ({...props}) => {
 	}
 
 	const handleScrollToBottom = () =>{
-		const chatBox = document.getElementById('box-chat');
-		chatBox.scrollTop = chatBox.scrollHeight;
-
-		setBtnToBottom(!btnToBottom);
+		scrollToBottom();
+		setBtnToBottom(false);
 		setTotalNewChat([]);
 	}
 
@@ -108,54 +109,48 @@ const Chat = ({...props}) => {
 			.catch(error => console.log(error))	
 	}
 	
-	const loadChatMessages = (id) => {
-		setChats([])
+	function loadChatMessages (id) {
 		let firstLoadChat = true;
-			props.listenChatMessages(id)
-				.then(collection => {
-					let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
-					querySnapshot.docChanges()
-						.map(change => {
-							let chatsTemp = chats
-							if (change.type === 'added') {
-								if (!sendingChat) {
-									if (chatsTemp.length > 0) {
-										let lastChat = chatsTemp
-										let newChat = change.doc.data();
-										if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-											if (firstLoadChat) chatsTemp.unshift(newChat);
-											else {
-												chatsTemp.push(newChat);
-												setTotalNewChat([...totalNewChat, newChat])
-												// this.state.total_newChat.push(newChat)
-											}
-										}
-									}
-									else {
-										if (firstLoadChat) chatsTemp.unshift(change.doc.data());	
-										else {
-											chatsTemp.push(change.doc.data());
-											setTotalNewChat([...totalNewChat, change.doc.data()])
-											// this.state.total_newChat.push(change.doc.data())
-										}
-									}
-
-									setChats([...chatsTemp]);
-									// const chatBox = document.getElementById('box-chat');
-									// chatBox.scrollTop = chatBox.scrollHeight;
-									
-									if(userData){
-										const chatInput = document.getElementById('chat-input');
-										chatInput.style.height = `24px`;
-									}
+		let totalTemp = totalNewChat
+		let chatsTemp = chats;
+		let lastChat = chats;
+		
+		props.listenChatMessages(id)
+			.then(collection => {
+				let snapshot = collection.orderBy('ts', 'desc').limit(10).onSnapshot(querySnapshot => {
+				
+				querySnapshot.docChanges()
+					.map(change => {
+						if (change.type === 'added') {
+							if (chatsTemp.length > 0) {
+								let newChat = change.doc.data();
+								if (firstLoadChat) chatsTemp.unshift(newChat);
+								else {
+									chatsTemp.push(newChat);
+									totalTemp.push(newChat);
 								}
 							}
-							
-						});
+							else {
+								if (firstLoadChat) chatsTemp.unshift(change.doc.data());
+								else {
+									chatsTemp.push(change.doc.data());
+									totalTemp.push(change.doc.data())
+								}
+							}
 
-						firstLoadChat = false;
+							setChats([...chatsTemp]);
+							setTotalNewChat([...totalTemp])
+							if(firstLoadChat) handleScrollToBottom()
+							if(userData){
+								const chatInput = document.getElementById('chat-input');
+								chatInput.style.height = `24px`;
+							}
+						}
+						
 					});
+					firstLoadChat = false;
 				});
+			});
 	};
 
 	const sendChat = (id) => {
@@ -187,9 +182,7 @@ const Chat = ({...props}) => {
 						
 						setChats(chatsCurrent);
 						setSendingChat(false);
-
-						const chatBox = document.getElementById('box-chat');
-						chatBox.scrollTop = chatBox.scrollHeight;
+						scrollToBottom()
 					})
 					.catch(() => {
 						newChat.sent = true;
@@ -200,8 +193,6 @@ const Chat = ({...props}) => {
 	};
 
 	useEffect(() =>{
-		const chatBox = document.getElementById('box-chat');
-		chatBox.scrollTop = chatBox.scrollHeight;
 		initGA();
 		getUser();
 		getStatusTNC();
@@ -229,6 +220,7 @@ const Chat = ({...props}) => {
 					{!isStatusTnC ? <LiveChatTnc toggelUnderstand={handleStatusTNC} toggelSkip={() => setIsStatusTnC(true)} /> : 
 					<Fragment>
 						<div className="chat-messages" >
+						{totalNewChat.length > 0 && <div style={{width:"100%", background: "#282828", fontSize: "10px", display:"flex", justifyContent: "center", alignItems:"center", padding:"4px"}} >{totalNewChat.length} Unread Messages</div>}
 							{chats.map((val, i) => (
 								<Row  className="chat-line">
 									<Col xs={2}>   
@@ -244,7 +236,7 @@ const Chat = ({...props}) => {
 								</Row>
 							))}
 
-							{btnToBottom && totalNewChat.length > 0 && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "105px", right: "10px"}}> {totalNewChat.length} </div>}
+							{btnToBottom && totalNewChat.length > 0 && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "140px", right: "10px"}}> {totalNewChat.length} </div>}
 							{btnToBottom && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "100px", right: "10px"}}> <ExpandMoreIcon /> </div>}
 						</div>
 
@@ -260,7 +252,6 @@ const Chat = ({...props}) => {
 										<Input
 											onKeyDown={handleChatEnter}
 											onChange={e => setChat(e.target.value)}
-											// onClick={this.checkLogin.bind(this)}
 											value={chat}
 											type="textarea"
 											id="chat-input"
@@ -279,9 +270,7 @@ const Chat = ({...props}) => {
 							</div>
 
 							<Picker
-								onSelect={emoji => {
-									onSelectEmoji(emoji);
-								}}
+								onSelect={emoji => onSelectEmoji(emoji)}
 								showPreview={false}
 								darkMode
 								style={{ display: emojiPickerOpen ? 'block' : 'none' }} 
