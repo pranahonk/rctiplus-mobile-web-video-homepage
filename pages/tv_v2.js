@@ -116,7 +116,7 @@ class TV_V2 extends React.Component {
     return(
       <>
         <HeadMetaTv meta={handleMeta()}/>
-        <Layout title={handleMeta().title}>
+        <Layout className="live-tv-layout" title={handleMeta().title}>
           <TvProvider>
             <div id="tv-v2" className="tv_wrapper">
               <div ref={this.channelContainer}>
