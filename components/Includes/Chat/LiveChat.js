@@ -45,6 +45,7 @@ const Chat = ({...props}) => {
 	const [sendingChat, setSendingChat] = useState(false);
 	const [btnToBottom, setBtnToBottom] = useState(false);
 	const [isLoading, setIsloading] = useState(false);
+	const [totalUnread, setTotalUnread] = useState(0)
 
   	const handleToggelEmoji = () => setEmojiPickerOpen(!emojiPickerOpen);
 	const onSelectEmoji = (emoji) => setChat(chat+emoji.native);
@@ -80,14 +81,16 @@ const Chat = ({...props}) => {
 		if((chatBox.scrollHeight - chatBox.scrollTop) - chatBox.clientHeight <= 25)	{
 			setBtnToBottom(false);
 			setTotalNewChat([]);
+			return true
 		}
-		else setBtnToBottom(true);
+		setBtnToBottom(true);
 	}
 
 	const handleScrollToBottom = () =>{
 		scrollToBottom();
 		setBtnToBottom(false);
 		setTotalNewChat([]);
+		setTotalUnread(0)
 	}
 
 	const getStatusTNC = () => {
@@ -107,6 +110,12 @@ const Chat = ({...props}) => {
 			})
 			.catch(error => console.log(error))	
 	}
+
+	useEffect(() => {
+		if (chats.length > 10 && btnToBottom) {
+			setTotalUnread(totalUnread + 1)
+		}
+	}, [chats.length])
 	
 	function loadChatMessages (id) {
 		let firstLoadChat = true;
@@ -235,7 +244,7 @@ const Chat = ({...props}) => {
 								</Row>
 							))}
 
-							{btnToBottom && totalNewChat.length > 0 && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "140px", right: "10px"}}> {totalNewChat.length} </div>}
+							{btnToBottom  && totalUnread && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "140px", right: "10px"}}> {totalUnread} </div>}
 							{btnToBottom && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "100px", right: "10px"}}> <ExpandMoreIcon /> </div>}
 						</div>
 
