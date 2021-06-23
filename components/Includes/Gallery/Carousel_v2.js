@@ -96,12 +96,15 @@ class Crs_v2 extends Component {
     }
 
     render() {
+
+        console.log(`ini adalah statte banner`, this.state.banner)
         
         return (
                 <div style={{ 
                     position: 'relative', 
                     paddingTop: this.props.showStickyInstall ? 135 : this.props.detailCategory? 0 : 70,
                 }}>
+                    {this.state.banner !== undefined ? 
                     <Carousel 
                         className="banner-carousel"
                         statusFormatter={(current, total) => `${current}/${total}`} 
@@ -120,8 +123,9 @@ class Crs_v2 extends Component {
                                 const program = this.state.banner[swipedIndex];
                                 homeBannerEvent(program.id, program.type, program.title, this.state.meta.image_path + this.state.resolution + program.portrait_image, this.state.meta.image_path + this.state.resolution + program.landscape_image, 'mweb_homepage_banner_swipe');
                             }
-                    }}>
-                        {this.state.banner && this.state.banner.length && this.state.banner.map((b, i) => (
+                        }}
+                    >
+                        {this.state.banner.map((b, i) => (
                             <div data-index={i} onClick={this.goToProgram.bind(this, b)} key={b.id} style={{ 
                                 width: '100%', 
                                 minHeight: 320
@@ -130,10 +134,25 @@ class Crs_v2 extends Component {
                                     alt={b.title}
                                     src={[`${this.state.meta.image_path + this.state.resolution + b.square_image}`, '/static/placeholders/placeholder_landscape.png']}
                                     unloader={<img alt={b.title} src="/static/placeholders/placeholder_landscape.png"/>}
-									loader={<img alt={b.title} src="/static/placeholders/placeholder_landscape.png"/>}/>
+                                    loader={<img alt={b.title} src="/static/placeholders/placeholder_landscape.png"/>}/>
                             </div>
-                            ))}
+                        ))}
                     </Carousel>
+                    :
+                    <div className="banner-carousel" style={{ 
+                        width: '100%', 
+                        minHeight: 320,
+                        display: "flex",
+                        justifyContent:"center",
+                        alignItems:"center"
+                    }}>
+                        <Img 
+                            alt="placeholder"
+                            src={<img alt="placeholder" src="/static/placeholders/placeholder_landscape.png"/>}
+                            unloader={<img alt="placeholder" src="/static/placeholders/placeholder_landscape.png"/>}
+                            loader={<img alt="placeholder" src="/static/placeholders/placeholder_landscape.png"/>}/>
+                    </div>
+                    }
                     {this.props.children}
                     <div style={{ position: 'absolute', bottom: -1.5, background: 'linear-gradient(180deg, #282828 9.89%, rgba(0, 0, 0, 0.0001) 100%)', transform: 'matrix(1, 0, 0, -1, 0, 0)', width: '100%', height: 136 }}></div>
                 </div>
