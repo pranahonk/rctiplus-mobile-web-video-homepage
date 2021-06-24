@@ -2,7 +2,7 @@ const initialState = {
     data: null,
     meta: null,
     status: null,
-    catchup_date: null,
+    catchup_date: "",
     catchup: [],
     channel_code: 'rcti'
 };
