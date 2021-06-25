@@ -388,13 +388,34 @@ class Tv extends React.Component {
 							formatDate(this.currentDate),
 							this.state.live_events[this.state.selected_index].channel_code
 						)
-							.then(response => {
+							.then(async (response) => {
 								console.log(response, "get EPG I")
 								epgLoaded = true;
 								let epg = response.data.data
 									.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + 'T' + e.e).getTime());
 
-								this.setState({ epg: epg }, () => {
+								// Get Catchup data based on passed date property parameter
+								const selectedDate = this.props.params_date 
+									? formatDateWord(new Date(this.props.params_date)) 
+									: formatDateWord(new Date())
+
+								const catchupResponse = await this.props.getEPG(
+									formatDate(new Date(selectedDate)),
+									this.state.live_events[this.state.selected_index].channel_code
+								)
+								catchupLoaded = true
+
+								const catchup = catchupResponse.data.data.filter(e => {
+									if (e.s > e.e) {
+										return this.currentDate.getTime() > new Date(new Date(selectedDate + ' ' + e.e).getTime() + (1 * 24 * 60 * 60 * 1000)).getTime();
+									}
+									return this.currentDate.getTime() > new Date(selectedDate + ' ' + e.e).getTime();
+								})
+
+								this.setState({ epg, catchup }, () => {
+									this.props.setCatchupData(catchup);
+									this.props.setCatchupDate(selectedDate)
+
 									if (first != true) {
 										let programLive = this.getCurrentLiveEpg();
 										liveTvChannelClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, programLive ? programLive.title : 'N/A', 'mweb_livetv_channel_clicked');
@@ -407,9 +428,6 @@ class Tv extends React.Component {
 										this.selectCatchup(this.props.context_data.epg_id, 'url');
 									}
 									this.props.setChannelCode(this.state.selected_live_event.channel_code);
-									if (epgLoaded && catchupLoaded) {
-										this.props.unsetPageLoader();
-									}
 								});
 							})
 							.catch(error => {
@@ -426,9 +444,6 @@ class Tv extends React.Component {
 									this.selectCatchup(this.props.context_data.epg_id, 'url');
 								}
 								this.props.setChannelCode(this.state.selected_live_event.channel_code);
-								if (epgLoaded && catchupLoaded) {
-									this.props.unsetPageLoader();
-								}
 							})
 					});
 				})
@@ -441,42 +456,9 @@ class Tv extends React.Component {
 						error_data: error.status === 200 ? error.data.status.message_client : '',
 						status: error.data && error.data.status.code  === 12 ? true : false,
 					});
-					this.props.unsetPageLoader();
 				})
-				.finally(async () => {
-
-					// Wait for all of these promise function above done processing
-					// to get the params_date from updated props
-					const selectedDate = this.props.params_date 
-						? formatDateWord(new Date(this.props.params_date)) 
-						: formatDateWord(new Date())
-
-					this.setState(() => {
-						this.props.setCatchupDate(selectedDate)
-						return {
-							selected_date: selectedDate
-						}
-					})
-		
-					const response = await this.props.getEPG(
-						formatDate(new Date(selectedDate)),
-						this.state.live_events[this.state.selected_index].channel_code
-					)
-					catchupLoaded = true
-
-					const catchup = response.data.data.filter(e => {
-						if (e.s > e.e) {
-							return this.currentDate.getTime() > new Date(new Date(selectedDate + ' ' + e.e).getTime() + (1 * 24 * 60 * 60 * 1000)).getTime();
-						}
-						return this.currentDate.getTime() > new Date(selectedDate + ' ' + e.e).getTime();
-					})
-					this.setState({ catchup }, () => {
-						this.props.setCatchupData(catchup);
-
-						if (epgLoaded && catchupLoaded) {
-							this.props.unsetPageLoader();
-						}
-					})
+				.finally(() => {
+					this.props.unsetPageLoader()
 				})
 		});
 	}
