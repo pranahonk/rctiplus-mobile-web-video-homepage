@@ -116,7 +116,7 @@ class TV_V2 extends React.Component {
     return(
       <>
         <HeadMetaTv meta={handleMeta()}/>
-        <Layout className="live-tv-layout" title={handleMeta().title}>
+        <Layout className="live-tv-layout" title={handleMeta().title} hideFooter={ this.state.openChat ? true: false}>
           <TvProvider>
             <div id="tv-v2" className="tv_wrapper">
               <div ref={this.channelContainer}>
@@ -143,7 +143,7 @@ class TV_V2 extends React.Component {
               {
                 this.state.openChat &&
                (<div className="chat-component__wrapper" style={this.state.openChat ? {height: `calc(100vh - ${this.state.heightList - this.tvTabRef.current.clientHeight - 15 }px)`} : null}>
-                  <Chat toggle={() => this.handleChat(this)} openChat={this.state.openChat} id={idChannel} />
+                  <Chat toggle={() => this.handleChat(this)} openChat={this.state.openChat} id={idChannel} channelMain={channelMain} />
                 </div>)
               }
             </div>
