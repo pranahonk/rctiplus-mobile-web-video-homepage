@@ -15,7 +15,7 @@ export default function ChannelList({toggle}) {
     liveTvChannelClicked(id , channel, liveContent?.title, 'mweb_livetv_channel_clicked');
     setTabChannel(channel)
     router.push(`tv_v2?channel=${channel.toLowerCase()}`, `tv/${channel.toLowerCase()}`)
-    // toggle()
+    toggle()
   }
 
   return(

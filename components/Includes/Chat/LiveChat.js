@@ -45,7 +45,7 @@ const Chat = ({...props}) => {
 	const [sendingChat, setSendingChat] = useState(false);
 	const [btnToBottom, setBtnToBottom] = useState(false);
 	const [isLoading, setIsloading] = useState(false);
-	const [totalUnread, setTotalUnread] = useState(0)
+	const [totalUnread, setTotalUnread] = useState(0);
 
   	const handleToggelEmoji = () => setEmojiPickerOpen(!emojiPickerOpen);
 	const onSelectEmoji = (emoji) => setChat(chat+emoji.native);
@@ -65,39 +65,40 @@ const Chat = ({...props}) => {
 
 	const handleChatEnter = (e) =>{
 		const chatInput = document.getElementById('chat-input');
-		const scrollHeight = chatInput.scrollHeight - 30;
-		chatInput.style.height = `${24 + (24 * (scrollHeight / 24))}px`;
+		chatInput.style.height = `24px`;
 
-		if (e.key === 'Enter' && !e.shiftKey && chat && chat != '\n') sendChat(props.id);
+		// const chatInput = document.getElementById('chat-input');
+		// const scrollHeight = chatInput.scrollHeight - 30;
+		// chatInput.style.height = `${24 + (24 * (scrollHeight / 24))}px`;
+
+		if (e.key === 'Enter' && !e.shiftKey && chat && chat != '\n') {
+			handleScrollToBottom();
+			sendChat(props.id);
+		};
 	}
 	
 	const scrollToBottom = () => {
 		const chatBox = document.getElementById('box-chat');
 		chatBox.scrollTop = chatBox.scrollHeight;
 	}
- 
-	const handleScroll = () => {
-		const chatBox = document.getElementById('box-chat');
-		if((chatBox.scrollHeight - chatBox.scrollTop) - chatBox.clientHeight <= 25)	{
-			setBtnToBottom(false);
-			setTotalNewChat([]);
-			return true
-		}
-		setBtnToBottom(true);
-	}
 
 	const handleScrollToBottom = () =>{
 		scrollToBottom();
 		setBtnToBottom(false);
-		setTotalNewChat([]);
-		setTotalUnread(0)
+		setTimeout(() => setTotalUnread(0), 5000)
+	}
+ 
+	const handleScroll = () => {
+		const chatBox = document.getElementById('box-chat');
+		if(((chatBox.scrollHeight - chatBox.scrollTop) - chatBox.clientHeight) <= 25) handleScrollToBottom()
+		else setBtnToBottom(true);
 	}
 
 	const getStatusTNC = () => {
-		if(userData !== null){
+		if(userData !== null && props.openChat){
 			axios.get('/v1/agreement/live-chat/status')
 				.then(response => {
-					if (response?.data?.data) setIsStatusTnC(response?.data?.data?.is_signed);
+					if (response?.data?.data)	setIsStatusTnC(response?.data?.data?.is_signed)
 				})
 				.catch(error => console.log(error))	
 		}
@@ -106,22 +107,19 @@ const Chat = ({...props}) => {
 	const handleStatusTNC = () => {
 		axios.get('/v1/agreement/live-chat/sign')
 			.then(response => {
-				if (response?.data?.data) setIsStatusTnC(true);
+				if (response?.data?.data) setShowTnC(false);
 			})
-			.catch(error => console.log(error))	
+			.catch(error => console.log(error));
 	}
 
 	useEffect(() => {
-		if (chats.length > 10 && btnToBottom) {
-			setTotalUnread(totalUnread + 1)
-		}
+		if (chats.length > 10 && btnToBottom) setTotalUnread(totalUnread + 1)
 	}, [chats.length])
 	
 	function loadChatMessages (id) {
 		let firstLoadChat = true;
 		let totalTemp = totalNewChat
 		let chatsTemp = chats;
-		let lastChat = chats;
 		
 		props.listenChatMessages(id)
 			.then(collection => {
@@ -148,7 +146,7 @@ const Chat = ({...props}) => {
 
 							setChats([...chatsTemp]);
 							setTotalNewChat([...totalTemp])
-							if(firstLoadChat) handleScrollToBottom()
+							if(firstLoadChat) handleScrollToBottom();
 							if(userData){
 								const chatInput = document.getElementById('chat-input');
 								chatInput.style.height = `24px`;
@@ -179,6 +177,7 @@ const Chat = ({...props}) => {
 				};
 				let chatsCurrent = chats;
 				setChat("");
+				handleScrollToBottom();
 
 				props.setChat(props.id, newChat.m, user, userData.photo_url)
 					.then(response => {
@@ -190,7 +189,7 @@ const Chat = ({...props}) => {
 						
 						setChats(chatsCurrent);
 						setSendingChat(false);
-						scrollToBottom()
+						handleScrollToBottom()
 					})
 					.catch(() => {
 						newChat.sent = true;
@@ -203,17 +202,19 @@ const Chat = ({...props}) => {
 	useEffect(() =>{
 		initGA();
 		getUser();
-		getStatusTNC();
 	}, [])
 
 	useEffect(() => {
 		if(!isStatusTnC) setTimeout(() =>  setShowTnC(true), 10000)
 	}, [isStatusTnC])
 
-	useEffect(() =>	loadChatMessages(props.id), [props.id])
+	useEffect(() =>	loadChatMessages(props.id), [props.id]);
+	useEffect(() => getStatusTNC(), [userData]);
+
+	console.log(`ini show tnc`, showTnC)
 
   	return(
-		<>
+		<Fragment>
 			<div onClick={props.toggle} className="chat-wrapper" style={{borderRadius:"0px", padding: "15px"}}>
 				<ChevronDownIcon />
 				<label className="chat-text">
@@ -223,29 +224,35 @@ const Chat = ({...props}) => {
 			</div>
  
 			<div onScroll={handleScroll} className="box-chat" id="box-chat" >
-				{!userData ? <NoLogin toggleChat={props.toggle} /> : 
+				{!userData ? <NoLogin toggleChat={props.toggle} channelMain={props.channelMain} /> : 
 				<Fragment>
-					{!isStatusTnC ? <LiveChatTnc toggelUnderstand={handleStatusTNC} toggelSkip={() => setIsStatusTnC(true)} /> : 
+					{showTnC ? <LiveChatTnc toggelUnderstand={handleStatusTNC} toggelSkip={() => setShowTnC(false)} /> : 
 					<Fragment>
 						<div className="chat-messages" >
-						{totalNewChat.length > 0 && <div style={{width:"100%", background: "#282828", fontSize: "10px", display:"flex", justifyContent: "center", alignItems:"center", padding:"4px"}} >{totalNewChat.length} Unread Messages</div>}
-							{chats.map((val, i) => (
-								<Row  className="chat-line">
-									<Col xs={2}>   
-										<Img
-											loader={<PersonOutlineIcon className="chat-avatar" />}
-											unloader={<PersonOutlineIcon className="chat-avatar" />}
-											className="chat-avatar" src={[val.i, '/static/icons/person-outline.png']} />
-									</Col>
-									<Col className="chat-message" xs={10}> 
-										{val?.sent != undefined && val?.failed != undefined ? (val?.sent == true && val?.failed == true ? (<span><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)} 
-										&nbsp;<span className="username">{val?.u}</span> <span className="message">{val?.m}</span>
-									</Col>
-								</Row>
-							))}
+								
+							{chats.map((val, i) => {
+								
+								return(
+									<Fragment>
+										<Row  className="chat-line">
+											<Col xs={2}>   
+												<Img
+													loader={<PersonOutlineIcon className="chat-avatar" />}
+													unloader={<PersonOutlineIcon className="chat-avatar" />}
+													className="chat-avatar" src={[val.i, '/static/icons/person-outline.png']} />
+											</Col>
+											<Col className="chat-message" xs={10}> 
+												{val?.sent != undefined && val?.failed != undefined ? (val?.sent == true && val?.failed == true ? (<span><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)} 
+												&nbsp;<span className="username">{val?.u}</span> <span className="message">{val?.m}</span>
+											</Col>
+										</Row>
+										{totalUnread > 0 && (chats.length - totalUnread) === i+1  && <div style={{width:"100%", background: "#282828", fontSize: "10px", display:"flex", justifyContent: "center", alignItems:"center", padding:"4px"}} >{totalUnread} Unread Messages</div>}
+									</Fragment>
+								)
+							})}
 
-							{btnToBottom  && totalUnread && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "140px", right: "10px"}}> {totalUnread} </div>}
-							{btnToBottom && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "100px", right: "10px"}}> <ExpandMoreIcon /> </div>}
+							{btnToBottom  && totalUnread > 0 && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "90px", right: "10px"}}> {totalUnread} </div>}
+							{btnToBottom && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "50px", right: "10px"}}> <ExpandMoreIcon /> </div>}
 						</div>
 
 						<div className="chat-input-box">
@@ -289,7 +296,7 @@ const Chat = ({...props}) => {
 				</Fragment>
 				}
 			</div>
-		</>
+		</Fragment>
   	)
 }
 

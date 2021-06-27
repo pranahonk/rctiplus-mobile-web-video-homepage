@@ -26,7 +26,7 @@ class Result extends React.Component {
             length: 9
         };
 
-        this.tabs = ['program', 'episode', 'extra', 'clip', 'photo'];
+        this.tabs = ['All','program', 'episode', 'extra', 'clip', 'photo'];
         this.swipe = {};
     }
 
