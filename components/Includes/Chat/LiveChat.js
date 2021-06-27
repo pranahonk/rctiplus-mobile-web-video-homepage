@@ -182,9 +182,7 @@ const Chat = ({...props}) => {
 				props.setChat(props.id, newChat.m, user, userData.photo_url)
 					.then(response => {
 						newChat.sent = true;
-						if (response.status !== 200 || response.data.status.code !== 0) {
-							newChat.failed = true;
-						}
+						if (response.status !== 200 || response.data.status.code !== 0) newChat.failed = true;
 						chatsCurrent[chatsCurrent.length] = newChat;
 						
 						setChats(chatsCurrent);
@@ -199,19 +197,10 @@ const Chat = ({...props}) => {
 		}
 	};
 
-	useEffect(() =>{
-		initGA();
-		getUser();
-	}, [])
-
-	useEffect(() => {
-		if(!isStatusTnC) setTimeout(() =>  setShowTnC(true), 10000)
-	}, [isStatusTnC])
-
-	useEffect(() =>	loadChatMessages(props.id), [props.id]);
+	useEffect(() => { initGA(); scrollToBottom(); getUser() }, []);
 	useEffect(() => getStatusTNC(), [userData]);
-
-	console.log(`ini show tnc`, showTnC)
+	useEffect(() =>	loadChatMessages(props.id), [props.id]);
+	useEffect(() => { if(!isStatusTnC) setTimeout(() =>  setShowTnC(true), 10000) }, [isStatusTnC]);
 
   	return(
 		<Fragment>
@@ -224,76 +213,76 @@ const Chat = ({...props}) => {
 			</div>
  
 			<div onScroll={handleScroll} className="box-chat" id="box-chat" >
-				{!userData ? <NoLogin toggleChat={props.toggle} channelMain={props.channelMain} /> : 
-				<Fragment>
-					{showTnC ? <LiveChatTnc toggelUnderstand={handleStatusTNC} toggelSkip={() => setShowTnC(false)} /> : 
+				{!isLoading && 
 					<Fragment>
-						<div className="chat-messages" >
-								
-							{chats.map((val, i) => {
-								
-								return(
-									<Fragment>
-										<Row  className="chat-line">
-											<Col xs={2}>   
-												<Img
-													loader={<PersonOutlineIcon className="chat-avatar" />}
-													unloader={<PersonOutlineIcon className="chat-avatar" />}
-													className="chat-avatar" src={[val.i, '/static/icons/person-outline.png']} />
-											</Col>
-											<Col className="chat-message" xs={10}> 
-												{val?.sent != undefined && val?.failed != undefined ? (val?.sent == true && val?.failed == true ? (<span><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)} 
-												&nbsp;<span className="username">{val?.u}</span> <span className="message">{val?.m}</span>
-											</Col>
-										</Row>
-										{totalUnread > 0 && (chats.length - totalUnread) === i+1  && <div style={{width:"100%", background: "#282828", fontSize: "10px", display:"flex", justifyContent: "center", alignItems:"center", padding:"4px"}} >{totalUnread} Unread Messages</div>}
-									</Fragment>
-								)
-							})}
+						{!userData ? <NoLogin toggleChat={props.toggle} channelMain={props.channelMain} /> : 
+							<Fragment>
+								{showTnC ? <LiveChatTnc toggelUnderstand={handleStatusTNC} toggelSkip={() => setShowTnC(false)} /> : 
+								<Fragment>
+									<div className="chat-messages" >
+										{chats.map((val, i) => (
+											<Fragment>
+												<Row  className="chat-line">
+													<Col xs={2}>   
+														<Img
+															loader={<PersonOutlineIcon className="chat-avatar" />}
+															unloader={<PersonOutlineIcon className="chat-avatar" />}
+															className="chat-avatar" src={[val.i, '/static/icons/person-outline.png']} />
+													</Col>
+													<Col className="chat-message" xs={10}> 
+														{val?.sent != undefined && val?.failed != undefined ? (val?.sent == true && val?.failed == true ? (<span><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - val?.ts)} />)} 
+														&nbsp;<span className="username">{val?.u}</span> <span className="message">{val?.m}</span>
+													</Col>
+												</Row>
+												{totalUnread > 0 && (chats.length - totalUnread) === i+1  && <div style={{width:"100%", background: "#282828", fontSize: "10px", display:"flex", justifyContent: "center", alignItems:"center", padding:"4px"}} >{totalUnread} Unread Messages</div>}
+											</Fragment>
+										))}
 
-							{btnToBottom  && totalUnread > 0 && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "90px", right: "10px"}}> {totalUnread} </div>}
-							{btnToBottom && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "50px", right: "10px"}}> <ExpandMoreIcon /> </div>}
-						</div>
+										{btnToBottom  && totalUnread > 0 && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "90px", right: "10px"}}> {totalUnread} </div>}
+										{btnToBottom && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "50px", right: "10px"}}> <ExpandMoreIcon /> </div>}
+									</div>
 
-						<div className="chat-input-box">
-							<div ref={inputChatBoxRef} className="chat-box">
-								<Row>
-									<Col xs={1}>
-										<Button className="emoji-button">
-											{emojiPickerOpen ? (<KeyboardIcon onClick={handleToggelEmoji} />) : (<SentimenVerySatifiedIcon onClick={handleToggelEmoji} />)}
-										</Button>
-									</Col>
-									<Col xs={9}>
-										<Input
-											onKeyDown={handleChatEnter}
-											onChange={e => setChat(e.target.value)}
-											value={chat}
-											type="textarea"
-											id="chat-input"
-											placeholder="Start Chatting"
-											className="chat-input"
-											maxLength={250}
-											rows={1} 
-										/>
-									</Col>
-									<Col xs={1}>
-										<Button onClick={() => sendChat(props.id)} className="send-button" >
-											<SendIcon />
-										</Button>
-									</Col>
-								</Row>
-							</div>
+									<div className="chat-input-box">
+										<div ref={inputChatBoxRef} className="chat-box">
+											<Row>
+												<Col xs={1}>
+													<Button className="emoji-button">
+														{emojiPickerOpen ? (<KeyboardIcon onClick={handleToggelEmoji} />) : (<SentimenVerySatifiedIcon onClick={handleToggelEmoji} />)}
+													</Button>
+												</Col>
+												<Col xs={9}>
+													<Input
+														onKeyDown={handleChatEnter}
+														onChange={e => setChat(e.target.value)}
+														value={chat}
+														type="textarea"
+														id="chat-input"
+														placeholder="Start Chatting"
+														className="chat-input"
+														maxLength={250}
+														rows={1} 
+													/>
+												</Col>
+												<Col xs={1}>
+													<Button onClick={() => sendChat(props.id)} className="send-button" >
+														<SendIcon />
+													</Button>
+												</Col>
+											</Row>
+										</div>
 
-							<Picker
-								onSelect={emoji => onSelectEmoji(emoji)}
-								showPreview={false}
-								darkMode
-								style={{ display: emojiPickerOpen ? 'block' : 'none' }} 
-							/>			
-						</div>
+										<Picker
+											onSelect={emoji => onSelectEmoji(emoji)}
+											showPreview={false}
+											darkMode
+											style={{ display: emojiPickerOpen ? 'block' : 'none' }} 
+										/>			
+									</div>
+								</Fragment>
+								}
+							</Fragment>
+						}
 					</Fragment>
-					}
-				</Fragment>
 				}
 			</div>
 		</Fragment>
