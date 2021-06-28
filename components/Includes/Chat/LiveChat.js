@@ -45,23 +45,17 @@ const Chat = ({...props}) => {
   	const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
 	const [sendingChat, setSendingChat] = useState(false);
 	const [btnToBottom, setBtnToBottom] = useState(false);
-	const [isLoading, setIsloading] = useState(false);
 	const [totalUnread, setTotalUnread] = useState(0);
 
   	const handleToggelEmoji = () => setEmojiPickerOpen(!emojiPickerOpen);
 	const onSelectEmoji = (emoji) => setChat(chat+emoji.native);
 
 	const getUser = () => {
-		setIsloading(true)
 		axios.get('/v3/user')
 		.then(response => {
-		  	if (response.data.data) {
-				setUserData(response.data.data);
-				setIsloading(false);
-			}
+		  	if (response.data.data) setUserData(response?.data?.data);
 		})
-		.catch(error => setIsloading(false)
-		);
+		.catch(error => setIsloading(false));
 	}
 
 	const handleChatEnter = (e) =>{
@@ -214,7 +208,6 @@ const Chat = ({...props}) => {
 			</div>
  
 			<div onScroll={handleScroll} className="box-chat" id="box-chat" >
-				{!isLoading && 
 					<Fragment>
 						{!userData ? <NoLogin toggleChat={props.toggle} channelMain={props.channelMain} /> : 
 							<Fragment>
@@ -235,11 +228,11 @@ const Chat = ({...props}) => {
 														&nbsp;<span className="username">{val?.u}</span> <span className="message">{val?.m}</span>
 													</Col>
 												</Row>
-												{totalUnread > 0 && (chats.length - totalUnread) === i+1  && <div style={{width:"100%", background: "#282828", fontSize: "10px", display:"flex", justifyContent: "center", alignItems:"center", padding:"4px"}} >{totalUnread} Unread Messages</div>}
+												{totalUnread > 0 && (chats.length - totalUnread) === i+1  && <div style={{width:"100%", background: "#282828", fontSize: "10px", display:"flex", justifyContent: "center", alignItems:"center", padding:"4px"}} >{totalUnread > 99 ? "99+" : totalUnread} Unread Messages</div>}
 											</Fragment>
 										))}
 
-										{btnToBottom  && totalUnread > 0 && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "90px", right: "10px"}}> {totalUnread} </div>}
+										{btnToBottom  && totalUnread > 0 && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "90px", right: "10px"}}> {totalUnread > 99 ? "99+" : totalUnread} </div>}
 										{btnToBottom && <div onClick={handleScrollToBottom} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "50px", right: "10px"}}> <ExpandMoreIcon /> </div>}
 									</div>
 
@@ -284,7 +277,6 @@ const Chat = ({...props}) => {
 							</Fragment>
 						}
 					</Fragment>
-				}
 			</div>
 		</Fragment>
   	)
