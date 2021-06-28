@@ -395,7 +395,7 @@ class Tv extends React.Component {
 										this.selectCatchup(this.props.context_data.epg_id, 'url');
 									}
 									this.props.setChannelCode(this.state.selected_live_event.channel_code);
-									this.props.setCatchupDate(formatDateWord(this.currentDate));
+									
 									if (epgLoaded && catchupLoaded) {
 										this.props.unsetPageLoader();
 									}
@@ -415,7 +415,7 @@ class Tv extends React.Component {
 									this.selectCatchup(this.props.context_data.epg_id, 'url');
 								}
 								this.props.setChannelCode(this.state.selected_live_event.channel_code);
-								this.props.setCatchupDate(formatDateWord(this.currentDate));
+								
 								if (epgLoaded && catchupLoaded) {
 									this.props.unsetPageLoader();
 								}
