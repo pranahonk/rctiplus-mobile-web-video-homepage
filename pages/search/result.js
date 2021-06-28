@@ -19,14 +19,14 @@ class Result extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            active_tab: 'program',
+            active_tab: 'all',
             results: [],
             meta: {},
             show_more_allowed: {},
             length: 9
         };
 
-        this.tabs = ['program', 'episode', 'extra', 'clip', 'photo'];
+        this.tabs = ['all', 'program', 'episode', 'catchup', 'extra'];
         this.swipe = {};
     }
 
@@ -79,7 +79,7 @@ class Result extends React.Component {
                         <TabPane key={i} tabId={t}>
                             <div className="content-search">
                                 <div className="header-list">
-                                    <p className="title">Search Result</p>
+                                    <p className="title">Result</p>
                                 </div>
                                 <div className="content-list">
                                     
