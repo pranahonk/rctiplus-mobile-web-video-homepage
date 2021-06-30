@@ -14,7 +14,7 @@ import KeyboardIcon from '@material-ui/icons/Keyboard';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { ChevronDownIcon} from "../../../components/IconComponents"
 import NoLogin from "./LiveChatNoLogin";
-// import LiveChatTnc from "./LiveChatTnC"
+import LiveChatTnc from "./LiveChatTnC"
 
 import '../../../assets/scss/components/tv-v2.scss';
 import 'emoji-mart/css/emoji-mart.css';
@@ -211,7 +211,7 @@ const Chat = ({...props}) => {
 					<Fragment>
 						{!userData ? <NoLogin toggleChat={props.toggle} channelMain={props.channelMain} /> : 
 							<Fragment>
-								{/* {showTnC ? <LiveChatTnc toggelUnderstand={handleStatusTNC} toggelSkip={() => setShowTnC(false)} /> :  */}
+								{showTnC ? <LiveChatTnc toggelUnderstand={handleStatusTNC} toggelSkip={() => setShowTnC(false)} /> : 
 								<Fragment>
 									<div className="chat-messages" >
 										{chats.map((val, i) => (
@@ -273,7 +273,7 @@ const Chat = ({...props}) => {
 										/>			
 									</div>
 								</Fragment>
-								{/* } */}
+								} 
 							</Fragment>
 						}
 					</Fragment>
