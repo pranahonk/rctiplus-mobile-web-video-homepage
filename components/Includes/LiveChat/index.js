@@ -911,10 +911,7 @@ class Tv extends React.Component {
 								<span>{this.state.block_user.message}</span>
 							</div>
 						</div>
-<<<<<<< HEAD
 					</div>
-=======
-					</div> */}
 
 							<div  className="chat-messages" id="chat-messages">
 								{this.state.isLogin ? 
@@ -944,7 +941,6 @@ class Tv extends React.Component {
 								: 
 									<NoLogin toggleChat={this.toggleChat.bind(this)} />}
 							</div>
->>>>>>> 7753d0a2 (update: live chat tnc)
 
 					<div  className="chat-messages" id="chat-messages">
 						{this.props.dataChats.map((chat, i) => (
