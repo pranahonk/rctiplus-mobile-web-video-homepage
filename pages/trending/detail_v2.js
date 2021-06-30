@@ -525,8 +525,9 @@ class Detail extends React.Component {
         };
 
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
-        const newsTitle = cdata.title.replace(/<\w+>|<\/\w+>/gmi, '');
-        const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
+        const newsTitle = cdata.meta_title.replace(/<\w+>|<\/\w+>/gmi, '');
+        const newsContent = cdata.meta_description?.replace( /(<([^>]+)>)/ig, '')
+        const newsKeyword = cdata.meta_keyword?.replace( /(<([^>]+)>)/ig, '')
         const widthImg = 600;
         const coverImg = imgURL(cdata.cover, cdata.image, widthImg, assets_url, this.props?.general?.img_logo || null)
         const heightImg = (widthImg*56) / 100;
@@ -556,15 +557,15 @@ class Detail extends React.Component {
             "description": newsContent
         }
         const canonicalFullUrl = oneSegment['desktop'] + encodeURI(asPath).replace('trending/', 'news/');
-
+        console.log('this props >>', this.props)
         return (
-            <Layout title={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title}>
+            <Layout title={newsTitle || this.props?.kanal?.title}>
                 <Head>
-                    <meta name="title" content={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title} />
-                    <meta name="keywords" content={newsTitle || this.props?.kanal?.keyword} />
+                    <meta name="title" content={newsTitle || this.props?.kanal?.title} />
+                    <meta name="keywords" content={newsKeyword || this.props?.kanal?.keyword} />
                     <meta name="description" content={newsContent || this.props?.kanal?.description} />
-                    <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
-                    <meta property="og:description" content={newsContent} />
+                    <meta property="og:title" content={newsTitle || this.props?.kanal?.title} />
+                    <meta property="og:description" content={newsContent || this.props?.kanal?.description} />
                     <meta property="og:image" itemProp="image" content={coverImg} />
                     <meta property="og:type" content="website" />
                     <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
@@ -577,9 +578,9 @@ class Detail extends React.Component {
                     <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
                     <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
                     <meta name="twitter:image" content={coverImg} />
-                    <meta name="twitter:title" content={`${newsTitle} - News+ on RCTI+`} />
-                    <meta name="twitter:image:alt" content={newsTitle} />
-                    <meta name="twitter:description" content={newsContent} />
+                    <meta name="twitter:title" content={newsTitle || this.props?.kanal?.title} />
+                    <meta name="twitter:image:alt" content={newsTitle || this.props?.kanal?.title} />
+                    <meta name="twitter:description" content={newsContent || this.props?.kanal?.description} />
                     <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <link rel="canonical" href={canonicalFullUrl} />

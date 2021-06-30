@@ -103,6 +103,7 @@ class Trending_v2 extends React.Component {
         if(!error_code_kanal || !error_code_category) {
             dataCategory= { data: [...data_category.data, ...data_kanal.data ] }
         }
+        console.log('metaSeo >>', metaSeo, ' ctx.query >>', isEmpty(ctx.query))
         if(isEmpty(ctx.query)) {
             metaSeo = [{title: SITEMAP.trending.title, description: SITEMAP.trending.description, keyword: SITEMAP.trending.keywords}]
         } else {
@@ -593,15 +594,21 @@ class Trending_v2 extends React.Component {
         const title = (this.props?.metaSeo?.title) + ' - ' + (site_name)
         const widthImg = 600;
         const heightImg = (widthImg*56) / 100;
+        const {data_category: {data}, query: {subcategory_id, subcategory_title}} = this.props
+        const categoryDetail = data.filter((filter) => filter.id === parseInt(subcategory_id))
+        let metaSEO = {}
+        if (categoryDetail.length > 0){
+            metaSEO = categoryDetail[0]
+        }
         return (
-            <Layout title={title}>
+            <Layout title={metaSEO.title || title}>
                 <Head>
-                    <meta name="title" content={title} />
-                    <meta name="description" content={this.props?.metaSeo?.description} />
-                    <meta name="keywords" content={this.props?.metaSeo?.keyword} />
-                    <meta property="og:title" content={this.props.metaOg?.title || ''} />
-                    <meta property="og:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
-                    <meta property="og:image" itemProp="image" content={this.props.metaOg?.cover || this.props?.general?.img_logo} />
+                    <meta name="title" content={metaSEO.title || title} />
+                    <meta name="description" content={metaSEO.description || this.props?.metaSeo?.description} />
+                    <meta name="keywords" content={metaSEO.keyword || this.props?.metaSeo?.keyword} />
+                    <meta property="og:title" content={metaSEO.title || this.props.metaOg?.title} />
+                    <meta property="og:description" content={metaSEO.description || this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
+                    <meta property="og:image" itemProp="image" content={this.props?.general?.img_logo || this.props.metaOg?.cover} />
                     <meta property="og:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
@@ -614,8 +621,8 @@ class Trending_v2 extends React.Component {
                     <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
                     <meta name="twitter:image" content={this.props.metaOg?.cover || this.props?.general?.img_logo} />
                     <meta name="twitter:image:alt" content={this.props.metaOg?.title || ''} />
-                    <meta name="twitter:title" content={this.props.metaOg?.title || ''} />
-                    <meta name="twitter:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
+                    <meta name="twitter:title" content={metaSEO.title || this.props.metaOg?.title || ''} />
+                    <meta name="twitter:description" content={metaSEO.description || this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
                     <meta name="twitter:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta name="twitter:domain" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <link rel="canonical" href={oneSegment + encodeURI(asPath).replace('trending/', 'news/')} />
