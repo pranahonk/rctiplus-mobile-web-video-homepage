@@ -103,7 +103,6 @@ class Trending_v2 extends React.Component {
         if(!error_code_kanal || !error_code_category) {
             dataCategory= { data: [...data_category.data, ...data_kanal.data ] }
         }
-        console.log('metaSeo >>', metaSeo, ' ctx.query >>', isEmpty(ctx.query))
         if(isEmpty(ctx.query)) {
             metaSeo = [{title: SITEMAP.trending.title, description: SITEMAP.trending.description, keyword: SITEMAP.trending.keywords}]
         } else {

@@ -557,7 +557,6 @@ class Detail extends React.Component {
             "description": newsContent
         }
         const canonicalFullUrl = oneSegment['desktop'] + encodeURI(asPath).replace('trending/', 'news/');
-        console.log('this props >>', this.props)
         return (
             <Layout title={newsTitle || this.props?.kanal?.title}>
                 <Head>
