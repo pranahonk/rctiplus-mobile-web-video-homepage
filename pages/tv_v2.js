@@ -123,7 +123,7 @@ class TV_V2 extends React.Component {
                 <div ref={ this.playerContainerRef }>
                   <PlayerTv />
                 </div>
-                <ChannelList toggle={() => this.handleChat(this)} />
+                <ChannelList toggle={() => this.setState({openChat: false})} />
                 <div ref={ this.tvTabRef }>
                   <WeekList />
                 </div>
