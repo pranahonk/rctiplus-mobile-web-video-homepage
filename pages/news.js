@@ -117,7 +117,7 @@ class Trending_v2 extends React.Component {
                 'Authorization': data_news.data.news_token
             }
         });
-        console.log('hello general >>', general)
+
         let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
         let gs = {};
         const data_general = await general.json();
@@ -133,7 +133,8 @@ class Trending_v2 extends React.Component {
         let newsData = {}
         if (!error_code && isArray(data.data) && data.data.length > 0){
             newsData = data.data[0]
-            newsData['cover'] = imagePath(newsData.cover, newsData.image, 600, data.meta.assets_url, gs['img_logo'])
+            newsData['cover'] = imagePath(newsData.cover, newsData.image, 600, data.meta.assets_url, `${data.meta.assets_url}/600/${gs['img_logo']}`)
+            newsData['content'] = newsData.content.substring(0, 165) + '....'
         }
         return {
             query: ctx.query,
@@ -593,21 +594,24 @@ class Trending_v2 extends React.Component {
         const title = (this.props?.metaSeo?.title) + ' - ' + (site_name)
         const widthImg = 600;
         const heightImg = (widthImg*56) / 100;
-        const {data_category: {data}, query: {subcategory_id, subcategory_title}} = this.props
+        const {data} = this.props.data_category
+        let {subcategory_id} = this.props.query
+        subcategory_id = isEmpty(subcategory_id) ? 15 : subcategory_id; 
         const categoryDetail = data.filter((filter) => filter.id === parseInt(subcategory_id))
         let metaSEO = {}
         if (categoryDetail.length > 0){
             metaSEO = categoryDetail[0]
         }
+
         return (
             <Layout title={metaSEO.title || title}>
                 <Head>
                     <meta name="title" content={metaSEO.title || title} />
                     <meta name="description" content={metaSEO.description || this.props?.metaSeo?.description} />
                     <meta name="keywords" content={metaSEO.keyword || this.props?.metaSeo?.keyword} />
-                    <meta property="og:title" content={metaSEO.title || this.props.metaOg?.title} />
-                    <meta property="og:description" content={metaSEO.description || this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
-                    <meta property="og:image" itemProp="image" content={this.props?.general?.img_logo || this.props.metaOg?.cover} />
+                    <meta property="og:title" content={this.props.metaOg?.title} />
+                    <meta property="og:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
+                    <meta property="og:image" itemProp="image" content={this.props.metaOg?.cover || this.props?.general?.img_logo} />
                     <meta property="og:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
@@ -620,8 +624,8 @@ class Trending_v2 extends React.Component {
                     <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
                     <meta name="twitter:image" content={this.props.metaOg?.cover || this.props?.general?.img_logo} />
                     <meta name="twitter:image:alt" content={this.props.metaOg?.title || ''} />
-                    <meta name="twitter:title" content={metaSEO.title || this.props.metaOg?.title || ''} />
-                    <meta name="twitter:description" content={metaSEO.description || this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
+                    <meta name="twitter:title" content={this.props.metaOg?.title || metaSEO.title} />
+                    <meta name="twitter:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
                     <meta name="twitter:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta name="twitter:domain" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <link rel="canonical" href={oneSegment + encodeURI(asPath).replace('trending/', 'news/')} />
