@@ -50,6 +50,7 @@ const JwPlayer = (props) => {
     hlsjsdefault: true,
     aspectratio: '16:9',
     displaytitle: true,
+    generateSEOMetadata: true,
     // setFullscreen: true,
     stretching: 'uniform',
     height: 180,
