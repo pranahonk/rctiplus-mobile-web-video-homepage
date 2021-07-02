@@ -105,10 +105,11 @@ module.exports = (window => {
 
 		const parsingMessage = (event) => {
 			if (!isJson(event.data)) return;
+			// console.log(event.data, "-----------------------------")
 			const data = JSON.parse(event.data);
 			const storyViewer = query('#zuck-modal .viewing');
 
-			if (data.state) {
+			if (data?.state) {
 				switch(data.state) {
 					case 'init':
 						{
@@ -182,19 +183,11 @@ module.exports = (window => {
 						}
 						break;
 					case 'touchNext':
-					{
-						// console.log("anung touchNext", zuck)
-						// modal.next();
 						zuck.nextItem(false, true)
-						// console.log(zuck)
-					}
-					break;
+						break;
 					case 'touchPrev':
-					{
-						// console.log("anung touchPrev", zuck)
 						zuck.navigateItem('previous', true)
-					}
-					break;
+						break;
 					case 'onmute':
 						{
 							// TEMP FIX
@@ -205,6 +198,12 @@ module.exports = (window => {
 							} */
 						}
 						break;
+					case "holdStory":
+						storyViewer.classList.add('paused');
+						break
+					case "releaseStory":
+						storyViewer.classList.remove('paused');
+						break
 				}
 			}
 		}
@@ -623,6 +622,8 @@ module.exports = (window => {
 			const moveStoryItem = function (direction) {
 				const modalContainer = query('#zuck-modal');
 
+				googletag.pubads().clear()
+
 				let target = '';
 				let useless = '';
 				let transform = 0;
@@ -969,65 +970,51 @@ module.exports = (window => {
 
 			// Story Ads
 			const createStoryViewerAds = function (storyID, storyAdsItems) {
-				each(storyAdsItems, (i, item) => {
-					if (item.type == 'ads') {
-						window.googletag = window.googletag || {cmd: []};
-						googletag.cmd.push(function() {
-							item['adsSlot'] = googletag.defineSlot(item.src, ['fluid'], item.preview).addService(googletag.pubads());
-							if (taData.length > 0) {
+				window.googletag = window.googletag || {cmd: []}
+
+				storyAdsItems.forEach(item => {
+					if (item.type === "ads") {
+						if (!item["adsSlot"]) {
+							googletag.cmd.push(function() {
+								item['adsSlot'] = googletag.defineSlot(item.src, ['fluid'], item.preview).addService(googletag.pubads());
+								
+								if (taData.length > 0) {
 									for (const custParam of taData) {
-											googletag.pubads().setTargeting(custParam.name, custParam.value);
+										googletag.pubads().setTargeting(custParam.name, custParam.value);
 									}
-							}
-							googletag.pubads().enableSingleRequest();
-							googletag.pubads().collapseEmptyDivs();
-							googletag.enableServices();
-						});
+								}
+								googletag.pubads().enableSingleRequest();
+								googletag.pubads().collapseEmptyDivs();
+								googletag.enableServices();
+							});
+						}
+						else {
+							googletag.cmd.push(function() {
+								googletag.pubads().refresh()
+							})
+						}
 
 						googletag.cmd.push(function() {
 							googletag.display(item.preview);
-						});
+	
+							googletag.pubads().addEventListener('slotOnload', () => {
+								const parentElement = document.querySelector('.slides');
+								const adsFrame = document.querySelector(`#${item.preview} > div > iframe`)
+								adsFrame.style.height = parentElement.offsetHeight + 'px'
+	
+								const msg = {
+									state: 'init',
+									storyId: storyID,
+									itemId: item.id
+								}
+	
+								adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*')
+							})
+						})
 
 						item['destroyed'] = false;
 					}
-				});
-
-				const initAds = (sID, item) => {
-					setTimeout(function initializingAds() {
-						const adsFrame = document.querySelector(`#${item.preview} > div > iframe`);
-						if (adsFrame) {
-							// test post message
-							const msg = {
-								state: 'init',
-								storyId: sID,
-								itemId: item.id
-							};
-
-							//console.log('message string', JSON.stringify(msg))
-							adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
-
-							if (item.contentType == 'none') {
-								setTimeout(initializingAds, 300);
-							}
-						}
-					}, 300);
-				}
-
-				const story_id = storyID;
-				setTimeout(function setIFrameHeight() {
-					const parentElement = document.querySelector('.slides');
-					each(storyAdsItems, (i, item) => {
-						if (item.type == 'ads') {
-							const adsFrame = document.querySelector(`#${item.preview} > div > iframe`);
-							if (adsFrame) {
-								adsFrame.style.height = parentElement.offsetHeight + 'px';
-								initAds(story_id, item);
-							} else {
-								setTimeout(setIFrameHeight, 100);
-							}
-						}
-					});
-				}, 100);
+				})
 			}
 
 			const createStoryTouchEvents = function (modalSliderElement) {
@@ -1036,7 +1023,6 @@ module.exports = (window => {
 
 				const modalSlider = modalSliderElement;
 				const touchElement = query(`#zuck-modal .story-viewer[data-story-id="${zuck.internalData['currentStory']}"]`);
-				// console.log(touchElement)
 
 				let position = {};
 				let touchOffset = void 0;
@@ -1077,7 +1063,6 @@ module.exports = (window => {
 					};
 
 					if (pageY < 80 || pageY > (modalContainer.slideHeight - 80)) {
-						// console.log('touch invalid:', modalContainer.slideHeight, pageY);
 						touchOffset.valid = false;
 						return;
 					} else {
@@ -1163,7 +1148,6 @@ module.exports = (window => {
 									const storyData = zuck.data[storyId];
 									const currentItem = storyData.currentItem || 0;
 									const item = storyData.items[currentItem];
-									//console.log(window.screen);
 									if (
 										lastTouchOffset.x > window.screen.width / 3 ||
 										!option('previousTap')
@@ -1173,8 +1157,6 @@ module.exports = (window => {
 									else {
 										homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_swipe_previous');
 									}
-
-									// console.log('MOVE ITEM');
 									moveStoryItem(direction);
 								} else {
 
@@ -1289,7 +1271,6 @@ module.exports = (window => {
 
 			return {
 				show(storyId, page) {
-					// console.log('SHOWWWWW');
 					// const storyData = zuck.data[storyId];
 					// const currentItem = storyData['currentItem'] || 0;
 					// const item = storyData.items[currentItem];
@@ -1443,10 +1424,9 @@ module.exports = (window => {
 							if (item.mpdPlayer) {
 								item.mpdPlayer.destroy();
 							}
-							item.destroyed = true;
-						} else if (item.type == 'ads') {
-							item.destroyed = googletag.destroySlots();
 						}
+						googletag.pubads().clear()
+						item.destroyed = true;
 					})
 
 					const callback = function () {
@@ -2035,6 +2015,10 @@ module.exports = (window => {
 					}
 				}
 			}
+			
+			// refresh the state of the ads to prevent overlapping sounds 
+			// between switching over ads story items
+			googletag.pubads().refresh()
 		};
 
 		const init = function () {
