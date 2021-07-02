@@ -11,6 +11,8 @@ module.exports = (window => {
 		return document.querySelectorAll(qs)[0];
 	};
 
+	let taData = null
+
 	const get = function (array, what) {
 		if (array) {
 			return array[what] || '';
@@ -105,7 +107,7 @@ module.exports = (window => {
 			if (!isJson(event.data)) return;
 			const data = JSON.parse(event.data);
 			const storyViewer = query('#zuck-modal .viewing');
-	
+
 			if (data.state) {
 				switch(data.state) {
 					case 'init':
@@ -891,7 +893,6 @@ module.exports = (window => {
 				each(storyViewer.querySelectorAll('.close, .back'), (i, el) => {
 					el.onclick = e => {
 						e.preventDefault();
-						console.log("test")
 						const currentItem = storyData.currentItem || 0;
 						const item = storyData.items[currentItem];
 						homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_close_button_clicked');
@@ -973,6 +974,11 @@ module.exports = (window => {
 						window.googletag = window.googletag || {cmd: []};
 						googletag.cmd.push(function() {
 							item['adsSlot'] = googletag.defineSlot(item.src, ['fluid'], item.preview).addService(googletag.pubads());
+							if (taData.length > 0) {
+									for (const custParam of taData) {
+											googletag.pubads().setTargeting(custParam.name, custParam.value);
+									}
+							}
 							googletag.pubads().enableSingleRequest();
 							googletag.pubads().collapseEmptyDivs();
 							googletag.enableServices();
@@ -1030,7 +1036,7 @@ module.exports = (window => {
 
 				const modalSlider = modalSliderElement;
 				const touchElement = query(`#zuck-modal .story-viewer[data-story-id="${zuck.internalData['currentStory']}"]`);
-				console.log(touchElement)
+				// console.log(touchElement)
 
 				let position = {};
 				let touchOffset = void 0;
@@ -1071,7 +1077,7 @@ module.exports = (window => {
 					};
 
 					if (pageY < 80 || pageY > (modalContainer.slideHeight - 80)) {
-						console.log('touch invalid:', modalContainer.slideHeight, pageY);
+						// console.log('touch invalid:', modalContainer.slideHeight, pageY);
 						touchOffset.valid = false;
 						return;
 					} else {
@@ -1168,7 +1174,7 @@ module.exports = (window => {
 										homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_swipe_previous');
 									}
 
-									console.log('MOVE ITEM');
+									// console.log('MOVE ITEM');
 									moveStoryItem(direction);
 								} else {
 
@@ -2085,7 +2091,7 @@ module.exports = (window => {
 
 
 	/* Helpers */
-	ZuckJS.buildTimelineItem = (id, photo, name, link, lastUpdated, items) => {
+	ZuckJS.buildTimelineItem = (id, photo, name, link, lastUpdated, items, taGpt) => {
 		let timelineItem = {
 			id,
 			photo,
@@ -2094,6 +2100,8 @@ module.exports = (window => {
 			lastUpdated,
 			items: []
 		};
+		taData = taGpt
+
 
 		each(items, (itemIndex, itemArgs) => {
 			timelineItem.items.push(ZuckJS.buildStoryItem.apply(ZuckJS, itemArgs));
