@@ -442,6 +442,16 @@ class Stories extends React.Component {
                 '' // videoType
             ]);
         }
+        
+        // Creation of source data for targetting ads
+        const targettingAdsData = [
+            ...this.props.ads?.data_ta,
+            {
+                name: "logged_in", 
+                value : String(this.props.user.data !== null)
+            }
+        ]
+
 
         const timeline = this.state.zuckJS.buildTimelineItem(
             this.storyId, //id
@@ -450,8 +460,8 @@ class Stories extends React.Component {
             '', //link
             false, //lastupdated
             items, //items
-            this.props.ads?.data_ta
-        );
+            targettingAdsData // data for targetting ads, the type is Array of objects
+        )
 
         this.storyId = this.storyId + 1;
 
@@ -630,7 +640,6 @@ class Stories extends React.Component {
     }
 
     render() {
-        console.log(`ini adalah storiesss`, this.state.stories);
         const timelineItems = []
         this.state.stories.forEach((story, storyId) => {
             const storyItems = [];
