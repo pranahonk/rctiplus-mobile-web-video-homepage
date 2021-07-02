@@ -72,21 +72,22 @@ class NavTrendingSearch extends Component {
                                     const params = new URLSearchParams(window.location.search);
                                     if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0 && this.props.router.asPath.indexOf('utm_source') === -1) {
                                         newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
-                                        alert('if pertama', document.URL);
                                         if(!document.referrer.includes("rctiplus")){
-                                          Router.push('/news' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&header=0&idfa=${params.get('idfa') ? params.get('idfa') : '00000000-0000-0000-0000-000000000000'}&core_token=${params.get('core_token') ? params.get('core_token') : process.env.CORE_TOKEN}` : ''}`);
+                                            alert('/news' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&header=0&idfa=${params.get('idfa') ? params.get('idfa') : '00000000-0000-0000-0000-000000000000'}&core_token=${params.get('core_token') ? params.get('core_token') : process.env.CORE_TOKEN}` : ''}`);
+                                            Router.push('/news' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&header=0&idfa=${params.get('idfa') ? params.get('idfa') : '00000000-0000-0000-0000-000000000000'}&core_token=${params.get('core_token') ? params.get('core_token') : process.env.CORE_TOKEN}` : ''}`);
                                         }else{
-                                          Router.back();
+                                            alert(document.referrer)
+                                            Router.back();
                                         }
 
                                     }
                                     else if (this.props.router.asPath.indexOf('utm_source') > -1) {
-                                        alert('elif', document.URL);
+                                        alert('/news' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&header=0&idfa=${params.get('idfa') ? params.get('idfa') : '00000000-0000-0000-0000-000000000000'}&core_token=${params.get('core_token') ? params.get('core_token') : process.env.CORE_TOKEN}` : ''}`);
                                         let Isplatform = this.props.router.asPath.indexOf('RplusaOsApp') > -1 ? `?platform=${platform}` : '';
                                         Router.push('/news' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&header=0&idfa=${params.get('idfa') ? params.get('idfa') : '00000000-0000-0000-0000-000000000000'}&core_token=${params.get('core_token') ? params.get('core_token') : process.env.CORE_TOKEN}` : ''}`);
                                     }
                                     else {
-                                        alert('else', document.URL);
+                                        alert(document.referrer)
                                         Router.back();
                                     }
                                 }} style={{color: 'white'}}>
