@@ -161,7 +161,8 @@ class Stories extends React.Component {
 
         }
         
-        if(this.props.homepage){
+        if (this.props.homepage) {
+
             this.setState({
                 zuckJS: require('../../../assets/js/zuck')
             }, () => {
@@ -448,7 +449,8 @@ class Stories extends React.Component {
             'ads_' + (this.storyId - 1), //name
             '', //link
             false, //lastupdated
-            items //items
+            items, //items
+            this.props.ads?.data_ta
         );
 
         this.storyId = this.storyId + 1;
