@@ -172,12 +172,12 @@ export const getUserData = () => {
         try {
             const response = await axios.get(`/v3/user`);
 
+            dispatch({
+                type: 'USER_DATA',
+                data: response.data.data,
+                meta: response.data.meta
+            });
             if (response.status === 200 && response.data.status.code === 0) {
-                dispatch({
-                    type: 'USER_DATA',
-                    data: response.data.data,
-                    meta: response.data.meta
-                });
                 resolve(response);
             }
             else {

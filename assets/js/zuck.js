@@ -11,7 +11,7 @@ module.exports = (window => {
 		return document.querySelectorAll(qs)[0];
 	};
 
-	let taData = null
+	let taData = []
 
 	const get = function (array, what) {
 		if (array) {
@@ -105,7 +105,6 @@ module.exports = (window => {
 
 		const parsingMessage = (event) => {
 			if (!isJson(event.data)) return;
-			// console.log(event.data, "-----------------------------")
 			const data = JSON.parse(event.data);
 			const storyViewer = query('#zuck-modal .viewing');
 
@@ -978,11 +977,13 @@ module.exports = (window => {
 							googletag.cmd.push(function() {
 								item['adsSlot'] = googletag.defineSlot(item.src, ['fluid'], item.preview).addService(googletag.pubads());
 								
-								if (taData.length > 0) {
-									for (const custParam of taData) {
-										googletag.pubads().setTargeting(custParam.name, custParam.value);
-									}
-								}
+								// Set targetting ads for each story ads items
+								// This process will be omitted when array is an empty array
+								taData.forEach(({ name, value }) => {
+									console.log(name, value, "from zuck")
+									googletag.pubads().setTargeting(name, value)
+								})
+
 								googletag.pubads().enableSingleRequest();
 								googletag.pubads().collapseEmptyDivs();
 								googletag.enableServices();
