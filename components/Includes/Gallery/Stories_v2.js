@@ -431,7 +431,7 @@ class Stories extends React.Component {
             items.push([
                 item.id + Math.floor(Math.random() * Math.floor(999999)) + Math.floor(Math.random() * Math.floor(99)), // id
                 'ads', // type
-                5, // durations in string
+                10, // durations in string
                 item.path, // item.path src
                 item.div_gpt, // item.div_gpt preview
                 false, // link
