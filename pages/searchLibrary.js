@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -17,6 +17,8 @@ import Layout from '../components/Layouts/Default_v2';
 import NavSearch from '../components/Includes/Navbar/NavSearch';
 import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
 import SearchResults from './search/result';
+import PopularSearch from './search/popular';
+import HistorySearch from './search/history'
 
 import { Row, Col } from 'reactstrap';
 
@@ -272,6 +274,7 @@ class Explores extends React.Component {
 
 	render() {
 		const metadata = this.getMetadata();
+		// const { search_popular } = useSelector(state => state.searches)
 		return (
 			<Layout title={metadata.title}>
 				<Head>
@@ -301,7 +304,15 @@ class Explores extends React.Component {
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
 				<NavSearch />
 				<div className="container-box-e">
-          <SearchResults resolution={this.state.resolution}/>
+					{this.props.searches.search_results.length > 0 ?
+						<SearchResults resolution={this.state.resolution}/>
+						:
+						<>
+							<PopularSearch />
+							<HistorySearch />
+						</>
+					}
+          			{/* <SearchResults resolution={this.state.resolution}/> */}
 				</div>
 			</Layout>
 		);

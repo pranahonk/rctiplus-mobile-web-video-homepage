@@ -21,6 +21,10 @@ const initialState = {
         photo: false
     },
     search_status: false,
+    search_all: [],
+    search_popular: [],
+    search_history: [],
+    search_suggestion: [],
 };
 
 export default (state = initialState, action) => {
@@ -29,13 +33,21 @@ export default (state = initialState, action) => {
         case 'SEARCH_BY_GENRE':
         case 'GET_RECOMMENDATION':
         case 'GET_RELATED_PROGRAM':
-            return Object.assign({}, state, { 
-                data: action.data, 
-                meta: action.meta, 
-                status: action.status
-            });
+            return Object.assign({}, state, {  data: action.data,   meta: action.meta,  status: action.status});
         case 'SET_SHOW_MORE_ALLOWED':
             return Object.assign({}, state, { show_more_allowed: action.allowed });
+        case 'SET_ACTIVE_TAB':
+            return Object.assign({}, state, { active_tab: action.tab });
+        case 'SET_SEARCH_STATUS':
+            return Object.assign({}, state, { search_status: false });
+        case 'SEARCH_ALL':
+            return Object.assign({}, state, { search_all: action.all });
+        case 'GET_SEARCH_POPULAR':
+            return Object.assign({}, state, { search_popular: action.popular });
+        case 'GET_SEARCH_HISTORY':
+            return Object.assign({}, state, { search_history: action.history });
+        case 'GET_SEARCH_SUGGESTION':
+            return Object.assign({}, state, { search_suggestion: action.suggestion });
         case 'SEARCH_RESULTS':
             const more_allowed = action.search_show_more_allowed;
             return Object.assign({}, state, { 
@@ -84,11 +96,6 @@ export default (state = initialState, action) => {
                 search_show_more_allowed: more,
                 search_status: true,
             });
-
-        case 'SET_ACTIVE_TAB':
-            return Object.assign({}, state, { active_tab: action.tab });
-        case 'SET_SEARCH_STATUS':
-            return Object.assign({}, state, { search_status: false });
         default:
             return state;
     }
