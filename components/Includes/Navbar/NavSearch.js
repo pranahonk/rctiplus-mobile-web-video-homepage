@@ -1,8 +1,6 @@
-import React, { Component, useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import Router, { withRouter } from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
-import LoadingBar from 'react-top-loading-bar';
 import { useRouter } from 'next/router'
 import searchActions from '../../../redux/actions/searchActions';
 import pageActions from '../../../redux/actions/pageActions';
@@ -18,28 +16,38 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import _isEmpty from "lodash/isEmpty";
 import _debounce from "lodash/debounce";
-// import { Subject } from 'rxjs';
-// import { debounceTime } from 'rxjs/operators';
 
 import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked } from '../../../utils/appier';
 
 const NavbarSearch = ({...props}) => {
+    const inputSearch = useRef(null);
+    
     const router = useRouter()
-    const [state, setState] = useState({q: router.query.q || '', length: 9})
+    const [state, setState] = useState({q: router.query.q || '', length: 9});
+
     useEffect(() => {
         if(!_isEmpty(state.q)) {
             props.setPageLoader();
-                props.searchAllCategory(state.q, 1, state.length)
-                    .then(responses => {
-                        console.log(responses);
-                        props.unsetPageLoader();
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        props.unsetPageLoader();
-                });
+            props.searchAllCategory(state.q, 1, state.length)
+                .then(responses => props.unsetPageLoader())
+                .catch(error => props.unsetPageLoader());
+
+            props.getSearchAll(state.q, 1, state.length)
+                .then(responses => props.unsetPageLoader())
+                .catch(error => props.unsetPageLoader());
         }
+
+        props.getPopularSearch()
+            .then(responses => props.unsetPageLoader())
+            .catch(error => props.unsetPageLoader());
+    
+        props.getSearchHistory()
+            .then(responses => props.unsetPageLoader())
+            .catch(error => props.unsetPageLoader());
+
+        inputSearch.current.focus();
     }, [])
+
     const _onChangeQuery = (e) => {
         setState({ ...state, q: e.target.value });
         _delayedQuery(e.target.value)
@@ -48,23 +56,16 @@ const NavbarSearch = ({...props}) => {
         if (state.q && props.searches.search_show_more_allowed[props.searches.active_tab]) {
             console.log('testt tab')
             props.searchCategory(state.q, props.searches.active_tab, props.searches.search_page[props.searches.active_tab], state.length)
-                .then(response => {
-                    
-                })
-                .catch(error => {
-                    console.log(error);
-                   
-                });
         }
     }
     const _clearKeyword = () => {
         searchKeywordEvent(state.q, 'mweb_search_clear_keyword_clicked');
         setState({ ...state, q: '' });
     }
-    const _search = (value) => {
-        router.replace(`/explores/search?q=${value}`, `/explores/keyword?q=${value}`, { shallow: true })
-    }
-    const _delayedQuery = useCallback(_debounce(q => _search(q), 500), [])
+
+    const _search = (value) => router.replace(`/explores/search?q=${value}`, `/explores/keyword?q=${value}`, { shallow: true })
+    const _delayedQuery = useCallback(_debounce(q => _search(q), 1000), [])
+
     return(
         <div className="nav-home-container nav-fixed-top">
             <BottomScrollListener offset={8} onBottom={() => _bottomScrollFetch()} />
@@ -84,7 +85,11 @@ const NavbarSearch = ({...props}) => {
                 </div>
                 <div className="middle-top">
                     <Input
-                        onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
+                        ref={inputSearch}
+                        onClick={() => {
+                            libraryGeneralEvent('mweb_library_search_form_clicked');
+                            
+                        }}
                         placeholder="Search for a program, genre, etc."
                         onChange={(e) => _onChangeQuery(e)}
                         value={state.q}

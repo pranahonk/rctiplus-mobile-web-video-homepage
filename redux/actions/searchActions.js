@@ -199,6 +199,102 @@ const getRelatedProgram = (id = null, page = 1, length = 10) => {
     });
 };
 
+const getSearchAll = (q, page = 1, length = 10) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/search/all?q=${q}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'SEARCH_ALL',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status,
+                    all: response.data.data
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getPopularSearch = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/search/fetch-popular`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_SEARCH_POPULAR',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status,
+                    popular: response.data.data
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getSearchSuggestion = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/search/suggestion`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_SEARCH_SUGGESTION',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status,
+                    suggestion: response.data.data
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getSearchHistory = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/search/history`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_SEARCH_HISTORY',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status,
+                    history: response.data.data
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 export default {
     search,
     searchByGenre,
@@ -206,6 +302,10 @@ export default {
     getRelatedProgram,
     searchAllCategory,
     searchCategory,
-    setActiveTab
+    setActiveTab,
+    getSearchAll,
+    getPopularSearch,
+    getSearchHistory,
+    getSearchSuggestion
     // setShowMoreAllowed
 };
