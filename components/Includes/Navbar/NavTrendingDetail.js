@@ -24,6 +24,27 @@ class NavTrendingSearch extends Component {
             token: getCookie('ACCESS_TOKEN'),
             is_top: true
         };
+        this.accessToken = null;
+        this.platform = null;
+        this.core_token = null;
+        const segments = this.props.router.asPath.split(/\?/);
+        this.idfa = null;
+        if (segments.length > 1) {
+            const q = queryString.parse(segments[1]);
+            if (q.token) {
+                this.accessToken = q.token;
+                setAccessToken(q.token);
+            }
+            if (q.core_token) {
+                this.core_token = q.core_token;
+            }
+            if (q.platform) {
+                this.platform = q.platform;
+            }
+            if (q.idfa) {
+                this.idfa = q.idfa;
+            }
+        }
     }
 
     signOut() {
@@ -47,6 +68,10 @@ class NavTrendingSearch extends Component {
         }
     }
 
+    redirectURL(){
+        return '/news' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&header=0&idfa=${this.idfa ? this.idfa : '00000000-0000-0000-0000-000000000000'}&core_token=${this.core_token ? this.core_token : process.env.CORE_TOKEN}` : ''}`
+    }
+
     componentDidMount() {
         if (!this.props.disableScrollListener) {
             document.addEventListener('scroll', () => {
@@ -66,29 +91,33 @@ class NavTrendingSearch extends Component {
                     <Navbar expand="md" className={'nav-trending-detail nav-shadow ' + (this.state.is_top ? 'nav-transparent' : '')}>
                         <div className="wr-col-trn-search">
                             <Col xs="12">
-                                <NavbarBrand onClick={() => {
-                                    this.props.setPageLoader();
-                                    let platform = isIOS ? 'ios' : isAndroid ? 'android' : 'mweb';
-                                    const params = new URLSearchParams(window.location.search);
-                                    if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0 && this.props.router.asPath.indexOf('utm_source') === -1) {
-                                        newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
-                                        if(!document.referrer.includes("rctiplus")){
-                                            Router.push('/news' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&header=0&idfa=${params.get('idfa') ? params.get('idfa') : '00000000-0000-0000-0000-000000000000'}&core_token=${params.get('core_token') ? params.get('core_token') : process.env.CORE_TOKEN}` : ''}`);
-                                        }else{
-                                            Router.back();
-                                        }
+                                {
+                                    this.platform === 'android' ?
+                                        <a href={this.redirectURL()} style={{color: 'white'}} className="navbar-brand"> <ArrowBackIcon/> <span className="trendingHeader"></span> </a> :
+                                        <NavbarBrand onClick={() => {
+                                            this.props.setPageLoader();
+                                            let platform = isIOS ? 'ios' : isAndroid ? 'android' : 'mweb';
+                                            const params = new URLSearchParams(window.location.search);
+                                            if (this.props.data && this.props.router.asPath.indexOf('/news/detail') === 0 && this.props.router.asPath.indexOf('utm_source') === -1) {
+                                                newsArticleBackClicked(this.props.data.id, this.props.data.title, this.props.data.category_source, 'mweb_news_article_back_clicked');
+                                                if(!document.referrer.includes("rctiplus")){
+                                                    Router.push('/news' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&header=0&idfa=${params.get('idfa') ? params.get('idfa') : '00000000-0000-0000-0000-000000000000'}&core_token=${params.get('core_token') ? params.get('core_token') : process.env.CORE_TOKEN}` : ''}`);
+                                                }else{
+                                                    Router.back();
+                                                }
 
-                                    }
-                                    else if (this.props.router.asPath.indexOf('utm_source') > -1) {
-                                        let Isplatform = this.props.router.asPath.indexOf('RplusaOsApp') > -1 ? `?platform=${platform}` : '';
-                                        Router.push('/news' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&header=0&idfa=${params.get('idfa') ? params.get('idfa') : '00000000-0000-0000-0000-000000000000'}&core_token=${params.get('core_token') ? params.get('core_token') : process.env.CORE_TOKEN}` : ''}`);
-                                    }
-                                    else {
-                                        Router.back();
-                                    }
-                                }} style={{color: 'white'}}>
-                                <ArrowBackIcon/> <span className="trendingHeader"></span>
-                            </NavbarBrand>
+                                            }
+                                            else if (this.props.router.asPath.indexOf('utm_source') > -1) {
+                                                let Isplatform = this.props.router.asPath.indexOf('RplusaOsApp') > -1 ? `?platform=${platform}` : '';
+                                                Router.push('/news' + `${params.get('token') ? `?token=${params.get('token')}&platform=${params.get('platform')}&header=0&idfa=${params.get('idfa') ? params.get('idfa') : '00000000-0000-0000-0000-000000000000'}&core_token=${params.get('core_token') ? params.get('core_token') : process.env.CORE_TOKEN}` : ''}`);
+                                            }
+                                            else {
+                                                Router.back();
+                                            }
+                                        }} style={{color: 'white'}}>
+                                            <ArrowBackIcon/> <span className="trendingHeader"></span>
+                                        </NavbarBrand>
+                                }
                             </Col>
                             <div className="navbar-interest__topic" >
                                 <h1>{!this.state.is_top ? this.props.titleNavbar || '' : ''}</h1>
