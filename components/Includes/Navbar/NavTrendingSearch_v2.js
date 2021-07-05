@@ -168,6 +168,10 @@ class NavbarTrendingSearch extends Component {
       e.preventDefault();
   }
 
+  redirectURL(){
+        return '/news' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&header=0&idfa=${this.idfa ? this.idfa : '00000000-0000-0000-0000-000000000000'}&core_token=${this.core_token ? this.core_token : process.env.CORE_TOKEN}` : ''}`
+    }
+
     render() {
         const { forwardedRef } = this.props;
         return (
@@ -176,17 +180,22 @@ class NavbarTrendingSearch extends Component {
                     <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
-                            <NavbarBrand onClick={() => {
-                                if (this.props.router.asPath.indexOf('/explores') === 0) {
-                                    searchBackClicked(this.props.newsv2.query, 'mweb_search_back_clicked');
-                                }else if (this.props.router.asPath.indexOf('keyword')){
-                                  Router.push('/news', `/news?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}`)
-                                }else{
-                                  Router.back();
-                                }
-                            }} style={{ color: 'white' }}>
-                                <ArrowBackIcon />
-                            </NavbarBrand>
+                            {
+                                this.platform === 'android' ?
+                                    this.props.router.asPath.indexOf('keyword') &&
+                                    <a href={this.redirectURL()} style={{color: 'white'}} className="navbar-brand"> <ArrowBackIcon/> <span className="trendingHeader"></span> </a> :
+                                    <NavbarBrand onClick={() => {
+                                        if (this.props.router.asPath.indexOf('/explores') === 0) {
+                                            searchBackClicked(this.props.newsv2.query, 'mweb_search_back_clicked');
+                                        }else if (this.props.router.asPath.indexOf('keyword')){
+                                            Router.push('/news', `/news?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}`)
+                                        }else{
+                                            Router.back();
+                                        }
+                                    }} style={{ color: 'white' }}>
+                                        <ArrowBackIcon />
+                                    </NavbarBrand>
+                            }
                         </div>
                     </div>
                     <div className="middle-top">
