@@ -39,10 +39,10 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
       else if((redirectToPublisherIndex.indexOf(indexKey) != -1) && platform === 'ios'){
         return window.open(article.link, "_self");
       }
-      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}&idfa=${idfa}&core_token=${core_token}` : ''}`);
+      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token=${accessToken}&platform=${platform}&idfa=${idfa}&core_token=${core_token}` : ''}`);
     }
     else {
-      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}&idfa=${idfa}&core_token=${core_token}` : ''}`);
+      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token=${accessToken}&platform=${platform}&idfa=${idfa}&core_token=${core_token}` : ''}`);
     }
   }
 
