@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import actions from '../../../redux/actions';
 import pageActions from '../../../redux/actions/pageActions';
 
-import { getCookie, removeCookie } from '../../../utils/cookie';
+import { getCookie, removeCookie, setAccessToken } from '../../../utils/cookie';
 import { newsArticleBackClicked } from '../../../utils/appier';
 
 import '../../../assets/scss/components/navbar_trending_detail.scss';
@@ -16,6 +16,7 @@ import { Navbar, NavbarBrand, Col, Row } from 'reactstrap';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import StatusNotification from './StatusNotification';
 import { isIOS, isAndroid } from 'react-device-detect';
+import queryString from "query-string";
 
 class NavTrendingSearch extends Component {
     constructor(props) {
