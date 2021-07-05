@@ -58,12 +58,24 @@ class StickyAds extends React.Component {
         }
     }
     componentDidMount() {
-        this.props.fetchTargetingAds()
-        .then((res) => {
-                this.fetchAds(res)
-            })
-        .catch((err) => this.fetchAds([]))
-        
+        this.generateTargettingAdsData()
+    }
+
+    async generateTargettingAdsData() {
+        let targettingAdsData = [
+            {
+                name: "logged_in", 
+                value : String(this.props.user.data !== null)
+            }
+        ]
+
+        try {
+            const res = await this.props.fetchTargetingAds()
+            targettingAdsData = [ ...targettingAdsData, ...res ]
+        }
+        catch {}
+
+        this.fetchAds(targettingAdsData)
     }
 
     render() {
