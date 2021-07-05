@@ -158,7 +158,7 @@ class NavbarDef_v2 extends Component {
 
     render() {
         return (
-            <div className="nav-home-container-v2 nav-fixed-top">
+            <div className="nav-home-container-v2 nav-fixed-top" id="navbar">
                 <div style={{ display: this.props.showStickyInstall ? 'block' : 'none' }} className="sticky-install-menu">
                     <Row style={{ height: '100%', paddingRight: 5 }}>
                         <Col xs={2} className="center-content" style={{ paddingRight: 0 }}>
