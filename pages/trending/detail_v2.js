@@ -499,7 +499,7 @@ class Detail extends React.Component {
 
     shareButtonPosition = el =>{
       window.addEventListener('scroll',()=>{
-        const position =  el.getBoundingClientRect().top + window.screen.height;
+        const position =  el?.getBoundingClientRect().top + window.screen.height;
         this.setState({
           relatedArticlePosition: position,
         });
