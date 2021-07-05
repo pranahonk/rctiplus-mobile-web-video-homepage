@@ -133,6 +133,8 @@ class Trending_v2 extends React.Component {
         let newsData = {}
         if (!error_code && isArray(data.data) && data.data.length > 0){
             newsData = data.data[0]
+            let siteName = !isEmpty(gs.site_name) ? gs.site_name : 'News+ on RCTI+'
+            newsData['title'] = newsData.title + ' - ' + siteName
             newsData['cover'] = imagePath(newsData.cover, newsData.image, 600, data.meta.assets_url, `${data.meta.assets_url}/600/${gs['img_logo']}`)
             newsData['content'] = newsData.content.substring(0, 165) + '....'
         }
@@ -669,7 +671,7 @@ class Trending_v2 extends React.Component {
                     offset={50}
                     onBottom={this.bottomScrollFetch.bind(this)} />
 
-                <div className={`main-content ${this.state.sticky_category_shown ? 'sticky-menu-category-active' : ''} ${(this.platform === 'ios' || this.platform === 'android') && 'apps-mode'}`} style={{ marginTop: this.platform === 'ios' ? 26 : this.platform === 'android' ? 15 : '110px' }}>
+                <div id="container" className={`main-content ${this.state.sticky_category_shown ? 'sticky-menu-category-active' : ''} ${(this.platform === 'ios' || this.platform === 'android') && 'apps-mode'}`} style={{ marginTop: this.platform === 'ios' ? 26 : this.platform === 'android' ? 15 : '110px' }}>
                     {this.state.load_error ? (
                         <div style={{
                             display: 'flex',
@@ -720,8 +722,8 @@ class Trending_v2 extends React.Component {
                                                             self.setState({ sticky_category_shown: distanceFromTop < distance })
                                                         }, 100);
                                                         return (
-                                                            <div className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : 'sticky-menu-inactive'}`}>
-                                                                <Nav tabs className="navigation-tabs">
+                                                            <div id="nav-container" className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : 'sticky-menu-inactive'}`}>
+                                                                <Nav tabs className="navigation-tabs" id="nav-tabs">
                                                                     {this.state.tabs.map((tab, i) => (
                                                                         <NavItem
                                                                             key={`${i}`}
@@ -770,12 +772,12 @@ class Trending_v2 extends React.Component {
                                         {this.state.is_tabs_loading ? (<HeadlineLoader />) : null}
                                         {this.state.is_tabs_loading ? (<ArticleLoader />) : null}
 
-                                        <TabContent activeTab={this.state.active_tab}>
+                                        <TabContent id="tab-content" activeTab={this.state.active_tab}>
                                             {this.state.tabs.map((tab, i) => {
                                                 return (
                                                 <TabPane key={i} tabId={tab.id.toString()}>
                                                     {(this.state.is_trending_loading ? (<HeadlineLoader />) : (
-                                                        !isEmpty(this.state.trending_articles[tab.id]) ? <HeadlineCarousel className="news-carousel" articles={this.state.trending_articles[tab.id]} assets_url={this.state.assets_url} /> : null
+                                                        !isEmpty(this.state.trending_articles[tab.id]) ? <div id="headline"><HeadlineCarousel className="news-carousel" articles={this.state.trending_articles[tab.id]} assets_url={this.state.assets_url} /></div> : null
                                                     ))}
                                                     { !isEmpty(this.props.newsv2.data_topic) ? (
                                                         <div className="interest-topic_wrapper">

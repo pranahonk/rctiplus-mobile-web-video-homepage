@@ -8,13 +8,13 @@ import LoadingBar from 'react-top-loading-bar';
 import Head from 'next/head'
 import {
   SITEMAP,
-  SITE_NAME,
+  SITE_NAME_NEWS,
   GRAPH_SITEMAP,
   DEV_API,
   NEWS_API_V2,
   GPT_ID_LIST,
   GPT_NEWS_MWEB_SEARCH,
-  GPT_NEWS_IOS_SEARCH, GPT_NEWS_ANDROID_SEARCH, GPT_ID_SEARCH
+  GPT_NEWS_IOS_SEARCH, GPT_NEWS_ANDROID_SEARCH, GPT_ID_SEARCH, BASE_URL
 } from '../../config';
 
 import newsv2Actions from '../../redux/actions/newsv2Actions';
@@ -391,31 +391,36 @@ class Search extends React.Component {
   }
 
     render() {
+        let sitname = this.props?.dataSearch?.general?.site_name || SITE_NAME_NEWS;
+        let fb_id = this.props?.dataSearch?.general?.fb_id || GRAPH_SITEMAP.appId;
+        let twitter_creator = this.props?.dataSearch?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator;
+        let twitter_site = this.props?.dataSearch?.general?.twitter_site || GRAPH_SITEMAP.twitterSite;
+        let img_logo = !isEmpty(this.props?.dataSearch?.general?.img_logo) ? `${this.props?.dataSearch?.meta?.assets_url}600${this.props?.dataSearch?.general?.img_logo}` : 'https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png'
         return (
-            <Layout title={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - News+ on RCTI+`}>
+            <Layout title={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - ${sitname}`}>
                 <Head>
-                    <meta name="title" content={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - News+ on RCTI+`} />
+                    <meta name="title" content={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - ${sitname}`} />
                     <meta name="description" content={`RCTI+ - Portal berita terbaru dan terpercaya | ${this.props.dataSearch?.keyword || ''}`} />
                     <meta name="keywords" content={'rctiplus'} />
-                    <meta property="og:title" content={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - News+ on RCTI+`} />
+                    <meta property="og:title" content={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - ${sitname}`} />
                     <meta property="og:description" content={`RCTI+ - Portal berita terbaru dan terpercaya | ${this.props.dataSearch?.keyword || ''}`} />
-                    <meta property="og:image" itemProp="image" content={this.props?.general?.img_logo || 'https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png'} />
-                    <meta property="og:url" content={encodeURI(this.props.router.asPath)} />
+                    <meta property="og:image" itemProp="image" content={img_logo} />
+                    <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta property="og:type" content="website" />
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
                     <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={this.props?.general?.site_name || SITE_NAME} />
-                    <meta property="fb:app_id" content={this.props?.general?.fb_id || GRAPH_SITEMAP.appId} />
+                    <meta property="og:site_name" content={sitname} />
+                    <meta property="fb:app_id" content={fb_id} />
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
-                    <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
-                    <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
-                    <meta name="twitter:image" content={this.props?.general?.img_logo || 'https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png'} />
+                    <meta name="twitter:creator" content={twitter_creator} />
+                    <meta name="twitter:site" content={twitter_site} />
+                    <meta name="twitter:image" content={img_logo} />
                     <meta name="twitter:image:alt" content={'News RCTIPlus'} />
-                    <meta name="twitter:title" content={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - News+ on RCTI+`} />
+                    <meta name="twitter:title" content={`Cari berita ${this.props.dataSearch?.keyword || ''} terbaru - ${sitname}`} />
                     <meta name="twitter:description" content={`RCTI+ - Portal berita terbaru dan terpercaya | ${this.props.dataSearch?.keyword || ''}`} />
-                    <meta name="twitter:url" content={encodeURI(this.props.router.asPath)} />
-                    <meta name="twitter:domain" content={encodeURI(this.props.router.asPath)} />
+                    <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
+                    <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                 </Head>
                 <BottomScrollListener offset={80} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
