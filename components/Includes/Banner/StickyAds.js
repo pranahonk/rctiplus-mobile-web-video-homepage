@@ -61,7 +61,7 @@ class StickyAds extends React.Component {
         this.generateTargettingAdsData()
     }
 
-    async generateTargettingAdsData() {
+    generateTargettingAdsData() {
         let targettingAdsData = [
             {
                 name: "logged_in", 
@@ -69,13 +69,9 @@ class StickyAds extends React.Component {
             }
         ]
 
-        try {
-            const res = await this.props.fetchTargetingAds()
-            targettingAdsData = [ ...targettingAdsData, ...res ]
-        }
-        catch {}
-
-        this.fetchAds(targettingAdsData)
+        this.props.fetchTargetingAds()
+            .then((res) => targettingAdsData = [ ...targettingAdsData, ...res ])
+            .finally(() => this.fetchAds(targettingAdsData))
     }
 
     render() {

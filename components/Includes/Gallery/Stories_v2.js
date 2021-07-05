@@ -444,14 +444,11 @@ class Stories extends React.Component {
         }
         
         // Creation of source data for targetting ads
-        const targettingAdsData = [
-            ...this.props.ads?.data_ta,
-            {
-                name: "logged_in", 
-                value : String(this.props.user.data !== null)
-            }
-        ]
-
+        const targettingAdsData = this.props.ads ? this.props.ads.data_ta : []
+        targettingAdsData.push({
+            name: "logged_in", 
+            value : String(this.props.user.data !== null)
+        })
 
         const timeline = this.state.zuckJS.buildTimelineItem(
             this.storyId, //id
