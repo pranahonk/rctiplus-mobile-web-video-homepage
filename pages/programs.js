@@ -113,7 +113,8 @@ class Index extends React.Component {
       scrolling: false,
       isStopped: false,
       routerHistory: "",
-      isPaused: false
+      isPaused: false,
+      adsShown: false
     };
     this.type = 'program-detail';
     this.typeEpisode = 'program-episode';
@@ -692,6 +693,7 @@ class Index extends React.Component {
                 scrolling={this.state.scrolling}
                 isStopped={this.state.isStopped}
                 isPaused={this.state.isPaused}
+                onAdsShown={(adsShown) => this.setState({ adsShown })}
                 handlePlaying={(e) => this.setState({ isStopped: e })}
                 getVideoLastPosition={(e) => this.props.dispatch(miniplayerActions.setVideoLastDuration(e))}
                 />
@@ -847,8 +849,13 @@ class Index extends React.Component {
 
     const source = this.props.data["description-player"].data
     const episode = `E${`0${source.episode}`.slice(-2)}:S${`0${source.season}`.slice(-2)}`
-    const programName = `${episode} ${source.title}`
-    const programTitle = source.program_title
+    let programName = `${episode} ${source.title}`
+    let programTitle = source.program_title
+
+    if (this.state.adsShown) {
+      programName = "Video will play after ads"
+      programTitle = "Advertisement"
+    }
     
     return (
       <article>
