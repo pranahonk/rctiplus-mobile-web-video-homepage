@@ -21,7 +21,7 @@ import Panel2 from '../components/Panels/Pnl_2';
 import Panel3 from '../components/Panels/Pnl_3';
 import Panel4 from '../components/Panels/Pnl_4';
 import StickyAds from '../components/Includes/Banner/StickyAds';
-import GridMenu from '../components/Includes/Common/GridMenu';
+import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
@@ -134,6 +134,7 @@ class Index_v2 extends React.Component {
     render() {
         const contents = this.state.contents;
         const meta = this.state.meta || {};
+
         return (
             <Layout title={SITEMAP.home.title}>
                 <Head>
@@ -162,19 +163,19 @@ class Index_v2 extends React.Component {
                 <LoadingBar progress={0} height={3} color={this.state.show_sticky_install ? '#000' : '#fff'} onRef={ref => (this.LoadingBar = ref)} />
                 {this.state.isShimmer ? (<HomeLoader/>) : (
                 <div>
-                        <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
-                    <Carousel showStickyInstall={this.state.show_sticky_install}>
-                    <GridMenu />
+                    <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
+                    <Carousel showStickyInstall={this.state.show_sticky_install} >
+                        <GridMenu />
                     </Carousel>
-                    <Stories loadingBar={this.LoadingBar}/>
+                    <Stories loadingBar={this.LoadingBar} homepage={true}/>
                     <StickyContainer>
                         <Sticky disableHardwareAcceleration>
                             { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
-                                const topDistance = this.state.show_sticky_install ? 120 : 60;
+                                const topDistance = this.state.show_sticky_install ? 120 : 40;
                                 if (distanceFromTop < topDistance) {
                                     if (!this.props.ads.ads_displayed) {
                                         return (
-                                            <div {...rest}>
+                                            <div {...rest} >
                                                 <StickyAds/>
                                             </div>
                                         );
@@ -189,20 +190,20 @@ class Index_v2 extends React.Component {
                                         }
                                     }
                                     return (
-                                        <div {...rest}>
+                                        <div {...rest} >
                                             <StickyAds sticky/>
                                         </div>
                                     );
                                 }
                                 return (
-                                    <div {...rest}>
+                                    <div {...rest} >
                                         <StickyAds id='div-gpt-ad-1584677577539-0'/>
                                     </div>
                                 );
                             } }
                         </Sticky>
                     </StickyContainer>
-                    <div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
+                    <div style={{marginBottom: 40, paddingTop: 10, paddingLeft: 12}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
                         {contents.map((content, i) => {
                             switch (content.display_type) {
                                 case 'horizontal_landscape_large':

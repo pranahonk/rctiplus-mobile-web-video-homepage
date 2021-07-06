@@ -172,6 +172,34 @@ const getLiveEvent = (type, infos = 'id,type,portrait_image,landscape_image,name
         }
     });
 };
+const getAllLiveEvent = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            dispatch({
+                type: 'LOADING_LIVE_EVENT',
+            })
+            const response = await axios.get(`/v3/live-event`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_ALL_LIVE_EVENT',
+                    data: response.data.data,
+                    meta: response.data.meta,
+                    status: response.data.status
+                });
+                resolve(response);
+            }
+            else {
+                dispatch({
+                    type: 'ERROR_LIVE_EVENT',
+                })
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
 
 const getMissedEvent = (page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
@@ -353,6 +381,7 @@ export const getVmapResponse = url => {
 
 export default {
     postChat,
+    getAllLiveEvent,
     getLiveEvent,
     getLiveEventDetail,
     getLiveEventUrl,

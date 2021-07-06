@@ -20,10 +20,11 @@ const setSigninPopupFlag = flag => {
 const getContents = (page = 1, length = 20, platform = 'mweb') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/homepage?page=${page}&length=${length}`);
+            const response = await axios.get(`/v2/homepage?page=${page}&length=${length}`);
             let contents = [];
             if (response.data.status.code === 0) {
                 const data = response.data.data;
+                console.log(`ini data home page`, data)
                 let selectedData = [];
                 let promises = [];
                 for (let i = 0; i < data.length; i++) {
@@ -124,7 +125,7 @@ const getContentShareLink = (id, type) => {
 const getBanner = (page = 1, length = 10, infos = 'id,title,portrait_image,image_landscape,type,type_value,sorting,program_id,popup_img,link,summary,square_image,program_name') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/banner?page=${page}&length=${length}&infos=${infos}&appierid=${getUidAppier()}`);
+            const response = await axios.get(`/v1/banner?page=${page}&length=${length}&appierid=${getUidAppier()}`);
             if (response.data.status.code === 0) {
                 dispatch({ type: 'BANNER', data: response.data.data, meta: response.data.meta });
                 resolve(response);
