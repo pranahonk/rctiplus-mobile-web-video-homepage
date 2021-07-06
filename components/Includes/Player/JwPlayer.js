@@ -78,14 +78,7 @@ const JwPlayer = (props) => {
     if (!player) return
     if (props.getVideoLastPosition) props.getVideoLastPosition(duration)
 
-    const miniPlayerActive = props.scrolling && !props.isStopped
-    player.resize(
-      miniPlayerActive ? "30%" : options.width,
-      miniPlayerActive ? 80 : options.height
-    )
-
-    if (miniPlayerActive) player.setControls(false)
-    else player.setControls(true)
+    handleMiniplayerSizeAndControl(props.scrolling && !props.isStopped)
 
     if (props.seekPosition) player.seek(props.seekPosition)
     
@@ -95,6 +88,21 @@ const JwPlayer = (props) => {
     if (props.isStopped) player.stop()
     
   }, [...variableToBeListened])
+
+  const handleMiniplayerSizeAndControl = (miniPlayerActive) => {
+    const variables = {
+      width: miniPlayerActive ? "30%" : options.width,
+      height: miniPlayerActive ? "80" : options.height,
+      showCtrl: !miniPlayerActive,
+      showAdsBtns: miniPlayerActive ? "none" : ""
+    }
+
+    player.setControls(variables.showCtrl)
+    player.resize(variables.width, variables.height)
+
+    const [adsOverlayScreen] = document.querySelectorAll("#jwplayer-rctiplus_ad > div iframe")
+    if (adsOverlayScreen) adsOverlayScreen.style.display = variables.showAdsBtns
+  }
 
   // Initial Setup
   useEffect(() => {
@@ -250,7 +258,6 @@ const JwPlayer = (props) => {
           }
         }
       });
-      
       player.on('play', (event) =>{
         convivaJwPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
@@ -265,9 +272,8 @@ const JwPlayer = (props) => {
         
         // This is to modify isStopped on the parent
         // isStopped is a state to tell whether jwplayer is stopped or playing
-        props.handlePlaying(false)
+        if (props.handlePlaying) props.handlePlaying(false)
       });
-
       player.on('pause', () =>{
         // console.log('EFFECT INIT 4 CONTINUE WATCHING PAUSE', test)
         // console.log('PAUSE');
@@ -303,6 +309,7 @@ const JwPlayer = (props) => {
         } */
         setPlayerFullscreen(player.getFullscreen());
       });
+
       // ads event
       player.on('adImpression', (event) => {
         if (document.querySelector('.ads_wrapper')) {
@@ -310,6 +317,8 @@ const JwPlayer = (props) => {
         }
       });
       player.on('adSkipped', (event) => {
+        if (props.onAdsShown) props.onAdsShown(false)
+
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
             setAdStatus('prestart');
@@ -317,12 +326,17 @@ const JwPlayer = (props) => {
         }
       });
       player.on('adComplete', (event) => {
+        if (props.onAdsShown) props.onAdsShown(false)
+
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
             setAdStatus('prestart');
           }
         }
       });
+      player.on('adStarted', _ => {
+        if (props.onAdsShown) props.onAdsShown(true)
+      })
       player.on('userActive', (event) => {
         if (document.querySelector('.ads_wrapper')) {
           document.querySelector('.ads_wrapper').style.bottom = '70px';
@@ -341,7 +355,7 @@ const JwPlayer = (props) => {
         }
       }); */
     }
-  },);
+  });
 
   // Error handling functions
   useEffect(() => {
@@ -370,7 +384,7 @@ const JwPlayer = (props) => {
         
         // When error has fired, remove player and cancel miniplayer onscroll event
         // by passing true parameter to stop the event
-        props.handlePlaying(true)
+        if (props.handlePlaying) props.handlePlaying(true)
         player.remove();
       });
 
@@ -396,7 +410,7 @@ const JwPlayer = (props) => {
 
         // When error has fired, remove player and cancel miniplayer onscroll event
         // by passing true parameter to stop the event
-        props.handlePlaying(true)
+        if (props.handlePlaying) props.handlePlaying(true)
         player.remove();
       });
     }
