@@ -17,7 +17,6 @@ import HomeIcon from '@material-ui/icons/Home';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import ImportContactsTwoToneIcon from '@material-ui/icons/ImportContactsTwoTone';
 import LiveStreamIcon from '../Common/LiveStream';
-import MiniPlayer from "../../miniplayers/miniplayer"
 
 // import { getCookie } from '../../../utils/cookie';
 
@@ -45,8 +44,6 @@ const FooterNav_v2 = (props) => {
 
         return (
             <>
-                <MiniPlayer />
-
                 <div className="nav-footer-v2">
                     <div className="footer-wrapper-list">
                         <div id="action-home" onClick={() => {

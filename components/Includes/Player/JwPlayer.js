@@ -77,7 +77,6 @@ const JwPlayer = (props) => {
   ]
   useEffect(() => {
     if (!player) return
-    if (props.getVideoLastPosition) props.getVideoLastPosition(duration)
 
     handleMiniplayerSizeAndControl(props.scrolling && !props.isStopped)
 
