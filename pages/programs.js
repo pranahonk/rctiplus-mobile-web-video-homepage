@@ -182,11 +182,6 @@ class Index extends React.Component {
   }
   
 	componentWillUnmount() {
-    if (!this.state.scrolling) {
-      localStorage.removeItem("miniplayer_data")
-      localStorage.removeItem("miniplayer_last_duration")
-    }
-
 		// if (window.convivaVideoAnalytics) {
 		// 	const convivaTracker = convivaJwPlayer();
 		// 	convivaTracker.cleanUpSession();
@@ -693,7 +688,6 @@ class Index extends React.Component {
                 isPaused={this.state.isPaused}
                 onAdsShown={(adsShown) => this.setState({ adsShown })}
                 handlePlaying={(e) => this.setState({ isStopped: e })}
-                getVideoLastPosition={(e) => this.props.dispatch(miniplayerActions.setVideoLastDuration(e))}
                 />
               {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
           </div>
@@ -793,8 +787,6 @@ class Index extends React.Component {
       })
       this.miniPlayer.current.style.display = "flex"
       this.miniPlayer.current.style.zIndex = "2"
-
-      this.setMiniplayerItemOnStorage()
       
       scrolling = true
     }
@@ -802,34 +794,17 @@ class Index extends React.Component {
     this.setState({ scrolling })
   }
 
-  setMiniplayerItemOnStorage() {
-    localStorage.setItem("miniplayer_data", JSON.stringify({
-      playerData: this.props.data["data-player"].data,
-      playerDesc: this.props.data["description-player"].data,
-      playerStatus: this.props.data["data-player"].status,
-      playerCustomData: {
-        isLogin: this.props.auth.isAuth, 
-        programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
-        sectionPage: 'VOD',
-      }
-    }))
-  }
-
   closeMiniPlayer(e) {
     e.preventDefault()
 
     this.setState({ isStopped: true })
     this.resetMiniPlayer()
-
-    localStorage.removeItem("miniplayer_data")
   }
 
   resetMiniPlayer() {
     const parent = this.scrollingElement.current
     const [playerWrapper] = parent.getElementsByClassName("rplus-jw-container")
     const changedStyles = [ "position", "bottom", "z-index" ]
-
-    localStorage.removeItem("miniplayer_data")
 
     if (!playerWrapper) return
 
