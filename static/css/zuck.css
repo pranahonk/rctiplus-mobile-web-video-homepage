@@ -140,6 +140,9 @@ and open the template in the editor.
   -webkit-animation-play-state: running;
   animation-play-state: running;
 }
+#zuck-modal-content .story-viewer.initial .slides-pointers > * > .active > b {
+  animation: none;
+}
 #zuck-modal-content .story-viewer.next {
   z-index: 10;
 }
