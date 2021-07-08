@@ -195,7 +195,7 @@ module.exports = (window => {
 						}
 						break;
 					case 'touchNext':
-						zuck.nextItem(false, true)
+						zuck.navigateItem('next', true)
 						break;
 					case 'touchPrev':
 						zuck.navigateItem('previous', true)
