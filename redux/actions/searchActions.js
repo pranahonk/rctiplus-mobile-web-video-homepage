@@ -247,10 +247,10 @@ const getPopularSearch = () => {
     });
 };
 
-const getSearchSuggestion = () => {
+const getSearchSuggestion = (q, page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v2/search/suggestion`);
+            const response = await axios.get(`/v2/search/suggestion?q=${q}`);
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_SEARCH_SUGGESTION',
@@ -268,6 +268,27 @@ const getSearchSuggestion = () => {
         catch (error) {
             reject(error);
         }
+    });
+};
+
+const resetSearchSuggestion = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        // try {
+        //     const response = await axios.get(`/v2/search/suggestion?q=${q}`);
+        //     if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'RESET_SEARCH_SUGGESTION',
+                    suggestion: []
+                });
+                // resolve(response);
+        //     }
+        //     else {
+        //         reject(response);
+        //     }
+        // }
+        // catch (error) {
+        //     reject(error);
+        // }
     });
 };
 
@@ -306,6 +327,7 @@ export default {
     getSearchAll,
     getPopularSearch,
     getSearchHistory,
-    getSearchSuggestion
+    getSearchSuggestion,
+    resetSearchSuggestion
     // setShowMoreAllowed
 };

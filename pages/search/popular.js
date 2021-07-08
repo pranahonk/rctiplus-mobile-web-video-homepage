@@ -10,11 +10,11 @@ const Popular = () => {
         <div style={{paddingLeft: "20px", paddingRight: "20px", width:"100%"}}>
             {search_popular.length > 0 &&
                 <div className="header-list">
-                    <p style={{fontSize:"14px", lineHeight: "19px", fontWeight: "bold"}} className="title">Popular Search</p>
+                    <p style={{fontSize:"14px",  fontWeight: "bold", marginBottom:"6px"}} className="title">Popular Search</p>
 
                     {search_popular.map((v,i) => (
                         <div style={{marginTop: "4px"}}>
-                            <div style={{display: "flex", alignItems:"center", color: "#777777", paddingTop:"4px"}}>
+                            <div style={{display: "flex", alignItems:"center", color: "#777777",  paddingTop:"4px"}}>
                                 <SearchIcon style={{ fontSize: 20 }}/>
                                 <div style={{marginLeft:"6px", fontSize:"14px", lineHeight:"22px", }}>{v.content_title}</div>
                             </div>

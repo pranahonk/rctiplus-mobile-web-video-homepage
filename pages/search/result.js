@@ -77,7 +77,7 @@ class Result extends React.Component {
                 <TabContent className="container-box-search-result" activeTab={this.state.active_tab}>
                     {this.tabs.map((t, i) => (
                         <TabPane key={i} tabId={t}>
-                            <div className="content-search">
+                            <div style={{background: "#282828"}} className="content-search">
                                 <div className="header-list">
                                     <p className="title">Result</p>
                                 </div>

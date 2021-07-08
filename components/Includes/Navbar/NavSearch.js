@@ -26,16 +26,16 @@ const NavbarSearch = ({...props}) => {
     const [state, setState] = useState({q: router.query.q || '', length: 9});
 
     useEffect(() => {
-        if(!_isEmpty(state.q)) {
-            props.setPageLoader();
-            props.searchAllCategory(state.q, 1, state.length)
-                .then(responses => props.unsetPageLoader())
-                .catch(error => props.unsetPageLoader());
+        // if(!_isEmpty(state.q)) {
+            // props.setPageLoader();
+            // props.searchAllCategory(state.q, 1, state.length)
+            //     .then(responses => props.unsetPageLoader())
+            //     .catch(error => props.unsetPageLoader());
 
-            props.getSearchAll(state.q, 1, state.length)
-                .then(responses => props.unsetPageLoader())
-                .catch(error => props.unsetPageLoader());
-        }
+            // props.getSearchAll(state.q, 1, state.length)
+            //     .then(responses => props.unsetPageLoader())
+            //     .catch(error => props.unsetPageLoader());
+        // }
 
         props.getPopularSearch()
             .then(responses => props.unsetPageLoader())
@@ -47,6 +47,23 @@ const NavbarSearch = ({...props}) => {
 
         inputSearch.current.focus();
     }, [])
+
+
+    useEffect(() => {
+        if(state.q.length >= 3 ){
+            // props.getSearchSuggestion(state.q, 1, state.length)
+            //     .then(responses => props.unsetPageLoader())
+            //     .catch(error => props.unsetPageLoader());
+            props.setPageLoader();
+            props.searchAllCategory(state.q, 1, state.length)
+                .then(responses => props.unsetPageLoader())
+                .catch(error => props.unsetPageLoader());
+
+            props.getSearchAll(state.q, 1, state.length)
+                .then(responses => props.unsetPageLoader())
+                .catch(error => props.unsetPageLoader());
+        }
+    }, [state.q])
 
     const _onChangeQuery = (e) => {
         setState({ ...state, q: e.target.value });
@@ -84,7 +101,7 @@ const NavbarSearch = ({...props}) => {
                     </div>
                 </div>
                 <div className="middle-top">
-                    <Input
+                    <input
                         ref={inputSearch}
                         onClick={() => {
                             libraryGeneralEvent('mweb_library_search_form_clicked');
@@ -93,6 +110,7 @@ const NavbarSearch = ({...props}) => {
                         placeholder="Search for a program, genre, etc."
                         onChange={(e) => _onChangeQuery(e)}
                         value={state.q}
+                        style={{width:"100%", outline: "none"}}
                         className="search-input" />
                 </div>
                 <div className="right-top-link">

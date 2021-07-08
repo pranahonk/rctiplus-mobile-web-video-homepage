@@ -48,6 +48,8 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { search_history: action.history });
         case 'GET_SEARCH_SUGGESTION':
             return Object.assign({}, state, { search_suggestion: action.suggestion });
+            case 'RESETs_SEARCH_SUGGESTION':
+        return Object.assign({}, state, { search_suggestion: action.suggestion });
         case 'SEARCH_RESULTS':
             const more_allowed = action.search_show_more_allowed;
             return Object.assign({}, state, { 
