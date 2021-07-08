@@ -106,7 +106,8 @@ module.exports = (window => {
 		const parsingMessage = (event) => {
 			if (!isJson(event.data)) return;
 			const data = JSON.parse(event.data);
-			const storyViewer = query('#zuck-modal .viewing');
+			const storyViewer = query('#zuck-modal .viewing')
+			const currentViewingStory = zuck.data[storyViewer.getAttribute("data-story-id")]
 
 			if (data?.state) {
 				switch(data.state) {
@@ -119,14 +120,22 @@ module.exports = (window => {
 
 							if (item.contentType == 'image') {
 								const items = storyViewer.querySelectorAll('[data-index].active');
-								const itemPointer = items[0];
-								
-								/* setVendorVariable(
-									itemPointer.getElementsByTagName('b')[0].style,
-									'AnimationDuration',
-									`5s`
-								); */
+								const itemPointer = items[0]
+
+								// start progress bar soon when currently displaying ads is an image
+								if (currentViewingStory.items[currentViewingStory.currentItem].id === item.id) {
+									storyViewer.classList.remove("loading")
+									storyViewer.classList.remove("initial")
+								}
+
 							} else {
+
+								// Stop now for a moment the progress bar when it is a video ads
+								// NOTE!! It will start only when video are playing
+								if (currentViewingStory.items[currentViewingStory.currentItem].id === item.id) {
+									storyViewer.classList.add("initial")
+								}
+
 								const storyId = zuck.internalData['currentStory'];
 								let items = query(`#zuck-modal [data-story-id="${storyId}"]`);
 								items = items.querySelectorAll('[data-index].active');
@@ -147,7 +156,11 @@ module.exports = (window => {
 								itemPointer.getElementsByTagName('b')[0].style,
 								'AnimationDuration',
 								`${data.duration}s`
-							);
+							)
+
+							// When video are ready and playing start the progress bar and tell user it is no longer loading
+							storyViewer.classList.remove("loading")
+							storyViewer.classList.remove("initial")
 						}
 						break;
 					case 'unmute':
@@ -970,51 +983,52 @@ module.exports = (window => {
 			// Story Ads
 			const createStoryViewerAds = function (storyID, storyAdsItems) {
 				window.googletag = window.googletag || {cmd: []}
+				
+				// Refresh the pubads service everytime ads are going to be displayed
+				// Tell user currently viewing story items is loading
+				googletag.pubads().refresh()
+				const storyViewer = query("#zuck-modal .viewing")
+				storyViewer.classList.add("loading")
+				storyViewer.classList.add("initial") // this will stop animation of the progress bar
 
 				storyAdsItems.forEach(item => {
-					if (item.type === "ads") {
-						if (!item["adsSlot"]) {
-							googletag.cmd.push(function() {
-								item['adsSlot'] = googletag.defineSlot(item.src, ['fluid'], item.preview).addService(googletag.pubads());
-								
-								// Set targetting ads for each story ads items
-								// This process will be omitted when array is an empty array
-								taData.forEach(({ name, value }) => {
-									console.log(name, value, "from zuck")
-									googletag.pubads().setTargeting(name, value)
-								})
+					if (item.type !== "ads") return
 
-								googletag.pubads().enableSingleRequest();
-								googletag.pubads().collapseEmptyDivs();
-								googletag.enableServices();
-							});
-						}
-						else {
-							googletag.cmd.push(function() {
-								googletag.pubads().refresh()
-							})
-						}
-
+					if (!item["adsSlot"]) {
 						googletag.cmd.push(function() {
-							googletag.display(item.preview);
-	
-							googletag.pubads().addEventListener('slotOnload', () => {
-								const parentElement = document.querySelector('.slides');
-								const adsFrame = document.querySelector(`#${item.preview} > div > iframe`)
-								adsFrame.style.height = parentElement.offsetHeight + 'px'
-	
-								const msg = {
-									state: 'init',
-									storyId: storyID,
-									itemId: item.id
-								}
-	
-								adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*')
+							item['adsSlot'] = googletag
+								.defineSlot(item.src, ['fluid'], item.preview)
+								.addService(googletag.pubads())
+							
+							// Set targetting ads for each story ads items
+							// This process will be omitted when array is an empty array
+							taData.forEach(({ name, value }) => {
+								googletag.pubads().setTargeting(name, value)
 							})
-						})
 
-						item['destroyed'] = false;
+							googletag.pubads().enableSingleRequest();
+							googletag.pubads().collapseEmptyDivs();
+							googletag.enableServices();
+						});
 					}
+
+					googletag.pubads().addEventListener('slotOnload', () => {
+						const parentElement = document.querySelector('.slides');
+						const adsFrame = document.querySelector(`#${item.preview} > div > iframe`)
+						adsFrame.style.height = parentElement.offsetHeight + 'px'
+
+						const msg = {
+							state: 'init',
+							storyId: storyID,
+							itemId: item.id
+						}
+
+						adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*')
+					})
+
+					googletag.display(item.preview)
+
+					item['destroyed'] = false;
 				})
 			}
 
@@ -2017,9 +2031,13 @@ module.exports = (window => {
 				}
 			}
 			
-			// refresh the state of the ads to prevent overlapping sounds 
-			// between switching over ads story items
+			// refresh the state of the ads to prevent overlapping sounds between switching over ads story items
+			// dont forget to add loading state to tell user it's still loading when it is going to display story ads
 			googletag.pubads().refresh()
+			if (zuck.data[currentStory].items.every(({ type }) => type === "ads")) {
+				storyViewer.classList.add("loading")
+				storyViewer.classList.add("initial") // this will stop animation of the progress bar
+			}
 		};
 
 		const init = function () {
