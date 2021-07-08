@@ -18,7 +18,8 @@ import NavSearch from '../components/Includes/Navbar/NavSearch';
 import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
 import SearchResults from './search/result';
 import PopularSearch from './search/popular';
-import HistorySearch from './search/history'
+import HistorySearch from './search/history';
+import SuggestionSearch from './search/suggestion'
 
 import { Row, Col } from 'reactstrap';
 
@@ -274,7 +275,7 @@ class Explores extends React.Component {
 
 	render() {
 		const metadata = this.getMetadata();
-		// const { search_popular } = useSelector(state => state.searches)
+
 		return (
 			<Layout title={metadata.title}>
 				<Head>
@@ -310,7 +311,7 @@ class Explores extends React.Component {
 						<>
 							<PopularSearch />
 							<HistorySearch />
-						</>
+						</>	
 					}
           			{/* <SearchResults resolution={this.state.resolution}/> */}
 				</div>

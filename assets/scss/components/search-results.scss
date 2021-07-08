@@ -36,8 +36,8 @@ $text-placeholder-color-login: #a8a8a8;
     
         .container-box-search-result {
             margin: 0px auto !important;
-            background-color: $primary-bg-color;
-            color: $primary-text-color;
+            background-color: $primary-bg-color !important;
+            color: $primary-text-color !important;
             width: 100% !important;
             height: 100%;
             object-fit: contain;
