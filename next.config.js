@@ -8,6 +8,10 @@ require("dotenv").config({ path: './.env' });
 
 let nextConfig = {
 	// next-offline options:
+  generateBuildId: async () => {
+    // You can, for example, get the latest git commit hash here
+    return 'dlingo-id-build'
+  },
 	async redirects() {
     return [
       {
