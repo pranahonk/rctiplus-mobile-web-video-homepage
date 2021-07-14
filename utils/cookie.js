@@ -1,6 +1,6 @@
 import cookie from 'js-cookie';
 import ax from 'axios';
-import { NEWS_API_V2, NEWS_API, DEV_API, VISITOR_TOKEN } from '../config';
+import { NEWS_API_V2, NEWS_API, DEV_API, VISITOR_TOKEN, MODE } from '../config';
 
 const axios = ax.create({
     // baseURL: API + '/api',
@@ -14,8 +14,7 @@ const axios = ax.create({
 export const setCookie = (key, value) => {
     if (process.browser) {
         cookie.set(key, value, {
-            expires: 1,
-            path: '/',
+           path: '/', domain: MODE === "PRODUCTION" ? "rctiplus.com" : null,
         });
     }
 };
