@@ -11,13 +11,43 @@ const axios = ax.create({
 });
 
 
-export const setCookie = (key, value) => {
-    if (process.browser) {
-        cookie.set(key, value, {
-            expires: 1,
-            path: '/',
-        });
-    }
+export const setCookie = (name, value, days) => {
+    // if (process.browser) {
+    //     cookie.set(key, value, { domain: 'rc-webm.rctiplus.com' });
+    // }
+    var domain, domainParts, date, expires, host;
+
+      if (days)
+      {
+         date = new Date();
+         date.setTime(date.getTime()+(days*24*60*60*1000));
+         expires = "; expires="+date.toGMTString();
+      }
+      else
+      {
+         expires = "";
+      }
+
+      host = location.host;
+      if (host.split('.').length === 1)
+      {
+         // no "." in a domain - it's localhost or something similar
+         document.cookie = name+"="+value+expires+"; path=/";
+      }
+      else
+      {
+         domainParts = host.split('.');
+         domainParts.shift();
+         domain = '.'+domainParts.join('.');
+
+         document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
+         if (Cookie.get(name) == null || Cookie.get(name) != value)
+         {
+
+            domain = '.'+host;
+            document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
+         }
+      }
 };
 
 export const removeCookie = key => {
