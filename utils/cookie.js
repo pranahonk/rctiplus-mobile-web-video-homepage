@@ -41,12 +41,12 @@ export const setCookie = (name, value, days) => {
          domain = '.'+domainParts.join('.');
 
          document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
-         if (Cookie.get(name) == null || Cookie.get(name) != value)
-         {
+        //  if (Cookie.get(name) == null || Cookie.get(name) != value)
+        //  {
 
-            domain = '.'+host;
-            document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
-         }
+        //     domain = '.'+host;
+        //     document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
+        //  }
       }
 };
 
