@@ -104,7 +104,7 @@ class Pnl_1 extends React.Component {
 						window.open(url, '_parent');
 						break;  
 				default:
-						Router.push(`/tv/rcti`);
+						Router.push(url);
 		}       
 	}
 	link(data) {
@@ -113,7 +113,7 @@ class Pnl_1 extends React.Component {
 			case 'special':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
 
-				let url = data.url ? url : data.link;
+				let url = data.url ? data.url : data.link;
 				// console.log('token:', this.props.token);
 				if (data.mandatory_login && this.props.user.isAuth) {
 					url += this.props.token;
