@@ -24,6 +24,7 @@ import trendingContent from './trending/content';
 //import trendingContent from './trending/content';
 
 import newsv2Reducer from './newsv2Reducer';
+import miniPlayerReducer from './miniplayerReducers';
 
 const rootReducer = combineReducers({
     authentication: authReducer,
@@ -47,7 +48,8 @@ const rootReducer = combineReducers({
     newsv2: newsv2Reducer,
     ads: adsReducer,
     Program: Program,
-    homeCategory : homeCategory
+    homeCategory : homeCategory,
+    miniplayer: miniPlayerReducer
 });
 
 export default rootReducer;
