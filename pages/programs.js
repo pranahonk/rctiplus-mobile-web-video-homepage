@@ -192,7 +192,6 @@ class Index extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
   }
   componentDidUpdate(prevProps) {
-    // console.log('COMPONENT DID UPDATE', this.props);
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
       if (this.props.router.query.content_id) {
         const {content_id , content_type} = this.props.router.query;
@@ -667,10 +666,65 @@ class Index extends React.Component {
       );
     }
   }
+
+  handleActionBtn(action) {
+    const { id, content_id } = this.props.router.query
+    const { seasonSelected } = this.props.data
+    const queueingContents = this.props.data["program-episode"][`season-${seasonSelected}`].data
+    
+    let targetVideoIndex = 0,
+      targetHref = [],
+      targetHrefAlias = [],
+      targetVideoContent = null
+
+    queueingContents.forEach((video, i) => {
+      if (video.id === +content_id && video.program_id === +id) {
+        targetVideoIndex = i
+        return
+      }
+    })
+
+    switch(action) {
+      case "forward": 
+        if (!queueingContents[targetVideoIndex + 1]) break
+        targetVideoContent = queueingContents[targetVideoIndex + 1]
+        break
+      case "backward":
+        if (!queueingContents[targetVideoIndex - 1]) break
+        targetVideoContent = queueingContents[targetVideoIndex - 1]
+        break
+    }
+
+    if (!targetVideoContent) return
+
+    const query = {
+      ...this.props.router.query,
+      id: targetVideoContent.program_id,
+      content_id: targetVideoContent.id,
+      content_title: urlRegex(targetVideoContent.title),
+      content_type: targetVideoContent.type,
+      title: urlRegex(targetVideoContent.program_title)
+    }
+
+    for (const key in query) {
+      targetHref.push(`${key}=${query[key]}`)
+      targetHrefAlias.push(query[key])
+    }
+
+    this.props.dispatch(fetchPlayerUrl(targetVideoContent.id, 'data-player', targetVideoContent.type));
+    this.props.router.push(`/programs?${targetHref.join("&")}`, `/programs/${targetHrefAlias.join("/")}`)
+  }
+
   switchPanel() {
     if (this.props.router.query.content_id) {
       if (this.props.data && this.props.data['data-player']) {
         const data = this.props.data && this.props.data['data-player'];
+
+        if (this.props.data["program-episode"] && this.props.data["program-episode"][`season-${this.props.data.seasonSelected}`].data) {
+          console.log(this.props.data["program-episode"][`season-${this.props.data.seasonSelected}`].data)
+        }
+
+        
         return (
           <div className="program-detail-player-wrapper">
               <JwPlayer
@@ -690,6 +744,7 @@ class Index extends React.Component {
                 isPaused={this.state.isPaused}
                 onAdsShown={(adsShown) => this.setState({ adsShown })}
                 handlePlaying={(e) => this.setState({ isStopped: e })}
+                actionBtn={(e) => this.handleActionBtn(e)}
                 />
               {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
           </div>

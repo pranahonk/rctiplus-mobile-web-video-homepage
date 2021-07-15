@@ -128,13 +128,84 @@ const JwPlayer = (props) => {
 
   // Update Setup
   useEffect(() => {
-
     if (player !== null) {
       setIsConviva(Math.random());
       setIsCustomSetup(Math.random());
       player.setup(options);
     }
   }, [props.data && props.data.url, props.data && props.data.vmap]);
+
+  const generateForwardBackwardBtns = ({ type, data }) => {
+    const playerContainer = player.getContainer()
+    const forwardContainer = playerContainer.querySelector('.jw-icon-next')
+    const backwardContainer = playerContainer.querySelector('.jw-icon-rewind')
+
+    // Set all display controls to be visible
+    playerContainer.querySelector(".jw-display.jw-reset").style.display = "flex"
+
+    // Setup the margin of each controls to zero to prevent overlapping
+    Array.from(
+      playerContainer.querySelectorAll(".jw-display-icon-container.jw-reset")
+    ).forEach(iconContainer => iconContainer.style.margin = 0)
+    
+    if (type.includes("live")) {
+      // Undisplay and empty the container
+      forwardContainer.style.display = "none"
+      backwardContainer.style.display = "none"
+      forwardContainer.innerHTML = ""
+      backwardContainer.innerHTML = ""
+
+      // check if gpt data exist
+      if ((data && data.gpt && data.gpt.path != null) && (data && data.gpt && data.gpt.path != undefined)) {
+        // check if ads_wrapper element not exist
+        if (document.querySelector('.ads_wrapper') == undefined) {
+          const playerContainer = player.getContainer();
+
+          const adsOverlayElement = document.createElement('div');
+          adsOverlayElement.classList.add('ads_wrapper');
+          adsOverlayElement.style.display = 'none';
+
+          const adsOverlayBox = document.createElement('div');
+          adsOverlayBox.classList.add('adsStyling');
+
+          const adsOverlayCloseButton = document.createElement('div');
+          adsOverlayCloseButton.classList.add('close_button');
+          adsOverlayCloseButton.innerHTML = closeIcon;
+
+          const adsOverlayContainer = document.createElement('div');
+          const divGPTString = (data && data.gpt && data.gpt.div_gpt != null) && (data && data.gpt && data.gpt.div_gpt != undefined) ? data.gpt.div_gpt : type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+          adsOverlayContainer.classList.add('adsContainer');
+          adsOverlayContainer.id = divGPTString;
+          adsOverlayContainer.innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${divGPTString}'); });</script>`;
+
+          playerContainer.appendChild(adsOverlayElement);
+          adsOverlayElement.appendChild(adsOverlayBox);
+          adsOverlayBox.appendChild(adsOverlayCloseButton);
+          adsOverlayBox.appendChild(adsOverlayContainer);
+
+          adsOverlayCloseButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            pubAdsRefreshInterval.timeStart = 0;
+            setAdStatus('close');
+          });
+        }
+      }
+    } else {
+      Array.from([
+        { key: "forward", container: forwardContainer },
+        { key: "backward", container: backwardContainer }
+      ]).forEach(({ key, container }) => {
+        container.innerHTML = `<img src=/static/icons/player_${key}.svg alt="${key}" />`
+        container.addEventListener("click", () => {
+          if (props.actionBtn) props.actionBtn(key)
+        })
+      })
+    }
+
+    return playerContainer
+  }
 
   // Costum Setup
   useEffect(() => {
@@ -146,11 +217,10 @@ const JwPlayer = (props) => {
         } */
         setPlayerFullscreen(props.isFullscreen);
 
-        const playerContainer = player.getContainer();
-        const fowardContainer = playerContainer.querySelector('.jw-icon-next');
-        const backwardContainer = playerContainer.querySelector('.jw-icon-rewind');
+        const playerContainer = generateForwardBackwardBtns(props)
         const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
+
         if(isForward) {
           const forwardElement = document.createElement('div');
           forwardElement.classList.add('jw-rplus-forward');
@@ -165,60 +235,7 @@ const JwPlayer = (props) => {
           });
           playerContainer.append(forwardElement);
         }
-        if (props.type !== 'live tv' || props.type !== 'live event') {
-          fowardContainer.innerHTML = foward10Icon;
-          backwardContainer.innerHTML = backward10Icon;
-          fowardContainer.addEventListener('touchstart', () => {
-            player.seek(player.getPosition() + 10);
-          });
-        }
 
-        if (props.type === 'live tv' || props.type === 'live event') {
-          // console.log(fowardContainer);
-          fowardContainer.style.display = 'none'
-          backwardContainer.style.display = 'none'
-          fowardContainer.innerHTML = '';
-          backwardContainer.innerHTML = '';
-
-          // check if gpt data exist
-          if ((props.data && props.data.gpt && props.data.gpt.path != null) && (props.data && props.data.gpt && props.data.gpt.path != undefined)) {
-            // check if ads_wrapper element not exist
-            if (document.querySelector('.ads_wrapper') == undefined) {
-              // console.log('data gpt', props.data.gpt);
-              const playerContainer = player.getContainer();
-
-              const adsOverlayElement = document.createElement('div');
-              adsOverlayElement.classList.add('ads_wrapper');
-              adsOverlayElement.style.display = 'none';
-
-              const adsOverlayBox = document.createElement('div');
-              adsOverlayBox.classList.add('adsStyling');
-
-              const adsOverlayCloseButton = document.createElement('div');
-              adsOverlayCloseButton.classList.add('close_button');
-              adsOverlayCloseButton.innerHTML = closeIcon;
-
-              const adsOverlayContainer = document.createElement('div');
-              const divGPTString = (props.data && props.data.gpt && props.data.gpt.div_gpt != null) && (props.data && props.data.gpt && props.data.gpt.div_gpt != undefined) ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-              adsOverlayContainer.classList.add('adsContainer');
-              adsOverlayContainer.id = divGPTString;
-              adsOverlayContainer.innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${divGPTString}'); });</script>`;
-
-              playerContainer.appendChild(adsOverlayElement);
-              adsOverlayElement.appendChild(adsOverlayBox);
-              adsOverlayBox.appendChild(adsOverlayCloseButton);
-              adsOverlayBox.appendChild(adsOverlayContainer);
-
-              adsOverlayCloseButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                pubAdsRefreshInterval.timeStart = 0;
-                setAdStatus('close');
-              });
-            }
-          }
-        }
         if (isIOS) {
           const elementCreateMute = document.createElement('btn');
           const elementMuteIcon = document.createElement('span');
@@ -245,7 +262,8 @@ const JwPlayer = (props) => {
           });
         }
         player.seek(props.data.last_duration);
-      });
+      })
+
       player.on('mute', function() {
         const elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
         if (elementJwplayer[0] !== undefined) {
@@ -257,8 +275,9 @@ const JwPlayer = (props) => {
             elementJwplayer[0].classList.remove('jwplayer-mute');
           }
         }
-      });
-      player.on('play', (event) =>{
+      })
+
+      player.on('play', () =>{
         convivaJwPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
           if (document.querySelector('.ads_wrapper').style.display == 'none') {
@@ -274,22 +293,22 @@ const JwPlayer = (props) => {
         // isStopped is a state to tell whether jwplayer is stopped or playing
         if (props.handlePlaying) props.handlePlaying(false)
       });
+      
       player.on('pause', () =>{
-        // console.log('EFFECT INIT 4 CONTINUE WATCHING PAUSE', test)
-        // console.log('PAUSE');
         convivaJwPlayer().pause();
       });
+
       player.on('buffer', (event) =>{
-        // console.log('BUFFER', event);
         convivaJwPlayer().buffer();
       });
+
       player.on('adError', (event) => {
         // console.log('ERRRRRORRR', event);
       });
 
       player.on('time', (event) => {
-        setDuration(player.getPosition())
-      })
+        setDuration(player.getPosition());
+      });
 
       player.on('complete', (event) => {
         const convivaTracker = convivaJwPlayer();
@@ -297,6 +316,7 @@ const JwPlayer = (props) => {
           convivaTracker.cleanUpSession();
         }
       });
+
       player.on('fullscreen', (event) => {
         /* if (event.fullscreen) {
           if (!playerFullscreen) {
@@ -316,6 +336,7 @@ const JwPlayer = (props) => {
           setAdStatus('none');
         }
       });
+
       player.on('adSkipped', (event) => {
         if (props.onAdsShown) props.onAdsShown(false)
 
@@ -325,6 +346,7 @@ const JwPlayer = (props) => {
           }
         }
       });
+
       player.on('adComplete', (event) => {
         if (props.onAdsShown) props.onAdsShown(false)
 
@@ -342,6 +364,7 @@ const JwPlayer = (props) => {
           document.querySelector('.ads_wrapper').style.bottom = '70px';
         }
       });
+
       player.on('userInactive', (event) => {
         if (document.querySelector('.ads_wrapper')) {
           document.querySelector('.ads_wrapper').style.bottom = '5px';
