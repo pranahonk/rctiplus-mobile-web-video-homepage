@@ -21,7 +21,7 @@ const initialState = {
         photo: false
     },
     search_status: false,
-    search_all: [],
+    search_all: null,
     search_popular: [],
     search_history: [],
     search_suggestion: [],

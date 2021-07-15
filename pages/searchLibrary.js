@@ -84,6 +84,7 @@ class Explores extends React.Component {
 			page: {},
 			show_more_allowed: {},
 			length: 9,
+			searchKeyword: "",
 			selected_genre: selectedGenre,
 			selected_genre_name: selectedGenreName,
 			selected_genre_id: this.props.query.id ? this.props.query.id : -1

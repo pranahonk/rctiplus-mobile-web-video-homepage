@@ -5,6 +5,10 @@ import { connect } from 'react-redux';
 import Img from 'react-image';
 import classnames from 'classnames';
 
+import AllResult from './Result/AllResult';
+import ProgramResult from './Result/ProgramResult';
+import EpisodeResult from './Result/EpisodeResult';
+
 import searchActions from '../../redux/actions/searchActions';
 
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
@@ -75,7 +79,10 @@ class Result extends React.Component {
                     ))}
                 </Nav>
                 <TabContent className="container-box-search-result" activeTab={this.state.active_tab}>
-                    {this.tabs.map((t, i) => (
+                    {this.state.active_tab === "all" && <AllResult/>}
+                    {this.state.active_tab === "program" && <ProgramResult />}
+                    {this.state.active_tab === "episode" && <EpisodeResult />}
+                    {/* {this.tabs.map((t, i) => (
                         <TabPane key={i} tabId={t}>
                             <div style={{background: "#282828"}} className="content-search">
                                 <div className="header-list">
@@ -123,7 +130,7 @@ class Result extends React.Component {
                                 </div>
                             </div>
                         </TabPane>
-                    ))}
+                    ))} */}
                     
                 </TabContent>
             </div>

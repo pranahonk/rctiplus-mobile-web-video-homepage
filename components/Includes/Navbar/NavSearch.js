@@ -21,8 +21,8 @@ import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked } from '../.
 
 const NavbarSearch = ({...props}) => {
     const inputSearch = useRef(null);
+    const router = useRouter();
     
-    const router = useRouter()
     const [state, setState] = useState({q: router.query.q || '', length: 9});
 
     useEffect(() => {
@@ -45,7 +45,7 @@ const NavbarSearch = ({...props}) => {
             .then(responses => props.unsetPageLoader())
             .catch(error => props.unsetPageLoader());
 
-        inputSearch.current.focus();
+        // inputSearch.current.focus();
     }, [])
 
 
@@ -71,7 +71,6 @@ const NavbarSearch = ({...props}) => {
     }
     const _bottomScrollFetch = () => {
         if (state.q && props.searches.search_show_more_allowed[props.searches.active_tab]) {
-            console.log('testt tab')
             props.searchCategory(state.q, props.searches.active_tab, props.searches.search_page[props.searches.active_tab], state.length)
         }
     }
