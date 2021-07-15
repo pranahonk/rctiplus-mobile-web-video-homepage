@@ -8,7 +8,7 @@ import '../../../assets/scss/components/home-category-menu.scss';
 const CategoryMenu = ({contents}) => {
     const size = 150;
     const dispatch = useDispatch();
-    const [listMenu, setListMenu] = useState({})
+    const [listMenu, setListMenu] = useState([{}])
     const {listMenuHomeCategory} = useSelector(state => state.homeCategory);
 
     useEffect(() => {
@@ -23,14 +23,14 @@ const CategoryMenu = ({contents}) => {
 
     return (
         <div className="h-category-container">
-            <div style={listMenu?.data?.length <= 4 ? {display: "flex", justifyContent: "center", borderRadius: "20px"} : {width: "100%", maxWidth: "700px"}} className="grid-h-category-container">
+            <div style={listMenu?.data?.length <= 4 ? {display: "flex", justifyContent: "center", borderRadius: "20px"} : {width: "100%", maxWidth: "1200px"}} className="grid-h-category-container">
                 
                 {listMenu?.data && 
                 listMenu.data.map((val, ind) => (
-                    <div className="menu-item-cat">
+                    <div key={ ind } className="menu-item-cat">
                         {/* <Link href={`/category?category_id=${val.id}&category_title=${val.name}`}> */}
                             <div onClick={() => window.location.href=`/category?category_id=${val.id}&category_title=${val.name}`}>
-                                <div style={{display: "flex",  flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+                                <div style={{display: "flex",  flexDirection: "column", justifyContent: "center", alignItems: "center", maxWidth: "54px", minWidth: "54px"}}>
                                     <div className="container-menu-icon-cat">
                                         <img alt={val.name} className="menu-icon-cat" src={`${listMenu?.meta?.image_path}${size}${val.icon}`}/>
                                     </div>

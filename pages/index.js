@@ -167,7 +167,10 @@ class Index_v2 extends React.Component {
                     <Carousel showStickyInstall={this.state.show_sticky_install} >
                         <GridMenu />
                     </Carousel>
-                    <Stories loadingBar={this.LoadingBar} homepage={true}/>
+                    <div style={{marginTop: "25px"}}>
+                        <Stories loadingBar={this.LoadingBar} homepage={true}/>
+                    </div>
+                    
                     <StickyContainer>
                         <Sticky disableHardwareAcceleration>
                             { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
@@ -203,7 +206,7 @@ class Index_v2 extends React.Component {
                             } }
                         </Sticky>
                     </StickyContainer>
-                    <div style={{marginBottom: 40, paddingTop: 10, paddingLeft: 12}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
+                    <div style={{marginBottom: 45, paddingTop: 10}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
                         {contents.map((content, i) => {
                             switch (content.display_type) {
                                 case 'horizontal_landscape_large':
