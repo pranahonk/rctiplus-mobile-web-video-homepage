@@ -96,6 +96,8 @@ const JwPlayer = (props) => {
       setIsConviva(Math.random());
       setIsCustomSetup(Math.random());
       player.setup(options);
+
+      setCustomBtnReady(false)
     }
   }, [props.data && props.data.url, props.data && props.data.vmap]);
 
@@ -108,9 +110,10 @@ const JwPlayer = (props) => {
     playerContainer.querySelector(".jw-display.jw-reset").style.display = "flex"
 
     // Setup the margin of each controls to zero to prevent overlapping per element
-    Array.from(
-      playerContainer.querySelectorAll(".jw-display-icon-container.jw-reset")
-    ).forEach(iconContainer => iconContainer.style.margin = 0)
+    Array.from(playerContainer.querySelectorAll(".jw-display-icon-container.jw-reset"))
+      .forEach(iconContainer => {
+        iconContainer.style.margin = 0
+      })
     
     if (type.includes("live")) {
       // Undisplay and empty the container
@@ -177,18 +180,24 @@ const JwPlayer = (props) => {
 
   useEffect(() => {
     if (!player) return
-
+    if (!customBtnReady) return
+    
     // process right after custom button had been set up
     // display / undisplay button based from active video index
-    const { prev, current, next } = props.videoIndexing
+    const { prev, current, maxQueue } = props.videoIndexing
     const playerContainer = player.getContainer()
     const forwardContainer = playerContainer.querySelector('.jw-icon-next')
     const backwardContainer = playerContainer.querySelector('.jw-icon-rewind')
-
+    forwardContainer.style.visibility = ""
+    backwardContainer.style.visibility = ""
+    
+    if (current === (maxQueue - 1)) forwardContainer.style.visibility = "hidden"
     if (current === prev) backwardContainer.style.visibility = "hidden"
-    if (current === next) forwardContainer.style.visibility = "hidden"
-
-  }, [props.videoIndexing && props.videoIndexing.current, customBtnReady])
+    
+  }, [
+    props.videoIndexing && props.videoIndexing.current,
+    customBtnReady
+  ])
 
   // Costum Setup
   useEffect(() => {

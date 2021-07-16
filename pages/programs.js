@@ -176,6 +176,8 @@ class Index extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
   }
   componentDidUpdate(prevProps) {
+    this.onVideoListChanged(this.props.data["program-episode"])
+
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
       if (this.props.router.query.content_id) {
         const {content_id , content_type} = this.props.router.query;
@@ -230,6 +232,20 @@ class Index extends React.Component {
       // }
     }
   }
+
+  onVideoListChanged(programEpisode) {
+    if (!programEpisode) return
+
+    const { seasonSelected } = this.props.data
+    const { pagination } = programEpisode[`season-${seasonSelected}`].meta
+
+    if (this.state.videoIndexing.maxQueue === pagination.total) return
+
+    this.setState({
+      videoIndexing: { ...this.state.videoIndexing, maxQueue: pagination.total }
+    })
+  }
+
   getProgramDetail(id, type) {
     if (!this.props.data[type]) {
       this.props.dispatch(
@@ -359,6 +375,8 @@ class Index extends React.Component {
         switch (this.isTabs(this.props.server[this.type].data)[0]) {
           case 'Episodes':
             if (!this.props.data['program-episode'] || this.state.episodeClearStore) {
+              if (this.props.data.seasonSelected) break
+
               this.props.dispatch(fetchEpisode(programId, 'program-episode'));
               this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
               this.props.dispatch(seasonSelected(1));
@@ -493,11 +511,7 @@ class Index extends React.Component {
               query={this.query()}
               link={this.getLinkVideo.bind(this)}
               seasonSelected= { this.props.data.seasonSelected }
-              onShowMore={() => {
-                console.log("lagi get show more")
-                this.props.dispatch(fetchEpisode(this.props.router.query.id, 'program-episode',props.data[0].season, pagination.nextPage));
-                onTracking(this.reference, this.props.router.query.id, this.props.server['program-detail']);
-                }}
+              onShowMore={() => this.handleShowMore(pagination)}
               onSeason={() => {this.props.dispatch(fetchSeasonEpisode(this.props.router.query.id,'program-episode',1, pagination.nextPage));}}
               onBookmarkAdd={this.addBookmark.bind(this)}
               onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
@@ -637,12 +651,31 @@ class Index extends React.Component {
     }
   }
 
+  handleShowMore(pagination) {
+    console.log("lagi get show more")
+
+    if (pagination.nextPage > pagination.total_page) return
+
+    const { query } = this.props.router
+    const { seasonSelected } = this.props.data
+
+    this.props.dispatch(fetchEpisode(
+      query.id,
+      'program-episode',
+      seasonSelected,
+      pagination.nextPage
+    ))
+
+    onTracking(this.reference, query.id, this.props.server['program-detail']);
+  }
+
   handleActionBtn(action) {
     const { seasonSelected } = this.props.data
     const { videoIndexing } = this.state
+    const { pagination } = this.props.data["program-episode"][`season-${seasonSelected}`].meta
     const queueingContents = this.props.data["program-episode"][`season-${seasonSelected}`].data
     const direction = action === "forward" ? "next" : "prev"
-    
+
     let targetHref = [],
       targetHrefAlias = [],
       targetVideoContent = queueingContents[videoIndexing[direction]]
@@ -660,6 +693,14 @@ class Index extends React.Component {
       targetHref.push(`${key}=${query[key]}`)
       targetHrefAlias.push(query[key])
     }
+    
+    // When current video is the last content on the pagination list, call the next page
+    if ((queueingContents.length - 1) === videoIndexing.next) {
+      this.handleShowMore({
+        ...pagination,
+        nextPage: (pagination.current_page + 1)
+      })
+    }
 
     this.props.dispatch(fetchPlayerUrl(targetVideoContent.id, 'data-player', targetVideoContent.type));
     this.props.router.push(
@@ -674,7 +715,7 @@ class Index extends React.Component {
     const { id, content_id } = this.props.router.query
     const queueingContents = programEpisode[`season-${currentSeason}`].data
     
-    let videoIndexing = {}
+    let videoIndexing = this.state.videoIndexing
 
     queueingContents.forEach((content, i) => {
       if (content.id === +content_id && content.program_id === +id) {
