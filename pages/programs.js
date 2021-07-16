@@ -114,7 +114,8 @@ class Index extends React.Component {
       isStopped: false,
       routerHistory: "",
       isPaused: false,
-      adsShown: false
+      adsShown: false,
+      videoIndexing: {},
     };
     this.type = 'program-detail';
     this.typeEpisode = 'program-episode';
@@ -668,34 +669,14 @@ class Index extends React.Component {
   }
 
   handleActionBtn(action) {
-    const { id, content_id } = this.props.router.query
     const { seasonSelected } = this.props.data
+    const { videoIndexing } = this.state
     const queueingContents = this.props.data["program-episode"][`season-${seasonSelected}`].data
+    const direction = action === "forward" ? "next" : "prev"
     
-    let targetVideoIndex = 0,
-      targetHref = [],
+    let targetHref = [],
       targetHrefAlias = [],
-      targetVideoContent = null
-
-    queueingContents.forEach((video, i) => {
-      if (video.id === +content_id && video.program_id === +id) {
-        targetVideoIndex = i
-        return
-      }
-    })
-
-    switch(action) {
-      case "forward": 
-        if (!queueingContents[targetVideoIndex + 1]) break
-        targetVideoContent = queueingContents[targetVideoIndex + 1]
-        break
-      case "backward":
-        if (!queueingContents[targetVideoIndex - 1]) break
-        targetVideoContent = queueingContents[targetVideoIndex - 1]
-        break
-    }
-
-    if (!targetVideoContent) return
+      targetVideoContent = queueingContents[videoIndexing[direction]]
 
     const query = {
       ...this.props.router.query,
@@ -712,18 +693,38 @@ class Index extends React.Component {
     }
 
     this.props.dispatch(fetchPlayerUrl(targetVideoContent.id, 'data-player', targetVideoContent.type));
-    this.props.router.push(`/programs?${targetHref.join("&")}`, `/programs/${targetHrefAlias.join("/")}`)
+    this.props.router.push(
+      `/programs?${targetHref.join("&")}`, // actual target url
+      `/programs/${targetHrefAlias.join("/")}` // url when displayed on browser 
+    )
+  }
+
+  getCurrentViewingVideoIndex(programEpisode = {}, currentSeason) {
+    if (!programEpisode[`season-${currentSeason}`]) return
+
+    const { id, content_id } = this.props.router.query
+    const queueingContents = programEpisode[`season-${currentSeason}`].data
+    
+    let videoIndexing = {}
+
+    queueingContents.forEach((content, i) => {
+      if (content.id === +content_id && content.program_id === +id) {
+        videoIndexing["prev"] = i - 1 < 0 ? 0 : i - 1
+        videoIndexing["current"] = i
+        videoIndexing["next"] = i + 1 > queueingContents.length - 1 ? queueingContents.length - 1 : i + 1
+        return
+      }
+    })
+
+    if (this.state.videoIndexing.current !== videoIndexing.current) {
+      this.setState({ videoIndexing })
+    }
   }
 
   switchPanel() {
     if (this.props.router.query.content_id) {
       if (this.props.data && this.props.data['data-player']) {
         const data = this.props.data && this.props.data['data-player'];
-
-        if (this.props.data["program-episode"] && this.props.data["program-episode"][`season-${this.props.data.seasonSelected}`].data) {
-          console.log(this.props.data["program-episode"][`season-${this.props.data.seasonSelected}`].data)
-        }
-
         
         return (
           <div className="program-detail-player-wrapper">
@@ -745,8 +746,8 @@ class Index extends React.Component {
                 onAdsShown={(adsShown) => this.setState({ adsShown })}
                 handlePlaying={(e) => this.setState({ isStopped: e })}
                 actionBtn={(e) => this.handleActionBtn(e)}
+                videoIndexing={this.state.videoIndexing}
                 />
-              {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
           </div>
         );
       }
@@ -776,7 +777,6 @@ class Index extends React.Component {
                 sectionPage: 'VOD',
                 }}
               />
-            {/* <Player data={ data.data } ref={this.ref} isFullscreen={ true }/> */}
         </div>
       );
     }
@@ -898,6 +898,12 @@ class Index extends React.Component {
   render() {
     const { props, state } = this;
     const content = props.seo_content_detail?.data
+
+    // set active video index to be used when user click next / back player button
+    this.getCurrentViewingVideoIndex(
+      this.props.data["program-episode"],
+      this.props.data.seasonSelected
+    )
    
     return (
       <Layout>
