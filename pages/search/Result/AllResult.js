@@ -8,10 +8,12 @@ import Img from 'react-image';
 import ShareIcon from "../../../components/Includes/IconCustom/ShareIcon";
 import GetApp from '@material-ui/icons/GetApp';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded';
 import '../../../assets/scss/components/search-results.scss';
 
 const  AllResult = () => {
     const { search_all } = useSelector(state => state.searches)
+    console.log(`ini adalah search all`, search_all )
 
     const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
         if (status)  return path + resolution + imgSrc;
@@ -25,9 +27,9 @@ const  AllResult = () => {
                 <div style={{background: "#282828"}} className="content-search">
                     {search_all?.program_data?.data?.length > 0 &&
                         <div>
-                            <div style={{display:"flex", justifyContent:"space-between", width:"100%"}} className="header-list">
+                            <div style={{display:"flex", justifyContent:"space-between", width:"100%", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Program</p>
-                                <div className="title">More</div>
+                                <div style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
@@ -52,9 +54,9 @@ const  AllResult = () => {
 
                     {search_all?.episode_data?.data?.length > 0 &&
                         <div>
-                            <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px"}} className="header-list">
+                            <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Episode</p>
-                                <div className="title">More</div>
+                                <div style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
@@ -98,9 +100,9 @@ const  AllResult = () => {
 
                     {search_all?.catchup_data?.data?.length > 0 &&
                         <div>
-                            <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px"}} className="header-list">
+                            <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Catch Up</p>
-                                <div className="title">More</div>
+                                <div style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
@@ -125,9 +127,9 @@ const  AllResult = () => {
 
                     {search_all?.extra_data?.data?.length > 0 &&
                         <div>
-                            <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px"}} className="header-list">
+                            <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Extras</p>
-                                <div className="title">More</div>
+                                <div style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
@@ -172,9 +174,9 @@ const  AllResult = () => {
 
                     {search_all?.clip_data?.data?.length > 0 &&
                         <div>
-                            <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px"}} className="header-list">
+                            <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Clips</p>
-                                <div className="title">More</div>
+                                <div style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
@@ -219,9 +221,9 @@ const  AllResult = () => {
 
                     {search_all?.photo_data?.data?.length > 0 &&
                         <div>
-                            <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px"}} className="header-list">
+                            <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Photos</p>
-                                <div className="title">More</div>
+                                <div style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
