@@ -276,6 +276,7 @@ class Explores extends React.Component {
 
 	render() {
 		const metadata = this.getMetadata();
+		console.log(`hahah`, this.props.searches.search_all)
 
 		return (
 			<Layout title={metadata.title}>
@@ -306,7 +307,7 @@ class Explores extends React.Component {
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
 				<NavSearch />
 				<div className="container-box-e">
-					{this.props.searches.search_results.length > 0 ?
+					{this.props.searches.search_all !== null ?
 						<SearchResults resolution={this.state.resolution}/>
 						:
 						<>

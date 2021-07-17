@@ -82,6 +82,8 @@ class Result extends React.Component {
                     {this.state.active_tab === "all" && <AllResult/>}
                     {this.state.active_tab === "program" && <ProgramResult />}
                     {this.state.active_tab === "episode" && <EpisodeResult />}
+                    {this.state.active_tab === "extra" && <EpisodeResult />}
+                    {this.state.active_tab === "catchup" && <EpisodeResult />}
                     {/* {this.tabs.map((t, i) => (
                         <TabPane key={i} tabId={t}>
                             <div style={{background: "#282828"}} className="content-search">
