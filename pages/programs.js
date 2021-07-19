@@ -136,7 +136,6 @@ class Index extends React.Component {
 
     this.premium = this.props?.server?.[this.type]?.data?.premium
     this.reference = queryString.parse(location.search).ref;
-    // console.log('MOUNTED: ', this.props);
     this.props.dispatch(userActions.getUserData());
     this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] , 'tracking-program'));
     if (this.props.router.query.content_id) {
@@ -259,6 +258,29 @@ class Index extends React.Component {
 
       this.scrollingElement.current.scrollTo(0, 0)
     }
+  }
+
+  onVideoListChanged(programEpisode) {
+    if (!programEpisode) return
+
+    const { seasonSelected } = this.props.data
+    const { data, meta } = programEpisode[`season-${seasonSelected}`]
+    const { query } = this.props.router
+
+    if (!data || !meta) return
+    if (this.state.videoIndexing.maxQueue === meta.pagination.total) return
+
+    // When currently playing video is not on the list of queue, target to the first content instead
+    const isPlayingVideoOnTheList = data.find(content => +content.id === +query.content_id)
+    if (!isPlayingVideoOnTheList) {
+      const { href, hrefAlias } = this.routingQueryGenerator(data[0])
+      this.props.router.push(`/programs?${href}`, `/programs/${hrefAlias}`)
+      this.props.dispatch(fetchPlayerUrl(data[0].id, 'data-player', data[0].type))
+    }
+
+    this.setState({
+      videoIndexing: { ...this.state.videoIndexing, maxQueue: meta.pagination.total }
+    })
   }
 
   getProgramDetail(id, type) {
@@ -667,24 +689,34 @@ class Index extends React.Component {
       );
     }
   }
+  handleShowMore(pagination) {
+    console.log("lagi get show more")
 
-  handleActionBtn(action) {
+    if (pagination.nextPage > pagination.total_page) return
+
+    const { query } = this.props.router
     const { seasonSelected } = this.props.data
-    const { videoIndexing } = this.state
-    const queueingContents = this.props.data["program-episode"][`season-${seasonSelected}`].data
-    const direction = action === "forward" ? "next" : "prev"
-    
-    let targetHref = [],
-      targetHrefAlias = [],
-      targetVideoContent = queueingContents[videoIndexing[direction]]
 
+    this.props.dispatch(fetchEpisode(
+      query.id,
+      'program-episode',
+      seasonSelected,
+      pagination.nextPage
+    ))
+
+    onTracking(this.reference, query.id, this.props.server['program-detail']);
+  }
+  routingQueryGenerator(targetContent) {
+    let targetHref = [],
+      targetHrefAlias = []
+    
     const query = {
       ...this.props.router.query,
-      id: targetVideoContent.program_id,
-      content_id: targetVideoContent.id,
-      content_title: urlRegex(targetVideoContent.title),
-      content_type: targetVideoContent.type,
-      title: urlRegex(targetVideoContent.program_title)
+      id: targetContent.program_id,
+      content_id: targetContent.id,
+      content_title: urlRegex(targetContent.title),
+      content_type: targetContent.type,
+      title: urlRegex(targetContent.program_title)
     }
 
     for (const key in query) {
@@ -692,11 +724,32 @@ class Index extends React.Component {
       targetHrefAlias.push(query[key])
     }
 
+    return {
+      href: targetHref.join("&"), // actual target url
+      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser 
+    }
+  }
+
+  handleActionBtn(action) {
+    const { seasonSelected } = this.props.data
+    const { videoIndexing } = this.state
+    const { pagination } = this.props.data["program-episode"][`season-${seasonSelected}`].meta
+    const queueingContents = this.props.data["program-episode"][`season-${seasonSelected}`].data
+    const direction = action === "forward" ? "next" : "prev"
+
+    const targetVideoContent = queueingContents[videoIndexing[direction]]
+    const { href, hrefAlias } = this.routingQueryGenerator(targetVideoContent)
+    
+    // When current video is the last content on the pagination list, call the next page
+    if ((queueingContents.length - 1) === videoIndexing.next) {
+      this.handleShowMore({
+        ...pagination,
+        nextPage: (pagination.current_page + 1)
+      })
+    }
+
     this.props.dispatch(fetchPlayerUrl(targetVideoContent.id, 'data-player', targetVideoContent.type));
-    this.props.router.push(
-      `/programs?${targetHref.join("&")}`, // actual target url
-      `/programs/${targetHrefAlias.join("/")}` // url when displayed on browser 
-    )
+    this.props.router.push(`/programs?${href}`, `/programs/${hrefAlias}`)
   }
 
   getCurrentViewingVideoIndex(programEpisode = {}, currentSeason) {
