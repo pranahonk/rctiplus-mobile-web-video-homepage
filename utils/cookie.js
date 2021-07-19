@@ -28,7 +28,10 @@ export const setCookie = (name, value, days) => {
          expires = "";
       }
 
-      host = location.host;
+      if(typeof location !== undefined){
+          host = location.host;
+      }
+
       if (host.split('.').length === 1)
       {
          // no "." in a domain - it's localhost or something similar
