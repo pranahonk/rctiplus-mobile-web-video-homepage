@@ -181,8 +181,8 @@ class Trending_v2 extends React.Component {
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
-                this.accessToken = q.token;
-                setAccessToken(q.token);
+                // this.accessToken = q.token;
+                // setAccessToken(q.token);
             }
             if(q.core_token){
               this.core_token = q.core_token;
@@ -596,7 +596,7 @@ class Trending_v2 extends React.Component {
         const heightImg = (widthImg*56) / 100;
         const {data} = this.props.data_category
         let {subcategory_id} = this.props.query
-        subcategory_id = isEmpty(subcategory_id) ? 15 : subcategory_id; 
+        subcategory_id = isEmpty(subcategory_id) ? 15 : subcategory_id;
         const categoryDetail = data.filter((filter) => filter.id === parseInt(subcategory_id))
         let metaSEO = {}
         if (categoryDetail.length > 0){
