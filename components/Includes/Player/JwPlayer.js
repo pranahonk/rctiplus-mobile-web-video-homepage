@@ -39,13 +39,15 @@ const JwPlayer = (props) => {
   const [prevWidth, setPrevWidth] = useState(0);
   const playerRef = useRef();
   const val = useRef();
+  const fastForwardContainer = useRef()
+  const fastBackwardContainer = useRef()
   const idPlayer = 'jwplayer-rctiplus';
   const options = {
     autostart: true,
     mute: false,
     floating: false,
-    file: props.data && props.data.url,
-    // file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
+    // file: props.data && props.data.url,
+    file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
     primary: 'html5',
     width: '100%',
     hlsjsdefault: true,
@@ -113,6 +115,7 @@ const JwPlayer = (props) => {
     Array.from(playerContainer.querySelectorAll(".jw-display-icon-container.jw-reset"))
       .forEach(iconContainer => {
         iconContainer.style.margin = 0
+        iconContainer.style.display = "block"
       })
     
     if (type.includes("live")) {
@@ -164,7 +167,7 @@ const JwPlayer = (props) => {
         { key: "forward", container: forwardContainer },
         { key: "backward", container: backwardContainer }
       ]).forEach(({ key, container }) => {
-        container.innerHTML = `<img src=/static/icons/player_${key}.svg alt="${key}" />`
+        container.innerHTML = `<img src=/static/player_icons/player_${key}.svg alt="${key}" />`
         container.addEventListener("click", () => {
           if (props.actionBtn) props.actionBtn(key)
         })
@@ -179,8 +182,7 @@ const JwPlayer = (props) => {
   }
 
   useEffect(() => {
-    if (!player) return
-    if (!customBtnReady) return
+    if (!customBtnReady || !props.videoIndexing || !player) return
     
     // process right after custom button had been set up
     // display / undisplay button based from active video index
@@ -269,7 +271,7 @@ const JwPlayer = (props) => {
         }
       })
 
-      player.on('play', () =>{
+      player.on('play', () => {
         convivaJwPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
           if (document.querySelector('.ads_wrapper').style.display == 'none') {
@@ -280,7 +282,7 @@ const JwPlayer = (props) => {
             }
           }
         }
-      });
+      })
       
       player.on('pause', () =>{
         convivaJwPlayer().pause();
@@ -361,7 +363,6 @@ const JwPlayer = (props) => {
       }); */
     }
   },);
-
 
   useEffect(() => {
     const containerElement = document.getElementsByClassName('rplus-jw-container');
@@ -728,30 +729,139 @@ const JwPlayer = (props) => {
     }
   }, [playerFullscreen]);
 
+  const fastForwardBackwardActionBtns = ({ type }) => {
+    if (type.includes("live")) return null
+
+    return (
+      <>
+        <figure
+          ref={fastForwardContainer}
+          className="jwplayer-action jwplayer-action__fastforward"
+          onClick={() => fastForwardBackwardClicked("forward")}>
+          <img src="/static/player_icons/player_fastforward.svg" alt="fast_fw"/>
+          <small style={{fontSize: "8pt"}}>10 seconds</small>
+        </figure>
+        <figure
+          ref={fastBackwardContainer}
+          className="jwplayer-action jwplayer-action__fastbackward"
+          onClick={() => fastForwardBackwardClicked("backward")}>
+          <img src="/static/player_icons/player_fastbackward.svg" alt="fast_bw"/>
+          <small style={{fontSize: "8pt"}}>10 seconds</small>
+        </figure>
+      </>
+    )
+  }
+
+  const getPlayer = (error1, error2) => {
+    if (error1) {
+      console.log('GEO')
+      return error(msgError01)
+    }
+    if (error2) {
+      console.log('ERRORRRRR P')
+      return error()
+    }
+    return (
+      <>
+        <div id="jwplayer-rctiplus" />
+        {fastForwardBackwardActionBtns(props)}
+      </>
+    )
+  }
+
+  const fastForwardBackwardClicked = (direction) => {
+    if (!player || duration === 0) return
+
+    const maxDuration = player.getDuration()
+    let position = 0
+    let refContainer = null
+
+    switch(direction) {
+      case "forward":
+        position = duration + 10 > maxDuration ? maxDuration : duration + 10
+        refContainer = fastForwardContainer
+        break
+      case "backward":
+        position = duration - 10 < 0 ? 0 : duration - 10
+        refContainer = fastBackwardContainer
+        break
+    }
+    player.seek(position)
+    refContainer.current.classList.add("idle")
+    setTimeout(() => {
+      refContainer.current.classList.remove("idle")
+    }, 10)
+  }
+
+  const tempId = (value) => {
+    if (value === 'rcti' || value === 1) {
+      return ['1', 'RCTI'];
+    }
+    if (value === 'mnctv' || value === 2) {
+      return ['2', 'MNCTV'];
+    }
+    if (value === 'gtv' || value === 3) {
+      return ['3', 'GTV'];
+    }
+    if (value === 'inews' || value === 4) {
+      return ['4', 'INEWS'];
+    }
+    return ['N/A', 'N/A'];
+  };
+  
+  const getLive = (value) => {
+    if(value === 'live tv' || value === 'live event') {
+      return true;
+    }
+    return false;
+  }
+  
+  const error = (msg = msgError02, icon = (<Wrench />)) => {
+    return (
+      <div id="jwplayer-rctiplus" style={{
+        textAlign: 'center',
+        padding: 30,
+        minHeight: 180,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+        { icon }
+        <h5 style={{ color: '#8f8f8f' }}>
+          { msg() }
+        </h5>
+      </div>
+    );
+  };
+  
+  const msgError01 = () => {
+    return(
+      <div>
+        <strong style={{ fontSize: 14 }}>Whoops, Your Location doesnt support us to live stream this content</strong><br />
+      </div>
+    )
+  }
+  const msgError02 = () => {
+    return(
+      <div>
+        <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+        <span style={{ fontSize: 12 }}>Please try again later,</span><br />
+        <span style={{ fontSize: 12 }}>we are working to fix the problem</span>
+      </div>
+    )
+  }
+
   return (
-    // <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
     <>
-      <div className="rplus-jw-container">
+      <div className="rplus-jw-container" style={{position: "relative"}}>
         { getPlayer(status.isError01 , status.isError02 ) }
-        {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
       </div>
     </>
   );
 };
 
 export default JwPlayer;
-
-const getPlayer = (error1, error2) => {
-  if (error1) {
-    console.log('GEO')
-    return error(msgError01)
-  }
-  if (error2) {
-    console.log('ERRORRRRR P')
-    return error()
-  }
-  return (<div id="jwplayer-rctiplus" />)
-}
 
 JwPlayer.propTypes = {
   data: PropTypes.object,
@@ -867,62 +977,3 @@ const closeIcon = `
       </g>
   </svg>
 `
-
-const tempId = (value) => {
-  if (value === 'rcti' || value === 1) {
-    return ['1', 'RCTI'];
-  }
-  if (value === 'mnctv' || value === 2) {
-    return ['2', 'MNCTV'];
-  }
-  if (value === 'gtv' || value === 3) {
-    return ['3', 'GTV'];
-  }
-  if (value === 'inews' || value === 4) {
-    return ['4', 'INEWS'];
-  }
-  return ['N/A', 'N/A'];
-};
-
-const getLive = (value) => {
-  if(value === 'live tv' || value === 'live event') {
-    return true;
-  }
-  return false;
-}
-
-const error = (msg = msgError02, icon = (<Wrench />)) => {
-  return (
-    <div id="jwplayer-rctiplus" style={{
-      textAlign: 'center',
-      padding: 30,
-      minHeight: 180,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}>
-      { icon }
-      <h5 style={{ color: '#8f8f8f' }}>
-        { msg() }
-      </h5>
-    </div>
-  );
-};
-
-const msgError01 = () => {
-  return(
-    <div>
-      <strong style={{ fontSize: 14 }}>Whoops, Your Location doesnt support us to live stream this content</strong><br />
-    </div>
-  )
-}
-const msgError02 = () => {
-  return(
-    <div>
-      <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
-      <span style={{ fontSize: 12 }}>Please try again later,</span><br />
-      <span style={{ fontSize: 12 }}>we are working to fix the problem</span>
-    </div>
-  )
-}
