@@ -1,0 +1,59 @@
+.container-nologin{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+
+    .title-nologin{
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 19px;
+        /* identical to box height */
+
+        text-align: center;
+        color: #FFFFFF;
+        padding-bottom: 10px;
+    }
+
+    p {
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 16px;
+        text-align: center;
+        color: #FFFFFF;
+
+        span {
+            color: #FA262F;
+            font-style: italic;
+        }
+
+        a {
+            color: #FA262F;
+            font-style: italic;
+        }
+    }
+
+    button{
+        background: #FA262F;
+        border-radius: 7px;
+        padding: 8px 65px;
+
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 19px;
+        /* identical to box height */
+
+        text-align: center;
+        letter-spacing: 0.48px;
+
+        color: #FFFFFF;
+        outline: none;
+        border: none;
+        margin-top: 4px;
+    }
+}

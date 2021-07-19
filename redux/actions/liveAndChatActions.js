@@ -149,7 +149,7 @@ const getLiveChatBlock = (channelId) => {
     });
 };
 
-const getLiveEvent = (type, infos = 'id,type,portrait_image,landscape_image,name,url,channel_code,epg_code,is_tvod,is_drm,chat,start_date,sorting', page = 1, length = 10) => {
+const getLiveEvent = (type, channel = 'rcti', page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             
@@ -159,7 +159,8 @@ const getLiveEvent = (type, infos = 'id,type,portrait_image,landscape_image,name
                     type: 'GET_LIVE_EVENT',
                     data: response.data.data,
                     meta: response.data.meta,
-                    status: response.data.status
+                    status: response.data.status,
+                    channel
                 });
                 resolve(response);
             }
@@ -338,6 +339,33 @@ const getEPG = (date, channel = 'rcti') => {
     });
 };
 
+const getAllEpg = (channel = 'rcti') => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            dispatch({ type: 'FADE', fade: false });
+            dispatch({ type: 'SET_PAGE_LOADER' });
+            const response = await axios.get(`/v2/epg?channel=${channel === 'gtv' ? 'globaltv' : channel}`)
+            if(response.status === 200) {
+                dispatch({ type: 'FADE', fade: true });
+                dispatch({ type: 'UNSET_PAGE_LOADER' });
+                dispatch({
+                    type: "GET_EPG_V2",
+                    data: response.data.data,
+                    meta: response.data.meta,
+                    status: response.data.status,
+                })
+                resolve(response)
+            }
+            else {
+                reject(err)
+            }
+        } 
+        catch (err) {
+            reject(err)
+        }
+    })
+}
+
 const getCatchupUrl = catchupId => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -379,6 +407,29 @@ export const getVmapResponse = url => {
     });
 };
 
+export const getChannelTv = payload => {
+    return dispatch => {
+        dispatch({
+            type: "GET_CHANNEL_TV",
+            payload: payload
+        })
+    }
+};
+
+export const getAdsDuration = () => {
+    return dispatch => {
+        axios.get('/v1/get-ads-duration').then((response) => {
+            dispatch({
+                type: 'GET_DURATION_ADS',
+                data: {
+                    refreshDuration: response.data.data[0].duration,
+                    reloadDuration: response.data.data[1].duration
+                },
+            }); 
+        }).catch((err) => console.log(err))
+    }
+};
+
 export default {
     postChat,
     getAllLiveEvent,
@@ -399,5 +450,8 @@ export default {
     getMissedEvent,
     getVmapResponse,
     getAdsChat,
+    getChannelTv,
+    getAdsDuration,
+    getAllEpg
 };
 
