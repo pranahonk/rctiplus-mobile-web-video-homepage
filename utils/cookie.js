@@ -30,7 +30,6 @@ export const setCookie = (name, value, days) => {
 
 
       if(process.browser){
-          console.log(window.location.host)
           host = window.location.host;
           if (host.split('.').length === 1)
           {
