@@ -145,6 +145,8 @@ class Search extends React.Component {
         this.props.setQuery(this.props.dataSearch?.keyword || '');
         this.props.getSearchFromServer(this.props.dataSearch);
         const searchHistory = getCookie('SEARCH_HISTORY');
+        // console.log([searchHistory.slice(0, 0), ",", searchHistory.slice(0)].join('').split(",").filter(n => n));
+        console.log(searchHistory);
         if (searchHistory) {
             this.setState({ search_history: JSON.parse(searchHistory) });
         }
@@ -241,7 +243,7 @@ class Search extends React.Component {
         const searchHistory = this.state.search_history;
         if (searchHistory && searchHistory.length > 0) {
             searchHistory.splice(index, 1);
-            setCookie('SEARCH_HISTORY', searchHistory);
+            setCookie('SEARCH_HISTORY', JSON.stringify(searchHistory));
             this.setState({ search_history: searchHistory });
         }
     }

@@ -98,10 +98,10 @@ class NavbarTrendingSearch extends Component {
   saveSearchHistory(q) {
         const searchHistory = getCookie('SEARCH_HISTORY');
         if (!searchHistory) {
-            setCookie('SEARCH_HISTORY', [q]);
+            setCookie('SEARCH_HISTORY',JSON.stringify([q]));
         }
         else {
-            const searchHistory = JSON.parse(searchHistory);
+            const searchHistory = JSON.parse(getCookie('SEARCH_HISTORY'));
             if (searchHistory.indexOf(q) === -1) {
                 if (searchHistory.length >= 5) {
                     searchHistory.pop();
@@ -112,7 +112,7 @@ class NavbarTrendingSearch extends Component {
             }
 
             searchHistory.unshift(q);
-            setCookie('SEARCH_HISTORY', searchHistory);
+            setCookie('SEARCH_HISTORY', JSON.stringify(searchHistory));
         }
     }
 
@@ -181,14 +181,14 @@ class NavbarTrendingSearch extends Component {
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
                             {
-                                this.platform === 'android' ?
+                                this.platform === 'android' || this.platform === 'ios' ?
                                     this.props.router.asPath.indexOf('keyword') &&
                                     <a href={this.redirectURL()} style={{color: 'white'}} className="navbar-brand"> <ArrowBackIcon/> <span className="trendingHeader"></span> </a> :
                                     <NavbarBrand onClick={() => {
                                         if (this.props.router.asPath.indexOf('/explores') === 0) {
                                             searchBackClicked(this.props.newsv2.query, 'mweb_search_back_clicked');
                                         }else if (this.props.router.asPath.indexOf('keyword')){
-                                            Router.push('/news', `/news?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}`)
+                                            Router.push('/news' + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&header=0&idfa=${this.idfa ? this.idfa : '00000000-0000-0000-0000-000000000000'}&core_token=${this.core_token ? this.core_token : process.env.CORE_TOKEN}` : ''}`);
                                         }else{
                                             Router.back();
                                         }
@@ -229,5 +229,5 @@ class NavbarTrendingSearch extends Component {
 }
 export default connect(state => state, {
     ...newsv2Actions,
-    ...pageActions
+    ...pageActions,
 })(withRouter(NavbarTrendingSearch));
