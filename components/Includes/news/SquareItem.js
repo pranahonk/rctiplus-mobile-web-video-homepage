@@ -35,6 +35,7 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
           return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token= ${accessToken}&platform=${platform}` : ''}`);
     }
   }
+  
   return(
     <div className={`list_tags_thumb ${indexKey%2 == 0 ? '' : 'tagsItems'}`}>
       <div className="lt_img">

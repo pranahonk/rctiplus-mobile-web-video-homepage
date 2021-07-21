@@ -7,7 +7,7 @@ import ShareIcon from "../../../components/Includes/IconCustom/ShareIcon";
 import GetApp from '@material-ui/icons/GetApp';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 
-const ExtraResult = () => {
+const ClipResult = () => {
     const { search_results } = useSelector(state => state.searches);
 
     const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
@@ -19,8 +19,8 @@ const ExtraResult = () => {
     return (
         <div style={{marginBottom: "30px"}} >
             <div style={{background: "#282828"}} className="content-search">
-                {search_results[2]?.data?.data?.length > 0 && 
-                    search_results[2]?.data?.data.map((v, i) =>(
+                {search_results[3]?.data?.data?.length > 0 && 
+                    search_results[3]?.data?.data.map((v, i) =>(
                         <div style={{ padding: '10px 15px'}} key={i}>
                             <div style={{display:"flex"}} className="panel-content">
                                 <div className="thumb-img__content">
@@ -28,9 +28,9 @@ const ExtraResult = () => {
                                         <a >
                                             <Img alt={v.title}
                                                 title={v.title}
-                                                className="background__program-detail" src={[search_results[2]?.data?.meta.image_path + "150" + v.landscape_image, getPathImage(search_results[2]?.data?.meta.image_path,v.landscape_image, false)]}
-                                                unloader={<img className="background__program-detail" src={getPathImage(search_results[2]?.data?.meta.image_path,v.landscape_image, false)}/>}
-                                                loader={<img className="background__program-detail" src={getPathImage(search_results[2]?.data?.meta.image_path,v.landscape_image, false)}/>}/>
+                                                className="background__program-detail" src={[search_results[3]?.data?.meta.image_path + "150" + v.landscape_image, getPathImage(search_results[3]?.data?.meta.image_path,v.landscape_image, false)]}
+                                                unloader={<img className="background__program-detail" src={getPathImage(search_results[3]?.data?.meta.image_path,v.landscape_image, false)}/>}
+                                                loader={<img className="background__program-detail" src={getPathImage(search_results[3]?.data?.meta.image_path,v.landscape_image, false)}/>}/>
                                         </a>
                                     </Link> 
                                 </div>
@@ -56,4 +56,4 @@ const ExtraResult = () => {
     )
 }
 
-export default ExtraResult
+export default ClipResult
