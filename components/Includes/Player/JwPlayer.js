@@ -787,9 +787,9 @@ const JwPlayer = (props) => {
         break
     }
     player.seek(position)
-    refContainer.current.classList.add("idle")
+    refContainer.current.classList.remove("start")
     setTimeout(() => {
-      refContainer.current.classList.remove("idle")
+      refContainer.current.classList.add("start")
     }, 10)
   }
 

@@ -200,7 +200,7 @@
     border-radius: 0 50% 50% 0;
   }
 
-  &.idle {
+  &.start {
     animation: opacity 2s;
     animation-play-state: running;
   }
