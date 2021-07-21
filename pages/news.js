@@ -54,7 +54,6 @@ const jwtDecode = require('jwt-decode');
 class Trending_v2 extends React.Component {
 
     static async getInitialProps(ctx) {
-        // console.log(isEmpty(ctx.query))
         const queryId = isEmpty(ctx.query) ? 15 : ctx.query.subcategory_id
         const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
          if (response_visitor.statusCode === 200) {

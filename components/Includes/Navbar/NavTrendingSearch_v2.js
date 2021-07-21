@@ -96,12 +96,12 @@ class NavbarTrendingSearch extends Component {
 
 
   saveSearchHistory(q) {
-        let searchHistory = getCookie('SEARCH_HISTORY');
+        const searchHistory = getCookie('SEARCH_HISTORY');
         if (!searchHistory) {
             setCookie('SEARCH_HISTORY', [q]);
         }
         else {
-            searchHistory = JSON.parse(searchHistory);
+            const searchHistory = JSON.parse(searchHistory);
             if (searchHistory.indexOf(q) === -1) {
                 if (searchHistory.length >= 5) {
                     searchHistory.pop();

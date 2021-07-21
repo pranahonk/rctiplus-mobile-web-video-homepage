@@ -150,7 +150,7 @@ class Search extends React.Component {
         }
         const user_recommendation = await this.props.userRecomendation();
         this.setState({
-          user_recommendations: [...user_recommendation.data.data]
+          user_recommendations: [...user_recommendation.data.data],
         });
 
         window.addEventListener('load', ()=>{
@@ -238,7 +238,7 @@ class Search extends React.Component {
     }
 
     deleteSearchHistory(index) {
-        let searchHistory = this.state.search_history;
+        const searchHistory = this.state.search_history;
         if (searchHistory && searchHistory.length > 0) {
             searchHistory.splice(index, 1);
             setCookie('SEARCH_HISTORY', searchHistory);

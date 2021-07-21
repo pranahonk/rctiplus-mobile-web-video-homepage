@@ -65,7 +65,7 @@ class HeadlineCarousel extends React.Component {
           category = urlRegex(article.subcategory_name)
         }
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&core_token=${this.core_token}&idfa=${this.idfa}` : ''}`);
+        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&core_token=${this.core_token ? this.core_token : process.env.CORE_TOKEN}&idfa=${this.idfa ? this.idfa : '00000000-0000-0000-0000-000000000000'}` : ''}`);
     }
 
     render() {

@@ -18,8 +18,9 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
     if (query.token || query.platform) {
       setAccessToken(query.token);
       setPlatform(query.platform);
-      setIdfa(query.idfa);
-      setCoreToken(query.core_token);
+      if(query.idfa){
+        setCoreToken(query.core_token);
+      }
       if(query.idfa){
         setIdfa(query.idfa);
       }
@@ -39,10 +40,10 @@ export default function SquareItem({item, indexKey, isIndexKey, assets_url}) {
       else if((redirectToPublisherIndex.indexOf(indexKey) != -1) && platform === 'ios'){
         return window.open(article.link, "_self");
       }
-      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token=${accessToken}&platform=${platform}&idfa=${idfa}&core_token=${core_token}` : ''}`);
+      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token=${accessToken}&platform=${platform}&idfa=${idfa ? idfa : '00000000-0000-0000-0000-000000000000'}&core_token=${core_token? core_token :  process.env.CORE_TOKEN}` : ''}`);
     }
     else {
-      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token=${accessToken}&platform=${platform}&idfa=${idfa}&core_token=${core_token}` : ''}`);
+      return router.push(`/news/detail/${category}/${article.id}/${encodeURI(urlRegex(article.title))}${accessToken ? `?token=${accessToken}&platform=${platform}&idfa=${idfa ? idfa : '00000000-0000-0000-0000-000000000000'}&core_token=${core_token? core_token :  process.env.CORE_TOKEN}` : ''}`);
     }
   }
 
