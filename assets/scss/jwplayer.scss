@@ -187,8 +187,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  animation: opacity 2s;
-  animation-play-state: running;
+  animation: none;
   opacity: 0;
 
   &__fastforward {
@@ -201,8 +200,9 @@
     border-radius: 0 50% 50% 0;
   }
 
-  &.idle {
-    animation: none;
+  &.start {
+    animation: opacity 2s;
+    animation-play-state: running;
   }
 }
 
