@@ -107,8 +107,9 @@ const JwPlayer = (props) => {
     const forwardContainer = playerContainer.querySelector('.jw-icon-next')
     const backwardContainer = playerContainer.querySelector('.jw-icon-rewind')
 
-    // Set all display controls to be visible
+    // Set all display controls to be visible and put buttom control to the front
     playerContainer.querySelector(".jw-display.jw-reset").style.display = "flex"
+    playerContainer.querySelector(".jw-controlbar.jw-reset").style.zIndex = "300"
 
     // Setup the margin of each controls to zero to prevent overlapping per element
     Array.from(playerContainer.querySelectorAll(".jw-display-icon-container.jw-reset"))
