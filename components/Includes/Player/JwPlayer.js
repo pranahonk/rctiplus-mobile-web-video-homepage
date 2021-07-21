@@ -22,6 +22,7 @@ const JwPlayer = (props) => {
   const [isConviva, setIsConviva] = useState(0);
   const [geoblock, setGeoblock] = useState();
   const [random1, setrandom1] = useState(0);
+  const [customBtnReady, setCustomBtnReady] = useState(false)
   const [status, setStatus] = useState({
     isPlayer: true,
     isError01: false,
@@ -38,13 +39,14 @@ const JwPlayer = (props) => {
   const [prevWidth, setPrevWidth] = useState(0);
   const playerRef = useRef();
   const val = useRef();
+  const fastForwardContainer = useRef()
+  const fastBackwardContainer = useRef()
   const idPlayer = 'jwplayer-rctiplus';
   const options = {
     autostart: true,
     mute: false,
     floating: false,
     file: props.data && props.data.url,
-    // file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
     primary: 'html5',
     width: '100%',
     hlsjsdefault: true,
@@ -91,21 +93,115 @@ const JwPlayer = (props) => {
 
   // Update Setup
   useEffect(() => {
-
-    // console.log('EFFECT INIT 2');
     if (player !== null) {
       setIsConviva(Math.random());
       setIsCustomSetup(Math.random());
       player.setup(options);
-      // console.log('PLAYERRRR : ',props.data)
-      // console.log('ISLOGIN : ', props.customData && props.customData.isLogin)
+
+      setCustomBtnReady(false)
     }
   }, [props.data && props.data.url, props.data && props.data.vmap]);
 
+  const generateForwardBackwardBtns = ({ type, data }) => {
+    const playerContainer = player.getContainer()
+    const forwardContainer = playerContainer.querySelector('.jw-icon-next')
+    const backwardContainer = playerContainer.querySelector('.jw-icon-rewind')
+
+    // Set all display controls to be visible
+    playerContainer.querySelector(".jw-display.jw-reset").style.display = "flex"
+
+    // Setup the margin of each controls to zero to prevent overlapping per element
+    Array.from(playerContainer.querySelectorAll(".jw-display-icon-container.jw-reset"))
+      .forEach(iconContainer => {
+        iconContainer.style.margin = 0
+        iconContainer.style.display = "block"
+      })
+    
+    if (type.includes("live")) {
+      // Undisplay and empty the container
+      forwardContainer.style.display = "none"
+      backwardContainer.style.display = "none"
+      forwardContainer.innerHTML = ""
+      backwardContainer.innerHTML = ""
+
+      // check if gpt data exist
+      if ((data && data.gpt && data.gpt.path != null) && (data && data.gpt && data.gpt.path != undefined)) {
+        // check if ads_wrapper element not exist
+        if (document.querySelector('.ads_wrapper') == undefined) {
+          const playerContainer = player.getContainer();
+
+          const adsOverlayElement = document.createElement('div');
+          adsOverlayElement.classList.add('ads_wrapper');
+          adsOverlayElement.style.display = 'none';
+
+          const adsOverlayBox = document.createElement('div');
+          adsOverlayBox.classList.add('adsStyling');
+
+          const adsOverlayCloseButton = document.createElement('div');
+          adsOverlayCloseButton.classList.add('close_button');
+          adsOverlayCloseButton.innerHTML = closeIcon;
+
+          const adsOverlayContainer = document.createElement('div');
+          const divGPTString = (data && data.gpt && data.gpt.div_gpt != null) && (data && data.gpt && data.gpt.div_gpt != undefined) ? data.gpt.div_gpt : type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+          adsOverlayContainer.classList.add('adsContainer');
+          adsOverlayContainer.id = divGPTString;
+          adsOverlayContainer.innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${divGPTString}'); });</script>`;
+
+          playerContainer.appendChild(adsOverlayElement);
+          adsOverlayElement.appendChild(adsOverlayBox);
+          adsOverlayBox.appendChild(adsOverlayCloseButton);
+          adsOverlayBox.appendChild(adsOverlayContainer);
+
+          adsOverlayCloseButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            pubAdsRefreshInterval.timeStart = 0;
+            setAdStatus('close');
+          });
+        }
+      }
+    } else {
+      Array.from([
+        { key: "forward", container: forwardContainer },
+        { key: "backward", container: backwardContainer }
+      ]).forEach(({ key, container }) => {
+        container.innerHTML = `<img src=/static/player_icons/player_${key}.svg alt="${key}" />`
+        container.addEventListener("click", () => {
+          if (props.actionBtn) props.actionBtn(key)
+        })
+      })
+
+      // send signal that custom buttons had already been set up
+      // this signal will be used on another process
+      setCustomBtnReady(true)
+    }
+
+    return playerContainer
+  }
+
+  useEffect(() => {
+    if (!customBtnReady || !props.videoIndexing || !player) return
+    
+    // process right after custom button had been set up
+    // display / undisplay button based from active video index
+    const { prev, current, maxQueue } = props.videoIndexing
+    const playerContainer = player.getContainer()
+    const forwardContainer = playerContainer.querySelector('.jw-icon-next')
+    const backwardContainer = playerContainer.querySelector('.jw-icon-rewind')
+    forwardContainer.style.visibility = ""
+    backwardContainer.style.visibility = ""
+    
+    if (current === (maxQueue - 1)) forwardContainer.style.visibility = "hidden"
+    if (current === prev) backwardContainer.style.visibility = "hidden"
+    
+  }, [
+    props.videoIndexing && props.videoIndexing.current,
+    customBtnReady
+  ])
+
   // Costum Setup
   useEffect(() => {
-    // console.log('EFFECT INIT 3');
-    // console.log('PLAYER GET DATA: ',props, player);
     if (player !== null) {
       player.on('ready', (event) => {
         /* if (props.isFullscreen) {
@@ -114,18 +210,16 @@ const JwPlayer = (props) => {
         } */
         setPlayerFullscreen(props.isFullscreen);
 
-        const playerContainer = player.getContainer();
-        const fowardContainer = playerContainer.querySelector('.jw-icon-next');
-        const backwardContainer = playerContainer.querySelector('.jw-icon-rewind');
+        const playerContainer = generateForwardBackwardBtns(props)
         const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
+
         if(isForward) {
           const forwardElement = document.createElement('div');
           forwardElement.classList.add('jw-rplus-forward');
           forwardElement.innerHTML = foward10;
           // const iconForward = document.querySelector('.icon-forward');
           forwardElement.addEventListener('dblclick', (ev) => {
-            // console.log('TOUCH:', ev);
             // iconForward.classList.add('animated', 'fadeInRight', 'go');
             setTimeout(() => {
               // iconForward.classList.remove('animated', 'fadeInRight', 'go');
@@ -134,61 +228,7 @@ const JwPlayer = (props) => {
           });
           playerContainer.append(forwardElement);
         }
-        // console.log('LIVEEE', isLiveContainer);
-        if (props.type !== 'live tv' || props.type !== 'live event') {
-          fowardContainer.innerHTML = foward10Icon;
-          backwardContainer.innerHTML = backward10Icon;
-          fowardContainer.addEventListener('touchstart', () => {
-            player.seek(player.getPosition() + 10);
-          });
-        }
 
-        if (props.type === 'live tv' || props.type === 'live event') {
-          // console.log(fowardContainer);
-          fowardContainer.style.display = 'none'
-          backwardContainer.style.display = 'none'
-          fowardContainer.innerHTML = '';
-          backwardContainer.innerHTML = '';
-
-          // check if gpt data exist
-          if ((props.data && props.data.gpt && props.data.gpt.path != null) && (props.data && props.data.gpt && props.data.gpt.path != undefined)) {
-            // check if ads_wrapper element not exist
-            if (document.querySelector('.ads_wrapper') == undefined) {
-              // console.log('data gpt', props.data.gpt);
-              const playerContainer = player.getContainer();
-
-              const adsOverlayElement = document.createElement('div');
-              adsOverlayElement.classList.add('ads_wrapper');
-              adsOverlayElement.style.display = 'none';
-
-              const adsOverlayBox = document.createElement('div');
-              adsOverlayBox.classList.add('adsStyling');
-
-              const adsOverlayCloseButton = document.createElement('div');
-              adsOverlayCloseButton.classList.add('close_button');
-              adsOverlayCloseButton.innerHTML = closeIcon;
-
-              const adsOverlayContainer = document.createElement('div');
-              const divGPTString = (props.data && props.data.gpt && props.data.gpt.div_gpt != null) && (props.data && props.data.gpt && props.data.gpt.div_gpt != undefined) ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-              adsOverlayContainer.classList.add('adsContainer');
-              adsOverlayContainer.id = divGPTString;
-              adsOverlayContainer.innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${divGPTString}'); });</script>`;
-
-              playerContainer.appendChild(adsOverlayElement);
-              adsOverlayElement.appendChild(adsOverlayBox);
-              adsOverlayBox.appendChild(adsOverlayCloseButton);
-              adsOverlayBox.appendChild(adsOverlayContainer);
-
-              adsOverlayCloseButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                pubAdsRefreshInterval.timeStart = 0;
-                setAdStatus('close');
-              });
-            }
-          }
-        }
         if (isIOS) {
           const elementCreateMute = document.createElement('btn');
           const elementMuteIcon = document.createElement('span');
@@ -215,7 +255,8 @@ const JwPlayer = (props) => {
           });
         }
         player.seek(props.data.last_duration);
-      });
+      })
+
       player.on('mute', function() {
         const elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
         if (elementJwplayer[0] !== undefined) {
@@ -227,9 +268,9 @@ const JwPlayer = (props) => {
             elementJwplayer[0].classList.remove('jwplayer-mute');
           }
         }
-      });
-      player.on('play', () =>{
-        // console.log('PLAYING');
+      })
+
+      player.on('play', () => {
         convivaJwPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
           if (document.querySelector('.ads_wrapper').style.display == 'none') {
@@ -240,29 +281,31 @@ const JwPlayer = (props) => {
             }
           }
         }
-      });
+      })
+      
       player.on('pause', () =>{
-        // console.log('EFFECT INIT 4 CONTINUE WATCHING PAUSE', test)
-        // console.log('PAUSE');
         convivaJwPlayer().pause();
       });
+
       player.on('buffer', (event) =>{
-        // console.log('BUFFER', event);
         convivaJwPlayer().buffer();
       });
+
       player.on('adError', (event) => {
         // console.log('ERRRRRORRR', event);
       });
+
       player.on('time', (event) => {
-        // console.log('duration:', event.currentTime);
         setDuration(player.getPosition());
       });
+
       player.on('complete', (event) => {
         const convivaTracker = convivaJwPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
       });
+
       player.on('fullscreen', (event) => {
         /* if (event.fullscreen) {
           if (!playerFullscreen) {
@@ -275,12 +318,14 @@ const JwPlayer = (props) => {
         } */
         setPlayerFullscreen(player.getFullscreen());
       });
+
       // ads event
       player.on('adImpression', (event) => {
         if (document.querySelector('.ads_wrapper')) {
           setAdStatus('none');
         }
       });
+
       player.on('adSkipped', (event) => {
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
@@ -288,6 +333,7 @@ const JwPlayer = (props) => {
           }
         }
       });
+
       player.on('adComplete', (event) => {
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
@@ -295,11 +341,13 @@ const JwPlayer = (props) => {
           }
         }
       });
+
       player.on('userActive', (event) => {
         if (document.querySelector('.ads_wrapper')) {
           document.querySelector('.ads_wrapper').style.bottom = '70px';
         }
       });
+
       player.on('userInactive', (event) => {
         if (document.querySelector('.ads_wrapper')) {
           document.querySelector('.ads_wrapper').style.bottom = '5px';
@@ -314,7 +362,6 @@ const JwPlayer = (props) => {
       }); */
     }
   },);
-
 
   useEffect(() => {
     const containerElement = document.getElementsByClassName('rplus-jw-container');
@@ -681,30 +728,139 @@ const JwPlayer = (props) => {
     }
   }, [playerFullscreen]);
 
+  const fastForwardBackwardActionBtns = ({ type }) => {
+    if (type.includes("live")) return null
+
+    return (
+      <>
+        <figure
+          ref={fastForwardContainer}
+          className="jwplayer-action jwplayer-action__fastforward"
+          onClick={() => fastForwardBackwardClicked("forward")}>
+          <img src="/static/player_icons/player_fastforward.svg" alt="fast_fw"/>
+          <small style={{fontSize: "8pt"}}>10 seconds</small>
+        </figure>
+        <figure
+          ref={fastBackwardContainer}
+          className="jwplayer-action jwplayer-action__fastbackward"
+          onClick={() => fastForwardBackwardClicked("backward")}>
+          <img src="/static/player_icons/player_fastbackward.svg" alt="fast_bw"/>
+          <small style={{fontSize: "8pt"}}>10 seconds</small>
+        </figure>
+      </>
+    )
+  }
+
+  const getPlayer = (error1, error2) => {
+    if (error1) {
+      console.log('GEO')
+      return error(msgError01)
+    }
+    if (error2) {
+      console.log('ERRORRRRR P')
+      return error()
+    }
+    return (
+      <>
+        <div id="jwplayer-rctiplus" />
+        {fastForwardBackwardActionBtns(props)}
+      </>
+    )
+  }
+
+  const fastForwardBackwardClicked = (direction) => {
+    if (!player || duration === 0) return
+
+    const maxDuration = player.getDuration()
+    let position = 0
+    let refContainer = null
+
+    switch(direction) {
+      case "forward":
+        position = duration + 10 > maxDuration ? maxDuration : duration + 10
+        refContainer = fastForwardContainer
+        break
+      case "backward":
+        position = duration - 10 < 0 ? 0 : duration - 10
+        refContainer = fastBackwardContainer
+        break
+    }
+    player.seek(position)
+    refContainer.current.classList.add("idle")
+    setTimeout(() => {
+      refContainer.current.classList.remove("idle")
+    }, 10)
+  }
+
+  const tempId = (value) => {
+    if (value === 'rcti' || value === 1) {
+      return ['1', 'RCTI'];
+    }
+    if (value === 'mnctv' || value === 2) {
+      return ['2', 'MNCTV'];
+    }
+    if (value === 'gtv' || value === 3) {
+      return ['3', 'GTV'];
+    }
+    if (value === 'inews' || value === 4) {
+      return ['4', 'INEWS'];
+    }
+    return ['N/A', 'N/A'];
+  };
+  
+  const getLive = (value) => {
+    if(value === 'live tv' || value === 'live event') {
+      return true;
+    }
+    return false;
+  }
+  
+  const error = (msg = msgError02, icon = (<Wrench />)) => {
+    return (
+      <div id="jwplayer-rctiplus" style={{
+        textAlign: 'center',
+        padding: 30,
+        minHeight: 180,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+        { icon }
+        <h5 style={{ color: '#8f8f8f' }}>
+          { msg() }
+        </h5>
+      </div>
+    );
+  };
+  
+  const msgError01 = () => {
+    return(
+      <div>
+        <strong style={{ fontSize: 14 }}>Whoops, Your Location doesnt support us to live stream this content</strong><br />
+      </div>
+    )
+  }
+  const msgError02 = () => {
+    return(
+      <div>
+        <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
+        <span style={{ fontSize: 12 }}>Please try again later,</span><br />
+        <span style={{ fontSize: 12 }}>we are working to fix the problem</span>
+      </div>
+    )
+  }
+
   return (
-    // <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
     <>
-      <div className="rplus-jw-container">
+      <div className="rplus-jw-container" style={{position: "relative"}}>
         { getPlayer(status.isError01 , status.isError02 ) }
-        {/* <div id="jwplayer-rctiplus" ref={ playerRef } /> */}
       </div>
     </>
   );
 };
 
 export default JwPlayer;
-
-const getPlayer = (error1, error2) => {
-  if (error1) {
-    console.log('GEO')
-    return error(msgError01)
-  }
-  if (error2) {
-    console.log('ERRORRRRR P')
-    return error()
-  }
-  return (<div id="jwplayer-rctiplus" />)
-}
 
 JwPlayer.propTypes = {
   data: PropTypes.object,
@@ -820,62 +976,3 @@ const closeIcon = `
       </g>
   </svg>
 `
-
-const tempId = (value) => {
-  if (value === 'rcti' || value === 1) {
-    return ['1', 'RCTI'];
-  }
-  if (value === 'mnctv' || value === 2) {
-    return ['2', 'MNCTV'];
-  }
-  if (value === 'gtv' || value === 3) {
-    return ['3', 'GTV'];
-  }
-  if (value === 'inews' || value === 4) {
-    return ['4', 'INEWS'];
-  }
-  return ['N/A', 'N/A'];
-};
-
-const getLive = (value) => {
-  if(value === 'live tv' || value === 'live event') {
-    return true;
-  }
-  return false;
-}
-
-const error = (msg = msgError02, icon = (<Wrench />)) => {
-  return (
-    <div id="jwplayer-rctiplus" style={{
-      textAlign: 'center',
-      padding: 30,
-      minHeight: 180,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}>
-      { icon }
-      <h5 style={{ color: '#8f8f8f' }}>
-        { msg() }
-      </h5>
-    </div>
-  );
-};
-
-const msgError01 = () => {
-  return(
-    <div>
-      <strong style={{ fontSize: 14 }}>Whoops, Your Location doesnt support us to live stream this content</strong><br />
-    </div>
-  )
-}
-const msgError02 = () => {
-  return(
-    <div>
-      <strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
-      <span style={{ fontSize: 12 }}>Please try again later,</span><br />
-      <span style={{ fontSize: 12 }}>we are working to fix the problem</span>
-    </div>
-  )
-}

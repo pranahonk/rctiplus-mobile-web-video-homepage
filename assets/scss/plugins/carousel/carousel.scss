@@ -4,10 +4,11 @@
     .control-dots {
         bottom: 20% !important;
         text-align: right !important;
+        padding-right: 17px;
 
         .dot {
-            margin-left: 6px;
-            margin-right: 6px;
+            margin-left: 4px;
+            margin-right: 4px;
 
             transition-property: transform;
             transition-duration: 0.5s;

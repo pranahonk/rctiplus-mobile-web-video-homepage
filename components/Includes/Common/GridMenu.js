@@ -20,8 +20,8 @@ class GridMenu extends React.Component {
     render() {
         return (
             <div className="menu-container">
-                <Row className="grid-menu-container">
-                    <Col className="menu-item">
+                <div className="grid-menu-container">
+                    <div className="menu-item">
                         <div id="action-exclusive" onClick={() => {
                             homeGeneralClicked('mweb_exclusive_clicked');
                             Router.push('/exclusive');
@@ -31,8 +31,8 @@ class GridMenu extends React.Component {
                                 <p className="menu-label">Exclusive</p>
                             </a>
                         </div>
-                    </Col>
-                    <Col className="menu-item">
+                    </div>
+                    <div className="menu-item">
                         <Link href="/explores/1/Drama">
                             <a id="action-drama" >
                                 <div onClick={() => {
@@ -43,8 +43,8 @@ class GridMenu extends React.Component {
                                 </div>
                             </a>
                         </Link>
-                    </Col>
-                    <Col className="menu-item">
+                    </div>
+                    <div className="menu-item">
                         <Link href="/explores/6/Comedy">
                             <a id="action-comedy" >
                                 <div onClick={() => {
@@ -55,18 +55,41 @@ class GridMenu extends React.Component {
                                 </div>
                             </a>
                         </Link>
-                    </Col>
-                    {/* <Col className="menu-item">
+                    </div>
+                    <div className="menu-item">
                         <div id="action-radio" onClick={() => {
                             homeGeneralClicked('mweb_comedy_clicked');
-                            window.location.assign('https://radio.rctiplus.com/');
+                            // window.location.assign('https://radio.rctiplus.com/');
                         }}>
                             <a>
-                                <img alt="menu - icon" className="menu-icon" src={'/icons/comedy.svg'}/>
+                                <img alt="menu - icon" className="menu-icon" src={'/icons-menu/comedy.svg'}/>
                                 <p className="menu-label">Comedy</p>
                             </a>
                         </div>
-                    </Col> */}
+                    </div>
+                    <div className="menu-item">
+                        <div id="action-radio" onClick={() => {
+                            homeGeneralClicked('mweb_comedy_clicked');
+                            // window.location.assign('https://radio.rctiplus.com/');
+                        }}>
+                            <a>
+                                <img alt="menu - icon" className="menu-icon" src={'/icons-menu/comedy.svg'}/>
+                                <p className="menu-label">Comedy</p>
+                            </a>
+                        </div>
+                    </div>
+                    <div className="menu-item">
+                        <div id="action-radio" onClick={() => {
+                            homeGeneralClicked('mweb_comedy_clicked');
+                            // window.location.assign('https://radio.rctiplus.com/');
+                        }}>
+                            <a>
+                                <img alt="menu - icon" className="menu-icon" src={'/icons-menu/comedy.svg'}/>
+                                <p className="menu-label">Comedy</p>
+                            </a>
+                        </div>
+                    </div>
+                    
                     {/* <Col className="menu-item">
                         <img alt="menu - icon" className="menu-icon" src={['/trivia_quiz.svg']}/>
                         <p className="menu-label">TriviaQuiz</p>
@@ -75,7 +98,7 @@ class GridMenu extends React.Component {
                         <img alt="menu - icon" className="menu-icon" src={['/more.svg']}/>
                         <p className="menu-label">More</p>
                     </Col> */}
-                </Row>
+                </div>
             </div>
             
         );

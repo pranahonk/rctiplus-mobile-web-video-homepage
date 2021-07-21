@@ -21,6 +21,7 @@ import { Modal } from 'reactstrap';
 const TabPanelLoader = dynamic(() => import('../Shimmer/detailProgramLoader').then((mod) => mod.TabPanelLoader));
 import smoothscroll from 'smoothscroll-polyfill';
 import { isIOS } from 'react-device-detect';
+import BottomScrollListener from 'react-bottom-scroll-listener';
 
 import { 
   programRateEvent, programShareEvent, programContentShareEvent, 
@@ -36,6 +37,35 @@ import {
   searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked,
   searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, 
   searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent, ProgramContentClick } from '../../../utils/appier';
+
+const setActiveContentHighlight = (isContentActive) => {
+  if (!isContentActive) return null
+  
+  const maskStyle = {
+    width: "100%",
+    position: "absolute",
+    background: "#0000009e",
+    borderRadius: "7px",
+    height: "100%",
+  }
+  const spanStyle = {
+    width: "100%",
+    position: "absolute",
+    background: "#05b5f585",
+    borderRadius: "0 0 7px 7px",
+    bottom: 0,
+    padding: "0.2rem",
+    textAlign: "center",
+    color: "white",
+  }
+  
+  return (
+    <>
+      <div style={maskStyle}></div>
+      <span style={spanStyle}>Now Watching</span>
+    </>
+  )
+}
 
 export const PanelEpisode = forwardRef((props, ref) => {
   smoothscroll.polyfill();
@@ -55,51 +85,54 @@ export const PanelEpisode = forwardRef((props, ref) => {
   };
   return (
       <TabPane tabId="Episodes">
+
+        <BottomScrollListener offset={0} onBottom={props.onShowMore} />
+
         <div className="episode-program">
           <div className="season__program">
             <Dialog onclick={props.onSeason} selected={props.seasonSelected} dataTracking={props.dataTracking}/>
           </div>
           { props.data.data.map((item,i) => {
             return (
-              <div style={{ padding: '10px 15px', background: props.isActive === item.id.toString() ? '#000000' :  'inherit'}} key={i}>
-                {/* {console.log(props.isActive, item.id.toString())} */}
-            <div className="panel-content">
-              <div className="thumb-img__content">
-                <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=episode&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
-                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/episode/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}
-                >
-                  <a onClick={() => link(item.title, item.id, 'episode', item.summary, item)} ref={linkRef}>
-                    <Img alt={item.title}
-                      title={item.title}
-                      className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
-                      unloader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}
-                      loader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}/>
-                  </a>
-                </Link>
-              </div>
-              <div className="thumb-detail__content">
-                <h3>{ `E${('0'+item.episode).slice(-2)}:S${('0'+item.season).slice(-2)} ${item.title}` }</h3>
-                <div className="action-button__content ">
-                  { bookmark(props.bookmark && props.bookmark.data, item, 'episode', props, 'content_bookmark') }
-                  <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
-                  <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'episode', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
+              <div key={i}>
+                <div className="panel-content">
+                  <div className="thumb-img__content" style={{ position: "relative"}}>
+                    <Link
+                      href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=episode&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
+                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/episode/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}>
+                      <a onClick={() => link(item.title, item.id, 'episode', item.summary, item)} ref={linkRef}>
+      
+                        {setActiveContentHighlight(+props.isActive === +item.id)}
+
+                        <Img
+                          alt={item.title}
+                          title={item.title}
+                          className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
+                          unloader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}
+                          loader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}/>
+                      </a>
+                    </Link>
+                  </div>
+                  <div className="thumb-detail__content">
+                    <h3>{ `E${(item.episode < 10 ? '0'+item.episode : ''+item.episode).slice(0)}:S${(item.season < 10 ? '0'+item.season : ''+item.season).slice(0)} ${item.title}` }</h3>
+                    <div className="action-button__content ">
+                      { bookmark(props.bookmark && props.bookmark.data, item, 'episode', props, 'content_bookmark') }
+                      <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
+                      <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'episode', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
+                    </div>
+                  </div>
                 </div>
+              <div className="summary__content">
+                <p>
+                  { item.summary }
+                </p>
               </div>
             </div>
-            <div className="summary__content">
-              <p>
-                { item.summary }
-              </p>
-            </div>
-          </div>
             );
           }) }
         </div>
-        { props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
-          <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-            <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-          </div>
-        ) : '' }
+
+        {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
       </TabPane>
   );
 });
@@ -121,47 +154,49 @@ export const PanelExtra = (props) => {
   };
   return (
     <TabPane tabId="Extra">
+      <BottomScrollListener offset={0} onBottom={props.onShowMore} />
       <div className="extra-program">
         { props.data.data.map((item,i) => {
           return (
-            <div style={{ padding: '10px 15px', background: props.isActive === item.id.toString() ? '#000000' :  'inherit'}} key={i}>
-          <div className="panel-content">
-            <div className="thumb-img__content">
-              <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=extra&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
-                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/extra/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}
-                >
-                  <a onClick={() => link(item.title, item.id, 'extra', item.summary, item)} ref={linkExtraRef}>
-                    <Img alt={item.title}
-                      title={item.title}
-                      className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
-                      unloader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}
-                      loader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}/>
-                  </a>
-                </Link>
-            </div>
-            <div className="thumb-detail__content">
-              <h3>{ item.title }</h3>
-              <div className="action-button__content ">
-                  { bookmark(props.bookmark && props.bookmark.data, item, 'extra', props, 'content_bookmark') }
-                  <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
-                  <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'extra', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
+            <div key={i}>
+              <div className="panel-content">
+                <div className="thumb-img__content">
+                  <Link
+                    href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=extra&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
+                    as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/extra/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}>
+                      <a onClick={() => link(item.title, item.id, 'extra', item.summary, item)} ref={linkExtraRef}>
+                        
+                        {setActiveContentHighlight(+props.isActive === +item.id)}
+
+                        <Img
+                          alt={item.title}
+                          title={item.title}
+                          className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
+                          unloader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}
+                          loader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}/>
+                      </a>
+                    </Link>
+                </div>
+                <div className="thumb-detail__content">
+                  <h3>{ item.title }</h3>
+                  <div className="action-button__content ">
+                      { bookmark(props.bookmark && props.bookmark.data, item, 'extra', props, 'content_bookmark') }
+                      <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
+                      <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'extra', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
+                  </div>
+                </div>
+              </div>
+              <div className="summary__content">
+                <p>
+                  { item.summary }
+                </p>
               </div>
             </div>
-          </div>
-          <div className="summary__content">
-            <p>
-              { item.summary }
-            </p>
-          </div>
-        </div>
           );
         }) }
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
-        <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-          <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-        </div>
-      ) : ''}
+
+      {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
   );
 };
@@ -183,47 +218,48 @@ export const PanelClip = (props) => {
   };
   return (
     <TabPane tabId="Clips">
+      <BottomScrollListener offset={0} onBottom={props.onShowMore} />
       <div className="clip-program">
         { props.data.data.map((item,i) => {
           return (
-            <div style={{ padding: '10px 15px', background: props.isActive === item.id.toString() ? '#000000' :  'inherit'}} key={i}>
-          <div className="panel-content">
-            <div className="thumb-img__content">
-              <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=clip&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
-                        as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/clip/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}
-                  >
+            <div key={i}>
+              <div className="panel-content">
+                <div className="thumb-img__content">
+                  <Link
+                    href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=clip&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
+                    as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/clip/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}>
                     <a onClick={() => link(item.title, item.id, 'clip', item.summary, item)} ref={linkClipRef}>
+                      
+                      {setActiveContentHighlight(+props.isActive === +item.id)}
+                      
                       <Img alt={item.title}
                         title={item.title}
                         className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
                         unloader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}
                         loader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}/>
                     </a>
-                </Link>
-            </div>
-            <div className="thumb-detail__content">
-              <h3>{ item.title }</h3>
-              <div className="action-button__content ">
-                { bookmark(props.bookmark && props.bookmark.data, item, 'clip', props, 'content_bookmark') }
-                <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
-                <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'clip', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
+                    </Link>
+                </div>
+                <div className="thumb-detail__content">
+                  <h3>{ item.title }</h3>
+                  <div className="action-button__content ">
+                    { bookmark(props.bookmark && props.bookmark.data, item, 'clip', props, 'content_bookmark') }
+                    <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
+                    <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'clip', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
+                  </div>
+                </div>
+              </div>
+              <div className="summary__content">
+                <p>
+                  { item.summary }
+                </p>
               </div>
             </div>
-          </div>
-          <div className="summary__content">
-            <p>
-              { item.summary }
-            </p>
-          </div>
-        </div>
           );
         }) }
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
-        <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-          <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-        </div>
-      ) : ''}
+
+     {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
   );
 };
@@ -254,11 +290,12 @@ export const PanelPhoto = (props) => {
           </div>
         </div>
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
+      {/* {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
         <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
           <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
         </div>
-      ) : ''}
+      ) : ''} */}
+      {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
   );
 };

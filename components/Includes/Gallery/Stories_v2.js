@@ -56,7 +56,7 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
-                            backButton: false,
+                            backButton: true,
                             backNative: false,
                             previousTap: true,
                             skin: currentSkin['name'],
@@ -161,8 +161,7 @@ class Stories extends React.Component {
 
         }
         
-        if (this.props.homepage) {
-
+        if(this.props.homepage){
             this.setState({
                 zuckJS: require('../../../assets/js/zuck')
             }, () => {
@@ -173,10 +172,6 @@ class Stories extends React.Component {
                     const stories = this.props.stories.data;
                     for (const story of stories) {
                         timelines.push(this.buildTimeline(story));
-                        
-                        if (story.gpt.length >= 1) {
-                            timelines.push(this.buildStoryGPT(story.gpt));
-                        }
                     }
 
                     let currentLength = this.state.totalLength + this.props.stories.data.length;
@@ -187,7 +182,7 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
-                            backButton: false,
+                            backButton: true,
                             backNative: false,
                             previousTap: true,
                             skin: currentSkin['name'],
@@ -402,6 +397,44 @@ class Stories extends React.Component {
             ]);
         }
 
+        // Add GPT
+        //console.log('story gpt', story.gpt)
+        //for (const item of story.gpt) {
+        /**
+         * Ukuran Avatar 40x40 margin left 15px
+         * font size title 16px margin left 15px
+         */
+        /* if (this.storyId == 0) {
+            items.push([
+                Math.floor(Math.random() * Math.floor(999999)), // id
+                'ads', // type
+                500, // durations in string
+                '/21865661642/RC_MOBILE_INSERTION-STORIES', // item.path src
+                'div-gpt-ad-1596100730972-0', // item.div_gpt preview
+                false, // link
+                '', // linkText
+                false, // seen
+                new Date().getTime(), // time
+                '', // title
+                '' // videoType
+            ]);
+        } */
+        /* for (const item of story.gpt) {
+            items.push([
+                item.id + Math.floor(Math.random() * Math.floor(999999)) + Math.floor(Math.random() * Math.floor(99)), // id
+                'ads', // type
+                5, // durations in string
+                item.path, // item.path src
+                item.div_gpt, // item.div_gpt preview
+                false, // link
+                '', // linkText
+                false, // seen
+                new Date().getTime(), // time
+                '', // title
+                '' // videoType
+            ]);
+        } */
+
         let programImg = '';
         if (story.program_img != null) {
             programImg = this.props.stories.meta.image_path + this.state.resolution  + story.program_img;
@@ -514,7 +547,7 @@ class Stories extends React.Component {
             case 'catchup':
                 if(program.swipe_value && program.channel && program.catchup_date) {
                     const title = program.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
-                    return `/tv/${program.channel}/${program.swipe_type}/${title}?date=${program.catchup_date}`
+                    return `/tv/${program.channel}/${program.swipe_value}/${title}?date=${program.catchup_date}`
                 }
                 break;
             case 'live_event':
@@ -637,6 +670,7 @@ class Stories extends React.Component {
     }
 
     render() {
+      
         const timelineItems = []
         this.state.stories.forEach((story, storyId) => {
             const storyItems = [];
@@ -675,7 +709,7 @@ class Stories extends React.Component {
         });
 
         return (
-            <div style={{paddingTop: 55, paddingLeft: 14}} >
+            <div style={{paddingTop: 35}} >
                 <Head>
                     <script src="/static/js/dash.js"></script>
                     <link rel="stylesheet" href="static/css/zuck.css?v=2" />
@@ -688,7 +722,7 @@ class Stories extends React.Component {
                         </div>
                     )}
                 </BottomScrollListener> */}
-                <div ref={node => this.storiesElement = node} id="stories-react" className="storiesWrapper">
+                <div style={{paddingLeft: "14px"}} ref={node => this.storiesElement = node} id="stories-react" className="storiesWrapper">
                     {timelineItems}
                 </div>
             </div>
