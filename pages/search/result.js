@@ -8,6 +8,9 @@ import classnames from 'classnames';
 import AllResult from './Result/AllResult';
 import ProgramResult from './Result/ProgramResult';
 import EpisodeResult from './Result/EpisodeResult';
+import ExtraResult from './Result/ExtraResult';
+import ClipResult from './Result/ClipResult';
+import PhotoResult from './Result/PhotoResult';
 
 import searchActions from '../../redux/actions/searchActions';
 
@@ -30,7 +33,7 @@ class Result extends React.Component {
             length: 9
         };
 
-        this.tabs = ['all', 'program', 'episode', 'catchup', 'extra'];
+        this.tabs = ['all', 'program', 'episode', 'catchup', 'extras', 'clips', 'photos'];
         this.swipe = {};
     }
 
@@ -79,11 +82,13 @@ class Result extends React.Component {
                     ))}
                 </Nav>
                 <TabContent className="container-box-search-result" activeTab={this.state.active_tab}>
-                    {this.state.active_tab === "all" && <AllResult/>}
-                    {this.state.active_tab === "program" && <ProgramResult />}
+                    {this.state.active_tab === "all" && <AllResult handleTab={(val) => this.toggleTab(val) }/>}
+                    {this.state.active_tab === "program" && <ProgramResult  />}
                     {this.state.active_tab === "episode" && <EpisodeResult />}
-                    {this.state.active_tab === "extra" && <EpisodeResult />}
+                    {this.state.active_tab === "extras" && <ExtraResult  />}
                     {this.state.active_tab === "catchup" && <EpisodeResult />}
+                    {this.state.active_tab === "clips" && <ClipResult />}
+                    {this.state.active_tab === "photos" && <PhotoResult />}
                     {/* {this.tabs.map((t, i) => (
                         <TabPane key={i} tabId={t}>
                             <div style={{background: "#282828"}} className="content-search">

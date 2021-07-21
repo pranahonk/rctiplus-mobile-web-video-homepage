@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import { Row, Col } from 'reactstrap';
 import { ButtonPrimary } from "../../../components/Includes/Common/Button";
+import { RESOLUTION_IMG } from '../../../config';
 
 import Img from 'react-image';
 import ShareIcon from "../../../components/Includes/IconCustom/ShareIcon";
@@ -11,7 +12,7 @@ import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded';
 import '../../../assets/scss/components/search-results.scss';
 
-const  AllResult = () => {
+const  AllResult = ({handleTab}) => {
     const { search_all } = useSelector(state => state.searches)
     console.log(`ini adalah search all`, search_all )
 
@@ -21,6 +22,22 @@ const  AllResult = () => {
         else return '/static/placeholders/placeholder_landscape.png';  
     };
 
+    const setColoring = (text, tags) =>{
+        const params = new URLSearchParams(window.location.search) // id=123
+        const keyword = params.get('keyword'); // 123
+        const replace = new RegExp(keyword,"ig");
+        if(keyword) {
+          if (text.toLowerCase().includes(keyword.toLowerCase())) {
+            return text.replace(replace, match => `<span style='color: #04a9e5'>${match}</span>`);
+          } else {
+            return `#<span style='color: #04a9e5'>${keyword.replace("#", "")}</span> - ${text} `;
+          }
+        }
+        else{
+          return text;
+        }
+    }
+
     return (
         <div style={{marginBottom: "30px"}} >
             {search_all !== null &&
@@ -29,7 +46,7 @@ const  AllResult = () => {
                         <div>
                             <div style={{display:"flex", justifyContent:"space-between", width:"100%", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Program</p>
-                                <div style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
+                                <div onClick={() => handleTab("program")} style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
@@ -42,7 +59,7 @@ const  AllResult = () => {
                                                     className="content-image"
                                                     unloader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
                                                     loader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
-                                                    src={[search_all?.program_data?.meta.image_path + "150" + v.portrait_image, '/static/placeholders/placeholder_potrait.png']} 
+                                                    src={[search_all?.program_data?.meta.image_path + RESOLUTION_IMG + v.portrait_image, '/static/placeholders/placeholder_potrait.png']} 
                                                 />
                                             </Col>
                                         ))
@@ -56,7 +73,7 @@ const  AllResult = () => {
                         <div>
                             <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Episode</p>
-                                <div style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
+                                <div onClick={() => handleTab("episode")} style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
@@ -102,7 +119,7 @@ const  AllResult = () => {
                         <div>
                             <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Catch Up</p>
-                                <div style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
+                                <div onClick={() => handleTab("catchup")} style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
@@ -115,7 +132,7 @@ const  AllResult = () => {
                                                     className="content-image"
                                                     unloader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
                                                     loader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
-                                                    src={[search_all?.catchup_data?.meta.image_path + "150" + v.portrait_image, '/static/placeholders/placeholder_potrait.png']} 
+                                                    src={[search_all?.catchup_data?.meta.image_path + RESOLUTION_IMG + v.portrait_image, '/static/placeholders/placeholder_potrait.png']} 
                                                 />
                                             </Col>
                                         ))
@@ -129,7 +146,7 @@ const  AllResult = () => {
                         <div>
                             <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Extras</p>
-                                <div style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
+                                <div onClick={() => handleTab("extras")} style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
@@ -176,7 +193,7 @@ const  AllResult = () => {
                         <div>
                             <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Clips</p>
-                                <div style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
+                                <div onClick={() => handleTab("clips")} style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
@@ -223,23 +240,26 @@ const  AllResult = () => {
                         <div>
                             <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Photos</p>
-                                <div style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
+                                <div onClick={() => handleTab("photo")} style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
                                 <Row>
                                     {search_all !== null && 
-                                        search_all?.photo_data?.data.map((v, i) =>(
-                                            <Col xs={4}>
-                                                <Img 
-                                                    alt={v.title} 
-                                                    className="content-image"
-                                                    unloader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
-                                                    loader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
-                                                    src={[search_all?.photo_data?.meta.image_path + "150" + v.portrait_image, '/static/placeholders/placeholder_potrait.png']} 
-                                                />
-                                            </Col>
-                                        ))
+                                        search_all?.photo_data?.data.map((v, i) =>{
+                                            if(i <= 1)
+                                            return (
+                                                <Col xs={6}>
+                                                    <Img 
+                                                        alt={v.title} 
+                                                        className="content-image"
+                                                        unloader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
+                                                        loader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
+                                                        src={[search_all?.photo_data?.meta.image_path + RESOLUTION_IMG + v.portrait_image, '/static/placeholders/placeholder_potrait.png']} 
+                                                    />
+                                                </Col>
+                                            )
+                                        })
                                     }
                                 </Row>
                             </div>
