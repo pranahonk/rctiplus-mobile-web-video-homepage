@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import Router, { withRouter } from 'next/router';
+import Router, { withRouter, useRouter } from 'next/router';
 import classnames from 'classnames';
 import Img from 'react-image';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -53,6 +53,7 @@ const Trailer = dynamic(() => import('../components/Includes/program-detail/prog
 class Index extends React.Component {
   static async getInitialProps(ctx) {
     // console.log('on server')
+    // const router = useRouter()
     const programId = ctx.query.id;
     const accessToken = getCookie('ACCESS_TOKEN');
     const res = await fetch(`${DEV_API}/api/v1/program/${programId}/detail`, {
@@ -122,6 +123,11 @@ class Index extends React.Component {
     this.premium = 0;
   }
   componentDidMount() {
+    const query = queryString.parse(location.search);
+    if(query.season){
+      this.setState({season : query.season})
+    }
+    
     this.premium = this.props?.server?.[this.type]?.data?.premium
     this.reference = queryString.parse(location.search).ref;
     // console.log('MOUNTED: ', this.props);
@@ -350,17 +356,17 @@ class Index extends React.Component {
     this.props.dispatch(fetchLike(programId, 'like', 'program'));
     if (this.props.server && this.props.server[this.type].data) {
       if (this.props.server[this.type].data.category === 'movie') {
-        this.props.dispatch(fetchEpisode(programId, 'program-episode'));
+        this.props.dispatch(fetchEpisode(programId, 'program-episode',this.state.season));
         this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
-        this.props.dispatch(seasonSelected(1));
+        this.props.dispatch(seasonSelected(this.state.season));
       }
       if (this.isTabs(this.props.server[this.type].data).length > 0) {
         switch (this.isTabs(this.props.server[this.type].data)[0]) {
           case 'Episodes':
             if (!this.props.data['program-episode'] || this.state.episodeClearStore) {
-              this.props.dispatch(fetchEpisode(programId, 'program-episode'));
+              this.props.dispatch(fetchEpisode(programId, 'program-episode',this.state.season));
               this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
-              this.props.dispatch(seasonSelected(1));
+              this.props.dispatch(seasonSelected(this.state.season));
             }
             break;
           case 'Extra':
@@ -496,7 +502,7 @@ class Index extends React.Component {
                 this.props.dispatch(fetchEpisode(this.props.router.query.id, 'program-episode',props.data[0].season, pagination.nextPage));
                 onTracking(this.reference, this.props.router.query.id, this.props.server['program-detail']);
                 }}
-              onSeason={() => {this.props.dispatch(fetchSeasonEpisode(this.props.router.query.id,'program-episode',1, pagination.nextPage));}}
+              onSeason={() => {this.props.dispatch(fetchEpisode(this.props.router.query.id,'program-episode', this.state.season, pagination.nextPage));}}
               onBookmarkAdd={this.addBookmark.bind(this)}
               onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
               bookmark={bookmark}
