@@ -25,6 +25,8 @@ class Dialog extends React.Component  {
 
   render() {
     const isStoreSeason = Object.keys(this.props.dialog && this.props.dialog['program-episode']);
+
+    console.log(`ini adalah list season`, this.props?.dialog?.season?.data)
                           
     return (
       <div>
