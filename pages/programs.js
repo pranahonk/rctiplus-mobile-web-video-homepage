@@ -192,6 +192,8 @@ class Index extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
   }
   componentDidUpdate(prevProps) {
+    this.onVideoListChanged(this.props.data["program-episode"])
+    
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
       if (this.props.router.query.content_id) {
         const {content_id , content_type} = this.props.router.query;
@@ -412,6 +414,9 @@ class Index extends React.Component {
         switch (this.isTabs(this.props.server[this.type].data)[0]) {
           case 'Episodes':
             if (!this.props.data['program-episode'] || this.state.episodeClearStore) {
+              
+              if (this.props.data.seasonSelected) break
+              
               this.props.dispatch(fetchEpisode(programId, 'program-episode'));
               this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
               this.props.dispatch(seasonSelected(1));

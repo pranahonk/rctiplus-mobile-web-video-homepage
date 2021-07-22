@@ -160,7 +160,7 @@ export const PanelExtra = (props) => {
           return (
             <div key={i}>
               <div className="panel-content">
-                <div className="thumb-img__content">
+                <div className="thumb-img__content" style={{ position: "relative"}}>
                   <Link
                     href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=extra&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
                     as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/extra/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}>
@@ -224,7 +224,7 @@ export const PanelClip = (props) => {
           return (
             <div key={i}>
               <div className="panel-content">
-                <div className="thumb-img__content">
+                <div className="thumb-img__content" style={{ position: "relative"}}>
                   <Link
                     href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=clip&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
                     as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/clip/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}>
