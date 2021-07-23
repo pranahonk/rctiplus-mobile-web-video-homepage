@@ -156,6 +156,7 @@ class Detail extends React.Component {
         this.accessToken = null;
         this.platform = null;
         this.pushNotif = null;
+        this.device_id = null;
         const segments = this.props.router.asPath.split(/\?/);
         const segments2 = this.props.router.asPath.split(/\#/);
         if (segments.length > 1) {
@@ -193,6 +194,7 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
+        this.device_id =new DeviceUUID().get();
         const {initial: {data = null}, router: {asPath = null}} = this.props;
         const condition = (!isEmpty(data) && !isEmpty(data.subcategory_name) && !isEmpty(data.title));
         if ((asPath.split('/').length < 6) && condition) {
@@ -697,7 +699,7 @@ class Detail extends React.Component {
                         if (percentage > 0.32) {
                             if (!this.state.scrolled_down) {
                                 if (!this.state.count) {
-                                    this.props.incrementCount(Number(this.state.trending_detail_id))
+                                    this.props.incrementCount(Number(this.state.trending_detail_id),  this.device_id)
                                         .then(response => {
                                             console.log(response);
                                         })

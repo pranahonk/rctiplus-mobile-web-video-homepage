@@ -450,11 +450,12 @@ const getSelectedChannelsVisitor = (device_id) => {
     });
 };
 
-const incrementCount = newsId => {
+const incrementCount = ( newsId, visitorId) => {
     return () => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.post(`/v1/news/count`, {
-                news_id: newsId
+                news_id: newsId,
+                visitor_id: visitorId,
             });
 
             if (response.status === 200) {
