@@ -88,7 +88,7 @@ export const getBannerCategory = () => {
 export const getBannerCategoryActive = (category_id) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v2/banner/category/${category_id}`);
+            const response = await axios.get(`/v2/banner/category/${category_id}?page=1&length=21`);
 
             if (response.data.status.code === 0) {
                 console.log(`ini banner haha`, response.data)
