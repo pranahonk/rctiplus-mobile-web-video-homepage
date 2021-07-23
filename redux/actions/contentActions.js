@@ -122,7 +122,7 @@ const getContentShareLink = (id, type) => {
     });
 };
 
-const getBanner = (page = 1, length = 10, infos = 'id,title,portrait_image,image_landscape,type,type_value,sorting,program_id,popup_img,link,summary,square_image,program_name') => {
+const getBanner = (page = 1, length = 21, infos = 'id,title,portrait_image,image_landscape,type,type_value,sorting,program_id,popup_img,link,summary,square_image,program_name') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/banner?page=${page}&length=${length}&appierid=${getUidAppier()}`);
