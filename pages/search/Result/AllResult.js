@@ -12,7 +12,7 @@ import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded';
 import '../../../assets/scss/components/search-results.scss';
 
-const  AllResult = ({handleTab}) => {
+const  AllResult = ({handleTab, onClick}) => {
     const { search_all } = useSelector(state => state.searches)
     console.log(`ini adalah search all`, search_all )
 
@@ -53,7 +53,7 @@ const  AllResult = ({handleTab}) => {
                                 <Row>
                                     {search_all !== null && 
                                         search_all?.program_data?.data.map((v, i) =>(
-                                            <Col xs={4}>
+                                            <Col onClick={() => onClick(v, "program")} xs={4}>
                                                 <Img 
                                                     alt={v.title} 
                                                     className="content-image"
@@ -80,7 +80,7 @@ const  AllResult = ({handleTab}) => {
                                 <div>
                                     {search_all !== null && 
                                         search_all?.episode_data?.data.map((v, i) =>(
-                                            <div style={{ padding: '10px 15px'}} key={i}>
+                                            <div onClick={() => onClick(v, "episode")} style={{ padding: '10px 15px'}} key={i}>
                                                 <div style={{display:"flex"}} className="panel-content">
                                                     <div className="thumb-img__content">
                                                         <Link href="" >
@@ -126,7 +126,7 @@ const  AllResult = ({handleTab}) => {
                                 <Row>
                                     {search_all !== null && 
                                         search_all?.catchup_data?.data.map((v, i) =>(
-                                            <Col xs={4}>
+                                            <Col onClick={() => onClick(v, "catchup")} xs={4}>
                                                 <Img 
                                                     alt={v.title} 
                                                     className="content-image"
@@ -153,7 +153,7 @@ const  AllResult = ({handleTab}) => {
                                 <div>
                                     {search_all !== null && 
                                         search_all?.extra_data?.data.map((v, i) =>(
-                                            <div style={{ padding: '10px 15px'}} key={i}>
+                                            <div onClick={() => onClick(v, "extras")} style={{ padding: '10px 15px'}} key={i}>
                                                 <div style={{display:"flex"}} className="panel-content">
                                                     <div className="thumb-img__content">
                                                         <Link href="" >
@@ -200,7 +200,7 @@ const  AllResult = ({handleTab}) => {
                                 <div>
                                     {search_all !== null && 
                                         search_all?.clip_data?.data.map((v, i) =>(
-                                            <div style={{ padding: '10px 15px'}} key={i}>
+                                            <div onClick={() => onClick(v, "clips")} style={{ padding: '10px 15px'}} key={i}>
                                                 <div style={{display:"flex"}} className="panel-content">
                                                     <div className="thumb-img__content">
                                                         <Link href="" >
@@ -240,7 +240,7 @@ const  AllResult = ({handleTab}) => {
                         <div>
                             <div style={{display:"flex", justifyContent:"space-between", width:"100%", marginTop:"20px", fontWeight: "bold"}} className="header-list">
                                 <p className="title">Photos</p>
-                                <div onClick={() => handleTab("photo")} style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
+                                <div onClick={() => handleTab("photos")} style={{color: "white"}} className="title"><ChevronRightRoundedIcon/></div>
                             </div>
 
                             <div className="content-list">
@@ -249,13 +249,13 @@ const  AllResult = ({handleTab}) => {
                                         search_all?.photo_data?.data.map((v, i) =>{
                                             if(i <= 1)
                                             return (
-                                                <Col xs={6}>
+                                                <Col onClick={() => onClick(v, "photo")} xs={6}>
                                                     <Img 
                                                         alt={v.title} 
                                                         className="content-image"
                                                         unloader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
                                                         loader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
-                                                        src={[search_all?.photo_data?.meta.image_path + RESOLUTION_IMG + v.portrait_image, '/static/placeholders/placeholder_potrait.png']} 
+                                                        src={[search_all?.photo_data?.meta.image_path + RESOLUTION_IMG + v.icon_image, '/static/placeholders/placeholder_potrait.png']} 
                                                     />
                                                 </Col>
                                             )

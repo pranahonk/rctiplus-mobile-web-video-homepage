@@ -20,7 +20,7 @@ const PhotoResult = () => {
                                             className="content-image"
                                             unloader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
                                             loader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
-                                            src={[search_results[4]?.data?.meta.image_path + "150" + v.portrait_image, '/static/placeholders/placeholder_potrait.png']} 
+                                            src={[search_results[4]?.data?.meta.image_path + "150" + v.icon_image, '/static/placeholders/placeholder_potrait.png']} 
                                         />
                                     </Col>
                                 ))

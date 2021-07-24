@@ -82,13 +82,14 @@ class Result extends React.Component {
                     ))}
                 </Nav>
                 <TabContent className="container-box-search-result" activeTab={this.state.active_tab}>
-                    {this.state.active_tab === "all" && <AllResult handleTab={(val) => this.toggleTab(val) }/>}
-                    {this.state.active_tab === "program" && <ProgramResult  />}
-                    {this.state.active_tab === "episode" && <EpisodeResult />}
-                    {this.state.active_tab === "extras" && <ExtraResult  />}
-                    {this.state.active_tab === "catchup" && <EpisodeResult />}
-                    {this.state.active_tab === "clips" && <ClipResult />}
-                    {this.state.active_tab === "photos" && <PhotoResult />}
+                    {this.state.active_tab === "all" && <AllResult handleTab={(val) => this.toggleTab(val) } onClick={(c, t) => this.link( c, t)} />}
+                    {this.state.active_tab === "program" && <ProgramResult onClick={(c) => this.link( c, "program")}  />}
+                    {this.state.active_tab === "episode" && <EpisodeResult onClick={(c) => this(c, "episode")} />}
+                    {this.state.active_tab === "extras" && <ExtraResult onClick={(c) => this(c, "extras")}  />}
+                    {this.state.active_tab === "catchup" && <EpisodeResult onClick={(c) => this(c, "catchup")} />}
+                    {this.state.active_tab === "clips" && <ClipResult onClick={(c) => this(c, "clips")} />}
+                    {this.state.active_tab === "photos" && <PhotoResult onClick={(c) => this(c, "photo")} />}
+                    
                     {/* {this.tabs.map((t, i) => (
                         <TabPane key={i} tabId={t}>
                             <div style={{background: "#282828"}} className="content-search">

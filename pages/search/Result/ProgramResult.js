@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Row, Col } from 'reactstrap';
 import Img from 'react-image';
 
-const ProgramResult = () => {
+const ProgramResult = ({onClick}) => {
     const { search_results } = useSelector(state => state.searches);
     return (
         <div style={{marginBottom: "30px"}} >
@@ -14,7 +14,7 @@ const ProgramResult = () => {
                         <Row>
                             {search_results && 
                                 search_results[0]?.data?.data?.map((v, i) =>(
-                                    <Col xs={4}>
+                                    <Col onClick={() => onClick(v)} xs={4}>
                                         <Img 
                                             alt={v.title} 
                                             className="content-image"
