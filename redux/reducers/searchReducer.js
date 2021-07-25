@@ -11,14 +11,16 @@ const initialState = {
         episode: 1,
         extra: 1,
         clip: 1,
-        photo: 1
+        photo: 1,
+        catchup: 1
     },
     search_show_more_allowed: {
         program: false,
         episode: false,
         extra: false,
         clip: false,
-        photo: false
+        photo: false,
+        catchup: false
     },
     search_status: false,
     search_all: null,
@@ -63,7 +65,8 @@ export default (state = initialState, action) => {
                     episode: more_allowed['episode'] ? 2 : 1,
                     extra: more_allowed['extra'] ? 2 : 1,
                     clip: more_allowed['clip'] ? 2 : 1,
-                    photo: more_allowed['photo'] ? 2 : 1
+                    photo: more_allowed['photo'] ? 2 : 1,
+                    catchup: more_allowed['catchup'] ? 2 : 1
                 }
             });
         case 'SEARCH_RESULTS_CATEGORY':
@@ -91,6 +94,9 @@ export default (state = initialState, action) => {
             }
             else if (action.category === 'photo') {
                 results[4].data.data.push.apply(results[4].data.data, action.results);
+            }
+            else if (action.category === 'catchup') {
+                results[5].data.data.push.apply(results[5].data.data, action.results);
             }
             return Object.assign({}, state, { 
                 search_results: results,

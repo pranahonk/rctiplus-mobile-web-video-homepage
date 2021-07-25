@@ -81,11 +81,12 @@ const searchAllCategory = (q, page = 1, length = 9) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const responses = await Promise.all([
-                axios.get(`/v1/search/program?q=${q}&page=${page}&length=${length}`),
-                axios.get(`/v1/search/episode?q=${q}&page=${page}&length=${length}`),
-                axios.get(`/v1/search/extra?q=${q}&page=${page}&length=${length}`),
-                axios.get(`/v1/search/clip?q=${q}&page=${page}&length=${length}`),
-                axios.get(`/v1/search/photo?q=${q}&page=${page}&length=${length}`)
+                axios.get(`/v2/search/program?q=${q}&page=${page}&length=${length}`),
+                axios.get(`/v2/search/episode?q=${q}&page=${page}&length=${length}`),
+                axios.get(`/v2/search/extra?q=${q}&page=${page}&length=${length}`),
+                axios.get(`/v2/search/clip?q=${q}&page=${page}&length=${length}`),
+                axios.get(`/v2/search/photo?q=${q}&page=${page}&length=${length}`),
+                axios.get(`/v2/search/catchup?q=${q}&page=${page}&length=${length}`)
             ]);
 
             let show_more_allowed = {
@@ -93,7 +94,8 @@ const searchAllCategory = (q, page = 1, length = 9) => {
                 episode: false,
                 extra: false,
                 clip: false,
-                photo: false
+                photo: false,
+                catchup: false
             };
             if (responses[0].status === 200 && responses[0].data.status.code === 0) {
                 show_more_allowed['program'] = responses[0].data.data.length >= length;
@@ -109,6 +111,9 @@ const searchAllCategory = (q, page = 1, length = 9) => {
             }
             if (responses[4].status === 200 && responses[4].data.status.code === 0) {
                 show_more_allowed['photo'] = responses[4].data.data.length >= length;
+            }
+            if (responses[5].status === 200 && responses[5].data.status.code === 0) {
+                show_more_allowed['catchup'] = responses[5].data.data.length >= length;
             }
 
             dispatch({

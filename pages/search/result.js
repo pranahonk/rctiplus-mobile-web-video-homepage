@@ -9,6 +9,7 @@ import AllResult from './Result/AllResult';
 import ProgramResult from './Result/ProgramResult';
 import EpisodeResult from './Result/EpisodeResult';
 import ExtraResult from './Result/ExtraResult';
+import CatchupResult from './Result/CatchUpResult';
 import ClipResult from './Result/ClipResult';
 import PhotoResult from './Result/PhotoResult';
 
@@ -86,7 +87,7 @@ class Result extends React.Component {
                     {this.state.active_tab === "program" && <ProgramResult onClick={(c) => this.link( c, "program")}  />}
                     {this.state.active_tab === "episode" && <EpisodeResult onClick={(c) => this(c, "episode")} />}
                     {this.state.active_tab === "extras" && <ExtraResult onClick={(c) => this(c, "extras")}  />}
-                    {this.state.active_tab === "catchup" && <EpisodeResult onClick={(c) => this(c, "catchup")} />}
+                    {this.state.active_tab === "catchup" && <CatchupResult onClick={(c) => this(c, "catchup")} />}
                     {this.state.active_tab === "clips" && <ClipResult onClick={(c) => this(c, "clips")} />}
                     {this.state.active_tab === "photos" && <PhotoResult onClick={(c) => this(c, "photo")} />}
                     
