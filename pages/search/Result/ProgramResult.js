@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Row, Col } from 'reactstrap';
 import Img from 'react-image';
+import { getTruncate } from '../../../utils/helpers';
 
 const ProgramResult = ({onClick}) => {
     const { search_results } = useSelector(state => state.searches);
