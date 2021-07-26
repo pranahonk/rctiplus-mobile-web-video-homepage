@@ -151,6 +151,8 @@ class Detail extends React.Component {
         this.accessToken = null;
         this.platform = null;
         this.pushNotif = null;
+        this.idfa = null;
+        this.core_token = null;
         const segments = this.props.router.asPath.split(/\?/);
         const segments2 = this.props.router.asPath.split(/\#/);
         if (segments.length > 1) {
@@ -162,6 +164,13 @@ class Detail extends React.Component {
 
             if (q.platform) {
                 this.platform = q.platform;
+            }
+            if(q.idfa){
+                this.idfa = q.idfa;
+            }
+
+            if(q.core_token){
+                this.core_token = q.core_token;
             }
             if(q.push_notif === 'true') {
                 this.pushNotif = '/news';
@@ -564,8 +573,8 @@ class Detail extends React.Component {
                 }} data={cdata} disableScrollListener />) : (
                     <NavBack
                         pushNotif={this.pushNotif}
-                        params={`?token=${this.accessToken}&platform=${this.platform}`}
-                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`}
+                        params={`?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}`}
+                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}`}
                         data={cdata}
                         titleNavbar={cdata.source}/>
                 )}

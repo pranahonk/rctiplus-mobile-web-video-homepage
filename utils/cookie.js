@@ -28,26 +28,31 @@ export const setCookie = (name, value, days) => {
          expires = "";
       }
 
-      host = location.host;
-      if (host.split('.').length === 1)
-      {
-         // no "." in a domain - it's localhost or something similar
-         document.cookie = name+"="+value+expires+"; path=/";
-      }
-      else
-      {
-         domainParts = host.split('.');
-         domainParts.shift();
-         domain = '.'+domainParts.join('.');
 
-         document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
-         if (getCookieHelper(name) == null || getCookieHelper(name) != value)
-         {
+      if(process.browser){
+          host = window.location.host;
+          if (host.split('.').length === 1)
+          {
+              // no "." in a domain - it's localhost or something similar
+              document.cookie = name+"="+value+expires+"; path=/";
+          }
+          else
+          {
+              domainParts = host.split('.');
+              domainParts.shift();
+              domain = '.'+domainParts.join('.');
 
-            domain = '.'+host;
-            document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
-         }
+              document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
+              if (getCookieHelper(name) == null || getCookieHelper(name) != value)
+              {
+
+                  domain = '.'+host;
+                  document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
+              }
+          }
       }
+
+
 };
 
 const getCookieHelper = (name) => {
