@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import Img from 'react-image';
 import { ButtonPrimary } from "../../../components/Includes/Common/Button";
+import { getTruncate } from '../../../utils/helpers';
 import ShareIcon from "../../../components/Includes/IconCustom/ShareIcon";
 import GetApp from '@material-ui/icons/GetApp';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
@@ -15,6 +16,22 @@ const EpisodeResult = () => {
         else if (potrait === 'potrait') return '/static/placeholders/placeholder_potrait.png';
         else return '/static/placeholders/placeholder_landscape.png';  
     };
+
+    const setColoring = (text, tags) =>{
+        const params = new URLSearchParams(window.location.search) // id=123
+        const keyword = params.get('q'); // 123
+        const replace = new RegExp(keyword,"ig");
+        if(keyword) {
+          if (text.toLowerCase().includes(keyword.toLowerCase())) {
+            return text.replace(replace, match => `<span style='color: #04a9e5'>${match}</span>`);
+          } else {
+            return `#<span style='color: #04a9e5'>${keyword.replace("#", "")}</span> - ${text} `;
+          }
+        }
+        else{
+          return text;
+        }
+    }
     
     return (
         <div style={{marginBottom: "30px"}} >
@@ -35,7 +52,7 @@ const EpisodeResult = () => {
                                     </Link> 
                                 </div>
                                 <div style={{marginLeft:"10px", width:"100%", display:"flex", justifyContent:"space-between", flexDirection:"column" }} className="thumb-detail__content">
-                                    <label style={{fontSize:"12px", fontWeight:"bold"}} >{ `E${('0'+v.episode).slice(-2)}:S${('0'+v.season).slice(-2)} ${v.title}` }</label>
+                                    <label style={{fontSize:"12px", fontWeight:"bold"}} >{ `E${('0'+v.episode).slice(-2)}:S${('0'+v.season).slice(-2)} :`} <span dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(v.title, '...', 100)) }}></span></label>
                                     <div style={{display:"flex", justifyContent:"start"}} className="action-button__content ">
                                         <ButtonPrimary icon={ <PlaylistAddIcon/> } />
                                         <ButtonPrimary icon={ <ShareIcon/> } />

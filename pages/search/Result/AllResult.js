@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux';
 import { Row, Col } from 'reactstrap';
 import { ButtonPrimary } from "../../../components/Includes/Common/Button";
 import { RESOLUTION_IMG } from '../../../config';
+import { getTruncate } from '../../../utils/helpers';
 
 import Img from 'react-image';
 import ShareIcon from "../../../components/Includes/IconCustom/ShareIcon";
+import { CirclePauseIcon, CircleTimeIcon, CirclePlayIcon } from "../../../components/IconComponents"
 import GetApp from '@material-ui/icons/GetApp';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded';
@@ -24,7 +26,7 @@ const  AllResult = ({handleTab, onClick}) => {
 
     const setColoring = (text, tags) =>{
         const params = new URLSearchParams(window.location.search) // id=123
-        const keyword = params.get('keyword'); // 123
+        const keyword = params.get('q'); // 123
         const replace = new RegExp(keyword,"ig");
         if(keyword) {
           if (text.toLowerCase().includes(keyword.toLowerCase())) {
@@ -94,7 +96,7 @@ const  AllResult = ({handleTab, onClick}) => {
                                                         </Link> 
                                                     </div>
                                                     <div style={{marginLeft:"10px", width:"100%", display:"flex", justifyContent:"space-between", flexDirection:"column" }} className="thumb-detail__content">
-                                                        <label style={{fontSize:"12px", fontWeight:"bold"}} >{ `E${('0'+v.episode).slice(-2)}:S${('0'+v.season).slice(-2)} ${v.title}` }</label>
+                                                        <label style={{fontSize:"12px", fontWeight:"bold"}} >{ `E${('0'+v.episode).slice(-2)}:S${('0'+v.season).slice(-2)} :`} <span dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(v.title, '...', 100)) }}></span></label>
                                                         <div style={{display:"flex", justifyContent:"start"}} className="action-button__content ">
                                                             <ButtonPrimary icon={ <PlaylistAddIcon/> } />
                                                             <ButtonPrimary icon={ <ShareIcon/> } />
@@ -123,7 +125,25 @@ const  AllResult = ({handleTab, onClick}) => {
                             </div>
 
                             <div className="content-list">
-                                <Row>
+                                {search_all !== null &&
+                                    search_all?.catchup_data?.data.map((v, i) =>(
+                                        <div style={{marginBottom: "1rem"}} className="content-list">
+                                            <div style={{display:"flex", justifyContent: "space-between", alignItems: "center"}}>
+                                                <div style={{display: "flex", alignItems:"center"}}>
+                                                    <div><CirclePlayIcon /></div>
+                                                    <div style={{marginLeft: "0.75rem"}}>
+                                                        <div style={{fontSize: "12px", fontWeight:"bold"}} dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(v.title, '...', 100)) }}></div>
+                                                        <div style={{fontSize: "10px"}}>{v.s} - {v.e}</div>
+                                                    </div>
+                                                </div>
+                                                <div style={{marginRight:"0.50rem"}}>
+                                                    <ShareIcon />
+                                                </div> 
+                                            </div>
+                                        </div> 
+                                    ))
+                                }
+                                {/* <Row>
                                     {search_all !== null && 
                                         search_all?.catchup_data?.data.map((v, i) =>(
                                             <Col onClick={() => onClick(v, "catchup")} xs={4}>
@@ -137,7 +157,7 @@ const  AllResult = ({handleTab, onClick}) => {
                                             </Col>
                                         ))
                                     }
-                                </Row>
+                                </Row> */}
                             </div>
                         </div>
                     }
@@ -168,7 +188,7 @@ const  AllResult = ({handleTab, onClick}) => {
                                                         </Link> 
                                                     </div>
                                                     <div style={{marginLeft:"10px", width:"100%", display:"flex", justifyContent:"space-between", flexDirection:"column" }} className="thumb-detail__content">
-                                                        <label style={{fontSize:"12px", fontWeight:"bold"}} >{ `${v.program_title} : ${v.title}` }</label>
+                                                        <label style={{fontSize:"12px", fontWeight:"bold"}} >{ `${v.program_title} :` } <span dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(v.title, '...', 100)) }}></span></label>
                                                         <div style={{display:"flex", justifyContent:"start"}} className="action-button__content ">
                                                             <ButtonPrimary icon={ <PlaylistAddIcon/> } />
                                                             <ButtonPrimary icon={ <ShareIcon/> } />
@@ -215,7 +235,7 @@ const  AllResult = ({handleTab, onClick}) => {
                                                         </Link> 
                                                     </div>
                                                     <div style={{marginLeft:"10px", width:"100%", display:"flex", justifyContent:"space-between", flexDirection:"column" }} className="thumb-detail__content">
-                                                        <label style={{fontSize:"12px", fontWeight:"bold"}} >{ `${v.program_title} : ${v.title}` }</label>
+                                                        <label style={{fontSize:"12px", fontWeight:"bold"}} >{ `${v.program_title} :` } <span dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(v.title, '...', 100)) }}></span></label>
                                                         <div style={{display:"flex", justifyContent:"start"}} className="action-button__content ">
                                                             <ButtonPrimary icon={ <PlaylistAddIcon/> } />
                                                             <ButtonPrimary icon={ <ShareIcon/> } />
