@@ -16,7 +16,6 @@ import '../../../assets/scss/components/search-results.scss';
 
 const  AllResult = ({handleTab, onClick}) => {
     const { search_all } = useSelector(state => state.searches)
-    console.log(`ini adalah search all`, search_all )
 
     const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
         if (status)  return path + resolution + imgSrc;

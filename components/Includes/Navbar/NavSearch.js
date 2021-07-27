@@ -4,7 +4,6 @@ import BottomScrollListener from 'react-bottom-scroll-listener';
 import { useRouter } from 'next/router'
 import searchActions from '../../../redux/actions/searchActions';
 import pageActions from '../../../redux/actions/pageActions';
-
 import '../../../assets/scss/components/navbar-search.scss';
 
 import { Navbar, NavbarBrand, Input } from 'reactstrap';
@@ -36,7 +35,7 @@ const NavbarSearch = ({...props}) => {
             //     .then(responses => props.unsetPageLoader())
             //     .catch(error => props.unsetPageLoader());
         // }
-
+        props.setPageLoader();
         props.getPopularSearch()
             .then(responses => props.unsetPageLoader())
             .catch(error => props.unsetPageLoader());
@@ -44,8 +43,6 @@ const NavbarSearch = ({...props}) => {
         props.getSearchHistory()
             .then(responses => props.unsetPageLoader())
             .catch(error => props.unsetPageLoader());
-
-        // inputSearch.current.focus();
     }, [])
 
 
@@ -54,7 +51,7 @@ const NavbarSearch = ({...props}) => {
             // props.getSearchSuggestion(state.q, 1, state.length)
             //     .then(responses => props.unsetPageLoader())
             //     .catch(error => props.unsetPageLoader());
-            props.setPageLoader();
+            // props.setPageLoader();
             props.searchAllCategory(state.q, 1, state.length)
                 .then(responses => props.unsetPageLoader())
                 .catch(error => props.unsetPageLoader());
@@ -79,7 +76,7 @@ const NavbarSearch = ({...props}) => {
         setState({ ...state, q: '' });
     }
 
-    const _search = (value) => router.replace(`/explores/search?q=${value}`, `/explores/keyword?q=${value}`, { shallow: true })
+    const _search = (value) =>  router.replace(`/explores/search?q=${value}`, `/explores/keyword?q=${value}`, { shallow: true })
     const _delayedQuery = useCallback(_debounce(q => _search(q), 1000), [])
 
     return(
