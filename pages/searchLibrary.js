@@ -1,9 +1,9 @@
 import React from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
-import Link from 'next/link';
-import Img from 'react-image';
+// import Link from 'next/link';
+// import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import fetch from 'isomorphic-unfetch';
@@ -15,13 +15,13 @@ import searchActions from '../redux/actions/searchActions';
 
 import Layout from '../components/Layouts/Default_v2';
 import NavSearch from '../components/Includes/Navbar/NavSearch';
-import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
+// import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
 import SearchResults from './search/result';
 import PopularSearch from './search/popular';
 import HistorySearch from './search/history';
-import SuggestionSearch from './search/suggestion'
+// import SuggestionSearch from './search/suggestion'
 
-import { Row, Col } from 'reactstrap';
+// import { Row, Col } from 'reactstrap';
 
 import '../assets/scss/components/explore.scss';
 
@@ -276,8 +276,6 @@ class Explores extends React.Component {
 
 	render() {
 		const metadata = this.getMetadata();
-		console.log(`hahah`, this.props.searches.search_all)
-
 		return (
 			<Layout title={metadata.title}>
 				<Head>
@@ -315,7 +313,6 @@ class Explores extends React.Component {
 							<HistorySearch />
 						</>	
 					}
-          			{/* <SearchResults resolution={this.state.resolution}/> */}
 				</div>
 			</Layout>
 		);

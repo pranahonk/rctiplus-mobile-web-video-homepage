@@ -214,6 +214,7 @@ const getSearchAll = (q, page = 1, length = 10) => {
                     data: response.data.data, 
                     meta: response.data.meta, 
                     status: response.data.status,
+                    query: q,
                     all: response.data.data
                 });
                 resolve(response);
@@ -278,22 +279,10 @@ const getSearchSuggestion = (q, page = 1, length = 10) => {
 
 const resetSearchSuggestion = () => {
     return dispatch => new Promise(async (resolve, reject) => {
-        // try {
-        //     const response = await axios.get(`/v2/search/suggestion?q=${q}`);
-        //     if (response.data.status.code === 0) {
-                dispatch({
-                    type: 'RESET_SEARCH_SUGGESTION',
-                    suggestion: []
-                });
-                // resolve(response);
-        //     }
-        //     else {
-        //         reject(response);
-        //     }
-        // }
-        // catch (error) {
-        //     reject(error);
-        // }
+        dispatch({
+            type: 'RESET_SEARCH_SUGGESTION',
+            suggestion: []
+        });
     });
 };
 
@@ -321,6 +310,15 @@ const getSearchHistory = () => {
     });
 };
 
+const handleKeyword = (q) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        dispatch({
+            type: 'SET_KEYWORD',
+            data: q, 
+        });
+    });
+};
+
 export default {
     search,
     searchByGenre,
@@ -333,6 +331,7 @@ export default {
     getPopularSearch,
     getSearchHistory,
     getSearchSuggestion,
-    resetSearchSuggestion
+    resetSearchSuggestion,
+    handleKeyword
     // setShowMoreAllowed
 };

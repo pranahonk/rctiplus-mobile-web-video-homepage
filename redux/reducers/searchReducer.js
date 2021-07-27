@@ -43,7 +43,7 @@ export default (state = initialState, action) => {
         case 'SET_SEARCH_STATUS':
             return Object.assign({}, state, { search_status: false });
         case 'SEARCH_ALL':
-            return Object.assign({}, state, { search_all: action.all });
+            return Object.assign({}, state, { search_all: action.all, query: action.query });
         case 'GET_SEARCH_POPULAR':
             return Object.assign({}, state, { search_popular: action.popular });
         case 'GET_SEARCH_HISTORY':
