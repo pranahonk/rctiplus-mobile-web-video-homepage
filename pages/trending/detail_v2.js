@@ -774,17 +774,6 @@ class Detail extends React.Component {
                                         {this.renderActionButton()}
                                     </div>
                                 </div>
-                                <div className="ads-banner__detail_news">
-                                  <AdsBanner
-                                    partner={cdata.source}
-                                    path={getPlatformGpt(this.platform)}
-                                    size={[300, 250]}
-                                    idGpt={process.env.GPT_ID_DETAIL}
-                                    setTarget={true}
-                                    platform={this.platform}
-                                  />
-                                  {/* <span>partner: { cdata.source }</span> */}
-                                </div>
                                 { cdata.exclusive === 'yes' ? (<div />
                                 ) : (
                                     <div className="ads-banner__detail_news">
