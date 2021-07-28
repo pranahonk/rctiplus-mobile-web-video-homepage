@@ -198,7 +198,7 @@ class Index extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
   }
   componentDidUpdate(prevProps) {
-    this.onVideoListChanged(this.props.data["program-episode"])
+    // this.onVideoListChanged(this.props.data["program-episode"])
     
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
       if (this.props.router.query.content_id) {
