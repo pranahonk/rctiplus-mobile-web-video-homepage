@@ -500,10 +500,9 @@ class Stories extends React.Component {
                 return program.swipe_value
             case 'link':
                 if(program.swipe_value) {
-                    return `${program.share_link}`;
+                    return `${program.swipe_value}`;
                 }
                 break;
-            case 'program':
             case 'extra':
             case 'clip':
             case 'episode':
