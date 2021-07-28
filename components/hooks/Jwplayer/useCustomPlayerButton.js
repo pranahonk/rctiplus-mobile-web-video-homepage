@@ -16,14 +16,15 @@ export default function useCustomPlayerButton (props) {
   ])
 
   const setUpCustomBtns = ({ type }) => {
-    
     if (!props.player) return
     const playerContainer = props.player.getContainer()
+    const overlayButtonContainer = playerContainer.querySelector(".jw-display.jw-reset")
+
+    if (!overlayButtonContainer) return
 
     // Set all display controls to be visible and put buttom control to the front
     playerContainer.querySelector(".jw-display.jw-reset").style.display = "flex"
-    playerContainer.querySelector(".jw-controlbar.jw-reset").style.zIndex = "300"
-    
+   
     // Setup the margin of each controls to zero to prevent overlapping per element
     Array.from(playerContainer.querySelectorAll(".jw-display-icon-container.jw-reset"))
       .forEach(iconContainer => {
@@ -102,7 +103,7 @@ export default function useCustomPlayerButton (props) {
         .querySelector(`.jw-display-icon-container.jw-display-${className}.jw-reset`)
 
       if (!parentIconsContainer) return
-      hydrate(<>{contents.map(content => (content))}</>, parentIconsContainer)
+      hydrate(<>{ contents.map(content => (content)) }</>, parentIconsContainer)
     })
   }
 

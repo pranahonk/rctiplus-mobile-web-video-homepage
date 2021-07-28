@@ -279,6 +279,8 @@ class Index extends React.Component {
     if (!programTypeDetail) return
 
     const { seasonSelected } = this.props.data
+    
+    if (!programTypeDetail[`season-${seasonSelected}`]) return
     if (query.content_type === "episode") programTypeDetail = programTypeDetail[`season-${seasonSelected}`]
 
     const { data, meta } = programTypeDetail
@@ -862,6 +864,7 @@ class Index extends React.Component {
     let queueingContents = programTypeDetail.data
     let videoIndexing = this.state.videoIndexing
 
+    if (!programTypeDetail[`season-${seasonSelected}`]) return
     if (content_type === "episode") queueingContents = programTypeDetail[`season-${seasonSelected}`].data
 
     queueingContents.forEach((content, i) => {
