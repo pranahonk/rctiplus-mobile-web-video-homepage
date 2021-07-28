@@ -121,7 +121,7 @@ const JwPlayer = (props) => {
         const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
 
-        if (type.includes("live")) {
+        if (props.type.includes("live")) {
           // check if gpt data exist
           if ((data && data.gpt && data.gpt.path != null) && (data && data.gpt && data.gpt.path != undefined)) {
             // check if ads_wrapper element not exist
