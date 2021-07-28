@@ -7,6 +7,7 @@ import { onTrackingClick } from '../program-detail/programDetail';
 import { isIOS } from 'react-device-detect';
 import Wrench from '../Common/Wrench';
 import '../../../assets/scss/jwplayer.scss';
+import useCustomPlayerButton from "../../hooks/Jwplayer/useCustomPlayerButton"
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -16,13 +17,13 @@ const pubAdsRefreshInterval = {
 let refreshCounter = 0;
 
 const JwPlayer = (props) => {
+  // Local States
   const [player, setPlayer] = useState(null);
   const [duration, setDuration] = useState(0);
   const [isCustomSetup, setIsCustomSetup] = useState(0);
   const [isConviva, setIsConviva] = useState(0);
   const [geoblock, setGeoblock] = useState();
   const [random1, setrandom1] = useState(0);
-  const [customBtnReady, setCustomBtnReady] = useState(false)
   const [status, setStatus] = useState({
     isPlayer: true,
     isError01: false,
@@ -37,16 +38,20 @@ const JwPlayer = (props) => {
   const [adsStatus, setAdStatus] = useState('none');
   const [playerFullscreen, setPlayerFullscreen] = useState(false);
   const [prevWidth, setPrevWidth] = useState(0);
+
+  // Custom Hooks
+  const { setIsPlayerReady } = useCustomPlayerButton({ ...props, player })
+
+  // Supporting Variables
   const playerRef = useRef();
   const val = useRef();
-  const fastForwardContainer = useRef()
-  const fastBackwardContainer = useRef()
   const idPlayer = 'jwplayer-rctiplus';
   const options = {
     autostart: true,
     mute: false,
     floating: false,
-    file: props.data && props.data.url,
+    // file: props.data && props.data.url,
+    file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     primary: 'html5',
     width: '100%',
     hlsjsdefault: true,
@@ -135,102 +140,10 @@ const JwPlayer = (props) => {
       setIsConviva(Math.random());
       setIsCustomSetup(Math.random());
       player.setup(options);
+
+      setIsPlayerReady(false)
     }
   }, [props.data && props.data.url, props.data && props.data.vmap]);
-
-  const generateForwardBackwardBtns = ({ type, data }) => {
-    const playerContainer = player.getContainer()
-    const forwardContainer = playerContainer.querySelector('.jw-icon-next')
-    const backwardContainer = playerContainer.querySelector('.jw-icon-rewind')
-
-    // Set all display controls to be visible and put buttom control to the front
-    playerContainer.querySelector(".jw-display.jw-reset").style.display = "flex"
-    playerContainer.querySelector(".jw-controlbar.jw-reset").style.zIndex = "300"
-
-    // Setup the margin of each controls to zero to prevent overlapping per element
-    Array.from(playerContainer.querySelectorAll(".jw-display-icon-container.jw-reset"))
-      .forEach(iconContainer => {
-        iconContainer.style.margin = 0
-        iconContainer.style.display = "block"
-      })
-    
-    if (type.includes("live")) {
-      // Undisplay and empty the container
-      forwardContainer.style.display = "none"
-      backwardContainer.style.display = "none"
-      forwardContainer.innerHTML = ""
-      backwardContainer.innerHTML = ""
-
-      // check if gpt data exist
-      if ((data && data.gpt && data.gpt.path != null) && (data && data.gpt && data.gpt.path != undefined)) {
-        // check if ads_wrapper element not exist
-        if (document.querySelector('.ads_wrapper') == undefined) {
-          const playerContainer = player.getContainer();
-
-          const adsOverlayElement = document.createElement('div');
-          adsOverlayElement.classList.add('ads_wrapper');
-          adsOverlayElement.style.display = 'none';
-
-          const adsOverlayBox = document.createElement('div');
-          adsOverlayBox.classList.add('adsStyling');
-
-          const adsOverlayCloseButton = document.createElement('div');
-          adsOverlayCloseButton.classList.add('close_button');
-          adsOverlayCloseButton.innerHTML = closeIcon;
-
-          const adsOverlayContainer = document.createElement('div');
-          const divGPTString = (data && data.gpt && data.gpt.div_gpt != null) && (data && data.gpt && data.gpt.div_gpt != undefined) ? data.gpt.div_gpt : type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-          adsOverlayContainer.classList.add('adsContainer');
-          adsOverlayContainer.id = divGPTString;
-          adsOverlayContainer.innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${divGPTString}'); });</script>`;
-
-          playerContainer.appendChild(adsOverlayElement);
-          adsOverlayElement.appendChild(adsOverlayBox);
-          adsOverlayBox.appendChild(adsOverlayCloseButton);
-          adsOverlayBox.appendChild(adsOverlayContainer);
-
-          adsOverlayCloseButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            pubAdsRefreshInterval.timeStart = 0;
-            setAdStatus('close');
-          });
-        }
-      }
-    } else {
-      Array.from([
-        { key: "forward", container: forwardContainer },
-        { key: "backward", container: backwardContainer }
-      ]).forEach(({ key, container }) => {
-        container.innerHTML = `<img src=/static/player_icons/player_${key}.svg alt="${key}" />`
-        container.addEventListener("click", () => {
-          if (props.actionBtn) props.actionBtn(key)
-        })
-      })
-
-      // send signal that custom buttons had already been set up
-      // this signal will be used on another process
-      setCustomBtnReady(true)
-    }
-
-    return playerContainer
-  }
-
-  useEffect(() => {
-    if (!customBtnReady || !props.videoIndexing || !player) return
-    
-    // process right after custom button had been set up
-    // display / undisplay button based from active video index
-    const { prev, current, next } = props.videoIndexing
-    const playerContainer = player.getContainer()
-    const forwardContainer = playerContainer.querySelector('.jw-icon-next')
-    const backwardContainer = playerContainer.querySelector('.jw-icon-rewind')
-
-    if (current === prev) backwardContainer.style.visibility = "hidden"
-    if (current === next) forwardContainer.style.visibility = "hidden"
-
-  }, [props.videoIndexing && props.videoIndexing.current, customBtnReady])
 
   // Costum Setup
   useEffect(() => {
@@ -241,10 +154,49 @@ const JwPlayer = (props) => {
           setPlayerFullscreen(true);
         } */
         setPlayerFullscreen(props.isFullscreen);
+        setIsPlayerReady(true)
 
-        const playerContainer = generateForwardBackwardBtns(props)
+        const playerContainer = player.getContainer()
         const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
+
+        if (type.includes("live")) {
+          // check if gpt data exist
+          if ((data && data.gpt && data.gpt.path != null) && (data && data.gpt && data.gpt.path != undefined)) {
+            // check if ads_wrapper element not exist
+            if (document.querySelector('.ads_wrapper') == undefined) {
+              const adsOverlayElement = document.createElement('div');
+              adsOverlayElement.classList.add('ads_wrapper');
+              adsOverlayElement.style.display = 'none';
+    
+              const adsOverlayBox = document.createElement('div');
+              adsOverlayBox.classList.add('adsStyling');
+    
+              const adsOverlayCloseButton = document.createElement('div');
+              adsOverlayCloseButton.classList.add('close_button');
+              adsOverlayCloseButton.innerHTML = closeIcon;
+    
+              const adsOverlayContainer = document.createElement('div');
+              const divGPTString = (data && data.gpt && data.gpt.div_gpt != null) && (data && data.gpt && data.gpt.div_gpt != undefined) ? data.gpt.div_gpt : type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+              adsOverlayContainer.classList.add('adsContainer');
+              adsOverlayContainer.id = divGPTString;
+              adsOverlayContainer.innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${divGPTString}'); });</script>`;
+    
+              playerContainer.appendChild(adsOverlayElement);
+              adsOverlayElement.appendChild(adsOverlayBox);
+              adsOverlayBox.appendChild(adsOverlayCloseButton);
+              adsOverlayBox.appendChild(adsOverlayContainer);
+    
+              adsOverlayCloseButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+    
+                pubAdsRefreshInterval.timeStart = 0;
+                setAdStatus('close');
+              });
+            }
+          }
+        }
 
         if(isForward) {
           const forwardElement = document.createElement('div');
@@ -780,29 +732,6 @@ const JwPlayer = (props) => {
     }
   }, [playerFullscreen]);
 
-  const fastForwardBackwardActionBtns = ({ type }) => {
-    if (type.includes("live")) return null
-
-    return (
-      <>
-        <figure
-          ref={fastForwardContainer}
-          className="jwplayer-action jwplayer-action__fastforward"
-          onClick={() => fastForwardBackwardClicked("forward")}>
-          <img src="/static/player_icons/player_fastforward.svg" alt="fast_fw"/>
-          <small style={{fontSize: "8pt"}}>10 seconds</small>
-        </figure>
-        <figure
-          ref={fastBackwardContainer}
-          className="jwplayer-action jwplayer-action__fastbackward"
-          onClick={() => fastForwardBackwardClicked("backward")}>
-          <img src="/static/player_icons/player_fastbackward.svg" alt="fast_bw"/>
-          <small style={{fontSize: "8pt"}}>10 seconds</small>
-        </figure>
-      </>
-    )
-  }
-
   const getPlayer = (error1, error2) => {
     if (error1) {
       console.log('GEO')
@@ -815,33 +744,8 @@ const JwPlayer = (props) => {
     return (
       <>
         <div id="jwplayer-rctiplus" />
-        {fastForwardBackwardActionBtns(props)}
       </>
     )
-  }
-
-  const fastForwardBackwardClicked = (direction) => {
-    if (!player || duration === 0) return
-
-    const maxDuration = player.getDuration()
-    let position = 0
-    let refContainer = null
-
-    switch(direction) {
-      case "forward":
-        position = duration + 10 > maxDuration ? maxDuration : duration + 10
-        refContainer = fastForwardContainer
-        break
-      case "backward":
-        position = duration - 10 < 0 ? 0 : duration - 10
-        refContainer = fastBackwardContainer
-        break
-    }
-    player.seek(position)
-    refContainer.current.classList.remove("start")
-    setTimeout(() => {
-      refContainer.current.classList.add("start")
-    }, 10)
   }
 
   const tempId = (value) => {

@@ -94,7 +94,7 @@ export const PanelEpisode = forwardRef((props, ref) => {
           </div>
           { props.data.data.map((item,i) => {
             return (
-              <div key={i}>
+              <div key={i} style={{padding: "1rem"}}>
                 <div className="panel-content">
                   <div className="thumb-img__content" style={{ position: "relative"}}>
                     <Link
@@ -158,7 +158,7 @@ export const PanelExtra = (props) => {
       <div className="extra-program">
         { props.data.data.map((item,i) => {
           return (
-            <div key={i}>
+            <div key={i} style={{padding: "1rem"}}>
               <div className="panel-content">
                 <div className="thumb-img__content" style={{ position: "relative"}}>
                   <Link
@@ -222,7 +222,7 @@ export const PanelClip = (props) => {
       <div className="clip-program">
         { props.data.data.map((item,i) => {
           return (
-            <div key={i}>
+            <div key={i} style={{padding: "1rem"}}>
               <div className="panel-content">
                 <div className="thumb-img__content" style={{ position: "relative"}}>
                   <Link
@@ -269,7 +269,7 @@ export const PanelPhoto = (props) => {
   return (
     <TabPane tabId="Photo">
       <div className="photo-program">
-        <div style={{ padding: '10px 0' }}>
+        <div style={{ padding: '1rem' }}>
           <div className="panel-content tab__photo">
           { props.data.data.map((item,i) => {
           return (
