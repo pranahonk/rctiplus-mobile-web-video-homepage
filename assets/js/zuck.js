@@ -397,7 +397,7 @@ module.exports = (window => {
 			skin: 'snapgram',
 			avatars: true,
 			stories: [],
-			backButton: true,
+			backButton: false,
 			backNative: false,
 			paginationArrows: false,
 			previousTap: true,
