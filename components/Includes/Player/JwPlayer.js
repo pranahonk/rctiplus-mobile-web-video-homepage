@@ -77,18 +77,14 @@ const JwPlayer = (props) => {
   // Please mind the sequence of the line of the logic!!
   const variableToBeListened = [
     player,
-    duration,
     props.scrolling,
     props.isStopped,
     props.isPaused,
-    props.seekPosition
   ]
   useEffect(() => {
     if (!player) return
 
     handleMiniplayerSizeAndControl(props.scrolling && !props.isStopped)
-
-    if (props.seekPosition) player.seek(props.seekPosition)
     
     if (props.isPaused) player.pause()
     else player.play()
@@ -101,11 +97,13 @@ const JwPlayer = (props) => {
     const variables = {
       width: miniPlayerActive ? "30%" : options.width,
       height: miniPlayerActive ? "80" : options.height,
-      showCtrl: !miniPlayerActive,
+      showCtrl: miniPlayerActive ? "none" : "",
       showAdsBtns: miniPlayerActive ? "none" : ""
     }
-
-    player.setControls(variables.showCtrl)
+    const controlContainer = player.getContainer().querySelector(".jw-controls.jw-reset")
+    if (controlContainer) controlContainer.style.display = variables.showCtrl
+    
+    // player.setControls(variables.showCtrl)
     player.resize(variables.width, variables.height)
 
     const [adsOverlayScreen] = document.querySelectorAll("#jwplayer-rctiplus_ad > div iframe")

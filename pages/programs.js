@@ -908,6 +908,8 @@ class Index extends React.Component {
             programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
             sectionPage: 'VOD',
           }}
+          scrolling={this.state.scrolling}
+          isStopped={this.state.isStopped}
           actionBtn={(e) => this.handleActionBtn(e)}
           videoIndexing={this.state.videoIndexing}
         />
