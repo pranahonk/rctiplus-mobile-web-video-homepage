@@ -19,17 +19,22 @@ export default function useCustomPlayerButton (props) {
     if (!props.player) return
     const playerContainer = props.player.getContainer()
     const overlayButtonContainer = playerContainer.querySelector(".jw-display.jw-reset")
+    const customBtnSlots = playerContainer.querySelector(".jw-display-controls.jw-reset")
 
-    if (!overlayButtonContainer) return
+    if (!overlayButtonContainer || !customBtnSlots) return
 
     // Set all display controls to be visible and put buttom control to the front
-    playerContainer.querySelector(".jw-display.jw-reset").style.display = "flex"
+    overlayButtonContainer.style.display = "flex"
+    customBtnSlots.style.display = "flex"
+    customBtnSlots.style.justifyContent = "center"
    
     // Setup the margin of each controls to zero to prevent overlapping per element
     Array.from(playerContainer.querySelectorAll(".jw-display-icon-container.jw-reset"))
       .forEach(iconContainer => {
         iconContainer.style.margin = 0
         iconContainer.style.display = "flex"
+        iconContainer.style.justifyContent = "space-between"
+        iconContainer.style.alignItems = "center"
       })
 
     injectCustomBtns([
@@ -58,7 +63,7 @@ export default function useCustomPlayerButton (props) {
       <figure
         key={`${index}-skipbtn`}
         ref={skipPosIconContainer}
-        className="jwplayer-action jw-icon"
+        className={`jwplayer-action jw-icon ${direction}`}
         role="button"
         onClick={() => fastForwardBackwardClicked(direction)}>
         <img
