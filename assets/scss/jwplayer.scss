@@ -179,9 +179,20 @@
 .jwplayer-action {
   background: #0000006e !important;
   animation: none;
-  border-radius: 50%;
+  border-radius: 100%;
   margin: 0;
+  height: 300px !important;
+  width: 180px !important;
+  padding: 1rem;
   opacity: 0;
+  
+  &.forward {
+    justify-content: flex-start !important;
+  }
+  
+  &.backward {
+    justify-content: flex-end !important;
+  }
 
   &.fading {
     animation: opacity 2s;

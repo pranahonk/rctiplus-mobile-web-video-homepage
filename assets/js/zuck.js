@@ -106,10 +106,10 @@ module.exports = (window => {
 		const parsingMessage = (event) => {
 			if (!isJson(event.data)) return;
 			const data = JSON.parse(event.data);
-			const storyViewer = query('#zuck-modal .viewing')
-			const currentViewingStory = zuck.data[storyViewer.getAttribute("data-story-id")]
-
+			
 			if (data?.state) {
+				const storyViewer = query('#zuck-modal .viewing')
+				const currentViewingStory = zuck.data[storyViewer.getAttribute("data-story-id")]
 				switch(data.state) {
 					case 'init':
 						{
