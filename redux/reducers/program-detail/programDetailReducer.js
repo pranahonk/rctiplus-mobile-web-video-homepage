@@ -127,18 +127,25 @@ export default (state = initialState, action) => {
         [action.filter]: null,
         loading: false,
       };
-    case FETCH_EXTRA_SUCCESS:
-      const initPageExtra = action && action.payload.meta.pagination.current_page;
-      if (initPageExtra > 1) {
-        const initStateExtra = state[action.filter].data;
-        const newStateExtra = action.payload.data;
-        const dataExtra = [...initStateExtra, ...newStateExtra];
+    case FETCH_EXTRA_SUCCESS: {
+      const page = action && action.payload.meta.pagination.current_page;
+      if (page > 1) {
+        const currentEntries = state[action.filter].data
+
+        // Find and overwrite intermittent data duplicates
+        const uniqueEntries = new Map()
+        Array.from([ ...currentEntries, ...action.payload.data ])
+          .forEach(entry => uniqueEntries.set(entry.id, entry))
+
         return {
           ...state,
-          [action.filter]: {...action.payload, data: dataExtra},
           loading: false,
           loading_extra: false,
           loading_more: false,
+          [action.filter]: { 
+            ...action.payload,
+            data: [ ...uniqueEntries.values() ]
+          },
         };
       }
       return {
@@ -146,19 +153,27 @@ export default (state = initialState, action) => {
         [action.filter]: action.payload,
         loading: false,
         loading_extra: false,
-      };
-    case FETCH_CLIP_SUCCESS:
-      const initPageClip = action && action.payload.meta.pagination.current_page;
-      if (initPageClip > 1) {
-        const initStateClip = state[action.filter].data;
-        const newStateClip = action.payload.data;
-        const dataClip = [...initStateClip, ...newStateClip];
+      }
+    }
+    case FETCH_CLIP_SUCCESS: {
+      const page = action && action.payload.meta.pagination.current_page;
+      if (page > 1) {
+        const currentEntries = state[action.filter].data;
+
+        // Find and overwrite intermittent data duplicates
+        const uniqueEntries = new Map()
+        Array.from([ ...currentEntries, ...action.payload.data])
+          .forEach(entry => uniqueEntries.set(entry.id, entry))
+
         return {
           ...state,
-          [action.filter]: {...action.payload, data: dataClip},
           loading: false,
           loading_clip: false,
           loading_more: false,
+          [action.filter]: {
+            ...action.payload,
+            data: [ ...uniqueEntries.values() ]
+          },
         };
       }
       return {
@@ -167,6 +182,7 @@ export default (state = initialState, action) => {
         loading: false,
         loading_clip: false,
       };
+    }
     case FETCH_PHOTO_SUCCESS:
       const initPagePhoto = action && action.payload.meta.pagination.current_page;
       if (initPagePhoto > 1) {
@@ -205,23 +221,27 @@ export default (state = initialState, action) => {
         [action.filter]: action.payload,
         loading: false,
       };
-    case FETCH_EPISODE_SUCCESS:
-      const initPage = action && action.payload.meta.pagination.current_page;
-      if (initPage > 1) {
-        const initState = state &&
-                          state['program-episode'] &&
-                          state['program-episode']['season-' + action.filter[1]];
-                          state['program-episode']['season-' + action.filter[1]] .data;
-        let clone = {};
-        clone = {...initState};
-        clone = clone.data;
-        const newState = action.payload.data;
-        const data = [...clone, ...newState];
+    case FETCH_EPISODE_SUCCESS: {
+      const page = action && action.payload.meta.pagination.current_page;
+      if (page > 1) {
+        const currentEntries = state['program-episode'][`season-${action.filter[1]}`]
+
+        // Find and overwrite intermittent data duplicates
+        const uniqueEntries = new Map()
+        Array.from([ ...currentEntries.data, ...action.payload.data ])
+          .forEach(entry => uniqueEntries.set(entry.id, entry))
+
         return {
           ...state,
-          [action.filter[0]]: {...state[action.filter[0]], ['season-' + action.filter[1]] : {...action.payload, data}},
           loading: false,
           loading_more: false,
+          [action.filter[0]]: { 
+            ...state[action.filter[0]],
+            ['season-' + action.filter[1]]: { 
+              ...action.payload,
+              data: [ ...uniqueEntries.values() ]
+            }
+          },
         };
       }
       return {
@@ -230,7 +250,8 @@ export default (state = initialState, action) => {
         selectedSeason: 'season-' + action.filter[1],
         loading: false,
         loading_episode: false,
-      };
+      }
+    }
     case FETCH_PLAYER_URL_SUCCESS:
       return {
         ...state,
