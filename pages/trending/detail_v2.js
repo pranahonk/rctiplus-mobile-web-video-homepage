@@ -156,6 +156,8 @@ class Detail extends React.Component {
         this.accessToken = null;
         this.platform = null;
         this.pushNotif = null;
+        this.idfa = null;
+        this.core_token = null;
         const segments = this.props.router.asPath.split(/\?/);
         const segments2 = this.props.router.asPath.split(/\#/);
         if (segments.length > 1) {
@@ -167,6 +169,13 @@ class Detail extends React.Component {
 
             if (q.platform) {
                 this.platform = q.platform;
+            }
+            if(q.idfa){
+                this.idfa = q.idfa;
+            }
+
+            if(q.core_token){
+                this.core_token = q.core_token;
             }
             if(q.push_notif === 'true') {
                 this.pushNotif = '/news';
@@ -608,8 +617,8 @@ class Detail extends React.Component {
                 }} data={cdata} disableScrollListener />) : (
                     <NavBack
                         pushNotif={this.pushNotif}
-                        params={`?token=${this.accessToken}&platform=${this.platform}`}
-                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`}
+                        params={`?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}`}
+                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}`}
                         data={cdata}
                         titleNavbar={cdata?.source}/>
                 )}
@@ -764,17 +773,6 @@ class Detail extends React.Component {
                                     <div style={{display: !this.state.sticky_share_shown ? 'block' : 'none', transition: 'all 0.3s ease-in-out'}}>
                                         {this.renderActionButton()}
                                     </div>
-                                </div>
-                                <div className="ads-banner__detail_news">
-                                  <AdsBanner
-                                    partner={cdata.source}
-                                    path={getPlatformGpt(this.platform)}
-                                    size={[300, 250]}
-                                    idGpt={process.env.GPT_ID_DETAIL}
-                                    setTarget={true}
-                                    platform={this.platform}
-                                  />
-                                  {/* <span>partner: { cdata.source }</span> */}
                                 </div>
                                 { cdata.exclusive === 'yes' ? (<div />
                                 ) : (

@@ -235,7 +235,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 	componentDidMount() {
-		if(this.props.router.asPath.match('/live-event/')) this.loadChatMessages(this.props.router.query.id);
+		if(this.props.router.asPath.match('/live-event/') && this.props?.selected_event?.data?.chat !== "inactive") this.loadChatMessages(this.props.router.query.id);
 		initGA();
 		this.getAvailable();
 		if (this.props.router.asPath.match('/missed-event/')) {
@@ -1452,13 +1452,15 @@ class LiveEvent extends React.Component {
 					{ this.props.router.asPath.match('/missed-event/') || this.state.selected_tab === 'missed-event'  ? (<div />) :
 					 (<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
 						{height: `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
-						: null}>
+							: null}>
+							{selected_event?.data?.chat !== "inactive" && (
 						<div className="btn-chat">
 							<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
 								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
 							</Button>
 							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
-						</div>
+						</div>)}
+
 						<div className="box-chat" id="chat-input">
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
 								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>

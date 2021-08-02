@@ -183,8 +183,8 @@ class Trending_v2 extends React.Component {
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
-                this.accessToken = q.token;
-                setAccessToken(q.token);
+                // this.accessToken = q.token;
+                // setAccessToken(q.token);
             }
             if(q.core_token){
               this.core_token = q.core_token;
