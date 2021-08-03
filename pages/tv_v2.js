@@ -128,7 +128,7 @@ class TV_V2 extends React.Component {
                   <WeekList />
                 </div>
               </div>
-              <div ref={this.listRef} style={{height: `calc(100vh - ${this.state.heightList + 70}px)`, width: "100%", overflow: "scroll"}}>
+              <div ref={this.listRef} style={{height: `calc(100vh - ${this.state.heightList + 70}px)`, width: "100%", overflow: "scroll"}} id="scroll-container">
                 <ListItem />
               </div>
               <div className="chat-container" onClick={() => this.handleChat(this)}>

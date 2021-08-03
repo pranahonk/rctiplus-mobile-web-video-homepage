@@ -1,12 +1,11 @@
 import React from "react";
 
-function CirclePlayIcon({circleColor, color}) {
+function CirclePlayIcon({circleColor, color, style}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="28"
-      height="28"
-      viewBox="0 0 28 28"
+      style={style || {width: 28}}
+      viewBox={`0 0 28 28`}
     >
       <g fill="none" fillRule="evenodd">
         <circle cx="14" cy="14" r="14" fill={circleColor || "#1A1A1A"}></circle>

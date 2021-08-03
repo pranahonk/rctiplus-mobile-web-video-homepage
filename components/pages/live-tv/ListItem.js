@@ -3,6 +3,12 @@ import { useRouter } from "next/router"
 import { useDispatch, useSelector } from "react-redux"
 import { CirclePauseIcon, CircleTimeIcon, CirclePlayIcon, ShareIcon } from "../../IconComponents"
 import { TvContext } from "../../../utils/contexts/tvContext"
+import {
+  Events,
+  scroller,
+} from 'react-scroll';
+
+
 
 
 import cookies from "js-cookie"
@@ -45,6 +51,43 @@ export default function ListItem({activeItem, activePlayCatchup, activePlayTv, a
         setList(filterList?.[0])
       }
   }, [tab, data_epg_v2])
+
+  useEffect(() => {
+    if (list) {
+      Events.scrollEvent.register('begin', function() {
+      console.log('begin', arguments);
+        });
+
+
+        const goToContainer = new Promise((resolve, reject) => {
+          Events.scrollEvent.register('end', () => {
+            resolve();
+            Events.scrollEvent.remove('end');
+          });
+
+          scroller.scrollTo('scroll-container', {
+            duration: 500,
+            delay: 0,
+            smooth: 'easeInOutQuart',
+          });
+        });
+
+        goToContainer.then(() =>
+          scroller.scrollTo('active-scroll', {
+            duration: 500,
+            delay: 0,
+            smooth: 'easeInOutQuart',
+            containerId: 'scroll-container',
+            // offset: 50,
+          })
+        );
+    }
+
+    return () => {
+      Events.scrollEvent.remove('begin');
+      Events.scrollEvent.remove('end');
+    }
+  }, [list])
 
 
 const Description = ({item, selected, onClick}) => {
@@ -95,7 +138,7 @@ const Description = ({item, selected, onClick}) => {
         if(activeSelected) {
           icon = <CirclePauseIcon circleColor="#FA262F" color="#ffffff"/>
         } else {
-          icon =  <CirclePlayIcon circleColor="#FA262F" color="#ffffff"/>
+          icon = <CirclePlayIcon circleColor="#FA262F" color="#ffffff"  />
         }
         activeItem = false
         activePlay = true
@@ -124,8 +167,9 @@ const Description = ({item, selected, onClick}) => {
       activeItem = activeSelected
     }
     // <CirclePlayIcon />}\
+
     return(
-      <div className="item-tv">
+      <div className={`item-tv`} id={item.live ? "active-scroll" : "tv-id"}>
         <div className="item-left-section">
           <IconStatus item={item}>
             {icon}

@@ -39,7 +39,7 @@
           /* !importanté */
           border-radius: inherit;
           /* !importanté */
-          background: linear-gradient(to bottom, #e73752, #ff9c9c);
+          background: linear-gradient(to bottom, #29baec, #9dddf3);
         }
       }
       &:last-child {
@@ -79,19 +79,29 @@
       color: #a8a8a8;
       padding-bottom: 5px;
       .day-item_today {
-        font-size: 0.9em;
-        padding: .1em 1em;
+        display: flex;
+        align-items: center;
+        font-size: 8px;
+        padding: 5px 1em;
         margin-bottom: .4em;
         border-radius: 9999px;
         background: #3a3a3a;
         color: #000;
       }
       .day-item_text {
-
+        font-size: 10px;
+        &.active {
+          font-weight: bold;
+          color: #ffffff;
+        }
       }
       .day-item_date {
         padding: 0.1em;
-        font-size: 1.5em;
+        font-size: 14px;
+        &.active {
+          font-weight: bold;
+          color: #ffffff;
+        }
       }
       .day-item_line {
         position: absolute;
