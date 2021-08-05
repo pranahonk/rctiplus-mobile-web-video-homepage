@@ -24,6 +24,8 @@ class HeadlineCarousel extends React.Component {
         this.accessToken = null;
         this.platform = null;
         this.idfa=null;
+        this.core_token = null;
+        this.device_id = null;
         const segments = this.props.router.asPath.split(/\?/);
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
@@ -38,6 +40,9 @@ class HeadlineCarousel extends React.Component {
 
             if (q.platform) {
                 this.platform = q.platform;
+            }
+            if(q.core_token){
+                this.core_token = q.core_token;
             }
         }
         else {
@@ -60,7 +65,7 @@ class HeadlineCarousel extends React.Component {
           category = urlRegex(article.subcategory_name)
         }
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}` : ''}`);
+        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&core_token=${this.core_token}&idfa=${this.idfa}` : ''}`);
     }
 
     render() {

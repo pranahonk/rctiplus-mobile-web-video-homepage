@@ -8,6 +8,19 @@ h3, h4, p {
   height: 100%;
   background-color: #000000;
   transition: max-height .4s ease;
+
+  .title-player{
+    // width: 320px;
+    // height: 17px;
+    font-size: 13px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.31;
+    letter-spacing: normal;
+    color: #ffffff;
+    padding: 11px 15px;
+  }
 }
 .program-detail-main-wrapper {
   width: 100%;
@@ -20,7 +33,7 @@ h3, h4, p {
     &::before {
       content: '';
       position: absolute;
-      bottom: 0;
+      bottom: -2px;
       height: 125px;
       width: 100%;
       background: rgb(0,0,0);
@@ -37,6 +50,7 @@ h3, h4, p {
     font-size: 12px;
     display: flex;
     justify-content: center;
+    margin-top: 4px;
   }
   .content--wrapper{ 
     padding: 15px 15px 0 15px;
@@ -618,6 +632,57 @@ h3, h4, p {
   width: 100%;
   top: 50%;
   transform: translateY(-67%);;
+}
+
+// ---------------------- Miniplayer styles ---------------------
+.miniplayer {
+  background: #212121;
+  height: 80px;
+  width: 100%;
+  justify-content: space-between;
+  right: 0;
+  box-shadow: 0 -1rem 2rem #000000b0;
+  padding: 0.5rem 0 0.5rem 0;
+
+  & > article {
+    padding: 0 0.5rem 0 calc(30% + 0.5rem);
+    width: 80%;
+
+    p {
+      &:first-child {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      &:last-child {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  & > div {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+  }
+
+  &__btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    display: flex;
+    margin-left: 0.5rem;
+    
+    &:focus {
+      outline: none;
+    }
+  }
 }
 
 
