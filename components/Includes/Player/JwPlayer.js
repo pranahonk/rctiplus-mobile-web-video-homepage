@@ -42,6 +42,7 @@ const JwPlayer = (props) => {
     autostart: true,
     mute: false,
     floating: false,
+    // file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
     file: props.data && props.data.url,
     // file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
     primary: 'html5',
@@ -118,37 +119,8 @@ const JwPlayer = (props) => {
         const backwardContainer = playerContainer.querySelector('.jw-icon-rewind');
         const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
-        if(isForward) {
-          const forwardElement = document.createElement('div');
-          forwardElement.classList.add('jw-rplus-forward');
-          forwardElement.innerHTML = foward10;
-          // const iconForward = document.querySelector('.icon-forward');
-          forwardElement.addEventListener('dblclick', (ev) => {
-            // console.log('TOUCH:', ev);
-            // iconForward.classList.add('animated', 'fadeInRight', 'go');
-            setTimeout(() => {
-              // iconForward.classList.remove('animated', 'fadeInRight', 'go');
-              forwardElement.style.opacity = 0;
-            }, 900);
-          });
-          playerContainer.append(forwardElement);
-        }
-        // console.log('LIVEEE', isLiveContainer);
-        if (props.type !== 'live tv' || props.type !== 'live event') {
-          fowardContainer.innerHTML = foward10Icon;
-          backwardContainer.innerHTML = backward10Icon;
-          fowardContainer.addEventListener('touchstart', () => {
-            player.seek(player.getPosition() + 10);
-          });
-        }
-
-        if (props.type === 'live tv' || props.type === 'live event') {
-          // console.log(fowardContainer);
-          fowardContainer.style.display = 'none'
-          backwardContainer.style.display = 'none'
-          fowardContainer.innerHTML = '';
-          backwardContainer.innerHTML = '';
-
+        if (props.type.includes("live")) {
+                  // console.log("CUSTOMMM", props.data)
           // check if gpt data exist
           if ((props.data && props.data.gpt && props.data.gpt.path != null) && (props.data && props.data.gpt && props.data.gpt.path != undefined)) {
             // check if ads_wrapper element not exist
@@ -260,8 +232,8 @@ const JwPlayer = (props) => {
         convivaJwPlayer().buffer();
       });
       player.on('adError', (event) => {
-        // console.log('ERRRRRORRR', event);
         if (document.querySelector('.ads_wrapper')) {
+            console.log('ERRRRRORRR', event);
           if (adsStatus === 'none') {
             setAdStatus('prestart');
           }
@@ -313,8 +285,7 @@ const JwPlayer = (props) => {
       });
 
     }
-  },);
-
+  }, [player, props?.data?.url]);
 
   useEffect(() => {
     const containerElement = document.getElementsByClassName('rplus-jw-container');
@@ -553,7 +524,8 @@ const JwPlayer = (props) => {
       const adsWrapper = document.querySelector('.ads_wrapper') || null
 
 
-      // console.log("SCREEN PLAYER ------", intervalTime)
+      console.log("SCREEN PLAYER ------", intervalTime)
+      console.log("ADS STATUS: ", adsStatus)
       player.on('idle', (event) => {
         console.log('----IDLE----', event);
       });
@@ -567,9 +539,8 @@ const JwPlayer = (props) => {
         console.log('----Ads Completed----', event);
 
       });
-
       if (["start", "prestart"].includes(adsStatus)) {
-        // console.log("ADS STATUS: ", adsStatus)
+        console.log("ADS STATUS: ", adsStatus)
         intervalAds = setInterval(() => {
           changeScreen()
           googletag.pubads().refresh();
@@ -602,8 +573,9 @@ const JwPlayer = (props) => {
       clearTimeout(timeoutAds)
       clearInterval(intervalAds)
     };
-  }, [adsStatus]);
+  }, [adsStatus, props?.data?.url]);
 
+  // console.log(adsStatus)
   // fullscreen
   useEffect(() => {
     if (player !== null) {
