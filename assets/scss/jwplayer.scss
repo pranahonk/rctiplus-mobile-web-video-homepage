@@ -137,8 +137,8 @@
     bottom: 70px;
 
     .adsStyling{
-        width: 320px;
-        height: 50px;
+        // width: 320px;
+        // height: 50px;
         margin: 0 auto;
         position: relative;
 
@@ -176,6 +176,7 @@
     }
 }
 
+<<<<<<< HEAD
 .jwplayer-action {
   background: #0000006e !important;
   animation: none;
@@ -204,3 +205,31 @@
   from { opacity: 1; }
   to { opacity: 0; }
 }
+=======
+.adsContainer {
+  div {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+/* portrait */
+@media screen and (orientation:portrait) {
+  /* portrait-specific styles */
+  .adsStyling {
+    margin: 0 auto;
+    width: 320px;
+    height: 50px;
+  }
+}
+
+/* landscape */
+@media screen and (orientation:landscape) {
+  /* landscape-specific styles */
+  .adsStyling {
+    margin: 0 auto;
+    width: 468px;
+    height: 60px;
+  }
+}
+>>>>>>> ef08a93f (fix overlay ads livetv & live event)
