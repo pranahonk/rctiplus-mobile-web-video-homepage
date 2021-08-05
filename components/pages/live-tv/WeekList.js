@@ -38,10 +38,10 @@ export default function WeekList() {
       <section>
         <div className="list-week_wrapper">
           {data_epg_v2?.map((week, index) => {
-            console.log(week, "anung")
+            {/* console.log(week, "anung") */}
             let activeItem = dayjs(selectItem?.date || null).format('DD')
             activeItem = activeItem === "Invalid Date" ? null : activeItem
-            console.log(activeItem, "anung")
+            {/* console.log(activeItem, "anung") */}
             return(
               <div className="day-item_wrapper" key={index} onClick={() => handleDate(index, week.day)}>
                 {activeItem === week.date && !week.active && (

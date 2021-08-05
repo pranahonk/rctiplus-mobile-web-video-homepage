@@ -50,6 +50,7 @@ const JwPlayer = (props) => {
     autostart: true,
     mute: false,
     floating: false,
+    // file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
     file: props.data && props.data.url,
     primary: 'html5',
     width: '100%',
@@ -156,10 +157,10 @@ const JwPlayer = (props) => {
         const playerContainer = player.getContainer()
         const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
-
         if (props.type.includes("live")) {
+                  // console.log("CUSTOMMM", props.data)
           // check if gpt data exist
-          if ((data && data.gpt && data.gpt.path != null) && (data && data.gpt && data.gpt.path != undefined)) {
+          if ((props.data && props.data.gpt && props.data.gpt.path != null) && (props.data && props.data.gpt && props.data.gpt.path != undefined)) {
             // check if ads_wrapper element not exist
             if (document.querySelector('.ads_wrapper') == undefined) {
               const adsOverlayElement = document.createElement('div');
@@ -174,7 +175,7 @@ const JwPlayer = (props) => {
               // adsOverlayCloseButton.innerHTML = closeIcon;
 
               const adsOverlayContainer = document.createElement('div');
-              const divGPTString = (data && data.gpt && data.gpt.div_gpt != null) && (data && data.gpt && data.gpt.div_gpt != undefined) ? data.gpt.div_gpt : type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+              const divGPTString = (props.data && props.data.gpt && props.data.gpt.div_gpt != null) && (props.data && props.data.gpt && props.data.gpt.div_gpt != undefined) ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
               adsOverlayContainer.classList.add('adsContainer');
               adsOverlayContainer.id = divGPTString;
               adsOverlayContainer.innerHTML = `
@@ -287,8 +288,8 @@ const JwPlayer = (props) => {
       });
 
       player.on('adError', (event) => {
-        // console.log('ERRRRRORRR', event);
         if (document.querySelector('.ads_wrapper')) {
+            console.log('ERRRRRORRR', event);
           if (adsStatus === 'none') {
             setAdStatus('prestart');
           }
@@ -353,7 +354,7 @@ const JwPlayer = (props) => {
       });
 
     }
-  });
+  }, [player, props?.data?.url]);
 
   // Error handling functions
   useEffect(() => {
@@ -603,7 +604,8 @@ const JwPlayer = (props) => {
       const adsWrapper = document.querySelector('.ads_wrapper') || null
 
 
-      // console.log("SCREEN PLAYER ------", intervalTime)
+      console.log("SCREEN PLAYER ------", intervalTime)
+      console.log("ADS STATUS: ", adsStatus)
       player.on('idle', (event) => {
         console.log('----IDLE----', event);
       });
@@ -617,9 +619,8 @@ const JwPlayer = (props) => {
         console.log('----Ads Completed----', event);
 
       });
-
       if (["start", "prestart"].includes(adsStatus)) {
-        // console.log("ADS STATUS: ", adsStatus)
+        console.log("ADS STATUS: ", adsStatus)
         intervalAds = setInterval(() => {
           changeScreen()
           googletag.pubads().refresh();
@@ -652,8 +653,9 @@ const JwPlayer = (props) => {
       clearTimeout(timeoutAds)
       clearInterval(intervalAds)
     };
-  }, [adsStatus]);
+  }, [adsStatus, props?.data?.url]);
 
+  // console.log(adsStatus)
   // fullscreen
   useEffect(() => {
     if (player !== null) {
