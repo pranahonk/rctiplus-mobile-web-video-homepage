@@ -137,8 +137,8 @@
     bottom: 70px;
 
     .adsStyling{
-        width: 320px;
-        height: 50px;
+        // width: 320px;
+        // height: 50px;
         margin: 0 auto;
         position: relative;
 
@@ -174,4 +174,31 @@
         //   height: 60px;
         // }
     }
+}
+
+.adsContainer {
+  div {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+/* portrait */
+@media screen and (orientation:portrait) {
+  /* portrait-specific styles */
+  .adsStyling {
+    margin: 0 auto;
+    width: 320px;
+    height: 50px;
+  }
+}
+
+/* landscape */
+@media screen and (orientation:landscape) {
+  /* landscape-specific styles */
+  .adsStyling {
+    margin: 0 auto;
+    width: 468px;
+    height: 60px;
+  }
 }
