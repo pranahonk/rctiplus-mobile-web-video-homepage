@@ -5,6 +5,7 @@ import { Row, Col } from 'reactstrap';
 import { ButtonPrimary } from "../../../components/Includes/Common/Button";
 import { RESOLUTION_IMG } from '../../../config';
 import { getTruncate } from '../../../utils/helpers';
+import NoResult from './NoResult';
 
 import Img from 'react-image';
 import ShareIcon from "../../../components/Includes/IconCustom/ShareIcon";
@@ -41,7 +42,7 @@ const  AllResult = ({handleTab, onClick}) => {
 
     return (
         <div style={{marginBottom: "30px"}} >
-            {search_all !== null &&
+            {search_all !== null ?
                 <div style={{background: "#282828"}} className="content-search">
                     {search_all?.program_data?.data?.length > 0 &&
                         <div>
@@ -285,6 +286,10 @@ const  AllResult = ({handleTab, onClick}) => {
                         </div>
                     }
                 </div>
+
+                :
+
+                <NoResult />
             }
         </div>
     )

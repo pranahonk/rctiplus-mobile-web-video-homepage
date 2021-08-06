@@ -7,8 +7,10 @@ import { getTruncate } from '../../../utils/helpers';
 import ShareIcon from "../../../components/Includes/IconCustom/ShareIcon";
 import GetApp from '@material-ui/icons/GetApp';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import { alertDownload } from '../../../components/Includes/program-detail/programDetail';
+import NoResult from './NoResult';
 
-const EpisodeResult = () => {
+const EpisodeResult = ({onClick}) => {
     const { search_results } = useSelector(state => state.searches);
 
     const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
@@ -36,9 +38,10 @@ const EpisodeResult = () => {
     return (
         <div style={{marginBottom: "30px"}} >
             <div style={{background: "#282828"}} className="content-search">
-                {search_results[1]?.data?.data?.length > 0 && 
+                <p style={{paddingBottom: "10px", fontWeight: "bold", fontSize:"14px" }} className="title">Result</p>
+                {search_results[1]?.data?.data?.length > 0 ?
                     search_results[1]?.data?.data.map((v, i) =>(
-                        <div style={{ padding: '10px 15px'}} key={i}>
+                        <div onClick={() => onClick(v)} style={{ padding: '10px 15px'}} key={i}>
                             <div style={{display:"flex"}} className="panel-content">
                                 <div className="thumb-img__content">
                                     <Link href="" >
@@ -56,7 +59,8 @@ const EpisodeResult = () => {
                                     <div style={{display:"flex", justifyContent:"start"}} className="action-button__content ">
                                         <ButtonPrimary icon={ <PlaylistAddIcon/> } />
                                         <ButtonPrimary icon={ <ShareIcon/> } />
-                                        <ButtonPrimary icon={ <GetApp/> } />
+                                        <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(v, 'episode', v.program_id, v.program_title ,"search") }}  /> 
+                                        {/* onclick={() => { alertDownload(v, 'clip', programId, programTitle ,"search") }} */}
                                     </div>
                                  </div>
                             </div>
@@ -67,6 +71,10 @@ const EpisodeResult = () => {
                             </div>
                         </div>
                     ))
+
+                    :
+
+                    <NoResult />
                 }
             </div>
         </div>

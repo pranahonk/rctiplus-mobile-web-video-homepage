@@ -6,7 +6,7 @@ import searchActions from '../../../redux/actions/searchActions';
 import pageActions from '../../../redux/actions/pageActions';
 import '../../../assets/scss/components/navbar-search.scss';
 
-import { Navbar, NavbarBrand, Input } from 'reactstrap';
+import { Navbar, NavbarBrand } from 'reactstrap';
 
 import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
@@ -17,6 +17,7 @@ import _isEmpty from "lodash/isEmpty";
 import _debounce from "lodash/debounce";
 
 import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked } from '../../../utils/appier';
+import { getCookie, setCookie } from '../../../utils/cookie';
 
 const NavbarSearch = ({...props}) => {
     const inputSearch = useRef(null);
@@ -24,39 +25,59 @@ const NavbarSearch = ({...props}) => {
     
     const [state, setState] = useState({q: router.query.q || '', length: 9});
 
-    useEffect(() => {
-        // if(!_isEmpty(state.q)) {
-            // props.setPageLoader();
-            // props.searchAllCategory(state.q, 1, state.length)
-            //     .then(responses => props.unsetPageLoader())
-            //     .catch(error => props.unsetPageLoader());
+    // useEffect(() => {
+    //     // if(!_isEmpty(state.q)) {
+    //         // props.setPageLoader();
+    //         // props.searchAllCategory(state.q, 1, state.length)
+    //         //     .then(responses => props.unsetPageLoader())
+    //         //     .catch(error => props.unsetPageLoader());
 
-            // props.getSearchAll(state.q, 1, state.length)
-            //     .then(responses => props.unsetPageLoader())
-            //     .catch(error => props.unsetPageLoader());
-        // }
-        props.setPageLoader();
+    //         // props.getSearchAll(state.q, 1, state.length)
+    //         //     .then(responses => props.unsetPageLoader())
+    //         //     .catch(error => props.unsetPageLoader());
+    //     // }
+    // }, [])
+
+    const handleFocus = () => {
         props.getPopularSearch()
             .then(responses => props.unsetPageLoader())
             .catch(error => props.unsetPageLoader());
-    
+        
         props.getSearchHistory()
             .then(responses => props.unsetPageLoader())
             .catch(error => props.unsetPageLoader());
-    }, [])
+
+        let searchHistory = getCookie('SEARCH_HISTORY');
+
+        if(searchHistory) {
+            searchHistory = JSON.parse(searchHistory);
+            if (searchHistory.indexOf(state.q) === -1) {
+                if (searchHistory.length >= 5) {
+                    searchHistory.pop();
+                }
+            }
+            else {
+                searchHistory.splice(searchHistory.indexOf(q), 1);
+            }
+    
+            searchHistory.unshift(state.q);
+            props.handleSetSearchHistory(searchHistory)
+        }
+    }
 
 
     useEffect(() => {
         if(state.q.length >= 3 ){
-            // props.getSearchSuggestion(state.q, 1, state.length)
-            //     .then(responses => props.unsetPageLoader())
-            //     .catch(error => props.unsetPageLoader());
-            // props.setPageLoader();
-            props.searchAllCategory(state.q, 1, state.length)
-                .then(responses => props.unsetPageLoader())
-                .catch(error => props.unsetPageLoader());
-
             props.getSearchAll(state.q, 1, state.length)
+                .then(responses => {
+                    props.unsetPageLoader()
+                    saveSearchHistory(state.q)
+                })
+                .catch(error => {
+                    props.unsetPageLoader();
+                    saveSearchHistory(state.q)
+                });
+            props.searchAllCategory(state.q, 1, state.length)
                 .then(responses => props.unsetPageLoader())
                 .catch(error => props.unsetPageLoader());
         }
@@ -76,7 +97,30 @@ const NavbarSearch = ({...props}) => {
         setState({ ...state, q: '' });
     }
 
-    const _search = (value) =>  router.replace(`/explores/search?q=${value}`, `/explores/keyword?q=${value}`, { shallow: true })
+    const saveSearchHistory = (q) => {
+        let searchHistory = getCookie('SEARCH_HISTORY');
+        if (!searchHistory) {
+            setCookie('SEARCH_HISTORY', [q]);
+        }
+        else {
+            searchHistory = JSON.parse(searchHistory);
+            if (searchHistory.indexOf(q) === -1) {
+                if (searchHistory.length >= 5) {
+                    searchHistory.pop();
+                }
+            }
+            else {
+                searchHistory.splice(searchHistory.indexOf(q), 1);
+            }
+
+            searchHistory.unshift(q);
+            setCookie('SEARCH_HISTORY', searchHistory);
+        }
+    }
+
+    const _search = (value) =>  {
+        router.push(`/explores/search`, `/explores/keyword?q=${value}`, { shallow: true })
+    }
     const _delayedQuery = useCallback(_debounce(q => _search(q), 1000), [])
 
     return(
@@ -101,10 +145,10 @@ const NavbarSearch = ({...props}) => {
                         ref={inputSearch}
                         onClick={() => {
                             libraryGeneralEvent('mweb_library_search_form_clicked');
-                            
                         }}
                         placeholder="Search for a program, genre, etc."
                         onChange={(e) => _onChangeQuery(e)}
+                        onFocus={handleFocus}
                         value={state.q}
                         style={{width:"100%", outline: "none"}}
                         className="search-input" />

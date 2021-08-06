@@ -253,6 +253,24 @@ const getPopularSearch = () => {
     });
 };
 
+
+const popularTracking = (refId) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`v1/episode/2170?ref_id=${refId}`);
+            if (response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const getSearchSuggestion = (q, page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -310,6 +328,24 @@ const getSearchHistory = () => {
     });
 };
 
+const handleSetSearchHistory = (data) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        dispatch({
+            type: 'SET_SEARCH_HISTORY',
+            history: data
+        });
+    })
+};
+
+const handleResetSearchHistory = (data) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        dispatch({
+            type: 'SET_SEARCH_HISTORY',
+            history: data
+        });
+    })
+};
+
 const handleKeyword = (q) => {
     return dispatch => new Promise(async (resolve, reject) => {
         dispatch({
@@ -329,7 +365,10 @@ export default {
     setActiveTab,
     getSearchAll,
     getPopularSearch,
+    popularTracking,
     getSearchHistory,
+    handleSetSearchHistory,
+    handleResetSearchHistory,
     getSearchSuggestion,
     resetSearchSuggestion,
     handleKeyword

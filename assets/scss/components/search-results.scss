@@ -17,9 +17,13 @@ $text-placeholder-color-login: #a8a8a8;
         width: 100%;
         padding-left: 10px;
         padding-right: 10px;
-        display: flex;
+        display: block;
         flex-wrap: wrap;
         margin-bottom: 15px;
+        overflow: auto;
+        white-space: nowrap;
+        display: block;
+        max-width: 700px;
         
         .nav-link {
             border-bottom: 1px solid white;
@@ -167,10 +171,13 @@ $text-placeholder-color-login: #a8a8a8;
     
     ul#search-results .nav-tab-item{
         width: auto;
+        max-width: 660px;
+        overflow-x: auto;
         text-align: center;
         color: #fff important;
         font-size: 12px;
         flex: 1 1 auto;
+        display: inline-block;
     }
     
     #search-results .nav-link {
@@ -178,10 +185,9 @@ $text-placeholder-color-login: #a8a8a8;
         padding: 10px;
     }
     
-    
-    
     #search-results::-webkit-scrollbar {
         display: none;
+
     }
 }
 

@@ -2,15 +2,16 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Row, Col } from 'reactstrap';
 import Img from 'react-image';
-import { getTruncate } from '../../../utils/helpers';
+import NoResult from './NoResult';
 
 const ProgramResult = ({onClick}) => {
     const { search_results } = useSelector(state => state.searches);
+    
     return (
         <div style={{marginBottom: "30px"}} >
             <div style={{background: "#282828"}} className="content-search">
                 <p style={{paddingBottom: "10px", fontWeight: "bold", fontSize:"14px" }} className="title">Result</p>
-                {search_results[0]?.data?.data?.length > 0 &&
+                {search_results[0]?.data?.data?.length > 0 ?
                     <div className="content-list">
                         <Row>
                             {search_results && 
@@ -28,6 +29,10 @@ const ProgramResult = ({onClick}) => {
                             }
                         </Row>
                     </div>
+
+                    :
+
+                    <NoResult />
                 }
             </div>
         </div>
