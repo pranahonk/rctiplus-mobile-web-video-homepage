@@ -48,6 +48,8 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { search_popular: action.popular });
         case 'GET_SEARCH_HISTORY':
             return Object.assign({}, state, { search_history: action.history });
+        case 'SET_SEARCH_HISTORY':
+            return Object.assign({}, state, { search_history: [...state.search_history, ...action.history] });
         case 'GET_SEARCH_SUGGESTION':
             return Object.assign({}, state, { search_suggestion: action.suggestion });
             case 'RESETs_SEARCH_SUGGESTION':

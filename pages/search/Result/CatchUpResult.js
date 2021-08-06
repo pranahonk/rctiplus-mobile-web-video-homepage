@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { getTruncate } from '../../../utils/helpers';
 import ShareIcon from "../../../components/Includes/IconCustom/ShareIcon";
 import { CirclePauseIcon, CircleTimeIcon, CirclePlayIcon } from "../../../components/IconComponents"
+import NoResult from './NoResult';
 
 const CatchupResult = ({onClick}) => {
     const { search_results } = useSelector(state => state.searches);
@@ -27,10 +28,10 @@ const CatchupResult = ({onClick}) => {
         <div style={{marginBottom: "30px"}} >
             <div style={{background: "#282828"}} className="content-search">
                 <p style={{paddingBottom: "10px", fontWeight: "bold", fontSize:"14px" }} className="title">Result</p>
-                {search_results[5]?.data?.data?.length > 0 &&
+                {search_results[5]?.data?.data?.length > 0 ?
                     search_results[5]?.data?.data.map((v,i) => {
                         return(
-                            <div style={{marginBottom: "1rem"}} className="content-list">
+                            <div onClick={() => onClick(v)} style={{marginBottom: "1rem"}} className="content-list">
                                 <div style={{display:"flex", justifyContent: "space-between", alignItems: "center"}}>
                                     <div style={{display: "flex", alignItems:"center"}}>
                                         <div><CirclePlayIcon /></div>
@@ -46,6 +47,10 @@ const CatchupResult = ({onClick}) => {
                             </div> 
                         )
                     })
+
+                    :
+
+                    <NoResult />
                 }
             </div>
         </div>

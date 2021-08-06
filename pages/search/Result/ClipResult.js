@@ -7,8 +7,9 @@ import { getTruncate } from '../../../utils/helpers';
 import ShareIcon from "../../../components/Includes/IconCustom/ShareIcon";
 import GetApp from '@material-ui/icons/GetApp';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import NoResult from './NoResult';
 
-const ClipResult = () => {
+const ClipResult = ({onClick}) => {
     const { search_results } = useSelector(state => state.searches);
 
     const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
@@ -36,9 +37,10 @@ const ClipResult = () => {
     return (
         <div style={{marginBottom: "30px"}} >
             <div style={{background: "#282828"}} className="content-search">
-                {search_results[3]?.data?.data?.length > 0 && 
+                <p style={{paddingBottom: "10px", fontWeight: "bold", fontSize:"14px" }} className="title">Result</p>
+                {search_results[3]?.data?.data?.length > 0 ?
                     search_results[3]?.data?.data.map((v, i) =>(
-                        <div style={{ padding: '10px 15px'}} key={i}>
+                        <div onClick={() => onClick(v)} style={{ padding: '10px 15px'}} key={i}>
                             <div style={{display:"flex"}} className="panel-content">
                                 <div className="thumb-img__content">
                                     <Link href="" >
@@ -67,6 +69,10 @@ const ClipResult = () => {
                             </div>
                         </div>
                     ))
+
+                    :
+
+                    <NoResult />
                 }
             </div>
         </div>
