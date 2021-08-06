@@ -105,8 +105,9 @@ module.exports = (window => {
 
 		const parsingMessage = (event) => {
 			if (!isJson(event.data)) return;
+			if (typeof event.data === typeof {}) return
+
 			const data = JSON.parse(event.data);
-			
 			if (data?.state) {
 				const storyViewer = query('#zuck-modal .viewing')
 				const currentViewingStory = zuck.data[storyViewer.getAttribute("data-story-id")]
@@ -138,11 +139,18 @@ module.exports = (window => {
 								`${data.duration}s`
 							)
 
-							// When video are ready and playing start the progress bar and tell user it is no longer loading
-							storyViewer.classList.remove("loading")
+							// When video are ready and playing start the progress bar
 							storyViewer.classList.remove("initial")
 						}
 						break;
+					case "buffering":
+						storyViewer.classList.add("loading")
+						storyViewer.classList.add('paused');
+						break
+					case "playing":
+						storyViewer.classList.remove("loading")
+						storyViewer.classList.remove('paused');
+						break
 					case 'touchNext':
 						zuck.navigateItem('next', true)
 						break;
