@@ -521,7 +521,7 @@ const JwPlayer = (props) => {
       const adSizeLandscape = [props?.data?.gpt?.size_width_2 || 468, props?.data?.gpt?.size_height_2 || 60]
       const adSizePotrait = [props?.data?.gpt?.size_width_1 || 468, props?.data?.gpt?.size_height_1 || 50]
 
-      const adsWrapper = document.querySelector('.ads_wrapper') || null
+      const adsWrapper = document.querySelector('.ads_wrapper') || {}
 
 
       console.log("SCREEN PLAYER ------", intervalTime)
@@ -541,6 +541,7 @@ const JwPlayer = (props) => {
       });
       if (["start", "prestart"].includes(adsStatus)) {
         console.log("ADS STATUS: ", adsStatus)
+        const adsWrapper = document.querySelector('.ads_wrapper') || {}
         intervalAds = setInterval(() => {
           changeScreen()
           googletag.pubads().refresh();
@@ -559,6 +560,7 @@ const JwPlayer = (props) => {
       })
 
       function changeScreen() {
+        const adsWrapper = document.querySelector('.ads_wrapper') || {}
         if (screen.orientation.type === "portrait-primary") {
           handleAds(slotName, slotDiv, custParams, adSizePotrait)
         }
