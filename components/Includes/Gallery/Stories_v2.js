@@ -390,7 +390,7 @@ class Stories extends React.Component {
             items.push([
                 item.id,
                 item.link_video != null ? 'video' : 'photo',
-                100000,
+                10,
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 this.handleActionClick(item), 
