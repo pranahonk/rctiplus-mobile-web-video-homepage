@@ -50,7 +50,6 @@ const JwPlayer = (props) => {
     autostart: true,
     mute: false,
     floating: false,
-    // file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
     file: props.data && props.data.url,
     primary: 'html5',
     width: '100%',
@@ -58,7 +57,6 @@ const JwPlayer = (props) => {
     aspectratio: '16:9',
     displaytitle: true,
     generateSEOMetadata: true,
-    // setFullscreen: true,
     stretching: 'uniform',
     height: 180,
     advertising: {
@@ -160,7 +158,7 @@ const JwPlayer = (props) => {
         if (props.type.includes("live")) {
                   // console.log("CUSTOMMM", props.data)
           // check if gpt data exist
-          if ((props.data && props.data.gpt && props.data.gpt.path != null) && (props.data && props.data.gpt && props.data.gpt.path != undefined)) {
+          if ((data && data.gpt && data.gpt.path != null) && (data && data.gpt && data.gpt.path != undefined)) {
             // check if ads_wrapper element not exist
             if (document.querySelector('.ads_wrapper') == undefined) {
               const adsOverlayElement = document.createElement('div');
@@ -175,7 +173,7 @@ const JwPlayer = (props) => {
               // adsOverlayCloseButton.innerHTML = closeIcon;
 
               const adsOverlayContainer = document.createElement('div');
-              const divGPTString = (props.data && props.data.gpt && props.data.gpt.div_gpt != null) && (props.data && props.data.gpt && props.data.gpt.div_gpt != undefined) ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+              const divGPTString = (data && data.gpt && data.gpt.div_gpt != null) && (data && data.gpt && data.gpt.div_gpt != undefined) ? data.gpt.div_gpt : type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
               adsOverlayContainer.classList.add('adsContainer');
               adsOverlayContainer.id = divGPTString;
               adsOverlayContainer.innerHTML = `
@@ -338,9 +336,11 @@ const JwPlayer = (props) => {
           }
         }
       });
+
       player.on('adStarted', _ => {
         if (props.onAdsShown) props.onAdsShown(true)
       })
+      
       player.on('userActive', (event) => {
         if (document.querySelector('.ads_wrapper')) {
           document.querySelector('.ads_wrapper').style.bottom = '70px';

@@ -230,3 +230,32 @@
     height: 60px;
   }
 }
+
+.jwplayer-action {
+  background: #0000006e !important;
+  animation: none;
+  border-radius: 100%;
+  margin: 0;
+  height: 300px !important;
+  width: 180px !important;
+  padding: 1rem;
+  opacity: 0;
+  
+  &.forward {
+    justify-content: flex-start !important;
+  }
+  
+  &.backward {
+    justify-content: flex-end !important;
+  }
+
+  &.fading {
+    animation: opacity 2s;
+    animation-play-state: running;
+  }
+}
+
+@keyframes opacity {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}

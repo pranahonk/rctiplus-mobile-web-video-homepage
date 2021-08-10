@@ -310,6 +310,44 @@ class Index extends React.Component {
     }
   }
 
+  onRouterChanged() {
+    const { query } = this.props.router
+    let programTypeDetail = this.props.data[`program-${query.content_type}`]
+    
+    if (!programTypeDetail) return
+
+    const { seasonSelected } = this.props.data
+    
+    if (!programTypeDetail[`season-${seasonSelected}`]) return
+    if (query.content_type === "episode") programTypeDetail = programTypeDetail[`season-${seasonSelected}`]
+
+    const { data, meta } = programTypeDetail
+    const { activeContentId } = this.state
+    
+    if (!data || !meta || !query.content_id) return
+
+    // When currently playing video is not on the list of queue, target to the first content instead
+    // Dont fetch or change anything yet when playing video not exist on the queue list
+    const isPlayingVideoOnTheList = data.find(content => +content.id === +query.content_id)
+    if (!isPlayingVideoOnTheList) {
+      const { href, hrefAlias } = this.routingQueryGenerator({ ...data[0], content_type: query.content_type })
+      this.props.router.push(`/programs?${href}`, `/programs/${hrefAlias}`)
+    }
+    
+    // Set max video queue length once it has the value from request call
+    if (this.state.videoIndexing.maxQueue !== meta.pagination.total) {
+      this.setState({
+        videoIndexing: { ...this.state.videoIndexing, maxQueue: meta.pagination.total }
+      })
+    }
+    
+    // Fetch video url everytime it has been pushed to new url
+    if (+query.content_id !== activeContentId) {
+      this.setState({ activeContentId: +query.content_id })
+      this.props.dispatch(fetchPlayerUrl(query.content_id, 'data-player', query.content_type))
+    }
+  }
+
   getProgramDetail(id, type) {
     if (!this.props.data[type]) {
       this.props.dispatch(
@@ -805,6 +843,7 @@ class Index extends React.Component {
 
     onTracking(this.reference, query.id, this.props.server['program-detail']);
   }
+  
   routingQueryGenerator(targetContent) {
     let targetHref = [],
       targetHrefAlias = []
