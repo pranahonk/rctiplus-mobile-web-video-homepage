@@ -311,15 +311,17 @@ class Index extends React.Component {
   }
 
   onRouterChanged() {
-    const { query } = this.props.router
-    let programTypeDetail = this.props.data[`program-${query.content_type}`]
-    
-    if (!programTypeDetail) return
+    if (!this.props.data) return
 
+    const { query } = this.props.router
     const { seasonSelected } = this.props.data
+    let programTypeDetail = this.props.data[`program-${query.content_type}`]
+    if (!programTypeDetail) return
     
-    if (!programTypeDetail[`season-${seasonSelected}`]) return
-    if (query.content_type === "episode") programTypeDetail = programTypeDetail[`season-${seasonSelected}`]
+    if (query.content_type === "episode") {
+      if (!programTypeDetail[`season-${seasonSelected}`]) return
+      programTypeDetail = programTypeDetail[`season-${seasonSelected}`]
+    }
 
     const { data, meta } = programTypeDetail
     const { activeContentId } = this.state
@@ -903,8 +905,10 @@ class Index extends React.Component {
     let queueingContents = programTypeDetail.data
     let videoIndexing = this.state.videoIndexing
 
-    if (!programTypeDetail[`season-${seasonSelected}`]) return
-    if (content_type === "episode") queueingContents = programTypeDetail[`season-${seasonSelected}`].data
+    if (content_type === "episode") {
+      if (!programTypeDetail[`season-${seasonSelected}`]) return
+      queueingContents = programTypeDetail[`season-${seasonSelected}`].data
+    }
 
     queueingContents.forEach((content, i) => {
       if (content.id === +content_id && content.program_id === +id) {

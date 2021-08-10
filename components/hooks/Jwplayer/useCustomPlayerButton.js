@@ -48,7 +48,22 @@ export default function useCustomPlayerButton (props) {
         skipPosIconContainer: fastBackwardContainer
       }
     ])
-  
+    hideBtnOtherThanPrograms(type)
+  }
+
+  const hideBtnOtherThanPrograms = (type) => {
+    const playerContainer = props.player.getContainer()
+
+    // IMPORTANT!! This logic below is temporary! When components on missed events and catchup are handled delete this logic!
+    if (type.includes("missed event") || type.includes("catch up")) {
+      const nextBtn = playerContainer.querySelector(".jw-icon-next")
+      const prevBtn = playerContainer.querySelector(".jw-icon-rewind")
+
+      if (nextBtn) nextBtn.style.display = "none"
+      if (prevBtn) prevBtn.style.display = "none"
+    }
+    // ------- End of temporary logic --------------
+
     if (type.includes("live")) {
       // Undisplay and empty the container
       playerContainer.querySelector(".jw-display-container.jw-reset").innerHTML = ""
@@ -140,7 +155,5 @@ export default function useCustomPlayerButton (props) {
     }, 10)
   }
 
-  return {
-    setIsPlayerReady,
-  }
+  return [ setIsPlayerReady ]
 }

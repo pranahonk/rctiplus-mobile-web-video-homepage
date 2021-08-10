@@ -8,6 +8,7 @@ import { isIOS } from 'react-device-detect';
 import Wrench from '../Common/Wrench';
 import '../../../assets/scss/jwplayer.scss';
 import useCustomPlayerButton from "../../hooks/Jwplayer/useCustomPlayerButton"
+import useSetupBitrate from "../../hooks/Jwplayer/useSetupBitrate"
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -40,7 +41,8 @@ const JwPlayer = (props) => {
   const [prevWidth, setPrevWidth] = useState(0);
 
   // Custom Hooks
-  const { setIsPlayerReady } = useCustomPlayerButton({ ...props, player })
+  const [ setIsPlayerReady ] = useCustomPlayerButton({ ...props, player })
+  const [ setBitrateLevels ] = useSetupBitrate({ ...props, player })
 
   // Supporting Variables
   const playerRef = useRef();
@@ -145,10 +147,6 @@ const JwPlayer = (props) => {
   useEffect(() => {
     if (player !== null) {
       player.on('ready', (event) => {
-        /* if (props.isFullscreen) {
-          player.setFullscreen(true);
-          setPlayerFullscreen(true);
-        } */
         setPlayerFullscreen(props.isFullscreen);
         setIsPlayerReady(true)
 
@@ -156,8 +154,8 @@ const JwPlayer = (props) => {
         const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
         if (props.type.includes("live")) {
-                  // console.log("CUSTOMMM", props.data)
           // check if gpt data exist
+          const data = props.data
           if ((data && data.gpt && data.gpt.path != null) && (data && data.gpt && data.gpt.path != undefined)) {
             // check if ads_wrapper element not exist
             if (document.querySelector('.ads_wrapper') == undefined) {
@@ -259,6 +257,8 @@ const JwPlayer = (props) => {
       })
 
       player.on('play', () => {
+        setBitrateLevels(player.getQualityLevels())
+
         convivaJwPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
           
@@ -588,14 +588,14 @@ const JwPlayer = (props) => {
     
     if (player !== null) {
       // let windowWidth = document.documentElement.clientWidth;
-      let slotName = props.data.gpt.path != null && props.data.gpt.path != undefined ? props.data.gpt.path : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
-      let slotDiv = props.data.gpt.div_gpt != null && props.data.gpt.div_gpt != undefined ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-      let intervalTime = props.data.gpt.interval_gpt != null && props.data.gpt.interval_gpt != undefined ? props.data.gpt.interval_gpt : props.adsOverlayData.reloadDuration;
-      let minWidth = props.data.gpt.size_width_1 != null && props.data.gpt.size_width_1 != undefined ? props.data.gpt.size_width_1 : 320;
-      let maxWidth = props.data.gpt.size_width_2 != null && props.data.gpt.size_width_2 != undefined ? props.data.gpt.size_width_2 : 468;
-      let minHeight = props.data.gpt.size_height_1 != null && props.data.gpt.size_height_1 != undefined ? props.data.gpt.size_height_1 : 50;
-      let maxHeight = props.data.gpt.size_height_2 != null && props.data.gpt.size_height_2 != undefined ? props.data.gpt.size_height_2 : 60;
-      let custParams = props.data.gpt.cust_params != null && props.data.gpt.cust_params != undefined ? props.data.gpt.cust_params : null;
+      let slotName = props.data.gpt?.path != null && props.data.gpt?.path != undefined ? props.data.gpt?.path : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
+      let slotDiv = props.data.gpt?.div_gpt != null && props.data.gpt?.div_gpt != undefined ? props.data.gpt?.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+      let intervalTime = props.data.gpt?.interval_gpt != null && props.data.gpt?.interval_gpt != undefined ? props.data.gpt?.interval_gpt : props.adsOverlayData?.reloadDuration;
+      let minWidth = props.data.gpt?.size_width_1 != null && props.data.gpt?.size_width_1 != undefined ? props.data.gpt?.size_width_1 : 320;
+      let maxWidth = props.data.gpt?.size_width_2 != null && props.data.gpt?.size_width_2 != undefined ? props.data.gpt?.size_width_2 : 468;
+      let minHeight = props.data.gpt?.size_height_1 != null && props.data.gpt?.size_height_1 != undefined ? props.data.gpt?.size_height_1 : 50;
+      let maxHeight = props.data.gpt?.size_height_2 != null && props.data.gpt?.size_height_2 != undefined ? props.data.gpt?.size_height_2 : 60;
+      let custParams = props.data.gpt?.cust_params != null && props.data.gpt?.cust_params != undefined ? props.data.gpt?.cust_params : null;
 
       
       const adSizeLandscape = [props?.data?.gpt?.size_width_2 || 468, props?.data?.gpt?.size_height_2 || 60]
@@ -603,22 +603,6 @@ const JwPlayer = (props) => {
 
       const adsWrapper = document.querySelector('.ads_wrapper') || null
 
-
-      console.log("SCREEN PLAYER ------", intervalTime)
-      console.log("ADS STATUS: ", adsStatus)
-      player.on('idle', (event) => {
-        console.log('----IDLE----', event);
-      });
-      player.on('adStarted', (event) => {
-        console.log('----Ads Started----', event);
-      });
-      player.on('adSkipped', (event) => {
-        console.log('----Ads Skipped----', event);
-      });
-      player.on('adComplete', (event) => {
-        console.log('----Ads Completed----', event);
-
-      });
       if (["start", "prestart"].includes(adsStatus)) {
         console.log("ADS STATUS: ", adsStatus)
         intervalAds = setInterval(() => {
@@ -639,13 +623,14 @@ const JwPlayer = (props) => {
       })
 
       function changeScreen() {
+        const adsWrapper = document.querySelector('.ads_wrapper')
         if (screen.orientation.type === "portrait-primary") {
           handleAds(slotName, slotDiv, custParams, adSizePotrait)
         }
         if (screen.orientation.type === "landscape-primary") {
           handleAds(slotName, slotDiv, custParams, adSizeLandscape)
         }
-        adsWrapper.style.display = "block"
+        if (adsWrapper) adsWrapper.style.display = "block"
         googletag.pubads().refresh();
       }
     }
