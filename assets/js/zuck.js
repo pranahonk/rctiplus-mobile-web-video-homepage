@@ -105,110 +105,57 @@ module.exports = (window => {
 
 		const parsingMessage = (event) => {
 			if (!isJson(event.data)) return;
-			const data = JSON.parse(event.data);
-			const storyViewer = query('#zuck-modal .viewing')
-			const currentViewingStory = zuck.data[storyViewer.getAttribute("data-story-id")]
+			if (typeof event.data === typeof {}) return
 
+			const data = JSON.parse(event.data);
 			if (data?.state) {
+				const storyViewer = query('#zuck-modal .viewing')
+				const currentViewingStory = zuck.data[storyViewer.getAttribute("data-story-id")]
 				switch(data.state) {
 					case 'init':
 						{
 							const story = zuck.data.find(element => element.id == data.storyId);
 							const item = story.items.find(element => element.id == data.itemId);
-
 							item.contentType = data.contentType;
 
-							if (item.contentType == 'image') {
-								const items = storyViewer.querySelectorAll('[data-index].active');
-								const itemPointer = items[0]
+							if (item.contentType !== 'image') break
 
-								// start progress bar soon when currently displaying ads is an image
-								if (currentViewingStory.items[currentViewingStory.currentItem].id === item.id) {
-									storyViewer.classList.remove("loading")
-									storyViewer.classList.remove("initial")
-								}
-
-							} else {
-
-								// Stop now for a moment the progress bar when it is a video ads
-								// NOTE!! It will start only when video are playing
-								if (currentViewingStory.items[currentViewingStory.currentItem].id === item.id) {
-									storyViewer.classList.add("initial")
-								}
-
-								const storyId = zuck.internalData['currentStory'];
-								let items = query(`#zuck-modal [data-story-id="${storyId}"]`);
-								items = items.querySelectorAll('[data-index].active');
-
-								if (items) {
-									const storyViewer = query(`#zuck-modal .story-viewer[data-story-id="${storyId}"]`);
-									playVideoItem(storyViewer, [items[0], items[1]], false);
-								}
+							// start progress bar soon when currently displaying ads is an image
+							if (currentViewingStory.items[currentViewingStory.currentItem].id === item.id) {
+								storyViewer.classList.remove("loading")
+								storyViewer.classList.remove("initial")
 							}
 						}
 						break;
 					case 'play':
 						{
+							if (currentViewingStory.items[currentViewingStory.currentItem].id !== data.itemId) break
 							const items = storyViewer.querySelectorAll('[data-index].active');
 							const itemPointer = items[0];
-							
+
 							setVendorVariable(
 								itemPointer.getElementsByTagName('b')[0].style,
 								'AnimationDuration',
 								`${data.duration}s`
 							)
 
-							// When video are ready and playing start the progress bar and tell user it is no longer loading
-							storyViewer.classList.remove("loading")
+							// When video are ready and playing start the progress bar
 							storyViewer.classList.remove("initial")
 						}
 						break;
-					case 'unmute':
-						{
-							if (storyViewer) {
-								storyViewer.classList.remove('paused');
-
-								if (storyViewer.classList.contains('muted')) {
-									storyViewer.classList.remove('muted');
-								}
-							}
-						}
-						break;
-					case 'onplay':
-						{
-							storyViewer.classList.remove('stopped');
-							storyViewer.classList.remove('paused');
-							storyViewer.classList.remove('loading');
-						}
-						break;
-					case 'onload':
-						{
-							storyViewer.classList.remove('loading');
-						}
-						break;
-					case 'onwaiting':
-						{
-							if (data.paused) {
-								storyViewer.classList.add('paused');
-								storyViewer.classList.add('loading');
-							}
-						}
-						break;
+					case "buffering":
+						storyViewer.classList.add("loading")
+						storyViewer.classList.add('paused');
+						break
+					case "playing":
+						storyViewer.classList.remove("loading")
+						storyViewer.classList.remove('paused');
+						break
 					case 'touchNext':
 						zuck.navigateItem('next', true)
 						break;
 					case 'touchPrev':
 						zuck.navigateItem('previous', true)
-						break;
-					case 'onmute':
-						{
-							// TEMP FIX
-							/* if (data.muted) {
-								storyViewer.classList.add('muted');
-							} else {
-								storyViewer.classList.remove('muted');
-							} */
-						}
 						break;
 					case "holdStory":
 						storyViewer.classList.add('paused');
@@ -457,44 +404,6 @@ module.exports = (window => {
                       <img loading="auto" src="${get(itemData, 'preview')}" />
                     </a>`;
 				},
-
-				/** Deprecated: modify this for story ads */
-				/* viewerItem(storyData, currentStoryItem) {
-					return `<div class="story-viewer">
-                      <div class="head">
-												<div class="left">
-                          ${option('backButton') ? '<a class="back">&lsaquo;</a>' : ''}
-  
-                          <span class="item-preview">
-                            <img lazy="eager" class="profilePhoto" src="${get(storyData, 'photo')}" />
-                          </span>
-  
-                          <div class="info">
-                            <strong class="name story-item-title" id="story-item-title">${storyData.items[currentStoryItem].title}</strong>
-                            <span class="time">${get(storyData, 'timeAgo')}</span>
-                          </div>
-                        </div>
-                        
-                        <div class="right">
-													<span class="time">${get(currentStoryItem, 'timeAgo')}</span>
-                          <span class="loading"></span>
-                          <a class="close" tabIndex="2">&#9587;</a>
-                        </div>
-                      </div>
-  
-                      <div class="slides-pointers">
-                        <div class="wrap"></div>
-                      </div>
-  
-                    ${option('paginationArrows')
-										? `<div class="slides-pagination">
-												<span class="previous">&lsaquo;</span>
-												<span class="next">&rsaquo;</span>
-											</div>`
-											: ``
-										}
-                    </div>`;
-				}, */
 
 				viewerItem(storyData, currentStoryItem) {
 					return `<div class="story-viewer">
@@ -966,18 +875,6 @@ module.exports = (window => {
 						}
 					}
 				}, 150);
-
-				/* if (isStoryAds) {
-					if (className === 'viewing') {
-						setTimeout(function compileAds() {
-							if (document.querySelector('#' + storyItems[0].preview)) {
-								createStoryViewerAds(storyId, storyItems);
-							} else {
-								setTimeout(compileAds, 100);
-							}
-						}, 100);
-					}
-				} */
 			};
 
 			// Story Ads
@@ -993,42 +890,40 @@ module.exports = (window => {
 
 				storyAdsItems.forEach(item => {
 					if (item.type !== "ads") return
+					
+					item['destroyed'] = false;
+					const adsSlot = googletag.defineSlot(item.src, ['fluid'], item.preview)
+					if (adsSlot) {
+						adsSlot.addService(googletag.pubads())
+						item['adsSlot'] = adsSlot
 
-					if (!item["adsSlot"]) {
-						googletag.cmd.push(function() {
-							item['adsSlot'] = googletag
-								.defineSlot(item.src, ['fluid'], item.preview)
-								.addService(googletag.pubads())
-							
-							// Set targetting ads for each story ads items
-							// This process will be omitted when array is an empty array
-							taData.forEach(({ name, value }) => {
-								googletag.pubads().setTargeting(name, value)
-							})
-
-							googletag.pubads().enableSingleRequest();
-							googletag.pubads().collapseEmptyDivs();
-							googletag.enableServices();
-						});
+						// Set targetting ads for each story ads items
+						// This process will be omitted when array is an empty array
+						taData.forEach(({ name, value }) => {
+							googletag.pubads().setTargeting(name, value)
+						})
+	
+						googletag.pubads().enableSingleRequest();
+						googletag.pubads().collapseEmptyDivs();
+						googletag.enableServices();
 					}
-
+					googletag.display(item.preview)
+					
 					googletag.pubads().addEventListener('slotOnload', () => {
 						const parentElement = document.querySelector('.slides');
 						const adsFrame = document.querySelector(`#${item.preview} > div > iframe`)
+						
+						if (!adsFrame) return
 						adsFrame.style.height = parentElement.offsetHeight + 'px'
-
+						
 						const msg = {
 							state: 'init',
 							storyId: storyID,
 							itemId: item.id
 						}
-
+						
 						adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*')
 					})
-
-					googletag.display(item.preview)
-
-					item['destroyed'] = false;
 				})
 			}
 
@@ -1286,10 +1181,6 @@ module.exports = (window => {
 
 			return {
 				show(storyId, page) {
-					// const storyData = zuck.data[storyId];
-					// const currentItem = storyData['currentItem'] || 0;
-					// const item = storyData.items[currentItem];
-					// homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_clicked');
 
 					const modalContainer = query('#zuck-modal');
 					const callback = function () {
@@ -1440,9 +1331,9 @@ module.exports = (window => {
 								item.mpdPlayer.destroy();
 							}
 						}
-						googletag.pubads().clear()
 						item.destroyed = true;
 					})
+					googletag.pubads().clear()
 
 					const callback = function () {
 						if (option('backNative')) {
@@ -1504,15 +1395,6 @@ module.exports = (window => {
 			if (zuck.internalData['seenItems'][storyId]) {
 				seen = true;
 			}
-
-			/*
-			REACT
-			if (seen) {
-			  story.classList.add('seen');
-			} else {
-			  story.classList.remove('seen');
-			}
-			*/
 
 			try {
 				if (!zuck.data[storyId]) {
@@ -1658,22 +1540,6 @@ module.exports = (window => {
 					if (itemHeader && !itemHeader.classList.contains('story-ads-content')) {
 						itemHeader.classList.add('story-ads-content');
 					}
-
-					// ads with video type
-					setTimeout(function checkVideoReady() {
-						if (adsItem.contentType == 'video') {
-							const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
-							if (adsFrame) {
-								const msg = {
-									state: 'play'
-								};
-	
-								adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
-							}
-						} else if (adsItem.contentType == 'none') {
-							setTimeout(checkVideoReady, 300)
-						}
-					}, 300)
 				} else {
 					const itemHeader = query(`#zuck-modal .story-viewer[data-story-id="${currentStory}"] > .head`);
 					if (itemHeader && itemHeader.classList.contains('story-ads-content')) {
@@ -1689,20 +1555,6 @@ module.exports = (window => {
 				try {
 					video.pause();
 				} catch (e) { }
-			} else {
-				const currentStory = zuck.internalData['currentStory'];
-				const currentItem = zuck.data[currentStory]['currentItem'];
-				const adsItem = zuck.data[currentStory].items[currentItem];
-
-				if (adsItem.type == 'ads' && adsItem.contentType == 'video') {
-					const adsFrame = document.querySelector(`#${adsItem.preview} > div > iframe`);
-
-					const msg = {
-						state: 'pause'
-					}
-
-					adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*')
-				}
 			}
 		};
 
@@ -1982,12 +1834,6 @@ module.exports = (window => {
 					playVideoItem(storyViewer, nextItems, event);
 				};
 
-				// const titleElms = document.getElementsByClassName('story-item-title');
-				// for (let i = 0; i < titleElms.length; i++) {
-				//   titleElms[i].innerText = zuck.data[currentStory].items[zuck.data[currentStory]['currentItem']].title;
-				// }
-
-
 				let callback = option('callbacks', 'onNavigateItem');
 				callback = !callback ? option('callbacks', 'onNextItem') : option('callbacks', 'onNavigateItem');
 				callback(currentStory, nextItem.getAttribute('data-story-id'), navigateItemCallback);
@@ -2033,8 +1879,9 @@ module.exports = (window => {
 			
 			// refresh the state of the ads to prevent overlapping sounds between switching over ads story items
 			// dont forget to add loading state to tell user it's still loading when it is going to display story ads
-			googletag.pubads().refresh()
+			googletag.pubads().clear()
 			if (zuck.data[currentStory].items.every(({ type }) => type === "ads")) {
+				googletag.pubads().refresh()
 				storyViewer.classList.add("loading")
 				storyViewer.classList.add("initial") // this will stop animation of the progress bar
 			}
@@ -2113,23 +1960,6 @@ module.exports = (window => {
 		return timelineItem;
 	};
 
-	/**
-	 * Deprecated for personal RCTI+ use case
-	 */
-	/* ZuckJS.buildStoryItem = (id, type, length, src, preview, link, linkText, seen, time, title) => {
-		return {
-			id,
-			type,
-			length,
-			src,
-			preview,
-			link,
-			linkText,
-			seen,
-			time,
-			title
-		};
-	}; */
 	ZuckJS.buildStoryItem = (id, type, length, src, preview, link, linkText, seen, time, title, videoType) => {
 		return {
 			id,
