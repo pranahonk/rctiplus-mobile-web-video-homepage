@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -30,6 +30,7 @@ import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
 import { alertDownload, onTracking, onTrackingClick } from '../components/Includes/program-detail/programDetail';
 import { BASE_URL } from '../config';
 import userActions from '../redux/actions/userActions';
+import miniplayerActions from '../redux/actions/miniplayerActions';
 
 // const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
@@ -109,6 +110,11 @@ class Index extends React.Component {
       title: 'title-program',
       statusProgram: false,
       statusError: 0,
+      scrolling: false,
+      isStopped: false,
+      routerHistory: "",
+      isPaused: false,
+      adsShown: false
     };
     this.type = 'program-detail';
     this.typeEpisode = 'program-episode';
@@ -119,10 +125,14 @@ class Index extends React.Component {
     this.refPanelExtra = React.createRef();
     this.refPanelClip = React.createRef();
     this.refPanelPhoto = React.createRef();
+    this.scrollingElement = React.createRef()
+    this.miniPlayer = React.createRef()
     this.reference = null;
     this.premium = 0;
   }
   componentDidMount() {
+    this.setState({ routerHistory: this.props.router.asPath })
+
     this.premium = this.props?.server?.[this.type]?.data?.premium
     this.reference = queryString.parse(location.search).ref;
     // console.log('MOUNTED: ', this.props);
@@ -160,18 +170,25 @@ class Index extends React.Component {
         this.setState({toggle: this.isTabs(this.props.server[this.type].data)[0]});
       }
     }
+
+    if (this.state.scrolling) {
+      this.scrollingElement.current.scrollTo(0, 0)
+      this.setState({ scrolling: false })
+    }
   }
+
   shouldComponentUpdate() {
-    // console.log('COMPONENT UPDATE');
     this.reference = queryString.parse(location.search).ref;
     return true;
   }
-	// componentWillUnmount() {
-	// 	if (window.convivaVideoAnalytics) {
-	// 		const convivaTracker = convivaJwPlayer();
-	// 		convivaTracker.cleanUpSession();
-	// 	}
-	// }
+  
+	componentWillUnmount() {
+		// if (window.convivaVideoAnalytics) {
+		// 	const convivaTracker = convivaJwPlayer();
+		// 	convivaTracker.cleanUpSession();
+		// }
+	}
+  
   UNSAFE_componentWillReceiveProps(nextProps) {
   }
   componentDidUpdate(prevProps) {
@@ -229,7 +246,21 @@ class Index extends React.Component {
       //   }
       // }
     }
+
+    // When user went into new url, reset scroll and miniplayer event and
+    // dont forget to update state of router history to the new path
+    const hasToBeFocusedOnTop = (
+      (this.state.routerHistory !== this.props.router.asPath) &&
+      this.props.router.query.content_id
+    )
+    if (hasToBeFocusedOnTop) {
+      this.setState({ routerHistory: this.props.router.asPath })
+      this.setState({ scrolling: false })
+
+      this.scrollingElement.current.scrollTo(0, 0)
+    }
   }
+
   getProgramDetail(id, type) {
     if (!this.props.data[type]) {
       this.props.dispatch(
@@ -642,17 +673,23 @@ class Index extends React.Component {
         const data = this.props.data && this.props.data['data-player'];
         return (
           <div className="program-detail-player-wrapper">
-              <JwPlayer data={data && data.data } 
+              <JwPlayer
+                data={data && data.data } 
                 isFullscreen={ data && data.isFullscreen } 
                 ref={this.ref} 
                 onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
                 isResume={true} 
                 geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
                 customData= {{
-                    isLogin: this.props.auth.isAuth, 
-                    programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
-                    sectionPage: 'VOD',
-                    }}
+                  isLogin: this.props.auth.isAuth, 
+                  programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
+                  sectionPage: 'VOD',
+                }}
+                scrolling={this.state.scrolling}
+                isStopped={this.state.isStopped}
+                isPaused={this.state.isPaused}
+                onAdsShown={(adsShown) => this.setState({ adsShown })}
+                handlePlaying={(e) => this.setState({ isStopped: e })}
                 />
               {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
           </div>
@@ -729,17 +766,138 @@ class Index extends React.Component {
   //     return isLogin;
   //   }
   // }
+
+  onScrollHandler() {
+    if (!this.props.router.query.content_id) return
+    if (this.state.isStopped) return
+
+    const parent = this.scrollingElement.current
+    const [playerWrapper] = parent.getElementsByClassName("rplus-jw-container")
+    const changedStyles = [
+      ["position", "fixed"],
+      ["bottom", "3rem"],
+      ["z-index", "3"]
+    ]
+    
+    let scrolling = false
+    this.resetMiniPlayer()
+
+    if (parent.scrollTop > 180) {
+      changedStyles.forEach(args => {
+        playerWrapper.children[0].style[args[0]] = args[1]
+        this.miniPlayer.current.style[args[0]] = args[1]
+      })
+      this.miniPlayer.current.style.display = "flex"
+      this.miniPlayer.current.style.zIndex = "2"
+      
+      scrolling = true
+    }
+
+    this.setState({ scrolling })
+  }
+
+  closeMiniPlayer(e) {
+    e.preventDefault()
+
+    this.setState({ isStopped: true })
+    this.resetMiniPlayer()
+  }
+
+  resetMiniPlayer() {
+    const parent = this.scrollingElement.current
+    const [playerWrapper] = parent.getElementsByClassName("rplus-jw-container")
+    const changedStyles = [ "position", "bottom", "z-index" ]
+
+    if (!playerWrapper) return
+
+    changedStyles.forEach(name => {
+      if(playerWrapper.children[0]) {
+        playerWrapper.children[0].style[name] = ""
+      }
+      this.miniPlayer.current.style[name] = ""
+    })
+    this.miniPlayer.current.style.display = "none"
+  }
+
+  generateMiniPlayerArticle() {
+    if (!this.props.data["description-player"]) return
+
+    const source = this.props.data["description-player"].data
+    const episode = `E${`0${source.episode}`.slice(-2)}:S${`0${source.season}`.slice(-2)}`
+    let programName = `${episode} ${source.title}`
+    let programTitle = source.program_title
+
+    if (this.state.adsShown) {
+      programName = "Video will play after ads"
+      programTitle = "Advertisement"
+    }
+    
+    return (
+      <article>
+        <p>{programName}</p>
+        <p>{programTitle}</p>
+      </article>
+    )
+  }
+
   render() {
     const { props, state } = this;
     const content = props.seo_content_detail?.data
    
     return (
       <Layout>
-        <HeadMeta data={props.seo_content}
-                  dataPlayer={(props.data && props.data['description-player']) || props.seo_content_detail} ogType={'article'}/>
-        <div className="program-detail-container animated fadeInDown go">
-          <div ref={this.refMainContent} style={{minHeight: '10px'}}>
+        <HeadMeta
+          data={props.seo_content}
+          dataPlayer={(props.data && props.data['description-player']) || props.seo_content_detail} ogType={'article'}/>
+        
+        <div
+          ref={this.scrollingElement}
+          style={{ overflowX: "auto", height: "100vh" }}
+          onScroll={() => this.onScrollHandler()}
+          className="program-detail-container">
+
+          <div
+            ref={this.refMainContent}
+            style={{minHeight: '10px'}}>
             { this.switchPanel() }
+            
+            <div
+              ref={this.miniPlayer}
+              className="miniplayer"
+              style={{ display: "none" }}>
+
+              {this.generateMiniPlayerArticle()}
+              
+              <div>
+                <button
+                  className="miniplayer__btn"
+                  onClick={() => this.setState({ isPaused: !this.state.isPaused })}>
+                  {
+                    !state.isPaused 
+                      ? (
+                        <svg width="20" height="15" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1 0C0.447723 0 0 0.447716 0 1V19C0 19.5523 0.447723 20 1 20H4C4.55228 20 5 19.5523 5 19V1C5 0.447716 4.55228 0 4 0H1Z" fill="white"/>
+                          <path d="M10 0C9.44772 0 9 0.447716 9 1V19C9 19.5523 9.44772 20 10 20H13C13.5523 20 14 19.5523 14 19V1C14 0.447716 13.5523 0 13 0H10Z" fill="white"/>
+                        </svg>
+                      )
+                      : (
+                        <svg width="20" height="15" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M15.3569 9.66839C15.9495 10.0643 15.9495 10.9354 15.3569 11.3313L1.9559 20.2856C1.29141 20.7296 0.400326 20.2533 0.400326 19.4542L0.400326 1.54553C0.400326 0.746364 1.29141 0.27007 1.9559 0.714067L15.3569 9.66839Z" fill="white"/>
+                        </svg>
+                      )
+                  }
+                </button>
+
+                <button
+                  className="miniplayer__btn"
+                  onClick={(e) => this.closeMiniPlayer(e)}>
+                  <svg width="20" height="15" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.924 0.397454C16.3926 -0.0711736 17.0891 -0.134486 17.4796 0.256034L19.601 2.37735C19.9915 2.76787 19.9282 3.46436 19.4595 3.93299L13.3405 10.052L19.2065 15.9179C19.6751 16.3865 19.7384 17.083 19.3479 17.4735L17.2266 19.5949C16.8361 19.9854 16.1396 19.9221 15.671 19.4534L9.80503 13.5875L4.18604 19.2065C3.71741 19.6751 3.02091 19.7384 2.63037 19.3479L0.509067 17.2266C0.118564 16.8361 0.181857 16.1396 0.650485 15.671L6.26947 10.052L0.397464 4.17994C-0.0711639 3.71131 -0.134488 3.01482 0.256015 2.6243L2.37735 0.502986C2.76786 0.112466 3.46436 0.175778 3.93299 0.644406L9.805 6.51643L15.924 0.397454Z" fill="white"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
           </div>
           <div style={ props.router.query.content_id && this.refMainContent !== null ? {
             overflowX: 'hidden',
@@ -864,8 +1022,8 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { Program, user } = state;
-  return { data: Program, auth: user };
+  const { Program, user, miniplayer } = state;
+  return { data: Program, auth: user, miniplayer };
 };
 
 const mapDispatchToProps = (dispatch) => {

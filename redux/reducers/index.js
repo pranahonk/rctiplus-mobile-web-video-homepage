@@ -24,6 +24,7 @@ import trendingContent from './trending/content';
 //import trendingContent from './trending/content';
 
 import newsv2Reducer from './newsv2Reducer';
+import miniPlayerReducer from './miniplayerReducers';
 
 const rootReducer = combineReducers({
     authentication: authReducer,
