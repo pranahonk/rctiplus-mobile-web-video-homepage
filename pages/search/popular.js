@@ -13,7 +13,7 @@ const Popular = () => {
     return (
         <div style={{paddingLeft: "20px", paddingRight: "20px", width:"100%"}}>
             {search_popular.length > 0 &&
-                <div className="header-list">
+                <div >
                     <p style={{fontSize:"14px",  fontWeight: "bold", marginBottom:"6px"}} className="title">Popular Search</p>
 
                     {search_popular.map((v,i) => (
