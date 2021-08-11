@@ -5,7 +5,6 @@ import '../../assets/scss/components/search-results.scss';
 
 const Sugestion = () => {
     const { search_suggestion } = useSelector(state => state.searches)
-    console.log(`ini suggestion`, search_suggestion)
 
     return (
         <div style={{paddingLeft: "20px", paddingRight: "20px", width:"100%", paddingBottom:"25px"}}> 

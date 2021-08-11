@@ -328,6 +328,54 @@ const getSearchHistory = () => {
     });
 };
 
+const clearAllHistory = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.delete(`/v2/search/history`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'CLEAR_ALL_SEARCH_HISTORY',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status,
+                    history: response.data.data
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const deleteHistory = (id) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.delete(`/v2/search/history/${id}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'DELETE_SEARCH_HISTORY',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status,
+                    history: response.data.data
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const handleSetSearchHistory = (data) => {
     return dispatch => new Promise(async (resolve, reject) => {
         dispatch({
@@ -337,13 +385,11 @@ const handleSetSearchHistory = (data) => {
     })
 };
 
-const handleResetSearchHistory = (data) => {
-    return dispatch => new Promise(async (resolve, reject) => {
-        dispatch({
-            type: 'SET_SEARCH_HISTORY',
-            history: data
-        });
-    })
+const handleResetSearchHistory = () => {
+    return {
+        type: 'RESET_SEARCH_HISTORY',
+        history: []
+    }
 };
 
 const handleKeyword = (q) => {
@@ -367,6 +413,8 @@ export default {
     getPopularSearch,
     popularTracking,
     getSearchHistory,
+    clearAllHistory,
+    deleteHistory,
     handleSetSearchHistory,
     handleResetSearchHistory,
     getSearchSuggestion,

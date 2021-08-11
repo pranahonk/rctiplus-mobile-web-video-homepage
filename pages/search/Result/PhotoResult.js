@@ -6,6 +6,7 @@ import NoResult from './NoResult';
 
 const PhotoResult = () => {
     const { search_results } = useSelector(state => state.searches);
+    
     return (
         <div style={{marginBottom: "30px"}} >
             <div style={{background: "#282828"}} className="content-search">

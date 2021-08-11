@@ -61,27 +61,6 @@ class Result extends React.Component {
         }
     }
 
-    // saveSearchHistory(q) {
-    //     let searchHistory = getCookie('SEARCH_HISTORY');
-    //     if (!searchHistory) {
-    //         setCookie('SEARCH_HISTORY', [q]);
-    //     }
-    //     else {
-    //         searchHistory = JSON.parse(searchHistory);
-    //         if (searchHistory.indexOf(q) === -1) {
-    //             if (searchHistory.length >= 5) {
-    //                 searchHistory.pop();
-    //             }
-    //         }
-    //         else {
-    //             searchHistory.splice(searchHistory.indexOf(q), 1);
-    //         }
-
-    //         searchHistory.unshift(q);
-    //         setCookie('SEARCH_HISTORY', searchHistory);
-    //     }
-    // }
-
     link(data, type) {
         this.props.popularTracking(data?.ref_id)
         searchProgramClicked(data.title, data.id, type, 'mweb_search_program_clicked');

@@ -46,23 +46,6 @@ const NavbarSearch = ({...props}) => {
         props.getSearchHistory()
             .then(responses => props.unsetPageLoader())
             .catch(error => props.unsetPageLoader());
-
-        let searchHistory = getCookie('SEARCH_HISTORY');
-
-        if(searchHistory) {
-            searchHistory = JSON.parse(searchHistory);
-            if (searchHistory.indexOf(state.q) === -1) {
-                if (searchHistory.length >= 5) {
-                    searchHistory.pop();
-                }
-            }
-            else {
-                searchHistory.splice(searchHistory.indexOf(q), 1);
-            }
-    
-            searchHistory.unshift(state.q);
-            props.handleSetSearchHistory(searchHistory)
-        }
     }
 
 
