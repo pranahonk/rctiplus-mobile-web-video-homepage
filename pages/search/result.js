@@ -1,9 +1,17 @@
 import React from 'react';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 import Img from 'react-image';
 import classnames from 'classnames';
+
+import AllResult from './Result/AllResult';
+import ProgramResult from './Result/ProgramResult';
+import EpisodeResult from './Result/EpisodeResult';
+import ExtraResult from './Result/ExtraResult';
+import CatchupResult from './Result/CatchUpResult';
+import ClipResult from './Result/ClipResult';
+import PhotoResult from './Result/PhotoResult';
 
 import searchActions from '../../redux/actions/searchActions';
 
@@ -13,20 +21,21 @@ import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissa
 import '../../assets/scss/components/search-results.scss';
 
 import { searchTabClicked, searchProgramClicked, searchScrollVerticalEvent } from '../../utils/appier';
+import { getCookie, setCookie, removeAccessToken, setAccessToken } from '../../utils/cookie';
 
 class Result extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            active_tab: 'program',
+            active_tab: 'all',
             results: [],
             meta: {},
             show_more_allowed: {},
             length: 9
         };
 
-        this.tabs = ['All','program', 'episode', 'extra', 'clip', 'photo'];
+        this.tabs = ['all', 'program', 'episode', 'catchup', 'extras', 'clips', 'photos'];
         this.swipe = {};
     }
 
@@ -53,6 +62,7 @@ class Result extends React.Component {
     }
 
     link(data, type) {
+        this.props.popularTracking(data?.ref_id)
         searchProgramClicked(data.title, data.id, type, 'mweb_search_program_clicked');
 		switch (type) {
 			case 'program':                
@@ -75,11 +85,19 @@ class Result extends React.Component {
                     ))}
                 </Nav>
                 <TabContent className="container-box-search-result" activeTab={this.state.active_tab}>
-                    {this.tabs.map((t, i) => (
+                    {this.state.active_tab === "all" && <AllResult handleTab={(val) => this.toggleTab(val) } onClick={(c, t) => this.link( c, t)} />}
+                    {this.state.active_tab === "program" && <ProgramResult onClick={(c) => this.link( c, "program")}  />}
+                    {this.state.active_tab === "episode" && <EpisodeResult onClick={(c) => this.link(c, "episode")} />}
+                    {this.state.active_tab === "extras" && <ExtraResult onClick={(c) => this.link(c, "extras")}  />}
+                    {this.state.active_tab === "catchup" && <CatchupResult onClick={(c) => this.link(c, "catchup")} />}
+                    {this.state.active_tab === "clips" && <ClipResult onClick={(c) => this.link(c, "clips")} />}
+                    {this.state.active_tab === "photos" && <PhotoResult onClick={(c) => this.link(c, "photo")} />}
+                    
+                    {/* {this.tabs.map((t, i) => (
                         <TabPane key={i} tabId={t}>
-                            <div className="content-search">
+                            <div style={{background: "#282828"}} className="content-search">
                                 <div className="header-list">
-                                    <p className="title">Search Result</p>
+                                    <p className="title">Result</p>
                                 </div>
                                 <div className="content-list">
                                     
@@ -123,7 +141,7 @@ class Result extends React.Component {
                                 </div>
                             </div>
                         </TabPane>
-                    ))}
+                    ))} */}
                     
                 </TabContent>
             </div>

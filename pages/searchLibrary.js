@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
-import Link from 'next/link';
-import Img from 'react-image';
+// import Link from 'next/link';
+// import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import fetch from 'isomorphic-unfetch';
@@ -15,10 +15,13 @@ import searchActions from '../redux/actions/searchActions';
 
 import Layout from '../components/Layouts/Default_v2';
 import NavSearch from '../components/Includes/Navbar/NavSearch';
-import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
+// import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
 import SearchResults from './search/result';
+import PopularSearch from './search/popular';
+import HistorySearch from './search/history';
+// import SuggestionSearch from './search/suggestion'
 
-import { Row, Col } from 'reactstrap';
+// import { Row, Col } from 'reactstrap';
 
 import '../assets/scss/components/explore.scss';
 
@@ -81,6 +84,7 @@ class Explores extends React.Component {
 			page: {},
 			show_more_allowed: {},
 			length: 9,
+			searchKeyword: "",
 			selected_genre: selectedGenre,
 			selected_genre_name: selectedGenreName,
 			selected_genre_id: this.props.query.id ? this.props.query.id : -1
@@ -301,7 +305,14 @@ class Explores extends React.Component {
                 <LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
 				<NavSearch />
 				<div className="container-box-e">
-          <SearchResults resolution={this.state.resolution}/>
+					{this.props.searches.search_all !== null ?
+						<SearchResults resolution={this.state.resolution}/>
+						:
+						<>
+							<PopularSearch />
+							<HistorySearch />
+						</>	
+					}
 				</div>
 			</Layout>
 		);

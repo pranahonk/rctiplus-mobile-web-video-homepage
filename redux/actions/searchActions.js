@@ -81,11 +81,12 @@ const searchAllCategory = (q, page = 1, length = 9) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const responses = await Promise.all([
-                axios.get(`/v1/search/program?q=${q}&page=${page}&length=${length}`),
-                axios.get(`/v1/search/episode?q=${q}&page=${page}&length=${length}`),
-                axios.get(`/v1/search/extra?q=${q}&page=${page}&length=${length}`),
-                axios.get(`/v1/search/clip?q=${q}&page=${page}&length=${length}`),
-                axios.get(`/v1/search/photo?q=${q}&page=${page}&length=${length}`)
+                axios.get(`/v2/search/program?q=${q}&page=${page}&length=${length}`),
+                axios.get(`/v2/search/episode?q=${q}&page=${page}&length=${length}`),
+                axios.get(`/v2/search/extra?q=${q}&page=${page}&length=${length}`),
+                axios.get(`/v2/search/clip?q=${q}&page=${page}&length=${length}`),
+                axios.get(`/v2/search/photo?q=${q}&page=${page}&length=${length}`),
+                axios.get(`/v2/search/catchup?q=${q}&page=${page}&length=${length}`)
             ]);
 
             let show_more_allowed = {
@@ -93,7 +94,8 @@ const searchAllCategory = (q, page = 1, length = 9) => {
                 episode: false,
                 extra: false,
                 clip: false,
-                photo: false
+                photo: false,
+                catchup: false
             };
             if (responses[0].status === 200 && responses[0].data.status.code === 0) {
                 show_more_allowed['program'] = responses[0].data.data.length >= length;
@@ -109,6 +111,9 @@ const searchAllCategory = (q, page = 1, length = 9) => {
             }
             if (responses[4].status === 200 && responses[4].data.status.code === 0) {
                 show_more_allowed['photo'] = responses[4].data.data.length >= length;
+            }
+            if (responses[5].status === 200 && responses[5].data.status.code === 0) {
+                show_more_allowed['catchup'] = responses[5].data.data.length >= length;
             }
 
             dispatch({
@@ -199,6 +204,203 @@ const getRelatedProgram = (id = null, page = 1, length = 10) => {
     });
 };
 
+const getSearchAll = (q, page = 1, length = 10) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/search/all?q=${q}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'SEARCH_ALL',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status,
+                    query: q,
+                    all: response.data.data
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getPopularSearch = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/search/fetch-popular`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_SEARCH_POPULAR',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status,
+                    popular: response.data.data
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+
+const popularTracking = (refId) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`v1/episode/2170?ref_id=${refId}`);
+            if (response.data.status.code === 0) {
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getSearchSuggestion = (q, page = 1, length = 10) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/search/suggestion?q=${q}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_SEARCH_SUGGESTION',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status,
+                    suggestion: response.data.data
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const resetSearchSuggestion = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        dispatch({
+            type: 'RESET_SEARCH_SUGGESTION',
+            suggestion: []
+        });
+    });
+};
+
+const getSearchHistory = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v2/search/history`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_SEARCH_HISTORY',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status,
+                    history: response.data.data
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const clearAllHistory = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.delete(`/v2/search/history`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'CLEAR_ALL_SEARCH_HISTORY',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status,
+                    history: response.data.data
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const deleteHistory = (id) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.delete(`/v2/search/history/${id}`);
+            if (response.data.status.code === 0) {
+                dispatch({
+                    type: 'DELETE_SEARCH_HISTORY',
+                    data: response.data.data, 
+                    meta: response.data.meta, 
+                    status: response.data.status,
+                    history: response.data.data
+                });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const handleSetSearchHistory = (data) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        dispatch({
+            type: 'SET_SEARCH_HISTORY',
+            history: data
+        });
+    })
+};
+
+const handleResetSearchHistory = () => {
+    return {
+        type: 'RESET_SEARCH_HISTORY',
+        history: []
+    }
+};
+
+const handleKeyword = (q) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        dispatch({
+            type: 'SET_KEYWORD',
+            data: q, 
+        });
+    });
+};
+
 export default {
     search,
     searchByGenre,
@@ -206,6 +408,17 @@ export default {
     getRelatedProgram,
     searchAllCategory,
     searchCategory,
-    setActiveTab
+    setActiveTab,
+    getSearchAll,
+    getPopularSearch,
+    popularTracking,
+    getSearchHistory,
+    clearAllHistory,
+    deleteHistory,
+    handleSetSearchHistory,
+    handleResetSearchHistory,
+    getSearchSuggestion,
+    resetSearchSuggestion,
+    handleKeyword
     // setShowMoreAllowed
 };
