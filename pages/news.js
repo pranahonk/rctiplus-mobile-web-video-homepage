@@ -358,6 +358,16 @@ class Trending_v2 extends React.Component {
     // }, false)
     // console.log(props)
 
+    alert(typeof window.NewsInterface !== 'undefined');
+    console.log(typeof window.NewsInterface !== 'undefined');
+
+    console.log("mulai tampilkan 5 pilar")
+
+    if (typeof window.NewsInterface !== 'undefined') {
+      console.log("show lima pilar")
+      window.NewsInterface.showHidePilar(true);
+    }
+
     if (this.accessToken !== null && this.accessToken !== undefined) {
       const decodedToken = jwtDecode(this.accessToken);
       if (decodedToken && decodedToken.uid != '0') {
