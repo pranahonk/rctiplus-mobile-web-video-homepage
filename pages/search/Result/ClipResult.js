@@ -9,7 +9,7 @@ import GetApp from '@material-ui/icons/GetApp';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import NoResult from './NoResult';
 
-const ClipResult = ({onClick, onShare, onDownload}) => {
+const ClipResult = ({onClick, onShare, onDownload, onBookmark}) => {
     const { search_results } = useSelector(state => state.searches);
 
     const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
@@ -56,7 +56,7 @@ const ClipResult = ({onClick, onShare, onDownload}) => {
                                 <div style={{marginLeft:"10px", width:"100%", display:"flex", justifyContent:"space-between", flexDirection:"column" }} className="thumb-detail__content">
                                     <label style={{fontSize:"12px", fontWeight:"bold"}} >{ `E${('0'+v.episode).slice(-2)}:S${('0'+v.season).slice(-2)} :`} <span dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(v.title, '...', 100)) }}></span></label>
                                     <div style={{display:"flex", justifyContent:"start"}} className="action-button__content ">
-                                        <ButtonPrimary icon={ <PlaylistAddIcon/> } />
+                                        <ButtonPrimary icon={ <PlaylistAddIcon/> } onclick={() => onBookmark(v?.is_bookmarked, v?.id, v?.type)} />
                                         <ButtonPrimary icon={ <ShareIcon/> } onclick={() => onShare(v.title, v.share_link)} />
                                         <ButtonPrimary icon={ <GetApp/> } onclick={onDownload} />
                                     </div>

@@ -35,7 +35,7 @@ const History = ({...props}) => {
 
     useEffect(() => {
         let history = getCookie('SEARCH_HISTORY');
-        if(history) setSearchHistory(JSON.parse(history));
+        if(history) setSearchHistory([history]);
     }, [])
 
     return (

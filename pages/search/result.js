@@ -95,12 +95,17 @@ class Result extends React.Component {
         return 'title-program';
     }
 
-    addBookmark(){
-        this.props.bookmark(15978,"episode")
+    addBookmark(id, type){
+        this.props.bookmark(id,type)
     }
 
-    deleteBookmark(){
-        this.props.deleteBookmark(15978,"episode")
+    deleteBookmark(id, type){
+        this.props.deleteBookmark(id,type)
+    }
+
+    handleBookmark(status, id, type){
+        if(status) this.deleteBookmark(id,type)
+        else this.addBookmark(id,type)
     }
 
     render() {
@@ -119,6 +124,7 @@ class Result extends React.Component {
                             handleTab={(val) => this.toggleTab(val) } 
                             onShare={(title, url, type) => this.toggleActionSheet(title, url)} 
                             onDownload={() => this.alertDownload()} 
+                            onBookmark={(status, id, type) => this.handleBookmark(status, id, type)}
                             onClick={(c, t) => this.link( c, t)} 
                         />
                     }
@@ -127,6 +133,7 @@ class Result extends React.Component {
                         <EpisodeResult 
                             onShare={(title, url) => this.toggleActionSheet(title, url)} 
                             onDownload={() => this.alertDownload()} 
+                            onBookmark={(status, id, type) => this.handleBookmark(status, id, type)}
                             onClick={(c) => this.link(c, "episode")} 
                         />
                     }
@@ -134,6 +141,7 @@ class Result extends React.Component {
                         <ExtraResult 
                             onShare={(title, url) => this.toggleActionSheet(title, url)} 
                             onDownload={() => this.alertDownload()} 
+                            onBookmark={(status, id, type) => this.handleBookmark(status, id, type)}
                             onClick={(c) => this.link(c, "extras")}  
                         />
                     }
@@ -147,6 +155,7 @@ class Result extends React.Component {
                         <ClipResult 
                             onShare={(title, url) => this.toggleActionSheet( title, url)} 
                             onDownload={() => this.alertDownload()} 
+                            onBookmark={(status, id, type) => this.handleBookmark(status, id, type)}
                             onClick={(c) => this.link(c, "clips")} 
                         />
                     }
