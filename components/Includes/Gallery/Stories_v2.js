@@ -56,7 +56,7 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
-                            backButton: true,
+                            // backButton: true,
                             backNative: false,
                             previousTap: true,
                             skin: currentSkin['name'],
@@ -182,7 +182,7 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
-                            backButton: true,
+                            // backButton: true,
                             backNative: false,
                             previousTap: true,
                             skin: currentSkin['name'],
@@ -385,7 +385,7 @@ class Stories extends React.Component {
             items.push([
                 item.id,
                 item.link_video != null ? 'video' : 'photo',
-                10,
+                100000,
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 this.handleActionClick(item), 
@@ -533,10 +533,9 @@ class Stories extends React.Component {
                 return program.swipe_value
             case 'link':
                 if(program.swipe_value) {
-                    return `${program.share_link}`;
+                    return `${program.swipe_value}`;
                 }
                 break;
-            case 'program':
             case 'extra':
             case 'clip':
             case 'episode':
