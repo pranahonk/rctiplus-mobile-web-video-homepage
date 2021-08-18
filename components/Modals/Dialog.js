@@ -38,8 +38,8 @@ class Dialog extends React.Component  {
                   
                   return (
                     <button key={i}
-                      style={{fontSize: this.props.dialog && this.props.dialog.seasonSelected === item.season ? '24px' : 'inherit', 
-                              fontWeight: this.props.dialog && this.props.dialog.seasonSelected === item.season ? 'bold' : 'inherit'}}
+                      style={{fontSize: this.props.dialog && Number(this.props.dialog.seasonSelected) === item.season ? '24px' : 'inherit', 
+                              fontWeight: this.props.dialog && Number(this.props.dialog.seasonSelected) === item.season ? 'bold' : 'inherit'}}
                       className="season-list-item"
                       onClick={() => {
                       if (isStoreSeason.filter((filter) => filter === 'season-'+item.season).length === 0) {

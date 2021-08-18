@@ -65,10 +65,48 @@ const JwPlayer = (props) => {
     },
   };
 
+  // Miniplayer hooks functions
+  // Please mind the sequence of the line of the logic!!
+  const variableToBeListened = [
+    player,
+    duration,
+    props.scrolling,
+    props.isStopped,
+    props.isPaused,
+    props.seekPosition
+  ]
+  useEffect(() => {
+    if (!player) return
+
+    handleMiniplayerSizeAndControl(props.scrolling && !props.isStopped)
+
+    if (props.seekPosition) player.seek(props.seekPosition)
+    
+    if (props.isPaused) player.pause()
+    else player.play()
+    
+    if (props.isStopped) player.stop()
+    
+  }, [...variableToBeListened])
+
+  const handleMiniplayerSizeAndControl = (miniPlayerActive) => {
+    const variables = {
+      width: miniPlayerActive ? "30%" : options.width,
+      height: miniPlayerActive ? "80" : options.height,
+      showCtrl: !miniPlayerActive,
+      showAdsBtns: miniPlayerActive ? "none" : ""
+    }
+
+    player.setControls(variables.showCtrl)
+    player.resize(variables.width, variables.height)
+
+    const [adsOverlayScreen] = document.querySelectorAll("#jwplayer-rctiplus_ad > div iframe")
+    if (adsOverlayScreen) adsOverlayScreen.style.display = variables.showAdsBtns
+  }
+
   // Initial Setup
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
-    // console.log('EFFECT INIT 1', props);
     if (props.geoblockStatus) {
       setStatus({
         isPlayer: false,
@@ -83,7 +121,6 @@ const JwPlayer = (props) => {
     }
     return () => {
       if (player !== null) {
-        // console.log('DISPOSEEEEEE');
         jwplayer.remove();
       }
     };
@@ -92,20 +129,15 @@ const JwPlayer = (props) => {
   // Update Setup
   useEffect(() => {
 
-    // console.log('EFFECT INIT 2');
     if (player !== null) {
       setIsConviva(Math.random());
       setIsCustomSetup(Math.random());
       player.setup(options);
-      // console.log('PLAYERRRR : ',props.data)
-      // console.log('ISLOGIN : ', props.customData && props.customData.isLogin)
     }
   }, [props.data && props.data.url, props.data && props.data.vmap]);
 
   // Costum Setup
   useEffect(() => {
-    // console.log('EFFECT INIT 3');
-    // console.log('PLAYER GET DATA: ',props, player);
     if (player !== null) {
       player.on('ready', (event) => {
         /* if (props.isFullscreen) {
@@ -119,8 +151,35 @@ const JwPlayer = (props) => {
         const backwardContainer = playerContainer.querySelector('.jw-icon-rewind');
         const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
-        if (props.type.includes("live")) {
-                  // console.log("CUSTOMMM", props.data)
+        if(isForward) {
+          const forwardElement = document.createElement('div');
+          forwardElement.classList.add('jw-rplus-forward');
+          forwardElement.innerHTML = foward10;
+          // const iconForward = document.querySelector('.icon-forward');
+          forwardElement.addEventListener('dblclick', (ev) => {
+            // iconForward.classList.add('animated', 'fadeInRight', 'go');
+            setTimeout(() => {
+              // iconForward.classList.remove('animated', 'fadeInRight', 'go');
+              forwardElement.style.opacity = 0;
+            }, 900);
+          });
+          playerContainer.append(forwardElement);
+        }
+        if (props.type !== 'live tv' || props.type !== 'live event') {
+          fowardContainer.innerHTML = foward10Icon;
+          backwardContainer.innerHTML = backward10Icon;
+          fowardContainer.addEventListener('touchstart', () => {
+            player.seek(player.getPosition() + 10);
+          });
+        }
+
+        if (props.type === 'live tv' || props.type === 'live event') {
+          // console.log(fowardContainer);
+          fowardContainer.style.display = 'none'
+          backwardContainer.style.display = 'none'
+          fowardContainer.innerHTML = '';
+          backwardContainer.innerHTML = '';
+
           // check if gpt data exist
           if ((props.data && props.data.gpt && props.data.gpt.path != null) && (props.data && props.data.gpt && props.data.gpt.path != undefined)) {
             // check if ads_wrapper element not exist
@@ -207,8 +266,7 @@ const JwPlayer = (props) => {
           }
         }
       });
-      player.on('play', () =>{
-        // console.log('PLAYING');
+      player.on('play', (event) =>{
         convivaJwPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
           
@@ -221,6 +279,10 @@ const JwPlayer = (props) => {
             }
           }
         }
+        
+        // This is to modify isStopped on the parent
+        // isStopped is a state to tell whether jwplayer is stopped or playing
+        if (props.handlePlaying) props.handlePlaying(false)
       });
       player.on('pause', () =>{
         // console.log('EFFECT INIT 4 CONTINUE WATCHING PAUSE', test)
@@ -239,10 +301,11 @@ const JwPlayer = (props) => {
           }
         }
       });
+
       player.on('time', (event) => {
-        // console.log('duration:', event.currentTime);
-        setDuration(player.getPosition());
-      });
+        setDuration(player.getPosition())
+      })
+
       player.on('complete', (event) => {
         const convivaTracker = convivaJwPlayer();
         if (window.convivaVideoAnalytics) {
@@ -253,6 +316,7 @@ const JwPlayer = (props) => {
 
         setPlayerFullscreen(player.getFullscreen());
       });
+
       // ads event
       player.on('adImpression', (event) => {
         if (document.querySelector('.ads_wrapper')) {
@@ -260,6 +324,8 @@ const JwPlayer = (props) => {
         }
       });
       player.on('adSkipped', (event) => {
+        if (props.onAdsShown) props.onAdsShown(false)
+
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
             setAdStatus('prestart');
@@ -267,12 +333,17 @@ const JwPlayer = (props) => {
         }
       });
       player.on('adComplete', (event) => {
+        if (props.onAdsShown) props.onAdsShown(false)
+
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
             setAdStatus('prestart');
           }
         }
       });
+      player.on('adStarted', _ => {
+        if (props.onAdsShown) props.onAdsShown(true)
+      })
       player.on('userActive', (event) => {
         if (document.querySelector('.ads_wrapper')) {
           document.querySelector('.ads_wrapper').style.bottom = '70px';
@@ -283,10 +354,17 @@ const JwPlayer = (props) => {
           document.querySelector('.ads_wrapper').style.bottom = '5px';
         }
       });
-
+      /* window.addEventListener('resize', (event) => {
+        if (document.querySelector('.ads_wrapper')) {
+          if (adsStatus === 'idle' || adsStatus === 'close') {
+            setAdStatus('restart');
+          }
+        }
+      }); */
     }
-  }, [player, props?.data?.url]);
+  });
 
+  // Error handling functions
   useEffect(() => {
     const containerElement = document.getElementsByClassName('rplus-jw-container');
     if (player !== null) {
@@ -295,7 +373,7 @@ const JwPlayer = (props) => {
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
-        console.log('ERRORR',props.data.url)
+
         if (props.data.url === 'error') {
           setStatus({
             isPlayer: false,
@@ -309,8 +387,14 @@ const JwPlayer = (props) => {
           isError01: false,
           isError02: true,
         });
+
+        
+        // When error has fired, remove player and cancel miniplayer onscroll event
+        // by passing true parameter to stop the event
+        if (props.handlePlaying) props.handlePlaying(true)
         player.remove();
       });
+
       player.on('setupError', (event) => {
         // console.log('PLAYER SETUP ERROR', event);
         const convivaTracker = convivaJwPlayer();
@@ -330,6 +414,10 @@ const JwPlayer = (props) => {
           isError01: false,
           isError02: true,
         });
+
+        // When error has fired, remove player and cancel miniplayer onscroll event
+        // by passing true parameter to stop the event
+        if (props.handlePlaying) props.handlePlaying(true)
         player.remove();
       });
     }
@@ -603,11 +691,9 @@ export default JwPlayer;
 
 const getPlayer = (error1, error2) => {
   if (error1) {
-    console.log('GEO')
     return error(msgError01)
   }
   if (error2) {
-    console.log('ERRORRRRR P')
     return error()
   }
   return (<div id="jwplayer-rctiplus" />)

@@ -1,71 +1,53 @@
 import React from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import nextCookie from 'next-cookies' 
 import { Picker } from 'emoji-mart';
-// import Img from 'react-image';
-// import TimeAgo from 'react-timeago';
-import dynamic from 'next/dynamic';
+import Img from 'react-image';
+import TimeAgo from 'react-timeago';
 
-import initialize from '../utils/initialize';
-import { getCountdown } from '../utils/helpers';
-// import { convivaJwPlayer } from '../utils/conviva';
+import initialize from '../../../utils/initialize';
+import { getCountdown } from '../../../utils//helpers';
 
-import liveAndChatActions from '../redux/actions/liveAndChatActions';
-import pageActions from '../redux/actions/pageActions';
-import chatsActions from '../redux/actions/chats';
-import userActions from '../redux/actions/userActions';
+import liveAndChatActions from '../../../redux/actions/liveAndChatActions';
+import pageActions from '../../../redux/actions/pageActions';
+import chatsActions from '../../../redux/actions/chats';
+import userActions from '../../../redux/actions/userActions';
 
-import Layout from '../components/Layouts/Default_v2';
-import SelectDateModal from '../components/Modals/SelectDateModal';
-// import { GeoblockModal } from '../components/Modals/Geoblock';
-import ActionSheet from '../components/Modals/ActionSheet';
-import Wrench from '../components/Includes/Common/Wrench';
-// import MuteChat from '../components/Includes/Common/MuteChat';
-// import Toast from '../components/Includes/Common/Toast';
-import JsonLDVideo from '../components/Seo/JsonLDVideo';
-import LiveChats from "../components/Includes/LiveChat"
+import Wrench from '../../../components/Includes/Common/Wrench';
+import MuteChat from '../../../components/Includes/Common/MuteChat';
+import Toast from '../../../components/Includes/Common/Toast';
 
-import { formatDate, formatDateWord, getFormattedDateBefore, formatMonthEngToID } from '../utils/dateHelpers';
-import { showAlert, showSignInAlert } from '../utils/helpers';
+import { formatDate, formatDateWord, getFormattedDateBefore, formatMonthEngToID } from '../../../utils/dateHelpers';
+import { showAlert, showSignInAlert } from '../../../utils/helpers';
 
-import { Row, Col, Button, Nav, NavItem, NavLink, TabContent, TabPane, Input } from 'reactstrap';
+import { Row, Col, Button, Input } from 'reactstrap';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-// import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-// import SentimenVerySatifiedIcon from '@material-ui/icons/SentimentVerySatisfied';
-// import SendIcon from '@material-ui/icons/Send';
-// import KeyboardIcon from '@material-ui/icons/Keyboard';
-// import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-// import RefreshIcon from '@material-ui/icons/Refresh';
-import PauseIcon from '../components/Includes/Common/PauseIcon';
-// import { isIOS } from 'react-device-detect';
-// import socketIOClient from 'socket.io-client';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import SentimenVerySatifiedIcon from '@material-ui/icons/SentimentVerySatisfied';
+import SendIcon from '@material-ui/icons/Send';
+import KeyboardIcon from '@material-ui/icons/Keyboard';
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import PauseIcon from '../../../components/Includes/Common/PauseIcon';
 import ax from 'axios';
 
-import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
+import NoLogin from "../../../components/Includes/LiveChat/LiveChat_NoLogin"
+import LiveChatTnC from "../../../components/Includes/LiveChat/LiveChat_TnC"
 
-import '../assets/scss/components/live-tv.scss';
+import { DEV_API} from '../../../config';
+
+import '../../../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
-import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId, appierAdsShow, appierAdsClicked } from '../utils/appier';
-import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTracking';
-// import { RPLUSAdsShowing, RPLUSAdsClicked } from '../utils/internalTracking';
+import {  liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId, appierAdsShow, appierAdsClicked } from '../../../utils/appier';
+import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../../utils/firebaseTracking';
 import queryString from 'query-string';
 
-import { getCookie, getVisitorToken, checkToken } from '../utils/cookie';
-// import { scrollToTop } from 'react-scroll/modules/mixins/animate-scroll';
+import { getCookie, getVisitorToken, checkToken } from '../../../utils/cookie';
 
-const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
-// const innerHeight = require('ios-inner-height');
-
-const axios = ax.create({
-  // baseURL: API + '/api',
-  baseURL: DEV_API + '/api'
-});
+const axios = ax.create({baseURL: DEV_API + '/api'});
 
 axios.interceptors.request.use(async (request) => {
   await checkToken();
@@ -78,7 +60,6 @@ class Tv extends React.Component {
 
 	static async getInitialProps(ctx) {
 		initialize(ctx);
-		// const { VISITOR_TOKEN, ACCESS_TOKEN } = nextCookie(ctx)
 		const idEpg = ctx.query.epg_id;
 		let dataEpg = null;
 		let q = null;
@@ -155,10 +136,13 @@ class Tv extends React.Component {
 			chats: [],
 			ads_data: null,
 			isAds: false,
+			isLogin: false,
 			chat: '',
 			total_newChat : [],
 			lastScroll: 0,
 			user_data: null,
+			isStatusTnC: true,
+			showTnC: false,
 			snapshots: [],
 			sending_chat: false,
 			block_user: {
@@ -180,6 +164,7 @@ class Tv extends React.Component {
 
 		this.player = null;
 		this.currentDate = now;
+		this.props.setCatchupDate(formatDateWord(now));
 		this.pubAdsRefreshInterval = null;
 		this.videoNode = null;
 		this.convivaTracker = null;
@@ -194,18 +179,20 @@ class Tv extends React.Component {
 		if (this.convivaTracker) {
 			this.convivaTracker.cleanUpSession();
 		}
-		// if (window.convivaVideoAnalytics) {
-		// 	const convivaTracker = convivaJwPlayer();
-		// 	convivaTracker.cleanUpSession();
-		// }
+		
 	}
 
-	componentDidUpdate() {
+	componentDidUpdate(){
+		if(!this.state.isStatusTnC){
+			setTimeout(() => console.log(`hahahahahahhahahahahahahahahahahahhhhhhhhhhhhhhhhhhhhhhhhhhhhhh`), 10000)
+		}
 	}
+
 
 	componentDidMount() {
-		
+
 		initGA();
+		this.getStatusTCN()
 		this.props.setPageLoader();
 		this.props.getLiveEvent('on air')
 			.then(response => {
@@ -237,27 +224,50 @@ class Tv extends React.Component {
 				console.log(error);
 			});
 
-    // this.refreshPubAds();
+    	// this.refreshPubAds();
 
-    axios.get('/v1/get-ads-duration')
-    .then(response => {
-      //console.log('ads duration res', response.data);
-      if (response.data.data) {
-        this.setState({
-          adsOverlayDuration: {
-            refreshDuration: response.data.data[0].duration,
-            reloadDuration: response.data.data[1].duration
-          }
-        })
-      }
-    })
-    .catch(error => {
-      console.log(error);
-    });
+		axios.get('/v1/get-ads-duration')
+		.then(response => {
+		//console.log('ads duration res', response.data);
+		if (response.data.data) {
+			this.setState({
+			adsOverlayDuration: {
+				refreshDuration: response.data.data[0].duration,
+				reloadDuration: response.data.data[1].duration
+			}
+			})
+		}
+		})
+		.catch(error => {
+		console.log(error);
+		});
 	}
+
+	getStatusTCN(){
+		if(this.checkLogin){
+			axios.get('/v1/agreement/live-chat/status')
+				.then(response => {
+					if (response?.data?.data) {
+						this.setState({isStatusTnC: response?.data?.data?.is_signed})
+					}
+				})
+				.catch(error => console.log(error))	
+		}
+	}
+
+	setStatusTCN(){
+		axios.get('/v1/agreement/live-chat/sign')
+			.then(response => {
+				if (response?.data?.data) {
+					this.setState({isStatusTnC: true})
+				}
+			})
+			.catch(error => console.log(error))	
+	}
+
 	setHeightChatBox() {
-		let heightPlayer = this.playerContainerRef.current.clientHeight + this.tvTabRef.current.clientHeight;
-		return `calc(100% - ${heightPlayer}px)`;	
+		// let heightPlayer = this.props.playerContainer + this.props.tvTabRef
+		// return `calc(100% - ${heightPlayer}px)`;	
 	}
 	isLiveProgram(epg) {
 		const currentTime = new Date().getTime();
@@ -276,6 +286,23 @@ class Tv extends React.Component {
 		}
 
 		return null;
+	}
+
+	handleScroll() {
+		const chatBox = document.getElementById('chat-messages');
+		if((chatBox.scrollHeight - chatBox.scrollTop) - chatBox.clientHeight <= 25){
+			this.setState({ chat_box: false, total_newChat: []})
+		}
+		else{
+			this.setState({ chat_box: true})	
+		}
+	}
+
+	handleScrollToBottom  () {
+		const chatBox = document.getElementById('chat-messages');
+		chatBox.scrollTop = chatBox.scrollHeight;
+		
+		this.setState({chat_box: false, total_newChat: []})
 	}
 
 	loadChatMessages(id) {
@@ -320,10 +347,10 @@ class Tv extends React.Component {
 												}
 											}
 											
-											// if(!this.state.chat_box && this.state.total_newChat.length > 0){
-											// 	const chatBox = document.getElementById('chat-messages');
-											// 	chatBox.scrollTop = chatBox.scrollHeight;
-											// }
+											if(!this.state.chat_box && this.state.total_newChat.length > 0){
+												const chatBox = document.getElementById('chat-messages');
+												chatBox.scrollTop = chatBox.scrollHeight;
+											}
 
 											this.setState({ chats: chats }, () => {
 												const chatInput = document.getElementById('chat-input');
@@ -360,14 +387,7 @@ class Tv extends React.Component {
 
 	selectChannel(index, first = false) {
 		// this.props.setPageLoader();
-
-		this.setState({ 
-			selected_index: index,
-			error: false,
-			chats: [],
-			ads_data: null,
-			isAds: false }, () => {
-
+		this.setState({ selected_index: index, error: false, chats: [], ads_data: null, isAds: false }, () => {
 			setTimeout(() => {
 				if (this.state.chat_open) {
 					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
@@ -375,7 +395,6 @@ class Tv extends React.Component {
 					}
 				}
 			}, 100);
-			
 			let epgLoaded = false;
 			let catchupLoaded = false;
 
@@ -396,29 +415,24 @@ class Tv extends React.Component {
 					}, () => {
 						// this.initVOD();
 
-						this.props.getEPG(
-							formatDate(this.currentDate),
-							this.state.live_events[this.state.selected_index].channel_code
-						)
+						this.props.getEPG(formatDate(this.currentDate), this.state.live_events[this.state.selected_index].channel_code)
 							.then(response => {
-								console.log(response, "get EPG I")
 								epgLoaded = true;
-								let epg = response.data.data
-									.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + 'T' + e.e).getTime());
-
+								let epg = response.data.data.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + 'T' + e.e).getTime());
 								this.setState({ epg: epg }, () => {
 									if (first != true) {
 										let programLive = this.getCurrentLiveEpg();
 										liveTvChannelClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, programLive ? programLive.title : 'N/A', 'mweb_livetv_channel_clicked');
 									}
 
-									if (!this.props.context_data.epg_id) {
-										// this.initPlayer();
-									}
-									else if (first === true && this.props.context_data.epg_id) {
+									// if (!this.props.context_data.epg_id) {
+									// 	// this.initPlayer();
+									// }
+									else if (first === true && this.props.context_data?.epg_id) {
 										this.selectCatchup(this.props.context_data.epg_id, 'url');
 									}
 									this.props.setChannelCode(this.state.selected_live_event.channel_code);
+									this.props.setCatchupDate(formatDateWord(this.currentDate));
 									if (epgLoaded && catchupLoaded) {
 										this.props.unsetPageLoader();
 									}
@@ -438,10 +452,11 @@ class Tv extends React.Component {
 									this.selectCatchup(this.props.context_data.epg_id, 'url');
 								}
 								this.props.setChannelCode(this.state.selected_live_event.channel_code);
+								this.props.setCatchupDate(formatDateWord(this.currentDate));
 								if (epgLoaded && catchupLoaded) {
 									this.props.unsetPageLoader();
 								}
-							})
+							});
 					});
 				})
 				.catch(error => {
@@ -454,43 +469,36 @@ class Tv extends React.Component {
 						status: error.data && error.data.status.code  === 12 ? true : false,
 					});
 					this.props.unsetPageLoader();
-				})
-				.finally(async () => {
+				});
 
-					// Wait for all of these promise function above done processing
-					// to get the params_date from updated props
-					const selectedDate = this.props.params_date 
-						? formatDateWord(new Date(this.props.params_date)) 
-						: formatDateWord(new Date())
 
-					this.setState(() => {
-						this.props.setCatchupDate(selectedDate)
-						return {
-							selected_date: selectedDate
-						}
-					})
-		
-					const response = await this.props.getEPG(
-						formatDate(new Date(selectedDate)),
-						this.state.live_events[this.state.selected_index].channel_code
-					)
-					catchupLoaded = true
 
-					const catchup = response.data.data.filter(e => {
+			this.props.getEPG(formatDate(new Date(this.state.selected_date)), this.state.live_events[this.state.selected_index].channel_code)
+				.then(response => {
+					catchupLoaded = true;
+					let catchup = response.data.data.filter(e => {
 						if (e.s > e.e) {
-							return this.currentDate.getTime() > new Date(new Date(selectedDate + ' ' + e.e).getTime() + (1 * 24 * 60 * 60 * 1000)).getTime();
+							return this.currentDate.getTime() > new Date(new Date(this.state.selected_date + ' ' + e.e).getTime() + (1 * 24 * 60 * 60 * 1000)).getTime();
 						}
-						return this.currentDate.getTime() > new Date(selectedDate + ' ' + e.e).getTime();
-					})
-					this.setState({ catchup }, () => {
+						return this.currentDate.getTime() > new Date(this.state.selected_date + ' ' + e.e).getTime();
+					});
+					this.setState({ catchup: catchup }, () => {
 						this.props.setCatchupData(catchup);
-
 						if (epgLoaded && catchupLoaded) {
 							this.props.unsetPageLoader();
 						}
-					})
+					});
 				})
+				.catch(error => {
+					catchupLoaded = true;
+					console.log(error);
+					if (epgLoaded && catchupLoaded) {
+						this.props.unsetPageLoader();
+					}
+				});
 		});
+
+
 	}
 
 	selectCatchup(id, ref = false) {
@@ -563,26 +571,28 @@ class Tv extends React.Component {
 	}
 
 	toggleChat() {
-		if (this.checkLogin()) {
-			this.setState({ chat_open: !this.state.chat_open }, () => {
-				if (this.state.chat_open && !this.state.isAds) {
-					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
-						this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
-					}
+		this.setState({ chat_open: !this.state.chat_open }, () => {
+			if (this.state.chat_open && !this.state.isAds) {
+				if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
+					this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
 				}
-				if (!this.state.chat_open) {
-					this.setState((state,props) => ({
-						ads_data: null,
-					}));
-				}
-				this.props.toggleFooter(this.state.chat_open);
-				if (this.state.chat_open) {
-					liveTvLiveChatClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_livechat_clicked');
-				}
-				const chatBox = document.getElementById('chat-messages');
-				chatBox.scrollTop = chatBox.scrollHeight;
-			});
-		}
+			}
+			if (!this.state.chat_open) {
+				this.setState((state,props) => ({
+					ads_data: null,
+				}));
+			}
+			this.props.toggleFooter(this.state.chat_open);
+			if (this.state.chat_open) {
+				liveTvLiveChatClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_livechat_clicked');
+			}
+			const chatBox = document.getElementById('chat-messages');
+			chatBox.scrollTop = chatBox.scrollHeight;
+		});
+
+		if (this.checkLogin()) this.setState({isLogin: true})
+		else this.setState({isLogin: false})
+		
 	}
 
 	toggleEmoji() {
@@ -618,11 +628,12 @@ class Tv extends React.Component {
 
 	checkLogin() {
 		if (!this.state.user_data) {
-			showSignInAlert(`Please <b>Sign In</b><br/>
-				Woops! Gonna sign in first!<br/>
-				Only a click away and you<br/>
-				can continue to enjoy<br/>
-				<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true, 'popup-action-signup', 'popup-action-signin');
+			// console.log(`belum login`)
+			// showSignInAlert(`Please <b>Sign In</b><br/>
+			// 	Woops! Gonna sign in first!<br/>
+			// 	Only a click away and you<br/>
+			// 	can continue to enjoy<br/>
+			// 	<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true, 'popup-action-signup', 'popup-action-signin');
 			return false;
 		}
 		return true;
@@ -673,11 +684,11 @@ class Tv extends React.Component {
 			}
 		}
 		else {
-			showSignInAlert(`Please <b>Sign In</b><br/>
-			Woops! Gonna sign in first!<br/>
-			Only a click away and you<br/>
-			can continue to enjoy<br/>
-			<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
+			// showSignInAlert(`Please <b>Sign In</b><br/>
+			// Woops! Gonna sign in first!<br/>
+			// Only a click away and you<br/>
+			// can continue to enjoy<br/>
+			// <b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
 		}
 	}
 
@@ -811,16 +822,9 @@ class Tv extends React.Component {
 			twitter_img_alt: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel == 'inews' ? 'iNEWS' : channel?.toUpperCase()} - RCTI+` : twitter_img_alt,
 		}
 	}
-	// _onClickEpg() {
-	// 	Router.replace(``)
-	// }
+    
 	render() {
-		const { props, state } = this
-		const contentData = {
-			asPath: props.router.asPath,
-			title: props.context_data?.epg_title || props.context_data?.channel,
-			thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image
-		}
+		
 		let playerRef = (<div></div>);
 		if (this.state.error) {
 			playerRef = (
@@ -893,220 +897,59 @@ class Tv extends React.Component {
 				</div>
 			);
 		}
+		
 
 		return (
-			<Layout className="live-tv-layout" title={this._metaTags().title}>
-				<Head>
-					<JsonLDVideo content={contentData} />
-					<meta name="description" content={this._metaTags().description} />
-					<meta name="keywords" content={this._metaTags().keywords} />
-					<meta property="og:title" content={this._metaTags().title} />
-					<meta property="og:description" content={this._metaTags().description} />
-					<meta property="og:image" itemProp="image" content={this._metaTags().image} />
-					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
-					<meta property="og:type" content="article" />
-					<meta property="og:image:type" content="image/jpeg" />
-					<meta property="og:image:width" content="600" />
-					<meta property="og:image:height" content="315" />
-					<meta property="og:site_name" content={SITE_NAME} />
-					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
-					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
-					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
-					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-					<meta name="twitter:image" content={this._metaTags().image} />
-					<meta name="twitter:image:alt" content={this._metaTags().twitter_img_alt} />
-					<meta name="twitter:title" content={this._metaTags().title} />
-					<meta name="twitter:description" content={this._metaTags().description} />
-					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
-					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
-
-					<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-					{/* <script dangerouslySetInnerHTML={{
-						__html: `
-						window.googletag = window.googletag || {cmd: []};
-						var i=2;
-						googletag.cmd.push(function() {
-							if(i===1){
-								googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
-							}
-							else {
-								googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
-							}
-							googletag.pubads().addEventListener('slotVisibilityChanged', function(event) {
-								console.log(event);
-							});
-							googletag.pubads().enableSingleRequest();
-							googletag.pubads().collapseEmptyDivs();
-							googletag.enableServices();
-						});
-					` }}></script> */}
-				</Head>
-				<SelectDateModal
-					open={this.state.select_modal}
-					data={this.state.dates_before}
-					toggle={this.toggleSelectModal.bind(this)} />
-
-				<ActionSheet
-					tabStatus= {this.state.tabStatus}
-					caption={this.state.caption}
-					url={this.state.url}
-					open={this.state.action_sheet}
-					hashtags={this.state.hashtags}
-					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])} />
-
-				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
-					{/* {playerRef} */}
-					{/* <GeoblockModal open={state.status} toggle={() => { this.setState({ status: !state.status }); }} text="Whoops, Your Location doesnt support us to live stream this content"/> */}
-					<div ref={this.playerContainerRef}>
-						<JwPlayer
-							data={ state.data_player }
-							type={ state.data_player_type }
-							geoblockStatus={state.status}
-							customData={ {
-								isLogin: this.props.user.isAuth,
-								sectionPage: state.data_player_type === 'live tv' ? 'live tv' : 'catchup',
-								} }
-              adsOverlayData={ state.adsOverlayDuration }
-							/>
-					</div>
-					<div ref= {this.tvTabRef} className="tv-wrap">
-						<Row>
-							<Col xs={3} className="text-center">
-								<Link href="/tv?channel=rcti" as="/tv/rcti">
-									<Button size="sm" color="link" className={this.state.selected_index === 0 ? 'selected shadow-none' : 'shadow-none'} onClick={this.selectChannel.bind(this, 0)}><h1 className="heading-rplus">RCTI</h1></Button>
-								</Link>
-							</Col>
-							<Col xs={3} className="text-center">
-								<Link href="/tv?channel=mnctv" as="/tv/mnctv">
-									<Button size="sm" color="link" className={this.state.selected_index === 1 ? 'selected shadow-none' : 'shadow-none'} onClick={this.selectChannel.bind(this, 1)}><h1 className="heading-rplus">MNCTV</h1></Button>
-								</Link>
-							</Col>
-							<Col xs={3} className="text-center">
-								<Link href="/tv?channel=gtv" as="/tv/gtv">
-									<Button size="sm" color="link" className={this.state.selected_index === 2 ? 'selected shadow-none' : 'shadow-none'} onClick={this.selectChannel.bind(this, 2)}><h1 className="heading-rplus">GTV</h1></Button>
-								</Link>
-							</Col>
-							<Col xs={3} className="text-center">
-								<Link href="/tv?channel=inews" as="/tv/inews">
-									<Button size="sm" color="link" className={this.state.selected_index === 3 ? 'selected shadow-none' : 'shadow-none'} onClick={this.selectChannel.bind(this, 3)}><h1 className="heading-rplus">INEWS</h1></Button>
-								</Link>
-							</Col>
-						</Row>
-					</div>
-					<Nav tabs className="tab-wrap">
-						<NavItem onClick={() => {
-							this.setState({ selected_tab: 'live' }, () => {
-								liveTvTabClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'Live', 'mweb_livetv_tab_clicked');
-							});
-						}} className={this.state.selected_tab === 'live' ? 'selected' : ''}>
-							<NavLink><h2 className="heading-rplus">Live</h2></NavLink>
-						</NavItem>
-						<NavItem onClick={() => {
-							this.setState({ selected_tab: 'catch_up_tv' }, () => {
-								liveTvTabClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'Catch Up TV', 'mweb_livetv_tab_clicked');
-							});
-						}} className={this.state.selected_tab === 'catch_up_tv' ? 'selected' : ''}>
-							<NavLink><h2 className="heading-rplus">Catch Up TV</h2></NavLink>
-						</NavItem>
-					</Nav>
-					<div className="tab-content-wrap">
-						<TabContent activeTab={this.state.selected_tab}>
-							<TabPane tabId={'live'}>
-								{this.state.epg.map((e, i) => {
-									if (this.isLiveProgram(e)) {
-										return (<Row key={i} className={'program-item selected'}>
-											<Col xs={9}>
-												<div className="title"><h3 className="heading-rplus"> {e.title} <FiberManualRecordIcon /> </h3></div>
-												<div className="subtitle">{e.s} - {e.e}</div>
-											</Col>
-											<Col className="right-side">
-												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Live TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + e.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code],'livetv')} className="share-btn" />
-											</Col>
-										</Row>);
-									}
-
-									return (<Row key={i} className={'program-item'}>
-										<Col xs={9}>
-											<div className="title"><h3 className="heading-rplus"> {e.title} </h3></div>
-											<div className="subtitle">{e.s} - {e.e}</div>
-										</Col>
-									</Row>);
-								})}
-							</TabPane>
-							<TabPane tabId={'catch_up_tv'}>
-								<div className="catch-up-wrapper">
-									<div className="catchup-dropdown-menu">
-										<Button
-											onClick={this.toggleSelectModal.bind(this)} size="sm" color="link">
-												{this.props.chats.catchup_date} <ExpandMoreIcon />
-										</Button>
-									</div>
-									{this.props.chats.catchup.map(c => (
-										<Row key={c.id} className={'program-item'}>
-											<Col xs={9} onClick={this.selectCatchup.bind(this, c.id)}>
-												<Link href={`/tv/${this.state.channel_code == 'globaltv' ? 'gtv' : this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}?date=${this.props.chats.catchup_date.replace(/ /gi, '-')}`}>
-													<a style={{ textDecoration: 'none', color: 'white' }}>
-														<div className="title"><h3 className="heading-rplus"> {c.title} </h3></div>
-														<div className="subtitle">{c.s} - {c.e}</div>
-													</a>
-												</Link>
-											</Col>
-											<Col className="right-side">
-												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + `/tv/${this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`, ['rctiplus', this.props.chats.channel_code], 'catchup')} className="share-btn" />
-											</Col>
-										</Row>
-									))}
-								</div>
-							</TabPane>
-						</TabContent>
-					</div>
+			
+			<div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ? { height: this.props.handleHeightChat() } : null}>
+				<div className="btn-chat">
+					<Button className="shadow-none" id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
+					    <ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
+					</Button>
+					{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
+				</div>
 					
-					<LiveChats dataChats={this.state.chats} handleHeightChat={() => this.setHeightChatBox()} />
-					{/* setHeightChatBox */}
-					{/* <div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
-						(isIOS ?
-							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
-							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
-						: null}> */}
-						
-					{/* <div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
-						{ height: this.setHeightChatBox() }
-						: null}>
-						<div className="btn-chat">
-							<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
-								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
-							</Button>
-							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
-						</div>
-					
-						<div onScroll={this.handleScroll.bind(this)}  className="box-chat">
-							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
-								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
-									<div>
-										<MuteChat className="icon-block__chat" />
-										<p>Sorry, you cannot send the message</p>
-										<span>{this.state.block_user.message}</span>
-									</div>
-								</div>
+				<div onScroll={this.handleScroll.bind(this)}  className="box-chat">
+					{/* <div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
+						<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
+							<div>
+							    <MuteChat className="icon-block__chat" />
+								<p>Sorry, you cannot send the message</p>
+								<span>{this.state.block_user.message}</span>
 							</div>
+						</div>
+					</div> */}
+
 							<div  className="chat-messages" id="chat-messages">
-								{this.state.chats.map((chat, i) => (
-									<Row key={i} className="chat-line">
-										<Col xs={2}>
-											<Img
-												loader={<PersonOutlineIcon className="chat-avatar" />}
-												unloader={<PersonOutlineIcon className="chat-avatar" />}
-												className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
-										</Col>
-										<Col className="chat-message" xs={10}>
-											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
-										</Col>
-									</Row>
-								))}
-								{this.state.chat_open && this.state.chat_box && this.state.total_newChat.length > 0 &&  <div onClick={this.handleScrollToBottom.bind(this)} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "105px", right: "10px"}}> {this.state.total_newChat.length} </div>}
-								{this.state.chat_open && this.state.chat_box &&  <div onClick={this.handleScrollToBottom.bind(this)} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "65px", right: "10px"}}> <ExpandMoreIcon /> </div>}
-								</div>
-							<div className="chat-input-box">
+								{this.state.isLogin ? 
+									
+									<Fragment> 
+										{!this.state.isStatusTnC ? <LiveChatTnC toggelUnderstand={this.setStatusTCN.bind(this)} toggelSkip={() => this.setState({isStatusTnC:true})} /> :
+											<Fragment>
+												{this.props.dataChats.map((chat, i) => (
+													<Row key={i} className="chat-line">
+														<Col xs={2}>
+															<Img
+																loader={<PersonOutlineIcon className="chat-avatar" />}
+																unloader={<PersonOutlineIcon className="chat-avatar" />}
+																className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
+														</Col>
+														<Col className="chat-message" xs={10}>
+															{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
+														</Col>
+													</Row>
+												))}
+
+												{this.state.chat_open && this.state.chat_box && this.state.total_newChat.length > 0 &&  <div onClick={this.handleScrollToBottom.bind(this)} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "105px", right: "10px"}}> {this.state.total_newChat.length} </div>}
+												{this.state.chat_open && this.state.chat_box &&  <div onClick={this.handleScrollToBottom.bind(this)} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "65px", right: "10px"}}> <ExpandMoreIcon /> </div>}
+											</Fragment>
+										}
+									</Fragment> 
+								: 
+									<NoLogin toggleChat={this.toggleChat.bind(this)} />}
+							</div>
+
+							<div style={{ display: this.state.isLogin ? 'block' : 'none' }} className="chat-input-box">
 								<div ref={ this.inputChatBoxRef } className="chat-box">
 									<Row>
 										<Col xs={1}>
@@ -1134,6 +977,7 @@ class Tv extends React.Component {
 										</Col>
 									</Row>
 								</div>
+										
 								<Picker
 									onSelect={emoji => {
 										this.onSelectEmoji(emoji);
@@ -1142,10 +986,10 @@ class Tv extends React.Component {
 									darkMode
 									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
 							</div>
-						</div>
-					</div> */}
+	
 				</div>
-			</Layout>
+			</div>
+			
 		);
 	}
 }
