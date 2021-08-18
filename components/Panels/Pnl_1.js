@@ -3,20 +3,18 @@ import Img from 'react-image';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
-import CountdownTimer from '../Includes/Common/CountdownTimer';
-
+import dynamic from "next/dynamic"
 
 import contentActions from '../../redux/actions/contentActions';
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../utils/appier';
 import { getCountdown } from '../../utils/helpers';
 import { showSignInAlert } from '../../utils/helpers';
-import { urlRegex } from '../../utils/regex';
+import { urlRegex, titleStringUrlRegex } from '../../utils/regex';
 
 import '../../assets/scss/components/panel.scss';
 
-/* horizontal_landscape_large  */
-
 const jwtDecode = require('jwt-decode');
+const CountdownTimer = dynamic(() => import("../Includes/Common/CountdownTimer"))
 
 class Pnl_1 extends React.Component {
 
@@ -48,81 +46,76 @@ class Pnl_1 extends React.Component {
 			homeGeneralClicked('mweb_homepage_scroll_horizontal');
 		}
 	}
+
 	handleActionClick(program, url) {
 			switch (program.action_type) {
-				case 'live_streaming' :
-					let channel = 'rcti'
-					if(program?.link === '1') {
-							channel = 'rcti'
+				case 'live_streaming' : {
+						const channels = {
+							"1": "rcti",
+							"2": "mnctv",
+							"3": "gtv",
+							"4": "inews",
+						}
+						Router.push(`/tv/${channels[program?.link]}`)
 					}
-					if(program?.link === '2') {
-							channel = 'mnctv'
-					}
-					if(program?.link === '3') {
-							channel = 'gtv'
-					}
-					if(program?.link === '4') {
-							channel = 'inews'
-					}
-					Router.push(`/tv/${channel}`);
-				break;
-				case 'catchup':
-				if(program.link && program.channel && program.catchup_date) {
-						const title = program?.content_title?.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
+					break;
+				case 'catchup': {
+						if (!program.link || !program.channel || !program.catchup_date) break
+						const title = titleStringUrlRegex(program?.content_title)
 						Router.push(`/tv/${program.channel}/${program.link}/${title}?date=${program.catchup_date}`)
-				}
-				break;
+					}
+					break;
 				case 'scan_qr':
 					Router.push("/qrcode")
-				break;
+					break;
 				case 'homepage_news':
 					Router.push("/news")
-				break;
-				case 'news_detail' :
-				case 'news_category':
+					break;
 				case 'news_tags' :
-						window.open(program.link, '_parent');
-						break;
-				case 'episode':
-						if(program.link && program.program_id) {
-								const title = program.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
-								Router.push(`/programs/${program.program_id}/${title}/episode/${program.link}/${title}`)
-						}
-						break;
-				case 'live_event':
-						if (program.link) {
-								Router.push(`/live-event/${program.link}/${program.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
-						}
-						break;
-				case 'genre':
-							Router.push(`/explores/${program.link}/${program.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
-						break;
-				case 'program':
-						Router.push(`/programs/${program.link}/${program.content_title.replace(/ +/g, '-')}`);
-						break;  
+					window.open(program.link, '_parent');
+					break;
+				case 'episode': {
+						if(!program.link || !program.program_id) return
+						const title = titleStringUrlRegex(program.content_title)
+						Router.push(`/programs/${program.program_id}/${title}/episode/${program.link}/${title}`)
+					}
+					break;
+				case 'live_event': {
+						if (!program.link) return
+						const title = titleStringUrlRegex(program.content_title)
+						Router.push(`/live-event/${program.link}/${title}`)
+					}
+					break;
+				case 'genre': {
+						const title = titleStringUrlRegex(program.content_title)
+						Router.push(`/explores/${program.link}/${title}`)
+					}
+					break;
+				case 'program': {
+						const title = titleStringUrlRegex(program.content_title)
+						Router.push(`/programs/${program.link}/${title}`);
+					}
+					break
 				case 'popup':
-						window.open(url, '_parent');
-						break;  
+					window.open(url, '_parent')
+					break
 				default:
-						Router.push(url);
-		}       
+					Router.push(url)
+		}
 	}
-	link(data) {
-		console.log('PANEL 1', data);
+
+	link (data) {
 		switch (data.content_type) {
 			case 'special':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
 
 				let url = data.url ? data.url : data.link;
-				// console.log('token:', this.props.token);
-				if (data.mandatory_login) {
+				if (data.mandatory_login && this.props.user.isAuth) {
 					url += this.props.token;
 				}
 
-				let payload = {};
 				try {
-					payload = jwtDecode(this.props.token);
-					// console.log(payload && !payload.vid);
+					jwtDecode(this.props.token);
 					if (data.mandatory_login && !this.props.user.isAuth) {
 						showSignInAlert(`Please <b>Sign In</b><br/>
 							Woops! Gonna sign in first!<br/>
@@ -132,8 +125,6 @@ class Pnl_1 extends React.Component {
 					}
 					else {
 						this.handleActionClick(data, url)
-						// window.open(url, '_blank');
-						// window.location.href = url;
 					}
 				}
 				catch (e) {
@@ -145,7 +136,6 @@ class Pnl_1 extends React.Component {
 							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
 					}
 				}
-
 				break;
 
 			case 'program':
@@ -156,7 +146,6 @@ class Pnl_1 extends React.Component {
 
 			case 'live':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_live_event_clicked');
-
 				Router.push(`/live-event/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 
@@ -169,74 +158,90 @@ class Pnl_1 extends React.Component {
 	}
 
 	loadMore() {
-		if (!this.state.loading && !this.state.endpage) {
-			const page = this.state.page + 1;
-			this.setState({ loading: true }, () => {
-				this.props.loadingBar && this.props.loadingBar.continuousStart();
-				this.props.getHomepageContents(this.state.id, 'mweb', page, this.state.length)
-					.then(response => {
-						if (response.status === 200 && response.data.status.code === 0) {
-							const contents = this.state.contents;
-							contents.push.apply(contents, response.data.data);
-							this.setState({ loading: false, contents: contents, page: page, endpage: response.data.data.length < this.state.length });
-						}
-						else {
-							this.setState({ loading: false });
-						}
-						this.props.loadingBar && this.props.loadingBar.complete();
-					})
-					.catch(error => {
-						console.log(error);
-						this.setState({ loading: false, endpage: true })
-						this.props.loadingBar && this.props.loadingBar.complete();
-					});
-			});
-		}
+    if (this.state.loading || this.state.endpage) return
+
+		const page = this.state.page + 1;
+		this.setState({ loading: true }, () => {
+			this.props.loadingBar && this.props.loadingBar.continuousStart();
+
+			this.props.getHomepageContents(this.state.id, 'mweb', page, this.state.length)
+				.then(response => {
+					if (response.status === 200 && response.data.status.code === 0) {
+						this.setState({ 
+							loading: false, 
+							contents: [ ...this.state.contents, ...response.data.data ], 
+							page: page, 
+							endpage: response.data.data.length < this.state.length
+						});
+					}
+					else {
+						this.setState({ loading: false });
+					}
+				})
+				.catch(error => this.setState({ loading: false, endpage: true }))
+				.finally(_ => this.props.loadingBar.complete())
+		});
 	}
 
 	render() {
-		console.log(`ini type banner horizontal`,this.state.contents )
+    const placeHolderImgUrl = "/static/placeholders/placeholder_landscape.png"
+    const rootImageUrl = `${this.props.imagePath}${this.props.resolution}`
 		return (
-			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className="homepage-content horizontal_landscape_large">
+			<div
+				onTouchStart={this.onTouchStart.bind(this)}
+				onTouchEnd={this.onTouchEnd.bind(this)}
+				className="homepage-content horizontal_landscape_large">
 				<h2 className="content-title">{this.props.title}</h2>
 				<BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
 					{scrollRef => (
 						<div ref={scrollRef} className="swiper-container">
 							{this.state.contents.map((c, i) => (
-								<div style={{ width: '96%' }} onClick={() => this.link(c)} key={`${this.props.contentId}-${i}`} className="swiper-slide">
-                {c?.label && c?.label != '' ? (
-                  <div className="new-label">
-                    {c.label}
-                  </div>
-                ) : ''}
-                  <div style={{ position: 'relative' }}>
-										<Img
-											alt={c.program_title || c.content_title}
-											unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-											loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
-											src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
-										{this.props.type === 'custom' ? (<div className="ribbon">Live</div>) : (<div></div>)}
-										{c.content_type === 'live' ? (
-											<div style={{ position: 'absolute', right: 0, bottom: 10 }}>
-												<CountdownTimer
-												timer={getCountdown(c.release_date_quiz, c.current_date)[0]}
-												statusTimer="1"
-												statusPlay={getCountdown(c.release_date_quiz, c.current_date)[1]}/>
-											</div>
-											) : (<div></div>)}
+								<div
+									style={{ width: '96%' }}
+									onClick={() => this.link(c)}
+									key={`${this.props.contentId}-${i}`}
+									className="swiper-slide">
+									<div>
+										<Img 
+											alt={c.program_title || c.content_title} 
+											unloader={<img src={placeHolderImgUrl}/>}
+											loader={<img src={placeHolderImgUrl}/>}
+											src={[`${rootImageUrl}${c.landscape_image}`, placeHolderImgUrl]} />
+
+										{this.props.type === 'custom' ? (<div className="ribbon">Live</div>) : null}
+										
+										{c.content_type === 'live' 
+											? (
+												<div style={{ position: 'absolute', right: 0 }}>
+													<CountdownTimer 
+													timer={getCountdown(c.release_date_quiz, c.current_date)[0]} 
+													statusTimer="1"
+													statusPlay={getCountdown(c.release_date_quiz, c.current_date)[1]}/>
+												</div>
+											) 
+											: null
+										}
 									</div>
-									{c.display_type == 'hide_url' ? null : (
-										<div style={{minHeight: "50px", maxHeight: "50px"}} className="txt-slider-panel no-bg">
-											<h3 style={{fontSize: "14px", fontWeight: 600, marginTop: 1}} className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
-											<p style={{fontSize: "14px", fontWeight: 300}}>{c.content_title}</p>
-										</div>
-									)}
+
+									{c.display_type == 'hide_url' 
+										? null 
+										: (
+											<div
+												style={{minHeight: "50px", maxHeight: "50px"}}
+												className="txt-slider-panel no-bg">
+												<h3
+													style={{fontSize: "14px", fontWeight: 600, marginTop: 1}}
+													className="txt-slider-panel-title">
+													{c.program_title || this.props.title}</h3>
+												<p style={{fontSize: "14px", fontWeight: 300}}>{c.content_title}</p>
+											</div>
+										)
+									}
 								</div>
 							))}
 						</div>
 					)}
-				</BottomScrollListener>
-
+				</BottomScrollListener>	
 			</div>
 		);
 	}

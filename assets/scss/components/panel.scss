@@ -28,26 +28,16 @@
 
 .txt-slider-panel {
     color: #fff;
-    // border-left: 1px solid #DB2828;
-    // border-left-width: 2px;
     margin: 8px 10px;
     font-size: 11px;
     text-align: left;
-    // padding-left: 10px;
     max-height: 73px;
-    min-height: 73px;
     overflow: hidden;
     white-space: normal;
 
-    .line-red{
-        width: 1px;
-        height: 35px;
-        margin-right: 6px;
-        border: solid 1px #fa262f;
-        background-color: #fa262f;
-    }
-
     .txt-slider-panel-cont {
+        border-left: 2px solid red;
+        padding-left: 0.5rem;
 
         .txt-slider-panel-title {
             font-size: 14px;
@@ -65,7 +55,7 @@
         }
     
         p {
-            margin-top: 1px;
+            margin: 0;
             font-size: 11px;
             font-weight: 300;
             font-stretch: normal;
@@ -90,7 +80,6 @@
 
 .pnl_horizontal_landscape, .pnl_horizontal, .pnl_vertical, .horizontal_landscape_large {
     .content-title{
-        // font-family: Open Sans;
         font-stretch: normal;
         font-style: normal;
         line-height: normal;
@@ -99,7 +88,6 @@
         font-size: 16px;
         line-height: 19px;
         padding-left: 14px !important;
-        /* identical to box height */
         color: #FFFFFF;
     }
     
@@ -115,7 +103,6 @@
             margin: 2px;
             position: relative;
             text-align: center;
-            // background: #171717;
             display: inline-block;
             vertical-align: top;
 
@@ -176,7 +163,6 @@
         img {
             width: 100%; 
             height: 184px;
-            // height: 100%;
         }
     }
 }
@@ -193,21 +179,12 @@
     }
 }
 
-// .horizontal_landscape_large {
-//     .swiper-container {
-//         .swiper-slide {
-//             // background: transparent;
-//         }
-//     }
-// }
-
 .homepage-content {
     margin-bottom: 20px;
 
     img {
         border-radius: 7px;
-        //object-fit: cover;
-}
+    }
 }
 
 @media only screen and (max-width: 400px) {

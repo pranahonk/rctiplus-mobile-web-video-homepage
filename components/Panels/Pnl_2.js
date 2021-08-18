@@ -187,7 +187,6 @@ class Pnl_2 extends React.Component {
 	}
 
 	render() {
-		console.log(`ini horizontal landscape `, this.props.title, this.state.contents)
 		return (
 			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className=" pnl_horizontal_landscape" id="pnl_horizontal_landscape" style={{ marginBottom: 20 }}>
 				<h2 className="content-title">{this.props.title}</h2>
@@ -218,12 +217,10 @@ class Pnl_2 extends React.Component {
 												unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
-											{/* <PlayCircleOutlineIcon className="play-btn-2" /> */}
 										</div>
 
 										{c.display_type == 'hide_url' ? null : (
 											<div style={{display: "flex"}} className="txt-slider-panel">
-												<div className="line-red" />
 												<div className="txt-slider-panel-cont">
 													<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
 													<p>{c.content_title }</p>
