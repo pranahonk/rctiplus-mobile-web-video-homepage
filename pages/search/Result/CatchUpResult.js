@@ -5,7 +5,7 @@ import ShareIcon from "../../../components/Includes/IconCustom/ShareIcon";
 import { CirclePauseIcon, CircleTimeIcon, CirclePlayIcon } from "../../../components/IconComponents"
 import NoResult from './NoResult';
 
-const CatchupResult = ({onClick}) => {
+const CatchupResult = ({onClick, onShare}) => {
     const { search_results } = useSelector(state => state.searches);
 
     const setColoring = (text, tags) =>{
@@ -31,16 +31,16 @@ const CatchupResult = ({onClick}) => {
                 {search_results[5]?.data?.data?.length > 0 ?
                     search_results[5]?.data?.data.map((v,i) => {
                         return(
-                            <div onClick={() => onClick(v)} style={{marginBottom: "1rem"}} className="content-list">
+                            <div style={{marginBottom: "1rem"}} className="content-list">
                                 <div style={{display:"flex", justifyContent: "space-between", alignItems: "center"}}>
-                                    <div style={{display: "flex", alignItems:"center"}}>
+                                    <div onClick={() => onClick(v)} style={{display: "flex", alignItems:"center"}}>
                                         <div><CirclePlayIcon /></div>
                                         <div style={{marginLeft: "0.75rem"}}>
                                             <div style={{fontSize: "12px", fontWeight:"bold"}} dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(v.title, '...', 100)) }}></div>
                                             <div style={{fontSize: "10px"}}>{v.s} - {v.e}</div>
                                         </div>
                                     </div>
-                                    <div style={{marginRight:"1rem"}}>
+                                    <div onClick={() => onShare(v.title, v.share_link)} style={{marginRight:"1rem"}}>
                                         <ShareIcon />
                                     </div>  
                                 </div>

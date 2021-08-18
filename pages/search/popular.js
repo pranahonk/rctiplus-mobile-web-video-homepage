@@ -12,11 +12,11 @@ const Popular = () => {
 
     return (
         <div style={{paddingLeft: "20px", paddingRight: "20px", width:"100%"}}>
-            {search_popular.length > 0 &&
+            {search_popular && search_popular?.length > 0 &&
                 <div >
                     <p style={{fontSize:"14px",  fontWeight: "bold", marginBottom:"6px"}} className="title">Popular Search</p>
 
-                    {search_popular.map((v,i) => (
+                    {search_popular && search_popular?.map((v,i) => (
                         <div style={{marginTop: "4px"}}>
                             <div onClick={() => handleClick(v.content_title)} style={{display: "flex", alignItems:"center", color: "#777777",  paddingTop:"4px"}}>
                                 <SearchIcon style={{ fontSize: 20 }}/>

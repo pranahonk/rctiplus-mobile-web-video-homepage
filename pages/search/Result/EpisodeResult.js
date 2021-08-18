@@ -7,10 +7,9 @@ import { getTruncate } from '../../../utils/helpers';
 import ShareIcon from "../../../components/Includes/IconCustom/ShareIcon";
 import GetApp from '@material-ui/icons/GetApp';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
-import { alertDownload } from '../../../components/Includes/program-detail/programDetail';
 import NoResult from './NoResult';
 
-const EpisodeResult = ({onClick}) => {
+const EpisodeResult = ({onClick, onShare, onDownload}) => {
     const { search_results } = useSelector(state => state.searches);
 
     const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
@@ -58,9 +57,8 @@ const EpisodeResult = ({onClick}) => {
                                     <label style={{fontSize:"12px", fontWeight:"bold"}} >{ `E${('0'+v.episode).slice(-2)}:S${('0'+v.season).slice(-2)} :`} <span dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(v.title, '...', 100)) }}></span></label>
                                     <div style={{display:"flex", justifyContent:"start"}} className="action-button__content ">
                                         <ButtonPrimary icon={ <PlaylistAddIcon/> } />
-                                        <ButtonPrimary icon={ <ShareIcon/> } />
-                                        <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(v, 'episode', v.program_id, v.program_title ,"search") }}  /> 
-                                        {/* onclick={() => { alertDownload(v, 'clip', programId, programTitle ,"search") }} */}
+                                        <ButtonPrimary icon={ <ShareIcon/> } onclick={() => onShare(v.title, v.share_link)} />
+                                        <ButtonPrimary icon={ <GetApp/> } onclick={onDownload}  /> 
                                     </div>
                                  </div>
                             </div>

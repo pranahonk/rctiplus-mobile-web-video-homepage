@@ -114,9 +114,9 @@ const NavbarSearch = ({...props}) => {
                 <div className="left-top-link">
                     <div className="logo-top-wrapper">
                         <NavbarBrand onClick={() => {
-                            if (router.asPath.indexOf('/explores') === 0) {
-                                searchBackClicked(state.q, 'mweb_search_back_clicked');
-                            }
+                            // if (router.asPath.indexOf('/explores') === 0) {
+                            //     searchBackClicked(state.q, 'mweb_search_back_clicked');
+                            // }
                             router.back()
                         }} style={{ color: 'white' }}>
                             <ArrowBackIcon />

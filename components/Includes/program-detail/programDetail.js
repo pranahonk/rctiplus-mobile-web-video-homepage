@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, forwardRef } from 'react';
+import React, { useRef, useCallback, useEffect, forwardRef } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Img from 'react-image';
