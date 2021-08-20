@@ -171,7 +171,7 @@ class ExploresRevamp extends React.Component {
         }
 
 				<div id="library-revamp">
-					<figure style={{width: "100%", margin: "0 0 1rem 0"}}>
+					<figure style={{width: "95%", margin: "0 0 1rem 0"}}>
 						<img src="static/img/homepage_revamp_library.svg" width="100%" />
 					</figure>
 					<button onClick={_ => this.redirectToVideoPlus()}>
