@@ -81,7 +81,6 @@ class ExploresRevamp extends React.Component {
   }
 
 	componentDidMount() {
-		initGA()
     let selectedGenreName = 'For You';
 		let selectedGenre;
 		const interests = this.props.interests.data;
@@ -131,9 +130,7 @@ class ExploresRevamp extends React.Component {
 	}
 
 	redirectToVideoPlus() {
-		const rplusUserId = this.props.user.data ? "" : this.props.user.data?.id
-		redirectToVisionPlus(rplusUserId)
-
+		redirectToVisionPlus(this.props.user.data)
 		const isAndroid = /android|windows/ig.test(navigator.userAgent)
 		const href = isAndroid ? "https://www.visionplus.id/page?src=rpl" : "https://www.visionplus.id/?src=rpl"
 		window.open(href, "_blank").focus()
@@ -174,11 +171,11 @@ class ExploresRevamp extends React.Component {
         }
 
 				<div id="library-revamp">
-					<figure>
-						<img src="static/img/homepage_revamp_library.svg" style={{width: "100vw"}} />
+					<figure style={{width: "95%", margin: "0 0 1rem 0"}}>
+						<img src="static/img/homepage_revamp_library.png" width="100%" />
 					</figure>
 					<button onClick={_ => this.redirectToVideoPlus()}>
-						Go To Video+
+						Go To Vision+
 					</button>
 				</div>
 			</Layout>
