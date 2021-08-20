@@ -106,23 +106,18 @@ class Default_v2 extends React.Component {
                     <meta name="mobile-web-app-capable" content="yes" />
                     <meta name="apple-mobile-web-app-capable" content="yes" />
                     <meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
-
                     <meta name="author" content={AUTHOR} />
                     <meta name="viewport" content={VIEWPORT} />
                     <meta name="description" content={MAIN_DESCRIPTION} />
-                    {/* {Object.keys(OPEN_GRAPH).map(og => (<meta key={og} name={'og:' + og} content={OPEN_GRAPH[og]} />))} */}
                     <link rel="icon" href="/static/logo/rcti-sm.png?v=1.0" />
                     <link rel="manifest" href="/static/manifest.json" />
                     <link rel="canonical" href={oneSegment + encodeURI(asPath).replace('trending/', 'news/')} />
-                    {/* <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" /> */}
 
-                    {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         window.dataLayer = window.dataLayer || [];
-                        let wDLurl = (document.URL.indexOf('/news/detail') > -1 || document.URL.indexOf('/trending/detail') > -1 || document.URL.indexOf('/trending/') > -1 || document.URL.indexOf('/news/') > -1) ? 'news' : 'video';
                         window.dataLayer.push({
-                            'pillar' : wDLurl
+                            'pillar' : "video"
                         });
                         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -148,14 +143,10 @@ class Default_v2 extends React.Component {
                             enable_page_level_ads: true
                         });
                     ` }}></script>
-                    {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
-
 
                     <script src="/static/js/fontawesome.min.js" crossOrigin="anonymous" defer></script>
 
-                    {/* <script src="/static/js/jwplayer.js"></script> */}
                     <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>
-                    {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
                     <script src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
                     <script dangerouslySetInnerHTML={{ __html: `
                         AIQUA.init({
@@ -198,53 +189,10 @@ class Default_v2 extends React.Component {
                     <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
 
                     <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
-
-                    {/* <script src="/static/js/firebase.js"></script> */}
-                    {/* <script async dangerouslySetInnerHTML={{ __html: `
-                        var firebaseConfig = { 
-                                apiKey: "${FIREBASE_apiKey}",
-                                authDomain: "${FIREBASE_authDomain}",
-                                databaseURL: "${FIREBASE_databaseURL}",
-                                projectId: "${FIREBASE_projectId}",
-                                storageBucket: "${FIREBASE_storageBucket}",
-                                messagingSenderId: "${FIREBASE_messagingSenderId}",
-                                appId: "${FIREBASE_appId}",
-                                measurementId: "${FIREBASE_measurementId}"
-                            };
-                            firebase.initializeApp(firebaseConfig);
-                            firebase.analytics();
-                    `}}>
-                    </script> */}
                 </Head>
                 <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
-                {/* <!-- DO NOT touch the following DIV --> */}
-                  {/* {MODE === 'DEVELOPMENT' ? (
-                    <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
-                    !function(q,g,r,a,p,h,js) {
-                        if(q.qg)return;
-                        js = q.qg = function() {
-                        js.callmethod ? js.callmethod.call(js, arguments) : js.queue.push(arguments);
-                        };
-                        js.queue = [];
-                        p=g.createElement(r);p.async=!0;p.src=a;h=g.getElementsByTagName(r)[0];
-                        h.parentNode.insertBefore(p,h);
-                    } (window,document,'script','//cdn.qgr.ph/qgraph.c63c2960bf562e9ec2de.js');
-                ` }}></script>
-                ) : (
-                <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
-                    !function(q,g,r,a,p,h,js) {
-                        if(q.qg)return;
-                        js = q.qg = function() {
-                        js.callmethod ? js.callmethod.call(js, arguments) : js.queue.push(arguments);
-                        };
-                        js.queue = [];
-                        p=g.createElement(r);p.async=!0;p.src=a;h=g.getElementsByTagName(r)[0];
-                        h.parentNode.insertBefore(p,h);
-                    } (window,document,'script','https://cdn.qgr.ph/qgraph.3be8515a1c2359442dfd.js');
-                ` }}></script>
-                )} */}
                 <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
                     !function(q,g,r,a,p,h,js) {
                         if(q.qg)return;
@@ -266,7 +214,6 @@ class Default_v2 extends React.Component {
                 ) : <div></div>}
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
-                {/* {console.log((!(this.platform && (this.platform == 'android' || this.platform == 'ios')) && this.props?.Program?.paid_video?.data?.is_paid === 0 && this.props.router.pathname === '/programs') || this.props?.Program['tracking-program']?.data?.premium === 1) } */}
                 {   
                     (!(this.platform && (this.platform == 'android' || this.platform == 'ios')) && this.props?.Program?.paid_video?.data?.is_paid === 0 && this.props.router.pathname === '/programs') || this.props?.Program['tracking-program']?.data?.premium === 1
                     ? (<PaidVideo />) : ''
