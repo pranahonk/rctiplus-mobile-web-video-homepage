@@ -98,3 +98,26 @@
         }
     }
 }
+
+#library-revamp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+
+    button {
+        background: #FA262F;
+        border: none;
+        color: white;
+        box-shadow: 0 0 0.5rem #00000063;
+        border-radius: 0.5rem;
+        width: 15rem;
+        padding: 0.2rem;
+        margin: 0.5rem;
+
+        &:hover {
+            background: #ce1620;
+        }
+    }
+}

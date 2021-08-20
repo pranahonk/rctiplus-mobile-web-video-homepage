@@ -596,14 +596,14 @@ const JwPlayer = (props) => {
     
     if (player !== null) {
       // let windowWidth = document.documentElement.clientWidth;
-      let slotName = props.data.gpt.path != null && props.data.gpt.path != undefined ? props.data.gpt.path : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
-      let slotDiv = props.data.gpt.div_gpt != null && props.data.gpt.div_gpt != undefined ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-      let intervalTime = props.data.gpt.interval_gpt != null && props.data.gpt.interval_gpt != undefined ? props.data.gpt.interval_gpt : props.adsOverlayData.reloadDuration;
-      let minWidth = props.data.gpt.size_width_1 != null && props.data.gpt.size_width_1 != undefined ? props.data.gpt.size_width_1 : 320;
-      let maxWidth = props.data.gpt.size_width_2 != null && props.data.gpt.size_width_2 != undefined ? props.data.gpt.size_width_2 : 468;
-      let minHeight = props.data.gpt.size_height_1 != null && props.data.gpt.size_height_1 != undefined ? props.data.gpt.size_height_1 : 50;
-      let maxHeight = props.data.gpt.size_height_2 != null && props.data.gpt.size_height_2 != undefined ? props.data.gpt.size_height_2 : 60;
-      let custParams = props.data.gpt.cust_params != null && props.data.gpt.cust_params != undefined ? props.data.gpt.cust_params : null;
+      let slotName = props.data.gpt?.path != null && props.data.gpt?.path != undefined ? props.data.gpt?.path : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
+      let slotDiv = props.data.gpt?.div_gpt != null && props.data.gpt?.div_gpt != undefined ? props.data.gpt?.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+      let intervalTime = props.data.gpt?.interval_gpt != null && props.data.gpt?.interval_gpt != undefined ? props.data.gpt?.interval_gpt : props.adsOverlayData.reloadDuration;
+      let minWidth = props.data.gpt?.size_width_1 != null && props.data.gpt?.size_width_1 != undefined ? props.data.gpt?.size_width_1 : 320;
+      let maxWidth = props.data.gpt?.size_width_2 != null && props.data.gpt?.size_width_2 != undefined ? props.data.gpt?.size_width_2 : 468;
+      let minHeight = props.data.gpt?.size_height_1 != null && props.data.gpt?.size_height_1 != undefined ? props.data.gpt?.size_height_1 : 50;
+      let maxHeight = props.data.gpt?.size_height_2 != null && props.data.gpt?.size_height_2 != undefined ? props.data.gpt?.size_height_2 : 60;
+      let custParams = props.data.gpt?.cust_params != null && props.data.gpt?.cust_params != undefined ? props.data.gpt?.cust_params : null;
 
       
       const adSizeLandscape = [props?.data?.gpt?.size_width_2 || 468, props?.data?.gpt?.size_height_2 || 60]
