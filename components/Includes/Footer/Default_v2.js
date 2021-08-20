@@ -108,17 +108,8 @@ class FooterNav_v2 extends Component {
                                 homeGeneralClicked('mweb_library_clicked');
                                 break;
                         }
-
-                        switch (this.props.router.asPath) {
-                            case '/radio':
-                            case '/profile':
-                                window.location.href = '/explores';
-                                break
-
-                            default:
-                                Router.push('/explores');
-                                break;
-                        }
+                        
+                        Router.push('/explores_revamp', "/explores")
                     }}>
                         <a>
                             <ImportContactsTwoToneIcon className="nav-footer-icon"/>

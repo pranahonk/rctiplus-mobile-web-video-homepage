@@ -24,11 +24,6 @@ const UIVersion = '2.0';
     await app.prepare();
 
     const server = express();
-    // server.use(device.capture());
-    // https://codeforgeek.com/how-to-detect-device-type-in-nodejs/
-    // example of custom request handlers:
-    // server.get('/a', (req, res) => app.render(req, res, '/b', req.query));
-    // server.get('/b', (req, res) => app.render(req, res, '/a', req.query));
 
     // handles service worker file request:
     server.get('/service-worker.js', (req, res) =>
@@ -46,17 +41,10 @@ const UIVersion = '2.0';
     server.get('/profile', (req, res) => {
       return app.render(req, res, '/profile');
     });
-    // server.get('/dfp', (req, res) => {
-    //   return app.render(req, res, '/dfp');
-    // });
+
     server.get('/player', (req, res) => {
       return app.render(req, res, '/player');
     });
-    // server.get('/tv/:channel', (req, res) => {
-    //   return app.render(req, res, '/tv_v2', {
-    //     channel: req.params.channel
-    //   });
-    // });
 
     server.get('/programs/:id/:title/photo/:content_id/:content_title', (req, res) => {
       return app.render(req, res, '/detail/photo', {
@@ -161,55 +149,48 @@ const UIVersion = '2.0';
         epg_title: req.params.epg_title,
       });
     });
-    server.get('/news/:subcategory_id/:subcategory_title', (req, res) => {
-      return app.render(req, res, '/news', {
-        subcategory_id: req.params.subcategory_id,
-        subcategory_title: req.params.subcategory_title,
-      });
-    });
 
-    server.get('/news/detail/:id/:title', (req, res) => {
-      return app.render(req, res, '/trending/detail_v2', {
-        id: req.params.id,
-        title: req.params.title,
-      });
-    });
+    // server.get('/news/:subcategory_id/:subcategory_title', (req, res) => {
+    //   return app.render(req, res, '/news', {
+    //     subcategory_id: req.params.subcategory_id,
+    //     subcategory_title: req.params.subcategory_title
+    //   });
+    // });
 
-    server.get('/news/topic/tag/:title_tag', (req, res) => {
-      return app.render(req, res, '/trending/list-tags', {
-        title_tag: req.params.title_tag,
-      });
-    });
+    // server.get('/news/detail/:id/:title', (req, res) => {
+    //   return app.render(req, res, '/trending/detail_v2', {
+    //     id: req.params.id,
+    //     title: req.params.title
+    //   })
+    // });
 
-    server.get('/news/detail/:category/:id/:title', (req, res, next) => {
-      console.log(req.originalUrl.includes('utm_source'))
-      console.log(req.originalUrl);
-      if(req.originalUrl.includes('utm_source')){
-        return app.render(req, res, '/news', {
-          id: req.params.id,
-          title: req.params.title,
-          category: req.params.category,
-        });
-      }
-      return app.render(req, res, '/trending/detail_v2', {
-        id: req.params.id,
-        title: req.params.title,
-        category: req.params.category,
-      });
-    });
+    // server.get('/news/topic/tag/:title_tag', (req, res) => {
+    //   return app.render(req, res, '/trending/list-tags', {
+    //     title_tag: req.params.title_tag,
+    //   })
+    // });
 
-    server.get('/news/search', (req, res) => {
-      return app.render(req, res, '/trending/search_v2');
-    });
-    server.get('/news/interest-topic', (req, res) => {
-      return app.render(req, res, '/interest-topic');
-    });
-    server.get('/news', (req, res) => {
-      return app.render(req, res, '/news');
-    });
-    server.get('/news/channels', (req, res) => {
-      return app.render(req, res, '/trending/channels');
-    });
+    // server.get('/news/detail/:category/:id/:title', (req, res) => {
+    //   return app.render(req, res, '/trending/detail_v2', {
+    //     id: req.params.id,
+    //     title: req.params.title,
+    //     category: req.params.category,
+    //   });
+    // });
+
+
+    // server.get('/news/search', (req, res) => {
+    //   return app.render(req, res, '/trending/search_v2');
+    // });
+    // server.get('/news/interest-topic', (req, res) => {
+    //   return app.render(req, res, '/interest-topic');
+    // });
+    // server.get('/news', (req, res) => {
+    //   return app.render(req, res, '/news');
+    // });
+    // server.get('/news/channels', (req, res) => {
+    //   return app.render(req, res, '/trending/channels');
+    // });
 
     // server.get('/trending/:subcategory_id/:subcategory_title', (req, res) => {
     //   return app.render(req, res, '/trending_old', {
@@ -256,6 +237,10 @@ const UIVersion = '2.0';
         category: req.params.category,
       });
     });
+    
+    server.get('/explores', (req, res) => {
+      return app.render(req, res, '/explores_revamp')
+    })
 
     server.get('/explores/search', (req, res) => {
       return app.render(req, res, '/searchLibrary', {
@@ -270,7 +255,7 @@ const UIVersion = '2.0';
       });
     });
     server.get('/explores/:id/:genre_name', (req, res) => {
-      return app.render(req, res, '/explores', {
+      return app.render(req, res, '/explores_v2', {
         id: req.params.id,
         genre_name: req.params.genre_name,
       });
