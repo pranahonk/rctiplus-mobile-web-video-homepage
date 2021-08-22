@@ -31,7 +31,6 @@ class Explores extends React.Component {
 	
 	static async getInitialProps(ctx) {
 		const accessToken = getCookie('ACCESS_TOKEN');
-		console.log(ctx)
 		const status = 'active';
 				let resContent = null
         const res = await fetch(`${DEV_API}/api/v1/genre?status=${status}&infos=id,name,image`, {
@@ -59,7 +58,6 @@ class Explores extends React.Component {
 						resContent = resContent.status === 200 ? await resContent.json() : null
 					}
 				}
-				// console.log(resContent)
 				// resContent = null
 				resContent = resContent && resContent.status.code === 0 ? resContent : null
         const error_code = res.statusCode > 200 ? res.statusCode : false;
@@ -137,7 +135,6 @@ class Explores extends React.Component {
 					this.LoadingBar.complete();
 				})
 				.catch(error => {
-					console.log(error);
 					this.LoadingBar.complete();
 				});
 		}
@@ -180,7 +177,6 @@ class Explores extends React.Component {
 						this.LoadingBar.complete();
 					})
 					.catch(error => {
-						console.log(error);
 						this.props.unsetPageLoader();
 						this.LoadingBar.complete();
 					});
@@ -209,7 +205,6 @@ class Explores extends React.Component {
 						}
 					})
 					.catch(error => {
-						console.log(error);
 						this.props.unsetPageLoader();
 						this.LoadingBar.complete();
 					});
@@ -250,7 +245,6 @@ class Explores extends React.Component {
 						}
 					})
 					.catch(error => {
-						console.log(error);
 						this.LoadingBar.complete();
 					});
 			}
@@ -275,7 +269,6 @@ class Explores extends React.Component {
 						this.LoadingBar.complete();
 					})
 					.catch(error => {
-						console.log(error);
 						this.LoadingBar.complete();
 					});
 			}

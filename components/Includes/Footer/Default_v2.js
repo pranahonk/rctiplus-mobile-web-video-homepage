@@ -60,8 +60,8 @@ const FooterNav_v2 = (props) => {
                         <a>
                             <div >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" viewBox="0 0 31 31">
-                                    <g fill="none" fill-rule="evenodd">
-                                        <g fill={props.router.asPath === "/" ? "#FFF" : "#8F8F8F"} fill-rule="nonzero">
+                                    <g fill="none" fillRule="evenodd">
+                                        <g fill={props.router.asPath === "/" ? "#FFF" : "#8F8F8F"} fillRule="nonzero">
                                             <g>
                                                 <path d="M27.328 13.874l-.001-.002-10.2-10.198C16.694 3.24 16.116 3 15.5 3s-1.193.24-1.628.674L3.68 13.867l-.01.01c-.893.898-.892 2.355.004 3.25.409.41.95.647 1.527.671.024.003.047.004.071.004h.407v7.505C5.678 26.792 6.886 28 8.372 28h3.99c.404 0 .732-.328.732-.732v-5.884c0-.678.552-1.23 1.23-1.23h2.353c.678 0 1.229.552 1.229 1.23v5.884c0 .404.328.732.732.732h3.99c1.486 0 2.695-1.208 2.695-2.693v-7.505h.377c.614 0 1.192-.24 1.627-.674.897-.897.897-2.357.001-3.254z" transform="translate(-22 -613) translate(22 613)"/>
                                             </g>
@@ -84,8 +84,8 @@ const FooterNav_v2 = (props) => {
                         <a>
                             <div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" viewBox="0 0 31 31">
-                                    <g fill="none" fill-rule="evenodd">
-                                        <g fill={props.router.asPath === "/live-event" ? "#FFF" : "#8F8F8F"} fill-rule="nonzero">
+                                    <g fill="none" fillRule="evenodd">
+                                        <g fill={props.router.asPath === "/live-event" ? "#FFF" : "#8F8F8F"} fillRule="nonzero">
                                             <g>
                                                 <path d="M30.945 26.452l-1.926-7.33c-.03-.114-.077-.22-.137-.319.11-.29.17-.604.17-.93V5.79c0-1.516-1.294-2.748-2.886-2.748H4.833c-1.592 0-2.887 1.232-2.887 2.748v12.083c0 .326.06.64.17.93-.06.098-.106.205-.136.32L.039 26.51c-.097.368-.01.758.235 1.057.245.299.622.474 1.02.474h28.412c.715 0 1.294-.552 1.294-1.232 0-.124-.02-.244-.055-.358zm-12.166-1.167H12.22c-.076 0-.147-.033-.196-.091-.048-.058-.069-.135-.055-.21l.51-2.835c.023-.122.128-.21.252-.21h5.535c.123 0 .23.088.251.21l.507 2.813c.006.022.009.044.009.068 0 .141-.114.255-.255.255zm7.752-6.66c0 .147-.088.274-.214.332H4.682c-.126-.058-.215-.185-.215-.333V5.93c0-.202.165-.366.366-.366h21.333c.201 0 .365.164.365.366v12.695z" transform="translate(-97 -613) translate(97 613)"/>
                                                 <g>
@@ -114,7 +114,7 @@ const FooterNav_v2 = (props) => {
                         <a>
                             <div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" viewBox="0 0 31 31">
-                                    <g fill="none" fill-rule="evenodd">
+                                    <g fill="none" fillRule="evenodd">
                                         <g fill={props.router.asPath === "/tv/rcti" || props.router.asPath === "/tv/mnctv" || props.router.asPath === "/tv/gtv" || props.router.asPath === "/tv/inews"  ? "#FFF" : "#8F8F8F"}>
                                             <g>
                                                 <path d="M25.966 26c.571 0 1.034.448 1.034 1 0 .515-.403.94-.921.994l-.113.006H6.034C5.463 28 5 27.552 5 27c0-.515.403-.94.921-.994L6.034 26h19.932zM28 3c1.657 0 3 1.343 3 3v15c0 1.657-1.343 3-3 3H3c-1.657 0-3-1.343-3-3V6c0-1.657 1.343-3 3-3h25zm-14.5 7.253h-5c-.552 0-1 .447-1 1 0 .552.448 1 1 1l1.5-.001v4.5c0 .553.448 1 1 1s1-.447 1-1v-4.5h1.5c.552 0 1-.447 1-1 0-.552-.448-1-1-1zm8.69.122c-.5-.234-1.095-.017-1.328.483L19 14.85l-1.862-3.992c-.233-.5-.828-.717-1.328-.483-.501.233-.718.828-.484 1.329l2.536 5.438c.204.438.686.659 1.138.55.453.108.934-.112 1.138-.55l2.536-5.438.043-.109c.158-.475-.062-1.003-.527-1.22z" transform="translate(-172 -613) translate(172 613)"/>
@@ -146,22 +146,13 @@ const FooterNav_v2 = (props) => {
                                 break;
                         }
 
-                        switch (props.router.asPath) {
-                            case '/radio':
-                            case '/profile':
-                                window.location.href = '/explores';
-                                break
-
-                            default:
-                                Router.push('/explores');
-                                break;
-                        }
+                        Router.push('/explores_revamp', "/explores")
                     }}>
                         <a>
                             <div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" viewBox="0 0 31 31">
-                                    <g fill="none" fill-rule="evenodd">
-                                        <g fill={props.router.asPath === "/explores" ? "#FFF" : "#8F8F8F"} fill-rule="nonzero">
+                                    <g fill="none" fillRule="evenodd">
+                                        <g fill={props.router.asPath === "/explores" ? "#FFF" : "#8F8F8F"} fillRule="nonzero">
                                             <g>
                                                 <g>
                                                     <path d="M23.09 0H15.68c-1.1 0-1.996.895-1.996 1.995v8.553c0 1.1.895 1.995 1.996 1.995h7.412c1.1 0 1.995-.895 1.995-1.995V1.995c0-1.1-.895-1.995-1.995-1.995zm-1.708 6.908l-2.85 2.565c-.548.492-1.428.106-1.428-.636V3.706c0-.739.88-1.128 1.428-.636l2.85 2.565c.378.341.378.932 0 1.273z" transform="translate(-247 -613) translate(247 613) translate(4 3)"/>
@@ -199,8 +190,8 @@ const FooterNav_v2 = (props) => {
                         <a>
                             <div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" viewBox="0 0 31 31">
-                                    <g fill="none" fill-rule="evenodd">
-                                        <g fill={props.router.asPath === "/profile" ? "#FFF" : "#8F8F8F"} fill-rule="nonzero">
+                                    <g fill="none" fillRule="evenodd">
+                                        <g fill={props.router.asPath === "/profile" ? "#FFF" : "#8F8F8F"} fillRule="nonzero">
                                             <g>
                                                 <g transform="translate(-322 -613) translate(322 613) translate(3 3)">
                                                     <circle cx="12.912" cy="5.592" r="5.592"/>
