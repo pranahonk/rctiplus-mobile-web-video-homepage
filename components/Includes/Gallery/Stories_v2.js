@@ -29,7 +29,7 @@ class Stories extends React.Component {
 
     componentDidMount() {
         document.getElementById('stories-react').addEventListener('scroll', this.handleScroll);
-
+        
         if(this.props.detailCategory) { // IF PARENT COMPONENT IS DETAIL HOME CATEGORY
             this.setState({
                 zuckJS: require('../../../assets/js/zuck')
@@ -40,6 +40,7 @@ class Stories extends React.Component {
                     const timelines = [];
 
                     const stories = this.props.stories.data;
+                    
                     for (const story of stories) {
                         timelines.push(this.buildTimeline(story));
 
@@ -168,10 +169,14 @@ class Stories extends React.Component {
                 this.props.getStories(this.state.page, this.state.length)
                 .then(() => {
                     const timelines = [];
-
                     const stories = this.props.stories.data;
+                    
                     for (const story of stories) {
                         timelines.push(this.buildTimeline(story));
+
+                        if (story.gpt.length >= 1) {
+                            timelines.push(this.buildStoryGPT(story.gpt));
+                        }
                     }
 
                     let currentLength = this.state.totalLength + this.props.stories.data.length;
@@ -385,7 +390,7 @@ class Stories extends React.Component {
             items.push([
                 item.id,
                 item.link_video != null ? 'video' : 'photo',
-                100000,
+                10,
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 this.handleActionClick(item), 
@@ -459,6 +464,7 @@ class Stories extends React.Component {
 
     buildStoryGPT = (gpt) => {
         const items = [];
+        console.log(gpt)
 
         for (const item of gpt) {
             items.push([
