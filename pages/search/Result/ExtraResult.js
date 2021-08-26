@@ -3,14 +3,16 @@ import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import Img from 'react-image';
 import { ButtonPrimary } from "../../../components/Includes/Common/Button";
-import { getTruncate } from '../../../utils/helpers';
+import { getTruncate,showSignInAlert } from '../../../utils/helpers';
 import ShareIcon from "../../../components/Includes/IconCustom/ShareIcon";
 import GetApp from '@material-ui/icons/GetApp';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import NoResult from './NoResult';
 
-const ExtraResult = ({onClick, onShare, onDownload, onBookmark}) => {
+const ExtraResult = ({onClick, data, onShare, onDownload, onBookmark}) => {
     const { search_results } = useSelector(state => state.searches);
+    const {isAuth} = useSelector(state => state.user)
 
     const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
         if (status)  return path + resolution + imgSrc;
@@ -32,6 +34,15 @@ const ExtraResult = ({onClick, onShare, onDownload, onBookmark}) => {
         else{
           return text;
         }
+    }
+
+    const alertSignIn = () =>{
+        showSignInAlert(`Please <b>Sign In</b><br/>
+                        Woops! Gonna sign in first!<br/>
+                        Only a click away and you<br/>
+                        can continue to enjoy<br/>
+                        <b>RCTI+</b>`, '', () => {}, true, 'Register', 'Login', true, true
+                        );
     }
     
     return (
@@ -56,7 +67,11 @@ const ExtraResult = ({onClick, onShare, onDownload, onBookmark}) => {
                                 <div style={{marginLeft:"10px", width:"100%", display:"flex", justifyContent:"space-between", flexDirection:"column" }} className="thumb-detail__content">
                                     <label style={{fontSize:"12px", fontWeight:"bold"}} >{ `E${('0'+v.episode).slice(-2)}:S${('0'+v.season).slice(-2)} :`} <span dangerouslySetInnerHTML={{ __html: setColoring(getTruncate(v.title, '...', 100)) }}></span></label>
                                     <div style={{display:"flex", justifyContent:"start"}} className="action-button__content ">
-                                        <ButtonPrimary icon={ <PlaylistAddIcon/> } onclick={() => onBookmark(v?.is_bookmarked, v?.id, v?.type)} />
+                                        {data?.id === v?.id && data?.type === v?.type ? 
+                                            <ButtonPrimary icon={data?.status ? <PlaylistAddCheckIcon/> : <PlaylistAddIcon/> } status={[isAuth, alertSignIn]} onclick={() => onBookmark(data?.status, v?.id, v?.type)} /> 
+                                            :
+                                            <ButtonPrimary icon={v?.is_bookmarked ? <PlaylistAddCheckIcon/> : <PlaylistAddIcon/> } status={[isAuth, alertSignIn]} onclick={() => onBookmark(v?.is_bookmarked, v?.id, v?.type)} />
+                                        }
                                         <ButtonPrimary icon={ <ShareIcon/> } onclick={() => onShare(v.title, v.share_link)} />
                                         <ButtonPrimary icon={ <GetApp/> } onclick={onDownload} />
                                     </div>

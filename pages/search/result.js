@@ -36,7 +36,8 @@ class Result extends React.Component {
             length: 9,
             action_sheet: false,
             urlShare: "",
-            title: "title-program"
+            title: "title-program",
+            data: {}
         };
 
         this.tabs = ['all', 'program', 'episode', 'catchup', 'extras', 'clips', 'photos'];
@@ -104,8 +105,16 @@ class Result extends React.Component {
     }
 
     handleBookmark(status, id, type){
-        if(status) this.deleteBookmark(id,type)
-        else this.addBookmark(id,type)
+        
+        if(status) {
+            this.setState({data: {id, type, status: false} })
+            this.deleteBookmark(id,type)
+        }
+        else {
+            this.setState({data: {id, type, status: true} })
+            this.addBookmark(id,type)
+        }
+
     }
 
     render() {
@@ -122,6 +131,7 @@ class Result extends React.Component {
                     {this.state.active_tab === "all" && 
                         <AllResult 
                             handleTab={(val) => this.toggleTab(val) } 
+                            data={this.state.data}
                             onShare={(title, url, type) => this.toggleActionSheet(title, url)} 
                             onDownload={() => this.alertDownload()} 
                             onBookmark={(status, id, type) => this.handleBookmark(status, id, type)}
@@ -131,6 +141,7 @@ class Result extends React.Component {
                     {this.state.active_tab === "program" && <ProgramResult onClick={(c) => this.link( c, "program")}  />}
                     {this.state.active_tab === "episode" && 
                         <EpisodeResult 
+                            data={this.state.data}
                             onShare={(title, url) => this.toggleActionSheet(title, url)} 
                             onDownload={() => this.alertDownload()} 
                             onBookmark={(status, id, type) => this.handleBookmark(status, id, type)}
@@ -139,6 +150,7 @@ class Result extends React.Component {
                     }
                     {this.state.active_tab === "extras" && 
                         <ExtraResult 
+                            data={this.state.data}
                             onShare={(title, url) => this.toggleActionSheet(title, url)} 
                             onDownload={() => this.alertDownload()} 
                             onBookmark={(status, id, type) => this.handleBookmark(status, id, type)}
@@ -153,6 +165,7 @@ class Result extends React.Component {
                     }
                     {this.state.active_tab === "clips" && 
                         <ClipResult 
+                            data={this.state.data}
                             onShare={(title, url) => this.toggleActionSheet( title, url)} 
                             onDownload={() => this.alertDownload()} 
                             onBookmark={(status, id, type) => this.handleBookmark(status, id, type)}

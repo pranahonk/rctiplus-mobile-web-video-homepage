@@ -447,6 +447,8 @@ const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
 };
 
 const bookmark = (data, item, type, props, typeTracking = null) => {
+  console.log(`ini adalah data bookmark`, data)
+  console.log(`ini adalah item bookmark`, item)
   if (data && data[type]) {
     const isBookmark = data && data[type].find((list) => list.id === item.id);
     if (isBookmark) {

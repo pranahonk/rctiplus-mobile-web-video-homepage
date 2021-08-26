@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import { useRouter } from 'next/router'
 import searchActions from '../../../redux/actions/searchActions';
@@ -22,7 +22,8 @@ import { getCookie, setCookie } from '../../../utils/cookie';
 const NavbarSearch = ({...props}) => {
     const inputSearch = useRef(null);
     const router = useRouter();
-    
+
+    const {isAuth} = useSelector(state => state.user)
     const [state, setState] = useState({q: router.query.q || '', length: 9});
 
     // useEffect(() => {
@@ -48,17 +49,20 @@ const NavbarSearch = ({...props}) => {
             .catch(error => props.unsetPageLoader());
     }
 
-
     useEffect(() => {
         if(state.q.length >= 3 ){
             props.getSearchAll(state.q, 1, state.length)
                 .then(responses => {
                     props.unsetPageLoader()
-                    saveSearchHistory(state.q)
+                    if(!isAuth){
+                        saveSearchHistory(state.q)
+                    }
                 })
                 .catch(error => {
                     props.unsetPageLoader();
-                    saveSearchHistory(state.q)
+                    if(!isAuth){
+                        saveSearchHistory(state.q)
+                    }
                 });
             props.searchAllCategory(state.q, 1, state.length)
                 .then(responses => props.unsetPageLoader())
