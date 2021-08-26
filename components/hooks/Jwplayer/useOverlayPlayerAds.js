@@ -10,6 +10,7 @@ export default function useOverlayPlayerAds(props) {
   }
   const [ slotDivGPT, setSlotDivGPT ] = useState(null)
   const [ adsState, setAdsState ] = useState(stateOfAds.NONE)
+  const [ screenAngle, setScreenAngle ] = useState(0)
 
   useEffect(() => {
     if (props.data && adsState === stateOfAds.INIT) initialSetup()
@@ -19,6 +20,34 @@ export default function useOverlayPlayerAds(props) {
     props.player,
     adsState
   ])
+
+  useEffect(() => {
+    deviceOrientationListener()
+  })
+  
+  const deviceOrientationListener = async () => {
+    if (screen.orientation.angle === screenAngle) return
+    
+    if (!slotDivGPT || !props.data) return
+    setScreenAngle(screen.orientation.angle)
+    
+    const adsIframe = document.getElementById(slotDivGPT).querySelector("iframe")
+    const adsImage = adsIframe.contentWindow.document.querySelector("#google_image_div img.img_ad")
+    const gpt = props.data.gpt
+
+    if (screen.orientation.angle === 90) {
+      adsIframe.width = gpt.size_width_2 
+      adsIframe.height = gpt.size_height_2 
+      adsImage.width = gpt.size_width_2 
+      adsImage.height = gpt.size_height_2 
+    }
+    else {
+      adsIframe.width = gpt.size_width_1 
+      adsIframe.height = gpt.size_height_1 
+      adsImage.width = gpt.size_width_1 
+      adsImage.height = gpt.size_height_1 
+    }
+  }
 
   const adsStatusListener = () => {
     if (!props.player) return
