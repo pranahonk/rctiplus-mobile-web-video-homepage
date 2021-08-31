@@ -16,10 +16,12 @@ import Layout from '../components/Layouts/Default_v2';
 import Nav from '../components/Includes/Navbar/NavDefault_v2';
 import Carousel from '../components/Includes/Gallery/Carousel_v2';
 import Stories from '../components/Includes/Gallery/Stories_v2';
+import StoriesLineUp from "../components/Includes/Gallery/Stories_Lineup"
 import Panel1 from '../components/Panels/Pnl_1';
 import Panel2 from '../components/Panels/Pnl_2';
 import Panel3 from '../components/Panels/Pnl_3';
 import Panel4 from '../components/Panels/Pnl_4';
+import Panel5 from '../components/Panels/Pnl_5'
 import StickyAds from '../components/Includes/Banner/StickyAds';
 import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
@@ -206,23 +208,27 @@ class Index_v2 extends React.Component {
                             } }
                         </Sticky>
                     </StickyContainer>
-                    <div style={{marginBottom: 45, paddingTop: 10}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
-                        {contents.map((content, i) => {
-                            switch (content.display_type) {
-                                case 'horizontal_landscape_large':
-                                    return <Panel1 token={this.token} type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                        <div style={{marginBottom: 45, paddingTop: 10}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
+                            {contents.map((content, i) => {
+                                // if(content.content_type === "story"){
+                                //     return <Panel5 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                // }
+                                switch (content.display_type) {
+                                    case 'horizontal_landscape_large':
+                                        return <Panel1 token={this.token} type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
-                                case 'horizontal_landscape':
-                                    return <Panel2 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                    case 'horizontal_landscape':
+                                        return <Panel2 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
-                                case 'horizontal':
-                                    return <Panel3 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                    case 'horizontal':
+                                        return <Panel3 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
-                                case 'vertical':
-                                    return <Panel4 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
-                            }
-                        })}
-                    </div>
+                                    case 'vertical':
+                                        return <Panel4 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                }
+                                
+                            })}
+                        </div>
                 </div>
                 )}
                 {/* <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
