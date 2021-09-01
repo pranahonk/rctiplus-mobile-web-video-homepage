@@ -50,24 +50,27 @@ const NavbarSearch = ({...props}) => {
     }
 
     useEffect(() => {
-        if(state.q.length >= 3 ){
-            props.getSearchAll(state.q, 1, state.length)
-                .then(responses => {
-                    props.unsetPageLoader()
-                    if(!isAuth){
-                        saveSearchHistory(state.q)
-                    }
-                })
-                .catch(error => {
-                    props.unsetPageLoader();
-                    if(!isAuth){
-                        saveSearchHistory(state.q)
-                    }
-                });
-            props.searchAllCategory(state.q, 1, state.length)
-                .then(responses => props.unsetPageLoader())
-                .catch(error => props.unsetPageLoader());
-        }
+        setTimeout(() => {
+            if(state.q.length >= 3 ){
+                props.getSearchAll(state.q, 1, state.length)
+                    .then(responses => {
+                        props.unsetPageLoader()
+                        props.handleKeyword(state.q)
+                        if(!isAuth){
+                            saveSearchHistory(state.q) 
+                        }
+                    })
+                    .catch(error => {
+                        props.unsetPageLoader();
+                        if(!isAuth){
+                            saveSearchHistory(state.q)
+                        }
+                    });
+                props.searchAllCategory(state.q, 1, state.length)
+                    .then(responses => props.unsetPageLoader())
+                    .catch(error => props.unsetPageLoader());
+            }
+        }, 2000)
     }, [state.q])
 
     const _onChangeQuery = (e) => {
@@ -108,7 +111,7 @@ const NavbarSearch = ({...props}) => {
     const _search = (value) =>  {
         router.push(`/explores/search`, `/explores/keyword?q=${value}`, { shallow: true })
     }
-    const _delayedQuery = useCallback(_debounce(q => _search(q), 1000), [])
+    const _delayedQuery = useCallback(_debounce(q => _search(q), 3000), [])
 
     return(
         <div className="nav-home-container nav-fixed-top">

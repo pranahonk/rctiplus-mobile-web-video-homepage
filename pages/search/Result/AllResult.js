@@ -17,7 +17,7 @@ import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import '../../../assets/scss/components/search-results.scss';
 
 const  AllResult = ({handleTab, data, onClick, onShare, onDownload, onBookmark}) => {
-    const { search_all } = useSelector(state => state.searches)
+    const { search_all, query } = useSelector(state => state.searches)
     const {isAuth} = useSelector(state => state.user)
 
     const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
@@ -29,6 +29,7 @@ const  AllResult = ({handleTab, data, onClick, onShare, onDownload, onBookmark})
     const setColoring = (text, tags) =>{
         const params = new URLSearchParams(window.location.search) // id=123
         const keyword = params.get('q'); // 123
+        console.log(`ini adalah params`, keyword)
         const replace = new RegExp(keyword,"ig");
         if(keyword) {
           if (text.toLowerCase().includes(keyword.toLowerCase())) {
@@ -50,6 +51,8 @@ const  AllResult = ({handleTab, data, onClick, onShare, onDownload, onBookmark})
                         <b>RCTI+</b>`, '', () => {}, true, 'Register', 'Login', true, true
                         );
     }
+
+    console.log(`ini adalah query redux`, query)
 
     return (
         <div style={{marginBottom: "30px"}} >

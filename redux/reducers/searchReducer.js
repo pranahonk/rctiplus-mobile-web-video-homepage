@@ -42,6 +42,8 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { active_tab: action.tab });
         case 'SET_SEARCH_STATUS':
             return Object.assign({}, state, { search_status: false });
+        case 'SET_KEYWORD':
+            return Object.assign({}, state, { query: action.keyword });
         case 'SEARCH_ALL':
             return Object.assign({}, state, { search_all: action.all, query: action.query });
         case 'GET_SEARCH_POPULAR':

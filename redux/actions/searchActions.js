@@ -396,7 +396,7 @@ const handleKeyword = (q) => {
     return dispatch => new Promise(async (resolve, reject) => {
         dispatch({
             type: 'SET_KEYWORD',
-            data: q, 
+            keyword: q, 
         });
     });
 };
