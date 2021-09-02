@@ -8,7 +8,7 @@ const Popular = () => {
     const router = useRouter();
     const { search_popular } = useSelector(state => state.searches)
 
-    const handleClick = (key) => router.replace(`/explores/search`, `/explores/keyword?q=${key}`, { shallow: true })
+    const handleClick = (key) => router.replace(`/explores/search`, `/explores/search?q=${key}`, { shallow: true })
 
     return (
         <div style={{paddingLeft: "20px", paddingRight: "20px", width:"100%"}}>

@@ -32,10 +32,9 @@ const History = ({...props}) => {
         props.deleteHistory(id)
     }
 
-    const handleClick = (key) => router.replace(`/explores/search`, `/explores/keyword?q=${key}`, { shallow: true })
+    const handleClick = (key) => router.replace(`/explores/search`, `/explores/search?q=${key}`, { shallow: true })
 
     useEffect(() => {
-        
         let history = getCookie('SEARCH_HISTORY');
         if(history) setSearchHistory(JSON.parse(history));
     }, [])

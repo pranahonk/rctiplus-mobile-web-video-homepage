@@ -109,7 +109,7 @@ const NavbarSearch = ({...props}) => {
     }
 
     const _search = (value) =>  {
-        router.push(`/explores/search`, `/explores/keyword?q=${value}`, { shallow: true })
+        router.push(`/explores/search`, `/explores/search?q=${value}`, { shallow: true })
     }
     const _delayedQuery = useCallback(_debounce(q => _search(q), 3000), [])
 

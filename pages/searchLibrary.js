@@ -310,7 +310,7 @@ class Explores extends React.Component {
 						:
 						<>
 							<PopularSearch />
-							<HistorySearch />
+							{/* <HistorySearch /> */}
 						</>	
 					}
 				</div>
