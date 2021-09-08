@@ -196,8 +196,8 @@ class Pnl_3 extends React.Component {
 				<BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
 					{scrollRef => (
 						<div ref={scrollRef} className="swiper-container">
-							{this.props.content.map(c => (
-								<div onClick={() => this.link(c)}  key={`${this.props.contentId}-${c.content_id}`} className="swiper-slide">
+							{this.props.content.map((c, i) => (
+								<div onClick={() => this.link(c)}  key={`${this.props.contentId}-${c.content_id}-${i}`} className="swiper-slide">
 								{c?.premium ? (
 									<div className="paid-label">
 										<div style={{ position: 'relative', display: 'flex' }}>

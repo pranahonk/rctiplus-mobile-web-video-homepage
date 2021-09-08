@@ -146,16 +146,7 @@ const FooterNav_v2 = (props) => {
                                 break;
                         }
 
-                        switch (props.router.asPath) {
-                            case '/radio':
-                            case '/profile':
-                                window.location.href = '/explores';
-                                break
-
-                            default:
-                                Router.push('/explores');
-                                break;
-                        }
+                        Router.push('/explores_revamp', "/explores")
                     }}>
                         <a>
                             <div>
