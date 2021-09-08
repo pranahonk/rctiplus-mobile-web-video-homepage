@@ -185,7 +185,6 @@ class Tv extends React.Component {
 		if (this.player) {
 			this.player.dispose();
 		}
-		console.log(this.convivaTracker);
 		if (this.convivaTracker) {
 			this.convivaTracker.cleanUpSession();
 		}
@@ -216,26 +215,21 @@ class Tv extends React.Component {
 				});
 			})
 			.catch(error => {
-				console.log(error);
 				this.props.unsetPageLoader();
 			});
 
 		this.props.getUserData()
 			.then(response => {
-				console.log(response);
 				if (response.status === 200 && response.data.status.code === 0) {
 					this.setState({ user_data: response.data.data });
 				}
 			})
-			.catch(error => {
-				console.log(error);
-			});
+			.catch(error => {});
 
     // this.refreshPubAds();
 
     axios.get('/v1/get-ads-duration')
     .then(response => {
-      //console.log('ads duration res', response.data);
       if (response.data.data) {
         this.setState({
           adsOverlayDuration: {
@@ -245,9 +239,7 @@ class Tv extends React.Component {
         })
       }
     })
-    .catch(error => {
-      console.log(error);
-    });
+    .catch(error => {});
 	}
 	setHeightChatBox() {
 		let heightPlayer = this.playerContainerRef.current.clientHeight + this.tvTabRef.current.clientHeight;
@@ -286,7 +278,6 @@ class Tv extends React.Component {
 							querySnapshot.docChanges()
 								.map(change => {
 									let chats = this.state.chats;
-									console.log(chats);
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
@@ -338,12 +329,8 @@ class Tv extends React.Component {
 						message: res.data.status.message_client,
 					},
 				});
-
-				console.log('state:', this.state.block_user);
 			})
-			.catch((error) => {
-				console.log(error);
-			});
+			.catch((error) => {});
 	}
 
 	selectChannel(index, first = false) {
@@ -389,7 +376,6 @@ class Tv extends React.Component {
 							this.state.live_events[this.state.selected_index].channel_code
 						)
 							.then(response => {
-								console.log(response, "get EPG I")
 								epgLoaded = true;
 								let epg = response.data.data
 									.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + 'T' + e.e).getTime());
@@ -414,7 +400,6 @@ class Tv extends React.Component {
 							})
 							.catch(error => {
 								epgLoaded = true;
-								console.log(error);
 								if (first != true) {
 									liveTvChannelClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'N/A', 'mweb_livetv_channel_clicked');
 								}
@@ -434,7 +419,6 @@ class Tv extends React.Component {
 				})
 				.catch(error => {
 					epgLoaded = true;
-					console.log(error);
 					this.setState({
 						error: true,
 						first_init_player: true,
@@ -512,7 +496,6 @@ class Tv extends React.Component {
 				this.props.unsetPageLoader();
 			})
 			.catch(error => {
-				console.log(error);
 				if (error.status === 200) {
 					showAlert(error.data.status.message_server, `
 					<svg style="font-size: 4.5rem" class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation"><circle cx="15.5" cy="9.5" r="1.5"></circle><circle cx="8.5" cy="9.5" r="1.5"></circle><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-6c-2.33 0-4.32 1.45-5.12 3.5h1.67c.69-1.19 1.97-2 3.45-2s2.75.81 3.45 2h1.67c-.8-2.05-2.79-3.5-5.12-3.5z"></path></svg>
@@ -712,10 +695,10 @@ class Tv extends React.Component {
 
 	refreshPubAds() {
 		this.pubAdsRefreshInterval = setInterval(() => {
-			console.log('refresh');
 			googletag.pubads().refresh();
 		}, 600000);
 	}
+
 	getAds(id) {
 		if(id) {
 			this.props.getAdsChat(id)
@@ -729,15 +712,12 @@ class Tv extends React.Component {
 						// RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
 					}
 				});
-				// console.log(this.state.ads_data);
 			})
-			.catch((error) => {
-				console.log(error);
-			});
+			.catch((error) => {});
 		}
 	}
+
 	callbackAds(e) {
-		console.log(e)
 		this.setState({
 			ads_data: null,
 		}, () => {
@@ -748,12 +728,11 @@ class Tv extends React.Component {
 			}, 100);
 		});
 	}
+
 	callbackCount(end, current) {
-		console.log(this.state.isAds)
 		if(this.state.isAds) {
 			let distance = getCountdown(end, current)[0] || 100000;
 			const countdown = setInterval(() => {
-				// console.log("callback from child", distance)
 				distance -= 1000
 				if (distance < 0 || !this.state.isAds) {
 					clearInterval(countdown)
@@ -774,17 +753,16 @@ class Tv extends React.Component {
 			,1000)
 		}
 	}
+
 	getStatusAds(e) {
 		if(this.state.ads_data) {
-			console.log('STCKY-CLOSED',this.state.ads_data)
 			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
 			appierAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
 			RPLUSAdsClicked(this.state.ads_data, 'click', 'sticky_ads_clicked', 'closed')
 		}
-		this.setState({
-			isAds: e,
-		}, () => { console.log(this.state.isAds)})
+		this.setState({ isAds: e })
 	}
+
 	_metaTags(){
 		const [titleChannel, titleEpg] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.title, this.props.router.query.epg_title?.replace(/-/gi, ' ')]
 		let [descriptionChannel, channel] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.description , this.props?.data_epg?.channel]
@@ -799,9 +777,7 @@ class Tv extends React.Component {
 			twitter_img_alt: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel == 'inews' ? 'iNEWS' : channel?.toUpperCase()} - RCTI+` : twitter_img_alt,
 		}
 	}
-	// _onClickEpg() {
-	// 	Router.replace(``)
-	// }
+
 	render() {
 		const { props, state } = this
 		const contentData = {
@@ -810,27 +786,29 @@ class Tv extends React.Component {
 			thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image
 		}
 		let playerRef = (<div></div>);
+
 		if (this.state.error) {
 			playerRef = (
-				<div ref={ this.playerContainerRef } style={{
-					textAlign: 'center',
-					padding: 30,
-					minHeight: 180
-				}}>
+				<div 
+					ref={ this.playerContainerRef } 
+					style={{ textAlign: 'center', padding: 30, minHeight: 180 }}>
 					<Wrench />
+
 					<h5 style={{ color: '#8f8f8f' }}>
-						{this.state.status && this.state.status.code === 12 ? (
+						{this.state.status && this.state.status.code === 12 
+						? (
 							<div>
 								<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
 							</div>
-						) : (
+							) 
+						: (
 								<div>
 									<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
 									<span style={{ fontSize: 12 }}>Please try again later,</span><br />
 									<span style={{ fontSize: 12 }}>we're working to fix the problem</span>
 								</div>
-							)}
-
+							)
+						}
 					</h5>
 				</div>
 			);
@@ -838,46 +816,43 @@ class Tv extends React.Component {
 		else {
 			playerRef = (
 				<div>
-					{/* <div style={{ minHeight: 180 }} id="live-tv-player"></div> */}
 					<div ref={ this.playerContainerRef } className="player-tv-container">
 						<div data-vjs-player>
 							<div
-                                onClick={() => {
-                                    if (this.player) {
-                                        this.player.pause();
-                                    }
-                                }}
-                                style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: this.state.screen_width / 2,
-                                    marginTop: '-0.81666em',
-                                    display: this.state.playing && this.state.user_active ? 'block' : 'none',
-                                    transform: 'scale(1.5) translateX(-30%) translateY(-30%)',
-                                    padding: 0
-                                }}>
-                                <PauseIcon/>
-                            </div>
+								onClick={() => { if (this.player) this.player.pause() }}
+								style={{
+									position: 'absolute',
+									top: '50%',
+									left: this.state.screen_width / 2,
+									marginTop: '-0.81666em',
+									display: this.state.playing && this.state.user_active ? 'block' : 'none',
+									transform: 'scale(1.5) translateX(-30%) translateY(-30%)',
+									padding: 0
+								}}>
+								<PauseIcon/>
+						</div>
 							<video
 								autoPlay
 								playsInline
 								style={{
-									// minHeight: 180,
 									width: '100%'
 								}}
 								ref={node => this.videoNode = node}
 								className="video-js vjs-default-skin vjs-big-play-centered"></video>
 						</div>
 					</div>
-					{/* <!-- /21865661642/RC_MOBILE_LIVE_BELOW-PLAYER --> */}
-					{this.state.ad_closed ? null : (
-						<div className='ads_wrapper'>
-							<div className='close_button' onClick={this.adsClose.bind(this)}>x</div>
-							<div id='div-gpt-ad-1581999069906-0' className='adsStyling'>
-								<script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1581999069906-0'); });` }}></script>
-							</div>
-						</div>
-					)}
+
+					{this.state.ad_closed 
+						? null 
+						: (
+								<div className='ads_wrapper'>
+									<div className='close_button' onClick={this.adsClose.bind(this)}>x</div>
+									<div id='div-gpt-ad-1581999069906-0' className='adsStyling'>
+										<script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1581999069906-0'); });` }}></script>
+									</div>
+								</div>
+							)
+					}
 				</div>
 			);
 		}
@@ -907,28 +882,9 @@ class Tv extends React.Component {
 					<meta name="twitter:description" content={this._metaTags().description} />
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
-
 					<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-					{/* <script dangerouslySetInnerHTML={{
-						__html: `
-						window.googletag = window.googletag || {cmd: []};
-						var i=2;
-						googletag.cmd.push(function() {
-							if(i===1){
-								googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[468, 60]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
-							}
-							else {
-								googletag.defineSlot('/21865661642/RC_MOBILE_LIVE_BELOW-PLAYER', [[320, 50]], 'div-gpt-ad-1581999069906-0').addService(googletag.pubads());
-							}
-							googletag.pubads().addEventListener('slotVisibilityChanged', function(event) {
-								console.log(event);
-							});
-							googletag.pubads().enableSingleRequest();
-							googletag.pubads().collapseEmptyDivs();
-							googletag.enableServices();
-						});
-					` }}></script> */}
 				</Head>
+
 				<SelectDateModal
 					open={this.state.select_modal}
 					data={this.state.dates_before}
@@ -943,19 +899,16 @@ class Tv extends React.Component {
 					toggle={this.toggleActionSheet.bind(this, this.state.title, BASE_URL + this.props.router.asPath, ['rctiplus'])} />
 
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
-					{/* {playerRef} */}
-					{/* <GeoblockModal open={state.status} toggle={() => { this.setState({ status: !state.status }); }} text="Whoops, Your Location doesnt support us to live stream this content"/> */}
 					<div ref={this.playerContainerRef}>
 						<JwPlayer
 							data={ state.data_player }
 							type={ state.data_player_type }
 							geoblockStatus={state.status}
-							customData={ {
+							customData={{
 								isLogin: this.props.user.isAuth,
 								sectionPage: state.data_player_type === 'live tv' ? 'live tv' : 'catchup',
-								} }
-              adsOverlayData={ state.adsOverlayDuration }
-							/>
+							}}
+              adsOverlayData={ state.adsOverlayDuration } />
 					</div>
 					<div ref= {this.tvTabRef} className="tv-wrap">
 						<Row>
@@ -1001,6 +954,7 @@ class Tv extends React.Component {
 						<TabContent activeTab={this.state.selected_tab}>
 							<TabPane tabId={'live'}>
 								{this.state.epg.map((e, i) => {
+									
 									if (this.isLiveProgram(e)) {
 										return (<Row key={i} className={'program-item selected'}>
 											<Col xs={9}>
@@ -1040,7 +994,9 @@ class Tv extends React.Component {
 												</Link>
 											</Col>
 											<Col className="right-side">
-												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + `/tv/${this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`, ['rctiplus', this.props.chats.channel_code], 'catchup')} className="share-btn" />
+												<ShareIcon 
+													onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + `/tv/${this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`, ['rctiplus', this.props.chats.channel_code], 'catchup')} 
+													className="share-btn" />
 											</Col>
 										</Row>
 									))}
@@ -1048,25 +1004,34 @@ class Tv extends React.Component {
 							</TabPane>
 						</TabContent>
 					</div>
-					{/* setHeightChatBox */}
-					{/* <div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
-						(isIOS ?
-							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
-							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
-						: null}> */}
-					<div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
-						{ height: this.setHeightChatBox() }
-						: null}>
+
+					<div
+						ref={ this.chatBoxRef } 
+						className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} 
+						style={this.state.chat_open ? { height: this.setHeightChatBox() } : null}>
 						<div className="btn-chat">
 							<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
-								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
+								<ExpandLessIcon className="expand-icon" />
+								Live Chat 
+								<FiberManualRecordIcon className="indicator-dot" />
 							</Button>
-							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
+							{this.state.ads_data 
+								? (
+										<Toast 
+											callbackCount={this.callbackCount.bind(this)} 
+											count={this.callbackAds.bind(this)} 
+											data={this.state.ads_data.data} 
+											isAds={this.getStatusAds.bind(this)}/>
+									) 
+								: (<div/>)}
 						</div>
-						{/* <div className="box-chat" style={{ height: 300 }}> */}
 						<div className="box-chat">
-							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
-								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
+							<div
+								className="wrap-live-chat__block" 
+								style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
+								<div 
+									className="block_chat" 
+									style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
 									<div>
 										<MuteChat className="icon-block__chat" />
 										<p>Sorry, you cannot send the message</p>
