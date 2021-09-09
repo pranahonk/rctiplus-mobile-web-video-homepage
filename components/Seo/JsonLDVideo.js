@@ -1,4 +1,3 @@
-
 export default function JsonLDVideo (props) {
   const { content, isProgram } = props
   const rplusUrl = 'https://m.rctiplus.com';

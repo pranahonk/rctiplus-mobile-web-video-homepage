@@ -13,6 +13,7 @@ import initialize from '../utils/initialize';
 import { getCountdown } from '../utils/helpers';
 import { convivaJwPlayer } from '../utils/conviva';
 
+// Redux Actions
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 import pageActions from '../redux/actions/pageActions';
 import chatsActions from '../redux/actions/chats';
@@ -199,48 +200,43 @@ class Tv extends React.Component {
 
 	componentDidMount() {
 		initGA();
-		this.props.setPageLoader();
-		this.props.getLiveEvent('on air')
-			.then(response => {
-				this.setState({ live_events: response.data.data, meta: response.data.meta }, () => {
-					this.props.unsetPageLoader();
-					if (this.state.live_events.length > 0) {
-						for (let i = 0; i < this.state.live_events.length; i++) {
-							if (this.state.live_events[i].channel_code === this.state.channel_code) {
-								this.selectChannel(i, true);
-								break;
-							}
-						}
-					}
-				});
-			})
-			.catch(error => {
-				this.props.unsetPageLoader();
-			});
-
-		this.props.getUserData()
-			.then(response => {
-				if (response.status === 200 && response.data.status.code === 0) {
-					this.setState({ user_data: response.data.data });
-				}
-			})
-			.catch(error => {});
-
-    // this.refreshPubAds();
-
-    axios.get('/v1/get-ads-duration')
-    .then(response => {
-      if (response.data.data) {
-        this.setState({
-          adsOverlayDuration: {
-            refreshDuration: response.data.data[0].duration,
-            reloadDuration: response.data.data[1].duration
-          }
-        })
-      }
-    })
-    .catch(error => {});
+		this.setupEssentialData()
 	}
+
+	setupEssentialData() {
+		this.props.setPageLoader();
+		Promise.all([
+			this.props.getLiveEvent('on air'),
+			axios.get('/v1/get-ads-duration'),
+		])
+			.then(([ liveEventRes, adsDurationRes ]) => {
+				const [ refresh, reload ] = adsDurationRes.data.data
+				const subjectsToChanges = {
+					live_events: liveEventRes.data.data,
+					meta: liveEventRes.data.meta,
+					user_data: this.props.user.data,
+          adsOverlayDuration: {
+            refreshDuration: refresh.duration,
+            reloadDuration: reload.duration
+          }
+				}
+
+				this.setState(subjectsToChanges, async () => {
+					if (this.state.live_events.length > 0) {
+						const index = this.state.live_events
+							.findIndex((event) => (event.channel_code === this.state.channel_code))
+
+						this.selectChannel(index, true)
+					}
+
+					this.props.unsetPageLoader()
+				})
+			})
+			.catch(_ => {
+				this.props.unsetPageLoader()
+			})
+	}
+
 	setHeightChatBox() {
 		let heightPlayer = this.playerContainerRef.current.clientHeight + this.tvTabRef.current.clientHeight;
 		return `calc(100% - ${heightPlayer}px)`;
@@ -783,7 +779,7 @@ class Tv extends React.Component {
 		const contentData = {
 			asPath: props.router.asPath,
 			title: props.context_data?.epg_title || props.context_data?.channel,
-			thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image
+			thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image,t
 		}
 		let playerRef = (<div></div>);
 
@@ -856,11 +852,10 @@ class Tv extends React.Component {
 				</div>
 			);
 		}
-
 		return (
 			<Layout className="live-tv-layout" title={this._metaTags().title}>
 				<Head>
-					<JsonLDVideo content={contentData} />
+					<JsonLDVideo content={contentData}/>
 					<meta name="description" content={this._metaTags().description} />
 					<meta name="keywords" content={this._metaTags().keywords} />
 					<meta property="og:title" content={this._metaTags().title} />
@@ -1102,5 +1097,6 @@ export default connect(state => state, {
 	...liveAndChatActions,
 	...pageActions,
 	...chatsActions,
-	...userActions
+	...userActions,
+	...seoActions
 })(withRouter(Tv));
