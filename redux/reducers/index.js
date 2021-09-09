@@ -21,7 +21,6 @@ import homeCategory from "./homeCategoryReducer"
 
 import trendingSubCategory from './trending/subCategory';
 import trendingContent from './trending/content';
-//import trendingContent from './trending/content';
 
 import newsv2Reducer from './newsv2Reducer';
 
