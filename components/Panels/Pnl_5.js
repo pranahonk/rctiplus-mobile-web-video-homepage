@@ -1,15 +1,14 @@
 import React from 'react';
-import Img from 'react-image';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
-import Stories from '../Includes/Gallery/Stories_Lineup';
+import Stories, {WithSeeMore} from 'react-insta-stories'
+import '../../assets/scss/components/stories.scss';
 
+import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import contentActions from '../../redux/actions/contentActions';
-import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../utils/appier';
-import { urlRegex } from '../../utils/regex';
-import { showSignInAlert } from '../../utils/helpers';
-const jwtDecode = require('jwt-decode');
+import TextLength from "../../utils/textLength";
+import { RESOLUTION_IMG } from '../../config';
 class Pnl_5 extends React.Component {
 
 	constructor(props) {
@@ -20,145 +19,69 @@ class Pnl_5 extends React.Component {
 			loading: false,
 			page: 1,
 			length: 7,
-			endpage: false
+			endpage: false,
+			showInsta: false,
+			storiesActive: []
 		};
 
 		this.swipe = {};
 	}
 
-	onTouchStart(e) {
-		const touch = e.touches[0];
-		this.swipe = { x: touch.clientX };
-	}
-
-	onTouchEnd(e) {
-		const touch = e.changedTouches[0];
-		const absX = Math.abs(touch.clientX - this.swipe.x);
-		if (absX > 50) {
-			homeGeneralClicked('mweb_homepage_scroll_horizontal');
-		}
-	}
-	handleActionClick(program, url) {
-			switch (program.action_type) {
-				case 'live_streaming' :
-					let channel = 'rcti'
-					if(program?.link === '1') {
-							channel = 'rcti'
-					}
-					if(program?.link === '2') {
-							channel = 'mnctv'
-					}
-					if(program?.link === '3') {
-							channel = 'gtv'
-					}
-					if(program?.link === '4') {
-							channel = 'inews'
-					}
-					Router.push(`/tv/${channel}`);
-				break;
-				case 'catchup':
-				if(program.link && program.channel && program.catchup_date) {
-						const title = program?.content_title?.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
-						Router.push(`/tv/${program.channel}/${program.link}/${title}?date=${program.catchup_date}`)
+	handleClickHere(data){
+		switch (data.swipe_type) {
+			case 'live_streaming' :
+				let channel = 'rcti'
+				if(data.swipe_value === '1') {
+					channel = 'rcti'
 				}
-				break;
-				case 'scan_qr':
-					Router.push("/qrcode")
-				break;
-				case 'homepage_news':
-					Router.push("/news")
-				break;
-				case 'news_detail' :
-				case 'news_category':
-				case 'news_tags' :
-						window.open(program.link, '_parent');
-						break;
-				case 'episode':
-						if(program.link && program.program_id) {
-								const title = program.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
-								Router.push(`/programs/${program.program_id}/${title}/episode/${program.link}/${title}`)
-						}
-						break;
-				case 'live_event':
-						if (program.link) {
-								Router.push(`/live-event/${program.link}/${program.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
-						}
-						break;
-				case 'genre':
-							Router.push(`/explores/${program.link}/${program.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
-						break;
-				case 'program':
-						Router.push(`/programs/${program.link}/${program.content_title.replace(/ +/g, '-')}`);
-						break;  
-				case 'popup':
-						window.open(url, '_parent');
-						break;  
-				default:
-						Router.push(url);
-		}       
-	}
-	link(data) {
-		
-		switch (data.content_type) {
-			case 'special':
-				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
-
-				// window.open(data.link, '_blank');
-				let url = data.url ? data.url : data.link;
-				// console.log('token:', this.props.token);
-				if (data.mandatory_login && this.props.user.isAuth) {
-					url += this.props.token;
+				if(data.swipe_value === '2') {
+					channel = 'mnctv'
 				}
-
-				let payload = {};
-				try {
-					payload = jwtDecode(this.props.token);
-					// console.log(payload && !payload.vid);
-					if (data.mandatory_login && !this.props.user.isAuth) {
-						showSignInAlert(`Please <b>Sign In</b><br/>
-							Woops! Gonna sign in first!<br/>
-							Only a click away and you<br/>
-							can continue to enjoy<br/>
-							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
-					}
-					else {
-						this.handleActionClick(data, url)
-						// window.open(url, '_blank');
-						// window.location.href = url;
-					}
+				if(data.swipe_value === '3') {
+					channel = 'gtv'
 				}
-				catch (e) {
-					if (data.mandatory_login && !this.props.user.isAuth) {
-						showSignInAlert(`Please <b>Sign In</b><br/>
-							Woops! Gonna sign in first!<br/>
-							Only a click away and you<br/>
-							can continue to enjoy<br/>
-							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
-					}
+				if(data.swipe_value === '4') {
+					channel = 'inews'
 				}
+				Router.push(`/tv/${channel}`);
 				break;
-
-			case 'live':
-				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_live_event_clicked');
-
-				Router.push(`/live-event/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${this.props.title}`);
+			case 'news_detail' :
+			case 'news_tags' :
+			case 'news_category':
+			case 'deeplink':
+			case 'link':
+				window.open(data.swipe_value, '_parent');
 				break;
-
+			case 'homepage_news':
+				Router.push("/news")
+				break;
+			case 'scan_qr':
+				Router.push("/qrcode")
+			case 'live_event':
+				break;
+			case 'extra':
+			case 'clips':
+			case 'episode':
+				window.open(data.share_link, '_parent');
+				break;
 			case 'program':
-				homeProgramClicked(this.props.title, data.program_id, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A',  this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_program_clicked');
-
-				if (data.program_id) {
-					Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}?ref=homepage&homepage_title=${this.props.title}${data.season > 0 ? `&season=${data.season}` : ""}`);
-				}
-				else if (data.content_id) {
-					Router.push(`/programs/${data.content_id}/${urlRegex(data.program_title)}?ref=homepage&homepage_title=${this.props.title}${data.season > 0 ? `&season=${data.season}` : ""}`);
+				Router.push(`/programs/${data.swipe_value}/${data.title.replace(/ +/g, '-')}`);
+				break;
+			case 'catchup':
+				if(data.swipe_value && data.channel && data.catchup_date) {
+					const title = data?.title?.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
+					Router.push(`/tv/${data.channel}/${data.swipe_value}/${title}?date=${data.catchup_date}`)
 				}
 				break;
-
+			case 'live_event':
+				if (data.swipe_value) {
+					Router.push(`/live-event/${data.swipe_value}/${data.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
+				}
+				break;
+			case 'genre':
+				Router.push(`/explores/${url}/${title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
+				break;
 			default:
-				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_content_clicked');
-
-				Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}/${data.content_type}/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${this.props.title}${data?.season > 0 ? `&season=${data?.season}` : ""}`);
 				break;
 		}
 	}
@@ -168,9 +91,10 @@ class Pnl_5 extends React.Component {
 			const page = this.state.page + 1;
 			this.setState({ loading: true }, () => {
 				this.props.loadingBar && this.props.loadingBar.continuousStart();
-				this.props.getHomepageContents(this.state.id, 'mweb', page, this.state.length)
+				this.props.getStoryLineup(this.state.id, page, this.state.length)
 					.then(response => {
 						if (response.status === 200 && response.data.status.code === 0) {
+							console.log(`ini response`,response.data.data)
 							const contents = this.state.contents;
 							contents.push.apply(contents, response.data.data);
 							this.setState({ loading: false, contents: contents, page: page, endpage: response.data.data.length < this.state.length });
@@ -189,12 +113,90 @@ class Pnl_5 extends React.Component {
 		}
 	}
 
+	seeMoreFactory = (data) => {
+		return ({close}) => {
+		  	close()
+			this.handleClickHere(data)
+		  	return null
+		}
+	}
+
+	handleSetStories(story, profile){
+		let _tempStory = []
+		story.forEach(element => {
+			if(element.swipe_type === "default"){
+				_tempStory.push(
+					{
+					url: element.link_video !== null ? element.link_video : `${this.props.imagePath}${RESOLUTION_IMG}${element.story_img}`,
+					type: element.link_video !== null ? 'video' : '',
+					header: {
+						heading: element.title,
+						profileImage: `${this.props.imagePath}150${profile}`
+					}
+				}
+				)
+			}else{
+				_tempStory.push(
+					{
+					url: element.link_video !== null ? element.link_video : `${this.props.imagePath}${RESOLUTION_IMG}${element.story_img}`,
+					type: element.link_video !== null ? 'video' : '',
+					header: {
+						heading: element.title,
+						profileImage: `${this.props.imagePath}150${profile}`
+					},	
+					seeMore: this.seeMoreFactory(element)
+				}
+				)
+			}
+			
+		});
+
+		this.setState({storiesActive: _tempStory})
+	}
+
 	render() {
 		return (
-			<div className="homepage-content pnl_horizontal">
-				<h2 className="content-title">{this.props.title}</h2>
-				<Stories content={this.props.content} imagePath={this.props.imagePath} />
-			</div>
+			<>
+				{/* Modal story lineup */}
+				{this.state.showInsta && 
+					<div className="modal-stories">
+						<div onClick={()=> this.setState({showInsta: false})} style={{position:"fixed", right: 25, top: 25, zIndex: 2000000, color:"white"}}><CloseRoundedIcon /></div>
+						<Stories
+							stories={this.state.storiesActive}
+							defaultInterval={7000}
+							width="100%"
+							height="100%"
+							onAllStoriesEnd= {() => this.setState({showInsta:false})}
+							keyboardNavigation={true}
+						/>
+					</div>
+				}
+
+				<div style={{paddingLeft:"14px"}} className="homepage-content pnl_horizontal">
+					<h2 className="content-title">{this.props.title}</h2>
+					<BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
+						{scrollRef => (
+							<div ref={scrollRef} className="contain-circle">
+								{this.state.contents && this.state.contents.map((v,i) => (
+										<div 
+											onClick={() => {
+												this.handleSetStories(v.story, v.program_img)
+												this.setState({showInsta: !this.state.showInsta})
+											}} 
+											style={{padding: "10px", background: "#1A1A1A", borderRadius: "5px"}} className="circle-box">
+											<div style={{display: "block", textAlign:"center", backgroundColor:"transparent"}} >
+												<span  className="cont-circle">
+													{v.program_img !== null && <img className="circle-img" src={this.props.imagePath + 150 + v.program_img} />}
+												</span>
+												<div style={{paddingTop:"4px", height:"40px", fontSize:"12px", fontWeight:300, color:"white", whiteSpace: "normal", overflow:"hidden", textOverflow:"ellipsis"}} >{TextLength(v.program_title, 25)}</div>
+											</div>
+										</div>
+								))}
+							</div>
+						)}
+					</BottomScrollListener>
+				</div>
+			</>
 		);
 	}
 }

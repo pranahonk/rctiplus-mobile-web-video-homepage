@@ -441,8 +441,6 @@ class Stories extends React.Component {
             programImg = 'static/placeholders/placeholder_potrait.png';
         }
 
-        console.log(`ini iten story hm`, items)
-
         const timeline = this.state.zuckJS.buildTimelineItem(
             this.storyId, //id
             programImg, //photo
