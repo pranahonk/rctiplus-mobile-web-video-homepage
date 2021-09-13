@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
-import Stories, {WithSeeMore} from 'react-insta-stories'
+import Stories from 'react-insta-stories'
 import '../../assets/scss/components/stories.scss';
 
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
@@ -57,8 +57,6 @@ class Pnl_5 extends React.Component {
 				break;
 			case 'scan_qr':
 				Router.push("/qrcode")
-			case 'live_event':
-				break;
 			case 'extra':
 			case 'clips':
 			case 'episode':
@@ -77,9 +75,6 @@ class Pnl_5 extends React.Component {
 				if (data.swipe_value) {
 					Router.push(`/live-event/${data.swipe_value}/${data.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
 				}
-				break;
-			case 'genre':
-				Router.push(`/explores/${url}/${title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
 				break;
 			default:
 				break;
