@@ -779,7 +779,7 @@ class Tv extends React.Component {
 		const contentData = {
 			asPath: props.router.asPath,
 			title: props.context_data?.epg_title || props.context_data?.channel,
-			thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image,t
+			thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image,
 		}
 		let playerRef = (<div></div>);
 
@@ -1098,5 +1098,4 @@ export default connect(state => state, {
 	...pageActions,
 	...chatsActions,
 	...userActions,
-	...seoActions
 })(withRouter(Tv));
