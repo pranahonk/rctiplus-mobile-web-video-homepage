@@ -15,6 +15,10 @@ export const GTM_AUTH = process.env.GTM_AUTH;
 
 export const DEV_API = process.env.DEV_API;
 
+export const GA_4_ID = process.env.GA_4_ID;
+
+export const GA_INIT_ID = process.env.GA_INIT_ID;
+
 export const API_V2 = process.env.API_V2 ? process.env.API_V2 : process.env.DEV_API;
 
 export const CHAT_API = process.env.CHAT_API;
