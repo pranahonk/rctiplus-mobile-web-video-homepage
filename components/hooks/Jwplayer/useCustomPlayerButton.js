@@ -3,6 +3,8 @@ import { hydrate } from "react-dom"
 
 export default function useCustomPlayerButton (props) {
   const [ isPlayerReady, setIsPlayerReady ] = useState(false)
+  const [ hideBtns, setHideBtns ] = useState(false)
+
   const fastForwardContainer = useRef()
   const fastBackwardContainer = useRef()
 
@@ -15,6 +17,18 @@ export default function useCustomPlayerButton (props) {
     props.videoIndexing
   ])
 
+  useEffect(() => {
+    if (props.player) onAdsActive()
+  }, [
+    hideBtns
+  ])
+  
+  const onAdsActive = () => {
+    const playerContainer = props.player.getContainer()
+    const overlayButtonContainer = playerContainer.querySelector(".jw-display.jw-reset")
+    overlayButtonContainer.style.display = hideBtns ? "none" : "flex"
+  }
+
   const setUpCustomBtns = ({ type }) => {
     if (!props.player) return
     const playerContainer = props.player.getContainer()
@@ -23,7 +37,7 @@ export default function useCustomPlayerButton (props) {
 
     if (!overlayButtonContainer || !customBtnSlots) return
 
-    // Set all display controls to be visible and put buttom control to the front
+    // // Set all display controls to be visible and put buttom control to the front
     overlayButtonContainer.style.display = "flex"
     customBtnSlots.style.display = "flex"
     customBtnSlots.style.justifyContent = "center"
@@ -65,7 +79,7 @@ export default function useCustomPlayerButton (props) {
         ref={skipPosIconContainer}
         className={`jwplayer-action jw-icon ${direction}`}
         role="button"
-        onClick={() => fastForwardBackwardClicked(direction)}>
+        onDoubleClick={() => fastForwardBackwardClicked(direction)}>
         <img
           src={`/static/player_icons/player_fast${direction}.svg`}
           alt={`fast-${direction}-btn`} />
@@ -142,5 +156,6 @@ export default function useCustomPlayerButton (props) {
 
   return {
     setIsPlayerReady,
+    setHideBtns
   }
 }

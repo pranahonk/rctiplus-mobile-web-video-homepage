@@ -40,7 +40,7 @@ const JwPlayer = (props) => {
   const [prevWidth, setPrevWidth] = useState(0);
 
   // Custom Hooks
-  const { setIsPlayerReady } = useCustomPlayerButton({ ...props, player })
+  const { setIsPlayerReady, setHideBtns } = useCustomPlayerButton({ ...props, player })
 
   // Supporting Variables
   const playerRef = useRef();
@@ -123,6 +123,7 @@ const JwPlayer = (props) => {
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
 
         if (props.type.includes("live")) {
+          const data = props.data
           // check if gpt data exist
           if ((data && data.gpt && data.gpt.path != null) && (data && data.gpt && data.gpt.path != undefined)) {
             // check if ads_wrapper element not exist
@@ -272,15 +273,23 @@ const JwPlayer = (props) => {
         }
       });
 
+      player.on("adPlay", _ => {
+        setHideBtns(true)
+      })
+      
       player.on('adSkipped', (event) => {
+        setHideBtns(false)
+        
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
             setAdStatus('prestart');
           }
         }
       });
-
+      
       player.on('adComplete', (event) => {
+        setHideBtns(false)
+        
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
             setAdStatus('prestart');
@@ -307,7 +316,7 @@ const JwPlayer = (props) => {
         }
       }); */
     }
-  },);
+  });
 
   useEffect(() => {
     const containerElement = document.getElementsByClassName('rplus-jw-container');

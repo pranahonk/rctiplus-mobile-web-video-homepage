@@ -12,6 +12,7 @@ import dynamic from 'next/dynamic';
 import initialize from '../utils/initialize';
 import { getCountdown } from '../utils/helpers';
 import { convivaJwPlayer } from '../utils/conviva';
+import { urlRegex } from '../utils/regex';
 
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 import pageActions from '../redux/actions/pageActions';
@@ -171,6 +172,7 @@ class Tv extends React.Component {
         refreshDuration: 0,
         reloadDuration: 0
       },
+      catchUpIndexing: {},
 		};
 
 		this.player = null;
@@ -200,59 +202,41 @@ class Tv extends React.Component {
 
 	componentDidMount() {
 		initGA();
+
 		this.props.setPageLoader();
-		this.props.getLiveEvent('on air')
-			.then(response => {
-				this.setState({ live_events: response.data.data, meta: response.data.meta }, () => {
-					this.props.unsetPageLoader();
-					if (this.state.live_events.length > 0) {
-						for (let i = 0; i < this.state.live_events.length; i++) {
-							if (this.state.live_events[i].channel_code === this.state.channel_code) {
-								this.selectChannel(i, true);
-								break;
-							}
-						}
+		Promise.all([
+			this.props.getLiveEvent('on air'),
+			axios.get('/v1/get-ads-duration')
+		])
+			.then((res) => {
+				const [ liveEvent, adsDuration ] = res
+				const [ refresh, reload ] = adsDuration.data.data
+				const liveEventData = liveEvent.data.data
+
+				this.setState({
+					live_events: liveEventData,
+					meta: liveEvent.data.meta,
+					adsOverlayDuration: {
+						refreshDuration: refresh.duration,
+						reloadDuration: reload.duration
 					}
-				});
+				}, _ => {
+					liveEventData.forEach((liveevent, i) => {
+						if (liveevent.channel_code === this.state.channel_code) {
+							this.selectChannel(i, true);
+							return
+						}
+					})
+				})
 			})
-			.catch(error => {
-				console.log(error);
-				this.props.unsetPageLoader();
-			});
-
-		this.props.getUserData()
-			.then(response => {
-				console.log(response);
-				if (response.status === 200 && response.data.status.code === 0) {
-					this.setState({ user_data: response.data.data });
-				}
-			})
-			.catch(error => {
-				console.log(error);
-			});
-
-    // this.refreshPubAds();
-
-    axios.get('/v1/get-ads-duration')
-    .then(response => {
-      //console.log('ads duration res', response.data);
-      if (response.data.data) {
-        this.setState({
-          adsOverlayDuration: {
-            refreshDuration: response.data.data[0].duration,
-            reloadDuration: response.data.data[1].duration
-          }
-        })
-      }
-    })
-    .catch(error => {
-      console.log(error);
-    });
+			.finally(_ => this.props.unsetPageLoader())
 	}
+
 	setHeightChatBox() {
 		let heightPlayer = this.playerContainerRef.current.clientHeight + this.tvTabRef.current.clientHeight;
 		return `calc(100% - ${heightPlayer}px)`;
 	}
+
 	isLiveProgram(epg) {
 		const currentTime = new Date().getTime();
 		const startTime = new Date(formatDate(this.currentDate) + 'T' + epg.s).getTime();
@@ -267,7 +251,6 @@ class Tv extends React.Component {
 				return epg[i];
 			}
 		}
-
 		return null;
 	}
 
@@ -347,7 +330,6 @@ class Tv extends React.Component {
 	}
 
 	selectChannel(index, first = false) {
-		// this.props.setPageLoader();
 
 		this.setState({ 
 			selected_index: index,
@@ -356,128 +338,193 @@ class Tv extends React.Component {
 			ads_data: null,
 			isAds: false }, () => {
 
-			setTimeout(() => {
-				if (this.state.chat_open) {
-					if (this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id) {
-						this.getAds(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
+				const liveEventId = this.state.live_events[this.state.selected_index].id || this.state.live_events[this.state.selected_index].content_id
+
+				setTimeout(() => {
+					if (this.state.chat_open) {
+						if (liveEventId) {
+							this.getAds(liveEventId);
+						}
 					}
-				}
-			}, 100);
+				}, 100);
 			
 			let epgLoaded = false;
 			let catchupLoaded = false;
 
-			this.loadChatMessages(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
-			this.statusChatBlock(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
-			this.props.getLiveEventUrl(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id)
+			this.loadChatMessages(liveEventId);
+			this.statusChatBlock(liveEventId);
+
+			const selectedDate = this.props.params_date 
+				? formatDateWord(new Date(this.props.params_date)) 
+				: formatDateWord(new Date())
+			
+			this.props.setCatchupDate(selectedDate)
+
+			Promise.all([
+				this.props.getLiveEventUrl(liveEventId),
+				this.props.getEPG(
+					formatDate(this.currentDate),
+					this.state.live_events[this.state.selected_index].channel_code
+				),
+				this.props.getEPG(
+					formatDate(new Date(selectedDate)),
+					this.state.live_events[this.state.selected_index].channel_code
+				)
+			])
 				.then(res => {
-					this.setState({
-						data_player: res.data.data,
-						data_player_type: 'live tv',
-						selected_live_event: this.state.live_events[this.state.selected_index],
-						selected_live_event_url: res.data.data,
-						player_url: res.data.data.url,
-						player_vmap: res.data.data[process.env.VMAP_KEY],
-						selected_tab: 'live',
-						error: false,
-						status: res.data.status && res.data.status.code === 12 ? true : false
-					}, () => {
-						// this.initVOD();
-
-						this.props.getEPG(
-							formatDate(this.currentDate),
-							this.state.live_events[this.state.selected_index].channel_code
-						)
-							.then(response => {
-								console.log(response, "get EPG I")
-								epgLoaded = true;
-								let epg = response.data.data
-									.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + 'T' + e.e).getTime());
-
-								this.setState({ epg: epg }, () => {
-									if (first != true) {
-										let programLive = this.getCurrentLiveEpg();
-										liveTvChannelClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, programLive ? programLive.title : 'N/A', 'mweb_livetv_channel_clicked');
-									}
-
-									if (!this.props.context_data.epg_id) {
-										// this.initPlayer();
-									}
-									else if (first === true && this.props.context_data.epg_id) {
-										this.selectCatchup(this.props.context_data.epg_id, 'url');
-									}
-									this.props.setChannelCode(this.state.selected_live_event.channel_code);
-									if (epgLoaded && catchupLoaded) {
-										this.props.unsetPageLoader();
-									}
-								});
-							})
-							.catch(error => {
-								epgLoaded = true;
-								console.log(error);
-								if (first != true) {
-									liveTvChannelClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'N/A', 'mweb_livetv_channel_clicked');
-								}
-
-								if (!this.props.context_data.epg_id) {
-									// this.initPlayer();
-								}
-								else if (first === true && this.props.context_data.epg_id) {
-									this.selectCatchup(this.props.context_data.epg_id, 'url');
-								}
-								this.props.setChannelCode(this.state.selected_live_event.channel_code);
-								if (epgLoaded && catchupLoaded) {
-									this.props.unsetPageLoader();
-								}
-							})
-					});
-				})
-				.catch(error => {
-					epgLoaded = true;
-					console.log(error);
-					this.setState({
-						error: true,
-						first_init_player: true,
-						error_data: error.status === 200 ? error.data.status.message_client : '',
-						status: error.data && error.data.status.code  === 12 ? true : false,
-					});
-					this.props.unsetPageLoader();
-				})
-				.finally(async () => {
-
-					// Wait for all of these promise function above done processing
-					// to get the params_date from updated props
-					const selectedDate = this.props.params_date 
-						? formatDateWord(new Date(this.props.params_date)) 
-						: formatDateWord(new Date())
-
-					this.setState(() => {
-						this.props.setCatchupDate(selectedDate)
-						return {
-							selected_date: selectedDate
-						}
-					})
-		
-					const response = await this.props.getEPG(
-						formatDate(new Date(selectedDate)),
-						this.state.live_events[this.state.selected_index].channel_code
-					)
-					catchupLoaded = true
-
-					const catchup = response.data.data.filter(e => {
+					const [ liveEventUrl, liveTv, catchUpRes ] = res
+					const epg = liveTv.data.data
+						.filter(e => (
+							e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + 'T' + e.e).getTime()
+						))
+					const catchup = catchUpRes.data.data.filter(e => {
 						if (e.s > e.e) {
 							return this.currentDate.getTime() > new Date(new Date(selectedDate + ' ' + e.e).getTime() + (1 * 24 * 60 * 60 * 1000)).getTime();
 						}
 						return this.currentDate.getTime() > new Date(selectedDate + ' ' + e.e).getTime();
 					})
-					this.setState({ catchup }, () => {
-						this.props.setCatchupData(catchup);
 
-						if (epgLoaded && catchupLoaded) {
-							this.props.unsetPageLoader();
-						}
+					if (first != true) {
+						let programLive = this.getCurrentLiveEpg();
+						liveTvChannelClicked(liveEventId, this.state.live_events[this.state.selected_index].name, programLive ? programLive.title : 'N/A', 'mweb_livetv_channel_clicked');
+					}
+
+					if (first === true && this.props.context_data.epg_id) {
+						this.selectCatchup(this.props.context_data.epg_id, 'url');
+					}
+					
+					this.props.setChannelCode(this.state.live_events[this.state.selected_index].channel_code);
+					this.props.setCatchupData(catchup)
+					this.setState({
+						data_player: liveEventUrl.data.data,
+						data_player_type: "live_tv",
+						selected_live_event: this.state.live_events[this.state.selected_index],
+						selected_live_event_url: liveEventUrl.data.data,
+						player_url: liveEventUrl.data.data.url,
+						player_vmap: liveEventUrl.data.data[process.env.VMAP_KEY],
+						selected_tab: "live",
+						error: false,
+						status: liveEventUrl.data.status.code === 12,
+						epg,
+						catchup
 					})
 				})
+				.catch(e => {
+
+				})
+
+			// this.props.getLiveEventUrl(liveEventId)
+			// 	.then(res => {
+			// 		this.setState({
+			// 			data_player: res.data.data,
+			// 			data_player_type: 'live tv',
+			// 			selected_live_event: this.state.live_events[this.state.selected_index],
+			// 			selected_live_event_url: res.data.data,
+			// 			player_url: res.data.data.url,
+			// 			player_vmap: res.data.data[process.env.VMAP_KEY],
+			// 			selected_tab: 'live',
+			// 			error: false,
+			// 			status: res.data.status && res.data.status.code === 12 ? true : false
+			// 		}, () => {
+			// 			// this.initVOD();
+
+			// 			this.props.getEPG(
+			// 				formatDate(this.currentDate),
+			// 				this.state.live_events[this.state.selected_index].channel_code
+			// 			)
+			// 				.then(response => {
+			// 					console.log(response, "get EPG I")
+			// 					epgLoaded = true;
+			// 					let epg = response.data.data
+			// 						.filter(e => e.e < e.s || this.currentDate.getTime() < new Date(formatDate(this.currentDate) + 'T' + e.e).getTime());
+
+			// 					this.setState({ epg: epg }, () => {
+			// 						if (first != true) {
+			// 							let programLive = this.getCurrentLiveEpg();
+			// 							liveTvChannelClicked(liveEventId, this.state.live_events[this.state.selected_index].name, programLive ? programLive.title : 'N/A', 'mweb_livetv_channel_clicked');
+			// 						}
+
+			// 						if (!this.props.context_data.epg_id) {
+			// 							// this.initPlayer();
+			// 						}
+			// 						else if (first === true && this.props.context_data.epg_id) {
+			// 							this.selectCatchup(this.props.context_data.epg_id, 'url');
+			// 						}
+			// 						this.props.setChannelCode(this.state.selected_live_event.channel_code);
+			// 						if (epgLoaded && catchupLoaded) {
+			// 							this.props.unsetPageLoader();
+			// 						}
+			// 					});
+			// 				})
+			// 				.catch(error => {
+			// 					epgLoaded = true;
+			// 					console.log(error);
+			// 					if (first != true) {
+			// 						liveTvChannelClicked(liveEventId, this.state.live_events[this.state.selected_index].name, 'N/A', 'mweb_livetv_channel_clicked');
+			// 					}
+
+			// 					if (!this.props.context_data.epg_id) {
+			// 						// this.initPlayer();
+			// 					}
+			// 					else if (first === true && this.props.context_data.epg_id) {
+			// 						this.selectCatchup(this.props.context_data.epg_id, 'url');
+			// 					}
+			// 					this.props.setChannelCode(this.state.selected_live_event.channel_code);
+			// 					if (epgLoaded && catchupLoaded) {
+			// 						this.props.unsetPageLoader();
+			// 					}
+			// 				})
+			// 		});
+			// 	})
+			// 	.catch(error => {
+			// 		epgLoaded = true;
+			// 		console.log(error);
+			// 		this.setState({
+			// 			error: true,
+			// 			first_init_player: true,
+			// 			error_data: error.status === 200 ? error.data.status.message_client : '',
+			// 			status: error.data && error.data.status.code  === 12 ? true : false,
+			// 		});
+			// 		this.props.unsetPageLoader();
+			// 	})
+			// 	.finally(async () => {
+
+			// 		// Wait for all of these promise function above done processing
+			// 		// to get the params_date from updated props
+			// 		const selectedDate = this.props.params_date 
+			// 			? formatDateWord(new Date(this.props.params_date)) 
+			// 			: formatDateWord(new Date())
+
+			// 		this.setState(() => {
+			// 			this.props.setCatchupDate(selectedDate)
+			// 			return {
+			// 				selected_date: selectedDate
+			// 			}
+			// 		})
+		
+			// 		const response = await this.props.getEPG(
+			// 			formatDate(new Date(selectedDate)),
+			// 			this.state.live_events[this.state.selected_index].channel_code
+			// 		)
+			// 		catchupLoaded = true
+
+			// 		const catchup = response.data.data.filter(e => {
+			// 			if (e.s > e.e) {
+			// 				return this.currentDate.getTime() > new Date(new Date(selectedDate + ' ' + e.e).getTime() + (1 * 24 * 60 * 60 * 1000)).getTime();
+			// 			}
+			// 			return this.currentDate.getTime() > new Date(selectedDate + ' ' + e.e).getTime();
+			// 		})
+			// 		this.setState({
+			// 			catchup,
+			// 			catchUpIndexing: { maxQueue: catchup.length }
+			// 		}, _ => {
+			// 			this.props.setCatchupData(catchup);
+
+			// 			if (epgLoaded && catchupLoaded) {
+			// 				this.props.unsetPageLoader();
+			// 			}
+			// 		})
+			// 	})
 		});
 	}
 
@@ -774,6 +821,7 @@ class Tv extends React.Component {
 			,1000)
 		}
 	}
+
 	getStatusAds(e) {
 		if(this.state.ads_data) {
 			console.log('STCKY-CLOSED',this.state.ads_data)
@@ -785,6 +833,7 @@ class Tv extends React.Component {
 			isAds: e,
 		}, () => { console.log(this.state.isAds)})
 	}
+
 	_metaTags(){
 		const [titleChannel, titleEpg] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.title, this.props.router.query.epg_title?.replace(/-/gi, ' ')]
 		let [descriptionChannel, channel] = [SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.description , this.props?.data_epg?.channel]
@@ -799,10 +848,68 @@ class Tv extends React.Component {
 			twitter_img_alt: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel == 'inews' ? 'iNEWS' : channel?.toUpperCase()} - RCTI+` : twitter_img_alt,
 		}
 	}
-	// _onClickEpg() {
-	// 	Router.replace(``)
-	// }
+
+	routingQueryGenerator(targetContent) {
+    let targetHref = [],
+      targetHrefAlias = []
+
+    const query = {
+      ...this.props.router.query,
+      epg_id: targetContent.id,
+      epg_title: targetContent.title.replace(/[^A-z]/ig, "-").toLowerCase(),
+			channel: targetContent.channel
+    }
+
+    for (const key in query) {
+      targetHref.push(`${key}=${query[key]}`)
+      targetHrefAlias.push(query[key])
+    }
+
+    return {
+      href: targetHref.join("&"), // actual target url
+      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser 
+    }
+  }
+
+	handleActionBtn(action) {
+    const { catchup, catchUpIndexing } = this.state
+
+    const direction = (action === "forward") ? "next" : "prev"
+    const targetVideoContent = catchup[catchUpIndexing[direction]]
+    const { href, hrefAlias } = this.routingQueryGenerator(targetVideoContent)
+
+    this.props.router.push(
+			`/tv?${href}`,
+			`/tv/${hrefAlias}?date=${this.props.params_date}`
+		)
+  }
+
+	getCurrentViewingVideoIndex() {
+		if (this.state.catchup.length === 0) return
+		if (!this.props.params_date) return
+
+		const currentCatchupId = +this.props.router.query.epg_id
+		const catchup = this.state.catchup
+
+		let catchUpIndexing = this.state.catchUpIndexing
+		
+		catchup.forEach((content, i) => {
+			if (currentCatchupId === content.id) {
+				catchUpIndexing["prev"] = i - 1 < 0 ? 0 : i - 1
+        catchUpIndexing["current"] = i
+        catchUpIndexing["next"] = i + 1 > catchup.length - 1 ? catchup.length - 1 : i + 1
+        return
+			}
+		})
+
+    if (this.state.catchUpIndexing.current !== catchUpIndexing.current) {
+      this.setState({ catchUpIndexing })
+    }
+  }
+
 	render() {
+		this.getCurrentViewingVideoIndex()
+
 		const { props, state } = this
 		const contentData = {
 			asPath: props.router.asPath,
@@ -950,11 +1057,13 @@ class Tv extends React.Component {
 							data={ state.data_player }
 							type={ state.data_player_type }
 							geoblockStatus={state.status}
-							customData={ {
+							customData={{
 								isLogin: this.props.user.isAuth,
 								sectionPage: state.data_player_type === 'live tv' ? 'live tv' : 'catchup',
-								} }
+							}}
               adsOverlayData={ state.adsOverlayDuration }
+							actionBtn={(e) => this.handleActionBtn(e)}
+							videoIndexing={state.catchUpIndexing}
 							/>
 					</div>
 					<div ref= {this.tvTabRef} className="tv-wrap">
