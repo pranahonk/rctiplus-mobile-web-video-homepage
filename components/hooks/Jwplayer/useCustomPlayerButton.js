@@ -96,7 +96,11 @@ export default function useCustomPlayerButton (props) {
           alt={`${direction}-btn`} />
       </div>
     )
-    const disabledNavBtn = <div key={`${index}-navbtn`}></div>
+    const disabledNavBtn = (
+      <div 
+        className={`jw-icon jw-${className} jw-button-color jw-reset`} 
+        key={`${index}-navbtn`}></div>
+    )
 
     const contents = [ skipBtn, disabled ? disabledNavBtn : navBtn ]
     if (direction === "forward") contents.reverse()
