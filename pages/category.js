@@ -17,6 +17,7 @@ import Panel1 from '../components/Panels/Pnl_1';
 import Panel2 from '../components/Panels/Pnl_2';
 import Panel3 from '../components/Panels/Pnl_3';
 import Panel4 from '../components/Panels/Pnl_4';
+import Panel5 from '../components/Panels/Pnl_5';
 
 import { DEV_API } from '../config';
 import { RESOLUTION_IMG,  } from '../config';
@@ -202,6 +203,9 @@ const Category = () => {
 
                     <div style={listStoriesCategory === null ? { marginTop: 15 } : {marginTop: 10}}>
                         {contents && contents.length > 0 && contents.map((content, i) => {
+                            if(content.content_type === "story"){
+                                return <Panel5 token={token} loadingBar={ref.current} type={content.type} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                            }
                             switch (content.display_type) {
                                 case 'horizontal_landscape_large':
                                     return <Panel1 token={token} loadingBar={ref.current} type={content.type} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;

@@ -148,11 +148,20 @@ export const getHomepageCategory = (page=1, length=6, category_id) => {
                 let promises = [];
                 for (let i = 0; i < data.length; i++) {
                     if (data[i].total_content > 0) {
-                        promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?platform=mweb&page=1&length=7`)
-                        .catch((err) => {
-                            console.log('err', err);
-                        }));
-                        selectedData.push(data[i]);
+                        if(data[i].content_type === "content"){
+                            promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?page=${1}&length=${7}`)
+                            .catch((err) => {
+                                console.log('err', err);
+                            }));
+                            selectedData.push(data[i]);
+                        }
+                        else if(data[i].content_type === "story"){
+                            promises.push(axios.get(`/v1/homepage/${data[i].id}/stories?page=${1}&length=${7}`)
+                            .catch((err) => {
+                                console.log('err', err);
+                            }));
+                            selectedData.push(data[i]);
+                        }
                     }
                     else if (data[i].type === 'custom' && data[i].api) {
                         promises.push(axios.get(data[i].api)

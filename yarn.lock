@@ -9990,6 +9990,11 @@ react-image@^2.2.1:
   dependencies:
     prop-types "15.7.2"
 
+react-insta-stories@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/react-insta-stories/-/react-insta-stories-2.2.4.tgz#0a3b10456aa887f3193c02939858366dd73cf2af"
+  integrity sha512-NQO+s1rTSQYZVcbkAQWR4uJ2eWyqrdj9RP9q6SyfeJCnSHZ0cWvrXMHnY97Woqh6bkfgVK26MhtT975shVO1Kg==
+
 react-intersection-observer@^8.25.1:
   version "8.26.2"
   resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.26.2.tgz#0562ff0c06b2b10e809190c2fa9b6ded656e6e16"
