@@ -56,47 +56,47 @@ export default function JsonLDVideo (props) {
   }
 
   const liveStreamSEO = {
-    "@context": "https://schema.org",
-    "@type": "VideoObject",
-    "name": `Live Streaming ${channel(content?.title).name} Hari Ini`,
-    "contentURL": `${rplusUrl}${content?.asPath}`,
-    "description": `${channel(content?.title).name} Live Streaming`,
-    "duration": "P6Y4M6DT23H59M59S",
-    "interactionCount": channel(content?.title).interactionCount,
-    "thumbnailUrl": `${content?.thumbnailUrl}`,
-    "sameAs": channel(content?.title).sameAs,
-    "uploadDate": "2019-08-24T14:00:00+07:00",
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "10",
-      "bestRating": "10",
-      "worstRating": "1",
-      "ratingCount": channel(content?.title).ratingCount
-    },
-    "publication": [
-      {
-        "@type": "BroadcastEvent",
-        "isLiveBroadcast": true,
-        "startDate": "2008-03-05T14:00:00+00:00",
-        "endDate": "2025-12-31T23:59:00+00:00",
-        "sameAs": [
-          "https://www.google.com/search?q=streaming+tv+internet&kponly&kgmid=/m/03x49v",
-          "https://id.wikipedia.org/wiki/Televisi_Internet"
-        ]
-      }
-    ]
+    // "@context": "https://schema.org",
+    // "@type": "VideoObject",
+    // "name": `Live Streaming ${channel(content?.title).name} Hari Ini`,
+    // "contentURL": `${rplusUrl}${content?.asPath}`,
+    // "description": `${channel(content?.title).name} Live Streaming`,
+    // "duration": "P6Y4M6DT23H59M59S",
+    // "interactionCount": channel(content?.title).interactionCount,
+    // "thumbnailUrl": `${content?.thumbnailUrl}`,
+    // "sameAs": channel(content?.title).sameAs,
+    // "uploadDate": "2019-08-24T14:00:00+07:00",
+    // "aggregateRating": {
+    //   "@type": "AggregateRating",
+    //   "ratingValue": "10",
+    //   "bestRating": "10",
+    //   "worstRating": "1",
+    //   "ratingCount": channel(content?.title).ratingCount
+    // },
+    // "publication": [
+    //   {
+    //     "@type": "BroadcastEvent",
+    //     "isLiveBroadcast": true,
+    //     "startDate": "2008-03-05T14:00:00+00:00",
+    //     "endDate": "2025-12-31T23:59:00+00:00",
+    //     "sameAs": [
+    //       "https://www.google.com/search?q=streaming+tv+internet&kponly&kgmid=/m/03x49v",
+    //       "https://id.wikipedia.org/wiki/Televisi_Internet"
+    //     ]
+    //   }
+    // ]
   }
 
   const programSEO = {
-    "@context": "https://schema.org",
-    "@type": "VideoObject",
-    "name": content?.title,
-    "description": content?.title,
-    "thumbnailUrl": [
-        content?.thumbnailUrl
-    ],
-    "uploadDate": content?.startDate || '1 Januari 1979',
-    "contentUrl": `${rplusUrl}${content?.asPath}`,
+    // "@context": "https://schema.org",
+    // "@type": "VideoObject",
+    // "name": content?.title,
+    // "description": content?.title,
+    // "thumbnailUrl": [
+    //     content?.thumbnailUrl
+    // ],
+    // "uploadDate": content?.startDate || '1 Januari 1979',
+    // "contentUrl": `${rplusUrl}${content?.asPath}`,
   }
   return(
     <>
