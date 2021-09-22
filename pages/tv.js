@@ -18,6 +18,7 @@ import liveAndChatActions from '../redux/actions/liveAndChatActions';
 import pageActions from '../redux/actions/pageActions';
 import chatsActions from '../redux/actions/chats';
 import userActions from '../redux/actions/userActions';
+import seoActions from "../redux/actions/seoActions"
 
 import Layout from '../components/Layouts/Default_v2';
 import SelectDateModal from '../components/Modals/SelectDateModal';
@@ -221,14 +222,23 @@ class Tv extends React.Component {
           }
 				}
 
+				let index = 1,
+					tvId = 1
+
+				if (liveEventRes.data.data.length > 0) {
+					liveEventRes.data.data
+						.forEach((event, i) => {
+							if (event.channel_code === this.state.channel_code) {
+								index = i
+								tvId = event.id
+								return
+							}
+						})
+				}
+				this.props.getSeoJsonLD("live-stream", tvId)
+
 				this.setState(subjectsToChanges, async () => {
-					if (this.state.live_events.length > 0) {
-						const index = this.state.live_events
-							.findIndex((event) => (event.channel_code === this.state.channel_code))
-
-						this.selectChannel(index, true)
-					}
-
+					this.selectChannel(index, true)
 					this.props.unsetPageLoader()
 				})
 			})
@@ -776,11 +786,11 @@ class Tv extends React.Component {
 
 	render() {
 		const { props, state } = this
-		const contentData = {
-			asPath: props.router.asPath,
-			title: props.context_data?.epg_title || props.context_data?.channel,
-			thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image,
-		}
+		// const contentData = {
+		// 	asPath: props.router.asPath,
+		// 	title: props.context_data?.epg_title || props.context_data?.channel,
+		// 	thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image,
+		// }
 		let playerRef = (<div></div>);
 
 		if (this.state.error) {
@@ -852,10 +862,10 @@ class Tv extends React.Component {
 				</div>
 			);
 		}
+
 		return (
 			<Layout className="live-tv-layout" title={this._metaTags().title}>
 				<Head>
-					<JsonLDVideo content={contentData}/>
 					<meta name="description" content={this._metaTags().description} />
 					<meta name="keywords" content={this._metaTags().keywords} />
 					<meta property="og:title" content={this._metaTags().title} />
@@ -879,6 +889,8 @@ class Tv extends React.Component {
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 					<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 				</Head>
+
+				{/* <JsonLDVideo seoContent={this.props.seoContent}/> */}
 
 				<SelectDateModal
 					open={this.state.select_modal}
@@ -1098,4 +1110,5 @@ export default connect(state => state, {
 	...pageActions,
 	...chatsActions,
 	...userActions,
+	...seoActions,
 })(withRouter(Tv));
