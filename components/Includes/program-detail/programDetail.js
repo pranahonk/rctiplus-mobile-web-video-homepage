@@ -12,7 +12,7 @@ import Dialog from '../../Modals/Dialog';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import GetApp from '@material-ui/icons/GetApp';
-import { RESOLUTION_IMG } from '../../../config';
+import { LINK_HOT, RESOLUTION_IMG } from '../../../config';
 import { showAlert, showSignInAlert } from '../../../utils/helpers';
 import { urlRegex } from '../../../utils/regex';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -22,6 +22,11 @@ const TabPanelLoader = dynamic(() => import('../Shimmer/detailProgramLoader').th
 import smoothscroll from 'smoothscroll-polyfill';
 import { isIOS } from 'react-device-detect';
 import BottomScrollListener from 'react-bottom-scroll-listener';
+
+// Icons
+import HOTIcon from '../../../static/recommendation-hot/icon_hot+.svg'
+import ViewIcon from '../../../static/recommendation-hot/icon_views.svg'
+import SeeMoreIcon from '../../../static/recommendation-hot/icon_see_more.svg'
 
 import { 
   programRateEvent, programShareEvent, programContentShareEvent, 
@@ -36,7 +41,9 @@ import {
   libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, 
   searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked,
   searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, 
-  searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent, ProgramContentClick } from '../../../utils/appier';
+  searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent, ProgramContentClick
+} from '../../../utils/appier';
+import { getCookie } from '../../../utils/cookie';
 
 export const PanelEpisode = forwardRef((props, ref) => {
   smoothscroll.polyfill();
@@ -258,6 +265,61 @@ export const PanelPhoto = (props) => {
       ) : ''} */}
       {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
+  );
+};
+
+export const PanelRecommendHOT = (props) => {
+  smoothscroll.polyfill();
+
+  const token = getCookie('ACCESS_TOKEN');
+  const pathImg = [props.data.meta.image_path, RESOLUTION_IMG];
+  const hasToken = (typeof token !== 'undefined' && token !== undefined && token !== 'undefined' && token !== null && token !== '')
+  const hasMore = props.data?.meta?.pagination?.current_page < props.data?.meta?.pagination?.total_page
+
+  const recommendationVideoURL = (id) => `${LINK_HOT}recommendation/video/${id}${hasToken ? `?token=${token}` : ''}`
+  const onClickItem = (id) => window.location.href = recommendationVideoURL(id);
+
+  return (
+    <div className="recommend__HOT-wrapper">
+      <div className="recommend__HOT-header-wrapper">
+        <img alt="HOT+ Icon" src={HOTIcon} />
+        <p className="recommend__HOT-header-label">HOT (Home Of Talent)</p>
+      </div>
+      <div className="recommend__HOT-list">
+        {props.data.data.map((item, i) => {
+          const thumbnail = item.thumbnail ?? item.portrait_image
+
+          return (
+            <Link key={i} href={recommendationVideoURL(item.video_id)}>
+              <a className="mr-2" onClick={() => onClickItem(item.video_id)}>
+                <div className="recommend__HOT-item">
+                  <Img alt={item.title}
+                    src={thumbnail}
+                    unloader={<img className="background__program-detail" src={getPathImage(...pathImg, thumbnail, false, 'potrait')} />}
+                    loader={<img className="background__program-detail" src={getPathImage(...pathImg, thumbnail, false, 'potrait')} />} />
+                  <div className="my-2">
+                    <p className="recommend__HOT-title mb-2">{item?.title || '-'}</p>
+                    <p className="recommend__HOT-author">{item?.author?.display_name}</p>
+                    {item?.views ? (
+                      <div className="recommend__HOT-views-wrapper">
+                        <img className="recommend__HOT-views-icon" alt="Number of Viewers Icon" src={ViewIcon} />
+                        <span className="recommend__HOT-views-count text-white">{item?.views}</span>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </a>
+            </Link>
+          );
+        })}
+        {hasMore && (
+          <div className="recommend__HOT-more-wrapper" onClick={props.hasMore}>
+            <img className="recommend__HOT-more-icon" alt="See More Icon" src={SeeMoreIcon} />
+            <p className="recommend__HOT-more-label">See More</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
