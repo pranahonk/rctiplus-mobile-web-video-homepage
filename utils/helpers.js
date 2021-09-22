@@ -243,3 +243,12 @@ export const readMore = (content) => {
     paragraph = paragraph.length > 1 ? paragraph[1] : paragraph[0]
     return paragraph.substring(0, 200).replace(/<\/?[^>]+(>|$)/g, "") + "...."
 }
+
+export const userAgents = {
+    ANDROID: "ANDROID",
+    IOS: "IOS"
+}
+
+export const getUserAgent = () => {
+    return /android|windows/ig.test(navigator.userAgent) ? userAgents.ANDROID : userAgents.IOS
+}
