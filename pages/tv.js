@@ -196,9 +196,6 @@ class Tv extends React.Component {
 		// }
 	}
 
-	componentDidUpdate() {
-	}
-
 	componentDidMount() {
 		initGA();
 		this.setupEssentialData()
@@ -236,6 +233,7 @@ class Tv extends React.Component {
 						})
 				}
 				this.props.getSeoJsonLD("live-stream", tvId)
+				this.props.getLiveEventDetail(tvId)
 
 				this.setState(subjectsToChanges, async () => {
 					this.selectChannel(index, true)
@@ -340,7 +338,8 @@ class Tv extends React.Component {
 	}
 
 	selectChannel(index, first = false) {
-		// this.props.setPageLoader();
+		this.props.getSeoJsonLD("live-stream", this.state.live_events[index].id)
+		this.props.getLiveEventDetail(this.state.live_events[index].id)
 
 		this.setState({ 
 			selected_index: index,
@@ -786,11 +785,6 @@ class Tv extends React.Component {
 
 	render() {
 		const { props, state } = this
-		// const contentData = {
-		// 	asPath: props.router.asPath,
-		// 	title: props.context_data?.epg_title || props.context_data?.channel,
-		// 	thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image,
-		// }
 		let playerRef = (<div></div>);
 
 		if (this.state.error) {
@@ -890,7 +884,12 @@ class Tv extends React.Component {
 					<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 				</Head>
 
-				{/* <JsonLDVideo seoContent={this.props.seoContent}/> */}
+				<JsonLDVideo 
+					seoContent={this.props.seoContent} 
+					stream={{ 
+						url: props.router.asPath,
+						detail: props.chats.live_event_detail
+					}} />
 
 				<SelectDateModal
 					open={this.state.select_modal}
@@ -993,7 +992,7 @@ class Tv extends React.Component {
 									{this.props.chats.catchup.map(c => (
 										<Row key={c.id} className={'program-item'}>
 											<Col xs={9} onClick={this.selectCatchup.bind(this, c.id)}>
-												<Link href={`/tv/${this.state.channel_code == 'globaltv' ? 'gtv' : this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}?date=${this.props.chats.catchup_date.replace(/ /gi, '-')}`}>
+												<Link href={`/tv/${this.props.router.query.channel == 'globaltv' ? 'gtv' : this.props.router.query.channel}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}?date=${this.props.chats.catchup_date.replace(/ /gi, '-')}`}>
 													<a style={{ textDecoration: 'none', color: 'white' }}>
 														<div className="title"><h3 className="heading-rplus"> {c.title} </h3></div>
 														<div className="subtitle">{c.s} - {c.e}</div>
@@ -1002,7 +1001,7 @@ class Tv extends React.Component {
 											</Col>
 											<Col className="right-side">
 												<ShareIcon 
-													onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + `/tv/${this.state.channel_code}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`, ['rctiplus', this.props.chats.channel_code], 'catchup')} 
+													onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + `/tv/${this.props.router.query.channel}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`, ['rctiplus', this.props.chats.channel_code], 'catchup')} 
 													className="share-btn" />
 											</Col>
 										</Row>
