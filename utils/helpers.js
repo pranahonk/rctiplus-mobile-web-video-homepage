@@ -2,6 +2,7 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty'
 import Img from 'react-image';
+import { STATIC } from "../config"
 
 export const showAlert = (text, title, confirmText = 'OK', cancelText = '', confirmCallback = () => {}, styleInverse = false, confirmButtonId = '', cancelButtonId = '') => {
     let options = {
@@ -209,7 +210,7 @@ export const humanizeStr = (str) => {
 
 export const imgURL = (source, staticUrl, size = 200, assetsUrl, imgDefault = null) => {
     const assets_url_check = !isEmpty(assetsUrl) && assetsUrl !== undefined
-    const assets_url = assets_url_check ? assetsUrl : 'https://rstatic.akamaized.net/media/'
+    const assets_url = assets_url_check ? assetsUrl : `${STATIC}/media/`
     return !isEmpty(staticUrl) && staticUrl !== '-' && assets_url_check ? `${assets_url}${size}${staticUrl}` : (
         imgDefault != null ? imgDefault : source
     );
@@ -242,4 +243,13 @@ export const readMore = (content) => {
     let paragraph = content.split('<p>')
     paragraph = paragraph.length > 1 ? paragraph[1] : paragraph[0]
     return paragraph.substring(0, 200).replace(/<\/?[^>]+(>|$)/g, "") + "...."
+}
+
+export const userAgents = {
+    ANDROID: "ANDROID",
+    IOS: "IOS"
+}
+
+export const getUserAgent = () => {
+    return /android|windows/ig.test(navigator.userAgent) ? userAgents.ANDROID : userAgents.IOS
 }

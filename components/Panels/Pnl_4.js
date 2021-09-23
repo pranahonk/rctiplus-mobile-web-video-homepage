@@ -71,7 +71,6 @@ class Pnl_4 extends React.Component {
 				case 'homepage_news':
 					Router.push("/news")
 				break;
-				case 'news_detail' :
 				case 'news_category':
 				case 'news_tags' :
 						window.open(program.link, '_parent');

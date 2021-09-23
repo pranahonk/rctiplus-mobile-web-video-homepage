@@ -14,6 +14,11 @@ export const GTM = process.env.GTM;
 export const GTM_AUTH = process.env.GTM_AUTH;
 
 export const DEV_API = process.env.DEV_API;
+export const DEVELOPMENT_API = process.env.DEVELOPMENT_API;
+
+export const GA_4_ID = process.env.GA_4_ID;
+
+export const GA_INIT_ID = process.env.GA_INIT_ID;
 
 export const API_V2 = process.env.API_V2 ? process.env.API_V2 : process.env.DEV_API;
 
@@ -26,13 +31,9 @@ export const REDIRECT_WEB_DESKTOP = process.env.REDIRECT_WEB_DESKTOP;
 export const SHARE_BASE_URL = process.env.SHARE_BASE_URL;
 export const RESOLUTION_IMG = process.env.RESOLUTION_IMG;
 
-// export const API = 'https://api.rctiplus.com';
-
-// export const DEV_API = 'https://dev-api.rctiplus.com';
-
 export const NEWS_API = process.env.NEWS_API;
 export const NEWS_API_V2 = process.env.NEWS_API_V2;
-// export const NEWS_API = 'https://api-v2.rctiplus.com/news';
+
 export const REWARDS_API = process.env.REWARDS_API;
 export const STATIC = process.env.STATIC;
 
@@ -115,7 +116,7 @@ export const SITEMAP = {
         title: `${SITE_NAME} - Satu Aplikasi, Semua Hiburan`,
         description: 'Nonton Film & Live Streaming TV Online di RCTI Plus. Satu Aplikasi, Semua Hiburan: Video, Berita, Radio, Podcast, Games, dan Ajang Pencarian Bakat. Download sekarang.',
         keywords: `rcti plus, rcti+, tv online, streaming tv, live streaming, nonton film`,
-        image: `https://rstatic.akamaized.net/media/600/files/fta_rcti/metaimages/Home-RCTIPlus-compress.jpg`
+        image: `${STATIC}/media/600/files/fta_rcti/metaimages/Home-RCTIPlus-compress.jpg`
     },
     terms_and_conditions: {
         title: `Terms and Conditions - ${SITE_NAME}`,
@@ -266,7 +267,7 @@ export const SITEMAP = {
         description: `Nonton tv online bersama Indonesia. Cek jadwal live streaming tayangan video siaran RCTI terbaru hari ini di RCTI+.`,
         keywords: `rcti, streaming rcti, live streaming rcti, rcti live, tv online, streaming tv, live streaming, tv bersama, nonton tv`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_RCTI-min.png`,
-        image_catchup: `http://rstatic.akamaized.net/media/500/files/assets/metaimages/CATCH_UP_RCTI.png`,
+        image_catchup: `${STATIC}/media/500/files/assets/metaimages/CATCH_UP_RCTI.png`,
         twitter_img_alt: 'streaming rcti'
     },
     live_tv_mnctv: {
@@ -274,7 +275,7 @@ export const SITEMAP = {
         description: `Nonton live streaming tv Indonesia, MNCTV online hari ini tanpa buffering. Cek juga jadwal program dan acara terbaru di RCTI+.`,
         keywords: `streaming mnctv, live streaming mnctv, mnctv, mnctv live, live mnctv, mnc, tv online mnctv, mnc tv, tv online indonesia, streaming tv indonesia`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_MNCTV-min.png`,
-        image_catchup: `http://rstatic.akamaized.net/media/500/files/assets/metaimages/CATCH_UP_MNCTV.png`,
+        image_catchup: `${STATIC}/media/500/files/assets/metaimages/CATCH_UP_MNCTV.png`,
         twitter_img_alt: 'streaming mnc tv'
     },
     live_tv_globaltv: {
@@ -282,7 +283,7 @@ export const SITEMAP = {
         description: `Nonton live streaming GTV online hari ini tanpa buffering untuk semua program dan acara favorit yang tayang setiap hari. Dapatkan juga jadwal acara Global TV terbaru hanya di RCTI+`,
         keywords: `gtv, streaming gtv, live streaming gtv, global tv, gtv live, streaming global tv, live streaming global tv, global tv live, jadwal global tv hari ini, live tv online`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_GTV-min.png`,
-        image_catchup: `http://rstatic.akamaized.net/media/500/files/assets/metaimages/CATCH_UP_GTV.png`,
+        image_catchup: `${STATIC}/media/500/files/assets/metaimages/CATCH_UP_GTV.png`,
         twitter_img_alt: 'streaming gtv'
     },
     live_tv_gtv: {
@@ -290,7 +291,7 @@ export const SITEMAP = {
         description: `Nonton live streaming GTV online hari ini tanpa buffering untuk semua program dan acara favorit yang tayang setiap hari. Dapatkan juga jadwal acara Global TV terbaru hanya di RCTI+`,
         keywords: `gtv, streaming gtv, live streaming gtv, global tv, gtv live, streaming global tv, live streaming global tv, global tv live, jadwal global tv hari ini, live tv online`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_GTV-min.png`,
-        image_catchup: `http://rstatic.akamaized.net/media/500/files/assets/metaimages/CATCH_UP_GTV.png`,
+        image_catchup: `${STATIC}/media/500/files/assets/metaimages/CATCH_UP_GTV.png`,
         twitter_img_alt: 'streaming gtv'
     },
     live_tv_inews: {
@@ -298,7 +299,7 @@ export const SITEMAP = {
         description: `Berita terkini terbaru hari ini dan program favorit lainnya disajikan iNews TV. Nonton online live streaming di RCTI+.`,
         keywords: `inews, inews tv, streaming inews, live streaming inews, inews tv online, inews live, streaming inews tv, berita terkini, berita terbaru`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_INEWS-min.png`,
-        image_catchup: `http://rstatic.akamaized.net/media/500/files/assets/metaimages/CATCH_UP_INEWS.png`,
+        image_catchup: `${STATIC}/media/500/files/assets/metaimages/CATCH_UP_INEWS.png`,
         twitter_img_alt: 'streaming inews tv'
     },
     live_event_index: {
