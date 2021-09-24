@@ -1,10 +1,10 @@
 import ax from 'axios';
-import { DEV_API, DEVELOPMENT_API, VISITOR_TOKEN } from '../../../config';
+import { DEV_API, VISITOR_TOKEN } from '../../../config';
 import { getCookie, getVisitorToken, checkToken, setCookie } from '../../../utils/cookie';
 import { getUidAppier } from '../../../utils/appier';
 
 const axios = ax.create({ baseURL: DEV_API + '/api' });
-const axiosHOT = ax.create({ baseURL: DEVELOPMENT_API + '/ugc-vote/api' });
+const axiosHOT = ax.create({ baseURL: DEV_API + '/ugc-vote/api' });
 
 axios.interceptors.request.use(async (request) => {
   await checkToken();
