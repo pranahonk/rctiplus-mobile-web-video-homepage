@@ -113,6 +113,11 @@ const JwPlayer = (props) => {
         const playerContainer = player.getContainer();
         setAdsState(stateOfAds.INIT)
 
+        if (props.type.includes("live")) {
+          document.querySelector(".jw-display-icon-container.jw-display-icon-rewind").style.display = "none"
+          document.querySelector(".jw-display-icon-container.jw-display-icon-next").style.display = "none"
+        }
+
         if (isIOS) {
           const elementCreateMute = document.createElement('btn');
           const elementMuteIcon = document.createElement('span');
