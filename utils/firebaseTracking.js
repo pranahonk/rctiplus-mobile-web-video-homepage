@@ -53,7 +53,7 @@ export const stickyAdsClicked = (data, event = 'gtag-event-rctiplus', status = '
 };
 
 export const redirectToVisionPlus = (user) => {
-  const rplusUserId = user ? "" : user?.id
+  const rplusUserId = !user ? "" : user?.id
 
   ReactGA.initialize(process.env.GA_INIT_ID, {
     titleCase: false
@@ -68,6 +68,6 @@ export const redirectToVisionPlus = (user) => {
     category: 'library',
     action: 'click_go_to_visionplus',
     label: 'redirect_to_visionplus',
-    name: "click_go_to_visionplus"
+    name: "general_event"
   })
 }
