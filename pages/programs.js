@@ -747,18 +747,18 @@ class Index extends React.Component {
   toggleRateModal(test = '') {
     this.setState({ rate_modal: !this.state.rate_modal });
   }
-  // statusLogin(data) {
-  //   let isLogin = false;
-  //   if (data && data.status) {
-  //     isLogin = data.status.code === 13 ? false : true;
-  //     return isLogin;
-  //   }
-  // }
 
   renderVisionPlusComponent() {
     const programDetail = this.props.data.programDetail
-    if (!programDetail) return null
+    const programEpisode = this.props.data["program-episode"]
+
+    if (!programDetail || !programEpisode) return null
     if (!programDetail.data.show_vision_plus_disclaimer) return null
+    if (this.state.toggle.toLowerCase() !== "episodes") return null
+
+    const { pagination } = programEpisode[`season-${this.props.data.seasonSelected}`].meta
+
+    if (pagination.current_page < pagination.total_page) return null
 
     return (
       <VisionPlusProgram user={this.props.auth} />
