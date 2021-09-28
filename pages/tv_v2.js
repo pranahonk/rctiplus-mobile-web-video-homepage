@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from "react"
-import { useSelector, useDispatch } from "react-redux"
+import React from "react"
 import { withRouter } from 'next/router';
 import { HeadMetaTv } from "../components/pages/live-tv"
-import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
-import { formatDate, formatDateWord, getFormattedDateBefore, formatMonthEngToID } from '../utils/dateHelpers';
+import { DEV_API, SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
+import { formatMonthEngToID } from '../utils/dateHelpers';
 import { ChevronUpIcon } from "../components/IconComponents"
 
 import dynamic from "next/dynamic"
@@ -118,17 +117,17 @@ class TV_V2 extends React.Component {
         <HeadMetaTv meta={handleMeta()}/>
         <Layout className="live-tv-layout" title={handleMeta().title} hideFooter={ this.state.openChat ? true: false}>
           <TvProvider>
-            <div id="tv-v2" className="tv_wrapper">
+            <div style={{height:"100%", overflow:"hidden"}} id="tv-v2" className="tv_wrapper">
               <div ref={this.channelContainer}>
                 <div ref={ this.playerContainerRef }>
                   <PlayerTv />
                 </div>
-                <ChannelList toggle={() => this.setState({openChat: false})} />
                 <div ref={ this.tvTabRef }>
-                  <WeekList />
+                  <ChannelList toggle={() => this.setState({openChat: false})} />
                 </div>
+                <WeekList />
               </div>
-              <div ref={this.listRef} style={{height: `calc(100vh - ${this.state.heightList + 70}px)`, width: "100%", overflow: "scroll"}}>
+              <div ref={this.listRef} style={{height: `calc(100vh - ${this.state.heightList + 50}px)`, width: "100%", overflow: "scroll"}}>
                 <ListItem />
               </div>
               <div className="chat-container" onClick={() => this.handleChat(this)}>
@@ -142,7 +141,7 @@ class TV_V2 extends React.Component {
               </div>
               {
                 this.state.openChat &&
-               (<div className="chat-component__wrapper" style={this.state.openChat ? {height: `calc(100vh - ${this.state.heightList - this.tvTabRef.current.clientHeight - 15 }px)`} : null}>
+               (<div className="chat-component__wrapper" style={this.state.openChat ? {height: `calc(100vh - ${this.playerContainerRef.current.clientHeight + this.tvTabRef.current.clientHeight +50}px` } : null}>
                   <Chat toggle={() => this.handleChat(this)} openChat={this.state.openChat} id={idChannel} channelMain={channelMain} />
                 </div>)
               }
