@@ -28,7 +28,7 @@ export default class VisionPlusProgram extends React.Component {
     const user = this.props.user ? this.props.user.data : null
 
     return (
-      <div style={{background: "#3a3a3a"}}>
+      <div style={{background: "#3a3a3a", padding: "1rem 0"}}>
         <div id="visionplus_program">
           <p className="visplus_child">
             Semua episode sebelumnya dapat disaksikan secara lengkap di aplikasi Vision+.
