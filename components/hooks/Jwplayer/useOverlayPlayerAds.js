@@ -22,6 +22,7 @@ export default function useOverlayPlayerAds(props) {
   ])
 
   useEffect(() => {
+    console.log(slotDivGPT, "uhuy")
     deviceOrientationListener()
   })
   
@@ -58,19 +59,33 @@ export default function useOverlayPlayerAds(props) {
     if (!adsWrapper) return
     
     if (adsState.includes("start")) {
-      adsWrapper.style.display = ""
-      defineAds()
+      initAds()
     }
     else {
       adsWrapper.style.display = "none"
     }
   }
 
-  const defineAds = () => {
+  const initAds = () => {
+    const { reloadDuration } = props.adsOverlayData
+
+    if (slotDivGPT) googletag.destroySlots()
+    const playerContainer = props.player.getContainer()
+    const adsWrapper = playerContainer.querySelector(".jw-ads-overlay")
+
+    setTimeout(() => {
+      defineAds(adsWrapper)
+    }, reloadDuration);
+  }
+
+  const defineAds = (adsWrapper) => {
     const { gpt } = props.data
+    const divGPTString = generateDivGPTString()
+
     window.googletag = window.googletag || {cmd: []}
+    adsWrapper.style.display = ""
     
-    const slot = googletag.defineSlot(gpt.path, [ gpt.size_width_1, gpt.size_height_1 ], slotDivGPT)
+    const slot = googletag.defineSlot(gpt.path, [ gpt.size_width_1, gpt.size_height_1 ], divGPTString)
     if (slot) {
       slot.addService(googletag.pubads())
 
@@ -82,8 +97,8 @@ export default function useOverlayPlayerAds(props) {
       googletag.pubads().disableInitialLoad();
       googletag.enableServices();
     }
+    googletag.display(divGPTString)
     
-    googletag.display(slotDivGPT)
     googletag.pubads().refresh()
   }
 
@@ -117,9 +132,25 @@ export default function useOverlayPlayerAds(props) {
     e.preventDefault();
     e.stopPropagation();
     
+    const { refreshDuration } = props.adsOverlayData
+    googletag.destroySlots()
+    
     const playerContainer = props.player.getContainer()
     const adsWrapper = playerContainer.querySelector(".jw-ads-overlay")
     adsWrapper.style.display = "none"
+
+    setTimeout(() => {
+      defineAds(adsWrapper)
+    }, refreshDuration);
+  }
+
+  const generateDivGPTString = () => {
+    const { gpt } = props.data
+    const envDivGPTString = (props.type === 'live tv') 
+      ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV 
+      : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+    
+    return gpt.div_gpt ? gpt.div_gpt : envDivGPTString
   }
 
   const createOverlayAdsComponent = () => {
@@ -127,12 +158,7 @@ export default function useOverlayPlayerAds(props) {
     adsOverlayElement.classList.add('jw-ads-overlay')
     adsOverlayElement.style.display = "none"
     
-    const { gpt } = props.data
-    const envDivGPTString = (props.type === 'live tv') 
-      ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV 
-      : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-    
-    const divGPTString = gpt.div_gpt ? gpt.div_gpt : envDivGPTString
+    const divGPTString = generateDivGPTString()
     refreshOverlayChildNodes(adsOverlayElement)
 
     hydrate(
