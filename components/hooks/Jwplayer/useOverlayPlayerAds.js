@@ -22,21 +22,23 @@ export default function useOverlayPlayerAds(props) {
   ])
 
   useEffect(() => {
-    console.log(slotDivGPT, "uhuy")
     deviceOrientationListener()
   })
   
   const deviceOrientationListener = async () => {
-    if (screen.orientation.angle === screenAngle) return
-    
+    const isPortrait = window.matchMedia("(orientation: portrait)").matches
+
+    if (isPortrait === screenAngle) return    
     if (!slotDivGPT || !props.data) return
-    setScreenAngle(screen.orientation.angle)
+    setScreenAngle(isPortrait)
     
     const adsIframe = document.getElementById(slotDivGPT).querySelector("iframe")
-    const adsImage = adsIframe.contentWindow.document.querySelector("#google_image_div img.img_ad")
     const gpt = props.data.gpt
+    if (!adsIframe || !gpt) return
 
-    if (screen.orientation.angle === 90) {
+    const adsImage = adsIframe.contentWindow.document.querySelector("#google_image_div img.img_ad")
+
+    if (!isPortrait) {
       adsIframe.width = gpt.size_width_2 
       adsIframe.height = gpt.size_height_2 
       adsImage.width = gpt.size_width_2 

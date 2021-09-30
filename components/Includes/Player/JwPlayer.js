@@ -35,9 +35,7 @@ const JwPlayer = (props) => {
     isError07: false,
     isError08: false,
   });
-  const [adsStatus, setAdStatus] = useState('none');
-  const [playerFullscreen, setPlayerFullscreen] = useState(false);
-  const [prevWidth, setPrevWidth] = useState(0);
+
   const [ setBitrateLevels ] = useSetupBitrate({ ...props, player })
   const [ adsState, setAdsState, stateOfAds ] = useOverlayPlayerAds({ ...props, player })
 
@@ -49,8 +47,7 @@ const JwPlayer = (props) => {
     autostart: true,
     mute: false,
     floating: false,
-    // file: props.data && props.data.url,
-    file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    file: props.data && props.data.url,
     primary: 'html5',
     width: '100%',
     hlsjsdefault: true,
@@ -115,8 +112,8 @@ const JwPlayer = (props) => {
         setAdsState(stateOfAds.INIT)
 
         if (props.type.includes("live")) {
-          document.querySelector(".jw-display-icon-container.jw-display-icon-rewind").style.display = "none"
-          document.querySelector(".jw-display-icon-container.jw-display-icon-next").style.display = "none"
+          playerContainer.querySelector(".jw-icon.jw-icon-next.jw-reset").style.display = "none"
+          playerContainer.querySelector(".jw-icon.jw-icon-rewind.jw-reset").style.display = "none"
         }
 
         if (isIOS) {
