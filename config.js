@@ -15,6 +15,8 @@ export const GTM_AUTH = process.env.GTM_AUTH;
 
 export const DEV_API = process.env.DEV_API;
 
+console.log(DEV_API, process.env.DEV_API, "ASDASDAS")
+
 export const GA_4_ID = process.env.GA_4_ID;
 
 export const GA_INIT_ID = process.env.GA_INIT_ID;
