@@ -7,6 +7,7 @@ const initialState = {
     channel_code: 'rcti',
     loading_live_event: false,
     error_live_event: false,
+    live_event_detail: null
 };
 
 export default (state = initialState, action) => {
@@ -26,6 +27,10 @@ export default (state = initialState, action) => {
                 loading_live_event: false,
             });
         case 'GET_LIVE_EVENT_DETAIL':
+            return {
+                ...state,
+                live_event_detail: action.payload.data
+            }
         case 'GET_LIVE_EVENT_URL':
         case 'GET_LIVE_QUIZ':
         case 'GET_LIVE_QUIZ_URL':

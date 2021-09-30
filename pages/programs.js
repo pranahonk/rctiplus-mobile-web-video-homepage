@@ -17,7 +17,7 @@ import {
   fetchClip, fetchPhoto, setClearClip,
   setClearExtra, fetchPlayerUrl, clearPlayer,
   fetchBookmark, postBookmark, deleteBookmark,
-  fetchLike, postLike, fetchDetailDesc, dataShareSeo,
+  fetchLike, postLike, fetchDetailDesc, dataShareSeo, fetchRecommendHOT,
 } from '../redux/actions/program-detail/programDetail';
 import { postContinueWatching } from '../redux/actions/historyActions';
 import Layout from '../components/Layouts/Default_v2';
@@ -30,6 +30,7 @@ import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
 import { alertDownload, onTracking, onTrackingClick } from '../components/Includes/program-detail/programDetail';
 import { BASE_URL } from '../config';
 import userActions from '../redux/actions/userActions';
+import VisionPlusProgram from "../components/Includes/program-detail/visionplus_program"
 
 // const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
@@ -45,6 +46,7 @@ const PanelExtra = dynamic(() => import('../components/Includes/program-detail/p
 const PanelClip = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod) => mod.PanelClip));
 const PanelPhoto = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod) => mod.PanelPhoto));
 const PanelRelated = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod) => mod.PanelRelated));
+const PanelRecommendHOT = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod) => mod.PanelRecommendHOT));
 const ActionSheet = dynamic(() => import('../components/Modals/ActionSheet'), { ssr: false });
 const ActionMenu = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.ActionMenu), { ssr: false });
 const RatedModal = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.RatedModal), { ssr: false });
@@ -136,6 +138,7 @@ class Index extends React.Component {
       episodeClearStore: true,
     }, () => this.loadFirstTab(this.programId));
     this.loadRelated(this.programId,1);
+    this.loadRecommendHOT(1);
     if (this.props.router.query.content_id) {
       this.props.dispatch(fetchPlayerUrl(this.props.router.query.content_id,'data-player',this.props.router.query.content_type));
     }
@@ -160,20 +163,21 @@ class Index extends React.Component {
         this.setState({toggle: this.isTabs(this.props.server[this.type].data)[0]});
       }
     }
+
+    this.props.dispatch(
+      fetchDetailProgram({
+        id: this.props.router.query.id,
+        filter: "episode",
+      })
+    )
   }
+
   shouldComponentUpdate() {
     // console.log('COMPONENT UPDATE');
     this.reference = queryString.parse(location.search).ref;
     return true;
   }
-	// componentWillUnmount() {
-	// 	if (window.convivaVideoAnalytics) {
-	// 		const convivaTracker = convivaJwPlayer();
-	// 		convivaTracker.cleanUpSession();
-	// 	}
-	// }
-  UNSAFE_componentWillReceiveProps(nextProps) {
-  }
+
   componentDidUpdate(prevProps) {
     // console.log('COMPONENT DID UPDATE', this.props);
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
@@ -183,6 +187,7 @@ class Index extends React.Component {
       }
       this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] && this.props.server[this.type], 'tracking-program'));
       this.loadRelated(this.props.router.query.id,1);
+      this.loadRecommendHOT(1);
       this.setState({clipClearStore: true, transform: 'rotate(0deg)', isOpen: false}, () => {
             this.loadFirstTab(this.props.router.query.id);
         }
@@ -230,16 +235,7 @@ class Index extends React.Component {
       // }
     }
   }
-  getProgramDetail(id, type) {
-    if (!this.props.data[type]) {
-      this.props.dispatch(
-        fetchDetailProgram({
-          id: id,
-          filter: type,
-        })
-      );
-    }
-  }
+
   showDetails() {
     this.setState({ details: true });
   }
@@ -346,6 +342,15 @@ class Index extends React.Component {
     };
     this.props.dispatch(fetchRelatedProgram(data));
   }
+  loadRecommendHOT(page) {
+    const params = {
+      page: page,
+      length: 10,
+      filter: 'recommend-hot',
+    }
+
+    this.props.dispatch(fetchRecommendHOT(params));
+  }
   loadFirstTab(programId) {
     this.props.dispatch(fetchBookmark(programId, 'bookmark'));
     this.props.dispatch(fetchLike(programId, 'like', 'program'));
@@ -428,7 +433,6 @@ class Index extends React.Component {
     const { id, title, content_id, content_title, content_type } = this.props.router.query;
     let href, as;
     let convert = '';
-    console.log(tab)
     if (tab === 'Episodes') {convert = 'episode';}
     if (tab === 'Extra') {convert = 'extra';}
     if (tab === 'Clips') {convert = 'clip';}
@@ -617,6 +621,27 @@ class Index extends React.Component {
     const vm = this;
     vm.props.dispatch(clearPlayer(filter));
   }
+
+  panelRecommendHOT(props) {
+    const { router, server } = this.props
+
+    if (props?.data?.length > 0) {
+      const pagination = {
+        page: props?.meta?.pagination?.current_page,
+        total_page: props?.meta?.pagination?.total_page,
+        nextPage: props?.meta?.pagination?.current_page + 1,
+      };
+      
+      return (
+        <PanelRecommendHOT
+          data={props}
+          hasMore={() => { this.loadRecommendHOT(pagination.nextPage); }}
+          dataTracking={{ ref: this.reference, idContent: router.query.id, title: server['program-detail'] }}
+        />
+      );
+    }
+  }
+
   panelRelated(props) {
     if (props && props.data && props.data.length > 0) {
       const pagination = {
@@ -722,13 +747,24 @@ class Index extends React.Component {
   toggleRateModal(test = '') {
     this.setState({ rate_modal: !this.state.rate_modal });
   }
-  // statusLogin(data) {
-  //   let isLogin = false;
-  //   if (data && data.status) {
-  //     isLogin = data.status.code === 13 ? false : true;
-  //     return isLogin;
-  //   }
-  // }
+
+  renderVisionPlusComponent() {
+    const programDetail = this.props.data.programDetail
+    const programEpisode = this.props.data["program-episode"]
+
+    if (!programDetail || !programEpisode) return null
+    if (!programDetail.data.show_vision_plus_disclaimer) return null
+    if (this.state.toggle.toLowerCase() !== "episodes") return null
+
+    const { pagination } = programEpisode[`season-${this.props.data.seasonSelected}`].meta
+
+    if (pagination.current_page < pagination.total_page) return null
+
+    return (
+      <VisionPlusProgram user={this.props.auth} />
+    )
+  }
+
   render() {
     const { props, state } = this;
     const content = props.seo_content_detail?.data
@@ -798,7 +834,7 @@ class Index extends React.Component {
               <div className="list__content-wrapper">
                 <div className="tab__content-wrapper">
                   { this.tabContent() }
-                  <TabContent activeTab={this.state.toggle}>
+                  <TabContent style={{ backgroundColor: '#3a3a3a' }} activeTab={this.state.toggle}>
                     { this.panelEpisode(
                         this.props.data &&
                         this.props.data['program-episode'] &&
@@ -822,6 +858,11 @@ class Index extends React.Component {
                   </TabContent>
                 </div>
               </div>
+              
+              {this.renderVisionPlusComponent()}
+
+              {this.panelRecommendHOT(this.props?.data['recommend-hot'])}
+
               {this.panelRelated(
                 this.props.data &&
                 this.props.data['program-related']

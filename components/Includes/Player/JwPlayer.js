@@ -7,6 +7,7 @@ import { onTrackingClick } from '../program-detail/programDetail';
 import { isIOS } from 'react-device-detect';
 import Wrench from '../Common/Wrench';
 import '../../../assets/scss/jwplayer.scss';
+import useSetupBitrate from "../../hooks/Jwplayer/useSetupBitrate"
 import useOverlayPlayerAds from "../../hooks/Jwplayer/useOverlayPlayerAds"
 
 const pubAdsRefreshInterval = {
@@ -34,6 +35,11 @@ const JwPlayer = (props) => {
     isError07: false,
     isError08: false,
   });
+
+  const [ setBitrateLevels ] = useSetupBitrate({ ...props, player })
+  const [ adsState, setAdsState, stateOfAds ] = useOverlayPlayerAds({ ...props, player })
+
+  // Supporting Variables
   const playerRef = useRef();
   const val = useRef();
   const idPlayer = 'jwplayer-rctiplus';
@@ -60,8 +66,6 @@ const JwPlayer = (props) => {
       hide: true,
     },
   };
-
-  const [ adsState, setAdsState, stateOfAds ] = useOverlayPlayerAds({ ...props, player })
 
   // Initial Setup
   useEffect(() => {
@@ -150,9 +154,11 @@ const JwPlayer = (props) => {
             elementJwplayer[0].classList.remove('jwplayer-mute');
           }
         }
-      });
+      })
 
-      player.on('play', () =>{
+      player.on('play', () => {
+        setBitrateLevels(player.getQualityLevels())
+
         convivaJwPlayer().playing();
         setAdsState(stateOfAds.START)
       });
