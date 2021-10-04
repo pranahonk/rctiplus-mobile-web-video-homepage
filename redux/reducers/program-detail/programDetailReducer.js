@@ -88,7 +88,7 @@ export default (state = initialState, action) => {
     case FETCH_SUCCESS:
       return {
         ...state,
-        [action.filter]: action.payload,
+        programDetail: action.payload,
         loading: false,
       };
     case FETCH_PAID_VIDEO:

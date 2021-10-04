@@ -8,6 +8,7 @@ import { isIOS } from 'react-device-detect';
 import Wrench from '../Common/Wrench';
 import '../../../assets/scss/jwplayer.scss';
 import useCustomPlayerButton from "../../hooks/Jwplayer/useCustomPlayerButton"
+import useSetupBitrate from "../../hooks/Jwplayer/useSetupBitrate"
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -41,6 +42,7 @@ const JwPlayer = (props) => {
 
   // Custom Hooks
   const { setIsPlayerReady, setHideBtns } = useCustomPlayerButton({ ...props, player })
+  const [ setBitrateLevels ] = useSetupBitrate({ ...props, player })
 
   // Supporting Variables
   const playerRef = useRef();
@@ -50,8 +52,7 @@ const JwPlayer = (props) => {
     autostart: true,
     mute: false,
     floating: false,
-    // file: props.data && props.data.url,
-    file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    file: props.data && props.data.url,
     primary: 'html5',
     width: '100%',
     hlsjsdefault: true,
@@ -111,10 +112,6 @@ const JwPlayer = (props) => {
   useEffect(() => {
     if (player !== null) {
       player.on('ready', (event) => {
-        /* if (props.isFullscreen) {
-          player.setFullscreen(true);
-          setPlayerFullscreen(true);
-        } */
         setPlayerFullscreen(props.isFullscreen);
         setIsPlayerReady(true)
 
@@ -218,6 +215,8 @@ const JwPlayer = (props) => {
       })
 
       player.on('play', () => {
+        setBitrateLevels(player.getQualityLevels())
+
         convivaJwPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
           if (document.querySelector('.ads_wrapper').style.display == 'none') {
@@ -511,14 +510,14 @@ const JwPlayer = (props) => {
   useEffect(() => {
     if (player !== null) {
       // let windowWidth = document.documentElement.clientWidth;
-      let slotName = props.data.gpt.path != null && props.data.gpt.path != undefined ? props.data.gpt.path : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
-      let slotDiv = props.data.gpt.div_gpt != null && props.data.gpt.div_gpt != undefined ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-      let intervalTime = props.data.gpt.interval_gpt != null && props.data.gpt.interval_gpt != undefined ? props.data.gpt.interval_gpt : props.adsOverlayData.reloadDuration;
-      let minWidth = props.data.gpt.size_width_1 != null && props.data.gpt.size_width_1 != undefined ? props.data.gpt.size_width_1 : 320;
-      let maxWidth = props.data.gpt.size_width_2 != null && props.data.gpt.size_width_2 != undefined ? props.data.gpt.size_width_2 : 468;
-      let minHeight = props.data.gpt.size_height_1 != null && props.data.gpt.size_height_1 != undefined ? props.data.gpt.size_height_1 : 50;
-      let maxHeight = props.data.gpt.size_height_2 != null && props.data.gpt.size_height_2 != undefined ? props.data.gpt.size_height_2 : 60;
-      let custParams = props.data.gpt.cust_params != null && props.data.gpt.cust_params != undefined ? props.data.gpt.cust_params : null;
+      let slotName = props.data.gpt?.path != null && props.data.gpt?.path != undefined ? props.data.gpt?.path : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
+      let slotDiv = props.data.gpt?.div_gpt != null && props.data.gpt?.div_gpt != undefined ? props.data.gpt?.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+      let intervalTime = props.data.gpt?.interval_gpt != null && props.data.gpt?.interval_gpt != undefined ? props.data.gpt?.interval_gpt : props.adsOverlayData?.reloadDuration;
+      let minWidth = props.data.gpt?.size_width_1 != null && props.data.gpt?.size_width_1 != undefined ? props.data.gpt?.size_width_1 : 320;
+      let maxWidth = props.data.gpt?.size_width_2 != null && props.data.gpt?.size_width_2 != undefined ? props.data.gpt?.size_width_2 : 468;
+      let minHeight = props.data.gpt?.size_height_1 != null && props.data.gpt?.size_height_1 != undefined ? props.data.gpt?.size_height_1 : 50;
+      let maxHeight = props.data.gpt?.size_height_2 != null && props.data.gpt?.size_height_2 != undefined ? props.data.gpt?.size_height_2 : 60;
+      let custParams = props.data.gpt?.cust_params != null && props.data.gpt?.cust_params != undefined ? props.data.gpt?.cust_params : null;
 
       if (adsStatus === 'start') {
         clearTimeout(pubAdsRefreshInterval.timeObject);
@@ -599,6 +598,17 @@ const JwPlayer = (props) => {
         }
       } else if (adsStatus === 'close') {
         clearTimeout(pubAdsRefreshInterval.timeObject);
+      if (["start", "prestart"].includes(adsStatus)) {
+        console.log("ADS STATUS: ", adsStatus)
+        const adsWrapper = document.querySelector('.ads_wrapper') || {}
+        intervalAds = setInterval(() => {
+          changeScreen()
+          googletag.pubads().refresh();
+          timeoutAds = setTimeout(() => {
+            adsWrapper.style.display = "none"
+          }, 10000)
+        }, intervalTime)
+      }
 
         if (document.querySelector('.ads_wrapper')) {
           while(document.querySelector('.adsURLLink')) {
@@ -668,6 +678,17 @@ const JwPlayer = (props) => {
             }, 1000);
           }, delay - 1000);
         }
+      function changeScreen() {
+        const adsWrapper = document.querySelector('.ads_wrapper')
+        if (screen.orientation.type === "portrait-primary") {
+          handleAds(slotName, slotDiv, custParams, adSizePotrait)
+        }
+        if (screen.orientation.type === "landscape-primary") {
+          handleAds(slotName, slotDiv, custParams, adSizeLandscape)
+        }
+        if (adsWrapper) adsWrapper.style.display = "block"
+        googletag.pubads().refresh();
+      }
       }
     }
     return () => clearTimeout(pubAdsRefreshInterval.timeObject);
