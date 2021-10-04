@@ -18,9 +18,10 @@ export default function useCustomPlayerButton (props) {
   ])
 
   useEffect(() => {
-    if (props.player) onAdsActive()
+    if (props.player && isPlayerReady) onAdsActive()
   }, [
-    hideBtns
+    hideBtns,
+    isPlayerReady
   ])
   
   const onAdsActive = () => {
@@ -62,11 +63,6 @@ export default function useCustomPlayerButton (props) {
         skipPosIconContainer: fastBackwardContainer
       }
     ])
-  
-    if (type.includes("live")) {
-      // Undisplay and empty the container
-      playerContainer.querySelector(".jw-display-container.jw-reset").innerHTML = ""
-    }
   }
 
   const createButtonContents = (rawContent, index, disabledDirection) => {
@@ -126,8 +122,25 @@ export default function useCustomPlayerButton (props) {
         .querySelector(`.jw-display-icon-container.jw-display-${className}.jw-reset`)
 
       if (!parentIconsContainer) return
-      hydrate(<>{ contents.map(content => (content)) }</>, parentIconsContainer)
+      hydrate(
+        <>{ contents.map(content => (content)) }</>, 
+        parentIconsContainer,
+        onButtonMounted
+      )
     })
+  }
+
+  const onButtonMounted = () => {
+    if (!props.type.includes("live")) return
+
+    // Undisplay and empty the container
+    const playerContainer = props.player.getContainer()
+    const nextContainer = playerContainer.querySelector(".jw-display-icon-next.jw-reset")
+    const prevContainer = playerContainer.querySelector(".jw-display-icon-rewind.jw-reset")
+
+    if (!nextContainer || !prevContainer) return
+    nextContainer.innerHTML = ""
+    prevContainer.innerHTML = ""
   }
 
   const handleClick = (direction) => {

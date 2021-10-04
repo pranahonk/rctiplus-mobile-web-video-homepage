@@ -219,7 +219,7 @@ class Tv extends React.Component {
 					meta: liveEvent.data.meta,
 					adsOverlayDuration: {
 						refreshDuration: refresh.duration,
-						reloadDuration: reload.duration
+						reloadDuration: reload ? reload.duration : refresh.duration
 					}
 				}, _ => {
 					liveEventData.forEach((liveevent, i) => {
