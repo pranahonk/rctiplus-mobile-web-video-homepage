@@ -250,7 +250,8 @@ const UIVersion = '2.0';
 
     server.get('/explores/search', (req, res) => {
       return app.render(req, res, '/searchLibrary', {
-        id: req.params.id
+        id: req.params.id,
+        q: req.query.q
       })
     })
     server.get('/explores/keyword', (req, res) => {
