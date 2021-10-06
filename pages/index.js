@@ -207,10 +207,11 @@ class Index_v2 extends React.Component {
                             } }
                         </Sticky>
                     </StickyContainer>
+                    
                         <div style={{marginBottom: 45, paddingTop: 10}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
                             {contents.map((content, i) => {
                                 if(content.content_type === "story"){
-                                    return <Panel5 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                    return <Panel5 token={this.token} type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
                                 }
                                 switch (content.display_type) {
                                     case 'horizontal_landscape_large':

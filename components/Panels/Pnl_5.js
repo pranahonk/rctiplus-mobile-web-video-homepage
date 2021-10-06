@@ -1,14 +1,20 @@
 import React from 'react';
+import ReactDOM from "react-dom";
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import Stories from 'react-insta-stories'
 import '../../assets/scss/components/stories.scss';
+import { Swiper, SwiperSlide } from "swiper/react";
+import SwiperCore, { EffectCube, EffectFade, Pagination } from "swiper";
+import "swiper/swiper-bundle.css";
 
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import contentActions from '../../redux/actions/contentActions';
 import TextLength from "../../utils/textLength";
 import { RESOLUTION_IMG } from '../../config';
+
+SwiperCore.use([EffectCube, EffectFade, Pagination]);
 class Pnl_5 extends React.Component {
 
 	constructor(props) {
@@ -21,10 +27,15 @@ class Pnl_5 extends React.Component {
 			length: 7,
 			endpage: false,
 			showInsta: false,
-			storiesActive: []
+			storiesActive: [],
+			idStoryActive: null,
+			initialSlide: 0,
+			storyRender: <div></div>,
+			nextIndex: 0,
 		};
 
 		this.swipe = {};
+		this.iNext= 0
 	}
 
 	handleClickHere(data){
@@ -89,7 +100,6 @@ class Pnl_5 extends React.Component {
 				this.props.getStoryLineup(this.state.id, page, this.state.length)
 					.then(response => {
 						if (response.status === 200 && response.data.status.code === 0) {
-							console.log(`ini response`,response.data.data)
 							const contents = this.state.contents;
 							contents.push.apply(contents, response.data.data);
 							this.setState({ loading: false, contents: contents, page: page, endpage: response.data.data.length < this.state.length });
@@ -118,35 +128,41 @@ class Pnl_5 extends React.Component {
 
 	handleSetStories(story, profile){
 		let _tempStory = []
-		story.forEach(element => {
-			if(element.swipe_type === "default"){
-				_tempStory.push(
-					{
-					url: element.link_video !== null ? element.link_video : `${this.props.imagePath}${RESOLUTION_IMG}${element.story_img}`,
-					type: element.link_video !== null ? 'video' : '',
-					header: {
-						heading: element.title,
-						profileImage: `${this.props.imagePath}150${profile}`
+		try {
+			story.forEach(element => {
+				if(element.swipe_type === "default"){
+	
+					_tempStory.push(
+						{
+						url: element.link_video !== null ? element.link_video : `${this.props.imagePath}${RESOLUTION_IMG}${element.story_img}`,
+						type: element.link_video !== null ? 'video' : '',
+						header: {
+							heading: element.title,
+							profileImage: `${this.props.imagePath}150${profile}`
+						}
 					}
+					)
+				}else{
+					_tempStory.push(
+						{
+						url: element.link_video !== null ? element.link_video : `${this.props.imagePath}${RESOLUTION_IMG}${element.story_img}`,
+						type: element.link_video !== null ? 'video' : '',
+						header: {
+							heading: element.title,
+							profileImage: `${this.props.imagePath}150${profile}`
+						},	
+						seeMore: this.seeMoreFactory(element)
+					}
+					)
 				}
-				)
-			}else{
-				_tempStory.push(
-					{
-					url: element.link_video !== null ? element.link_video : `${this.props.imagePath}${RESOLUTION_IMG}${element.story_img}`,
-					type: element.link_video !== null ? 'video' : '',
-					header: {
-						heading: element.title,
-						profileImage: `${this.props.imagePath}150${profile}`
-					},	
-					seeMore: this.seeMoreFactory(element)
-				}
-				)
-			}
-			
-		});
+			});
+			return _tempStory
+		} catch (error) {
+			console.log(`error`, error)
+		}
 
-		this.setState({storiesActive: _tempStory})
+		return false
+		
 	}
 
 	render() {
@@ -155,15 +171,48 @@ class Pnl_5 extends React.Component {
 				{/* Modal story lineup */}
 				{this.state.showInsta && 
 					<div className="modal-stories">
-						<div onClick={()=> this.setState({showInsta: false})} style={{position:"fixed", right: 25, top: 25, zIndex: 2000000, color:"white"}}><CloseRoundedIcon /></div>
-						<Stories
-							stories={this.state.storiesActive}
-							defaultInterval={7000}
-							width="100%"
-							height="100%"
-							onAllStoriesEnd= {() => this.setState({showInsta:false})}
-							keyboardNavigation={true}
-						/>
+						<Swiper
+							effect={"cube"}
+							loop
+							touchAngle={500}
+							grabCursor
+							normalizeSlideIndex
+							initialSlide={this.state.initialSlide}
+							onSlideChange={(swiper) => {
+
+								console.log(`swiper`, swiper)
+								console.log(`content`, this.state.contents[swiper.realIndex].story)
+								
+								// destroy element if silde change
+								let elm = null;
+								elm = <div id={`story_id_${swiper.realIndex}`} >
+										<div onClick={()=> { this.setState({showInsta: false});}} style={{position:"fixed", right: 10, top: 25, zIndex: 2000000, color:"white"}}><CloseRoundedIcon /></div>
+         								<Stories
+          									stories={this.handleSetStories(this.state.contents[swiper.realIndex].story, this.state.contents[swiper.realIndex].program_img)}
+          									defaultInterval={7000}
+											keyboardNavigation={true}
+											width="100%"
+											height="100vh"
+											onAllStoriesEnd= {() => {
+												this.setState({showInsta: false})
+												// this.handleSetStories(this.state.contents[i+1].story, this.state.contents[i+1].program_img)
+												// this.setState({ idStoryActive: this.state.contents[i+1].program_id})
+											}}
+        								/>
+      								</div>							
+
+								ReactDOM.render(elm, document.getElementById(`story_id_${swiper.realIndex}`))
+							}}
+						>
+							{this.state.contents && this.state.contents.map((v,i) => {
+								return(
+									<SwiperSlide>
+										<div id={`story_id_${i}`}>
+										</div>
+									</SwiperSlide>
+								)
+							})}
+						</Swiper>
 					</div>
 				}
 
@@ -172,11 +221,11 @@ class Pnl_5 extends React.Component {
 					<BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
 						{scrollRef => (
 							<div ref={scrollRef} className="contain-circle">
-								{this.state.contents && this.state.contents.map((v,i) => (
+								{this.state.contents && this.state.contents.map((v,i) => {
+									return(
 										<div 
-											onClick={() => {
-												this.handleSetStories(v.story, v.program_img)
-												this.setState({showInsta: !this.state.showInsta})
+											onClick={() => { 
+												this.setState({initialSlide: i, showInsta: true})
 											}} 
 											style={{padding: "10px", background: "#1A1A1A", borderRadius: "5px"}} className="circle-box">
 											<div style={{display: "block", textAlign:"center", backgroundColor:"transparent"}} >
@@ -186,7 +235,8 @@ class Pnl_5 extends React.Component {
 												<div style={{paddingTop:"4px", height:"40px", fontSize:"12px", fontWeight:300, color:"white", whiteSpace: "normal", overflow:"hidden", textOverflow:"ellipsis"}} >{TextLength(v.program_title, 25)}</div>
 											</div>
 										</div>
-								))}
+									)
+								})}
 							</div>
 						)}
 					</BottomScrollListener>
@@ -197,3 +247,82 @@ class Pnl_5 extends React.Component {
 }
 
 export default connect(state => state, contentActions)(Pnl_5);
+
+{/* 
+if(i === this.state.initialSlide){
+							// 		return(
+							// 			<SwiperSlide >
+							// 				<div onClick={()=>{ this.setState({showInsta: false}); console.log(`on close`)}} style={{position:"fixed", right: 10, top: 25, zIndex: 2000000, color:"white"}}><CloseRoundedIcon /></div>
+							// 				<Stories
+							// 					stories={this.handleSetStories(this.state.contents[this.state.initialSlide].story, this.state.contents[0].program_img)}
+							// 					defaultInterval={7000}
+							// 					keyboardNavigation={true}
+							// 					width="100%"
+							// 					height="100vh"
+							// 					onAllStoriesEnd= {() => {
+							// 						this.setState({showInsta: false})
+							// 						// this.handleSetStories(this.state.contents[i+1].story, this.state.contents[i+1].program_img)
+							// 						// this.setState({ idStoryActive: this.state.contents[i+1].program_id})
+							// 					}}
+							// 				/>
+							// 			</SwiperSlide>
+							// 		 )	
+							// 	}
+							// 	else{ 
+							// 		console.log(`ini story render`)
+							// 		return this.state.storyRender 
+							// 	}
+								
+							//  })}  */}
+
+
+
+// import logo from './logo.svg';
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+// import './App.css';
+// import Stories from 'react-insta-stories';
+ 
+// let toggle = true;
+// let arrStories = [
+//     {
+//       url: "https://rc-static.rctiplus.id/fta_rcti/Videos/idol_290321_lyodra_clip_7fe5ae0f3f67dd8adc5a78a8b6b485fc.mp4",
+//       type: 'video',
+//       renderer: {action:'pause'},
+//       header: {
+//       	heading: "TEST",
+//       	profileImage: "https://dev-static.rctiplus.com",
+//       }
+//     },
+//     {
+//       url: "https://rc-static.rctiplus.id/fta_rcti/Videos/idol_290321_lyodra_clip_7fe5ae0f3f67dd8adc5a78a8b6b485fc.mp4",
+//       type: 'video',
+//       header: {
+//       	heading: "TEST",
+//       	profileImage: "https://dev-static.rctiplus.com",
+//       }
+//     },
+//   ];
+ 
+// setInterval(()=>{ Blk(toggle)}, 20000)
+ 
+// function Blk(tog) {
+//   yarn devconsole.log('Blk', tog)
+//   toggle = !tog;
+//     let elm = null;
+//     if( tog ) {
+//       elm = <div>Hello</div>
+//     }
+//     else {
+//       elm = <div>
+//         <Stories
+//           stories={arrStories}
+//           defaultInterval={1500}
+//           width={432}
+//           height={768}
+//         />
+//       </div>
+//     }
+ 
+//     ReactDOM.render(elm, document.getElementById('tmp'))
+//   };
