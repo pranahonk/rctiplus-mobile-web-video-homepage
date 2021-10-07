@@ -30,6 +30,7 @@ import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
 import { alertDownload, onTracking, onTrackingClick } from '../components/Includes/program-detail/programDetail';
 import { BASE_URL } from '../config';
 import userActions from '../redux/actions/userActions';
+import VisionPlusProgram from "../components/Includes/program-detail/visionplus_program"
 
 // const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
@@ -160,20 +161,21 @@ class Index extends React.Component {
         this.setState({toggle: this.isTabs(this.props.server[this.type].data)[0]});
       }
     }
+
+    this.props.dispatch(
+      fetchDetailProgram({
+        id: this.props.router.query.id,
+        filter: "episode",
+      })
+    )
   }
+
   shouldComponentUpdate() {
     // console.log('COMPONENT UPDATE');
     this.reference = queryString.parse(location.search).ref;
     return true;
   }
-	// componentWillUnmount() {
-	// 	if (window.convivaVideoAnalytics) {
-	// 		const convivaTracker = convivaJwPlayer();
-	// 		convivaTracker.cleanUpSession();
-	// 	}
-	// }
-  UNSAFE_componentWillReceiveProps(nextProps) {
-  }
+
   componentDidUpdate(prevProps) {
     // console.log('COMPONENT DID UPDATE', this.props);
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
@@ -230,16 +232,7 @@ class Index extends React.Component {
       // }
     }
   }
-  getProgramDetail(id, type) {
-    if (!this.props.data[type]) {
-      this.props.dispatch(
-        fetchDetailProgram({
-          id: id,
-          filter: type,
-        })
-      );
-    }
-  }
+
   showDetails() {
     this.setState({ details: true });
   }
@@ -428,7 +421,6 @@ class Index extends React.Component {
     const { id, title, content_id, content_title, content_type } = this.props.router.query;
     let href, as;
     let convert = '';
-    console.log(tab)
     if (tab === 'Episodes') {convert = 'episode';}
     if (tab === 'Extra') {convert = 'extra';}
     if (tab === 'Clips') {convert = 'clip';}
@@ -722,13 +714,24 @@ class Index extends React.Component {
   toggleRateModal(test = '') {
     this.setState({ rate_modal: !this.state.rate_modal });
   }
-  // statusLogin(data) {
-  //   let isLogin = false;
-  //   if (data && data.status) {
-  //     isLogin = data.status.code === 13 ? false : true;
-  //     return isLogin;
-  //   }
-  // }
+
+  renderVisionPlusComponent() {
+    const programDetail = this.props.data.programDetail
+    const programEpisode = this.props.data["program-episode"]
+
+    if (!programDetail || !programEpisode) return null
+    if (!programDetail.data.show_vision_plus_disclaimer) return null
+    if (this.state.toggle.toLowerCase() !== "episodes") return null
+
+    const { pagination } = programEpisode[`season-${this.props.data.seasonSelected}`].meta
+
+    if (pagination.current_page < pagination.total_page) return null
+
+    return (
+      <VisionPlusProgram user={this.props.auth} />
+    )
+  }
+
   render() {
     const { props, state } = this;
     const content = props.seo_content_detail?.data
@@ -822,6 +825,9 @@ class Index extends React.Component {
                   </TabContent>
                 </div>
               </div>
+
+              {this.renderVisionPlusComponent()}
+              
               {this.panelRelated(
                 this.props.data &&
                 this.props.data['program-related']

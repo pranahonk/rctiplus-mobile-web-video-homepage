@@ -235,12 +235,12 @@ class Tv extends React.Component {
 
     axios.get('/v1/get-ads-duration')
     .then(response => {
-      //console.log('ads duration res', response.data);
-      if (response.data.data) {
+			if (response.data.data) {
+				const [ refresh, reload ] = response.data.data
         this.setState({
           adsOverlayDuration: {
-            refreshDuration: response.data.data[0].duration,
-            reloadDuration: response.data.data[1].duration
+            refreshDuration: refresh.duration,
+            reloadDuration: reload ? reload.duration : refresh.duration
           }
         })
       }
