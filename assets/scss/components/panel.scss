@@ -26,25 +26,66 @@
     font-size: 2.5rem !important;
 }
 
+.txt-slider-panel.no-bg {
+    .txt-slider-panel-title,
+    .txt-slider-panel-title + p {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+}
+
 .txt-slider-panel {
     color: #fff;
-    border-left: 1px solid #DB2828;
-    border-left-width: 2px;
-    margin: 10px;
-    font-size: 10px;
+    margin: 8px 10px;
+    font-size: 11px;
     text-align: left;
-    padding-left: 10px;
-    max-height: 46px;
-    min-height: 46px;
+    max-height: 73px;
     overflow: hidden;
     white-space: normal;
 
-    .txt-slider-panel-title {
-        font-size: 12px;
+    .line-red{
+        width: 1px;
+        height: 35px;
+        margin-right: 6px;
+        border: solid 1px #fa262f;
+        background-color: #fa262f;
     }
 
-    p {
-        margin-bottom: 0;
+    .txt-slider-panel-cont {
+        border-left: 2px solid red;
+        padding-left: 0.5rem;
+
+
+        .txt-slider-panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 1px;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1; /* number of lines to show */
+            -webkit-box-orient: vertical;
+        }
+    
+        p {
+            margin: 0;
+            font-size: 11px;
+            font-weight: 300;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* number of lines to show */
+            -webkit-box-orient: vertical;
+        }
     }
 }
 
@@ -56,18 +97,30 @@
 }
 
 .pnl_horizontal_landscape, .pnl_horizontal, .pnl_vertical, .horizontal_landscape_large {
+    .content-title{
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 19px;
+        padding-left: 14px !important;
+        color: #FFFFFF;
+    }
+    
     .swiper-container {
         overflow: auto;
         white-space: nowrap;
         display: block;
         scrollbar-width: none;
+        padding-left: 12px;
 
         .swiper-slide {
             height: 100%;
-            margin: 3px;
+            margin: 2px;
             position: relative;
             text-align: center;
-            background: #171717;
             display: inline-block;
             vertical-align: top;
 
@@ -84,7 +137,7 @@
                 padding: 4px 8px;
                 font-size: 10px;
                 color: white;
-                border-bottom-right-radius: 3px;
+                border-bottom-right-radius: 7px;
                 font-family: Helvetica;
             }
         }
@@ -93,28 +146,40 @@
 
 .pnl_horizontal_landscape {
     .swiper-slide {
-        max-width: 45%;
-        min-width: 45%;
-        height: 135px;
-        border-radius: 3px;
+        max-width: 45.5%;
+        min-width: 45.5%;
+        height: 137px;
+        border-radius: 5px;
+
+    }
+    .img-text-desc{
+        border-radius: 7px;
+    }
+    img {
+        border-top-left-radius: 7px;
+        border-top-right-radius: 7px;
     }
 }
 
 .pnl_horizontal {
     .swiper-slide {
-        max-width: 88px;
-
+        max-width: 31%;
+        
         img {
-            width: 100%;
-            height: 135px;
+            width: 100%; 
+            height: 184px;
         }
     }
 }
 
-.horizontal_landscape_large {
-    .swiper-container {
+.pnl_vertical{
+    .swiper-container{
         .swiper-slide {
-            // background: transparent;
+            .txt-slider-panel{
+                txt-slider-panel-title{
+                    font-size: 14px;
+                }
+            }
         }
     }
 }
@@ -123,7 +188,32 @@
     margin-bottom: 20px;
 
     img {
-        border-radius: 3px;
-        object-fit: cover;
+        border-radius: 7px;
     }
 }
+
+@media only screen and (max-width: 400px) {
+    .pnl_horizontal {
+        .swiper-slide {
+            max-width: 31%;
+            
+            img {
+                width: 100%; 
+                height: 162px;
+            }
+        }
+    }
+  }
+
+  @media only screen and (max-width: 340px) {
+    .pnl_horizontal {
+        .swiper-slide {
+            max-width: 31%;
+            
+            img {
+                width: 100%; 
+                height: 145px;
+            }
+        }
+    }
+  }

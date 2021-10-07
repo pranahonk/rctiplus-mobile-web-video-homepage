@@ -47,3 +47,4 @@ export default class Error extends React.Component {
     }
 
 }
+

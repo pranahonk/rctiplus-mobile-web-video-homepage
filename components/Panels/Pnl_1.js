@@ -3,7 +3,7 @@ import Img from 'react-image';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
-import CountdownTimer from '../Includes/Common/CountdownTimer';
+import dynamic from "next/dynamic"
 
 
 import contentActions from '../../redux/actions/contentActions';
@@ -17,6 +17,7 @@ import '../../assets/scss/components/panel.scss';
 /* horizontal_landscape_large  */
 
 const jwtDecode = require('jwt-decode');
+const CountdownTimer = dynamic(() => import("../Includes/Common/CountdownTimer"))
 
 class Pnl_1 extends React.Component {
 
@@ -48,14 +49,71 @@ class Pnl_1 extends React.Component {
 			homeGeneralClicked('mweb_homepage_scroll_horizontal');
 		}
 	}
-
+	handleActionClick(program, url) {
+			switch (program.action_type) {
+				case 'live_streaming' :
+					let channel = 'rcti'
+					if(program?.link === '1') {
+							channel = 'rcti'
+					}
+					if(program?.link === '2') {
+							channel = 'mnctv'
+					}
+					if(program?.link === '3') {
+							channel = 'gtv'
+					}
+					if(program?.link === '4') {
+							channel = 'inews'
+					}
+					Router.push(`/tv/${channel}`);
+				break;
+				case 'catchup':
+				if(program.link && program.channel && program.catchup_date) {
+						const title = program?.content_title?.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
+						Router.push(`/tv/${program.channel}/${program.link}/${title}?date=${program.catchup_date}`)
+				}
+				break;
+				case 'scan_qr':
+					Router.push("/qrcode")
+				break;
+				case 'homepage_news':
+					Router.push("/news")
+				break;
+				case 'news_detail' :
+				case 'news_category':
+				case 'news_tags' :
+						window.open(program.link, '_parent');
+						break;
+				case 'episode':
+						if(program.link && program.program_id) {
+								const title = program.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
+								Router.push(`/programs/${program.program_id}/${title}/episode/${program.link}/${title}`)
+						}
+						break;
+				case 'live_event':
+						if (program.link) {
+								Router.push(`/live-event/${program.link}/${program.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
+						}
+						break;
+				case 'genre':
+							Router.push(`/explores/${program.link}/${program.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
+						break;
+				case 'program':
+						Router.push(`/programs/${program.link}/${program.content_title.replace(/ +/g, '-')}`);
+						break;  
+				case 'popup':
+						window.open(url, '_parent');
+						break;  
+				default:
+						Router.push(url);
+		}       
+	}
 	link(data) {
-		console.log('PANEL 1', data);
 		switch (data.content_type) {
 			case 'special':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
 
-				let url = data.url ? url : data.link;
+				let url = data.url ? data.url : data.link;
 				// console.log('token:', this.props.token);
 				if (data.mandatory_login && this.props.user.isAuth) {
 					url += this.props.token;
@@ -73,8 +131,9 @@ class Pnl_1 extends React.Component {
 							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
 					}
 					else {
+						this.handleActionClick(data, url)
 						// window.open(url, '_blank');
-						window.location.href = url;
+						// window.location.href = url;
 					}
 				}
 				catch (e) {
@@ -143,7 +202,7 @@ class Pnl_1 extends React.Component {
 					{scrollRef => (
 						<div ref={scrollRef} className="swiper-container">
 							{this.state.contents.map((c, i) => (
-								<div style={{ width: '100%' }} onClick={() => this.link(c)} key={`${this.props.contentId}-${i}`} className="swiper-slide">
+								<div style={{ width: '96%' }} onClick={() => this.link(c)} key={`${this.props.contentId}-${i}`} className="swiper-slide">
 									<div>
 										<Img 
 											alt={c.program_title || c.content_title} 
@@ -161,9 +220,9 @@ class Pnl_1 extends React.Component {
 											) : (<div></div>)}
 									</div>
 									{c.display_type == 'hide_url' ? null : (
-										<div className="txt-slider-panel no-bg">
-											<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
-											<p>{c.content_title}</p>
+										<div style={{minHeight: "50px", maxHeight: "50px"}} className="txt-slider-panel no-bg">
+											<h3 style={{fontSize: "14px", fontWeight: 600, marginTop: 1}} className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
+											<p style={{fontSize: "14px", fontWeight: 300}}>{c.content_title}</p>
 										</div>
 									)}
 								</div>

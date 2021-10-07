@@ -244,6 +244,10 @@ const UIVersion = '2.0';
       })
     });
 
+    server.get("/explores", (req, res) => {
+      return app.render(req, res, "/explores_revamp")
+    })
+
     server.get('/explores/search', (req, res) => {
       return app.render(req, res, '/searchLibrary', {
         id: req.params.id,

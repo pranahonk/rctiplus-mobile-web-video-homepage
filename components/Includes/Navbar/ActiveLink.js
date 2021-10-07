@@ -16,7 +16,6 @@ const ActiveLink = ({ children, activeClassName, ...props }) => {
     (props.href === '/news' && asPath.includes(props.href))
     ? `${childClassName} ${activeClassName}`.trim()
     : childClassName;
-    // console.log({...props})
     return (
       <Link href={props.href}>
       {React.cloneElement(child, {

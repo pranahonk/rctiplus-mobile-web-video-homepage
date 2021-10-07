@@ -20,19 +20,29 @@ const setSigninPopupFlag = flag => {
 const getContents = (page = 1, length = 20, platform = 'mweb') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/homepage?page=${page}&length=${length}`);
+            const response = await axios.get(`/v2/homepage?page=${page}&length=${length}`);
             let contents = [];
             if (response.data.status.code === 0) {
                 const data = response.data.data;
+                console.log(`ini data home page`, data)
                 let selectedData = [];
                 let promises = [];
                 for (let i = 0; i < data.length; i++) {
                     if (data[i].total_content > 0) {
-                        promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?page=${1}&length=${7}`)
-                        .catch((err) => {
-                            console.log('err', err);
-                        }));
-                        selectedData.push(data[i]);
+                        if(data[i].content_type === "content"){
+                            promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?page=${1}&length=${7}`)
+                            .catch((err) => {
+                                console.log('err', err);
+                            }));
+                            selectedData.push(data[i]);
+                        }
+                        else if(data[i].content_type === "story"){
+                            promises.push(axios.get(`/v1/homepage/${data[i].id}/stories?page=${1}&length=${7}`)
+                            .catch((err) => {
+                                console.log('err', err);
+                            }));
+                            selectedData.push(data[i]);
+                        }
                     }
                     else if (data[i].type === 'custom' && data[i].api) {
                         promises.push(axios.get(data[i].api)
@@ -104,6 +114,29 @@ const getHomepageContents = (id, platform = 'mweb', page = 1, length = 21) => {
     });
 };
 
+const getStoryLineup = (id, page, length) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/homepage/${id}/stories?page=${page}&length=${length}`);
+            if (response.data.status.code === 0) {
+                // dispatch({
+                //     type: 'GET_HOMEPAGE_CONTENTS',
+                //     data: response.data.data,
+                //     meta: response.data.meta,
+                //     status: response.data.status
+                // });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
 const getContentShareLink = (id, type) => {
     return () => new Promise(async (resolve, reject) => {
         try {
@@ -121,10 +154,10 @@ const getContentShareLink = (id, type) => {
     });
 };
 
-const getBanner = (page = 1, length = 10, infos = 'id,title,portrait_image,image_landscape,type,type_value,sorting,program_id,popup_img,link,summary,square_image,program_name') => {
+const getBanner = (page = 1, length = 21, infos = 'id,title,portrait_image,image_landscape,type,type_value,sorting,program_id,popup_img,link,summary,square_image,program_name') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.get(`/v1/banner?page=${page}&length=${length}&infos=${infos}&appierid=${getUidAppier()}`);
+            const response = await axios.get(`/v1/banner?page=${page}&length=${length}&appierid=${getUidAppier()}`);
             if (response.data.status.code === 0) {
                 dispatch({ type: 'BANNER', data: response.data.data, meta: response.data.meta });
                 resolve(response);
@@ -462,6 +495,7 @@ export default {
     getProgramPhoto,
     getProgramClip,
     getContentShareLink,
+    getStoryLineup,
     selectSeason,
     setShowMoreAllowed
 };

@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import { StickyContainer, Sticky } from 'react-sticky';
+import dynamic from "next/dynamic"
+
 
 import contentActions from '../redux/actions/contentActions';
 import pageActions from '../redux/actions/pageActions';
@@ -16,18 +18,21 @@ import Layout from '../components/Layouts/Default_v2';
 import Nav from '../components/Includes/Navbar/NavDefault_v2';
 import Carousel from '../components/Includes/Gallery/Carousel_v2';
 import Stories from '../components/Includes/Gallery/Stories_v2';
-import Panel1 from '../components/Panels/Pnl_1';
-import Panel2 from '../components/Panels/Pnl_2';
-import Panel3 from '../components/Panels/Pnl_3';
-import Panel4 from '../components/Panels/Pnl_4';
 import StickyAds from '../components/Includes/Banner/StickyAds';
-import GridMenu from '../components/Includes/Common/GridMenu';
+import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
+
+const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
+const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
+const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
+const Panel4 = dynamic(() => import("../components/Panels/Pnl_4"))
+const Panel5 = dynamic(() => import("../components/Panels/Pnl_5"))
+const SquareImage = dynamic(() => import("../components/Panels/SquareImage"))
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -134,6 +139,7 @@ class Index_v2 extends React.Component {
     render() {
         const contents = this.state.contents;
         const meta = this.state.meta || {};
+
         return (
             <Layout title={SITEMAP.home.title}>
                 <Head>
@@ -162,19 +168,22 @@ class Index_v2 extends React.Component {
                 <LoadingBar progress={0} height={3} color={this.state.show_sticky_install ? '#000' : '#fff'} onRef={ref => (this.LoadingBar = ref)} />
                 {this.state.isShimmer ? (<HomeLoader/>) : (
                 <div>
-                        <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
-                    <Carousel showStickyInstall={this.state.show_sticky_install}>
-                    <GridMenu />
+                    <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
+                    <Carousel showStickyInstall={this.state.show_sticky_install} >
+                        <GridMenu />
                     </Carousel>
-                    <Stories loadingBar={this.LoadingBar}/>
+                    <div style={{marginTop: "25px"}}>
+                        <Stories loadingBar={this.LoadingBar} homepage={true}/>
+                    </div>
+                    
                     <StickyContainer>
                         <Sticky disableHardwareAcceleration>
                             { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
-                                const topDistance = this.state.show_sticky_install ? 120 : 60;
+                                const topDistance = this.state.show_sticky_install ? 120 : 40;
                                 if (distanceFromTop < topDistance) {
                                     if (!this.props.ads.ads_displayed) {
                                         return (
-                                            <div {...rest}>
+                                            <div {...rest} >
                                                 <StickyAds/>
                                             </div>
                                         );
@@ -189,52 +198,57 @@ class Index_v2 extends React.Component {
                                         }
                                     }
                                     return (
-                                        <div {...rest}>
+                                        <div {...rest} >
                                             <StickyAds sticky/>
                                         </div>
                                     );
                                 }
                                 return (
-                                    <div {...rest}>
+                                    <div {...rest} >
                                         <StickyAds id='div-gpt-ad-1584677577539-0'/>
                                     </div>
                                 );
                             } }
                         </Sticky>
                     </StickyContainer>
-                    <div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
-                        {contents.map((content, i) => {
-                            switch (content.display_type) {
-                                case 'horizontal_landscape_large':
-                                    return <Panel1 token={this.token} type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                        <div style={{marginBottom: 45, paddingTop: 10}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
+                            {contents.map((content, i) => {
+                                if(content.content_type === "story"){
+                                    return <Panel5 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                }
+                                switch (content.display_type) {
+                                    case 'horizontal_landscape_large':
+                                        return <Panel1 token={this.token} type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
-                                case 'horizontal_landscape':
-                                    return <Panel2 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                    case 'horizontal_landscape':
+                                        return <Panel2 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
-                                case 'horizontal':
-                                    return <Panel3 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                    case 'horizontal':
+                                        return <Panel3 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
-                                case 'vertical':
-                                    return <Panel4 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
-                            }
-                        })}
-                    </div>
+                                    case 'vertical':
+                                        return <Panel4 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+
+                                    case 'horizontal_square':
+                                        return (
+                                            <SquareImage
+                                                token={this.token}
+                                                loadingBar={this.LoadingBar}
+                                                key={content.id}
+                                                contentId={content.id}
+                                                title={content.title}
+                                                content={content.content}
+                                                imagePath={meta.image_path}
+                                                type={content.type}
+                                                resolution={RESOLUTION_IMG}
+                                                displayType={content.display_type}/>
+                                        );   
+                                }
+                                
+                            })}
+                        </div>
                 </div>
                 )}
-                {/* <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-                <script dangerouslySetInnerHTML={{ __html: `
-                    window.googletag = window.googletag || {cmd: []};
-                    googletag.cmd.push(function() {
-                        googletag.defineSlot('/21865661642/RC_NATIVE-AD_MOBILE', ['fluid'], 'div-gpt-ad-1584419593176-0').addService(googletag.pubads());
-                        googletag.pubads().enableSingleRequest();
-                        googletag.pubads().collapseEmptyDivs();
-                        googletag.enableServices();
-                    });
-                ` }}></script> */}
-                {/* <!-- /21865661642/RC_NATIVE-AD_MOBILE --> */}
-                {/* <div id='div-gpt-ad-1584419593176-0'>
-                    <script dangerouslySetInnerHTML={{ __html: `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584419593176-0'); });` }}></script>
-                </div> */}
         </Layout>
         );
     }

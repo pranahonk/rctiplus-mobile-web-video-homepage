@@ -12,7 +12,7 @@ import Dialog from '../../Modals/Dialog';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import GetApp from '@material-ui/icons/GetApp';
-import { RESOLUTION_IMG } from '../../../config';
+import { LINK_HOT, RESOLUTION_IMG } from '../../../config';
 import { showAlert, showSignInAlert } from '../../../utils/helpers';
 import { urlRegex } from '../../../utils/regex';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -21,6 +21,12 @@ import { Modal } from 'reactstrap';
 const TabPanelLoader = dynamic(() => import('../Shimmer/detailProgramLoader').then((mod) => mod.TabPanelLoader));
 import smoothscroll from 'smoothscroll-polyfill';
 import { isIOS } from 'react-device-detect';
+import BottomScrollListener from 'react-bottom-scroll-listener';
+
+// Icons
+import HOTIcon from '../../../static/recommendation-hot/icon_hot+.svg'
+import ViewIcon from '../../../static/recommendation-hot/icon_views.svg'
+import SeeMoreIcon from '../../../static/recommendation-hot/icon_see_more.svg'
 
 import { 
   programRateEvent, programShareEvent, programContentShareEvent, 
@@ -35,7 +41,9 @@ import {
   libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, 
   searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked,
   searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, 
-  searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent, ProgramContentClick } from '../../../utils/appier';
+  searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent, ProgramContentClick
+} from '../../../utils/appier';
+import { getCookie } from '../../../utils/cookie';
 
 export const PanelEpisode = forwardRef((props, ref) => {
   smoothscroll.polyfill();
@@ -55,6 +63,9 @@ export const PanelEpisode = forwardRef((props, ref) => {
   };
   return (
       <TabPane tabId="Episodes">
+
+        <BottomScrollListener offset={0} onBottom={props.onShowMore} />
+
         <div className="episode-program">
           <div className="season__program">
             <Dialog onclick={props.onSeason} selected={props.seasonSelected} dataTracking={props.dataTracking}/>
@@ -78,7 +89,7 @@ export const PanelEpisode = forwardRef((props, ref) => {
                 </Link>
               </div>
               <div className="thumb-detail__content">
-                <h3>{ `E${('0'+item.episode).slice(-2)}:S${('0'+item.season).slice(-2)} ${item.title}` }</h3>
+                <h3>{ `E${(item.episode < 10 ? '0'+item.episode : ''+item.episode).slice(0)}:S${(item.season < 10 ? '0'+item.season : ''+item.season).slice(0)} ${item.title}` }</h3>
                 <div className="action-button__content ">
                   { bookmark(props.bookmark && props.bookmark.data, item, 'episode', props, 'content_bookmark') }
                   <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
@@ -95,11 +106,8 @@ export const PanelEpisode = forwardRef((props, ref) => {
             );
           }) }
         </div>
-        { props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
-          <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-            <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-          </div>
-        ) : '' }
+
+        {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
       </TabPane>
   );
 });
@@ -121,6 +129,7 @@ export const PanelExtra = (props) => {
   };
   return (
     <TabPane tabId="Extra">
+      <BottomScrollListener offset={0} onBottom={props.onShowMore} />
       <div className="extra-program">
         { props.data.data.map((item,i) => {
           return (
@@ -157,11 +166,8 @@ export const PanelExtra = (props) => {
           );
         }) }
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
-        <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-          <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-        </div>
-      ) : ''}
+
+      {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
   );
 };
@@ -183,6 +189,7 @@ export const PanelClip = (props) => {
   };
   return (
     <TabPane tabId="Clips">
+      <BottomScrollListener offset={0} onBottom={props.onShowMore} />
       <div className="clip-program">
         { props.data.data.map((item,i) => {
           return (
@@ -219,11 +226,8 @@ export const PanelClip = (props) => {
           );
         }) }
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
-        <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
-          <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
-        </div>
-      ) : ''}
+
+     {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
   );
 };
@@ -254,12 +258,68 @@ export const PanelPhoto = (props) => {
           </div>
         </div>
       </div>
-      {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
+      {/* {props.enableShowMore.isLoading ? (<TabPanelLoader />) : props.enableShowMore.isNext ? (
         <div style={{display: 'flex' ,justifyContent: 'center', width: '100%'}}>
           <ButtonOutline text="Show more" className="small-button" onclick={props.onShowMore}/>
         </div>
-      ) : ''}
+      ) : ''} */}
+      {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
+  );
+};
+
+export const PanelRecommendHOT = (props) => {
+  smoothscroll.polyfill();
+
+  const token = getCookie('ACCESS_TOKEN');
+  const pathImg = [props.data.meta.image_path, RESOLUTION_IMG];
+  const hasToken = (typeof token !== 'undefined' && token !== undefined && token !== 'undefined' && token !== null && token !== '')
+  const hasMore = props.data?.meta?.pagination?.current_page < props.data?.meta?.pagination?.total_page
+
+  const recommendationVideoURL = (id) => `${LINK_HOT}recommendation/video/${id}${hasToken ? `?token=${token}` : ''}`
+  const onClickItem = (id) => window.location.href = recommendationVideoURL(id);
+
+  return (
+    <div className="recommend__HOT-wrapper">
+      <div className="recommend__HOT-header-wrapper">
+        <img alt="HOT+ Icon" src={HOTIcon} />
+        <p className="recommend__HOT-header-label">HOT (Home Of Talent)</p>
+      </div>
+      <div className="recommend__HOT-list">
+        {props.data.data.map((item, i) => {
+          const thumbnail = item.thumbnail ?? item.portrait_image
+
+          return (
+            <Link key={i} href={recommendationVideoURL(item.video_id)}>
+              <a className="mr-2" onClick={() => onClickItem(item.video_id)}>
+                <div className="recommend__HOT-item">
+                  <Img alt={item.title}
+                    src={thumbnail}
+                    unloader={<img className="background__program-detail" src={getPathImage(...pathImg, thumbnail, false, 'potrait')} />}
+                    loader={<img className="background__program-detail" src={getPathImage(...pathImg, thumbnail, false, 'potrait')} />} />
+                  <div className="my-2">
+                    <p className="recommend__HOT-title mb-2">{item?.title || '-'}</p>
+                    <p className="recommend__HOT-author">{item?.author?.display_name}</p>
+                    {item?.views ? (
+                      <div className="recommend__HOT-views-wrapper">
+                        <img className="recommend__HOT-views-icon" alt="Number of Viewers Icon" src={ViewIcon} />
+                        <span className="recommend__HOT-views-count text-white">{item?.views}</span>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </a>
+            </Link>
+          );
+        })}
+        {hasMore && (
+          <div className="recommend__HOT-more-wrapper" onClick={props.hasMore}>
+            <img className="recommend__HOT-more-icon" alt="See More Icon" src={SeeMoreIcon} />
+            <p className="recommend__HOT-more-label">See More</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

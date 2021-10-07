@@ -4,20 +4,33 @@ const initialState = {
     status: null,
     catchup_date: null,
     catchup: [],
-    channel_code: 'rcti'
+    channel_code: 'rcti',
+    loading_live_event: false,
+    error_live_event: false,
+    live_event_detail: null
 };
 
 export default (state = initialState, action) => {
     switch (action.type) {
+        case 'LOADING_LIVE_EVENT':
+            return { ...state, loading_live_event: true, error_live_event: false }
+        case 'ERROR_LIVE_EVENT':
+            return { ...state, error_live_event: true, loading_live_event: false }
         case 'POST_CHAT':
         case 'GET_LIVE_EVENT':
+        case 'GET_ALL_LIVE_EVENT':
         case 'GET_MISSED_EVENT':
             return Object.assign({}, state, {
                 status: action.status,
                 data: action.data,
                 meta: action.meta,
+                loading_live_event: false,
             });
         case 'GET_LIVE_EVENT_DETAIL':
+            return {
+                ...state,
+                live_event_detail: action.payload.data
+            }
         case 'GET_LIVE_EVENT_URL':
         case 'GET_LIVE_QUIZ':
         case 'GET_LIVE_QUIZ_URL':

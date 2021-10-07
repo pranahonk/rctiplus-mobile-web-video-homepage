@@ -9,7 +9,8 @@ import { loadState, saveState } from '../utils/localStorage';
 // const persistedState = loadState();
 
 const initStore = (initialState = {}) => {
-    return createStore(reducer, initialState, applyMiddleware(thunk/*, logger*/));
+    return createStore(reducer, initialState, applyMiddleware(thunk/* ,logger*/));
+    // return createStore(reducer, initialState, applyMiddleware(thunk, logger));
 };
 
 

@@ -172,6 +172,34 @@ const getLiveEvent = (type, infos = 'id,type,portrait_image,landscape_image,name
         }
     });
 };
+const getAllLiveEvent = () => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            dispatch({
+                type: 'LOADING_LIVE_EVENT',
+            })
+            const response = await axios.get(`/v3/live-event`);
+            if (response.status === 200 && response.data.status.code === 0) {
+                dispatch({
+                    type: 'GET_ALL_LIVE_EVENT',
+                    data: response.data.data,
+                    meta: response.data.meta,
+                    status: response.data.status
+                });
+                resolve(response);
+            }
+            else {
+                dispatch({
+                    type: 'ERROR_LIVE_EVENT',
+                })
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
 
 const getMissedEvent = (page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
@@ -196,26 +224,15 @@ const getMissedEvent = (page = 1, length = 10) => {
 };
 
 const getLiveEventDetail = liveEventId => {
-    return dispatch => new Promise(async (resolve, reject) => {
-        try {
-            const response = await axios.get(`/v1/live-event/${liveEventId}`);
-            if (response.data.status.code === 0) {
+    return dispatch => {
+        axios.get(`/v1/live-event/${liveEventId}`)
+            .then((res) => {
                 dispatch({
                     type: 'GET_LIVE_EVENT_DETAIL',
-                    data: response.data.data,
-                    meta: response.data.meta,
-                    status: response.data.status
-                });
-                resolve(response);
-            }
-            else {
-                reject(response);
-            }
-        }
-        catch (error) {
-            reject(error);
-        }
-    });
+                    payload: res.data
+                })
+            })
+    }
 };
 
 const getLiveEventUrl = liveEventId => {
@@ -353,6 +370,7 @@ export const getVmapResponse = url => {
 
 export default {
     postChat,
+    getAllLiveEvent,
     getLiveEvent,
     getLiveEventDetail,
     getLiveEventUrl,

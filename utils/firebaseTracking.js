@@ -21,12 +21,10 @@ export const getUserId = () => {
 };
 
 export const initGA = () => {
-  console.log('GA init')
-  ReactGA.initialize('GTM-WJNRTJP')
+  ReactGA.initialize(process.env.GA_INIT_ID)
 }
 
 export const stickyAdsShowing = (data, event = 'gtag-event-rctiplus', channel_type = 'live-tv') => {
-  console.log(event);
   ReactGA.event({
     'action' : event,
     'value' : {
@@ -41,7 +39,6 @@ export const stickyAdsShowing = (data, event = 'gtag-event-rctiplus', channel_ty
 };
 
 export const stickyAdsClicked = (data, event = 'gtag-event-rctiplus', status = 'clicked') => {
-  console.log(event);
   ReactGA.event({
     'action' : event,
     'value' : {
@@ -54,3 +51,23 @@ export const stickyAdsClicked = (data, event = 'gtag-event-rctiplus', status = '
     },
   });
 };
+
+export const redirectToVisionPlus = (user) => {
+  const rplusUserId = !user ? "" : user?.id
+
+  ReactGA.initialize(process.env.GA_INIT_ID, {
+    titleCase: false
+  })
+  ReactGA.set({
+    "user_id": rplusUserId, // RCTI+ user id or leave blank if user is not logged in
+    "date_time": new Date().toISOString(),
+    "client_id": process.env.GA_INIT_ID,
+    "pillar": "video"
+  })
+  ReactGA.event({
+    category: 'library',
+    action: 'click_go_to_visionplus',
+    label: 'redirect_to_visionplus',
+    name: "general_event"
+  })
+}

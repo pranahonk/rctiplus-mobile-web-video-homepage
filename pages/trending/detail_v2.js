@@ -156,6 +156,8 @@ class Detail extends React.Component {
         this.accessToken = null;
         this.platform = null;
         this.pushNotif = null;
+        this.idfa = null;
+        this.core_token = null;
         const segments = this.props.router.asPath.split(/\?/);
         const segments2 = this.props.router.asPath.split(/\#/);
         if (segments.length > 1) {
@@ -167,6 +169,13 @@ class Detail extends React.Component {
 
             if (q.platform) {
                 this.platform = q.platform;
+            }
+            if(q.idfa){
+                this.idfa = q.idfa;
+            }
+
+            if(q.core_token){
+                this.core_token = q.core_token;
             }
             if(q.push_notif === 'true') {
                 this.pushNotif = '/news';
@@ -499,7 +508,7 @@ class Detail extends React.Component {
 
     shareButtonPosition = el =>{
       window.addEventListener('scroll',()=>{
-        const position =  el.getBoundingClientRect().top + window.screen.height;
+        const position =  el?.getBoundingClientRect().top + window.screen.height;
         this.setState({
           relatedArticlePosition: position,
         });
@@ -525,8 +534,18 @@ class Detail extends React.Component {
         };
 
         const currentUrl = oneSegment['mobile'] + encodeURI(asPath).replace('trending/', 'news/');
-        const newsTitle = cdata.title.replace(/<\w+>|<\/\w+>/gmi, '');
-        const newsContent = cdata.content?.replace( /(<([^>]+)>)/ig, '')
+        let newsTitle = !isEmpty(cdata.meta_title) ? cdata.meta_title : cdata.title
+        let siteName = !isEmpty(this.props?.general?.site_name) ? this.props?.general?.site_name : 'News+ on RCTI+'
+        newsTitle = newsTitle + ' - ' + siteName
+
+        let newsContent = !isEmpty(cdata.meta_description) ? cdata.meta_description : cdata.content
+        newsContent = newsContent.length > 150 ? newsContent.substring(0, 147) + '....' : newsContent
+        newsContent = newsContent.replace( /(<([^>]+)>)/ig, '')
+
+        let newsKeyword = !isEmpty(cdata.meta_keyword) ? cdata.meta_keyword : cdata.content;
+        newsKeyword = newsKeyword.length > 150 ? newsKeyword.substring(0, 147) + '....' : newsKeyword
+        newsKeyword = newsKeyword.replace( /(<([^>]+)>)/ig, '')
+
         const widthImg = 600;
         const coverImg = imgURL(cdata.cover, cdata.image, widthImg, assets_url, this.props?.general?.img_logo || null)
         const heightImg = (widthImg*56) / 100;
@@ -556,16 +575,15 @@ class Detail extends React.Component {
             "description": newsContent
         }
         const canonicalFullUrl = oneSegment['desktop'] + encodeURI(asPath).replace('trending/', 'news/');
-
         return (
-            <Layout title={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title}>
+            <Layout title={newsTitle || this.props?.kanal?.title}>
                 <Head>
-                    <meta name="title" content={`${newsTitle} - News+ on RCTI+` || this.props?.kanal?.title} />
-                    <meta name="keywords" content={newsTitle || this.props?.kanal?.keyword} />
+                    <meta name="title" content={newsTitle || this.props?.kanal?.title} />
+                    <meta name="keywords" content={newsKeyword || this.props?.kanal?.keyword} />
                     <meta name="description" content={newsContent || this.props?.kanal?.description} />
-                    <meta property="og:title" content={`${newsTitle} - News+ on RCTI+`} />
-                    <meta property="og:description" content={newsContent} />
-                    <meta property="og:image" itemProp="image" content={coverImg} />
+                    <meta property="og:title" content={newsTitle || this.props?.kanal?.title} />
+                    <meta property="og:description" content={newsContent || this.props?.kanal?.description} />
+                    <meta property="og:image" content={coverImg} />
                     <meta property="og:type" content="website" />
                     <meta property="og:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta property="og:image:type" content="image/jpeg" />
@@ -577,9 +595,9 @@ class Detail extends React.Component {
                     <meta name="twitter:creator" content={this.props?.general?.twitter_creator || GRAPH_SITEMAP.twitterCreator} />
                     <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
                     <meta name="twitter:image" content={coverImg} />
-                    <meta name="twitter:title" content={`${newsTitle} - News+ on RCTI+`} />
-                    <meta name="twitter:image:alt" content={newsTitle} />
-                    <meta name="twitter:description" content={newsContent} />
+                    <meta name="twitter:title" content={newsTitle || this.props?.kanal?.title} />
+                    <meta name="twitter:image:alt" content={newsTitle || this.props?.kanal?.title} />
+                    <meta name="twitter:description" content={newsContent || this.props?.kanal?.description} />
                     <meta name="twitter:url" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <meta name="twitter:domain" content={BASE_URL + encodeURI(this.props.router.asPath)} />
                     <link rel="canonical" href={canonicalFullUrl} />
@@ -599,8 +617,8 @@ class Detail extends React.Component {
                 }} data={cdata} disableScrollListener />) : (
                     <NavBack
                         pushNotif={this.pushNotif}
-                        params={`?token=${this.accessToken}&platform=${this.platform}`}
-                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}`}
+                        params={`?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}`}
+                        src={`${this.pushNotif}?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}`}
                         data={cdata}
                         titleNavbar={cdata?.source}/>
                 )}
@@ -755,17 +773,6 @@ class Detail extends React.Component {
                                     <div style={{display: !this.state.sticky_share_shown ? 'block' : 'none', transition: 'all 0.3s ease-in-out'}}>
                                         {this.renderActionButton()}
                                     </div>
-                                </div>
-                                <div className="ads-banner__detail_news">
-                                  <AdsBanner
-                                    partner={cdata.source}
-                                    path={getPlatformGpt(this.platform)}
-                                    size={[300, 250]}
-                                    idGpt={process.env.GPT_ID_DETAIL}
-                                    setTarget={true}
-                                    platform={this.platform}
-                                  />
-                                  {/* <span>partner: { cdata.source }</span> */}
                                 </div>
                                 { cdata.exclusive === 'yes' ? (<div />
                                 ) : (

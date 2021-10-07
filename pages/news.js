@@ -117,7 +117,7 @@ class Trending_v2 extends React.Component {
                 'Authorization': data_news.data.news_token
             }
         });
-        console.log('hello general >>', general)
+
         let gen_error_code = general.statusCode > 200 ? general.statusCode : false;
         let gs = {};
         const data_general = await general.json();
@@ -133,7 +133,10 @@ class Trending_v2 extends React.Component {
         let newsData = {}
         if (!error_code && isArray(data.data) && data.data.length > 0){
             newsData = data.data[0]
-            newsData['cover'] = imagePath(newsData.cover, newsData.image, 600, data.meta.assets_url, gs['img_logo'])
+            let siteName = !isEmpty(gs.site_name) ? gs.site_name : 'News+ on RCTI+'
+            newsData['title'] = newsData.title + ' - ' + siteName
+            newsData['cover'] = imagePath(newsData.cover, newsData.image, 600, data.meta.assets_url, `${data.meta.assets_url}/600/${gs['img_logo']}`)
+            newsData['content'] = newsData.content.substring(0, 165) + '....'
         }
         return {
             query: ctx.query,
@@ -180,8 +183,8 @@ class Trending_v2 extends React.Component {
         if (segments.length > 1) {
             const q = queryString.parse(segments[1]);
             if (q.token) {
-                this.accessToken = q.token;
-                setAccessToken(q.token);
+                // this.accessToken = q.token;
+                // setAccessToken(q.token);
             }
             if(q.core_token){
               this.core_token = q.core_token;
@@ -532,7 +535,7 @@ class Trending_v2 extends React.Component {
           category = urlRegex(article.subcategory_name)
         }
         newsArticleClicked(article.id, article.title, article.source, 'mweb_news_article_clicked');
-        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}` : ''}`);
+        Router.push('/news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${this.accessToken ? `?token=${this.accessToken}&platform=${this.platform}&idfa=${this.idfa}&core_token=${this.core_token}` : ''}`);
     }
 
     getMetadata() {
@@ -593,13 +596,22 @@ class Trending_v2 extends React.Component {
         const title = (this.props?.metaSeo?.title) + ' - ' + (site_name)
         const widthImg = 600;
         const heightImg = (widthImg*56) / 100;
+        const {data} = this.props.data_category
+        let {subcategory_id} = this.props.query
+        subcategory_id = isEmpty(subcategory_id) ? 15 : subcategory_id;
+        const categoryDetail = data.filter((filter) => filter.id === parseInt(subcategory_id))
+        let metaSEO = {}
+        if (categoryDetail.length > 0){
+            metaSEO = categoryDetail[0]
+        }
+
         return (
-            <Layout title={title}>
+            <Layout title={metaSEO.title || title}>
                 <Head>
-                    <meta name="title" content={title} />
-                    <meta name="description" content={this.props?.metaSeo?.description} />
-                    <meta name="keywords" content={this.props?.metaSeo?.keyword} />
-                    <meta property="og:title" content={this.props.metaOg?.title || ''} />
+                    <meta name="title" content={metaSEO.title || title} />
+                    <meta name="description" content={metaSEO.description || this.props?.metaSeo?.description} />
+                    <meta name="keywords" content={metaSEO.keyword || this.props?.metaSeo?.keyword} />
+                    <meta property="og:title" content={this.props.metaOg?.title} />
                     <meta property="og:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
                     <meta property="og:image" itemProp="image" content={this.props.metaOg?.cover || this.props?.general?.img_logo} />
                     <meta property="og:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
@@ -614,7 +626,7 @@ class Trending_v2 extends React.Component {
                     <meta name="twitter:site" content={this.props?.general?.twitter_site || GRAPH_SITEMAP.twitterSite} />
                     <meta name="twitter:image" content={this.props.metaOg?.cover || this.props?.general?.img_logo} />
                     <meta name="twitter:image:alt" content={this.props.metaOg?.title || ''} />
-                    <meta name="twitter:title" content={this.props.metaOg?.title || ''} />
+                    <meta name="twitter:title" content={this.props.metaOg?.title || metaSEO.title} />
                     <meta name="twitter:description" content={this.props.metaOg?.content?.replace(/(<([^>]+)>)/gi, "") || ''} />
                     <meta name="twitter:url" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
                     <meta name="twitter:domain" content={`${BASE_URL+encodeURI(this.props.router.asPath)}`} />
@@ -659,7 +671,7 @@ class Trending_v2 extends React.Component {
                     offset={50}
                     onBottom={this.bottomScrollFetch.bind(this)} />
 
-                <div className={`main-content ${this.state.sticky_category_shown ? 'sticky-menu-category-active' : ''} ${(this.platform === 'ios' || this.platform === 'android') && 'apps-mode'}`} style={{ marginTop: this.platform === 'ios' ? 26 : this.platform === 'android' ? 15 : '110px' }}>
+                <div id="container" className={`main-content ${this.state.sticky_category_shown ? 'sticky-menu-category-active' : ''} ${(this.platform === 'ios' || this.platform === 'android') && 'apps-mode'}`} style={{ marginTop: this.platform === 'ios' ? 26 : this.platform === 'android' ? 15 : '110px' }}>
                     {this.state.load_error ? (
                         <div style={{
                             display: 'flex',
@@ -710,8 +722,8 @@ class Trending_v2 extends React.Component {
                                                             self.setState({ sticky_category_shown: distanceFromTop < distance })
                                                         }, 100);
                                                         return (
-                                                            <div className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : 'sticky-menu-inactive'}`}>
-                                                                <Nav tabs className="navigation-tabs">
+                                                            <div id="nav-container" className={`navigation-container ${sticky_category_shown ? 'sticky-menu-category' : 'sticky-menu-inactive'}`}>
+                                                                <Nav tabs className="navigation-tabs" id="nav-tabs">
                                                                     {this.state.tabs.map((tab, i) => (
                                                                         <NavItem
                                                                             key={`${i}`}
@@ -760,12 +772,12 @@ class Trending_v2 extends React.Component {
                                         {this.state.is_tabs_loading ? (<HeadlineLoader />) : null}
                                         {this.state.is_tabs_loading ? (<ArticleLoader />) : null}
 
-                                        <TabContent activeTab={this.state.active_tab}>
+                                        <TabContent id="tab-content" activeTab={this.state.active_tab}>
                                             {this.state.tabs.map((tab, i) => {
                                                 return (
                                                 <TabPane key={i} tabId={tab.id.toString()}>
                                                     {(this.state.is_trending_loading ? (<HeadlineLoader />) : (
-                                                        !isEmpty(this.state.trending_articles[tab.id]) ? <HeadlineCarousel className="news-carousel" articles={this.state.trending_articles[tab.id]} assets_url={this.state.assets_url} /> : null
+                                                        !isEmpty(this.state.trending_articles[tab.id]) ? <div id="headline"><HeadlineCarousel className="news-carousel" articles={this.state.trending_articles[tab.id]} assets_url={this.state.assets_url} /></div> : null
                                                     ))}
                                                     { !isEmpty(this.props.newsv2.data_topic) ? (
                                                         <div className="interest-topic_wrapper">

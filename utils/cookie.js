@@ -1,6 +1,6 @@
 import cookie from 'js-cookie';
 import ax from 'axios';
-import { NEWS_API_V2, NEWS_API, DEV_API, VISITOR_TOKEN } from '../config';
+import { NEWS_API_V2, NEWS_API, DEV_API, VISITOR_TOKEN, MODE } from '../config';
 
 const axios = ax.create({
     // baseURL: API + '/api',
@@ -11,12 +11,71 @@ const axios = ax.create({
 });
 
 
-export const setCookie = (key, value) => {
+export const setCookie = (name, value, days) => {
+    // if (process.browser) {
+    //     cookie.set(key, value, { domain: 'rc-webm.rctiplus.com' });
+    // }
+    var domain, domainParts, date, expires, host;
+
+      if (days)
+      {
+         date = new Date();
+         date.setTime(date.getTime()+(days*24*60*60*1000));
+         expires = "; expires="+date.toGMTString();
+      }
+      else
+      {
+         expires = "";
+      }
+
+
+      if(process.browser){
+          host = window.location.host;
+          if (host.split('.').length === 1)
+          {
+              // no "." in a domain - it's localhost or something similar
+              document.cookie = name+"="+value+expires+"; path=/";
+          }
+          else
+          {
+              domainParts = host.split('.');
+              domainParts.shift();
+              domain = '.'+domainParts.join('.');
+
+              document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
+              if (getCookieHelper(name) == null || getCookieHelper(name) != value)
+              {
+
+                  domain = '.'+host;
+                  document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
+              }
+          }
+      }
+
+
+};
+
+const getCookieHelper = (name) => {
+    {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for (var i=0; i < ca.length; i++)
+      {
+         var c = ca[i];
+         while (c.charAt(0)==' ')
+         {
+            c = c.substring(1,c.length);
+         }
+
+         if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+      }
+      return null;
+   }
+}
+
+export const erese = key => {
     if (process.browser) {
-        cookie.set(key, value, {
-            expires: 1,
-            path: '/',
-        });
+        setCookie(key, '', -1)
     }
 };
 

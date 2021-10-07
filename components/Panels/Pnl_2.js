@@ -3,6 +3,7 @@ import Img from 'react-image';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
+import TextLength from "../../utils/textLength"
 
 import contentActions from '../../redux/actions/contentActions';
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../utils/appier';
@@ -39,7 +40,65 @@ class Pnl_2 extends React.Component {
 			homeGeneralClicked('mweb_homepage_scroll_horizontal');
 		}
 	}
-
+	handleActionClick(program, url) {
+			switch (program.action_type) {
+				case 'live_streaming' :
+					let channel = 'rcti'
+					if(program?.link === '1') {
+							channel = 'rcti'
+					}
+					if(program?.link === '2') {
+							channel = 'mnctv'
+					}
+					if(program?.link === '3') {
+							channel = 'gtv'
+					}
+					if(program?.link === '4') {
+							channel = 'inews'
+					}
+					Router.push(`/tv/${channel}`);
+				break;
+				case 'catchup':
+				if(program.link && program.channel && program.catchup_date) {
+						const title = program?.content_title?.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
+						Router.push(`/tv/${program.channel}/${program.link}/${title}?date=${program.catchup_date}`)
+				}
+				break;
+				case 'scan_qr':
+					Router.push("/qrcode")
+				break;
+				case 'homepage_news':
+					Router.push("/news")
+				break;
+				case 'news_detail' :
+				case 'news_category':
+				case 'news_tags' :
+						window.open(program.link, '_parent');
+						break;
+				case 'episode':
+						if(program.link && program.program_id) {
+								const title = program.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
+								Router.push(`/programs/${program.program_id}/${title}/episode/${program.link}/${title}`)
+						}
+						break;
+				case 'live_event':
+						if (program.link) {
+								Router.push(`/live-event/${program.link}/${program.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
+						}
+						break;
+				case 'genre':
+							Router.push(`/explores/${program.link}/${program.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')}`);
+						break;
+				case 'program':
+						Router.push(`/programs/${program.link}/${program.content_title.replace(/ +/g, '-')}`);
+						break;  
+				case 'popup':
+						window.open(url, '_parent');
+						break;  
+				default:
+						Router.push(url);
+		}       
+	}
 	link(data) {
 		console.log('PANEL 2', data);
 		switch (data.content_type) {
@@ -47,7 +106,7 @@ class Pnl_2 extends React.Component {
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
 
 				// window.open(data.link, '_blank');
-				let url = data.url ? url : data.link;
+				let url = data.url ? data.url : data.link;
 				// console.log('token:', this.props.user.isAuth);
 				if (data.mandatory_login && this.props.user.isAuth) {
 					url += this.props.token;
@@ -65,8 +124,9 @@ class Pnl_2 extends React.Component {
 							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
 					}
 					else {
+						this.handleActionClick(data, url)
 						// window.open(url, '_blank');
-						window.location.href = url;
+						// window.location.href = url;
 					}
 				}
 				catch (e) {
@@ -128,13 +188,13 @@ class Pnl_2 extends React.Component {
 
 	render() {
 		return (
-			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className="homepage-content pnl_horizontal_landscape" id="pnl_horizontal_landscape" style={{ marginBottom: 20 }}>
+			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className=" pnl_horizontal_landscape" id="pnl_horizontal_landscape" style={{ marginBottom: 20 }}>
 				<h2 className="content-title">{this.props.title}</h2>
 				<BottomScrollListener offset={40} onBottom={this.loadMore.bind(this)}>
 					{scrollRef => (
 						<div ref={scrollRef} className="swiper-container">
 							{this.state.contents.map(c => (
-									<div onClick={() => this.link(c)}  key={`${this.props.contentId}-${c.content_id}`} className="swiper-slide">
+									<div onClick={() => this.link(c)}  key={`${this.props.contentId}-${c.content_id}`} style={{backgroundColor: "#171717"}} className="swiper-slide">
 										<div style={{position: 'relative'}}>
 										{c?.premium ? (
 											<>
@@ -152,6 +212,7 @@ class Pnl_2 extends React.Component {
 											</>
 											) : ''}
 											<Img 
+												className={c.display_type == 'hide_url' ? "img-text-desc" : ""}
 												alt={c.program_title || c.content_title} 
 												unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
@@ -160,9 +221,12 @@ class Pnl_2 extends React.Component {
 										</div>
 
 										{c.display_type == 'hide_url' ? null : (
-											<div className="txt-slider-panel">
-												<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
-												<p>{c.content_title}</p>
+											<div style={{display: "flex"}} className="txt-slider-panel">
+												<div className="txt-slider-panel-cont">
+													<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
+													<p>{c.content_title }</p>
+												</div>
+												
 											</div>
 										)}
 										
