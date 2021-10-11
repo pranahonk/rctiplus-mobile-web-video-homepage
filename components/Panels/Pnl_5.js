@@ -139,7 +139,8 @@ class Pnl_5 extends React.Component {
 						header: {
 							heading: element.title,
 							profileImage: `${this.props.imagePath}150${profile}`
-						}
+						},
+
 					}
 					)
 				}else{
@@ -179,18 +180,19 @@ class Pnl_5 extends React.Component {
 							normalizeSlideIndex
 							initialSlide={this.state.initialSlide}
 							onSlideChange={(swiper) => {
-
-								console.log(`swiper`, swiper)
-								console.log(`content`, this.state.contents[swiper.realIndex].story)
-								
-								// destroy element if silde change
+								// console.log(`swiper`, swiper)
+								// console.log(`content`, this.state.contents[swiper.realIndex].story)
 								let elm = null;
-								elm = <div id={`story_id_${swiper.realIndex}`} >
+									
+									elm = <div id={`story_id_${swiper.realIndex}`} >
 										<div onClick={()=> { this.setState({showInsta: false});}} style={{position:"fixed", right: 10, top: 25, zIndex: 2000000, color:"white"}}><CloseRoundedIcon /></div>
-         								<Stories
-          									stories={this.handleSetStories(this.state.contents[swiper.realIndex].story, this.state.contents[swiper.realIndex].program_img)}
-          									defaultInterval={7000}
+										<Stories
+											stories={this.handleSetStories(this.state.contents[swiper.realIndex].story, this.state.contents[swiper.realIndex].program_img)}
+											defaultInterval={7000}
 											keyboardNavigation={true}
+											onStoryEnd={(event) => {
+												
+											}}
 											width="100%"
 											height="100vh"
 											onAllStoriesEnd= {() => {
@@ -198,17 +200,20 @@ class Pnl_5 extends React.Component {
 												// this.handleSetStories(this.state.contents[i+1].story, this.state.contents[i+1].program_img)
 												// this.setState({ idStoryActive: this.state.contents[i+1].program_id})
 											}}
-        								/>
-      								</div>							
+										/>
+									</div>						
+
+									
+								// }
 
 								ReactDOM.render(elm, document.getElementById(`story_id_${swiper.realIndex}`))
+								
 							}}
 						>
 							{this.state.contents && this.state.contents.map((v,i) => {
 								return(
 									<SwiperSlide>
-										<div id={`story_id_${i}`}>
-										</div>
+										<div id={`story_id_${i}`}></div>
 									</SwiperSlide>
 								)
 							})}
