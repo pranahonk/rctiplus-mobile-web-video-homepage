@@ -127,98 +127,100 @@ class Pnl_5 extends React.Component {
 	}
 
 	handleSetStories(story, profile){
-		let _tempStory = []
-		try {
-			story.forEach(element => {
-				if(element.swipe_type === "default"){
-	
-					_tempStory.push(
-						{
-						url: element.link_video !== null ? element.link_video : `${this.props.imagePath}${RESOLUTION_IMG}${element.story_img}`,
-						type: element.link_video !== null ? 'video' : '',
-						header: {
-							heading: element.title,
-							profileImage: `${this.props.imagePath}150${profile}`
-						},
+		let stories = []
 
-					}
-					)
-				}else{
-					_tempStory.push(
-						{
-						url: element.link_video !== null ? element.link_video : `${this.props.imagePath}${RESOLUTION_IMG}${element.story_img}`,
-						type: element.link_video !== null ? 'video' : '',
-						header: {
-							heading: element.title,
-							profileImage: `${this.props.imagePath}150${profile}`
-						},	
-						seeMore: this.seeMoreFactory(element)
-					}
-					)
-				}
-			});
-			return _tempStory
-		} catch (error) {
-			console.log(`error`, error)
+		story.forEach(element => {
+			// let options = {
+			// 	url: element.link_video !== null ? element.link_video : `${this.props.imagePath}${RESOLUTION_IMG}${element.story_img}`,
+			// 	type: element.link_video !== null ? 'video' : '',
+			// 	header: {
+			// 		heading: element.title,
+			// 		profileImage: `${this.props.imagePath}150${profile}`
+			// 	},
+			// }
+
+			// if(element.swipe_type !== "default"){
+			// 	options = {
+			// 		...options,
+			// 		seeMore: this.seeMoreFactory(element)
+			// 	}
+			// }
+
+			stories.push("https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455__480.jpg")
+		})
+		return stories
+	}
+
+	reactInstaModal () {
+		if (!this.state.showInsta) return null
+		const { contents, initialSlide } = this.state
+
+		return (
+			<div className="modal-stories">
+				<Stories
+					stories={this.handleSetStories(contents[initialSlide].story, contents[initialSlide].program_img)}
+					defaultInterval={1000}
+					width="100%"
+					height="100vh"
+				/>
+			</div>
+		)
+	}
+
+	handleStoryEnd () {
+		const { contents, initialSlide } = this.state
+
+		if (initialSlide < contents.length - 1) {
+			this.setState({ initialSlide: initialSlide + 1 }, _ => {
+				this.reactInstaModal()
+			})
 		}
-
-		return false
-		
+		else {
+			this.setState({ showInsta: false })
+		}
 	}
 
 	render() {
 		return (
 			<>
-				{/* Modal story lineup */}
-				{this.state.showInsta && 
-					<div className="modal-stories">
-						<Swiper
-							effect={"cube"}
-							loop
-							touchAngle={500}
-							grabCursor
-							normalizeSlideIndex
-							initialSlide={this.state.initialSlide}
-							onSlideChange={(swiper) => {
-								// console.log(`swiper`, swiper)
-								// console.log(`content`, this.state.contents[swiper.realIndex].story)
-								let elm = null;
-									
-									elm = <div id={`story_id_${swiper.realIndex}`} >
-										<div onClick={()=> { this.setState({showInsta: false});}} style={{position:"fixed", right: 10, top: 25, zIndex: 2000000, color:"white"}}><CloseRoundedIcon /></div>
-										<Stories
-											stories={this.handleSetStories(this.state.contents[swiper.realIndex].story, this.state.contents[swiper.realIndex].program_img)}
-											defaultInterval={7000}
-											keyboardNavigation={true}
-											onStoryEnd={(event) => {
-												
-											}}
-											width="100%"
-											height="100vh"
-											onAllStoriesEnd= {() => {
-												this.setState({showInsta: false})
-												// this.handleSetStories(this.state.contents[i+1].story, this.state.contents[i+1].program_img)
-												// this.setState({ idStoryActive: this.state.contents[i+1].program_id})
-											}}
-										/>
-									</div>						
-
-									
-								// }
-
-								ReactDOM.render(elm, document.getElementById(`story_id_${swiper.realIndex}`))
-								
-							}}
-						>
-							{this.state.contents && this.state.contents.map((v,i) => {
-								return(
-									<SwiperSlide>
-										<div id={`story_id_${i}`}></div>
-									</SwiperSlide>
-								)
-							})}
-						</Swiper>
-					</div>
+				{
+					this.reactInstaModal()
+				// this.state.showInsta && 
+				// 	<div className="modal-stories">
+				// 		<Swiper
+				// 			effect={"cube"}
+				// 			loop
+				// 			touchAngle={500}
+				// 			grabCursor
+				// 			normalizeSlideIndex
+				// 			initialSlide={this.state.initialSlide}
+				// 			onSlideChange={(swiper) => {
+				// 				let elm = null;
+				// 					elm = <div id={`story_id_${swiper.realIndex}`} >
+				// 						<div onClick={()=> { this.setState({showInsta: false});}} style={{position:"fixed", right: 10, top: 25, zIndex: 2000000, color:"white"}}><CloseRoundedIcon /></div>
+				// 						<Stories
+				// 							stories={this.handleSetStories(this.state.contents[swiper.realIndex].story, this.state.contents[swiper.realIndex].program_img)}
+				// 							defaultInterval={7000}
+				// 							keyboardNavigation={true}
+				// 							width="100%"
+				// 							height="100vh"
+				// 							onAllStoriesEnd= {() => {
+				// 								this.setState({showInsta: false})
+				// 							}}
+				// 						/>
+				// 					</div>						
+				// 				ReactDOM.render(elm, document.getElementById(`story_id_${swiper.realIndex}`))	
+				// 			}}
+				// 		>
+				// 			{this.state.contents && this.state.contents.map((v,i) => {
+				// 				return(
+				// 					<SwiperSlide>
+				// 						<div id={`story_id_${i}`}></div>
+				// 					</SwiperSlide>
+				// 				)
+				// 			})}
+				// 		</Swiper>
+				// 	</div>
 				}
 
 				<div style={{paddingLeft:"14px"}} className="homepage-content pnl_horizontal">
@@ -229,9 +231,8 @@ class Pnl_5 extends React.Component {
 								{this.state.contents && this.state.contents.map((v,i) => {
 									return(
 										<div 
-											onClick={() => { 
-												this.setState({initialSlide: i, showInsta: true})
-											}} 
+											key={i}
+											onClick={_ => this.setState({initialSlide: i, showInsta: true})} 
 											style={{padding: "10px", background: "#1A1A1A", borderRadius: "5px"}} className="circle-box">
 											<div style={{display: "block", textAlign:"center", backgroundColor:"transparent"}} >
 												<span  className="cont-circle">
