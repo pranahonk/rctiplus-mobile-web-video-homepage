@@ -3,7 +3,7 @@ import Img from 'react-image';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
-import CountdownTimer from '../Includes/Common/CountdownTimer';
+import dynamic from "next/dynamic"
 
 
 import contentActions from '../../redux/actions/contentActions';
@@ -17,6 +17,7 @@ import '../../assets/scss/components/panel.scss';
 /* horizontal_landscape_large  */
 
 const jwtDecode = require('jwt-decode');
+const CountdownTimer = dynamic(() => import("../Includes/Common/CountdownTimer"))
 
 class Pnl_1 extends React.Component {
 
