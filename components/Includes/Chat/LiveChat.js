@@ -64,11 +64,7 @@ const Chat = ({...props}) => {
 	const handleChatEnter = (e) =>{
 		const chatInput = document.getElementById('chat-input');
 		chatInput.style.height = `24px`;
-
-		// const chatInput = document.getElementById('chat-input');
-		// const scrollHeight = chatInput.scrollHeight - 30;
-		// chatInput.style.height = `${24 + (24 * (scrollHeight / 24))}px`;
-
+		
 		if (e.key === 'Enter' && !e.shiftKey && chat && chat != '\n') {
 			handleScrollToBottom();
 			sendChat(props.id);
@@ -95,9 +91,9 @@ const Chat = ({...props}) => {
 	const getStatusTNC = () => {
 		if(userData !== null && props.openChat){
 			axios.get('/v1/agreement/live-chat/status')
-				.then(response => {
-					if (response?.data?.data)	setIsStatusTnC(response?.data?.data?.is_signed)
-				})
+			.then(response => {
+				if (response?.data?.data)	setIsStatusTnC(response?.data?.data?.is_signed)
+			})
 				.catch(error => console.log(error))	
 		}
 	}
@@ -212,7 +208,7 @@ const Chat = ({...props}) => {
  
 			<div onScroll={handleScroll} className="box-chat" id="box-chat" >
 					{isLoading ? null :
-						<Fragment>
+						<div style={!userData || showTnC ? {height:"100%"} : {} }>
 							{!userData ? <NoLogin toggleChat={props.toggle} channelMain={props.channelMain} /> : 
 								<Fragment>
 									{showTnC ? <LiveChatTnc toggelUnderstand={handleStatusTNC} toggelSkip={() => setShowTnC(false)} /> : 
@@ -282,7 +278,7 @@ const Chat = ({...props}) => {
 									} 
 								</Fragment>
 							}
-						</Fragment>
+						</div>
 					}
 			</div>
 		</Fragment>
