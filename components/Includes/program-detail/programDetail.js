@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, forwardRef } from 'react';
+import React, { useRef, useCallback, useEffect, forwardRef } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Img from 'react-image';
@@ -507,6 +507,8 @@ const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
 };
 
 const bookmark = (data, item, type, props, typeTracking = null) => {
+  console.log(`ini adalah data bookmark`, data)
+  console.log(`ini adalah item bookmark`, item)
   if (data && data[type]) {
     const isBookmark = data && data[type].find((list) => list.id === item.id);
     if (isBookmark) {
