@@ -659,7 +659,6 @@ class LiveEvent extends React.Component {
 								newChat.failed = true;
 							}
 							// chats[chats.length - 1] = newChat;
-							console.log('CHATS', chats)
 							this.setState({ chats: chats, sending_chat: false });
 						})
 						.catch(() => {
@@ -834,15 +833,10 @@ class LiveEvent extends React.Component {
 						// RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
 					}
 				});
-				// console.log(this.state.ads_data);
 			})
-			.catch((error) => {
-				console.log(error);
-			});
 		}
 	}
 	callbackAds(e) {
-		// console.log(e)
 		this.setState({
 			ads_data: null,
 		}, () => {
@@ -855,11 +849,9 @@ class LiveEvent extends React.Component {
 	}
 
 	callbackCount(end, current) {
-		// console.log(this.state.isAds)
 		if(this.state.isAds) {
 			let distance = getCountdown(end, current)[0] || 100000;
 			const countdown = setInterval(() => {
-				// console.log("callback from child", distance)
 				distance -= 1000
 				if (distance < 0 || !this.state.isAds) {
 					clearInterval(countdown)
@@ -882,14 +874,11 @@ class LiveEvent extends React.Component {
 	}
 	getStatusAds(e) {
 		if(this.state.ads_data) {
-			console.log('STCKY-CLOSED',this.state.ads_data)
 			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
 			appierAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
 			RPLUSAdsClicked(this.state.ads_data, 'click', 'sticky_ads_clicked', 'closed')
 		}
-		this.setState({
-			isAds: e,
-		}, () => { console.log(this.state.isAds)})
+		this.setState({ isAds: e })
 	}
 
 
@@ -916,30 +905,37 @@ class LiveEvent extends React.Component {
 
 	handleActionBtn(action) {
 		this.props.setPageLoader()
-    const { videoIndexing, missed_event } = this.state
+    const { videoIndexing, missed_event, live_events } = this.state
+
+		const isLiveEvent = this.props.router.asPath.includes("live")
+		const queuingContents = isLiveEvent ? live_events : missed_event
+		const route = isLiveEvent ? "live-event" : "missed-event"
     const direction = (action === "forward") ? "next" : "prev"
 
-    const targetVideoContent = missed_event[videoIndexing[direction]]
+    const targetVideoContent = queuingContents[videoIndexing[direction]]
     const { href, hrefAlias } = this.routingQueryGenerator(targetVideoContent)
-		const indexing = this.generateIndexing(missed_event, this.state.videoIndexing, targetVideoContent.content_id)
+		const indexing = this.generateIndexing(queuingContents, this.state.videoIndexing, targetVideoContent.content_id)
 
     this.props.router.push(
-			`/missed-event/?${href}`,
-			`/missed-event/${hrefAlias}`
+			`/${route}/?${href}`,
+			`/${route}/${hrefAlias}`
 			)
 		this.setState({ videoIndexing: indexing }, _ => this.props.unsetPageLoader())
 	}
 
 	getCurrentViewingVideoIndex() {
-		const { missed_event } = this.state		
-		if (missed_event.length === 0) return
+		const { missed_event, live_events } = this.state
+		const isLiveEvent = this.props.router.asPath.includes("live")
+		const queuingContents = isLiveEvent ? live_events : missed_event
+
+		if (queuingContents.length === 0) return
 		
 		const currentEventId = +this.props.router.query.id
 		const indexes = {
 			...this.state.videoIndexing,
-			maxQueue: missed_event.length
+			maxQueue: queuingContents.length
 		}
-		const videoIndexing = this.generateIndexing(missed_event, indexes, currentEventId)
+		const videoIndexing = this.generateIndexing(queuingContents, indexes, currentEventId)
 		
     if (this.state.videoIndexing.current !== videoIndexing.current) {
 			this.setState({ videoIndexing })
