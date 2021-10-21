@@ -195,6 +195,7 @@ class LiveEvent extends React.Component {
         refreshDuration: 0,
         reloadDuration: 0
       },
+			videoIndexing: {}
 		};
 
 		const segments = this.props.router.asPath.split(/\?/);
@@ -216,12 +217,8 @@ class LiveEvent extends React.Component {
 		this.disconnectHandler = null;
 		this.currentTime = new Date().getTime();
 		this.props.setPageLoader();
+	}
 
-		console.log(this.props.selected_event);
-	}
-	componentDidUpdate() {
-		// console.log(this.playerContainerRef.current.clientHeight, this.titleRef.current.clientHeight)
-	}
 	componentWillUnmount() {
 		for (let key in this.state.snapshots) {
 			this.state.snapshots[key]();
@@ -242,32 +239,27 @@ class LiveEvent extends React.Component {
 		}
 		this.getMissedEvent();
 		this.getLiveEvent();
+
 		this.props.getUserData()
 			.then(response => {
-				console.log(response);
 				if (response.status === 200 && response.data.status.code === 0) {
 					this.setState({ user_data: response.data.data });
 				}
 			})
-			.catch(error => {
-				console.log(error);
-      });
 
     axios.get('/v1/get-ads-duration')
       .then(response => {
-        //console.log('ads duration res', response.data);
         if (response.data.data) {
+					const [ refresh, reload ] = response.data.data
+
           this.setState({
             adsOverlayDuration: {
-              refreshDuration: response.data.data[0].duration,
-              reloadDuration: response.data.data[1].duration
+              refreshDuration: refresh.duration,
+              reloadDuration: reload ? reload.duration : refresh.duration
             }
           })
         }
       })
-      .catch(error => {
-        console.log(error);
-      });
 	}
 	getLiveEvent() {
 		this.props.setPageLoader();
@@ -285,7 +277,6 @@ class LiveEvent extends React.Component {
 			});
 		})
 		.catch(error => {
-			console.log(error);
 			// this.initPlayer();
 			this.props.setSeamlessLoad(false);
 			this.props.unsetPageLoader();
@@ -302,12 +293,10 @@ class LiveEvent extends React.Component {
 				missed_event: lists.data,
 				meta: lists.meta.image_path,
       });
-      console.log(lists);
     })
     .catch((error) => {
 			this.props.setSeamlessLoad(false);
 			this.props.unsetPageLoader();
-      console.log(error);
     });
   }
 
@@ -328,7 +317,7 @@ class LiveEvent extends React.Component {
 	}
 	getAvailable() {
 		if (this.props.selected_event && this.props.selected_event.data && this.props.selected_event_url && this.props.selected_event_url.data) {
-			// console.log("testt1")
+
 			const { data } = this.props.selected_event;
 			const currentTime = new Date().getTime();
 			const endTime = new Date(data.end_date).getTime();
@@ -340,12 +329,12 @@ class LiveEvent extends React.Component {
 			return false;
 		}
 		if(this.props.router.asPath.match('/missed-event/')) {
-			// console.log("testt2")
+
 			this.setState({ isAvailable: true })
 			return false
 		}
 		if(this.props.router.asPath.match('/live-event/') || !(this.props.selected_event_url && this.props.selected_event_url.data)) {
-			// console.log("testt3")
+
 			this.setState({ errorEnd: true })
 			return false
 		}
@@ -355,18 +344,14 @@ class LiveEvent extends React.Component {
 		// UNCOMMENT LAGI KALO UDAH
 		this.props.getLiveChatBlock(id)
 			.then(res => {
-				console.log(res);
 				this.setState({
 					block_user: {
 						status: res.data.status.code === 0 ? false : true,
 						message: res.data.status.message_client,
 					},
 				});
-
-				console.log('state:', this.state.block_user);
 			})
 			.catch((error) => {
-				console.log(error);
 			});
 	}
 
@@ -397,7 +382,6 @@ class LiveEvent extends React.Component {
 							querySnapshot.docChanges()
 								.map(change => {
 									let chats = this.state.chats;
-									console.log(chats)
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
@@ -435,62 +419,6 @@ class LiveEvent extends React.Component {
 							firstLoadChat = false;
 						});
 					});
-
-
-				// websocket
-				// this.props.getChatSocket(id)
-				// .then(data => {
-				// 	let chats = this.state.chats;
-				// 	if (!this.state.sending_chat) {
-				// 		if (chats.length > 0) {
-				// 			let lastChat = chats[chats.length - 1];
-				// 			let newChat = data.data;
-				// 			if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-				// 				chats = newChat;
-				// 			}
-				// 			}
-				// 			else {
-				// 				chats = data.data;
-				// 			}
-
-				// 		this.setState({ chats: chats }, () => {
-				// 			const chatBox = document.getElementById('chat-messages');
-				// 			chatBox.scrollTop = chatBox.scrollHeight;
-
-				// 			const chatInput = document.getElementById('chat-input');
-				// 			chatInput.style.height = `24px`;
-				// 		});
-				// 	}
-				// })
-				// .then(() => {
-				// 	this.props.listenSocketIo(id)
-				// 	.then((socket) => {
-				// 		socket.on('message', (data) => {
-				// 		let chats = this.state.chats;
-				// 		let newChat = data;
-				// 			if (chats.length > 0) {
-				// 				let lastChat = chats[chats.length - 1];
-				// 				if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
-				// 					chats.push(newChat);
-				// 				}
-				// 			}
-				// 			else {
-				// 				chats.push(newChat);
-				// 			}
-
-				// 			this.setState({ chats: chats }, () => {
-				// 				const chatBox = document.getElementById('chat-messages');
-				// 				chatBox.scrollTop = chatBox.scrollHeight;
-
-				// 				const chatInput = document.getElementById('chat-input');
-				// 				chatInput.style.height = `24px`;
-				// 			});
-				// 		})
-				// 	})
-				// })
-				// .catch((err) => {
-				// 	console.log(err);
-				// });
 			}
 
 		});
@@ -586,18 +514,18 @@ class LiveEvent extends React.Component {
                 for (let i = 0; i < childs.length; i++) {
                     if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
                         childs[i].addEventListener('touchstart', function() {
-                            console.log('touch');
+                            
                             self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
                         });
                         const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
                         for (let j = 0; j < qualityItems.length; j++) {
                             qualityItems[j].addEventListener('touchstart', function() {
-                                console.log('touch');
+                                
                                 self.setState({ quality_selector_shown: false });
                             });
                         }
                         childs[i].addEventListener('click', function() {
-                            console.log('click');
+                            
                             self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
                         });
 
@@ -615,327 +543,6 @@ class LiveEvent extends React.Component {
             }
         }, 1000);
     }
-
-
-	// initPlayer() {
-	// 	if (this.videoNode) {
-	// 		let url = '';
-	// 		let vmap = '';
-	// 		let id = '';
-	// 		let name = '';
-	// 		let type = '';
-	// 		let portrait_image = '';
-	// 		let asset_name = '';
-	// 		let asset_cdn = '';
-	// 		if (this.props.selected_event && this.props.selected_event_url && this.props.selected_event.data && this.props.selected_event_url.data) {
-	// 			url = this.props.selected_event_url.data.url;
-	// 			vmap = this.props.selected_event_url.data[process.env.VMAP_KEY];
-	// 			asset_name = this.props.selected_event_url.data.assets_name;
-	// 			id = this.props.selected_event.data.id;
-	// 			name = this.props.selected_event.data.name;
-	// 			type = this.props.selected_event.data.type;
-	// 			portrait_image = this.props.selected_event.data.portrait_image;
-	// 			if(this.props.router.asPath.match('/live-event/')) this.loadChatMessages(id);
-	// 			this.statusChatBlock(id);
-	// 			asset_cdn = this.props.selected_event_url.data.asset_cdn;
-	// 		}
-	// 		const self = this;
-
-	// 		// console.log(vmap);
-	// 		// this.props.getVmapResponse(vmap)
-	// 		// 	.then(response => {
-	// 		// 		console.log(response);
-	// 		// 	})
-	// 		// 	.catch(error => {
-	// 		// 		console.log(error.message);
-	// 		// 	});
-
-	// 		videojs.registerPlugin('hlsQualitySelector', qualitySelector);
-	// 		this.player = videojs(this.videoNode, {
-	// 			autoplay: true,
-	// 			controls: true,
-	// 			fluid: true,
-	// 			muted: isIOS,
-	// 			aspectratio: '16:9',
-	// 			fill: true,
-	// 			errorDisplay: false,
-	// 			html5: {
-	// 				hls: {
-	// 					overrideNative: true,
-	// 				},
-	// 				nativeAudioTracks: false,
-	// 				nativeVideoTracks: false,
-	// 			},
-	// 			sources: [{
-	// 				src: url,
-	// 				type: url.match(/.mp4$/) ? 'video/mp4' : 'application/x-mpegURL',
-	// 			}]
-	// 		}, function onPlayerReady() {
-	// 			console.log('onPlayerReady', this);
-	// 			const vm = this;
-	// 			const reloadOptions = {
-	// 				errorInterval: 50,
-	// 			};
-	// 			vm.reloadSourceOnError(reloadOptions);
-	// 			if(isIOS) {
-  //                   vm.muted(true)
-	// 				const wrapElement = document.getElementsByClassName('video-js');
-	// 				console.log(wrapElement)
-  //                   if(wrapElement[0] !== undefined) {
-	// 					const elementCreateWrapper = document.createElement('btn');
-	// 					const elementMuteIcon = document.createElement('span');
-	// 					elementCreateWrapper.classList.add('jwplayer-vol-off');
-	// 					elementCreateWrapper.innerText = 'Tap to unmute ';
-	// 					wrapElement[0].appendChild(elementCreateWrapper);
-	// 					elementCreateWrapper.appendChild(elementMuteIcon);
-	// 					elementCreateWrapper.addEventListener('click', function() {
-	// 						console.log('mute video');
-	// 						if (elementCreateWrapper === null) {
-	// 							vm.muted(false);
-	// 							elementCreateWrapper.classList.add('jwplayer-mute');
-	// 							elementCreateWrapper.classList.remove('jwplayer-full');
-	// 						}
-	// 						else {
-	// 							vm.muted(false);
-	// 							elementCreateWrapper.classList.add('jwplayer-full');
-	// 							elementCreateWrapper.classList.remove('jwplayer-mute');
-	// 						}
-	// 					});
-	// 				}
-	// 			}
-
-	// 			const player = this;
-	// 			const assetName = self.props.selected_event && self.props.selected_event.data ? self.props.selected_event.data.name : 'Live Streaming';
-
-	// 			const customTags = {
-  //                   app_version: process.env.APP_VERSION,
-  //                   carrier: 'N/A',
-  //                   connection_type: 'N/A',
-	// 				content_type: self.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event',
-	// 				section_page: self.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event',
-  //                   content_id: id.toString(),
-	// 				program_name: name,
-  //                   tv_id: 'N/A',
-  //                   tv_name: 'N/A',
-  //                   date_video: 'N/A',
-  //                   genre: 'N/A',
-  //                   page_title: 'N/A',
-  //                   page_view: 'N/A',
-  //                   program_id: 'N/A',
-  //                   screen_mode: 'portrait',
-  //                   time_video: 'N/A',
-  //                   viewer_id: getUserId().toString(),
-	// 				application_name: 'RCTI+ MWEB',
-	// 				genre: 'N/A'
-  //               };
-
-	// 			this.convivaTracker = convivaVideoJs(asset_name, player, self.props.router.asPath.match('/missed-event/') ? player.duration() : true, url, 'Live Event ' + assetName.toUpperCase(), customTags, asset_cdn);
-	// 			this.convivaTracker.createSession();
-
-	// 			if(self.props.router.asPath.match('/missed-event/')) {
-	// 				player.seekButtons({
-	// 					forward: 10,
-	// 					back: 10
-	// 				});
-	// 				setTimeout(() => {
-	// 					self.setSkipButtonCentered();
-	// 				}, 2000);
-	// 				window.onresize = () => {
-	// 					self.setSkipButtonCentered();
-	// 				};
-	// 			}
-
-	// 		});
-	// 		videojs.registerPlugin('hlsQualitySelector', qualitySelector);
-	// 		this.player.ready(function () {
-	// 			const vm = this
-	// 			const promise = vm.play();
-	// 			if (promise !== undefined) {
-	// 				promise.then(() => console.log('play'))
-	// 					.catch((err) => console.log('err'))
-	// 			}
-
-	// 			setTimeout(() => {
-	// 				self.setupPlayerBehavior();
-  //                   self.changeQualityIconButton();
-  //               }, 100);
-	// 		});
-
-	// 		window.onorientationchange = () => {
-  //               if (!isIOS) {
-	// 				this.player.userActive(false);
-	// 				if (self.props.router.asPath.match('/missed-event/')) {
-	// 					setTimeout(() => {
-	// 						this.setState({ screen_width: window.outerWidth }, () => {
-	// 							let orientation = document.documentElement.clientWidth > document.documentElement.clientHeight ? 'landscape' : 'portrait';
-	// 							this.setSkipButtonCentered(orientation);
-	// 						});
-	// 					}, 1000);
-	// 				}
-  //               }
-  //           };
-
-	// 		this.player.on('useractive', () => {
-  //               if (!this.player.paused()) {
-  //                   const seekButtons = document.getElementsByClassName('vjs-seek-button');
-  //                   for (let i = 0; i < seekButtons.length; i++) {
-  //                       seekButtons[i].style.display = 'block';
-  //                   }
-
-  //                   this.setState({ user_active: true });
-  //               }
-  //           });
-
-  //           this.player.on('userinactive', () => {
-  //               if (!this.player.paused()) {
-  //                   const seekButtons = document.getElementsByClassName('vjs-seek-button');
-  //                   for (let i = 0; i < seekButtons.length; i++) {
-  //                       seekButtons[i].style.display = 'none';
-  //                   }
-
-  //                   this.setState({ user_active: false });
-  //               }
-
-  //               if (this.state.quality_selector_shown) {
-  //                   triggerQualityButtonClick('inactive');
-  //               }
-  //           });
-
-	// 		this.player.on('fullscreenchange', () => {
-	// 			if (screen.orientation.type === 'portrait-primary') {
-	// 				screen.orientation.lock("landscape-primary");
-	// 			}
-	// 			if (screen.orientation.type === 'landscape-primary') {
-	// 				screen.orientation.lock("portrait-primary");
-	// 			}
-	// 		});
-
-	// 		let errorCount = 0;
-	// 		let isExecuting = false;
-	// 		this.player.on('error', (e) => {
-	// 			if (isIOS) {
-	// 				console.log(e);
-	// 				if (!isExecuting) {
-	// 					isExecuting = true;
-	// 					if (errorCount <= 1) {
-	// 						this.player.error(null);
-	// 					}
-	// 					setTimeout(() => {
-	// 						this.player.ready(() => {
-	// 							console.log('READY');
-	// 							if (errorCount++ <= 1) {
-	// 								this.player.src([{
-	// 									src: url,
-	// 									type: url.match(/.mp4$/) ? 'video/mp4' : 'application/x-mpegURL',
-	// 								}]);
-	// 							}
-	// 						});
-	// 						isExecuting = false;
-	// 					}, 1000);
-	// 				}
-
-	// 			}
-	// 			else {
-	// 				console.log('err');
-	// 				this.setState({
-	// 					error: true,
-	// 				});
-	// 			}
-
-	// 		});
-	// 		this.player.on('ended', () => {
-	// 			if (!isIOS) {
-	// 				if(!this.state.is_live) {
-	// 					this.setState({
-	// 						errorEnd: true,
-	// 					});
-	// 				}
-	// 			}
-	// 		});
-	// 		this.player.hlsQualitySelector({
-	// 			displayCurrentQuality: true,
-	// 			identifyBy: 'bitrate'
-	// 		});
-
-	// 		this.disconnectHandler = null;
-	// 		this.player.on('waiting', (e) => {
-	// 			const playButton = document.getElementsByClassName('vjs-big-play-button');
-  //               if (playButton.length > 0) {
-  //                   playButton[0].style.display = 'none';
-	// 			}
-	// 			if (this.disconnectHandler) {
-  //                   clearTimeout(this.disconnectHandler);
-  //                   this.disconnectHandler = null;
-  //               }
-
-	// 			this.disconnectHandler = setTimeout(() => {
-	// 				this.setState({
-	// 					error: true,
-	// 				});
-	// 			}, 40000);
-	// 		})
-
-	// 		this.player.on('playing', () => {
-	// 			if (this.disconnectHandler) {
-	// 				clearTimeout(this.disconnectHandler);
-	// 			}
-
-	// 			this.setState({ playing: true });
-	// 		});
-
-	// 		this.player.on('ads-ad-started', () => {
-	// 			console.log('ADS STARTED');
-  //               const playButton = document.getElementsByClassName('vjs-big-play-button');
-  //               if (playButton.length > 0) {
-  //                   playButton[0].style.display = 'none';
-  //               }
-  //           });
-
-  //           this.player.on('play', () => {
-  //               const seekButtons = document.getElementsByClassName('vjs-seek-button');
-  //               for (let i = 0; i < seekButtons.length; i++) {
-  //                   seekButtons[i].style.display = 'none';
-  //               }
-
-  //               const playButton = document.getElementsByClassName('vjs-big-play-button');
-  //               if (playButton.length > 0) {
-  //                   playButton[0].style.display = 'none';
-  //               }
-
-  //               this.setState({ playing: true });
-  //           });
-
-	// 		let pauseCounter = 0; // avoid trigger first pause
-  //           this.player.on('pause', () => {
-  //               const seekButtons = document.getElementsByClassName('vjs-seek-button');
-  //               for (let i = 0; i < seekButtons.length; i++) {
-  //                   seekButtons[i].style.display = 'none';
-  //               }
-
-  //               if (pauseCounter++ > 0) {
-  //                   const playButton = document.getElementsByClassName('vjs-big-play-button');
-  //                   if (playButton.length > 0) {
-  //                       playButton[0].style.display = 'block';
-  //                   }
-  //               }
-
-  //               this.setState({ playing: false });
-  //           });
-
-	// 		this.player.ima({
-	// 			adTagUrl: vmap,
-	// 			preventLateAdStart: true
-	// 		});
-	// 		this.player.ima.initializeAdDisplayContainer();
-
-	// 		this.setState({ screen_width: window.outerWidth });
-	// 	}
-	// }
-
-
-	loadMore() {
-		// TODO
-	}
 
 	toggleChat() {
 		if (this.checkLogin()) {
@@ -1051,7 +658,6 @@ class LiveEvent extends React.Component {
 								newChat.failed = true;
 							}
 							// chats[chats.length - 1] = newChat;
-							console.log('CHATS', chats)
 							this.setState({ chats: chats, sending_chat: false });
 						})
 						.catch(() => {
@@ -1226,15 +832,10 @@ class LiveEvent extends React.Component {
 						// RPLUSAdsShowing(data, 'views', 'sticky_ads_showing');
 					}
 				});
-				// console.log(this.state.ads_data);
 			})
-			.catch((error) => {
-				console.log(error);
-			});
 		}
 	}
 	callbackAds(e) {
-		// console.log(e)
 		this.setState({
 			ads_data: null,
 		}, () => {
@@ -1247,11 +848,9 @@ class LiveEvent extends React.Component {
 	}
 
 	callbackCount(end, current) {
-		// console.log(this.state.isAds)
 		if(this.state.isAds) {
 			let distance = getCountdown(end, current)[0] || 100000;
 			const countdown = setInterval(() => {
-				// console.log("callback from child", distance)
 				distance -= 1000
 				if (distance < 0 || !this.state.isAds) {
 					clearInterval(countdown)
@@ -1274,17 +873,90 @@ class LiveEvent extends React.Component {
 	}
 	getStatusAds(e) {
 		if(this.state.ads_data) {
-			console.log('STCKY-CLOSED',this.state.ads_data)
 			stickyAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
 			appierAdsClicked(this.state.ads_data, 'sticky_ads_clicked', 'closed')
 			RPLUSAdsClicked(this.state.ads_data, 'click', 'sticky_ads_clicked', 'closed')
 		}
-		this.setState({
-			isAds: e,
-		}, () => { console.log(this.state.isAds)})
+		this.setState({ isAds: e })
+	}
+
+
+	routingQueryGenerator(targetContent) {
+    let targetHref = [],
+      targetHrefAlias = []
+
+    const query = {
+      ...this.props.router.query,
+      id: targetContent.content_id,
+      title: targetContent.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase(),
+    }
+
+    for (const key in query) {
+			targetHref.push(`${key}=${query[key]}`)
+      targetHrefAlias.push(query[key])
+    }
+		
+    return {
+      href: targetHref.join("&"), // actual target url
+      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser 
+    }
+  }
+
+	handleActionBtn(action) {
+		this.props.setPageLoader()
+    const { videoIndexing, missed_event, live_events } = this.state
+
+		const isLiveEvent = this.props.router.asPath.includes("live")
+		const queuingContents = isLiveEvent ? live_events : missed_event
+		const route = isLiveEvent ? "live-event" : "missed-event"
+    const direction = (action === "forward") ? "next" : "prev"
+
+    const targetVideoContent = queuingContents[videoIndexing[direction]]
+    const { href, hrefAlias } = this.routingQueryGenerator(targetVideoContent)
+		const indexing = this.generateIndexing(queuingContents, this.state.videoIndexing, targetVideoContent.content_id)
+
+    this.props.router.push(
+			`/${route}/?${href}`,
+			`/${route}/${hrefAlias}`
+			)
+		this.setState({ videoIndexing: indexing }, _ => this.props.unsetPageLoader())
+	}
+
+	getCurrentViewingVideoIndex() {
+		const { missed_event, live_events } = this.state
+		const isLiveEvent = this.props.router.asPath.includes("live")
+		const queuingContents = isLiveEvent ? live_events : missed_event
+
+		if (queuingContents.length === 0) return
+		
+		const currentEventId = +this.props.router.query.id
+		const indexes = {
+			...this.state.videoIndexing,
+			maxQueue: queuingContents.length
+		}
+		const videoIndexing = this.generateIndexing(queuingContents, indexes, currentEventId)
+		
+    if (this.state.videoIndexing.current !== videoIndexing.current) {
+			this.setState({ videoIndexing })
+    }
+  }
+	
+	generateIndexing(queueingContents, indexes, targetId) {
+		let output = indexes
+		queueingContents.forEach((content, i) => {
+			if (targetId === content.content_id) {
+				output["prev"] = i - 1 < 0 ? 0 : i - 1
+        output["current"] = i
+        output["next"] = i + 1 > queueingContents.length - 1 ? queueingContents.length - 1 : i + 1
+        return
+			}
+		})
+		return output
 	}
 
 	render() {
+		this.getCurrentViewingVideoIndex()
+
 		const { state, props } = this;
 		const  { selected_event, selected_event_url } = this.props;
 		let errorEvent = (<Col xs="12" key="1" className="le-error">
@@ -1354,18 +1026,21 @@ class LiveEvent extends React.Component {
 				<div className="wrapper-content" style={{ padding: 0, margin: 0 }}>
 					<div ref={ this.playerContainerRef }  className="rplus-player-container">
 					<NavBack navPlayer={true} stylePos="absolute"/>
-						{/* {this.renderPlayer()} */}
+
 						<JwPlayer
 							data={ selected_event_url && selected_event_url.data }
 							type={ this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' }
-							customData={ {
+							customData={{
 								program_name: this.props.selected_event && this.props.selected_event.data && this.props.selected_event.data.name,
 								isLogin: this.props.user.isAuth,
 								sectionPage: this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' ,
-								} }
+								}}
 							geoblockStatus={ this.state.statusError === 2 ? true : false }
               adsOverlayData={ state.adsOverlayDuration }
+							actionBtn={(e) => this.handleActionBtn(e)}
+							videoIndexing={state.videoIndexing}
 							/>
+
 					</div>
 					<div ref= { this.titleRef } className="title-wrap">
 						<h1 style={{
