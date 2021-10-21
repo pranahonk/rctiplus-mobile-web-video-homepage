@@ -906,7 +906,7 @@ class LiveEvent extends React.Component {
 		this.props.setPageLoader()
     const { videoIndexing, missed_event, live_events } = this.state
 
-		const isLiveEvent = this.props.router.asPath.includes("live")
+		const isLiveEvent = this.props.router.asPath.includes("live-event/")
 		const queuingContents = isLiveEvent ? live_events : missed_event
 		const route = isLiveEvent ? "live-event" : "missed-event"
     const direction = (action === "forward") ? "next" : "prev"
@@ -924,7 +924,7 @@ class LiveEvent extends React.Component {
 
 	getCurrentViewingVideoIndex() {
 		const { missed_event, live_events } = this.state
-		const isLiveEvent = this.props.router.asPath.includes("live")
+		const isLiveEvent = this.props.router.asPath.includes("live-event/")
 		const queuingContents = isLiveEvent ? live_events : missed_event
 
 		if (queuingContents.length === 0) return
