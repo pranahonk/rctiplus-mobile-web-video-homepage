@@ -131,16 +131,29 @@ export default function useCustomPlayerButton (props) {
   }
 
   const onButtonMounted = () => {
-    if (!props.type.includes("live")) return
-
     // Undisplay and empty the container
     const playerContainer = props.player.getContainer()
     const nextContainer = playerContainer.querySelector(".jw-display-icon-next.jw-reset")
     const prevContainer = playerContainer.querySelector(".jw-display-icon-rewind.jw-reset")
-
+    
     if (!nextContainer || !prevContainer) return
-    nextContainer.innerHTML = ""
-    prevContainer.innerHTML = ""
+
+    switch(props.type) {
+      case "live_tv": {
+        nextContainer.innerHTML = ""
+        prevContainer.innerHTML = ""
+        break
+      }
+      case "live event": {
+        const fastBackward = prevContainer.querySelector(".jwplayer-action.jw-icon.backward")
+        const fastForward = nextContainer.querySelector(".jwplayer-action.jw-icon.forward")
+
+        if (!fastForward || !fastBackward) return
+        fastBackward.style.display = "none"
+        fastForward.style.display = "none"
+        break
+      }
+    }
   }
 
   const handleClick = (direction) => {
