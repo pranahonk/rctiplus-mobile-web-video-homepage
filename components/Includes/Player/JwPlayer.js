@@ -7,8 +7,8 @@ import { onTrackingClick } from '../program-detail/programDetail';
 import { isIOS } from 'react-device-detect';
 import Wrench from '../Common/Wrench';
 import '../../../assets/scss/jwplayer.scss';
-import useSetupBitrate from "../../hooks/Jwplayer/useSetupBitrate"
 import useOverlayPlayerAds from "../../hooks/Jwplayer/useOverlayPlayerAds"
+import useSetupBitrate from "../../hooks/Jwplayer/useSetupBitrate"
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -35,9 +35,6 @@ const JwPlayer = (props) => {
     isError07: false,
     isError08: false,
   });
-  const [adsStatus, setAdStatus] = useState('none');
-  const [playerFullscreen, setPlayerFullscreen] = useState(false);
-  const [prevWidth, setPrevWidth] = useState(0);
 
   const [ setBitrateLevels ] = useSetupBitrate({ ...props, player })
   const [ adsState, setAdsState, stateOfAds ] = useOverlayPlayerAds({ ...props, player })
@@ -111,10 +108,13 @@ const JwPlayer = (props) => {
   useEffect(() => {
     if (player !== null) {
       player.on('ready', (event) => {
-        setPlayerFullscreen(props.isFullscreen);
-
         const playerContainer = player.getContainer();
         setAdsState(stateOfAds.INIT)
+
+        if (props.type.includes("live")) {
+          playerContainer.querySelector(".jw-icon.jw-icon-next.jw-reset").style.display = "none"
+          playerContainer.querySelector(".jw-icon.jw-icon-rewind.jw-reset").style.display = "none"
+        }
 
         if (isIOS) {
           const elementCreateMute = document.createElement('btn');

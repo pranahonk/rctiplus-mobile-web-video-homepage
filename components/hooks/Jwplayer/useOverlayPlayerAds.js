@@ -26,16 +26,19 @@ export default function useOverlayPlayerAds(props) {
   })
   
   const deviceOrientationListener = async () => {
-    if (screen.orientation.angle === screenAngle) return
-    
+    const isPortrait = window.matchMedia("(orientation: portrait)").matches
+
+    if (isPortrait === screenAngle) return    
     if (!slotDivGPT || !props.data) return
-    setScreenAngle(screen.orientation.angle)
+    setScreenAngle(isPortrait)
     
     const adsIframe = document.getElementById(slotDivGPT).querySelector("iframe")
-    const adsImage = adsIframe.contentWindow.document.querySelector("#google_image_div img.img_ad")
     const gpt = props.data.gpt
+    if (!adsIframe || !gpt) return
 
-    if (screen.orientation.angle === 90) {
+    const adsImage = adsIframe.contentWindow.document.querySelector("#google_image_div img.img_ad")
+
+    if (!isPortrait) {
       adsIframe.width = gpt.size_width_2 
       adsIframe.height = gpt.size_height_2 
       adsImage.width = gpt.size_width_2 
@@ -58,19 +61,33 @@ export default function useOverlayPlayerAds(props) {
     if (!adsWrapper) return
     
     if (adsState.includes("start")) {
-      adsWrapper.style.display = ""
-      defineAds()
+      initAds()
     }
     else {
       adsWrapper.style.display = "none"
     }
   }
 
-  const defineAds = () => {
+  const initAds = () => {
+    const { reloadDuration } = props.adsOverlayData
+
+    if (slotDivGPT) googletag.destroySlots()
+    const playerContainer = props.player.getContainer()
+    const adsWrapper = playerContainer.querySelector(".jw-ads-overlay")
+
+    setTimeout(() => {
+      defineAds(adsWrapper)
+    }, reloadDuration);
+  }
+
+  const defineAds = (adsWrapper) => {
     const { gpt } = props.data
+    const divGPTString = generateDivGPTString()
+
     window.googletag = window.googletag || {cmd: []}
+    adsWrapper.style.display = ""
     
-    const slot = googletag.defineSlot(gpt.path, [ gpt.size_width_1, gpt.size_height_1 ], slotDivGPT)
+    const slot = googletag.defineSlot(gpt.path, [ gpt.size_width_1, gpt.size_height_1 ], divGPTString)
     if (slot) {
       slot.addService(googletag.pubads())
 
@@ -82,8 +99,8 @@ export default function useOverlayPlayerAds(props) {
       googletag.pubads().disableInitialLoad();
       googletag.enableServices();
     }
+    googletag.display(divGPTString)
     
-    googletag.display(slotDivGPT)
     googletag.pubads().refresh()
   }
 
@@ -117,9 +134,25 @@ export default function useOverlayPlayerAds(props) {
     e.preventDefault();
     e.stopPropagation();
     
+    const { refreshDuration } = props.adsOverlayData
+    googletag.destroySlots()
+    
     const playerContainer = props.player.getContainer()
     const adsWrapper = playerContainer.querySelector(".jw-ads-overlay")
     adsWrapper.style.display = "none"
+
+    setTimeout(() => {
+      defineAds(adsWrapper)
+    }, refreshDuration);
+  }
+
+  const generateDivGPTString = () => {
+    const { gpt } = props.data
+    const envDivGPTString = (props.type === 'live tv') 
+      ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV 
+      : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+    
+    return gpt.div_gpt ? gpt.div_gpt : envDivGPTString
   }
 
   const createOverlayAdsComponent = () => {
@@ -127,12 +160,7 @@ export default function useOverlayPlayerAds(props) {
     adsOverlayElement.classList.add('jw-ads-overlay')
     adsOverlayElement.style.display = "none"
     
-    const { gpt } = props.data
-    const envDivGPTString = (props.type === 'live tv') 
-      ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV 
-      : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-    
-    const divGPTString = gpt.div_gpt ? gpt.div_gpt : envDivGPTString
+    const divGPTString = generateDivGPTString()
     refreshOverlayChildNodes(adsOverlayElement)
 
     hydrate(
