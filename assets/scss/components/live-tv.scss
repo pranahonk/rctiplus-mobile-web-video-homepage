@@ -220,60 +220,59 @@ $default-player-space: 180px;
         transition-timing-function: linear;
     }
 
-    .chat-input-box {
-        position: absolute;
+    // .chat-input-box {
+    //     position: absolute;
 
-        .chat-box {
-            padding: 5px 10px;
-            width: 100%;
+    //     .chat-box {
+    //         padding: 5px 10px;
+    //         width: 100%;
 
+    //         .emoji-button {
+    //             padding: 0;
+    //             margin-left: 15px;
+    //             background: transparent;
+    //             border: transparent;
+    //         }
 
+    //         .emoji-button:focus {
+    //             box-shadow: none;
+    //         }
 
-            .emoji-button {
-                padding: 0;
-                margin-left: 15px;
-                background: transparent;
-                border: transparent;
-            }
+    //         .col-9 {
+    //             width: 100%;
+    //             padding-right: 0;
+    //             padding-left: 0;
+    //             margin-left: 10px;
+    //             .chat-input {
+    //                 background: transparent;
+    //                 border: transparent;
+    //                 color: white;
+    //                 overflow-y: hidden;
+    //                 height: 24px;
+    //                 padding-top: 0;
+    //             }
 
-            .emoji-button:focus {
-                box-shadow: none;
-            }
+    //             .chat-input::-webkit-resizer {
+    //                 display: none;
+    //             }
+    //         }
 
-            .col-9 {
-                padding-right: 0;
-                padding-left: 0;
-                margin-left: 10px;
-                .chat-input {
-                    background: transparent;
-                    border: transparent;
-                    color: white;
-                    overflow-y: hidden;
-                    height: 24px;
-                    padding-top: 0;
-                }
+    //         .col-1 {
+    //             // padding-right: 5px;
+    //             padding-left: 0;
+    //         }
 
-                .chat-input::-webkit-resizer {
-                    display: none;
-                }
-            }
+    //         .send-button {
+    //             padding: 0;
+    //             background: transparent;
+    //             border: transparent;
+    //         }
 
-            .col-1 {
-                padding-right: 5px;
-                padding-left: 0;
-            }
-
-            .send-button {
-                padding: 0;
-                background: transparent;
-                border: transparent;
-            }
-
-            .send-button:focus {
-                box-shadow: none;
-            }
-        }
-    }
+    //         .send-button:focus {
+    //             box-shadow: none;
+    //         }
+    //     }
+    // }
 
     .emoji-mart {
         width: 100% !important;

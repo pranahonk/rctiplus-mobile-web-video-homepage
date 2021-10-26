@@ -1,17 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import nextCookie from 'next-cookies' 
 import { Picker } from 'emoji-mart';
-import Img from 'react-image';
-import TimeAgo from 'react-timeago';
+// import Img from 'react-image';
+// import TimeAgo from 'react-timeago';
 import dynamic from 'next/dynamic';
 
 import initialize from '../utils/initialize';
 import { getCountdown } from '../utils/helpers';
-import { convivaJwPlayer } from '../utils/conviva';
+// import { convivaJwPlayer } from '../utils/conviva';
 
 // Redux Actions
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
@@ -21,12 +21,13 @@ import userActions from '../redux/actions/userActions';
 
 import Layout from '../components/Layouts/Default_v2';
 import SelectDateModal from '../components/Modals/SelectDateModal';
-import { GeoblockModal } from '../components/Modals/Geoblock';
+// import { GeoblockModal } from '../components/Modals/Geoblock';
 import ActionSheet from '../components/Modals/ActionSheet';
 import Wrench from '../components/Includes/Common/Wrench';
-import MuteChat from '../components/Includes/Common/MuteChat';
-import Toast from '../components/Includes/Common/Toast';
+// import MuteChat from '../components/Includes/Common/MuteChat';
+// import Toast from '../components/Includes/Common/Toast';
 import JsonLDVideo from '../components/Seo/JsonLDVideo';
+import LiveChats from "../components/Includes/LiveChat"
 
 import { formatDate, formatDateWord, getFormattedDateBefore, formatMonthEngToID } from '../utils/dateHelpers';
 import { showAlert, showSignInAlert } from '../utils/helpers';
@@ -35,15 +36,15 @@ import { Row, Col, Button, Nav, NavItem, NavLink, TabContent, TabPane, Input } f
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import SentimenVerySatifiedIcon from '@material-ui/icons/SentimentVerySatisfied';
-import SendIcon from '@material-ui/icons/Send';
-import KeyboardIcon from '@material-ui/icons/Keyboard';
-import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import RefreshIcon from '@material-ui/icons/Refresh';
+// import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+// import SentimenVerySatifiedIcon from '@material-ui/icons/SentimentVerySatisfied';
+// import SendIcon from '@material-ui/icons/Send';
+// import KeyboardIcon from '@material-ui/icons/Keyboard';
+// import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+// import RefreshIcon from '@material-ui/icons/Refresh';
 import PauseIcon from '../components/Includes/Common/PauseIcon';
-import { isIOS } from 'react-device-detect';
-import socketIOClient from 'socket.io-client';
+// import { isIOS } from 'react-device-detect';
+// import socketIOClient from 'socket.io-client';
 import ax from 'axios';
 
 import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
@@ -57,9 +58,10 @@ import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTra
 import queryString from 'query-string';
 
 import { getCookie, getVisitorToken, checkToken } from '../utils/cookie';
+// import { scrollToTop } from 'react-scroll/modules/mixins/animate-scroll';
 
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
-const innerHeight = require('ios-inner-height');
+// const innerHeight = require('ios-inner-height');
 
 const axios = ax.create({
   // baseURL: API + '/api',
@@ -123,6 +125,7 @@ class Tv extends React.Component {
 		this.inputChatBoxRef = React.createRef();
 		const now = new Date();
 		this.state = {
+			chat_box: false,
 			data_player: {},
 			data_player_type: 'live tv',
 			live_events: [],
@@ -154,6 +157,8 @@ class Tv extends React.Component {
 			ads_data: null,
 			isAds: false,
 			chat: '',
+			total_newChat : [],
+			lastScroll: 0,
 			user_data: null,
 			snapshots: [],
 			sending_chat: false,
@@ -199,6 +204,7 @@ class Tv extends React.Component {
 	}
 
 	componentDidMount() {
+		
 		initGA();
 		this.setupEssentialData()
 	}
@@ -239,7 +245,7 @@ class Tv extends React.Component {
 
 	setHeightChatBox() {
 		let heightPlayer = this.playerContainerRef.current.clientHeight + this.tvTabRef.current.clientHeight;
-		return `calc(100% - ${heightPlayer}px)`;
+		return `calc(100% - ${heightPlayer}px)`;	
 	}
 	isLiveProgram(epg) {
 		const currentTime = new Date().getTime();
@@ -247,6 +253,7 @@ class Tv extends React.Component {
 		const endTime = new Date(formatDate(this.currentDate) + 'T' + epg.e).getTime();
 		return currentTime > startTime && currentTime < endTime;
 	}
+
 
 	getCurrentLiveEpg() {
 		const epg = this.state.epg;
@@ -277,30 +284,35 @@ class Tv extends React.Component {
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
-												let lastChat = chats[chats.length - 1];
+												let lastChat = chats
 												let newChat = change.doc.data();
+												
 												if ((lastChat && newChat) && (lastChat.u != newChat.u || lastChat.m != newChat.m || lastChat.i != newChat.i)) {
 													if (firstLoadChat) {
 														chats.unshift(newChat);
 													}
 													else {
 														chats.push(newChat);
+														this.state.total_newChat.push(newChat)
 													}
 												}
 											}
 											else {
 												if (firstLoadChat) {
-													chats.unshift(change.doc.data());
+													chats.unshift(change.doc.data());	
 												}
 												else {
 													chats.push(change.doc.data());
+													this.state.total_newChat.push(change.doc.data())
 												}
 											}
+											
+											// if(!this.state.chat_box && this.state.total_newChat.length > 0){
+											// 	const chatBox = document.getElementById('chat-messages');
+											// 	chatBox.scrollTop = chatBox.scrollHeight;
+											// }
 
 											this.setState({ chats: chats }, () => {
-												const chatBox = document.getElementById('chat-messages');
-												chatBox.scrollTop = chatBox.scrollHeight;
-
 												const chatInput = document.getElementById('chat-input');
 												chatInput.style.height = `24px`;
 											});
@@ -909,22 +921,22 @@ class Tv extends React.Component {
 						<Row>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=rcti" as="/tv/rcti">
-									<Button size="sm" color="link" className={this.state.selected_index === 0 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 0)}><h1 className="heading-rplus">RCTI</h1></Button>
+									<Button size="sm" color="link" className={this.state.selected_index === 0 ? 'selected shadow-none' : 'shadow-none'} onClick={this.selectChannel.bind(this, 0)}><h1 className="heading-rplus">RCTI</h1></Button>
 								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=mnctv" as="/tv/mnctv">
-									<Button size="sm" color="link" className={this.state.selected_index === 1 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 1)}><h1 className="heading-rplus">MNCTV</h1></Button>
+									<Button size="sm" color="link" className={this.state.selected_index === 1 ? 'selected shadow-none' : 'shadow-none'} onClick={this.selectChannel.bind(this, 1)}><h1 className="heading-rplus">MNCTV</h1></Button>
 								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=gtv" as="/tv/gtv">
-									<Button size="sm" color="link" className={this.state.selected_index === 2 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 2)}><h1 className="heading-rplus">GTV</h1></Button>
+									<Button size="sm" color="link" className={this.state.selected_index === 2 ? 'selected shadow-none' : 'shadow-none'} onClick={this.selectChannel.bind(this, 2)}><h1 className="heading-rplus">GTV</h1></Button>
 								</Link>
 							</Col>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=inews" as="/tv/inews">
-									<Button size="sm" color="link" className={this.state.selected_index === 3 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 3)}><h1 className="heading-rplus">INEWS</h1></Button>
+									<Button size="sm" color="link" className={this.state.selected_index === 3 ? 'selected shadow-none' : 'shadow-none'} onClick={this.selectChannel.bind(this, 3)}><h1 className="heading-rplus">INEWS</h1></Button>
 								</Link>
 							</Col>
 						</Row>
@@ -999,11 +1011,18 @@ class Tv extends React.Component {
 							</TabPane>
 						</TabContent>
 					</div>
-
-					<div
-						ref={ this.chatBoxRef } 
-						className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} 
-						style={this.state.chat_open ? { height: this.setHeightChatBox() } : null}>
+					
+					<LiveChats dataChats={this.state.chats} handleHeightChat={() => this.setHeightChatBox()} />
+					{/* setHeightChatBox */}
+					{/* <div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
+						(isIOS ?
+							{ height: `calc(100vh - (${innerHeight()}px - 342px))` } :
+							{ height: `calc(100vh - (${document.documentElement.clientHeight}px - 342px))` })
+						: null}> */}
+						
+					{/* <div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
+						{ height: this.setHeightChatBox() }
+						: null}>
 						<div className="btn-chat">
 							<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
 								<ExpandLessIcon className="expand-icon" />
@@ -1020,13 +1039,10 @@ class Tv extends React.Component {
 									) 
 								: (<div/>)}
 						</div>
-						<div className="box-chat">
-							<div
-								className="wrap-live-chat__block" 
-								style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
-								<div 
-									className="block_chat" 
-									style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
+					
+						<div onScroll={this.handleScroll.bind(this)}  className="box-chat">
+							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
+								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
 									<div>
 										<MuteChat className="icon-block__chat" />
 										<p>Sorry, you cannot send the message</p>
@@ -1034,7 +1050,7 @@ class Tv extends React.Component {
 									</div>
 								</div>
 							</div>
-							<div className="chat-messages" id="chat-messages">
+							<div  className="chat-messages" id="chat-messages">
 								{this.state.chats.map((chat, i) => (
 									<Row key={i} className="chat-line">
 										<Col xs={2}>
@@ -1048,7 +1064,9 @@ class Tv extends React.Component {
 										</Col>
 									</Row>
 								))}
-							</div>
+								{this.state.chat_open && this.state.chat_box && this.state.total_newChat.length > 0 &&  <div onClick={this.handleScrollToBottom.bind(this)} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "105px", right: "10px"}}> {this.state.total_newChat.length} </div>}
+								{this.state.chat_open && this.state.chat_box &&  <div onClick={this.handleScrollToBottom.bind(this)} style={{width: "36px", height: "36px", borderRadius: "50px", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute", bottom: "65px", right: "10px"}}> <ExpandMoreIcon /> </div>}
+								</div>
 							<div className="chat-input-box">
 								<div ref={ this.inputChatBoxRef } className="chat-box">
 									<Row>
@@ -1086,7 +1104,7 @@ class Tv extends React.Component {
 									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
 							</div>
 						</div>
-					</div>
+					</div> */}
 				</div>
 			</Layout>
 		);

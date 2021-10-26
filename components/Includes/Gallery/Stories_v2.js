@@ -56,7 +56,7 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
-                            backButton: true,
+                            // backButton: true,
                             backNative: false,
                             previousTap: true,
                             skin: currentSkin['name'],
@@ -182,7 +182,7 @@ class Stories extends React.Component {
                     }, () => {
                         const currentSkin = this.getCurrentSkin();
                         this.storiesApi = new this.state.zuckJS("stories-react", {
-                            backButton: true,
+                            // backButton: true,
                             backNative: false,
                             previousTap: true,
                             skin: currentSkin['name'],
@@ -383,7 +383,7 @@ class Stories extends React.Component {
             items.push([
                 item.id,
                 item.link_video != null ? 'video' : 'photo',
-                10,
+                100000,
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 this.handleActionClick(item), 
@@ -475,7 +475,7 @@ class Stories extends React.Component {
         }
         
         // Creation of source data for targetting ads
-        const targettingAdsData = this.props.ads ? this.props.ads.data_ta : []
+        const targettingAdsData = this.props.ads?.data_ta ? this.props.ads.data_ta : []
         targettingAdsData.push({
             name: "logged_in", 
             value : String(this.props.user.data !== null)
@@ -531,10 +531,9 @@ class Stories extends React.Component {
                 return program.swipe_value
             case 'link':
                 if(program.swipe_value) {
-                    return `${program.share_link}`;
+                    return `${program.swipe_value}`;
                 }
                 break;
-            case 'program':
             case 'extra':
             case 'clip':
             case 'episode':

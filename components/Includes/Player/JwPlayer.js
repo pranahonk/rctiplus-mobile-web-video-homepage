@@ -34,6 +34,8 @@ const JwPlayer = (props) => {
     isError07: false,
     isError08: false,
   });
+  const [adsStatus, setAdStatus] = useState('none');
+  const [playerFullscreen, setPlayerFullscreen] = useState(false);
   const playerRef = useRef();
   const val = useRef();
   const idPlayer = 'jwplayer-rctiplus';
@@ -41,8 +43,9 @@ const JwPlayer = (props) => {
     autostart: true,
     mute: false,
     floating: false,
-    file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
-    // file: props.data && props.data.url,
+    // file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
+    file: props.data && props.data.url,
+    // file: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
     primary: 'html5',
     width: '100%',
     hlsjsdefault: true,
@@ -63,11 +66,48 @@ const JwPlayer = (props) => {
   };
 
   const [ adsState, setAdsState, stateOfAds ] = useOverlayPlayerAds({ ...props, player })
+  // Miniplayer hooks functions
+  // Please mind the sequence of the line of the logic!!
+  const variableToBeListened = [
+    player,
+    duration,
+    props.scrolling,
+    props.isStopped,
+    props.isPaused,
+    props.seekPosition
+  ]
+  useEffect(() => {
+    if (!player) return
+
+    handleMiniplayerSizeAndControl(props.scrolling && !props.isStopped)
+
+    if (props.seekPosition) player.seek(props.seekPosition)
+    
+    if (props.isPaused) player.pause()
+    else player.play()
+    
+    if (props.isStopped) player.stop()
+    
+  }, [...variableToBeListened])
+
+  const handleMiniplayerSizeAndControl = (miniPlayerActive) => {
+    const variables = {
+      width: miniPlayerActive ? "30%" : options.width,
+      height: miniPlayerActive ? "80" : options.height,
+      showCtrl: !miniPlayerActive,
+      showAdsBtns: miniPlayerActive ? "none" : ""
+    }
+
+    player.setControls(variables.showCtrl)
+    player.resize(variables.width, variables.height)
+
+    const [adsOverlayScreen] = document.querySelectorAll("#jwplayer-rctiplus_ad > div iframe")
+    if (adsOverlayScreen) adsOverlayScreen.style.display = variables.showAdsBtns
+  }
 
   // Initial Setup
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
-    // console.log('EFFECT INIT 1', props);
     if (props.geoblockStatus) {
       setStatus({
         isPlayer: false,
@@ -82,7 +122,6 @@ const JwPlayer = (props) => {
     }
     return () => {
       if (player !== null) {
-        // console.log('DISPOSEEEEEE');
         jwplayer.remove();
       }
     };
@@ -91,7 +130,6 @@ const JwPlayer = (props) => {
   // Update Setup
   useEffect(() => {
 
-    // console.log('EFFECT INIT 2');
     if (player !== null) {
       setIsConviva(Math.random());
       setIsCustomSetup(Math.random());
@@ -108,6 +146,86 @@ const JwPlayer = (props) => {
         const playerContainer = player.getContainer();
         setAdsState(stateOfAds.INIT)
 
+        const fowardContainer = playerContainer.querySelector('.jw-icon-next');
+        const backwardContainer = playerContainer.querySelector('.jw-icon-rewind');
+        const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
+        const isForward = playerContainer.querySelector('.jw-rplus-forward');
+        if(isForward) {
+          const forwardElement = document.createElement('div');
+          forwardElement.classList.add('jw-rplus-forward');
+          forwardElement.innerHTML = foward10;
+          // const iconForward = document.querySelector('.icon-forward');
+          forwardElement.addEventListener('dblclick', (ev) => {
+            // iconForward.classList.add('animated', 'fadeInRight', 'go');
+            setTimeout(() => {
+              // iconForward.classList.remove('animated', 'fadeInRight', 'go');
+              forwardElement.style.opacity = 0;
+            }, 900);
+          });
+          playerContainer.append(forwardElement);
+        }
+        if (props.type !== 'live tv' || props.type !== 'live event') {
+          fowardContainer.innerHTML = foward10Icon;
+          backwardContainer.innerHTML = backward10Icon;
+          fowardContainer.addEventListener('touchstart', () => {
+            player.seek(player.getPosition() + 10);
+          });
+        }
+
+        if (props.type === 'live tv' || props.type === 'live event') {
+          // console.log(fowardContainer);
+          fowardContainer.style.display = 'none'
+          backwardContainer.style.display = 'none'
+          fowardContainer.innerHTML = '';
+          backwardContainer.innerHTML = '';
+
+          // check if gpt data exist
+          if ((props.data && props.data.gpt && props.data.gpt.path != null) && (props.data && props.data.gpt && props.data.gpt.path != undefined)) {
+            // check if ads_wrapper element not exist
+            if (document.querySelector('.ads_wrapper') == undefined) {
+              // console.log('data gpt', props.data.gpt);
+              const playerContainer = player.getContainer();
+
+              const adsOverlayElement = document.createElement('div');
+              adsOverlayElement.classList.add('ads_wrapper');
+              adsOverlayElement.style.display = 'none';
+
+              const adsOverlayBox = document.createElement('div');
+              adsOverlayBox.classList.add('adsStyling');
+
+              // const adsOverlayCloseButton = document.createElement('div');
+              // adsOverlayCloseButton.classList.add('close_button');
+              // adsOverlayCloseButton.innerHTML = closeIcon;
+
+              const adsOverlayContainer = document.createElement('div');
+              const divGPTString = (props.data && props.data.gpt && props.data.gpt.div_gpt != null) && (props.data && props.data.gpt && props.data.gpt.div_gpt != undefined) ? props.data.gpt.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+              adsOverlayContainer.classList.add('adsContainer');
+              adsOverlayContainer.id = divGPTString;
+              adsOverlayContainer.innerHTML = `
+                <script>googletag.cmd.push(function() { googletag.display('${divGPTString}'); });</script>
+              `;
+
+              const adsOverlayCloseButton = document.createElement('div');
+              adsOverlayCloseButton.classList.add('close_button');
+              adsOverlayCloseButton.innerHTML = closeIcon;
+
+              playerContainer.appendChild(adsOverlayElement);
+              adsOverlayElement.appendChild(adsOverlayBox);
+              adsOverlayBox.appendChild(adsOverlayCloseButton);
+              adsOverlayBox.appendChild(adsOverlayContainer);
+
+              adsOverlayCloseButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                adsOverlayElement.classList.add('ads_wrapper');
+                adsOverlayElement.style.display = 'none';
+                pubAdsRefreshInterval.timeStart = 0;
+                // setAdStatus('close');
+              });
+            }
+          }
+        }
         if (isIOS) {
           const elementCreateMute = document.createElement('btn');
           const elementMuteIcon = document.createElement('span');
@@ -147,13 +265,28 @@ const JwPlayer = (props) => {
           }
         }
       });
-
-      player.on('play', () =>{
+      player.on('play', (event) =>{
         convivaJwPlayer().playing();
-        setAdsState(stateOfAds.START)
+        if (document.querySelector('.ads_wrapper')) {
+          
+          if (document.querySelector('.ads_wrapper').style.display == 'none') {
+            // console.log('PLAYING');
+            if (adsStatus === 'prestart') {
+              setAdStatus('start');
+            } else if (adsStatus === 'none') {
+              setAdStatus('start');
+            }
+          }
+        }
+        
+        // This is to modify isStopped on the parent
+        // isStopped is a state to tell whether jwplayer is stopped or playing
+        if (props.handlePlaying) props.handlePlaying(false)
       });
 
       player.on('pause', () =>{
+        // console.log('EFFECT INIT 4 CONTINUE WATCHING PAUSE', test)
+        console.log('PAUSE');
         convivaJwPlayer().pause();
       });
 
@@ -169,26 +302,59 @@ const JwPlayer = (props) => {
         setDuration(player.getPosition());
       });
       
+        if (document.querySelector('.ads_wrapper')) {
+            console.log('ERRRRRORRR', event);
+          if (adsStatus === 'none') {
+            setAdStatus('prestart');
+          }
+        }
+      // });
+
+      player.on('time', (event) => {
+        setDuration(player.getPosition())
+      })
+
       player.on('complete', (event) => {
         const convivaTracker = convivaJwPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
       });
-      
+      player.on('fullscreen', (event) => {
+
+        setPlayerFullscreen(player.getFullscreen());
+      });
+
       // ads event
       player.on('adImpression', (event) => {
         setAdsState(stateOfAds.NONE)
       });
       
       player.on('adSkipped', (event) => {
-        setAdsState(stateOfAds.START)
+        if (props.onAdsShown) props.onAdsShown(false)
+
+        if (document.querySelector('.ads_wrapper')) {
+          if (adsStatus === 'none') {
+            setAdStatus('prestart');
+          }
+        }
       });
       
       player.on('adComplete', (event) => {
         setAdsState(stateOfAds.START)
       });
       
+        if (props.onAdsShown) props.onAdsShown(false)
+
+        if (document.querySelector('.ads_wrapper')) {
+          if (adsStatus === 'none') {
+            setAdStatus('prestart');
+          }
+        }
+      // });
+      player.on('adStarted', _ => {
+        if (props.onAdsShown) props.onAdsShown(true)
+      })
       player.on('userActive', (event) => {
         if (document.querySelector('.jw-ads-overlay')) {
           document.querySelector('.jw-ads-overlay').style.bottom = '70px';
@@ -203,6 +369,7 @@ const JwPlayer = (props) => {
     }
   }, [player, props?.data?.url]);
 
+  // Error handling functions
   useEffect(() => {
     const containerElement = document.getElementsByClassName('rplus-jw-container');
     if (player !== null) {
@@ -211,7 +378,7 @@ const JwPlayer = (props) => {
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
-        console.log('ERRORR',props.data.url)
+
         if (props.data.url === 'error') {
           setStatus({
             isPlayer: false,
@@ -225,8 +392,14 @@ const JwPlayer = (props) => {
           isError01: false,
           isError02: true,
         });
+
+        
+        // When error has fired, remove player and cancel miniplayer onscroll event
+        // by passing true parameter to stop the event
+        if (props.handlePlaying) props.handlePlaying(true)
         player.remove();
       });
+
       player.on('setupError', (event) => {
         // console.log('PLAYER SETUP ERROR', event);
         const convivaTracker = convivaJwPlayer();
@@ -246,6 +419,10 @@ const JwPlayer = (props) => {
           isError01: false,
           isError02: true,
         });
+
+        // When error has fired, remove player and cancel miniplayer onscroll event
+        // by passing true parameter to stop the event
+        if (props.handlePlaying) props.handlePlaying(true)
         player.remove();
       });
     }
@@ -392,6 +569,118 @@ const JwPlayer = (props) => {
     }
   }, [isConviva]);
 
+  // ads overlay
+  useEffect(() => {
+    let intervalAds = null
+    let timeoutAds = null
+    function handleAds(slotName, slotDiv, custParams, adSize) {
+        console.log("ADS FUNC",)
+            console.log("GPT", screen.orientation)
+        googletag.destroySlots();
+        window.googletag = window.googletag || { cmd: [] };
+        googletag.cmd.push(function () {
+
+          googletag.defineSlot(slotName, adSize, slotDiv)
+          .addService(googletag.pubads());
+          if (custParams != null) {
+            for (const custParam of custParams) {
+              console.log(custParam.name, custParam.value);
+              googletag.pubads().setTargeting(custParam.name, custParam.value);
+            }
+          }
+
+          googletag.pubads().enableSingleRequest();
+          googletag.pubads().collapseEmptyDivs();
+          googletag.pubads().disableInitialLoad();
+          googletag.enableServices();
+        });
+        googletag.cmd.push(function () {
+          // googletag.display(slotDiv);
+        });
+    }
+    
+    if (player !== null) {
+      // let windowWidth = document.documentElement.clientWidth;
+      let slotName = props.data.gpt?.path != null && props.data.gpt?.path != undefined ? props.data.gpt?.path : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
+      let slotDiv = props.data.gpt?.div_gpt != null && props.data.gpt?.div_gpt != undefined ? props.data.gpt?.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
+      let intervalTime = props.data.gpt?.interval_gpt != null && props.data.gpt?.interval_gpt != undefined ? props.data.gpt?.interval_gpt : props.adsOverlayData.reloadDuration;
+      let minWidth = props.data.gpt?.size_width_1 != null && props.data.gpt?.size_width_1 != undefined ? props.data.gpt?.size_width_1 : 320;
+      let maxWidth = props.data.gpt?.size_width_2 != null && props.data.gpt?.size_width_2 != undefined ? props.data.gpt?.size_width_2 : 468;
+      let minHeight = props.data.gpt?.size_height_1 != null && props.data.gpt?.size_height_1 != undefined ? props.data.gpt?.size_height_1 : 50;
+      let maxHeight = props.data.gpt?.size_height_2 != null && props.data.gpt?.size_height_2 != undefined ? props.data.gpt?.size_height_2 : 60;
+      let custParams = props.data.gpt?.cust_params != null && props.data.gpt?.cust_params != undefined ? props.data.gpt?.cust_params : null;
+
+      
+      const adSizeLandscape = [props?.data?.gpt?.size_width_2 || 468, props?.data?.gpt?.size_height_2 || 60]
+      const adSizePotrait = [props?.data?.gpt?.size_width_1 || 468, props?.data?.gpt?.size_height_1 || 50]
+
+      const adsWrapper = document.querySelector('.ads_wrapper') || {}
+
+
+      console.log("SCREEN PLAYER ------", intervalTime)
+      console.log("ADS STATUS: ", adsStatus)
+      player.on('idle', (event) => {
+        console.log('----IDLE----', event);
+      });
+      player.on('adStarted', (event) => {
+        console.log('----Ads Started----', event);
+      });
+      player.on('adSkipped', (event) => {
+        console.log('----Ads Skipped----', event);
+      });
+      player.on('adComplete', (event) => {
+        console.log('----Ads Completed----', event);
+
+      });
+      if (["start", "prestart"].includes(adsStatus)) {
+        console.log("ADS STATUS: ", adsStatus)
+        const adsWrapper = document.querySelector('.ads_wrapper') || {}
+        intervalAds = setInterval(() => {
+          changeScreen()
+          googletag.pubads().refresh();
+          timeoutAds = setTimeout(() => {
+            adsWrapper.style.display = "none"
+          }, 10000)
+        }, intervalTime)
+      }
+
+      player.on('fullscreen', (event) => {
+        changeScreen()
+      });
+
+      window.addEventListener("orientationchange", function () {
+        changeScreen()
+      })
+
+      function changeScreen() {
+        const adsWrapper = document.querySelector('.ads_wrapper') || {}
+        if (screen.orientation.type === "portrait-primary") {
+          handleAds(slotName, slotDiv, custParams, adSizePotrait)
+        }
+        if (screen.orientation.type === "landscape-primary") {
+          handleAds(slotName, slotDiv, custParams, adSizeLandscape)
+        }
+        adsWrapper.style.display = "block"
+        googletag.pubads().refresh();
+      }
+    }
+    return () => {
+      clearTimeout(timeoutAds)
+      clearInterval(intervalAds)
+    };
+  }, [adsStatus, props?.data?.url]);
+
+  // console.log(adsStatus)
+  // fullscreen
+  useEffect(() => {
+    if (player !== null) {
+      if ((props.type === 'live tv' || props.type === 'live event') && ((props.data && props.data.gpt && props.data.gpt.path != null) &&  (props.data && props.data.gpt && props.data.gpt.path != undefined))) {
+        document.querySelector('.ads_wrapper').classList.toggle('fullscreen-player', playerFullscreen);
+        setAdStatus('restart');
+      }
+    }
+  }, [playerFullscreen]);
+
   return (
     // <div className="rplus-jw-container" style={{backgroundImage: "url('../../../static/placeholders/placeholder_landscape.png')"}}>
     <>
@@ -407,11 +696,9 @@ export default JwPlayer;
 
 const getPlayer = (error1, error2) => {
   if (error1) {
-    console.log('GEO')
     return error(msgError01)
   }
   if (error2) {
-    console.log('ERRORRRRR P')
     return error()
   }
   return (<div id="jwplayer-rctiplus" />)

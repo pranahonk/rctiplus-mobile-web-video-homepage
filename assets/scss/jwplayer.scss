@@ -132,10 +132,11 @@
   width:100%;
   position: absolute;
 
-  .jw-overlay-wrapper{
-    margin: 0 auto;
-    position: relative;
-    background: white;
+    .adsStyling{
+        // width: 320px;
+        // height: 50px;
+        margin: 0 auto;
+        position: relative;
 
     .jw-close-overlay{
       border-radius: 180px;
@@ -159,8 +160,28 @@
   }
 }
 
+.adsContainer {
+  div {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+/* portrait */
+@media screen and (orientation:portrait) {
+  /* portrait-specific styles */
+  .adsStyling {
+    margin: 0 auto;
+    width: 320px;
+    height: 50px;
+  }
+}
+
+/* landscape */
 @media screen and (orientation:landscape) {
-  .jw-overlay-wrapper {
+  /* landscape-specific styles */
+  .adsStyling {
+    margin: 0 auto;
     width: 468px;
     height: 60px;
   }
