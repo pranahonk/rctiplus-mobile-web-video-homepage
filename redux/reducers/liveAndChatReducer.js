@@ -24,6 +24,9 @@ export default (state = initialState, action) => {
             return { ...state, loading_live_event: true, error_live_event: false }
         case 'ERROR_LIVE_EVENT':
             return { ...state, error_live_event: true, loading_live_event: false }
+        case 'POST_CHAT':
+        case 'GET_LIVE_EVENT':
+        case 'GET_ALL_LIVE_EVENT':
         case 'GET_LIVE_EVENT':
             return { ...state, 
                 status: action.status,
