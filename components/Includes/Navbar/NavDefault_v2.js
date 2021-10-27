@@ -217,7 +217,7 @@ class NavbarDef_v2 extends Component {
                             <img className="icon-menu-top" src={'/icons-menu/hotIcon.svg'} alt="hot" width="30" height="30" />
                             <label>HOT</label>
                         </Button>
-                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_GAMES}?token=${this.state.token}`}>
+                        <Button outline className="btn-nav-menu" onClick={() => window.open(LINK_GAMES, "_blank").focus()}>
                             <img className="icon-menu-top" src={'/icons-menu/gamesIcon.svg'} alt="games" width="30" height="30" />
                             <label>Games+</label>
                         </Button>
