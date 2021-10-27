@@ -33,3 +33,5 @@ lighthouse-reports
 #env
 .env
 .env.rc
+
+*package-lock.json

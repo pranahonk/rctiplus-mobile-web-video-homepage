@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, forwardRef } from 'react';
+import React, { useRef, useCallback, useEffect, forwardRef } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Img from 'react-image';
@@ -12,7 +12,7 @@ import Dialog from '../../Modals/Dialog';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import GetApp from '@material-ui/icons/GetApp';
-import { RESOLUTION_IMG } from '../../../config';
+import { LINK_HOT, RESOLUTION_IMG } from '../../../config';
 import { showAlert, showSignInAlert } from '../../../utils/helpers';
 import { urlRegex } from '../../../utils/regex';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -22,6 +22,11 @@ const TabPanelLoader = dynamic(() => import('../Shimmer/detailProgramLoader').th
 import smoothscroll from 'smoothscroll-polyfill';
 import { isIOS } from 'react-device-detect';
 import BottomScrollListener from 'react-bottom-scroll-listener';
+
+// Icons
+import HOTIcon from '../../../static/recommendation-hot/icon_hot+.svg'
+import ViewIcon from '../../../static/recommendation-hot/icon_views.svg'
+import SeeMoreIcon from '../../../static/recommendation-hot/icon_see_more.svg'
 
 import { 
   programRateEvent, programShareEvent, programContentShareEvent, 
@@ -36,7 +41,38 @@ import {
   libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, 
   searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked,
   searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, 
-  searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent, ProgramContentClick } from '../../../utils/appier';
+  searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent, ProgramContentClick
+} from '../../../utils/appier';
+import { getCookie } from '../../../utils/cookie';
+
+const setActiveContentHighlight = (isContentActive) => {
+  if (!isContentActive) return null
+  
+  const maskStyle = {
+    width: "100%",
+    position: "absolute",
+    background: "#0000009e",
+    borderRadius: "7px",
+    height: "100%",
+  }
+  const spanStyle = {
+    width: "100%",
+    position: "absolute",
+    background: "#05b5f585",
+    borderRadius: "0 0 7px 7px",
+    bottom: 0,
+    padding: "0.2rem",
+    textAlign: "center",
+    color: "white",
+  }
+  
+  return (
+    <>
+      <div style={maskStyle}></div>
+      <span style={spanStyle}>Now Watching</span>
+    </>
+  )
+}
 
 export const PanelEpisode = forwardRef((props, ref) => {
   smoothscroll.polyfill();
@@ -65,37 +101,40 @@ export const PanelEpisode = forwardRef((props, ref) => {
           </div>
           { props.data.data.map((item,i) => {
             return (
-              <div style={{ padding: '10px 15px', background: props.isActive === item.id.toString() ? '#000000' :  'inherit'}} key={i}>
-                {/* {console.log(props.isActive, item.id.toString())} */}
-            <div className="panel-content">
-              <div className="thumb-img__content">
-                <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=episode&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
-                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/episode/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}
-                >
-                  <a onClick={() => link(item.title, item.id, 'episode', item.summary, item)} ref={linkRef}>
-                    <Img alt={item.title}
-                      title={item.title}
-                      className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
-                      unloader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}
-                      loader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}/>
-                  </a>
-                </Link>
-              </div>
-              <div className="thumb-detail__content">
-                <h3>{ `E${(item.episode < 10 ? '0'+item.episode : ''+item.episode).slice(0)}:S${(item.season < 10 ? '0'+item.season : ''+item.season).slice(0)} ${item.title}` }</h3>
-                <div className="action-button__content ">
-                  { bookmark(props.bookmark && props.bookmark.data, item, 'episode', props, 'content_bookmark') }
-                  <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
-                  <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'episode', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
+              <div key={i} style={{padding: "1rem"}}>
+                <div className="panel-content">
+                  <div className="thumb-img__content" style={{ position: "relative"}}>
+                    <Link
+                      href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=episode&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
+                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/episode/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}>
+                      <a onClick={() => link(item.title, item.id, 'episode', item.summary, item)} ref={linkRef}>
+      
+                        {setActiveContentHighlight(+props.isActive === +item.id)}
+
+                        <Img
+                          alt={item.title}
+                          title={item.title}
+                          className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
+                          unloader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}
+                          loader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}/>
+                      </a>
+                    </Link>
+                  </div>
+                  <div className="thumb-detail__content">
+                    <h3>{ `E${(item.episode < 10 ? '0'+item.episode : ''+item.episode).slice(0)}:S${(item.season < 10 ? '0'+item.season : ''+item.season).slice(0)} ${item.title}` }</h3>
+                    <div className="action-button__content ">
+                      { bookmark(props.bookmark && props.bookmark.data, item, 'episode', props, 'content_bookmark') }
+                      <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
+                      <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'episode', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
+                    </div>
+                  </div>
                 </div>
+              <div className="summary__content">
+                <p>
+                  { item.summary }
+                </p>
               </div>
             </div>
-            <div className="summary__content">
-              <p>
-                { item.summary }
-              </p>
-            </div>
-          </div>
             );
           }) }
         </div>
@@ -126,36 +165,40 @@ export const PanelExtra = (props) => {
       <div className="extra-program">
         { props.data.data.map((item,i) => {
           return (
-            <div style={{ padding: '10px 15px', background: props.isActive === item.id.toString() ? '#000000' :  'inherit'}} key={i}>
-          <div className="panel-content">
-            <div className="thumb-img__content">
-              <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=extra&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
-                      as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/extra/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}
-                >
-                  <a onClick={() => link(item.title, item.id, 'extra', item.summary, item)} ref={linkExtraRef}>
-                    <Img alt={item.title}
-                      title={item.title}
-                      className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
-                      unloader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}
-                      loader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}/>
-                  </a>
-                </Link>
-            </div>
-            <div className="thumb-detail__content">
-              <h3>{ item.title }</h3>
-              <div className="action-button__content ">
-                  { bookmark(props.bookmark && props.bookmark.data, item, 'extra', props, 'content_bookmark') }
-                  <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
-                  <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'extra', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
+            <div key={i} style={{padding: "1rem"}}>
+              <div className="panel-content">
+                <div className="thumb-img__content" style={{ position: "relative"}}>
+                  <Link
+                    href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=extra&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
+                    as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/extra/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}>
+                      <a onClick={() => link(item.title, item.id, 'extra', item.summary, item)} ref={linkExtraRef}>
+                        
+                        {setActiveContentHighlight(+props.isActive === +item.id)}
+
+                        <Img
+                          alt={item.title}
+                          title={item.title}
+                          className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
+                          unloader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}
+                          loader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}/>
+                      </a>
+                    </Link>
+                </div>
+                <div className="thumb-detail__content">
+                  <h3>{ item.title }</h3>
+                  <div className="action-button__content ">
+                      { bookmark(props.bookmark && props.bookmark.data, item, 'extra', props, 'content_bookmark') }
+                      <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
+                      <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'extra', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
+                  </div>
+                </div>
+              </div>
+              <div className="summary__content">
+                <p>
+                  { item.summary }
+                </p>
               </div>
             </div>
-          </div>
-          <div className="summary__content">
-            <p>
-              { item.summary }
-            </p>
-          </div>
-        </div>
           );
         }) }
       </div>
@@ -186,36 +229,39 @@ export const PanelClip = (props) => {
       <div className="clip-program">
         { props.data.data.map((item,i) => {
           return (
-            <div style={{ padding: '10px 15px', background: props.isActive === item.id.toString() ? '#000000' :  'inherit'}} key={i}>
-          <div className="panel-content">
-            <div className="thumb-img__content">
-              <Link href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=clip&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
-                        as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/clip/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}
-                  >
+            <div key={i} style={{padding: "1rem"}}>
+              <div className="panel-content">
+                <div className="thumb-img__content" style={{ position: "relative"}}>
+                  <Link
+                    href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=clip&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
+                    as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/clip/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}>
                     <a onClick={() => link(item.title, item.id, 'clip', item.summary, item)} ref={linkClipRef}>
+                      
+                      {setActiveContentHighlight(+props.isActive === +item.id)}
+                      
                       <Img alt={item.title}
                         title={item.title}
                         className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
                         unloader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}
                         loader={<img className="background__program-detail" src={getPathImage(...pathImg,item.landscape_image, false)}/>}/>
                     </a>
-                </Link>
-            </div>
-            <div className="thumb-detail__content">
-              <h3>{ item.title }</h3>
-              <div className="action-button__content ">
-                { bookmark(props.bookmark && props.bookmark.data, item, 'clip', props, 'content_bookmark') }
-                <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
-                <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'clip', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
+                    </Link>
+                </div>
+                <div className="thumb-detail__content">
+                  <h3>{ item.title }</h3>
+                  <div className="action-button__content ">
+                    { bookmark(props.bookmark && props.bookmark.data, item, 'clip', props, 'content_bookmark') }
+                    <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
+                    <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'clip', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
+                  </div>
+                </div>
+              </div>
+              <div className="summary__content">
+                <p>
+                  { item.summary }
+                </p>
               </div>
             </div>
-          </div>
-          <div className="summary__content">
-            <p>
-              { item.summary }
-            </p>
-          </div>
-        </div>
           );
         }) }
       </div>
@@ -230,7 +276,7 @@ export const PanelPhoto = (props) => {
   return (
     <TabPane tabId="Photo">
       <div className="photo-program">
-        <div style={{ padding: '10px 0' }}>
+        <div style={{ padding: '1rem' }}>
           <div className="panel-content tab__photo">
           { props.data.data.map((item,i) => {
           return (
@@ -258,6 +304,61 @@ export const PanelPhoto = (props) => {
       ) : ''} */}
       {props.enableShowMore.isNext ? props.enableShowMore.isLoading ? (<TabPanelLoader />) : null : null}
     </TabPane>
+  );
+};
+
+export const PanelRecommendHOT = (props) => {
+  smoothscroll.polyfill();
+
+  const token = getCookie('ACCESS_TOKEN');
+  const pathImg = [props.data.meta.image_path, RESOLUTION_IMG];
+  const hasToken = (typeof token !== 'undefined' && token !== undefined && token !== 'undefined' && token !== null && token !== '')
+  const hasMore = props.data?.meta?.pagination?.current_page < props.data?.meta?.pagination?.total_page
+
+  const recommendationVideoURL = (id) => `${LINK_HOT}recommendation/video/${id}${hasToken ? `?token=${token}` : ''}`
+  const onClickItem = (id) => window.location.href = recommendationVideoURL(id);
+
+  return (
+    <div className="recommend__HOT-wrapper">
+      <div className="recommend__HOT-header-wrapper">
+        <img alt="HOT+ Icon" src={HOTIcon} />
+        <p className="recommend__HOT-header-label">HOT (Home Of Talent)</p>
+      </div>
+      <div className="recommend__HOT-list">
+        {props.data.data.map((item, i) => {
+          const thumbnail = item.thumbnail ?? item.portrait_image
+
+          return (
+            <Link key={i} href={recommendationVideoURL(item.video_id)}>
+              <a className="mr-2" onClick={() => onClickItem(item.video_id)}>
+                <div className="recommend__HOT-item">
+                  <Img alt={item.title}
+                    src={thumbnail}
+                    unloader={<img className="background__program-detail" src={getPathImage(...pathImg, thumbnail, false, 'potrait')} />}
+                    loader={<img className="background__program-detail" src={getPathImage(...pathImg, thumbnail, false, 'potrait')} />} />
+                  <div className="my-2">
+                    <p className="recommend__HOT-title mb-2">{item?.title || '-'}</p>
+                    <p className="recommend__HOT-author">{item?.author?.display_name}</p>
+                    {item?.views ? (
+                      <div className="recommend__HOT-views-wrapper">
+                        <img className="recommend__HOT-views-icon" alt="Number of Viewers Icon" src={ViewIcon} />
+                        <span className="recommend__HOT-views-count text-white">{item?.views}</span>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </a>
+            </Link>
+          );
+        })}
+        {hasMore && (
+          <div className="recommend__HOT-more-wrapper" onClick={props.hasMore}>
+            <img className="recommend__HOT-more-icon" alt="See More Icon" src={SeeMoreIcon} />
+            <p className="recommend__HOT-more-label">See More</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
@@ -445,6 +546,8 @@ const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
 };
 
 const bookmark = (data, item, type, props, typeTracking = null) => {
+  console.log(`ini adalah data bookmark`, data)
+  console.log(`ini adalah item bookmark`, item)
   if (data && data[type]) {
     const isBookmark = data && data[type].find((list) => list.id === item.id);
     if (isBookmark) {
