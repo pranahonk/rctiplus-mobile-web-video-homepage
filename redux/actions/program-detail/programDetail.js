@@ -20,7 +20,7 @@ axiosHOT.interceptors.request.use(async (request) => {
   return request;
 });
 
-const fetchDetailProgramRequest = () => {
+export const fetchDetailProgramRequest = () => {
   return {
     type: FETCH_REQUEST,
   };
