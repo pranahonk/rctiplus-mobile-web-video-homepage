@@ -17,7 +17,7 @@ import {
   fetchClip, fetchPhoto, setClearClip,
   setClearExtra, fetchPlayerUrl, clearPlayer,
   fetchBookmark, postBookmark, deleteBookmark,
-  fetchLike, postLike, fetchDetailDesc, dataShareSeo, fetchRecommendHOT,
+  fetchLike, postLike, fetchDetailDesc, dataShareSeo, fetchDetailProgramRequest, fetchRecommendHOT
 } from '../redux/actions/program-detail/programDetail';
 import { postContinueWatching } from '../redux/actions/historyActions';
 import Layout from '../components/Layouts/Default_v2';
@@ -30,6 +30,7 @@ import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
 import { alertDownload, onTracking, onTrackingClick } from '../components/Includes/program-detail/programDetail';
 import { BASE_URL } from '../config';
 import userActions from '../redux/actions/userActions';
+import VisionPlusProgram from "../components/Includes/program-detail/visionplus_program"
 
 // const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
@@ -110,6 +111,8 @@ class Index extends React.Component {
       title: 'title-program',
       statusProgram: false,
       statusError: 0,
+      videoIndexing: {},
+      activeContentId: 0
     };
     this.type = 'program-detail';
     this.typeEpisode = 'program-episode';
@@ -126,7 +129,6 @@ class Index extends React.Component {
   componentDidMount() {
     this.premium = this.props?.server?.[this.type]?.data?.premium
     this.reference = queryString.parse(location.search).ref;
-    // console.log('MOUNTED: ', this.props);
     this.props.dispatch(userActions.getUserData());
     this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] , 'tracking-program'));
     if (this.props.router.query.content_id) {
@@ -139,8 +141,10 @@ class Index extends React.Component {
     this.loadRelated(this.programId,1);
     // this.loadRecommendHOT(1);
     if (this.props.router.query.content_id) {
+      this.setState({ activeContentId: +this.props.router.query.content_id })
       this.props.dispatch(fetchPlayerUrl(this.props.router.query.content_id,'data-player',this.props.router.query.content_type));
     }
+
     if (this.props.server && this.props.server[this.type].data) {
       console.log(this.props)
       if (this.isTabs(this.props.server[this.type].data).length > 0) {
@@ -162,22 +166,23 @@ class Index extends React.Component {
         this.setState({toggle: this.isTabs(this.props.server[this.type].data)[0]});
       }
     }
+
+    this.props.dispatch(
+      fetchDetailProgram({
+        id: this.props.router.query.id,
+        filter: "episode",
+      })
+    )
   }
+
   shouldComponentUpdate() {
-    // console.log('COMPONENT UPDATE');
     this.reference = queryString.parse(location.search).ref;
     return true;
   }
-	// componentWillUnmount() {
-	// 	if (window.convivaVideoAnalytics) {
-	// 		const convivaTracker = convivaJwPlayer();
-	// 		convivaTracker.cleanUpSession();
-	// 	}
-	// }
-  UNSAFE_componentWillReceiveProps(nextProps) {
-  }
+
   componentDidUpdate(prevProps) {
-    // console.log('COMPONENT DID UPDATE', this.props);
+    this.onRouterChanged()
+
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
       if (this.props.router.query.content_id) {
         const {content_id , content_type} = this.props.router.query;
@@ -233,6 +238,45 @@ class Index extends React.Component {
       // }
     }
   }
+
+  onRouterChanged() {
+    const { query } = this.props.router
+    let programTypeDetail = this.props.data[`program-${query.content_type}`]
+    
+    if (!programTypeDetail) return
+
+    const { seasonSelected } = this.props.data
+    
+    if (!programTypeDetail[`season-${seasonSelected}`]) return
+    if (query.content_type === "episode") programTypeDetail = programTypeDetail[`season-${seasonSelected}`]
+
+    const { data, meta } = programTypeDetail
+    const { activeContentId } = this.state
+    
+    if (!data || !meta || !query.content_id) return
+
+    // When currently playing video is not on the list of queue, target to the first content instead
+    // Dont fetch or change anything yet when playing video not exist on the queue list
+    const isPlayingVideoOnTheList = data.find(content => +content.id === +query.content_id)
+    if (!isPlayingVideoOnTheList) {
+      const { href, hrefAlias } = this.routingQueryGenerator({ ...data[0], content_type: query.content_type })
+      this.props.router.push(`/programs?${href}`, `/programs/${hrefAlias}`)
+    }
+    
+    // Set max video queue length once it has the value from request call
+    if (this.state.videoIndexing.maxQueue !== meta.pagination.total) {
+      this.setState({
+        videoIndexing: { ...this.state.videoIndexing, maxQueue: meta.pagination.total }
+      })
+    }
+    
+    // Fetch video url everytime it has been pushed to new url
+    if (+query.content_id !== activeContentId) {
+      this.setState({ activeContentId: +query.content_id })
+      this.props.dispatch(fetchPlayerUrl(query.content_id, 'data-player', query.content_type))
+    }
+  }
+
   getProgramDetail(id, type) {
     if (!this.props.data[type]) {
       this.props.dispatch(
@@ -283,9 +327,7 @@ class Index extends React.Component {
               shallow
             >
             <a onClick={ () => {
-              this.setState({ trailer: !this.state.trailer }, () => {
-                {/* this.props.dispatch(fetchPlayerUrl(mainData.id,'data-player','episode', true)) */}
-                  });
+              this.setState({ trailer: !this.state.trailer });
                 }}>
               <ButtonOutline text="Trailer" />
             </a>
@@ -371,6 +413,8 @@ class Index extends React.Component {
         switch (this.isTabs(this.props.server[this.type].data)[0]) {
           case 'Episodes':
             if (!this.props.data['program-episode'] || this.state.episodeClearStore) {
+              if (this.props.data.seasonSelected) break
+
               this.props.dispatch(fetchEpisode(programId, 'program-episode'));
               this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
               this.props.dispatch(seasonSelected(1));
@@ -439,12 +483,10 @@ class Index extends React.Component {
   redirect(tab) {
     const { id, title, content_id, content_title, content_type } = this.props.router.query;
     let href, as;
-    let convert = '';
-    console.log(tab)
-    if (tab === 'Episodes') {convert = 'episode';}
-    if (tab === 'Extra') {convert = 'extra';}
-    if (tab === 'Clips') {convert = 'clip';}
-    if (tab === 'Photo') {convert = 'photo';}
+    let convert = this.onTabChange(tab).contentType
+
+    this.setState({ videoIndexing: {} })
+
     if (!content_id) {
       // href = `/programs/${id}/${urlRegex(title)}/${convert}${this.reference ? '?ref=' + this.reference : ''}`;
       href = `/programs?id=${id}&title=${urlRegex(title)}&tab=${convert}`;
@@ -468,13 +510,45 @@ class Index extends React.Component {
     // Router.push(href, as, { shallow: true });
     onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'], 'tab_click');
   }
+
+  onTabChange(tabName, page = 1) {
+    const { query } = this.props.router
+    const { seasonSelected } = this.props.data
+
+    switch(tabName.toLowerCase()) {
+      case "episodes":
+        return {
+          contentType: "episode",
+          contentDispatcher: fetchEpisode,
+          dispatcherArgs: [ query.id, "program-episode", seasonSelected, page ]
+        }
+      case "extra":
+        return {
+          contentType: "extra",
+          contentDispatcher: fetchExtra,
+          dispatcherArgs: [ query.id, "program-extra", page ]
+        }
+      case "clips":
+        return {
+          contentType: "clip",
+          contentDispatcher: fetchClip,
+          dispatcherArgs: [ query.id, "program-clip", page ]
+        }
+      case "photo":
+        return {
+          contentType: "photo",
+          contentDispatcher: fetchPhoto,
+          dispatcherArgs: [ query.id, "program-photo", page ]
+        }
+    }
+  }
+
   hasMore(props, page) {
     this.loadRelated(this.props.router.query.id, page);
   }
   getLinkVideo(id, filter, season, type) {
     const vm = this;
     vm.props.dispatch(fetchDetailDesc(id, 'description-player', type));
-    vm.props.dispatch(fetchPlayerUrl(id,filter,type));
   }
   addBookmark(id, type) {
     const vm = this;
@@ -486,65 +560,90 @@ class Index extends React.Component {
       title: this.props.server && this.props.server[this.type].data && this.props.server[this.type].data.title,
     };
   }
-  panelEpisode(props, bookmark) {
-    if (!this.props.data.loading_episode && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data) {
-      if (((props && props.data && props.data.length > 0) &&
-      // eslint-disable-next-line radix
-      this.props.server['program-detail'].data.id === parseInt(this.props.router.query.id)) && bookmark) {
-        const pagination = {
-          page: props.meta.pagination.current_page,
-          total_page: props.meta.pagination.total_page,
-          nextPage: props.meta.pagination.current_page + 1,
-        };
-        return (
-          <>
-            <PanelEpisode
-              ref={this.refPanelEpisode}
-              enableShowMore={{isNext:pagination.page < pagination.total_page, isLoading:this.props.data.loading_more}}
-              data={props}
-              query={this.query()}
-              link={this.getLinkVideo.bind(this)}
-              seasonSelected= { this.props.data.seasonSelected }
-              onShowMore={() => {
-                console.log("lagi get show more")
-                this.props.dispatch(fetchEpisode(this.props.router.query.id, 'program-episode',props.data[0].season, pagination.nextPage));
-                onTracking(this.reference, this.props.router.query.id, this.props.server['program-detail']);
-                }}
-              onSeason={() => {this.props.dispatch(fetchSeasonEpisode(this.props.router.query.id,'program-episode',1, pagination.nextPage));}}
-              onBookmarkAdd={this.addBookmark.bind(this)}
-              onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
-              bookmark={bookmark}
-              isLogin={this.props.auth.isAuth}
-              onShare={(title, item) => this.toggleActionSheet.bind(this, 'episode', title, 'content_share', item)}
-              dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
-              isActive={this.props.router &&  this.props.router.query.content_id}
-            />
-          </>
-          );
-      }
+  panelEpisode(programEpisode, bookmark) {
+    const { loading, loading_episode, loading_more } = this.props.data
+    if (loading || loading_episode) {
+      return (
+        <TabPane tabId="Episodes">
+          <TabPanelLoader />
+        </TabPane>
+      );
+    }
+    
+    const { query } = this.props.router
+    const programDetail = this.props.server['program-detail']
+
+    if (((programEpisode.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
+    
+    const pagination = {
+      ...programEpisode.meta.pagination,
+      nextPage: programEpisode.meta.pagination.current_page + 1,
+    };
+    const dataTracking = {
+      ref: this.reference,
+      idContent: query.id,
+      title: programDetail
+    }
+    const enableShowMore = {
+      isNext: pagination.current_page < pagination.total_page,
+      isLoading: loading_more
+    }
+    return (
+      <>
+        <PanelEpisode
+          ref={this.refPanelEpisode}
+          enableShowMore={enableShowMore}
+          data={programEpisode}
+          query={this.query()}
+          link={this.getLinkVideo.bind(this)}
+          seasonSelected= { this.props.data.seasonSelected }
+          onShowMore={() => this.handleShowMore(pagination, "Episodes")}
+          onSeason={() => {this.props.dispatch(fetchSeasonEpisode(query.id,'program-episode',1, pagination.nextPage));}}
+          onBookmarkAdd={this.addBookmark.bind(this)}
+          onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
+          bookmark={bookmark}
+          isLogin={this.props.auth.isAuth}
+          onShare={(title, item) => this.toggleActionSheet.bind(this, 'episode', title, 'content_share', item)}
+          dataTracking={dataTracking}
+          isActive={query.content_id}
+        />
+      </>
+    );
+  }
+  panelExtra(programExtra, bookmark) {
+    const { loading, loading_extra, loading_more } = this.props.data
+    if (loading || loading_extra) {
+      return (
+        <TabPane tabId="Extra">
+          <TabPanelLoader />
+        </TabPane>
+      );
     }
 
+    const { query } = this.props.router
+    const programDetail = this.props.server['program-detail']
+
+    if (((programExtra.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
+
+    const pagination = {
+      ...programExtra.meta.pagination,
+      nextPage: programExtra.meta.pagination.current_page + 1,
+    }
+    const dataTracking = {
+      ref: this.reference,
+      idContent: query.id,
+      title: programDetail
+    }
+    const enableShowMore = {
+      isNext: pagination.current_page < pagination.total_page,
+      isLoading: loading_more
+    }
     return (
-      <TabPane tabId="Episodes">
-        <TabPanelLoader />
-      </TabPane>
-    );
-  }
-  panelExtra(props, bookmark) {
-    if (!this.props.data.loading_extra && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data) {
-      if ((props && props.data && props.data.length > 0) &&
-        (this.props.server['program-detail'].data.id === parseInt(this.props.router.query.id)) && bookmark) {
-      const pagination = {
-        page: props.meta.pagination.current_page,
-        total_page: props.meta.pagination.total_page,
-        nextPage: props.meta.pagination.current_page + 1,
-      };
-      return (
       <PanelExtra
         ref={this.refPanelExtra}
-        enableShowMore={{isNext:pagination.page < pagination.total_page, isLoading:this.props.data.loading_more}}
-        onShowMore={() => { this.props.dispatch(fetchExtra(this.props.router.query.id, 'program-extra',pagination.nextPage)); }}
-        data={props}
+        enableShowMore={enableShowMore}
+        onShowMore={() => this.handleShowMore(pagination, "Extra")}
+        data={programExtra}
         query={this.query()}
         link={this.getLinkVideo.bind(this)}
         onBookmarkAdd={this.addBookmark.bind(this)}
@@ -552,33 +651,46 @@ class Index extends React.Component {
         bookmark={bookmark}
         isLogin={this.props.auth.isAuth}
         onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
-        dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
+        dataTracking={dataTracking}
         isActive={this.props.router &&  this.props.router.query.content_id}
       />
-        );
-      }
-    }
-    return (
-      <TabPane tabId="Extra">
-        <TabPanelLoader />
-      </TabPane>
     );
   }
-  panelClip(props, bookmark) {
-    if (!this.props.data.loading_clip && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data) {
-      if ((props && props.data && props.data.length > 0) &&
-      (this.props.server['program-detail'].data.id === parseInt(this.props.router.query.id)) && bookmark) {
-      const pagination = {
-        page: props.meta.pagination.current_page,
-        total_page: props.meta.pagination.total_page,
-        nextPage: props.meta.pagination.current_page + 1,
-      };
+
+  panelClip(programClip, bookmark) {
+    const { loading, loading_clip, loading_more } = this.props.data
+    if (loading || loading_clip) {
       return (
+        <TabPane tabId="Clips">
+          <TabPanelLoader />
+        </TabPane>
+      );
+    }
+
+    const { query } = this.props.router
+    const programDetail = this.props.server['program-detail']
+
+    if (((programClip.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
+    
+    const pagination = {
+      ...programClip.meta.pagination,
+      nextPage: programClip.meta.pagination.current_page + 1,
+    }
+    const dataTracking = {
+      ref: this.reference,
+      idContent: query.id,
+      title: programDetail
+    }
+    const enableShowMore = {
+      isNext: pagination.current_page < pagination.total_page,
+      isLoading: loading_more
+    }
+    return (
       <PanelClip
         ref={this.refPanelClip}
-        enableShowMore={{isNext:pagination.page < pagination.total_page, isLoading:this.props.data.loading_more}}
-        onShowMore={() => { this.props.dispatch(fetchClip(this.props.router.query.id, 'program-clip',pagination.nextPage)); }}
-        data={props}
+        enableShowMore={enableShowMore}
+        onShowMore={() => this.handleShowMore(pagination, "Clips")}
+        data={programClip}
         query={this.query()}
         link={this.getLinkVideo.bind(this)}
         onBookmarkAdd={this.addBookmark.bind(this)}
@@ -586,43 +698,49 @@ class Index extends React.Component {
         bookmark={bookmark}
         isLogin={this.props.auth.isAuth}
         onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
-        dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
+        dataTracking={dataTracking}
         isActive={this.props.router &&  this.props.router.query.content_id}
       />
-        );
-    }
-  }
-    return (
-      <TabPane tabId="Clips">
-        <TabPanelLoader />
-      </TabPane>
     );
   }
-  panelPhoto(props) {
-    if (!this.props.data.loading_photo && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data) {
-      if ((props && props.data && props.data.length > 0)
-        && (this.props.server['program-detail'].data.id === parseInt(this.props.router.query.id))) {
-            const pagination = {
-              page: props.meta.pagination.current_page,
-              total_page: props.meta.pagination.total_page,
-              nextPage: props.meta.pagination.current_page + 1,
-            };
-            return (
-            <PanelPhoto
-              ref={this.refPanelPhoto}
-              enableShowMore={{isNext:pagination.page < pagination.total_page, isLoading:this.props.data.loading_more}}
-              onShowMore={() => { this.props.dispatch(fetchPhoto(this.props.router.query.id, 'program-photo',pagination.nextPage)); }}
-              data={props}
-              query={this.query()}
-              dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
-            />
+
+  panelPhoto(programPhoto) {
+    const { loading, loading_photo, loading_more } = this.props.data
+    if (loading || loading_photo) {
+      return (
+        <TabPane tabId="Photo">
+          <TabPanelLoader />
+        </TabPane>
       );
-        }
+    }
+
+    const { query } = this.props.router
+    const programDetail = this.props.server['program-detail']
+
+    if ((programPhoto.data.length === 0) && programDetail.data.id !== +query.id) return null
+    
+    const pagination = {
+      ...programPhoto.meta.pagination,
+      nextPage: programPhoto.meta.pagination.current_page + 1,
+    }
+    const dataTracking = {
+      ref: this.reference,
+      idContent: query.id,
+      title: programDetail
+    }
+    const enableShowMore = {
+      isNext: pagination.current_page < pagination.total_page,
+      isLoading: loading_more
     }
     return (
-      <TabPane tabId="Photo">
-        <TabPanelLoader />
-      </TabPane>
+      <PanelPhoto
+        ref={this.refPanelPhoto}
+        enableShowMore={enableShowMore}
+        onShowMore={() => this.handleShowMore(pagination, "Photo")}
+        data={programPhoto}
+        query={this.query()}
+        dataTracking={dataTracking}
+      />
     );
   }
   setPlayerDispose(filter) {
@@ -669,37 +787,129 @@ class Index extends React.Component {
       );
     }
   }
-  switchPanel() {
-    if (this.props.router.query.content_id) {
-      if (this.props.data && this.props.data['data-player']) {
-        const data = this.props.data && this.props.data['data-player'];
-        return (
-          <div className="program-detail-player-wrapper">
-              <JwPlayer data={data && data.data } 
-                isFullscreen={ data && data.isFullscreen } 
-                ref={this.ref} 
-                onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
-                isResume={true} 
-                geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
-                customData= {{
-                    isLogin: this.props.auth.isAuth, 
-                    programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
-                    sectionPage: 'VOD',
-                    }}
-                />
-              {/* <Player data={ data.data } isFullscreen={ data.isFullscreen } ref={this.ref} /> */}
-          </div>
-        );
+
+  handleShowMore(pagination, activeTab) {
+    console.log("lagi get show more")
+
+    if (pagination.nextPage > pagination.total_page && pagination.total_page > 0) return
+    if (activeTab !== this.state.toggle) return
+
+    const { query } = this.props.router
+
+    const { contentDispatcher, dispatcherArgs } = this.onTabChange(activeTab, pagination.nextPage)
+    this.props.dispatch(contentDispatcher(...dispatcherArgs))
+
+    onTracking(this.reference, query.id, this.props.server['program-detail']);
+  }
+
+  routingQueryGenerator(targetContent) {
+    let targetHref = [],
+      targetHrefAlias = []
+
+    const query = {
+      ...this.props.router.query,
+      id: targetContent.program_id,
+      content_id: targetContent.id,
+      content_title: urlRegex(targetContent.title),
+      content_type: targetContent.content_type,
+      title: urlRegex(targetContent.program_title)
+    }
+
+    for (const key in query) {
+      targetHref.push(`${key}=${query[key]}`)
+      targetHrefAlias.push(query[key])
+    }
+
+    return {
+      href: targetHref.join("&"), // actual target url
+      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser 
+    }
+  }
+
+  handleActionBtn(action) {
+    const { seasonSelected } = this.props.data
+    const { videoIndexing } = this.state
+    const { content_type } = this.props.router.query
+
+    let programTypeDetail = this.props.data[`program-${content_type}`]
+
+    if (content_type === "episode") programTypeDetail = programTypeDetail[`season-${seasonSelected}`]
+
+    const { data, meta } = programTypeDetail
+    const direction = action === "forward" ? "next" : "prev"
+    const targetVideoContent = { ...data[videoIndexing[direction]], content_type }
+    const { href, hrefAlias } = this.routingQueryGenerator(targetVideoContent)
+    
+    // When current video is the last content on the pagination list, request the next page if any
+    if ((data.length - 1) === videoIndexing.next) {
+      this.handleShowMore({
+        ...meta.pagination,
+        nextPage: (meta.pagination.current_page + 1)
+      }, this.state.toggle)
+    }
+
+    this.props.router.push(`/programs?${href}`, `/programs/${hrefAlias}`)
+    this.props.dispatch(fetchDetailProgramRequest())
+  }
+
+  getCurrentViewingVideoIndex() {
+    const { seasonSelected } = this.props.data
+    const { id, content_id, content_type } = this.props.router.query
+    const programTypeDetail = this.props.data[`program-${content_type}`]
+    if (!programTypeDetail) return
+
+    let queueingContents = programTypeDetail.data
+    let videoIndexing = this.state.videoIndexing
+
+    if (!programTypeDetail[`season-${seasonSelected}`]) return
+    if (content_type === "episode") queueingContents = programTypeDetail[`season-${seasonSelected}`].data
+
+    queueingContents.forEach((content, i) => {
+      if (content.id === +content_id && content.program_id === +id) {
+        videoIndexing["prev"] = i - 1 < 0 ? 0 : i - 1
+        videoIndexing["current"] = i
+        videoIndexing["next"] = i + 1 > queueingContents.length - 1 ? queueingContents.length - 1 : i + 1
+        return
       }
+    })
+
+    if (this.state.videoIndexing.current !== videoIndexing.current) {
+      this.setState({ videoIndexing })
+    }
+  }
+
+  switchPanel() {
+    if (!this.props.router.query.content_id) return this.mainContent()
+
+    if (!this.props.data["data-player"]) {
       return (
         <div className="program-detail-player-wrapper animated fadeInDown go">
             <div>Loading...</div>
         </div>
-      );
+      )
     }
+
+    const dataPlayer = this.props.data['data-player'];
+    
     return (
-      this.mainContent()
-    );
+      <div className="program-detail-player-wrapper">
+        <JwPlayer
+          data={dataPlayer && dataPlayer.data } 
+          isFullscreen={ dataPlayer && dataPlayer.isFullscreen } 
+          ref={this.ref} 
+          onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
+          isResume={true} 
+          geoblockStatus={ dataPlayer && dataPlayer.status && dataPlayer.status.code === 12 ? true : false }
+          customData= {{
+            isLogin: this.props.auth.isAuth, 
+            programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
+            sectionPage: 'VOD',
+          }}
+          actionBtn={(e) => this.handleActionBtn(e)}
+          videoIndexing={this.state.videoIndexing}
+        />
+      </div>
+    )
   }
   trailer() {
     if (this.props.server && this.props.server[this.type] && this.props.server[this.type]) {
@@ -717,7 +927,6 @@ class Index extends React.Component {
                 sectionPage: 'VOD',
                 }}
               />
-            {/* <Player data={ data.data } ref={this.ref} isFullscreen={ true }/> */}
         </div>
       );
     }
@@ -755,16 +964,30 @@ class Index extends React.Component {
   toggleRateModal(test = '') {
     this.setState({ rate_modal: !this.state.rate_modal });
   }
-  // statusLogin(data) {
-  //   let isLogin = false;
-  //   if (data && data.status) {
-  //     isLogin = data.status.code === 13 ? false : true;
-  //     return isLogin;
-  //   }
-  // }
+
+  renderVisionPlusComponent() {
+    const programDetail = this.props.data.programDetail
+    const programEpisode = this.props.data["program-episode"]
+
+    if (!programDetail || !programEpisode) return null
+    if (!programDetail.data.show_vision_plus_disclaimer) return null
+    if (this.state.toggle.toLowerCase() !== "episodes") return null
+
+    const { pagination } = programEpisode[`season-${this.props.data.seasonSelected}`].meta
+
+    if (pagination.current_page < pagination.total_page) return null
+
+    return (
+      <VisionPlusProgram user={this.props.auth} />
+    )
+  }
+
   render() {
     const { props, state } = this;
     const content = props.seo_content_detail?.data
+
+    // set active video index to be used when user click next / back player button
+    this.getCurrentViewingVideoIndex()
    
     return (
       <Layout>
@@ -855,7 +1078,10 @@ class Index extends React.Component {
                   </TabContent>
                 </div>
               </div>
+              {this.renderVisionPlusComponent()}
+
               {/* {this.panelRecommendHOT(this.props?.data['recommend-hot'])} */}
+              
               {this.panelRelated(
                 this.props.data &&
                 this.props.data['program-related']

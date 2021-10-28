@@ -107,8 +107,7 @@ h3, h4, p {
   // overflow-x:hidden;
 }
 .list__content-wrapper{
-  // padding: 0 15px;
-  background-color: #282828;
+  background-color: #3a3a3a;
 }
 
 .flex-nav {
@@ -316,9 +315,7 @@ h3, h4, p {
 }
 .tab__content-wrapper {
     padding-bottom: 10px;
-    .tab-content {
-      // padding: 0 15px;
-    }
+
     .episode-program, .clip-program, .extra-program {
       .season__program {
         padding: 0 15px;
@@ -336,7 +333,7 @@ h3, h4, p {
           }
         }
         .thumb-detail__content {
-          padding: 0 1em;
+          padding-left: 1rem;
           width: 50%;
           display: flex;
           flex-direction: column;
@@ -373,9 +370,10 @@ h3, h4, p {
         }
       }
       .summary__content {
-        padding: 10px 0 0 0;
+        padding-top: 1rem;
         p {
           font-size: 10px;
+          text-align: justify;
         }
       }
     }
