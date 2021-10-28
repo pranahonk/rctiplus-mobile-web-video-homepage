@@ -71,14 +71,16 @@ export default function useCustomPlayerButton (props) {
 
     const skipBtn = (
       <figure
-        key={`${index}-skipbtn`}
         ref={skipPosIconContainer}
+        key={`${index}-skipbtn`}>
+        {/* 
+          ---------------- TEMPORARY HIDE ---------------
         className={`jwplayer-action jw-icon ${direction}`}
         role="button"
         onDoubleClick={() => fastForwardBackwardClicked(direction)}>
         <img
           src={`/static/player_icons/player_fast${direction}.svg`}
-          alt={`fast-${direction}-btn`} />
+          alt={`fast-${direction}-btn`} /> */}
       </figure>
     )
     const navBtn = (
