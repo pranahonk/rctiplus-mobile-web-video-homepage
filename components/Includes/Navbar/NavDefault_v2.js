@@ -17,7 +17,7 @@ import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import { json } from 'body-parser';
-import { LINK_RADIO, LINK_GAMES, LINK_HOT } from '../../../config';
+import {LINK_RADIO, LINK_GAMES, LINK_HOT, LINK_NEWS} from '../../../config';
 
 
 class NavbarDef_v2 extends Component {
@@ -199,12 +199,10 @@ class NavbarDef_v2 extends Component {
                                 <label>Video+</label>
                             </Button>
                         </ActiveLink>
-                        <ActiveLink activeClassName="active" href="/news" activeMenu={'news' + this.props.router.asPath}>
-                            <Button outline className="btn-nav-menu">
-                                <img className="icon-menu-top" src={'/icons-menu/newsIcon.svg'} alt="news" width="30" height="30" />
-                                <label>News+</label>
-                            </Button>
-                        </ActiveLink>
+                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_NEWS}`}>
+                            <img alt="News+" className="icon-menu-top" src={'/icons-menu/newsIcon.svg'}  width="30" height="30" />
+                            <label>News+</label>
+                        </Button>
                         {/* <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
                             <Button outline className="btn-nav-menu">
                                 <img className="img-menu-icon" src={'/radio.png'}/>
@@ -219,7 +217,7 @@ class NavbarDef_v2 extends Component {
                             <img className="icon-menu-top" src={'/icons-menu/hotIcon.svg'} alt="hot" width="30" height="30" />
                             <label>HOT</label>
                         </Button>
-                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_GAMES}?token=${this.state.token}`}>
+                        <Button outline className="btn-nav-menu" onClick={() => window.open(LINK_GAMES, "_blank").focus()}>
                             <img className="icon-menu-top" src={'/icons-menu/gamesIcon.svg'} alt="games" width="30" height="30" />
                             <label>Games+</label>
                         </Button>
