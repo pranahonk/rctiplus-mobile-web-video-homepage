@@ -137,7 +137,7 @@ class Index extends React.Component {
       episodeClearStore: true,
     }, () => this.loadFirstTab(this.programId));
     this.loadRelated(this.programId,1);
-    this.loadRecommendHOT(1);
+    // this.loadRecommendHOT(1);
     if (this.props.router.query.content_id) {
       this.props.dispatch(fetchPlayerUrl(this.props.router.query.content_id,'data-player',this.props.router.query.content_type));
     }
@@ -185,7 +185,7 @@ class Index extends React.Component {
       }
       this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] && this.props.server[this.type], 'tracking-program'));
       this.loadRelated(this.props.router.query.id,1);
-      this.loadRecommendHOT(1);
+      // this.loadRecommendHOT(1);
       this.setState({clipClearStore: true, transform: 'rotate(0deg)', isOpen: false}, () => {
             this.loadFirstTab(this.props.router.query.id);
         }
@@ -855,7 +855,7 @@ class Index extends React.Component {
                   </TabContent>
                 </div>
               </div>
-              {this.panelRecommendHOT(this.props?.data['recommend-hot'])}
+              {/* {this.panelRecommendHOT(this.props?.data['recommend-hot'])} */}
               {this.panelRelated(
                 this.props.data &&
                 this.props.data['program-related']
