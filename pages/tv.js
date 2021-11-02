@@ -322,10 +322,10 @@ class Tv extends React.Component {
 												}
 											}
 											
-											// if(!this.state.chat_box && this.state.total_newChat.length > 0){
-											// 	const chatBox = document.getElementById('chat-messages');
-											// 	chatBox.scrollTop = chatBox.scrollHeight;
-											// }
+											if(!this.state.chat_box && this.state.total_newChat.length > 0){
+												const chatBox = document.getElementById('chat-messages');
+												chatBox.scrollTop = chatBox.scrollHeight;
+											}
 
 											this.setState({ chats: chats }, () => {
 												const chatInput = document.getElementById('chat-input');
