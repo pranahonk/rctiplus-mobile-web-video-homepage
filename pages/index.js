@@ -31,7 +31,9 @@ const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
 const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
 const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
 const Panel4 = dynamic(() => import("../components/Panels/Pnl_4"))
-const SquareImage = dynamic(() => import("../components/Panels/SquareImage"))
+
+// NEW RPLUS LINEUP CONTENTS
+const VideoSquareView = dynamic(() => import("../components/lineups/video_square"))
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -166,11 +168,7 @@ class Index_v2 extends React.Component {
                 <BottomScrollListener offset={150} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color={this.state.show_sticky_install ? '#000' : '#fff'} onRef={ref => (this.LoadingBar = ref)} />
 
-                {/* 
-                
-                
-                ---------------------------- THESE LINES BELOW ARE SUBJECTED TO CHANGES FOR THE NEW R+ -----------------------------
-                
+                                
                 {this.state.isShimmer ? (<HomeLoader/>) : (
                 <div>
                     <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
@@ -216,6 +214,10 @@ class Index_v2 extends React.Component {
                             } }
                         </Sticky>
                     </StickyContainer>
+                    {/* 
+                        --------------------------------- LINE UP CONTENTS --------------------------------- 
+                        ------------------------------- SUBJECTED TO CHANGES -------------------------------
+                    */}
                     <div style={{marginBottom: 45, paddingTop: 10}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
                         {contents.map((content, i) => {
                             switch (content.display_type) {
@@ -278,7 +280,7 @@ class Index_v2 extends React.Component {
                                 
                                 case 'horizontal_square':
                                     return (
-                                        <SquareImage
+                                        <VideoSquareView
                                             token={this.token}
                                             loadingBar={this.LoadingBar}
                                             key={content.id}
@@ -294,7 +296,7 @@ class Index_v2 extends React.Component {
                         })}
                     </div>
                 </div>
-                )} */}
+                )}
         </Layout>
         );
     }

@@ -16,7 +16,7 @@ import '../../assets/scss/components/panel.scss';
 const jwtDecode = require('jwt-decode');
 const CountdownTimer = dynamic(() => import("../Includes/Common/CountdownTimer"))
 
-class SquareImage extends React.Component {
+class SquareView extends React.Component {
   state = {
     id: this.props.contentId,
     contents: this.props.content,
@@ -262,4 +262,4 @@ class SquareImage extends React.Component {
 	}
 }
 
-export default connect(state => state, contentActions)(SquareImage);
+export default connect(state => state, contentActions)(SquareView);
