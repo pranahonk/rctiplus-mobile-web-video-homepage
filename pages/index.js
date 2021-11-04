@@ -165,6 +165,12 @@ class Index_v2 extends React.Component {
                 </Head>
                 <BottomScrollListener offset={150} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color={this.state.show_sticky_install ? '#000' : '#fff'} onRef={ref => (this.LoadingBar = ref)} />
+
+                {/* 
+                
+                
+                ---------------------------- THESE LINES BELOW ARE SUBJECTED TO CHANGES FOR THE NEW R+ -----------------------------
+                
                 {this.state.isShimmer ? (<HomeLoader/>) : (
                 <div>
                     <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
@@ -288,7 +294,7 @@ class Index_v2 extends React.Component {
                         })}
                     </div>
                 </div>
-                )}
+                )} */}
         </Layout>
         );
     }
