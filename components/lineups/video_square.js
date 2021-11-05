@@ -3,18 +3,15 @@ import Img from 'react-image';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
-import dynamic from 'next/dynamic'
 
 import contentActions from '../../redux/actions/contentActions';
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../utils/appier';
-import { getCountdown } from '../../utils/helpers';
 import { showSignInAlert } from '../../utils/helpers';
 import { urlRegex, titleStringUrlRegex } from '../../utils/regex';
 
 import '../../assets/scss/components/panel.scss';
 
 const jwtDecode = require('jwt-decode');
-const CountdownTimer = dynamic(() => import("../Includes/Common/CountdownTimer"))
 
 class SquareView extends React.Component {
   state = {
@@ -204,7 +201,7 @@ class SquareView extends React.Component {
 			<div
         onTouchStart={this.onTouchStart.bind(this)}
         onTouchEnd={this.onTouchEnd.bind(this)}
-        className="pnl_horizontal_landscape">
+        className="pnl_video_square">
 				<h2 className="content-title">
           {this.props.title}
         </h2>
@@ -213,9 +210,8 @@ class SquareView extends React.Component {
 						<div ref={scrollRef} className="swiper-container">
               {this.state.contents.map((c, i) => (
                 <div
-                  style={{ width: '96%' }}
                   onClick={() => this.link(c)}
-                  key={`${this.state.id}-${i}-square`}
+                  key={i}
                   className="swiper-slide">
                   <div>
                     <Img 
@@ -223,35 +219,7 @@ class SquareView extends React.Component {
                       unloader={<img src={placeHolderImgUrl} />}
                       loader={<img src={placeHolderImgUrl} />}
                       src={[`${rootImageUrl}${c.square_image}`, placeHolderImgUrl]} />
-                    
-                    {c.content_type === 'live' 
-                      ? (
-                        <div style={{ position: 'absolute', right: 0 }}>
-                          <CountdownTimer 
-                            timer={getCountdown(c.release_date_quiz, c.current_date)[0]} 
-                            statusTimer="1"
-                            statusPlay={getCountdown(c.release_date_quiz, c.current_date)[1]}/>
-                        </div>
-                      ) 
-                      : null
-                    }
                   </div>
-                  
-                  {c.display_type == 'hide_url' 
-                    ? null 
-                    : (
-                      <div
-                        style={{minHeight: "50px", maxHeight: "50px"}}
-                        className="txt-slider-panel no-bg">
-                        <h3
-                          style={{fontSize: "14px", fontWeight: 600, marginTop: 1}}
-                          className="txt-slider-panel-title">
-                          {c.program_title || this.props.title}
-                        </h3>
-                        <p style={{fontSize: "14px", fontWeight: 300}}>{c.content_title}</p>
-                      </div>
-                    )
-                  }
                 </div>
               ))}
 						</div>
