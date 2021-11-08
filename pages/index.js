@@ -26,6 +26,8 @@ import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
+import HorizontalLandspace from '../components/news/HorizontalLandspace';
+import HorizontalLandscape from '../components/lineups/news/HorizontalLandscape';
 
 const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
 const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
@@ -168,17 +170,17 @@ class Index_v2 extends React.Component {
                 <BottomScrollListener offset={150} onBottom={this.bottomScrollFetch.bind(this)} />
                 <LoadingBar progress={0} height={3} color={this.state.show_sticky_install ? '#000' : '#fff'} onRef={ref => (this.LoadingBar = ref)} />
 
-                                
                 {this.state.isShimmer ? (<HomeLoader/>) : (
                 <div>
                     <Nav parent={this} closeStickyInstallFunction={this.closeStickyInstall} showStickyInstall={this.state.show_sticky_install}/>
                     <Carousel showStickyInstall={this.state.show_sticky_install} >
                         <GridMenu />
                     </Carousel>
+                    <HorizontalLandscape />
                     <div style={{marginTop: "25px"}}>
                         <Stories loadingBar={this.LoadingBar} homepage={true}/>
                     </div>
-                    
+
                     <StickyContainer>
                         <Sticky disableHardwareAcceleration>
                             { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
@@ -214,8 +216,8 @@ class Index_v2 extends React.Component {
                             } }
                         </Sticky>
                     </StickyContainer>
-                    {/* 
-                        --------------------------------- LINE UP CONTENTS --------------------------------- 
+                    {/*
+                        --------------------------------- LINE UP CONTENTS ---------------------------------
                         ------------------------------- SUBJECTED TO CHANGES -------------------------------
                     */}
                     <div style={{marginBottom: 45, paddingTop: 10}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
@@ -235,7 +237,7 @@ class Index_v2 extends React.Component {
                                             resolution={RESOLUTION_IMG}
                                             displayType={content.display_type}/>
                                     )
-                                    
+
                                 case 'horizontal_landscape':
                                     return (
                                         <Panel2
@@ -265,7 +267,7 @@ class Index_v2 extends React.Component {
                                     )
 
                                 case 'vertical':
-                                    return ( 
+                                    return (
                                         <Panel4
                                             token={this.token}
                                             loadingBar={this.LoadingBar}
@@ -277,7 +279,7 @@ class Index_v2 extends React.Component {
                                             resolution={RESOLUTION_IMG}
                                             displayType={content.display_type}/>
                                     )
-                                
+
                                 case 'horizontal_square':
                                     return (
                                         <VideoSquareView
@@ -291,7 +293,7 @@ class Index_v2 extends React.Component {
                                             type={content.type}
                                             resolution={RESOLUTION_IMG}
                                             displayType={content.display_type}/>
-                                    );                         
+                                    );
                             }
                         })}
                     </div>
