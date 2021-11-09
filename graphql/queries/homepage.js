@@ -5,10 +5,13 @@ export const GET_BANNERS = gql`
   query {
     banners {
       data {
-        landscape_image
         id
-        sorting
+        title
+        square_image
+      }
+      meta {
+        image_path
       }
     }
   }
-`;
+`

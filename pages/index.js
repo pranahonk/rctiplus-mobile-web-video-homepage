@@ -30,10 +30,10 @@ import { RPLUSAppVisit } from '../utils/internalTracking';
 const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
 const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
 const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
-const Panel4 = dynamic(() => import("../components/Panels/Pnl_4"))
 
 // NEW RPLUS LINEUP CONTENTS
-const VideoSquareView = dynamic(() => import("../components/lineups/video_square"))
+const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/Square"))
+const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -266,7 +266,7 @@ class Index_v2 extends React.Component {
 
                                 case 'vertical':
                                     return ( 
-                                        <Panel4
+                                        <VideoVerticalView
                                             token={this.token}
                                             loadingBar={this.LoadingBar}
                                             key={content.id}
@@ -288,9 +288,7 @@ class Index_v2 extends React.Component {
                                             title={content.title}
                                             content={content.content}
                                             imagePath={meta.image_path}
-                                            type={content.type}
-                                            resolution={RESOLUTION_IMG}
-                                            displayType={content.display_type}/>
+                                            resolution={RESOLUTION_IMG} />
                                     );                         
                             }
                         })}
