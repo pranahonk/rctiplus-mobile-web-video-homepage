@@ -7,6 +7,7 @@ import { urlRegex } from '../../../utils/regex';
 import { imageNews } from '../../../utils/helpers';
 import isEmpty from 'lodash/isEmpty';
 import dynamic from 'next/dynamic';
+import {client }  from "../../../graphql/client"
 
 
 // Import Swiper React components
@@ -25,7 +26,7 @@ let count = 0;
 
 
 const HorizontalLandscape = ({...props}) => {
-  const {data, loading } = useQuery(GET_REGROUPING);
+  // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
   const [list, setList] = useState([]);
@@ -34,11 +35,13 @@ const HorizontalLandscape = ({...props}) => {
   const [platform, setPlatform] = useState(null);
 
   useEffect(() => {
-    console.log(data?.mock_news_regroupings);
-    console.log(data?.mock_news_regroupings?.data);
-    if(data?.mock_news_regroupings){
-      setList(data?.mock_news_regroupings?.data);
-    }
+    client.query({query: GET_REGROUPING})
+      .then((res)=>{
+        setList(res?.data?.mock_news_regroupings?.data);
+      })
+      .catch((err)=>{
+        console.log(err);
+      });
     const query = queryString.parse(window.location.search);
     if (query.accessToken) {
       setAccessToken(query.accessToken);
@@ -47,10 +50,10 @@ const HorizontalLandscape = ({...props}) => {
     else{
       count++;
     }
-  },[data]);
+  },[list]);
   useEffect(() => {
     if (list.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list.data.length < 20) {
-      setLoadingMore(true)
+      setLoadingMore(true);
     }
   }, [show])
   const assetUrl = list.meta && list.meta.assets_url ? list.meta.assets_url : null;
@@ -76,7 +79,7 @@ const HorizontalLandscape = ({...props}) => {
             height={140}
             onReachEnd={setShow}
           >
-            {data?.mock_news_regroupings?.data?.map((item, index) => {
+            {list.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
                   <Link href={_goToDetail(item)}  >
