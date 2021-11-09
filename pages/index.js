@@ -26,8 +26,7 @@ import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
-import HorizontalLandspace from '../components/news/HorizontalLandspace';
-import HorizontalLandscape from '../components/lineups/news/HorizontalLandscape';
+import NewsHorizontalLandscape from '../components/lineups/news/HorizontalLandscape';
 
 const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
 const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
@@ -176,7 +175,7 @@ class Index_v2 extends React.Component {
                     <Carousel showStickyInstall={this.state.show_sticky_install} >
                         <GridMenu />
                     </Carousel>
-                    <HorizontalLandscape />
+                    <NewsHorizontalLandscape />
                     <div style={{marginTop: "25px"}}>
                         <Stories loadingBar={this.LoadingBar} homepage={true}/>
                     </div>
