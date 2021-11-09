@@ -1,7 +1,7 @@
 const initialState = {
     homepage_content: [],
-    banner: null,
-    meta: null,
+    banner: [],
+    meta: {},
     data: null,
     status: null,
     selected_season: 1,
