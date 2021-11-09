@@ -18,7 +18,7 @@ import { useQuery } from '@apollo/client';
 import { GET_REGROUPING } from '../../../graphql/queries/regrouping';
 
 //import scss
-import '../../../assets/scss/components/trending.scss';
+import '../../../assets/scss/components/horizontal-landscape.scss';
 
 const TopicLoader = dynamic(() => import('../../Includes/Shimmer/ListTagLoader'))
 let count = 0;
@@ -80,11 +80,11 @@ const HorizontalLandscape = ({...props}) => {
               return (
                 <SwiperSlide key={index}>
                   <Link href={_goToDetail(item)}  >
-                    <div className="news-interest_thumbnail-wrapper">
+                    <div className="regroupping-by-section_thumbnail-wrapper">
                       {
                         imageNews(item.title, item.cover, item.image, 320, assetUrl, 'thumbnail')
                       }
-                      <div className="news-interest_thumbnail-title" >
+                      <div className="regroupping-by-section_thumbnail-title" >
                         <h1>{getTruncate(item.title, '...', 100)}</h1>
                         <h2>{item.subcategory_name} | {item.source} | <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
                       </div>
