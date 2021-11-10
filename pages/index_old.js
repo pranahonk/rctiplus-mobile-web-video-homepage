@@ -31,7 +31,7 @@ const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
 const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
 const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
 const Panel4 = dynamic(() => import("../components/Panels/Pnl_4"))
-const SquareImage = dynamic(() => import("../components/Panels/SquareImage"))
+const SquareImage = dynamic(() => import("../components/lineups/video_lineup/Square"))
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
