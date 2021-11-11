@@ -37,7 +37,7 @@ const HorizontalLandscape = ({...props}) => {
   useEffect(() => {
     client.query({query: GET_REGROUPING})
       .then((res)=>{
-        setList(res?.data?.mock_news_regroupings?.data);
+        setList(res?.data?.mock_news_regroupings);
       })
       .catch((err)=>{
         console.log(err);
@@ -79,7 +79,7 @@ const HorizontalLandscape = ({...props}) => {
             height={140}
             onReachEnd={setShow}
           >
-            {list.map((item, index) => {
+            {list?.data.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
                   <Link href={_goToDetail(item)}  >
