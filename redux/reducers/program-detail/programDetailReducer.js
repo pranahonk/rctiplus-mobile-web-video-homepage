@@ -28,6 +28,7 @@ import {
   TEMP_POST_LIKE_SUCCESS,
   DATA_SHARE_SEO,
   FETCH_PAID_VIDEO,
+  FETCH_RECOMMEND_HOT_SUCCESS
 } from '../../actions/program-detail/programDetail';
 const initialState = {
   loading: true,
@@ -252,6 +253,25 @@ export default (state = initialState, action) => {
         loading_episode: false,
       }
     }
+    case FETCH_RECOMMEND_HOT_SUCCESS:
+      const initPageRecommendHOT = action && action.payload.meta.pagination.current_page;
+      
+      if (initPageRecommendHOT > 1) {
+        const initStateRecommendHOT = state[action.filter].data;
+        const newStateRecommendHOT = action.payload.data;
+        const dataRecommendHOT = [...initStateRecommendHOT, ...newStateRecommendHOT];
+        return {
+          ...state,
+          [action.filter]: {...action.payload, data: dataRecommendHOT},
+          loading: false,
+          loading_more: false,
+        };
+      }
+      return {
+        ...state,
+        [action.filter]: action.payload,
+        loading: false,
+      };
     case FETCH_PLAYER_URL_SUCCESS:
       return {
         ...state,

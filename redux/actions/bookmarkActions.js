@@ -11,7 +11,6 @@ axios.interceptors.request.use(async (request) => {
     return request;
 });
 
-
 const bookmark = (id, type) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
