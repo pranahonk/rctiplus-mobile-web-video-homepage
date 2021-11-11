@@ -26,7 +26,6 @@ import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
-import NewsHorizontalLandscape from '../components/lineups/news/HorizontalLandscape';
 
 const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
 const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
@@ -34,7 +33,10 @@ const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
 const Panel4 = dynamic(() => import("../components/Panels/Pnl_4"))
 
 // NEW RPLUS LINEUP CONTENTS
-const VideoSquareView = dynamic(() => import("../components/lineups/video_square"))
+const VideoSquareView = dynamic(() => import("../components/lineups/video_square"));
+const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
+const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
+
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -175,6 +177,7 @@ class Index_v2 extends React.Component {
                     <Carousel showStickyInstall={this.state.show_sticky_install} >
                         <GridMenu />
                     </Carousel>
+                    <HorizontalHastags />
                     <NewsHorizontalLandscape />
                     <div style={{marginTop: "25px"}}>
                         <Stories loadingBar={this.LoadingBar} homepage={true}/>
