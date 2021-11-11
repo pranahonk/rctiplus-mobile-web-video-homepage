@@ -30,7 +30,8 @@ const HorizontalLandscape = ({...props}) => {
 
   const [show, setShow] = useState(null);
   const [list, setList] = useState([]);
-  const [loadingMore, setLoadingMore] = useState(false)
+  const [assetUrl, setAssetUrl] = useState(null);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
 
@@ -38,7 +39,6 @@ const HorizontalLandscape = ({...props}) => {
     client.query({query: GET_REGROUPING})
       .then((res)=>{
         setList(res?.data?.mock_news_regroupings);
-        console.log(res?.data?.mock_news_regroupings);
       })
       .catch((err)=>{
         console.log(err);
@@ -53,11 +53,12 @@ const HorizontalLandscape = ({...props}) => {
     }
   },[list]);
   useEffect(() => {
+    setAssetUrl(list?.meta && list.meta.assets_url ? list.meta.assets_url : null);
     if (list.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list.data.length < 20) {
       setLoadingMore(true);
     }
   }, [show, list])
-  const assetUrl = list.meta && list.meta.assets_url ? list.meta.assets_url : null;
+
   const _goToDetail = (article) => {
     let category = '';
     if (article.subcategory_name.length < 1) {
