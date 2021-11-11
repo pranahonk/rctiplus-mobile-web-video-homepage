@@ -54,7 +54,7 @@ const HorizontalLandscape = ({...props}) => {
   },[list]);
   useEffect(() => {
     setAssetUrl(list?.meta && list.meta.assets_url ? list.meta.assets_url : null);
-    if (list.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list?.data?.length < 20) {
+    if (list?.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list?.data?.length < 20) {
       setLoadingMore(true);
     }
   }, [show, list])
