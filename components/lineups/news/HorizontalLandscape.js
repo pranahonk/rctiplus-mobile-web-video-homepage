@@ -54,14 +54,14 @@ const HorizontalLandscape = ({...props}) => {
   },[list]);
   useEffect(() => {
     setAssetUrl(list?.meta && list.meta.assets_url ? list.meta.assets_url : null);
-    if (list.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list.data.length < 20) {
+    if (list.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list.data?.length < 20) {
       setLoadingMore(true);
     }
   }, [show, list])
 
   const _goToDetail = (article) => {
     let category = '';
-    if (article.subcategory_name.length < 1) {
+    if (article.subcategory_name?.length < 1) {
       category = 'berita-utama';
     } else {
       category = urlRegex(article.subcategory_name)
@@ -75,7 +75,7 @@ const HorizontalLandscape = ({...props}) => {
       )}
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
-          {list.length === 0 ? (<TopicLoader />) : (<Swiper
+          {list?.length === 0 ? (<TopicLoader />) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}
