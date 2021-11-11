@@ -75,7 +75,7 @@ const HorizontalLandscape = ({...props}) => {
       )}
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
-          {list?.data?.length === 0 ? (<TopicLoader />) : (<Swiper
+          {list?.data?.length === undefined ? (<TopicLoader />) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}
