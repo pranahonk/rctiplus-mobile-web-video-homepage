@@ -20,6 +20,7 @@ import { GET_REGROUPING } from '../../../graphql/queries/regrouping';
 
 //import scss
 import '../../../assets/scss/components/horizontal-landscape.scss';
+import { GET_HASTAGS } from '../../../graphql/queries/hastags';
 
 const TopicLoader = dynamic(() => import('../../Includes/Shimmer/ListTagLoader'))
 let count = 0;
@@ -29,15 +30,20 @@ const HorizontalHastags = ({...props}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
-  const [list, setList] = useState([]);
+  const [hastags, setHastags] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false)
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING})
+    client.query({query: GET_HASTAGS})
       .then((res)=>{
-        setList(res?.data?.mock_news_regroupings?.data);
+        console.log(res?.data?.mock_news_regroupings);
+        console.log(hastags?.meta?.pagination?.current_page);
+        console.log(hastags?.meta?.pagination?.total_page);
+        console.log(hastags.data.length);
+        setHastags(res?.data?.mock_news_regroupings?.data);
+        // setList(res?.data?.mock_news_regroupings?.data);
       })
       .catch((err)=>{
         console.log(err);
@@ -50,13 +56,13 @@ const HorizontalHastags = ({...props}) => {
     else{
       count++;
     }
-  },[list]);
+  },[hastags]);
   useEffect(() => {
-    if (list.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list.data.length < 20) {
+    if (hastags.data && (hastags?.meta?.pagination?.current_page < hastags?.meta?.pagination?.total_page) && show && hastags.data.length < 20) {
       setLoadingMore(true);
     }
   }, [show])
-  const assetUrl = list.meta && list.meta.assets_url ? list.meta.assets_url : null;
+  const assetUrl = hastags.meta && hastags.meta.assets_url ? hastags.meta.assets_url : null;
   const _goToDetail = (article) => {
     let category = ''
     if (article.subcategory_name.length < 1) {
@@ -65,7 +71,7 @@ const HorizontalHastags = ({...props}) => {
       category = urlRegex(article.subcategory_name)
     }
     return ('/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
-  }
+  };
   return (
     <li className="regroupping-by-section">
       {!isEmpty(props.article?.section) && (
@@ -73,13 +79,13 @@ const HorizontalHastags = ({...props}) => {
       )}
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
-          {list.length === 0 ? (<TopicLoader />) : (<Swiper
+          {hastags.length === 0 ? (<TopicLoader />) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}
             onReachEnd={setShow}
           >
-            {list.map((item, index) => {
+            {hastags?.data.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
                   <Link href={_goToDetail(item)}  >

@@ -37,7 +37,7 @@ const HorizontalLandscape = ({...props}) => {
   useEffect(() => {
     client.query({query: GET_REGROUPING})
       .then((res)=>{
-        setList(res?.data?.mock_news_regroupings?.data);
+        setList(res?.data?.mock_news_regroupings);
       })
       .catch((err)=>{
         console.log(err);
@@ -73,7 +73,7 @@ const HorizontalLandscape = ({...props}) => {
       )}
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
-          {list.length === 0 ? (<TopicLoader />) : (<Swiper
+          {list?.data.length === 0 ? (<TopicLoader />) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}
