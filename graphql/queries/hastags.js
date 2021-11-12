@@ -2,12 +2,16 @@
 import { gql } from '@apollo/client';
 
 export const GET_HASTAGS = gql`
- {
-  mock_news_regroupings{
-    data{
-      author
+ query {
+  mock_news_tagars {
+    data {
+      count
+      created_at
+      sorting
+      tag
+      type
     }
-    meta{
+    meta {
       assets_url
       image_path
       pagination{
@@ -16,8 +20,9 @@ export const GET_HASTAGS = gql`
         total
         total_page
       }
+      video_path
     }
-    status{
+    status {
       code
       message_client
       message_server

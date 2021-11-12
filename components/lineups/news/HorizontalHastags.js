@@ -19,11 +19,10 @@ import { useQuery } from '@apollo/client';
 import { GET_REGROUPING } from '../../../graphql/queries/regrouping';
 
 //import scss
-import '../../../assets/scss/components/horizontal-landscape.scss';
+import '../../../assets/scss/components/horizontal-hastags.scss';
 import { GET_HASTAGS } from '../../../graphql/queries/hastags';
 
-const TopicLoader = dynamic(() => import('../../Includes/Shimmer/ListTagLoader'))
-let count = 0;
+const TopicLoader = dynamic(() => import('../../Includes/Shimmer/ListTagLoader'));
 
 
 const HorizontalHastags = ({...props}) => {
@@ -32,71 +31,43 @@ const HorizontalHastags = ({...props}) => {
   const [show, setShow] = useState(null);
   const [hastags, setHastags] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false)
-  const [accessToken, setAccessToken] = useState(null);
-  const [platform, setPlatform] = useState(null);
 
   useEffect(() => {
     client.query({query: GET_HASTAGS})
       .then((res)=>{
-        console.log(res?.data?.mock_news_regroupings);
-        console.log(hastags?.meta?.pagination?.current_page);
-        console.log(hastags?.meta?.pagination?.total_page);
-        console.log(hastags.data.length);
-        setHastags(res?.data?.mock_news_regroupings?.data);
+        console.log(res?.data?.mock_news_tagars);
+
+        setHastags(res?.data?.mock_news_tagars);
         // setList(res?.data?.mock_news_regroupings?.data);
       })
       .catch((err)=>{
         console.log(err);
       });
-    const query = queryString.parse(window.location.search);
-    if (query.accessToken) {
-      setAccessToken(query.accessToken);
-      setPlatform(query.platform);
-    }
-    else{
-      count++;
-    }
   },[hastags]);
   useEffect(() => {
     if (hastags.data && (hastags?.meta?.pagination?.current_page < hastags?.meta?.pagination?.total_page) && show && hastags.data.length < 20) {
       setLoadingMore(true);
     }
-  }, [show])
-  const assetUrl = hastags.meta && hastags.meta.assets_url ? hastags.meta.assets_url : null;
+  }, [show]);
   const _goToDetail = (article) => {
-    let category = ''
-    if (article.subcategory_name.length < 1) {
-      category = 'berita-utama';
-    } else {
-      category = urlRegex(article.subcategory_name)
-    }
-    return ('/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
+    return `news/topic/tag/${article.tag}`
   };
+
   return (
-    <li className="regroupping-by-section">
-      {!isEmpty(props.article?.section) && (
-        <h2 className="section-h2">{props.article?.section?.name}</h2>
-      )}
-      <ul style={{paddingLeft: 0}}>
+    <li>
+      <h2 className="section-h2 mt-40 mb-2">Popular Topics</h2>
+      <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
           {hastags.length === 0 ? (<TopicLoader />) : (<Swiper
             spaceBetween={10}
-            width={320}
-            height={140}
-            onReachEnd={setShow}
+            height={150}
           >
             {hastags?.data.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
                   <Link href={_goToDetail(item)}  >
-                    <div className="regroupping-by-section_thumbnail-wrapper">
-                      {
-                        imageNews(item.title, item.cover, item.image, 320, assetUrl, 'thumbnail')
-                      }
-                      <div className="regroupping-by-section_thumbnail-title" >
-                        <h1>{getTruncate(item.title, '...', 100)}</h1>
-                        <h2>{item.subcategory_name} | {item.source} | <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
-                      </div>
+                    <div className="horizontal-tags">
+                      <span className="horizontal-tags_text">#{item.tag}</span>
                     </div>
                   </Link>
                 </SwiperSlide>
