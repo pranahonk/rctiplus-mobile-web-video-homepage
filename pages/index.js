@@ -33,9 +33,11 @@ const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
 const Panel4 = dynamic(() => import("../components/Panels/Pnl_4"))
 
 // NEW RPLUS LINEUP CONTENTS
-const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/Square"))
+const VideoSquareView = dynamic(() => import("../components/lineups/video_square"));
 const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
-const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape.js"))
+const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
+const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
+
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -176,6 +178,7 @@ class Index_v2 extends React.Component {
                     <Carousel showStickyInstall={this.state.show_sticky_install} >
                         <GridMenu />
                     </Carousel>
+                    <HorizontalHastags />
                     <NewsHorizontalLandscape />
                     <div style={{marginTop: "25px"}}>
                         <Stories loadingBar={this.LoadingBar} homepage={true}/>
