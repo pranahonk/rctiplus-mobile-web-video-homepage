@@ -30,7 +30,8 @@ const HorizontalLandscape = ({...props}) => {
 
   const [show, setShow] = useState(null);
   const [list, setList] = useState([]);
-  const [loadingMore, setLoadingMore] = useState(false)
+  const [assetUrl, setAssetUrl] = useState(null);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
   const [platform, setPlatform] = useState(null);
 
@@ -52,20 +53,21 @@ const HorizontalLandscape = ({...props}) => {
     }
   },[list]);
   useEffect(() => {
-    if (list.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list.data.length < 20) {
+    setAssetUrl(list?.meta && list.meta.assets_url ? list.meta.assets_url : null);
+    if (list?.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list.data?.length < 20) {
       setLoadingMore(true);
     }
-  }, [show])
-  const assetUrl = list.meta && list.meta.assets_url ? list.meta.assets_url : null;
+  }, [show, list])
+
   const _goToDetail = (article) => {
-    let category = ''
-    if (article.subcategory_name.length < 1) {
+    let category = '';
+    if (article.subcategory_name?.length < 1) {
       category = 'berita-utama';
     } else {
       category = urlRegex(article.subcategory_name)
     }
-    return ('/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)) + `${accessToken ? `?token=${accessToken}&platform=${platform}` : ''}`);
-  }
+    return ('news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)));
+  };
   return (
     <li className="regroupping-by-section">
       {!isEmpty(props.article?.section) && (
@@ -73,13 +75,13 @@ const HorizontalLandscape = ({...props}) => {
       )}
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
-          {list?.data.length === 0 ? (<TopicLoader />) : (<Swiper
+          {list?.data?.length === undefined ? (<TopicLoader />) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}
             onReachEnd={setShow}
           >
-            {list.map((item, index) => {
+            {list?.data.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
                   <Link href={_goToDetail(item)}  >
