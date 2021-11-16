@@ -101,61 +101,10 @@
 }
 .nav-menu-container {
     display: flex;
-    padding: 15px 0 5px 0;
+    justify-content: space-between;
     width: 100%;
-    flex-direction: row;
-    overflow-x: auto;
-    align-items: center;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-    .btn-nav-menu {
-        display: flex;
-        position: relative;
-        margin: 0 2px !important;
-        border-radius: 20px;
-        font-size: 10px;
-        padding: 5px 16px !important;
-        padding-right: 0 !important;
-        justify-content: center;
-        align-items: center;
-        border-color: #3a3a3a !important;
-        width: 25%;
-        &:focus, &:active {
-            border: none !important;
-            box-shadow: none !important;
-        }
-        &:focus {
-            // background-color: inherit !important;
-            border: solid 1px #3a3a3a !important;
-            // color: #6c757d !important;
-        }
-        &:active {
-            background-color: #000000 !important;
-        }
-        &:first-child {
-            margin-left: 0 !important;
-        }
-        &:last-child {
-            margin-right: 0 !important;
-        }
-        &.active {
-            background-color: #3a3a3a !important;
-        }
+    padding-top: 15px;
 
-        p {
-          margin: 0 !important;
-          white-space: nowrap;
-          font-size: 10px !important;
-        }
-        .icon-menu-top {
-            position: absolute;
-            left: -4px;
-        }
-        label {
-            margin: 0;
-        }
-    }
     .img-menu-icon {
         width: 10px;
         max-width: 10px;
