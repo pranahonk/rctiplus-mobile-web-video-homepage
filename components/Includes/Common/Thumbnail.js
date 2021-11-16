@@ -10,7 +10,6 @@ class Thumbnail extends React.Component {
     super(props);
   }
   render() {
-    console.log(this.props)
     return (
       <div className="thumb-container">
         <div className={'thumb-label'} style={{backgroudColor: this.props.backgroudColor, opacity: this.props.statusLabel }}>
