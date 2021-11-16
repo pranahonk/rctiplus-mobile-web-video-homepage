@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Head from 'next/head';
 import PropTypes from 'prop-types';
-import { convivaJwPlayer} from '../../../utils/conviva';
-import { getUserId } from '../../../utils/appier';
-import { onTrackingClick } from '../program-detail/programDetail';
 import { isIOS } from 'react-device-detect';
+
+import { convivaJwPlayer} from '../../../utils/conviva';
 import Wrench from '../Common/Wrench';
 import '../../../assets/scss/jwplayer.scss';
+
 import useCustomPlayerButton from "../../hooks/Jwplayer/useCustomPlayerButton"
+import useOverlayPlayerAds from "../../hooks/Jwplayer/useOverlayPlayerAds"
 import useSetupBitrate from "../../hooks/Jwplayer/useSetupBitrate"
+import useConvivaInitiator from "../../hooks/Jwplayer/useConvivaInitiator"
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -22,9 +23,6 @@ const JwPlayer = (props) => {
   const [player, setPlayer] = useState(null);
   const [duration, setDuration] = useState(0);
   const [isCustomSetup, setIsCustomSetup] = useState(0);
-  const [isConviva, setIsConviva] = useState(0);
-  const [geoblock, setGeoblock] = useState();
-  const [random1, setrandom1] = useState(0);
   const [status, setStatus] = useState({
     isPlayer: true,
     isError01: false,
@@ -36,17 +34,14 @@ const JwPlayer = (props) => {
     isError07: false,
     isError08: false,
   });
-  const [adsStatus, setAdStatus] = useState('none');
-  const [playerFullscreen, setPlayerFullscreen] = useState(false);
-  const [prevWidth, setPrevWidth] = useState(0);
 
   // Custom Hooks
-  const { setIsPlayerReady, setHideBtns } = useCustomPlayerButton({ ...props, player })
   const [ setBitrateLevels ] = useSetupBitrate({ ...props, player })
+  const { setInitConviva } = useConvivaInitiator({ ...props, player })
+  const [ adsState, setAdsState, stateOfAds ] = useOverlayPlayerAds({ ...props, player })
+  const { setIsPlayerReady, setHideBtns } = useCustomPlayerButton({ ...props, player })
 
   // Supporting Variables
-  const playerRef = useRef();
-  const val = useRef();
   const idPlayer = 'jwplayer-rctiplus';
   const options = {
     autostart: true,
@@ -58,7 +53,6 @@ const JwPlayer = (props) => {
     hlsjsdefault: true,
     aspectratio: '16:9',
     displaytitle: true,
-    // setFullscreen: true,
     stretching: 'uniform',
     height: 180,
     advertising: {
@@ -76,7 +70,6 @@ const JwPlayer = (props) => {
   // Initial Setup
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
-    // console.log('EFFECT INIT 1', props);
     if (props.geoblockStatus) {
       setStatus({
         isPlayer: false,
@@ -85,13 +78,10 @@ const JwPlayer = (props) => {
     }
     setPlayer(jwplayer);
     if (props.data && props.data.url) {
-      setIsConviva(Math.random());
-      // setIsCustomSetup(Math.random());
       jwplayer.setup(options);
     }
     return () => {
       if (player !== null) {
-        // console.log('DISPOSEEEEEE');
         jwplayer.remove();
       }
     };
@@ -100,11 +90,13 @@ const JwPlayer = (props) => {
   // Update Setup
   useEffect(() => {
     if (player !== null) {
-      setIsConviva(Math.random());
       setIsCustomSetup(Math.random());
       player.setup(options);
 
       setIsPlayerReady(false)
+      setAdsState(stateOfAds.NONE)
+
+      console.log(props.data.url)
     }
   }, [props.data && props.data.url, props.data && props.data.vmap]);
 
@@ -112,66 +104,10 @@ const JwPlayer = (props) => {
   useEffect(() => {
     if (player !== null) {
       player.on('ready', (event) => {
-        setPlayerFullscreen(props.isFullscreen);
+        const playerContainer = player.getContainer();
+
+        setAdsState(stateOfAds.INIT)
         setIsPlayerReady(true)
-
-        const playerContainer = player.getContainer()
-        const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
-        const isForward = playerContainer.querySelector('.jw-rplus-forward');
-
-        if (props.type.includes("live")) {
-          const data = props.data
-          // check if gpt data exist
-          if ((data && data.gpt && data.gpt.path != null) && (data && data.gpt && data.gpt.path != undefined)) {
-            // check if ads_wrapper element not exist
-            if (document.querySelector('.ads_wrapper') == undefined) {
-              const adsOverlayElement = document.createElement('div');
-              adsOverlayElement.classList.add('ads_wrapper');
-              adsOverlayElement.style.display = 'none';
-    
-              const adsOverlayBox = document.createElement('div');
-              adsOverlayBox.classList.add('adsStyling');
-    
-              const adsOverlayCloseButton = document.createElement('div');
-              adsOverlayCloseButton.classList.add('close_button');
-              adsOverlayCloseButton.innerHTML = closeIcon;
-    
-              const adsOverlayContainer = document.createElement('div');
-              const divGPTString = (data && data.gpt && data.gpt.div_gpt != null) && (data && data.gpt && data.gpt.div_gpt != undefined) ? data.gpt.div_gpt : type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-              adsOverlayContainer.classList.add('adsContainer');
-              adsOverlayContainer.id = divGPTString;
-              adsOverlayContainer.innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${divGPTString}'); });</script>`;
-    
-              playerContainer.appendChild(adsOverlayElement);
-              adsOverlayElement.appendChild(adsOverlayBox);
-              adsOverlayBox.appendChild(adsOverlayCloseButton);
-              adsOverlayBox.appendChild(adsOverlayContainer);
-    
-              adsOverlayCloseButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-    
-                pubAdsRefreshInterval.timeStart = 0;
-                setAdStatus('close');
-              });
-            }
-          }
-        }
-
-        if(isForward) {
-          const forwardElement = document.createElement('div');
-          forwardElement.classList.add('jw-rplus-forward');
-          forwardElement.innerHTML = foward10;
-          // const iconForward = document.querySelector('.icon-forward');
-          forwardElement.addEventListener('dblclick', (ev) => {
-            // iconForward.classList.add('animated', 'fadeInRight', 'go');
-            setTimeout(() => {
-              // iconForward.classList.remove('animated', 'fadeInRight', 'go');
-              forwardElement.style.opacity = 0;
-            }, 900);
-          });
-          playerContainer.append(forwardElement);
-        }
 
         if (isIOS) {
           const elementCreateMute = document.createElement('btn');
@@ -213,22 +149,16 @@ const JwPlayer = (props) => {
           }
         }
       })
-
-      player.on('play', () => {
+      
+      player.on('play', () =>{
         setBitrateLevels(player.getQualityLevels())
+        setInitConviva(true)
 
         convivaJwPlayer().playing();
-        if (document.querySelector('.ads_wrapper')) {
-          if (document.querySelector('.ads_wrapper').style.display == 'none') {
-            if (adsStatus === 'prestart') {
-              setAdStatus('start');
-            } else if (adsStatus === 'none') {
-              setAdStatus('start');
-            }
-          }
-        }
-      })
-      
+        setAdsState(stateOfAds.START)
+        setHideBtns(false)
+      });
+
       player.on('pause', () =>{
         convivaJwPlayer().pause();
       });
@@ -236,40 +166,25 @@ const JwPlayer = (props) => {
       player.on('buffer', (event) =>{
         convivaJwPlayer().buffer();
       });
-
+      
       player.on('adError', (event) => {
-        // console.log('ERRRRRORRR', event);
+        setAdsState(stateOfAds.NONE)
       });
-
+      
       player.on('time', (event) => {
         setDuration(player.getPosition());
       });
-
+      
       player.on('complete', (event) => {
         const convivaTracker = convivaJwPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
       });
-
-      player.on('fullscreen', (event) => {
-        /* if (event.fullscreen) {
-          if (!playerFullscreen) {
-            setPlayerFullscreen(true);
-          }
-        } else {
-          if (playerFullscreen) {
-            setPlayerFullscreen(false);
-          }
-        } */
-        setPlayerFullscreen(player.getFullscreen());
-      });
-
+      
       // ads event
       player.on('adImpression', (event) => {
-        if (document.querySelector('.ads_wrapper')) {
-          setAdStatus('none');
-        }
+        setAdsState(stateOfAds.NONE)
       });
 
       player.on("adPlay", _ => {
@@ -277,43 +192,24 @@ const JwPlayer = (props) => {
       })
       
       player.on('adSkipped', (event) => {
-        setHideBtns(false)
-        
-        if (document.querySelector('.ads_wrapper')) {
-          if (adsStatus === 'none') {
-            setAdStatus('prestart');
-          }
-        }
+        setAdsState(stateOfAds.START)
       });
       
       player.on('adComplete', (event) => {
-        setHideBtns(false)
-        
-        if (document.querySelector('.ads_wrapper')) {
-          if (adsStatus === 'none') {
-            setAdStatus('prestart');
-          }
-        }
+        setAdsState(stateOfAds.START)
       });
-
+      
       player.on('userActive', (event) => {
-        if (document.querySelector('.ads_wrapper')) {
-          document.querySelector('.ads_wrapper').style.bottom = '70px';
+        if (document.querySelector('.jw-ads-overlay')) {
+          document.querySelector('.jw-ads-overlay').style.bottom = '70px';
         }
       });
-
+      
       player.on('userInactive', (event) => {
-        if (document.querySelector('.ads_wrapper')) {
-          document.querySelector('.ads_wrapper').style.bottom = '5px';
+        if (document.querySelector('.jw-ads-overlay')) {
+          document.querySelector('.jw-ads-overlay').style.bottom = '5px';
         }
       });
-      /* window.addEventListener('resize', (event) => {
-        if (document.querySelector('.ads_wrapper')) {
-          if (adsStatus === 'idle' || adsStatus === 'close') {
-            setAdStatus('restart');
-          }
-        }
-      }); */
     }
   });
 
@@ -325,7 +221,6 @@ const JwPlayer = (props) => {
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
-        console.log('ERRORR',props.data.url)
         if (props.data.url === 'error') {
           setStatus({
             isPlayer: false,
@@ -342,7 +237,6 @@ const JwPlayer = (props) => {
         player.remove();
       });
       player.on('setupError', (event) => {
-        // console.log('PLAYER SETUP ERROR', event);
         const convivaTracker = convivaJwPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
@@ -364,47 +258,28 @@ const JwPlayer = (props) => {
       });
     }
   });
-  // Continue Watching
 
+  // Continue Watching
   useEffect(() => {
-    // console.log('EFFECT INIT 4 CONTINUE WATCHING', duration, props.customData && props.customData.isLogin);
-    // val.current = props;
     if(props.customData && props.customData.isLogin && props.isResume && (props.data && props.data.id)) {
       props.onResume(props.data.id, props.data.content_type, duration);
     }
-    // return () => {
-    //   if (window.convivaVideoAnalytics) {
-    //     const convivaTracker = convivaJwPlayer();
-    //     convivaTracker.cleanUpSession();
-    //     // console.log('RELESE FROM');
-    //   }
-
-    //   if (props.isResume && (props.data && props.data.id)) {
-    //     console.log('EFFECT INIT 4 CONTINUE WATCHING CLEANUP :', player);
-    //     props.onResume(props.data.id, props.data.content_type, duration);
-    //   }
-    // };
   }, [isCustomSetup]);
 
   useEffect(() => {
     let ab = 0
     if(player !== null) {
       player.on('time', (event) => {
-        // setDuration(player.getPosition());
         ab = event.currentTime
-        // console.log('EFFECT INIT 4 CONTINUE WATCHING CLEANUP', ab)
       });
     }
     return () => {
-      // console.log('EFFECT INIT 4 CONTINUE WATCHING CLEANUP', ab)
       if (window.convivaVideoAnalytics) {
         const convivaTracker = convivaJwPlayer();
         convivaTracker.cleanUpSession();
-        // console.log('RELESE FROM');
       }
 
       if (props.isResume && (props.data && props.data.id)) {
-        // console.log('EFFECT INIT 4 CONTINUE WATCHING CLEANUP :', ab);
         props.onResume(props.data.id, props.data.content_type, ab);
       }
     };
@@ -418,299 +293,13 @@ const JwPlayer = (props) => {
       }
     }
   }, [props.geoblockStatus]);
-  
-  // Conviva Tracker
-  useEffect(() => {
-    if (props.data) {
-      // console.log('EFFECT INIT 5');
-      let genreTags = 'N/A';
-      if (props.data && props.data.genre) {
-          if (Array.isArray(props.data.genre)) {
-              genreTags = '';
-              const genres = props.data.genre;
-              for (let i = 0; i < genres.length; i++) {
-                  genreTags += genres[i].name;
-                  if (i < genres.length - 1) {
-                      genreTags += ',';
-                  }
-              }
-          }
-          else {
-              genreTags = props.data.genre;
-          }
-      }
-      const optionsConviva = {
-        assetName : props.type === 'live tv' ?
-                    tempId(props.data && props.data.id)[1] :
-                    props.type === 'live event' || props.type === 'missed event' ?
-                    props.data && props.data.assets_name :
-                    props.type === 'catch up tv' ?
-                    props.data.title :
-                    props.data && props.data.content_name ? props.data.content_name : 'N/A',
-        content_type: props.type === 'live tv' || props.type === 'catch up tv' || props.type === 'live event' || props.type === 'missed event' ?
-                      props.type : props.data && props.data.content_type ? props.data && props.data.content_type : 'N/A',
-        content_id: props.type === 'live tv' ?
-                    'N/A' :
-                    props.type === 'catch up tv' ?
-                    (props.data.id).toString() :
-                    (props.data.id ? props.data.id : 'N/A').toString(),
-        program_name: props.type === 'live tv' || props.type === 'catch up tv' ?
-                    'N/A' :
-                    props.type === 'live event' || props.type === 'missed event' ?
-                    props.customData.program_name :
-                    (props.data.program_title ? props.data.program_title : 'N/A'),
-        program_id: props.type === 'live tv' || props.type === 'catch up tv' ?
-                    'N/A' : (props.data.program_id ? props.data.program_id : 'N/A').toString(),
-        tv_id: props.type === 'live tv' ?
-                    (props.data && props.data.id && props.data.id.toString()) :
-                    props.type === 'catch up tv' ?
-                    tempId(props.data.channel)[0] :
-                    (props.data.tv_id ? props.data.tv_id : 'N/A'),
-        tv_name: props.type === 'live tv' ?
-                    tempId(props.data && props.data.id)[1] :
-                    props.type === 'catch up tv' ?
-                    tempId(props.data.channel)[0] :
-                    (props.data.tv_name ? props.data.tv_name : 'N/A'),
-      };
-      // const assetName = props.data && props.data.content_name ? props.data.content_name : 'N/A';
-      const customTags = {
-        app_version: process.env.APP_VERSION,
-        carrier: 'N/A',
-        connection_type: 'N/A',
-        content_type: optionsConviva.content_type,
-        content_id: optionsConviva.content_id,
-        program_name: optionsConviva.program_name,
-        tv_id: optionsConviva.tv_id,
-        tv_name: optionsConviva.tv_name,
-        date_video: 'N/A',
-        page_title: 'N/A',
-        page_view: 'N/A',
-        program_id: optionsConviva.program_id,
-        screen_mode: 'portrait',
-        time_video: 'N/A',
-        section_page: props.customData.sectionPage,
-        application_name: process.env.MODE === 'DEVELOPMENT' ? 'RCTI+ MWEB RC' : 'RCTI+ MWEB',
-        genre: genreTags,
-        is_login: props.customData && props.customData.isLogin ? 'login' : 'not login',
-        program_type: props.customData && props.customData.programType ? props.customData.programType : 'N/A',
-      };
-      if (player !== null) {
-        // console.log('CONVIVA TAGS: ',optionsConviva);
-        const convivaTracker = convivaJwPlayer(optionsConviva.assetName, player, player.getDuration(), props.data.url ? props.data.url : props.data.trailer_url, customTags, 'Anevia', getLive(props.type));
-        if (window.convivaVideoAnalytics) {
-          convivaTracker.cleanUpSession();
-        }
-        convivaTracker.createSession();
-      }
-      // console.log('CONVIVA PLAYER', window.convivaVideoAnalytics);
-    }
-  }, [isConviva]);
 
-  // ads overlay
-  useEffect(() => {
-    if (player !== null) {
-      // let windowWidth = document.documentElement.clientWidth;
-      let slotName = props.data.gpt?.path != null && props.data.gpt?.path != undefined ? props.data.gpt?.path : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
-      let slotDiv = props.data.gpt?.div_gpt != null && props.data.gpt?.div_gpt != undefined ? props.data.gpt?.div_gpt : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-      let intervalTime = props.data.gpt?.interval_gpt != null && props.data.gpt?.interval_gpt != undefined ? props.data.gpt?.interval_gpt : props.adsOverlayData?.reloadDuration;
-      let minWidth = props.data.gpt?.size_width_1 != null && props.data.gpt?.size_width_1 != undefined ? props.data.gpt?.size_width_1 : 320;
-      let maxWidth = props.data.gpt?.size_width_2 != null && props.data.gpt?.size_width_2 != undefined ? props.data.gpt?.size_width_2 : 468;
-      let minHeight = props.data.gpt?.size_height_1 != null && props.data.gpt?.size_height_1 != undefined ? props.data.gpt?.size_height_1 : 50;
-      let maxHeight = props.data.gpt?.size_height_2 != null && props.data.gpt?.size_height_2 != undefined ? props.data.gpt?.size_height_2 : 60;
-      let custParams = props.data.gpt?.cust_params != null && props.data.gpt?.cust_params != undefined ? props.data.gpt?.cust_params : null;
-
-      if (adsStatus === 'start') {
-        clearTimeout(pubAdsRefreshInterval.timeObject);
-
-        if (document.querySelector('.ads_wrapper')) {
-          googletag.destroySlots();
-          window.googletag = window.googletag || { cmd: [] };
-          googletag.cmd.push(function () {
-            const mappingSlot = googletag.sizeMapping().addSize([(maxWidth + 15), maxHeight], [maxWidth, maxHeight]).addSize([0, 0], [minWidth, minHeight]).build();
-
-            googletag.defineSlot(slotName, [[maxWidth, maxHeight], [minWidth, minHeight]], slotDiv)
-            .defineSizeMapping(mappingSlot)
-            .addService(googletag.pubads());
-            /* .setTargeting('logged_in', props.customData && props.customData.isLogin.toString())
-            .setTargeting('channel_id', props.data && props.data.id)
-            .setTargeting('program_title', props.type === 'live tv' ?
-            tempId(props.data && props.data.id)[1] :
-            props.type === 'live event' || props.type === 'missed event' ?
-            props.data && props.data.assets_name : 'NOT_SET'); */
-
-            // TODO: looping targeting value
-            if (custParams != null) {
-              for (const custParam of custParams) {
-                console.log(custParam.name, custParam.value);
-                googletag.pubads().setTargeting(custParam.name, custParam.value);
-              }
-            }
-
-            googletag.pubads().enableSingleRequest();
-            googletag.pubads().collapseEmptyDivs();
-            googletag.pubads().disableInitialLoad();
-            googletag.enableServices();
-          });
-          googletag.cmd.push(function () {
-            googletag.display(slotDiv);
-          });
-          setAdStatus('close');
-        }
-      } else if (adsStatus === 'restart') {
-        if (document.querySelector('.ads_wrapper')) {
-          if (document.querySelector('.adsContainer').style.display != 'none') {
-            const adsIFrame = document.getElementById(slotDiv)?.children[0]?.children[0];
-            if (adsIFrame) {
-              setTimeout(() => {
-                if (document.querySelector('.fullscreen-player')) {
-                  if (adsIFrame.width != maxWidth) {
-                    googletag.pubads().refresh();
-                  }
-                } else {
-                  if (adsIFrame.width != minWidth) {
-                    googletag.pubads().refresh();
-                  }
-                }
-              }, 100);
-            }
-          }
-        }
-        if (document.querySelector('.ads_wrapper').style.display === 'block') {
-          setAdStatus('idle');
-        } else {
-          setAdStatus('close');
-        }
-      } else if (adsStatus === 'idle') {
-        clearTimeout(pubAdsRefreshInterval.timeObject);
-
-        if (document.querySelector('.ads_wrapper')) {
-          let delay = 15000;
-          if (pubAdsRefreshInterval.timeStart > 0) {
-            delay = delay - (new Date().getTime() - pubAdsRefreshInterval.timeStart);
-          } else {
-            pubAdsRefreshInterval.timeStart = new Date().getTime();
-          }
-
-          pubAdsRefreshInterval.timeObject = setTimeout(() => {
-            pubAdsRefreshInterval.timeStart = 0;
-            setAdStatus('close');
-          }, delay);
-        }
-      } else if (adsStatus === 'close') {
-        clearTimeout(pubAdsRefreshInterval.timeObject);
-      if (["start", "prestart"].includes(adsStatus)) {
-        console.log("ADS STATUS: ", adsStatus)
-        const adsWrapper = document.querySelector('.ads_wrapper') || {}
-        intervalAds = setInterval(() => {
-          changeScreen()
-          googletag.pubads().refresh();
-          timeoutAds = setTimeout(() => {
-            adsWrapper.style.display = "none"
-          }, 10000)
-        }, intervalTime)
-      }
-
-        if (document.querySelector('.ads_wrapper')) {
-          while(document.querySelector('.adsURLLink')) {
-            document.querySelector('.adsURLLink')?.remove();
-          }
-
-          let delay = intervalTime;
-          if (pubAdsRefreshInterval.timeStart > 0) {
-            delay = delay - (new Date().getTime() - pubAdsRefreshInterval.timeStart);
-          } else {
-            pubAdsRefreshInterval.timeStart = new Date().getTime();
-          }
-
-          if (document.querySelector('.ads_wrapper')) {
-            document.querySelector('.ads_wrapper').style.display = 'none';
-          }
-
-          pubAdsRefreshInterval.timeObject = setTimeout(() => {
-            if (refreshCounter === 0) {
-              googletag.pubads().refresh();
-              refreshCounter = 1
-            } else {
-              refreshCounter = 0
-            }
-            // console.log('CALL CALL')
-            setTimeout(() => {
-              if (document.querySelector('.ads_wrapper')) {
-                if (document.querySelector('.adsContainer').style.display != 'none') {
-                  const adsIFrame = document.getElementById(slotDiv)?.children[0]?.children[0];
-
-                  if (adsIFrame == null || adsIFrame == undefined) {
-                    //document.querySelector('.adsContainer').style.display = 'none';
-                    pubAdsRefreshInterval.timeStart = 0;
-                    setAdStatus('close');
-                  } else {
-                    //const adsImage = adsIFrame.contentWindow.document.querySelector('amp-img');
-
-                    if (document.querySelector('.adsURLLink') == null || document.querySelector('.adsURLLink') == undefined) {
-                      const adsLink = adsIFrame.contentWindow.document.querySelector('a')?.href;
-                      const adsOverlayBoxLink = document.createElement('div');
-                      adsOverlayBoxLink.classList.add('adsURLLink');
-                      adsOverlayBoxLink.style.width = '100%';
-                      adsOverlayBoxLink.style.height = '100%';
-                      adsOverlayBoxLink.style.top = '0';
-                      adsOverlayBoxLink.style.position = 'absolute';
-
-
-                      document.querySelector('.adsStyling')?.appendChild(adsOverlayBoxLink);
-                      const elementAds = document.querySelector('.adsURLLink')
-                      if (elementAds) {
-                        elementAds.addEventListener('click', function(e) {
-                          e.preventDefault();
-                          e.stopPropagation();
-
-                          window.open(adsLink, '_blank');
-                        });
-                      }
-                    }
-
-                    document.querySelector('.ads_wrapper').style.display = 'block';
-
-                    pubAdsRefreshInterval.timeStart = 0;
-                    setAdStatus('idle');
-                  }
-                }
-              }
-            }, 1000);
-          }, delay - 1000);
-        }
-      function changeScreen() {
-        const adsWrapper = document.querySelector('.ads_wrapper')
-        if (screen.orientation.type === "portrait-primary") {
-          handleAds(slotName, slotDiv, custParams, adSizePotrait)
-        }
-        if (screen.orientation.type === "landscape-primary") {
-          handleAds(slotName, slotDiv, custParams, adSizeLandscape)
-        }
-        if (adsWrapper) adsWrapper.style.display = "block"
-        googletag.pubads().refresh();
-      }
-      }
-    }
-    return () => clearTimeout(pubAdsRefreshInterval.timeObject);
-  }, [adsStatus]);
-
-  // fullscreen
-  useEffect(() => {
-    if (player !== null) {
-      if ((props.type === 'live tv' || props.type === 'live event') && ((props.data && props.data.gpt && props.data.gpt.path != null) &&  (props.data && props.data.gpt && props.data.gpt.path != undefined))) {
-        document.querySelector('.ads_wrapper').classList.toggle('fullscreen-player', playerFullscreen);
-        setAdStatus('restart');
-      }
-    }
-  }, [playerFullscreen]);
 
   const getPlayer = (error1, error2) => {
     if (error1) {
-      console.log('GEO')
       return error(msgError01)
     }
     if (error2) {
-      console.log('ERRORRRRR P')
       return error()
     }
     return (
@@ -718,29 +307,6 @@ const JwPlayer = (props) => {
         <div id="jwplayer-rctiplus" />
       </>
     )
-  }
-
-  const tempId = (value) => {
-    if (value === 'rcti' || value === 1) {
-      return ['1', 'RCTI'];
-    }
-    if (value === 'mnctv' || value === 2) {
-      return ['2', 'MNCTV'];
-    }
-    if (value === 'gtv' || value === 3) {
-      return ['3', 'GTV'];
-    }
-    if (value === 'inews' || value === 4) {
-      return ['4', 'INEWS'];
-    }
-    return ['N/A', 'N/A'];
-  };
-  
-  const getLive = (value) => {
-    if(value === 'live tv' || value === 'live event') {
-      return true;
-    }
-    return false;
   }
   
   const error = (msg = msgError02, icon = (<Wrench />)) => {
@@ -836,65 +402,6 @@ const foward10 = `
     </g>
 </g>
 </svg>`;
-
-const backward10 = `
-<svg xmlns="http://www.w3.org/2000/svg" width="46" height="15" viewBox="0 0 46 15">
-<g fill="none" fill-rule="evenodd">
-    <g>
-        <path fill="#FFF" fill-rule="nonzero" d="M6 21l11.171-7.5L6 6v15zM17.829 6v15L29 13.5 17.829 6z" transform="translate(-2 -6) matrix(-1 0 0 1 31 0)"/>
-        <path d="M0 0L31 0 31 29 0 29z" transform="translate(-2 -6) matrix(-1 0 0 1 31 0)"/>
-        <path d="M0 0L31 0 31 29 0 29z" transform="translate(-2 -6) matrix(-1 0 0 1 31 0)"/>
-    </g>
-    <g>
-        <path fill="#FFF" fill-rule="nonzero" d="M6 21l11.171-7.5L6 6v15zM17.829 6v15L29 13.5 17.829 6z" transform="translate(-2 -6) matrix(-1 0 0 1 54 0)"/>
-        <path d="M0 0L31 0 31 29 0 29z" transform="translate(-2 -6) matrix(-1 0 0 1 54 0)"/>
-        <path d="M0 0L31 0 31 29 0 29z" transform="translate(-2 -6) matrix(-1 0 0 1 54 0)"/>
-    </g>
-</g>
-</svg>
-`;
-const foward10Icon = `
-<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
-    <title>fastforward</title>
-    <desc>Created with Sketch.</desc>
-    <defs>
-        <polygon id="path-1" points="48 48 0 48 0 0 48 0"></polygon>
-    </defs>
-    <g id="fastforward" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="baseline-forward_10-24px-(1)">
-            <g id="Clipped">
-                <mask id="mask-2" fill="white">
-                    <use xlink:href="#path-1"></use>
-                </mask>
-                <g id="a"></g>
-                <path d="M8,26 C8,34.8 15.2,42 24,42 C32.8,42 40,34.8 40,26 L36,26 C36,32.6 30.6,38 24,38 C17.4,38 12,32.6 12,26 C12,19.4 17.4,14 24,14 L24,22 L34,12 L24,2 L24,10 C15.2,10 8,17.2 8,26 L8,26 Z M21.6,32 L20,32 L20,25.4 L18,26 L18,24.6 L21.6,23.4 L21.8,23.4 L21.8,32 L21.6,32 Z M30.2,28.4 C30.2,29 30.2,29.6 30,30 L29.4,31.2 C29.4,31.2 28.8,31.8 28.4,31.8 C28,31.8 27.6,32 27.2,32 C26.8,32 26.4,32 26,31.8 C25.6,31.6 25.4,31.4 25,31.2 C24.6,31 24.6,30.6 24.4,30 C24.2,29.4 24.2,29 24.2,28.4 L24.2,27 C24.2,26.4 24.2,25.8 24.4,25.4 L25,24.2 C25,24.2 25.6,23.6 26,23.6 C26.4,23.6 26.8,23.4 27.2,23.4 C27.6,23.4 28,23.4 28.4,23.6 C28.8,23.8 29,24 29.4,24.2 C29.8,24.4 29.8,24.8 30,25.4 C30.2,26 30.2,26.4 30.2,27 L30.2,28.4 L30.2,28.4 Z M28.6,26.8 L28.6,25.8 C28.6,25.8 28.4,25.4 28.4,25.2 C28.4,25 28.2,25 28,24.8 C27.8,24.6 27.6,24.6 27.4,24.6 C27.2,24.6 27,24.6 26.8,24.8 L26.4,25.2 C26.4,25.2 26.2,25.6 26.2,25.8 L26.2,29.8 C26.2,29.8 26.4,30.2 26.4,30.4 C26.4,30.6 26.6,30.6 26.8,30.8 C27,31 27.2,31 27.4,31 C27.6,31 27.8,31 28,30.8 L28.4,30.4 C28.4,30.4 28.6,30 28.6,29.8 L28.6,26.8 L28.6,26.8 Z" id="Shape" fill="#FFFFFF" mask="url(#mask-2)"></path>
-            </g>
-        </g>
-    </g>
-</svg>`;
-
-const backward10Icon = `
-<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
-    <title>previous</title>
-    <desc>Created with Sketch.</desc>
-    <defs>
-        <polygon id="path-1" points="48 48 0 48 0 0 48 0"></polygon>
-    </defs>
-    <g id="previous" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="baseline-forward_10-24px-(1)">
-            <g id="Clipped">
-                <mask id="mask-2" fill="white">
-                    <use xlink:href="#path-1"></use>
-                </mask>
-                <g id="a"></g>
-                <path d="M40,26 C40,34.8 32.8,42 24,42 C15.2,42 8,34.8 8,26 L12,26 C12,32.6 17.4,38 24,38 C30.6,38 36,32.6 36,26 C36,19.4 30.6,14 24,14 L24,22 L14,12 L24,2 L24,10 C32.8,10 40,17.2 40,26 L40,26 Z M21.6,32 L20,32 L20,25.4 L18,26 L18,24.6 L21.6,23.4 L21.8,23.4 L21.8,32 L21.6,32 Z M30.2,28.4 C30.2,29 30.2,29.6 30,30 L29.4,31.2 C29.4,31.2 28.8,31.8 28.4,31.8 C28,31.8 27.6,32 27.2,32 C26.8,32 26.4,32 26,31.8 C25.6,31.6 25.4,31.4 25,31.2 C24.6,31 24.6,30.6 24.4,30 C24.2,29.4 24.2,29 24.2,28.4 L24.2,27 C24.2,26.4 24.2,25.8 24.4,25.4 L25,24.2 C25,24.2 25.6,23.6 26,23.6 C26.4,23.6 26.8,23.4 27.2,23.4 C27.6,23.4 28,23.4 28.4,23.6 C28.8,23.8 29,24 29.4,24.2 C29.8,24.4 29.8,24.8 30,25.4 C30.2,26 30.2,26.4 30.2,27 L30.2,28.4 L30.2,28.4 Z M28.6,26.8 L28.6,25.8 C28.6,25.8 28.4,25.4 28.4,25.2 C28.4,25 28.2,25 28,24.8 C27.8,24.6 27.6,24.6 27.4,24.6 C27.2,24.6 27,24.6 26.8,24.8 L26.4,25.2 C26.4,25.2 26.2,25.6 26.2,25.8 L26.2,29.8 C26.2,29.8 26.4,30.2 26.4,30.4 C26.4,30.6 26.6,30.6 26.8,30.8 C27,31 27.2,31 27.4,31 C27.6,31 27.8,31 28,30.8 L28.4,30.4 C28.4,30.4 28.6,30 28.6,29.8 L28.6,26.8 L28.6,26.8 Z" id="Shape" fill="#FFFFFF" mask="url(#mask-2)"></path>
-            </g>
-        </g>
-    </g>
-</svg>
-`;
 
 const closeIcon = `
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
