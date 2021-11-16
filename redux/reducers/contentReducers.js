@@ -22,7 +22,6 @@ const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
         case 'HOMEPAGE_CONTENT':
-            console.log(state.homepage_content.concat(action.data), "uhuy")
             return {
                 ...state,
                 homepage_content: state.homepage_content.concat(action.data),
