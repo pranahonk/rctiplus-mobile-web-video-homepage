@@ -445,6 +445,11 @@ const setShowMoreAllowed = (allowed, type = 'EPISODES') => {
     }
 }
 
+
+const setHomepageLineups = ({ data, meta }) => dispatch => {
+    dispatch({ type: 'HOMEPAGE_CONTENT', data, meta });
+}
+
 export default {
     getContents,
     getHomepageContents,
@@ -464,5 +469,6 @@ export default {
     getProgramClip,
     getContentShareLink,
     selectSeason,
-    setShowMoreAllowed
+    setShowMoreAllowed,
+    setHomepageLineups
 };
