@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
+import Image from "next/image"
+import Link from "next/link"
 
 import actions from '../../../redux/actions';
 import pageActions from '../../../redux/actions/pageActions';
@@ -9,14 +11,12 @@ import cookie from 'js-cookie';
 import { getCookie, removeCookie } from '../../../utils/cookie';
 import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent, newsGeneralEvent } from '../../../utils/appier';
 import '../../../assets/scss/components/navbar-v2.scss';
-import ActiveLink from '../Navbar/ActiveLink';
 
 import { Navbar, NavbarBrand, Button, Row, Col } from 'reactstrap';
 
 import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
-import { json } from 'body-parser';
 import {LINK_RADIO, LINK_GAMES, LINK_HOT, LINK_NEWS} from '../../../config';
 
 
@@ -60,56 +60,6 @@ class NavbarDef_v2 extends Component {
         } else {
             Router.push('/explores/search');
         }
-        // switch (e) {
-        //     case ['/' , '/explores' , '/live-event' , '/exclusive'].includes(e) :
-        //         Router.push('/explores/search');
-        //     break;
-        //     case '/radio' :
-        //         Router.push('/radio/search');
-        //     break;
-        //     default:
-        //         Router.push('/news/search');
-        // }
-        // switch (this.props.router.asPath) {
-        //     case '/exclusive':
-        //         exclusiveGeneralEvent('mweb_exclusive_library_clicked');
-        //         break;
-
-        //     case '/profile':
-        //         accountGeneralEvent('mweb_account_library_clicked');
-        //         break;
-
-        //     case '/':
-        //         homeGeneralClicked('mweb_search_clicked');
-        //         break;
-        //     case '/news':
-        //         Router.push('/news/search');
-        //         // homeGeneralClicked('mweb_search_clicked');
-        //         break;
-
-        //     // default:
-        //     //     if (this.props.router.asPath.indexOf('/news') === 0) {
-        //     //         // newsGeneralEvent('mweb_news_search_clicked');
-        //     //     }
-        //     //     else {
-        //     //         homeGeneralClicked('mweb_library_clicked');
-        //     //     }
-        //     //     break;
-        // }
-        // if (e.includes('/news/')) {
-        //     Router.push('/news/search');
-        //     return;
-        // }
-        // switch (e) {
-        //     case '/' || '/explores' || '/live-event' || '/exclusive' :
-        //         Router.push('/explores/search');
-        //     break;
-        //     case '/radio' :
-        //         Router.push('/radio/search');
-        //     break;
-        //     default:
-        //         Router.push('/news/search');
-        // }
     }
 
     signOut() {
@@ -123,7 +73,6 @@ class NavbarDef_v2 extends Component {
                     Router.push('/login');
                 })
                 .catch(error => {
-                    console.log(error);
                     this.props.unsetPageLoader();
                     removeCookie('ACCESS_TOKEN');
                 });
@@ -134,8 +83,6 @@ class NavbarDef_v2 extends Component {
     }
 
     componentDidMount() {
-        // console.log(cookie.getJSON('ACCESS_TOKEN'))
-        // console.log(cookie.getJSON('VISITOR_TOKEN').VALUE)
         this.setState({token: this.getToken()});
         if (!this.props.disableScrollListener) {
             document.addEventListener('scroll', () => {
@@ -151,9 +98,54 @@ class NavbarDef_v2 extends Component {
 
     getToken() {
         const accessToken = cookie.getJSON('ACCESS_TOKEN');
-        // const accessToken = cookie.getJSON('ACCESS_TOKEN') && cookie.getJSON('ACCESS_TOKEN').VALUE
         const visitorToken = cookie.getJSON('VISITOR_TOKEN') && cookie.getJSON('VISITOR_TOKEN').VALUE
         return accessToken ? accessToken : visitorToken;
+    }
+
+    navMenuIcons() {
+        const iconData = [
+            { 
+                href: "/", 
+                service: "video", 
+                isActive: true 
+            },
+            { 
+                href: "https://m.rctiplus.com/news",
+                service: "news", 
+                isActive: false
+            },
+            { 
+                href: `${LINK_RADIO}/?token=${this.getToken()}`,
+                service: "audio",
+                isActive: false
+            },
+            { 
+                href: LINK_HOT,
+                service: "hot",
+                isActive: false
+            },
+            { 
+                href: LINK_GAMES,
+                service: "games",
+                isActive: false
+            },
+        ]
+        return iconData.map(({ href, service, isActive }) => {
+            const activeSrcSuffix = isActive ? "_active" : ""
+
+            return (
+                <Link href={href}>
+                    <a>
+                        <Image 
+                            src={`/icons-menu/${service}plus${activeSrcSuffix}.png`}
+                            alt={`${service}+`}
+                            width={67}
+                            height={20}
+                            />
+                    </a>
+                </Link>
+            )
+        })
     }
 
     render() {
@@ -193,34 +185,7 @@ class NavbarDef_v2 extends Component {
                         </div>
                     </div>
                     <div className="nav-menu-container">
-                        <ActiveLink activeClassName="active" href="/" activeMenu={'home' + this.props.router.asPath}>
-                            <Button outline className="btn-nav-menu">
-                                <img alt="Video+" className="icon-menu-top" src={'/icons-menu/videoIcon.svg'} alt="video" width="30" height="30" />
-                                <label>Video+</label>
-                            </Button>
-                        </ActiveLink>
-                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_NEWS}`}>
-                            <img alt="News+" className="icon-menu-top" src={'/icons-menu/newsIcon.svg'}  width="30" height="30" />
-                            <label>News+</label>
-                        </Button>
-                        {/* <ActiveLink activeClassName="active" href="/radio" activeMenu={'radio' + this.props.router.asPath}>
-                            <Button outline className="btn-nav-menu">
-                                <img className="img-menu-icon" src={'/radio.png'}/>
-                                Radio +
-                            </Button>
-                        </ActiveLink> */}
-                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_RADIO}?token=${this.state.token}`}>
-                            <img alt="Radio+" className="icon-menu-top" src={'/icons-menu/radioIcon.svg'} alt="radio" width="30" height="30" />
-                            <label>Radio+</label>
-                        </Button>
-                        <Button outline className="btn-nav-menu" onClick={() => window.location.href = `${LINK_HOT}?token=${this.state.token}`}>
-                            <img className="icon-menu-top" src={'/icons-menu/hotIcon.svg'} alt="hot" width="30" height="30" />
-                            <label>HOT</label>
-                        </Button>
-                        <Button outline className="btn-nav-menu" onClick={() => window.open(LINK_GAMES, "_blank").focus()}>
-                            <img className="icon-menu-top" src={'/icons-menu/gamesIcon.svg'} alt="games" width="30" height="30" />
-                            <label>Games+</label>
-                        </Button>
+                        {this.navMenuIcons()}
                     </div>
                 </Navbar>
                 <StatusNotification />
