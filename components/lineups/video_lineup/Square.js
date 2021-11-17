@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import { connect } from 'react-redux';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 
 import contentActions from '../../../redux/actions/contentActions'
 import useVideoLineups from "../../hooks/lineups/useVideoLineups"
+import { RESOLUTION_IMG } from "../../../config"
 
 import '../../../assets/scss/components/panel.scss'
 
@@ -16,7 +17,7 @@ function SquareView (props) {
 
   const pageLength = 7
   const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
-  const rootImageUrl = `${props.imagePath}${props.resolution}`
+  const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
 	const loadMore = () => {
     if (endPage) return
@@ -50,17 +51,17 @@ function SquareView (props) {
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
           <div ref={scrollRef} className="swiper-container">
-            {contents.map((c, i) => (
+            {contents.map((content, i) => (
               <div
-                onClick={() => generateLink(c)}
+                onClick={() => generateLink(content)}
                 key={`${i}-square-video`}
                 className="swiper-slide">
                 <div>
-                  <Img 
-                    alt={c.program_title || c.content_title} 
-                    unloader={<img src={placeHolderImgUrl} />}
-                    loader={<img src={placeHolderImgUrl} />}
-                    src={[`${rootImageUrl}${c.square_image}`, placeHolderImgUrl]} />
+                  {/*<Img*/}
+                  {/*  alt={props.title}*/}
+                  {/*  unloader={<img src={placeHolderImgUrl} />}*/}
+                  {/*  loader={<img src={placeHolderImgUrl} />}*/}
+                  {/*  src={[`${rootImageUrl}${content.content_type_detail.detail.data.square_image}`, placeHolderImgUrl]} />*/}
                 </div>
               </div>
             ))}
