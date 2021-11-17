@@ -108,38 +108,44 @@ class NavbarDef_v2 extends Component {
                 href: "/", 
                 service: "video", 
                 isActive: true,
-                replacePage: true
+                newPage: false
             },
             { 
                 href: "https://m.rctiplus.com/news",
                 service: "news", 
                 isActive: false,
-                replacePage: true
+                newPage: false
             },
             { 
                 href: `${LINK_RADIO}/?token=${this.getToken()}`,
                 service: "audio",
                 isActive: false,
-                replacePage: true
+                newPage: false
             },
             { 
                 href: LINK_HOT,
                 service: "hot",
                 isActive: false,
-                replacePage: true
+                newPage: false
             },
             { 
                 href: LINK_GAMES,
                 service: "games",
                 isActive: false,
-                replacePage: false
+                newPage: true
             },
         ]
-        return iconData.map(({ href, service, isActive, replacePage }, i) => {
+
+        const redirectUrl = (isNewpage, href) => {
+            if (isNewpage) return window.open(href, "_blank")
+            return window.location.assign(href)
+        }
+
+        return iconData.map(({ href, service, isActive, newPage }, i) => {
             const activeSrcSuffix = isActive ? "_active" : ""
             return (
-                <Link href={href} replace={replacePage} key={i} >
-                    <a>
+                <Link href="/" key={i} >
+                    <a onClick={_ => redirectUrl(newPage, href)}>
                         <Image 
                             src={`/icons-menu/${service}plus${activeSrcSuffix}.svg`}
                             alt={`${service}+`}
