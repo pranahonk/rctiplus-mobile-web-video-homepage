@@ -109,6 +109,7 @@ class Index extends React.Component {
       trailer: false,
       title: 'title-program',
       statusProgram: false,
+      share_link: "",
       statusError: 0,
       videoIndexing: {},
       activeContentId: 0
@@ -592,7 +593,7 @@ class Index extends React.Component {
           onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
           bookmark={bookmark}
           isLogin={this.props.auth.isAuth}
-          onShare={(title, item) => this.toggleActionSheet.bind(this, 'episode', title, 'content_share', item)}
+          onShare={(item) => this.toggleActionSheet.bind(this, 'episode', 'content_share', item)}
           dataTracking={dataTracking}
           isActive={query.content_id}
         />
@@ -639,7 +640,7 @@ class Index extends React.Component {
         onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
         bookmark={bookmark}
         isLogin={this.props.auth.isAuth}
-        onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
+        onShare={(item) => this.toggleActionSheet.bind(this, 'extra', 'content_share', item)}
         dataTracking={dataTracking}
         isActive={this.props.router &&  this.props.router.query.content_id}
       />
@@ -686,7 +687,7 @@ class Index extends React.Component {
         onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
         bookmark={bookmark}
         isLogin={this.props.auth.isAuth}
-        onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
+        onShare={(item) => this.toggleActionSheet.bind(this, 'extra', 'content_share', item)}
         dataTracking={dataTracking}
         isActive={this.props.router &&  this.props.router.query.content_id}
       />
@@ -904,29 +905,19 @@ class Index extends React.Component {
       </div>
     );
   }
-  toggleActionSheet(value, title = 'title-program', trackingType, item) {
-    const { props, state } = this;
+  toggleActionSheet(value, trackingType, item = {}) {
     this.setState({
       action_sheet: !this.state.action_sheet,
-    });
-    if (value === 'program') {
-      this.setState({title: props.data && props.data['tracking-program'] && props.data['tracking-program'].data && props.data['tracking-program'].data.title, statusProgram: true});
-    }
-    if (value === 'episode') {
-      this.setState({title: title, statusProgram: false});
-    }
-    if (value === 'extra') {
-      this.setState({title: title, statusProgram: false});
-    }
-    if (value === 'clip') {
-      this.setState({title: title, statusProgram: false});
-    }
+      statusProgram: value === "program" ? true : false,
+      share_link: item.share_link || `${BASE_URL}${this.props.router.asPath}`,
+      title: item.title || "title-program"
+    })
+
     if (!this.state.action_sheet) {
       if (this.props.server['program-detail']) {
         onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'], trackingType, item, value);
       }
     }
-
     return 'title-program';
   }
   toggleRateModal(test = '') {
@@ -953,6 +944,8 @@ class Index extends React.Component {
   render() {
     const { props, state } = this;
     const content = props.seo_content_detail?.data
+
+    console.log(state.share_link, "uhuyyy")
 
     // set active video index to be used when user click next / back player button
     this.getCurrentViewingVideoIndex()
@@ -986,7 +979,7 @@ class Index extends React.Component {
                   onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
                   dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
                   />
-              <ButtonPrimary className="button-20" icon={ <ShareIcon/> } text="Share" onclick={this.toggleActionSheet.bind(this, 'program', null, 'program_share')}/>
+              <ButtonPrimary className="button-20" icon={ <ShareIcon/> } text="Share" onclick={this.toggleActionSheet.bind(this, 'program', 'program_share')}/>
               { this.props.router.query.content_id ? (
                 <>
                   <ButtonPrimary className="button-20" icon={ <GetApp/> } text="Download" onclick={() => alertDownload()} />
@@ -1063,7 +1056,7 @@ class Index extends React.Component {
                         props.router.pathname
                         }
               caption={state.title}
-              url={BASE_URL + props.router.asPath}
+              url={state.share_link}
               open={state.action_sheet}
               hashtags={props.data && props.data['tracking-program'] && props.data['tracking-program'].data && props.data['tracking-program'].data.tag}
                />
