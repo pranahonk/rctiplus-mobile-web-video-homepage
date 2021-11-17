@@ -34,7 +34,7 @@ const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
 const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
 
 // NEW RPLUS LINEUP CONTENTS
-const VideoSquareView = dynamic(() => import("../components/lineups/video_square"));
+const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/square"));
 const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
 const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
 const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
@@ -99,6 +99,7 @@ class Index_v2 extends React.Component {
             query: GET_LINEUPS(page, pageSize)
         })
             .then(({ data }) => {
+                console.log(data);
                 this.props.setHomepageLineups({
                     data: data.lineups.data,
                     meta: data.lineups.meta
@@ -160,14 +161,15 @@ class Index_v2 extends React.Component {
                             if (lineup.lineup_type !== "default") return null
 
                             return (
-                                <VideoSquareView
-                                    token={this.state.token}
-                                    loadingBar={this.LoadingBar}
-                                    key={lineup.id}
-                                    contentId={lineup.id}
-                                    title={lineup.title}
-                                    content={lineup.lineup_type_detail.detail.data}
-                                    imagePath={meta.image_path} />
+                              null
+                                // <VideoSquareView
+                                //     token={this.state.token}
+                                //     loadingBar={this.LoadingBar}
+                                //     key={lineup.id}
+                                //     contentId={lineup.id}
+                                //     title={lineup.title}
+                                //     content={lineup.lineup_type_detail.detail.data}
+                                //     imagePath={meta.image_path} />
                                 // <Panel3
                                 //     token={this.state.token}
                                 //     loadingBar={this.LoadingBar}
@@ -207,7 +209,68 @@ class Index_v2 extends React.Component {
                             )
                     }
                 } break
-                case "news" : return null
+                case "news" : {
+                  switch(lineup.display_type) {
+                    case 'news_tagar':
+                      return (
+                        <HorizontalHastags key={lineup.id} title={lineup.title} />
+                      )
+                    case 'square_list_news':
+                      return (
+                        <NewsHorizontalLandscape key={lineup.id} title={lineup.title} />
+                      )
+                    case "horizontal" :
+                      if (lineup.lineup_type !== "default") return null
+
+                      return (
+                        null
+                        // <VideoSquareView
+                        //     token={this.state.token}
+                        //     loadingBar={this.LoadingBar}
+                        //     key={lineup.id}
+                        //     contentId={lineup.id}
+                        //     title={lineup.title}
+                        //     content={lineup.lineup_type_detail.detail.data}
+                        //     imagePath={meta.image_path} />
+                        // <Panel3
+                        //     token={this.state.token}
+                        //     loadingBar={this.LoadingBar}
+                        //     key={lineup.id}
+                        //     contentId={lineup.id}
+                        //     title={lineup.title}
+                        //     content={lineup.lineup_type_detail.detail.data}
+                        //     imagePath={meta.image_path}
+                        //     resolution={RESOLUTION_IMG}
+                        //     displayType={lineup.display_type}/>
+                      )
+                    case "horizontal_square" :
+                      return (
+                        null
+                        // <VideoSquareView
+                        //     token={this.state.token}
+                        //     loadingBar={this.LoadingBar}
+                        //     key={lineup.id}
+                        //     contentId={lineup.id}
+                        //     title={lineup.title}
+                        //     content={lineup.lineup_type_detail.detail.data}
+                        //     imagePath={meta.image_path}/>
+                      )
+                    case "vertical" :
+                      return (
+                        null
+                        // <VideoVerticalView
+                        //     token={this.state.token}
+                        //     loadingBar={this.LoadingBar}
+                        //     key={content.id}
+                        //     contentId={content.id}
+                        //     title={content.title}
+                        //     content={lineup.lineup_type_detail.detail.data}
+                        //     imagePath={meta.image_path}
+                        //     resolution={RESOLUTION_IMG}
+                        //     displayType={content.display_type}/>
+                      )
+                  }
+                } break
                 case "radio" : return null
                 case "hot" : return null
             }

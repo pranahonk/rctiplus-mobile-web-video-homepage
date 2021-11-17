@@ -57,6 +57,49 @@ export const GET_LINEUPS = (page = 1, pageSize = 10) => {
                 }
               }
             }
+            ... on LineupTypeNewsRegrouping {
+              detail {
+                data {
+                  author
+                  category
+                  category_id
+                  content
+                  count
+                  deeplink
+                  id
+                  image
+                  image_url
+                  link
+                  permalink
+                  pubdate
+                  source
+                  title
+                  total_like
+                }
+                meta {
+                  pagination {
+                    current_page
+                    per_page
+                    total
+                    total_page
+                  }
+                }
+                status {
+                  code
+                  message_client
+                  message_server
+                }
+              }
+            }
+            ... on LineupTypeNewsTagar {
+              detail {
+                data {
+                  tag
+                  type
+                  sorting
+                }
+              }
+            }
           }
         }
         meta {

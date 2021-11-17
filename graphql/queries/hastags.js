@@ -1,32 +1,31 @@
 
 import { gql } from '@apollo/client';
 
-export const GET_HASTAGS = gql`
- query {
-  mock_news_tagars {
-    data {
-      count
-      created_at
-      sorting
-      tag
-      type
-    }
-    meta {
-      assets_url
-      image_path
-      pagination{
-        current_page
-        per_page
-        total
-        total_page
+export const GET_HASTAGS = (page = 1, pageSize= 15) => {
+ return gql`
+    query {
+      lineups {
+        data {
+          lineup_type_detail {
+            ... on LineupTypeNewsTagar {
+              detail(page: ${page}, page_size: ${pageSize}) {
+                data {
+                  tag
+                  type
+                  sorting
+                }
+              }
+            }
+          }
+        }
+        meta {
+          pagination {
+            current_page
+            total_page
+          }
+          image_path
+        }
       }
-      video_path
     }
-    status {
-      code
-      message_client
-      message_server
-    }
-  }
+  `;
 }
-`;
