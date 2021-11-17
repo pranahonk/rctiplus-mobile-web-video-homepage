@@ -24,7 +24,7 @@ import '../../../assets/scss/components/horizontal-landscape.scss';
 const TopicLoader = dynamic(() => import('../../Includes/Shimmer/ListTagLoader'))
 
 
-const HorizontalLandscape = ({title}) => {
+const HorizontalLandscape = ({title, indexTag}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -35,7 +35,7 @@ const HorizontalLandscape = ({title}) => {
   useEffect(() => {
     client.query({query: GET_REGROUPING(1,15)})
       .then((res)=>{
-        setList(res?.data?.lineups?.data[3]?.lineup_type_detail?.detail);
+        setList(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{
         console.log(err);

@@ -17,7 +17,7 @@ import { GET_HASTAGS } from '../../../graphql/queries/hastags';
 const TopicLoader = dynamic(() => import('../../Includes/Shimmer/ListTagLoader'));
 
 
-const HorizontalHastags = ({title}) => {
+const HorizontalHastags = ({title, indexTag}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -27,7 +27,7 @@ const HorizontalHastags = ({title}) => {
   useEffect(() => {
     client.query({query: GET_HASTAGS(1, 15)})
       .then((res)=>{
-        setHastags(res?.data?.lineups?.data[1]?.lineup_type_detail?.detail);
+        setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{
         console.log(err);
@@ -47,7 +47,7 @@ const HorizontalHastags = ({title}) => {
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
-          {hastags.length === 0 ? (<TopicLoader />) : (<Swiper
+          {hastags?.length === 0 ? (<TopicLoader />) : (<Swiper
             spaceBetween={10}
             height={150}
           >
