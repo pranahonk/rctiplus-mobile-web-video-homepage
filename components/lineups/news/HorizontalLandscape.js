@@ -36,7 +36,7 @@ const HorizontalLandscape = ({...props}) => {
   const [platform, setPlatform] = useState(null);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING})
+    client.query({query: GET_REGROUPING()})
       .then((res)=>{
         setList(res?.data?.mock_news_regroupings);
       })
