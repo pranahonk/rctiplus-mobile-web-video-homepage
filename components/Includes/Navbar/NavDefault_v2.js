@@ -135,17 +135,11 @@ class NavbarDef_v2 extends Component {
                 newPage: true
             },
         ]
-
-        const redirectUrl = (isNewpage, href) => {
-            if (isNewpage) return window.open(href, "_blank")
-            return window.location.assign(href)
-        }
-
         return iconData.map(({ href, service, isActive, newPage }, i) => {
             const activeSrcSuffix = isActive ? "_active" : ""
             return (
-                <Link href="/" key={i} >
-                    <a onClick={_ => redirectUrl(newPage, href)}>
+                <Link href={href} key={i} passHref>
+                    <a href={href} target={newPage ? "_blank" : "_self"}>
                         <Image 
                             src={`/icons-menu/${service}plus${activeSrcSuffix}.svg`}
                             alt={`${service}+`}
