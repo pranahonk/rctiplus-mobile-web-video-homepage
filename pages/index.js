@@ -113,7 +113,7 @@ class Index_v2 extends React.Component {
 
     bottomScrollFetch() {
         const { pagination } = this.props.contents.meta
-        if (pagination.total_page === pagination.current_page) return
+        if (pagination?.total_page === pagination?.current_page) return
 
         this.getHomePageLineups(pagination.current_page + 1, this.state.length)
     }
