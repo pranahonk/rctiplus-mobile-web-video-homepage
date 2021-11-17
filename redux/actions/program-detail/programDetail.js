@@ -272,14 +272,14 @@ export const fetchSeasonEpisode = (programId, filter, season = 1, page = 1, leng
       });
   };
 };
-export const fetchEpisode = (programId, filter, season = 1, page = 1, length = 5, infos = 'id,program_id,title,portrait_image,landscape_image,summary,season,episode,duration') => {
+export const fetchEpisode = (programId, filter, contentId = 0, season = 1, page = 0, length = 5, infos = 'id,program_id,title,portrait_image,landscape_image,summary,season,episode,duration') => {
   return function(dispatch) {
     if(page > 1) {
       dispatch(moreRequest());
     } else {
       dispatch(episodeRequest());
     }
-    axios.get(`/v1/program/${programId}/episode?season=${season}&page=${page}&length=${length}&infos=${infos}`)
+    axios.get(`/v2/program/${programId}/episode?season=${season}&page=${page}&length=${length}&infos=${infos}&content_id=${contentId}`)
       .then(response => {
         const data = response.data;
         dispatch(fetchDetailEpisodeSuccess(data, [filter, season]));

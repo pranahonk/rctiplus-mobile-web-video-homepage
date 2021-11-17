@@ -267,6 +267,8 @@ class Index extends React.Component {
     
     // Set max video queue length once it has the value from request call
     if (this.state.videoIndexing.maxQueue !== meta.pagination.total) {
+      if (this.state.videoIndexing.maxQueue === data.length) return
+
       this.setState({
         videoIndexing: { ...this.state.videoIndexing, maxQueue: meta.pagination.total }
       })
@@ -407,7 +409,7 @@ class Index extends React.Component {
     this.props.dispatch(fetchLike(programId, 'like', 'program'));
     if (this.props.server && this.props.server[this.type].data) {
       if (this.props.server[this.type].data.category === 'movie') {
-        this.props.dispatch(fetchEpisode(programId, 'program-episode'));
+        this.props.dispatch(fetchEpisode(programId, 'program-episode', this.props.router.query.content_id));
         this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
         this.props.dispatch(seasonSelected(1));
       }
@@ -417,7 +419,7 @@ class Index extends React.Component {
             if (!this.props.data['program-episode'] || this.state.episodeClearStore) {
               if (this.props.data.seasonSelected) break
 
-              this.props.dispatch(fetchEpisode(programId, 'program-episode'));
+              this.props.dispatch(fetchEpisode(programId, 'program-episode', this.props.router.query.content_id));
               this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
               this.props.dispatch(seasonSelected(1));
             }
@@ -522,7 +524,7 @@ class Index extends React.Component {
         return {
           contentType: "episode",
           contentDispatcher: fetchEpisode,
-          dispatcherArgs: [ query.id, "program-episode", seasonSelected, page ]
+          dispatcherArgs: [ query.id, "program-episode", this.props.router.query.content_id, seasonSelected, page ]
         }
       case "extra":
         return {
@@ -574,8 +576,10 @@ class Index extends React.Component {
     
     const { query } = this.props.router
     const programDetail = this.props.server['program-detail']
-
+    
+    if (!programEpisode) return null
     if (((programEpisode.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
+
     
     const pagination = {
       ...programEpisode.meta.pagination,
@@ -871,9 +875,13 @@ class Index extends React.Component {
         videoIndexing["prev"] = i - 1 < 0 ? 0 : i - 1
         videoIndexing["current"] = i
         videoIndexing["next"] = i + 1 > queueingContents.length - 1 ? queueingContents.length - 1 : i + 1
+        videoIndexing["maxQueue"] = i + 1 > queueingContents.length - 1 ? queueingContents.length : videoIndexing["maxQueue"]
         return
       }
     })
+
+    console.log(videoIndexing, "uhuy")
+
 
     if (this.state.videoIndexing.current !== videoIndexing.current) {
       this.setState({ videoIndexing })
