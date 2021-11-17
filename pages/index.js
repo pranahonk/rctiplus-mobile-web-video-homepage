@@ -124,7 +124,7 @@ class Index_v2 extends React.Component {
     }
 
     renderLineup(lineups, meta) {
-       return lineups.map((lineup) => {
+       return lineups.map((lineup, index) => {
             switch(lineup.service) {
                 case "video": {
                     switch(lineup.display_type) {
@@ -213,11 +213,11 @@ class Index_v2 extends React.Component {
                   switch(lineup.display_type) {
                     case 'news_tagar':
                       return (
-                        <HorizontalHastags key={lineup.id} title={lineup.title} />
+                        <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} />
                       )
                     case 'square_list_news':
                       return (
-                        <NewsHorizontalLandscape key={lineup.id} title={lineup.title} />
+                        <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} />
                       )
                     case "horizontal" :
                       if (lineup.lineup_type !== "default") return null

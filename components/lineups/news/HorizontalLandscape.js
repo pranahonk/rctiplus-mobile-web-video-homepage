@@ -22,39 +22,28 @@ import { GET_REGROUPING } from '../../../graphql/queries/regrouping';
 import '../../../assets/scss/components/horizontal-landscape.scss';
 
 const TopicLoader = dynamic(() => import('../../Includes/Shimmer/ListTagLoader'))
-let count = 0;
 
 
-const HorizontalLandscape = ({...props}) => {
+const HorizontalLandscape = ({title, indexTag}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
   const [list, setList] = useState([]);
   const [assetUrl, setAssetUrl] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [accessToken, setAccessToken] = useState(null);
-  const [platform, setPlatform] = useState(null);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING()})
+    client.query({query: GET_REGROUPING(1,15)})
       .then((res)=>{
-        setList(res?.data?.mock_news_regroupings);
+        setList(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{
         console.log(err);
       });
-    const query = queryString.parse(window.location.search);
-    if (query.accessToken) {
-      setAccessToken(query.accessToken);
-      setPlatform(query.platform);
-    }
-    else{
-      count++;
-    }
   },[list]);
   useEffect(() => {
-    setAssetUrl(list?.meta && list.meta.assets_url ? list.meta.assets_url : null);
-    if (list?.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list?.data?.length < 20) {
+    setAssetUrl(list?.meta && list.meta?.image_path ? list?.meta?.image_path : null);
+    if (list?.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list.data?.length < 20) {
       setLoadingMore(true);
     }
   }, [show, list])
@@ -70,9 +59,7 @@ const HorizontalLandscape = ({...props}) => {
   };
   return (
     <li className="regroupping-by-section">
-      {!isEmpty(props.article?.section) && (
-        <h2 className="section-h2">{props.article?.section?.name}</h2>
-      )}
+      <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
           {list?.data?.length === undefined ? (<TopicLoader />) : (<Swiper
@@ -87,7 +74,7 @@ const HorizontalLandscape = ({...props}) => {
                   <Link href={_goToDetail(item)}  >
                     <div className="regroupping-by-section_thumbnail-wrapper">
                       {
-                        imageNews(item.title, item.cover, item.image, 320, assetUrl, 'thumbnail')
+                        imageNews(item.title, item.image_url, item.image, 320, assetUrl, 'thumbnail')
                       }
                       <div className="regroupping-by-section_thumbnail-title" >
                         <h1>{getTruncate(item.title, '...', 100)}</h1>
