@@ -244,8 +244,12 @@ export default (state = initialState, action) => {
     case FETCH_EPISODE_SUCCESS: {
       const page = action && action.payload.meta.pagination.current_page;
       if (page > 1) {
-        const currentEntries = state['program-episode'][`season-${action.filter[1]}`]
 
+        if (!state["program-episode"]) state["program-episode"] = {
+          [`season-${action.filter[1]}`]: {data: []}
+        }
+        const currentEntries = state['program-episode'][`season-${action.filter[1]}`]
+        
         // Find and overwrite intermittent data duplicates
         const uniqueEntries = new Map()
         Array.from([ ...currentEntries.data, ...action.payload.data ])
@@ -255,6 +259,7 @@ export default (state = initialState, action) => {
           ...state,
           loading: false,
           loading_more: false,
+          loading_episode: false,
           [action.filter[0]]: { 
             ...state[action.filter[0]],
             ['season-' + action.filter[1]]: { 
@@ -266,7 +271,12 @@ export default (state = initialState, action) => {
       }
       return {
         ...state,
-        [action.filter[0]]: {...state[action.filter[0]], ['season-' + action.filter[1]] : {...action.payload}},
+        [action.filter[0]]: {
+          ...state[action.filter[0]], 
+          ['season-' + action.filter[1]] : {
+            ...action.payload
+          }
+        },
         selectedSeason: 'season-' + action.filter[1],
         loading: false,
         loading_episode: false,
