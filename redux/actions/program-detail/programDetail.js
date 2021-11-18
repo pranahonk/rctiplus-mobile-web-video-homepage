@@ -4,8 +4,16 @@ import { getCookie, getVisitorToken, checkToken, setCookie } from '../../../util
 import { getUidAppier } from '../../../utils/appier';
 
 const axios = ax.create({ baseURL: DEV_API + '/api' });
+const axiosHOT = ax.create({ baseURL: DEV_API + '/ugc-vote/api' });
 
 axios.interceptors.request.use(async (request) => {
+  await checkToken();
+  const accessToken = getCookie('ACCESS_TOKEN');
+  request.headers['Authorization'] = accessToken === undefined ? getVisitorToken() : accessToken;
+  return request;
+});
+
+axiosHOT.interceptors.request.use(async (request) => {
   await checkToken();
   const accessToken = getCookie('ACCESS_TOKEN');
   request.headers['Authorization'] = accessToken === undefined ? getVisitorToken() : accessToken;
@@ -108,6 +116,13 @@ const fetchRelatedProgramSuccess = (related, filter) => {
     type: FETCH_RELATED_PROGRAM_SUCCESS,
     filter: filter,
     payload: related,
+  };
+};
+const fetchRecommendHOTSuccess = (payload, filter) => {
+  return {
+    type: FETCH_RECOMMEND_HOT_SUCCESS,
+    filter,
+    payload,
   };
 };
 const fetchSeasonEpisodeSuccess = (season, filter) => {
@@ -231,6 +246,19 @@ export const fetchRelatedProgram = (params = {}) => {
       });
   };
 };
+export const fetchRecommendHOT = (params = {}) => {
+  return function(dispatch) {
+    dispatch(fetchDetailProgramRequest());
+    axiosHOT.get(`/v1/recommendation/viqi-recommendation`)
+      .then(response => {
+        const data = response.data;
+        dispatch(fetchRecommendHOTSuccess(data, params.filter));
+      })
+      .catch(error => {
+        dispatch(fetchDetailProgramFailure(error.message));
+      });
+  };
+};
 export const fetchSeasonEpisode = (programId, filter, season = 1, page = 1, length = 5, infos = 'id,program_id,title,portrait_image,landscape_image,summary,season,episode,duration') => {
   return function(dispatch) {
     dispatch(fetchDetailProgramRequest());
@@ -244,14 +272,14 @@ export const fetchSeasonEpisode = (programId, filter, season = 1, page = 1, leng
       });
   };
 };
-export const fetchEpisode = (programId, filter, season = 1, page = 1, length = 5, infos = 'id,program_id,title,portrait_image,landscape_image,summary,season,episode,duration') => {
+export const fetchEpisode = (programId, filter, contentId = 0, season = 1, page = 0, length = 5, infos = 'id,program_id,title,portrait_image,landscape_image,summary,season,episode,duration') => {
   return function(dispatch) {
     if(page > 1) {
       dispatch(moreRequest());
     } else {
       dispatch(episodeRequest());
     }
-    axios.get(`/v1/program/${programId}/episode?season=${season}&page=${page}&length=${length}&infos=${infos}`)
+    axios.get(`/v2/program/${programId}/episode?season=${season}&page=${page}&length=${length}&infos=${infos}&content_id=${contentId}`)
       .then(response => {
         const data = response.data;
         dispatch(fetchDetailEpisodeSuccess(data, [filter, season]));
@@ -448,6 +476,7 @@ export const FETCH_PHOTO_SUCCESS = 'FETCH_PHOTO_SUCCESS';
 export const FETCH_SEASON_SUCCESS = 'FETCH_SEASON_SUCCESS';
 export const SEASON_SELECTED = 'SEASON_SELECTED';
 export const FETCH_RELATED_PROGRAM_SUCCESS = 'FETCH_RELATED_PROGRAM_SUCCESS';
+export const FETCH_RECOMMEND_HOT_SUCCESS = 'FETCH_RECOMMEND_HOT_SUCCESS';
 export const CLEAR_CLIP = 'CLEAR_CLIP';
 export const CLEAR_EXTRA = 'CLEAR_EXTRA';
 export const EPISODE_FAILURE = 'EPISODE_FAILURE';

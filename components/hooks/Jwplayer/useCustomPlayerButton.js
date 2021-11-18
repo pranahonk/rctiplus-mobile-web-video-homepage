@@ -67,22 +67,20 @@ export default function useCustomPlayerButton (props) {
 
   const createButtonContents = (rawContent, index, disabledDirection) => {
     const { className, direction, skipPosIconContainer } = rawContent
-    const disabled = direction === disabledDirection
-
+    const disabled = direction === disabledDirection || disabledDirection === "all"
+    
     const skipBtn = (
-      // <figure
-      //   key={`${index}-skipbtn`}
-      //   ref={skipPosIconContainer}
-      //   className={`jwplayer-action jw-icon ${direction}`}
-      //   role="button"
-      //   onDoubleClick={() => fastForwardBackwardClicked(direction)}>
-      //   <img
-      //     src={`/static/player_icons/player_fast${direction}.svg`}
-      //     alt={`fast-${direction}-btn`} />
-      // </figure>
       <figure
-        key={`${index}-skipbtn`}
-        role="button">
+        ref={skipPosIconContainer}
+        key={`${index}-skipbtn`}>
+        {/* 
+          ---------------- TEMPORARY HIDE ---------------
+        className={`jwplayer-action jw-icon ${direction}`}
+        role="button"
+        onDoubleClick={() => fastForwardBackwardClicked(direction)}>
+        <img
+          src={`/static/player_icons/player_fast${direction}.svg`}
+          alt={`fast-${direction}-btn`} /> */}
       </figure>
     )
     const navBtn = (
@@ -110,14 +108,15 @@ export default function useCustomPlayerButton (props) {
 
   const injectCustomBtns = (buttonContents) => {
     const playerContainer = props.player.getContainer()
-    
+
     let disabledDirection = ""
     if (props.videoIndexing) {
       const { prev, current, maxQueue } = props.videoIndexing
       if (current === (maxQueue - 1)) disabledDirection = "forward"
       if (current === prev) disabledDirection = "backward"
+      if ((current === prev) && (current === (maxQueue - 1))) disabledDirection = "all"
     }
-
+    
     Array.from(buttonContents).forEach((buttonContent, i) => {
       const { className } = buttonContent
       

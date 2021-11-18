@@ -17,7 +17,7 @@ import {
   fetchClip, fetchPhoto, setClearClip,
   setClearExtra, fetchPlayerUrl, clearPlayer,
   fetchBookmark, postBookmark, deleteBookmark,
-  fetchLike, postLike, fetchDetailDesc, dataShareSeo, fetchDetailProgramRequest
+  fetchLike, postLike, fetchDetailDesc, dataShareSeo, fetchDetailProgramRequest, fetchRecommendHOT
 } from '../redux/actions/program-detail/programDetail';
 import { postContinueWatching } from '../redux/actions/historyActions';
 import Layout from '../components/Layouts/Default_v2';
@@ -46,6 +46,7 @@ const PanelExtra = dynamic(() => import('../components/Includes/program-detail/p
 const PanelClip = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod) => mod.PanelClip));
 const PanelPhoto = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod) => mod.PanelPhoto));
 const PanelRelated = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod) => mod.PanelRelated));
+const PanelRecommendHOT = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod) => mod.PanelRecommendHOT));
 const ActionSheet = dynamic(() => import('../components/Modals/ActionSheet'), { ssr: false });
 const ActionMenu = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.ActionMenu), { ssr: false });
 const RatedModal = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.RatedModal), { ssr: false });
@@ -139,7 +140,7 @@ class Index extends React.Component {
       episodeClearStore: true,
     }, () => this.loadFirstTab(this.programId));
     this.loadRelated(this.programId,1);
-
+    this.loadRecommendHOT(1);
     if (this.props.router.query.content_id) {
       this.setState({ activeContentId: +this.props.router.query.content_id })
       this.props.dispatch(fetchPlayerUrl(this.props.router.query.content_id,'data-player',this.props.router.query.content_type));
@@ -190,6 +191,7 @@ class Index extends React.Component {
       }
       this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] && this.props.server[this.type], 'tracking-program'));
       this.loadRelated(this.props.router.query.id,1);
+      this.loadRecommendHOT(1);
       this.setState({clipClearStore: true, transform: 'rotate(0deg)', isOpen: false}, () => {
             this.loadFirstTab(this.props.router.query.id);
         }
@@ -264,6 +266,8 @@ class Index extends React.Component {
     
     // Set max video queue length once it has the value from request call
     if (this.state.videoIndexing.maxQueue !== meta.pagination.total) {
+      if (this.state.videoIndexing.maxQueue === data.length) return
+
       this.setState({
         videoIndexing: { ...this.state.videoIndexing, maxQueue: meta.pagination.total }
       })
@@ -390,12 +394,21 @@ class Index extends React.Component {
     };
     this.props.dispatch(fetchRelatedProgram(data));
   }
+  loadRecommendHOT(page) {
+    const params = {
+      page: page,
+      length: 10,
+      filter: 'recommend-hot',
+    }
+
+    this.props.dispatch(fetchRecommendHOT(params));
+  }
   loadFirstTab(programId) {
     this.props.dispatch(fetchBookmark(programId, 'bookmark'));
     this.props.dispatch(fetchLike(programId, 'like', 'program'));
     if (this.props.server && this.props.server[this.type].data) {
       if (this.props.server[this.type].data.category === 'movie') {
-        this.props.dispatch(fetchEpisode(programId, 'program-episode'));
+        this.props.dispatch(fetchEpisode(programId, 'program-episode', this.props.router.query.content_id));
         this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
         this.props.dispatch(seasonSelected(1));
       }
@@ -405,7 +418,7 @@ class Index extends React.Component {
             if (!this.props.data['program-episode'] || this.state.episodeClearStore) {
               if (this.props.data.seasonSelected) break
 
-              this.props.dispatch(fetchEpisode(programId, 'program-episode'));
+              this.props.dispatch(fetchEpisode(programId, 'program-episode', this.props.router.query.content_id));
               this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
               this.props.dispatch(seasonSelected(1));
             }
@@ -510,7 +523,7 @@ class Index extends React.Component {
         return {
           contentType: "episode",
           contentDispatcher: fetchEpisode,
-          dispatcherArgs: [ query.id, "program-episode", seasonSelected, page ]
+          dispatcherArgs: [ query.id, "program-episode", this.props.router.query.content_id, seasonSelected, page ]
         }
       case "extra":
         return {
@@ -562,8 +575,10 @@ class Index extends React.Component {
     
     const { query } = this.props.router
     const programDetail = this.props.server['program-detail']
-
+    
+    if (!programEpisode) return null
     if (((programEpisode.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
+
     
     const pagination = {
       ...programEpisode.meta.pagination,
@@ -737,6 +752,27 @@ class Index extends React.Component {
     const vm = this;
     vm.props.dispatch(clearPlayer(filter));
   }
+
+  panelRecommendHOT(props) {
+    const { router, server } = this.props
+
+    if (props?.data?.length > 0) {
+      const pagination = {
+        page: props?.meta?.pagination?.current_page,
+        total_page: props?.meta?.pagination?.total_page,
+        nextPage: props?.meta?.pagination?.current_page + 1,
+      };
+      
+      return (
+        <PanelRecommendHOT
+          data={props}
+          hasMore={() => { this.loadRecommendHOT(pagination.nextPage); }}
+          dataTracking={{ ref: this.reference, idContent: router.query.id, title: server['program-detail'] }}
+        />
+      );
+    }
+  }
+
   panelRelated(props) {
     if (props && props.data && props.data.length > 0) {
       const pagination = {
@@ -838,9 +874,13 @@ class Index extends React.Component {
         videoIndexing["prev"] = i - 1 < 0 ? 0 : i - 1
         videoIndexing["current"] = i
         videoIndexing["next"] = i + 1 > queueingContents.length - 1 ? queueingContents.length - 1 : i + 1
+        videoIndexing["maxQueue"] = i + 1 > queueingContents.length - 1 ? queueingContents.length : videoIndexing["maxQueue"]
         return
       }
     })
+
+    console.log(videoIndexing, "uhuy")
+
 
     if (this.state.videoIndexing.current !== videoIndexing.current) {
       this.setState({ videoIndexing })
@@ -1015,7 +1055,7 @@ class Index extends React.Component {
               <div className="list__content-wrapper">
                 <div className="tab__content-wrapper">
                   { this.tabContent() }
-                  <TabContent activeTab={this.state.toggle}>
+                  <TabContent style={{ backgroundColor: '#3a3a3a' }} activeTab={this.state.toggle}>
                     { this.panelEpisode(
                         this.props.data &&
                         this.props.data['program-episode'] &&
@@ -1039,8 +1079,9 @@ class Index extends React.Component {
                   </TabContent>
                 </div>
               </div>
-
               {this.renderVisionPlusComponent()}
+
+              {this.panelRecommendHOT(this.props?.data['recommend-hot'])}
               
               {this.panelRelated(
                 this.props.data &&

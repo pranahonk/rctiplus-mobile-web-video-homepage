@@ -28,6 +28,7 @@ import {
   TEMP_POST_LIKE_SUCCESS,
   DATA_SHARE_SEO,
   FETCH_PAID_VIDEO,
+  FETCH_RECOMMEND_HOT_SUCCESS
 } from '../../actions/program-detail/programDetail';
 const initialState = {
   loading: true,
@@ -221,11 +222,34 @@ export default (state = initialState, action) => {
         [action.filter]: action.payload,
         loading: false,
       };
+    case FETCH_RECOMMEND_HOT_SUCCESS:
+      const initPageRecommendHOT = action && action.payload.meta.pagination.current_page;
+      
+      if (initPageRecommendHOT > 1) {
+        const initStateRecommendHOT = state[action.filter].data;
+        const newStateRecommendHOT = action.payload.data;
+        const dataRecommendHOT = [...initStateRecommendHOT, ...newStateRecommendHOT];
+        return {
+          ...state,
+          [action.filter]: {...action.payload, data: dataRecommendHOT},
+          loading: false,
+          loading_more: false,
+        };
+      }
+      return {
+        ...state,
+        [action.filter]: action.payload,
+        loading: false,
+      };
     case FETCH_EPISODE_SUCCESS: {
       const page = action && action.payload.meta.pagination.current_page;
       if (page > 1) {
-        const currentEntries = state['program-episode'][`season-${action.filter[1]}`]
 
+        if (!state["program-episode"]) state["program-episode"] = {
+          [`season-${action.filter[1]}`]: {data: []}
+        }
+        const currentEntries = state['program-episode'][`season-${action.filter[1]}`]
+        
         // Find and overwrite intermittent data duplicates
         const uniqueEntries = new Map()
         Array.from([ ...currentEntries.data, ...action.payload.data ])
@@ -235,6 +259,7 @@ export default (state = initialState, action) => {
           ...state,
           loading: false,
           loading_more: false,
+          loading_episode: false,
           [action.filter[0]]: { 
             ...state[action.filter[0]],
             ['season-' + action.filter[1]]: { 
@@ -246,7 +271,12 @@ export default (state = initialState, action) => {
       }
       return {
         ...state,
-        [action.filter[0]]: {...state[action.filter[0]], ['season-' + action.filter[1]] : {...action.payload}},
+        [action.filter[0]]: {
+          ...state[action.filter[0]], 
+          ['season-' + action.filter[1]] : {
+            ...action.payload
+          }
+        },
         selectedSeason: 'season-' + action.filter[1],
         loading: false,
         loading_episode: false,
