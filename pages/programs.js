@@ -925,11 +925,11 @@ class Index extends React.Component {
   }
 
   renderVisionPlusComponent() {
-    const programDetail = this.props.data.programDetail
+    const programDetail = this.props.data.programDetail.data
     const programEpisode = this.props.data["program-episode"]
 
     if (!programDetail || !programEpisode) return null
-    if (!programDetail.data.show_vision_plus_disclaimer) return null
+    if (!programDetail.show_vision_plus_disclaimer) return null
     if (this.state.toggle.toLowerCase() !== "episodes") return null
 
     const { pagination } = programEpisode[`season-${this.props.data.seasonSelected}`].meta
@@ -944,8 +944,6 @@ class Index extends React.Component {
   render() {
     const { props, state } = this;
     const content = props.seo_content_detail?.data
-
-    console.log(state.share_link, "uhuyyy")
 
     // set active video index to be used when user click next / back player button
     this.getCurrentViewingVideoIndex()
@@ -968,39 +966,50 @@ class Index extends React.Component {
             }
 
             <div className="action__button--wrapper">
-                <ActionMenu
-                  onRate={this.toggleRateModal.bind(this)}
-                  bookmark={props.data && props.data.bookmark}
-                  like={props.data && props.data.like}
-                  onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
-                  isLogin={this.props.auth.isAuth}
-                  data={ props.server && props.server['program-detail'] && props.server['program-detail'].data }
-                  onBookmarkAdd={(id, type) => { this.props.dispatch(postBookmark(id,type, 'bookmark')); }}
-                  onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
-                  dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
-                  />
-              <ButtonPrimary className="button-20" icon={ <ShareIcon/> } text="Share" onclick={this.toggleActionSheet.bind(this, 'program', 'program_share')}/>
+              <ActionMenu
+                onRate={this.toggleRateModal.bind(this)}
+                bookmark={props.data && props.data.bookmark}
+                like={props.data && props.data.like}
+                onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
+                isLogin={this.props.auth.isAuth}
+                data={ props.server && props.server['program-detail'] && props.server['program-detail'].data }
+                onBookmarkAdd={(id, type) => { this.props.dispatch(postBookmark(id,type, 'bookmark')); }}
+                onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
+                dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
+                />
+              <ButtonPrimary 
+                className="button-20" 
+                icon={ <ShareIcon/> } 
+                text="Share" 
+                onclick={this.toggleActionSheet.bind(this, 'program', 'program_share', props.data.programDetail.data)}/>
               { this.props.router.query.content_id ? (
-                <>
-                  <ButtonPrimary className="button-20" icon={ <GetApp/> } text="Download" onclick={() => alertDownload()} />
-                  <ButtonPrimary className="button-20"
-                  onclick={()=> this.setState({transform: this.state.transform === 'rotate(0deg)' ? 'rotate(180deg)' : 'rotate(0deg)', isOpen: this.state.transform === 'rotate(0deg)' ? true : false}, () => {
-                    if(this.state.isOpen) {
-                      onTrackingClick(null, null, null, 'content_click', null, null, null, props && props.data && props.data['data-player'] && props.data['data-player'].data, 'mweb_homepage_program_description_clicked')
-                    }
-                  })}
-                  icon={ <KeyboardArrowDown className="arrow-rotate" style={{ transform: this.state.transform }}/> }
-                  text="Description"
-                  />
-                </>) : '' }
-                {!(props.router.query.content_id) && (props?.data?.paid_video?.data?.is_paid) ? 
-                (
-                  <span style={{ width: '100% !important', textAlign: 'right', display: 'inline-block' }}>
-                    <div style={{fontSize: 10}}>Expired in <strong>{ props?.data?.paid_video?.data?.order_detail?.expired_in }</strong></div>
-                    <div style={{fontSize: 10}}>(counted after first watch)</div>
-                  </span>
-                ) : ''}
-              </div>
+                  <>
+                    <ButtonPrimary 
+                      className="button-20" 
+                      icon={ <GetApp/> } 
+                      text="Download" 
+                      onclick={() => alertDownload()} />
+                    <ButtonPrimary 
+                      className="button-20"
+                      onclick={()=> this.setState({transform: this.state.transform === 'rotate(0deg)' ? 'rotate(180deg)' : 'rotate(0deg)', isOpen: this.state.transform === 'rotate(0deg)' ? true : false}, () => {
+                        if(this.state.isOpen) {
+                          onTrackingClick(null, null, null, 'content_click', null, null, null, props && props.data && props.data['data-player'] && props.data['data-player'].data, 'mweb_homepage_program_description_clicked')
+                        }
+                      })}
+                      icon={ <KeyboardArrowDown className="arrow-rotate" style={{ transform: this.state.transform }}/> }
+                      text="Description"/>
+                  </>
+                ) : ''
+              }
+              {!(props.router.query.content_id) && (props?.data?.paid_video?.data?.is_paid) ? 
+              (
+                <span style={{ width: '100% !important', textAlign: 'right', display: 'inline-block' }}>
+                  <div style={{fontSize: 10}}>Expired in <strong>{ props?.data?.paid_video?.data?.order_detail?.expired_in }</strong></div>
+                  <div style={{fontSize: 10}}>(counted after first watch)</div>
+                </span>
+              ) : ''}
+            </div>
+
               <Collapse isOpen={this.state.isOpen}>
                 <div className="detail__content-description-wrapper">
                   <div className="content-description">
