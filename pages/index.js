@@ -74,7 +74,7 @@ class Index_v2 extends React.Component {
         RPLUSAppVisit();
 
         const accessToken = getCookie('ACCESS_TOKEN');
-        this.setState({ 
+        this.setState({
             token: (accessToken == undefined) ? getVisitorToken() : accessToken
         })
         window.onbeforeunload = _ => {
@@ -97,8 +97,8 @@ class Index_v2 extends React.Component {
             query: GET_LINEUPS(page, pageSize)
         })
             .then(({ data }) => {
-                this.props.setHomepageLineups({ 
-                    data: data.lineups.data, 
+                this.props.setHomepageLineups({
+                    data: data.lineups.data,
                     meta: data.lineups.meta
                 })
             })
@@ -122,92 +122,56 @@ class Index_v2 extends React.Component {
 
     renderLineup(lineups, meta) {
        return lineups.map((lineup) => {
-            switch(lineup.service) {
-                case "video": {
-                    switch(lineup.display_type) {
-                        case 'horizontal_landscape_large':
-                            return (
-                                null
-                                // <Panel1
-                                //     token={this.state.token}
-                                //     type={content.type}
-                                //     loadingBar={this.LoadingBar}
-                                //     key={content.id}
-                                //     contentId={content.id}
-                                //     title={content.title}
-                                //     content={lineup.lineup_type_detail.detail.data}
-                                //     imagePath={meta.image_path}
-                                //     resolution={RESOLUTION_IMG}
-                                //     displayType={content.display_type}/>
-                            )    
-                        case 'horizontal_landscape':
-                            return (
-                                null
-                                // <Panel2
-                                //     token={this.state.token}
-                                //     loadingBar={this.LoadingBar}
-                                //     key={content.id}
-                                //     contentId={content.id}
-                                //     title={content.title}
-                                //     content={lineup.lineup_type_detail.detail.data}
-                                //     imagePath={meta.image_path}
-                                //     resolution={RESOLUTION_IMG}
-                                //     displayType={content.display_type}/>
-                            )
-                        case "horizontal" : 
-                            if (lineup.lineup_type !== "default") return null
+            switch(lineup.display_type) {
+              case "horizontal" :
+                if (lineup.lineup_type !== "default") return null
 
-                            return (
-                                <VideoSquareView
-                                    token={this.state.token}
-                                    loadingBar={this.LoadingBar}
-                                    key={lineup.id}
-                                    contentId={lineup.id}
-                                    title={lineup.title}
-                                    content={lineup.lineup_type_detail.detail.data}
-                                    imagePath={meta.image_path} />
-                                // <Panel3
-                                //     token={this.state.token}
-                                //     loadingBar={this.LoadingBar}
-                                //     key={lineup.id}
-                                //     contentId={lineup.id}
-                                //     title={lineup.title}
-                                //     content={lineup.lineup_type_detail.detail.data}
-                                //     imagePath={meta.image_path}
-                                //     resolution={RESOLUTION_IMG}
-                                //     displayType={lineup.display_type}/>
-                            )
-                        case "horizontal_square" : 
-                            return (
-                                null
-                                // <VideoSquareView
-                                //     token={this.state.token}
-                                //     loadingBar={this.LoadingBar}
-                                //     key={lineup.id}
-                                //     contentId={lineup.id}
-                                //     title={lineup.title}
-                                //     content={lineup.lineup_type_detail.detail.data}
-                                //     imagePath={meta.image_path}/>
-                            )
-                        case "vertical" :
-                            return ( 
-                                null
-                                // <VideoVerticalView
-                                //     token={this.state.token}
-                                //     loadingBar={this.LoadingBar}
-                                //     key={content.id}
-                                //     contentId={content.id}
-                                //     title={content.title}
-                                //     content={lineup.lineup_type_detail.detail.data}
-                                //     imagePath={meta.image_path}
-                                //     resolution={RESOLUTION_IMG}
-                                //     displayType={content.display_type}/>
-                            )
-                    }
-                } break
-                case "news" : return null
-                case "radio" : return null
-                case "hot" : return null
+                return (
+                  <VideoSquareView
+                    token={this.state.token}
+                    loadingBar={this.LoadingBar}
+                    key={lineup.id}
+                    contentId={lineup.id}
+                    title={lineup.title}
+                    content={lineup.lineup_type_detail.detail.data}
+                    imagePath={meta.image_path} />
+                  // <Panel3
+                  //     token={this.state.token}
+                  //     loadingBar={this.LoadingBar}
+                  //     key={lineup.id}
+                  //     contentId={lineup.id}
+                  //     title={lineup.title}
+                  //     content={lineup.lineup_type_detail.detail.data}
+                  //     imagePath={meta.image_path}
+                  //     resolution={RESOLUTION_IMG}
+                  //     displayType={lineup.display_type}/>
+                )
+              case "horizontal_square" :
+                return (
+                  null
+                  // <VideoSquareView
+                  //     token={this.state.token}
+                  //     loadingBar={this.LoadingBar}
+                  //     key={lineup.id}
+                  //     contentId={lineup.id}
+                  //     title={lineup.title}
+                  //     content={lineup.lineup_type_detail.detail.data}
+                  //     imagePath={meta.image_path}/>
+                )
+              case "vertical" :
+                return (
+                  null
+                  // <VideoVerticalView
+                  //     token={this.state.token}
+                  //     loadingBar={this.LoadingBar}
+                  //     key={content.id}
+                  //     contentId={content.id}
+                  //     title={content.title}
+                  //     content={lineup.lineup_type_detail.detail.data}
+                  //     imagePath={meta.image_path}
+                  //     resolution={RESOLUTION_IMG}
+                  //     displayType={content.display_type}/>
+                )
             }
         })
     }
@@ -241,23 +205,23 @@ class Index_v2 extends React.Component {
                     <meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
                 </Head>
 
-                <BottomScrollListener 
-                    offset={150} 
+                <BottomScrollListener
+                    offset={150}
                     onBottom={this.bottomScrollFetch.bind(this)} />
-                
-                <LoadingBar 
-                    progress={0} 
-                    height={3} 
-                    color={this.state.show_sticky_install ? '#000' : '#fff'} 
+
+                <LoadingBar
+                    progress={0}
+                    height={3}
+                    color={this.state.show_sticky_install ? '#000' : '#fff'}
                     onRef={ref => (this.LoadingBar = ref)} />
-                                
-                {this.state.isShimmer 
-                    ? (<HomeLoader/>) 
+
+                {this.state.isShimmer
+                    ? (<HomeLoader/>)
                     : (
                         <div>
-                            <Nav 
-                                parent={this} 
-                                closeStickyInstallFunction={this.closeStickyInstall} 
+                            <Nav
+                                parent={this}
+                                closeStickyInstallFunction={this.closeStickyInstall}
                                 showStickyInstall={this.state.show_sticky_install}/>
                             <Carousel showStickyInstall={this.state.show_sticky_install} >
                                 <GridMenu />
@@ -266,7 +230,7 @@ class Index_v2 extends React.Component {
                             <div style={{marginTop: "25px"}}>
                                 <Stories loadingBar={this.LoadingBar} homepage={true}/>
                             </div>
-                            
+
                             <StickyContainer>
                                 <Sticky disableHardwareAcceleration>
                                     { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
@@ -302,13 +266,13 @@ class Index_v2 extends React.Component {
                                     } }
                                 </Sticky>
                             </StickyContainer>
-                            {/* 
-                                --------------------------------- LINE UP CONTENTS --------------------------------- 
+                            {/*
+                                --------------------------------- LINE UP CONTENTS ---------------------------------
                                 ------------------------------- SUBJECTED TO CHANGES -------------------------------
                             */}
-                            <div 
-                                style={{marginBottom: 45, paddingTop: 10}} 
-                                onTouchStart={this.onTouchStart.bind(this)} 
+                            <div
+                                style={{marginBottom: 45, paddingTop: 10}}
+                                onTouchStart={this.onTouchStart.bind(this)}
                                 onTouchEnd={this.onTouchEnd.bind(this)}>
                                 { this.renderLineup(lineupContents, lineupMeta) }
                             </div>
