@@ -32,7 +32,7 @@ const HorizontalHastags = ({title, indexTag}) => {
       .catch((err)=>{
         console.log(err);
       });
-  },[hastags]);
+  },[]);
   useEffect(() => {
     if (hastags.data && (hastags?.meta?.pagination?.current_page < hastags?.meta?.pagination?.total_page) && show && hastags.data.length < 20) {
       setLoadingMore(true);
