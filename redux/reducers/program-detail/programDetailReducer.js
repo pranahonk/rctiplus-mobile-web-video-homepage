@@ -40,6 +40,7 @@ const initialState = {
   paid_video: null,
   error: '',
   filter: '',
+  programDetail: {}
 };
 
 export default (state = initialState, action) => {
