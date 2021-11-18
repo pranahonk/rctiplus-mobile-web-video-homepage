@@ -34,7 +34,7 @@ const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
 const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
 
 // NEW RPLUS LINEUP CONTENTS
-const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/square"));
+const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/Square"));
 const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
 const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
 const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
