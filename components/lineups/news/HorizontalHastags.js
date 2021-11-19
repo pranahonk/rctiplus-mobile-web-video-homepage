@@ -27,7 +27,6 @@ const HorizontalHastags = ({title, indexTag, id}) => {
   useEffect(() => {
     client.query({query: GET_HASTAGS(1, 15)})
       .then((res)=>{
-        console.log(res?.data?.lineups?.data[indexTag]);
         setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{
@@ -37,13 +36,13 @@ const HorizontalHastags = ({title, indexTag, id}) => {
   useEffect(() => {
     console.log(show);
     if (hastags.data && show) {
-      client.query({query: GET_HASTAGS_PAGINATION(id)})
-        .then((res)=>{
-          console.log(res);
-        })
-        .catch((err)=>{
-          console.log(err);
-        });
+      // client.query({query: GET_HASTAGS_PAGINATION(id)})
+      //   .then((res)=>{
+      //     console.log(res);
+      //   })
+      //   .catch((err)=>{
+      //     console.log(err);
+      //   });
       // hastags?.meta?.pagination?.current_page < hastags?.meta?.pagination?.total_page ?
       //   (props.getListTag(hastags.tag, hastags?.meta?.pagination?.current_page + 1).then((res) => {
       //     setShow(null)
@@ -68,7 +67,6 @@ const HorizontalHastags = ({title, indexTag, id}) => {
           {hastags?.length === 0 ? (<TopicLoader />) : (<Swiper
             spaceBetween={10}
             height={150}
-            onReachEnd={setShow}
           >
             {hastags?.data.map((item, index) => {
               return (
