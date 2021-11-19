@@ -12,12 +12,12 @@ import 'swiper/swiper.scss';
 
 //import scss
 import '../../../assets/scss/components/horizontal-hastags.scss';
-import { GET_HASTAGS } from '../../../graphql/queries/hastags';
+import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 
 const TopicLoader = dynamic(() => import('../../Includes/Shimmer/ListTagLoader'));
 
 
-const HorizontalHastags = ({title, indexTag}) => {
+const HorizontalHastags = ({title, indexTag, id}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -27,12 +27,30 @@ const HorizontalHastags = ({title, indexTag}) => {
   useEffect(() => {
     client.query({query: GET_HASTAGS(1, 15)})
       .then((res)=>{
+        console.log(res?.data?.lineups?.data[indexTag]);
         setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{
         console.log(err);
       });
   },[]);
+  useEffect(() => {
+    console.log(show);
+    if (hastags.data && show) {
+      client.query({query: GET_HASTAGS_PAGINATION(id)})
+        .then((res)=>{
+          console.log(res);
+        })
+        .catch((err)=>{
+          console.log(err);
+        });
+      // hastags?.meta?.pagination?.current_page < hastags?.meta?.pagination?.total_page ?
+      //   (props.getListTag(hastags.tag, hastags?.meta?.pagination?.current_page + 1).then((res) => {
+      //     setShow(null)
+      //     setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
+      //   }).catch((err) => console.log(err))) : ''
+    }
+  },[show])
   useEffect(() => {
     if (hastags.data && (hastags?.meta?.pagination?.current_page < hastags?.meta?.pagination?.total_page) && show && hastags.data.length < 20) {
       setLoadingMore(true);
@@ -43,13 +61,14 @@ const HorizontalHastags = ({title, indexTag}) => {
   };
 
   return (
-    <li>
+    <li className="regroupping-by-section">
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
           {hastags?.length === 0 ? (<TopicLoader />) : (<Swiper
             spaceBetween={10}
             height={150}
+            onReachEnd={setShow}
           >
             {hastags?.data.map((item, index) => {
               return (

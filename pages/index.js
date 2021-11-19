@@ -128,7 +128,7 @@ class Index_v2 extends React.Component {
             switch(lineup.display_type) {
               case 'news_tagar':
                 return (
-                  <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} />
+                  <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
                 )
               case 'square_list_news':
                 return (

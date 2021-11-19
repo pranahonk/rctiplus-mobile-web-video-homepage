@@ -66,7 +66,7 @@ const HorizontalLandscape = ({title, indexTag}) => {
             spaceBetween={10}
             width={320}
             height={140}
-            onReachEnd={setShow}
+            slidesPerView={1}
           >
             {list?.data.map((item, index) => {
               return (
