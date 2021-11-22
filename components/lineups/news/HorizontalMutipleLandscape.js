@@ -60,9 +60,10 @@ const HorizontalLandscape = ({title, indexTag}) => {
   return (
     <li className="regroupping-by-section">
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
+      <h2 className="section-h2 mt-40 mb-2">{list?.data}</h2>
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
-          {list?.data?.length === undefined ? (<TopicLoader />) : (<Swiper
+          {list?.data === undefined || list?.data === null? (<TopicLoader />) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}

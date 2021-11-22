@@ -14,7 +14,7 @@ import 'swiper/swiper.scss';
 import '../../../assets/scss/components/horizontal-hastags.scss';
 import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 
-const TopicLoader = dynamic(() => import('../../Includes/Shimmer/ListTagLoader'));
+const HastagLoader = dynamic(() => import('../../Includes/Shimmer/HastagLoader'));
 
 
 const HorizontalHastags = ({title, indexTag, id}) => {
@@ -64,7 +64,7 @@ const HorizontalHastags = ({title, indexTag, id}) => {
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
-          {hastags?.length === 0 ? (<TopicLoader />) : (<Swiper
+          {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<HastagLoader />) : (<Swiper
             spaceBetween={10}
             height={150}
           >
