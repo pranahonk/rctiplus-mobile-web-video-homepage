@@ -22,6 +22,7 @@ const HorizontalHastags = ({title, indexTag, id}) => {
 
   const [show, setShow] = useState(null);
   const [hastags, setHastags] = useState([]);
+  const [meta, setMeta] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
@@ -35,26 +36,34 @@ const HorizontalHastags = ({title, indexTag, id}) => {
   },[]);
   useEffect(() => {
     console.log(show);
+
     if (hastags.data && show) {
-      // client.query({query: GET_HASTAGS_PAGINATION(id)})
-      //   .then((res)=>{
-      //     console.log(res);
-      //   })
-      //   .catch((err)=>{
-      //     console.log(err);
-      //   });
-      // hastags?.meta?.pagination?.current_page < hastags?.meta?.pagination?.total_page ?
-      //   (props.getListTag(hastags.tag, hastags?.meta?.pagination?.current_page + 1).then((res) => {
-      //     setShow(null)
-      //     setList((list) => ({...list, data: [...list.data, ...res.data.data], meta: res.data.meta}))
-      //   }).catch((err) => console.log(err))) : ''
-    }
-  },[show])
-  useEffect(() => {
-    if (hastags.data && (hastags?.meta?.pagination?.current_page < hastags?.meta?.pagination?.total_page) && show && hastags.data.length < 20) {
       setLoadingMore(true);
+      let page;
+      if(meta?.pagination){
+        if(meta?.pagination?.current_page < meta?.pagination?.total){
+          page = meta?.pagination?.current_page + 1;
+        }else{
+          page =  meta?.pagination?.total;
+        }
+      }else{
+        page = 2
+      }
+      client.query({query: GET_HASTAGS_PAGINATION(id, page)})
+        .then((res)=>{
+          setHastags((list) => ({...list, data: [...list.data, ...res.data.lineup_news_tagars.data]}))
+          setMeta(res.data.lineup_news_tagars.meta);
+          setLoadingMore(false);
+          setShow(null);
+        })
+        .catch((err)=>{
+          console.log(err);
+        });
     }
-  }, [show]);
+  },[show]);
+  useEffect(()=>{
+    console.log(meta)
+  }, [meta])
   const _goToDetail = (article) => {
     return `news/topic/tag/${article.tag}`
   };
@@ -67,6 +76,8 @@ const HorizontalHastags = ({title, indexTag, id}) => {
           {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<HastagLoader />) : (<Swiper
             spaceBetween={10}
             height={150}
+            width={180}
+            onReachEnd={setShow}
           >
             {hastags?.data.map((item, index) => {
               return (
@@ -81,7 +92,7 @@ const HorizontalHastags = ({title, indexTag, id}) => {
             })}
             {loadingMore && (
               <SwiperSlide>
-                <TopicLoader />
+                <HastagLoader />
               </SwiperSlide>)}
           </Swiper>) }
         </li>

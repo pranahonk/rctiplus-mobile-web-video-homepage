@@ -67,6 +67,7 @@ const HorizontalMutipleLandscape = ({title, indexTag}) => {
             width={320}
             height={140}
             slidesPerView={1}
+            onReachEnd={()=> alert("yes")}
           >
             {list?.data.map((item, index) => {
               return (

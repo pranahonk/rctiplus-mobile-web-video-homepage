@@ -1,9 +1,10 @@
 .horizontal-tags {
   background: linear-gradient(146.31deg, #05B5F5 14.04%, #0079FF 88.41%);
-  height: 47px;
-  width: auto;
+  //height: 47px;
+  //width: auto;
   padding: 12px 16px;
   border-radius: 8px;
+  text-align: center;
 
   &_text{
     font-family: inherit;
@@ -15,9 +16,9 @@
   }
 }
 
-.swiper-slide{
-  width: auto!important;
-}
+//.swiper-slide{
+//  width: auto!important;
+//}
 
 .section-h2 {
   font-size: 14px;
