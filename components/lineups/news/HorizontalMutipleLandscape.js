@@ -35,7 +35,9 @@ const HorizontalMutipleLandscape = ({title, indexTag}) => {
   useEffect(() => {
     client.query({query: GET_REGROUPING(1,15)})
       .then((res)=>{
-        setList(res?.data?.lineups?.data[indexTag - 1]?.lineup_type_detail?.detail);
+        console.log(indexTag)
+        console.log(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail)
+        setList(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{
         console.log(err);
@@ -62,7 +64,7 @@ const HorizontalMutipleLandscape = ({title, indexTag}) => {
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
-          {list?.data === undefined || list?.data === null? (<Loader />) : (<Swiper
+          {list?.data === undefined || list?.data?.length < 1 ? (<Loader />) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}
@@ -72,17 +74,32 @@ const HorizontalMutipleLandscape = ({title, indexTag}) => {
             {list?.data.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
-                  <Link href={_goToDetail(item)}  >
-                    <div className="regroupping-by-section_thumbnail-wrapper">
-                      {
-                        imageNews(item.title, item.image_url, item.image, 320, assetUrl, 'thumbnail')
-                      }
-                      <div className="regroupping-by-section_thumbnail-title" >
-                        <h1>{getTruncate(item.title, '...', 100)}</h1>
-                        <h2>{item.subcategory_name} | {item.source} | <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
+                  <div className={`list_tags_thumb`}>
+                    <div className="lt_img">
+                      <div className="lt_img_wrap">
+                        <a onClick={(e) => {
+                          e.preventDefault()
+                          _goToDetail(item)
+                        }}>
+                          {
+                            imageNews(item.title, item.cover, item.image, 200, null, 'news-interest_thumbnail')
+                          }
+                        </a>
                       </div>
                     </div>
-                  </Link>
+                    <div className="lt_content">
+                      <a onClick={(e) => {
+                        e.preventDefault()
+                        _goToDetail(item)
+                      }}>
+                        <h2 dangerouslySetInnerHTML={{ __html: getTruncate(item.title, '...', 100) }}></h2>
+                      </a>
+                      <div className="lt_content-info">
+                        <h5>{item.source}</h5>
+                        <h6>{formatDateWordID(new Date(item.pubDate * 1000))}</h6>
+                      </div>
+                    </div>
+                  </div>
                 </SwiperSlide>
               );
             })}
