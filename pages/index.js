@@ -125,154 +125,21 @@ class Index_v2 extends React.Component {
 
     renderLineup(lineups, meta) {
        return lineups.map((lineup, index) => {
-            switch(lineup.service) {
-                case "video": {
-                    switch(lineup.display_type) {
-                        case 'horizontal_landscape_large':
-                            return (
-                                null
-                                // <Panel1
-                                //     token={this.state.token}
-                                //     type={content.type}
-                                //     loadingBar={this.LoadingBar}
-                                //     key={content.id}
-                                //     contentId={content.id}
-                                //     title={content.title}
-                                //     content={lineup.lineup_type_detail.detail.data}
-                                //     imagePath={meta.image_path}
-                                //     resolution={RESOLUTION_IMG}
-                                //     displayType={content.display_type}/>
-                            )
-                        case 'horizontal_landscape':
-                            return (
-                                null
-                                // <Panel2
-                                //     token={this.state.token}
-                                //     loadingBar={this.LoadingBar}
-                                //     key={content.id}
-                                //     contentId={content.id}
-                                //     title={content.title}
-                                //     content={lineup.lineup_type_detail.detail.data}
-                                //     imagePath={meta.image_path}
-                                //     resolution={RESOLUTION_IMG}
-                                //     displayType={content.display_type}/>
-                            )
-                        case "horizontal" :
-                            if (lineup.lineup_type !== "default") return null
+            switch(lineup.display_type) {
+              case 'news_tagar':
+                return (
+                  <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                )
+              case 'square_list_news':
+                return (
+                  <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} />
+                )
+              case "horizontal" :
+                if (lineup.lineup_type !== "default") return null
 
-                            return (
-                              null
-                                // <VideoSquareView
-                                //     token={this.state.token}
-                                //     loadingBar={this.LoadingBar}
-                                //     key={lineup.id}
-                                //     contentId={lineup.id}
-                                //     title={lineup.title}
-                                //     content={lineup.lineup_type_detail.detail.data}
-                                //     imagePath={meta.image_path} />
-                                // <Panel3
-                                //     token={this.state.token}
-                                //     loadingBar={this.LoadingBar}
-                                //     key={lineup.id}
-                                //     contentId={lineup.id}
-                                //     title={lineup.title}
-                                //     content={lineup.lineup_type_detail.detail.data}
-                                //     imagePath={meta.image_path}
-                                //     resolution={RESOLUTION_IMG}
-                                //     displayType={lineup.display_type}/>
-                            )
-                        case "horizontal_square" :
-                            return (
-                                null
-                                // <VideoSquareView
-                                //     token={this.state.token}
-                                //     loadingBar={this.LoadingBar}
-                                //     key={lineup.id}
-                                //     contentId={lineup.id}
-                                //     title={lineup.title}
-                                //     content={lineup.lineup_type_detail.detail.data}
-                                //     imagePath={meta.image_path}/>
-                            )
-                        case "vertical" :
-                            return (
-                                null
-                                // <VideoVerticalView
-                                //     token={this.state.token}
-                                //     loadingBar={this.LoadingBar}
-                                //     key={content.id}
-                                //     contentId={content.id}
-                                //     title={content.title}
-                                //     content={lineup.lineup_type_detail.detail.data}
-                                //     imagePath={meta.image_path}
-                                //     resolution={RESOLUTION_IMG}
-                                //     displayType={content.display_type}/>
-                            )
-                    }
-                } break
-                case "news" : {
-                  switch(lineup.display_type) {
-                    case 'news_tagar':
-                      return (
-                        <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} />
-                      )
-                    case 'square_list_news':
-                      return (
-                        <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} />
-                      )
-                    case "horizontal" :
-                      if (lineup.lineup_type !== "default") return null
-
-                      return (
-                        null
-                        // <VideoSquareView
-                        //     token={this.state.token}
-                        //     loadingBar={this.LoadingBar}
-                        //     key={lineup.id}
-                        //     contentId={lineup.id}
-                        //     title={lineup.title}
-                        //     content={lineup.lineup_type_detail.detail.data}
-                        //     imagePath={meta.image_path} />
-                        // <Panel3
-                        //     token={this.state.token}
-                        //     loadingBar={this.LoadingBar}
-                        //     key={lineup.id}
-                        //     contentId={lineup.id}
-                        //     title={lineup.title}
-                        //     content={lineup.lineup_type_detail.detail.data}
-                        //     imagePath={meta.image_path}
-                        //     resolution={RESOLUTION_IMG}
-                        //     displayType={lineup.display_type}/>
-                      )
-                    case "horizontal_square" :
-                      return (
-                        null
-                        // <VideoSquareView
-                        //     token={this.state.token}
-                        //     loadingBar={this.LoadingBar}
-                        //     key={lineup.id}
-                        //     contentId={lineup.id}
-                        //     title={lineup.title}
-                        //     content={lineup.lineup_type_detail.detail.data}
-                        //     imagePath={meta.image_path}/>
-                      )
-                    case "vertical" :
-                      return (
-                        null
-                        // <VideoVerticalView
-                        //     token={this.state.token}
-                        //     loadingBar={this.LoadingBar}
-                        //     key={content.id}
-                        //     contentId={content.id}
-                        //     title={content.title}
-                        //     content={lineup.lineup_type_detail.detail.data}
-                        //     imagePath={meta.image_path}
-                        //     resolution={RESOLUTION_IMG}
-                        //     displayType={content.display_type}/>
-                      )
-                  }
-                } break
-                case "radio" : return null
-                case "hot" : return null
+                return (
+                  null
+                )
             }
         })
     }

@@ -21,7 +21,7 @@ import { GET_REGROUPING } from '../../../graphql/queries/regrouping';
 //import scss
 import '../../../assets/scss/components/horizontal-landscape.scss';
 
-const HorizontalLandspaceLoader = dynamic(() => import('../../Includes/Shimmer/HorizontalLandspaceLoader'))
+const TopicLoader = dynamic(() => import('../../Includes/Shimmer/ListTagLoader'))
 
 
 const HorizontalLandscape = ({title, indexTag}) => {
@@ -60,9 +60,10 @@ const HorizontalLandscape = ({title, indexTag}) => {
   return (
     <li className="regroupping-by-section">
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
+      <h2 className="section-h2 mt-40 mb-2">{list?.data}</h2>
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
-          {list?.data?.length === undefined || list?.data?.length < 1 ? (<HorizontalLandspaceLoader />) : (<Swiper
+          {list?.data === undefined || list?.data === null? (<TopicLoader />) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}
@@ -87,7 +88,7 @@ const HorizontalLandscape = ({title, indexTag}) => {
             })}
             {loadingMore && (
               <SwiperSlide>
-                <HorizontalLandspaceLoader />
+                <TopicLoader />
               </SwiperSlide>)}
           </Swiper>) }
         </li>
