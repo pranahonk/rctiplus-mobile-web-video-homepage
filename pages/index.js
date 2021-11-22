@@ -35,6 +35,8 @@ const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
 
 // NEW RPLUS LINEUP CONTENTS
 const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/Square"))
+const VideoHorizontalView = dynamic(() => import("../components/lineups/video_lineup/Horizontal"))
+const VideoHorizontalLandscapeMdView = dynamic(() => import("../components/lineups/video_lineup/HorizontalLandscapeMd"))
 const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
 
 class Index_v2 extends React.Component {
@@ -55,6 +57,7 @@ class Index_v2 extends React.Component {
         token: ""
     }
 
+    LoadingBar = null
     swipe = {}
 
     onTouchStart(e) {
@@ -124,54 +127,38 @@ class Index_v2 extends React.Component {
        return lineups.map((lineup) => {
             switch(lineup.display_type) {
               case "horizontal" :
-                if (lineup.lineup_type !== "default") return null
-
-                return (
-                  <VideoSquareView
-                    token={this.state.token}
-                    loadingBar={this.LoadingBar}
-                    key={lineup.id}
-                    contentId={lineup.id}
-                    title={lineup.title}
-                    content={lineup.lineup_type_detail.detail.data}
-                    imagePath={meta.image_path} />
-                  // <Panel3
-                  //     token={this.state.token}
-                  //     loadingBar={this.LoadingBar}
-                  //     key={lineup.id}
-                  //     contentId={lineup.id}
-                  //     title={lineup.title}
-                  //     content={lineup.lineup_type_detail.detail.data}
-                  //     imagePath={meta.image_path}
-                  //     resolution={RESOLUTION_IMG}
-                  //     displayType={lineup.display_type}/>
-                )
+                    if (lineup.lineup_type !== "default") return null
+                    return (
+                        <VideoHorizontalView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
               case "horizontal_square" :
-                return (
-                  null
-                  // <VideoSquareView
-                  //     token={this.state.token}
-                  //     loadingBar={this.LoadingBar}
-                  //     key={lineup.id}
-                  //     contentId={lineup.id}
-                  //     title={lineup.title}
-                  //     content={lineup.lineup_type_detail.detail.data}
-                  //     imagePath={meta.image_path}/>
-                )
-              case "vertical" :
-                return (
-                  null
-                  // <VideoVerticalView
-                  //     token={this.state.token}
-                  //     loadingBar={this.LoadingBar}
-                  //     key={content.id}
-                  //     contentId={content.id}
-                  //     title={content.title}
-                  //     content={lineup.lineup_type_detail.detail.data}
-                  //     imagePath={meta.image_path}
-                  //     resolution={RESOLUTION_IMG}
-                  //     displayType={content.display_type}/>
-                )
+                    if (lineup.lineup_type !== "default") return null
+                    return (
+                        <VideoSquareView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "horizontal_landscape_medium" :
+                    if (lineup.lineup_type !== "default") return null
+                    return (
+                        <VideoHorizontalLandscapeMdView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
             }
         })
     }
