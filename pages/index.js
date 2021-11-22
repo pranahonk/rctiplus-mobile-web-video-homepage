@@ -28,6 +28,8 @@ import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
+import HorizontalLandscape from '../components/lineups/news/HorizontalMutipleLandscape';
+import HorizontalMutipleLandscape from '../components/lineups/news/HorizontalMutipleLandscape';
 
 const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
 const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
@@ -134,9 +136,10 @@ class Index_v2 extends React.Component {
                 return (
                   <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} />
                 )
-              case "horizontal" :
-                if (lineup.lineup_type !== "default") return null
-
+              case "horizontal_landscape_news" :
+                return (
+                  <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} />
+                )
                 return (
                   null
                 )
