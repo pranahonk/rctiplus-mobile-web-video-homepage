@@ -61,9 +61,6 @@ const HorizontalHastags = ({title, indexTag, id}) => {
         });
     }
   },[show]);
-  useEffect(()=>{
-    console.log(meta)
-  }, [meta])
   const _goToDetail = (article) => {
     return `news/topic/tag/${article.tag}`
   };
