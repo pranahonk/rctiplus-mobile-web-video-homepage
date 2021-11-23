@@ -21,10 +21,10 @@ import { GET_REGROUPING } from '../../../graphql/queries/regrouping';
 //import scss
 import '../../../assets/scss/components/horizontal-landscape.scss';
 
-const TopicLoader = dynamic(() => import('../../Includes/Shimmer/ListTagLoader'))
+const Loader = dynamic(() => import('../../Includes/Shimmer/HorizontalMutipleLandscapeloader.js'))
 
 
-const HorizontalLandscape = ({title, indexTag}) => {
+const HorizontalMutipleLandscape = ({title, indexTag}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -35,7 +35,7 @@ const HorizontalLandscape = ({title, indexTag}) => {
   useEffect(() => {
     client.query({query: GET_REGROUPING(1,15)})
       .then((res)=>{
-        setList(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
+        setList(res?.data?.lineups?.data[indexTag - 1]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{
         console.log(err);
@@ -60,14 +60,14 @@ const HorizontalLandscape = ({title, indexTag}) => {
   return (
     <li className="regroupping-by-section">
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
-      <h2 className="section-h2 mt-40 mb-2">{list?.data}</h2>
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
-          {list?.data === undefined || list?.data === null? (<TopicLoader />) : (<Swiper
+          {list?.data === undefined || list?.data === null? (<Loader />) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}
             slidesPerView={1}
+            onReachEnd={()=> alert("yes")}
           >
             {list?.data.map((item, index) => {
               return (
@@ -88,7 +88,7 @@ const HorizontalLandscape = ({title, indexTag}) => {
             })}
             {loadingMore && (
               <SwiperSlide>
-                <TopicLoader />
+                <Loader />
               </SwiperSlide>)}
           </Swiper>) }
         </li>
@@ -97,4 +97,4 @@ const HorizontalLandscape = ({title, indexTag}) => {
   );
 };
 
-export default HorizontalLandscape;
+export default HorizontalMutipleLandscape;
