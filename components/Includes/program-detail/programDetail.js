@@ -318,6 +318,8 @@ export const PanelRecommendHOT = (props) => {
   const recommendationVideoURL = (id) => `${LINK_HOT}recommendation/video/${id}${hasToken ? `?token=${token}` : ''}`
   const onClickItem = (id) => window.location.href = recommendationVideoURL(id);
 
+  const seeMore = () => Router.push(`${LINK_HOT}${hasToken ? `?token=${token}` : ''}`)
+
   return (
     <div className="recommend__HOT-wrapper">
       <div className="recommend__HOT-header-wrapper">
@@ -351,12 +353,10 @@ export const PanelRecommendHOT = (props) => {
             </Link>
           );
         })}
-        {hasMore && (
-          <div className="recommend__HOT-more-wrapper" onClick={props.hasMore}>
-            <img className="recommend__HOT-more-icon" alt="See More Icon" src={SeeMoreIcon} />
-            <p className="recommend__HOT-more-label">See More</p>
-          </div>
-        )}
+        <div className="recommend__HOT-more-wrapper" onClick={seeMore}>
+          <img className="recommend__HOT-more-icon" alt="See More Icon" src={SeeMoreIcon} />
+          <p className="recommend__HOT-more-label">See More</p>
+        </div>
       </div>
     </div>
   );
