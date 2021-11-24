@@ -31,42 +31,45 @@ function carouselBanner(props) {
             .catch(e => console.log(e))
     }
 
-    const goToProgram = (program) => {
-        sendTracker(homeBannerEvent, "homeBanner", program)
+    const goToProgram = (banner) => {
+        sendTracker(homeBannerEvent, "homeBanner", banner)
 
-        switch (program.type) {
-            case 'live_streaming' : 
-                const channels = {
-                    "1": "rcti",
-                    "2": "mnctv",
-                    "3": "gtv",
-                    "4": "inews"
-                }
-                return Router.push(`/tv/${channels[program.type_value]}`);
-            case 'url':
-                return window.open(program.type_value, '_blank')
-            case 'episode':
-                if(program.type_value && program.program_id) {
-                    const title = titleStringUrlRegex(program.title)
-                    Router.push(`/programs/${program.program_id}/${title}/episode/${program.type_value}/${title}`)
-                }
-                break;
-            case 'catchup':
-                if(program.type_value && program.channel && program.catchup_date) {
-                    const title = titleStringUrlRegex(program.title)
-                    Router.push(`/tv/${program.channel}/${program.type_value}/${title}?date=${program.catchup_date}`)
-                }
-                break;
-            case 'live_event':
-                if (program.type_value) {
-                    Router.push(`/live-event/${program.type_value}/${titleStringUrlRegex(program.title)}`);
-                }
-                break;
-            case 'program':
-                return Router.push(`/programs/${program.type_value}/${titleStringUrlRegex(program.title)}`); 
-            default:
-                return Router.push(`/tv/rcti`);
-        }    
+        if (!banner.permalink) return
+        Router.push(banner.permalink)
+
+        // switch (banner.type) {
+        //     case 'live_streaming' : 
+        //         const channels = {
+        //             "1": "rcti",
+        //             "2": "mnctv",
+        //             "3": "gtv",
+        //             "4": "inews"
+        //         }
+        //         return Router.push(`/tv/${channels[banner.type_value]}`);
+        //     case 'url':
+        //         return window.open(banner.type_value, '_blank')
+        //     case 'episode':
+        //         if(banner.type_value && banner.program_id) {
+        //             const title = titleStringUrlRegex(banner.title)
+        //             Router.push(`/programs/${banner.program_id}/${title}/episode/${banner.type_value}/${title}`)
+        //         }
+        //         break;
+        //     case 'catchup':
+        //         if(banner.type_value && banner.channel && banner.catchup_date) {
+        //             const title = titleStringUrlRegex(banner.title)
+        //             Router.push(`/tv/${banner.channel}/${banner.type_value}/${title}?date=${banner.catchup_date}`)
+        //         }
+        //         break;
+        //     case 'live_event':
+        //         if (banner.type_value) {
+        //             Router.push(`/live-event/${banner.type_value}/${titleStringUrlRegex(banner.title)}`);
+        //         }
+        //         break;
+        //     case 'program':
+        //         return Router.push(`/programs/${banner.type_value}/${titleStringUrlRegex(banner.title)}`); 
+        //     default:
+        //         return Router.push(`/tv/rcti`);
+        // }    
     }
 
     const sendTracker = (func, type, program) => {
