@@ -19,7 +19,8 @@ import { useQuery } from '@apollo/client';
 import { GET_REGROUPING } from '../../../graphql/queries/regrouping';
 
 //import scss
-import '../../../assets/scss/components/horizontal-landscape.scss';
+import '../../../assets/scss/components/horizontal-multiple.scss';
+import '../../../assets/scss/components/trending_v2.scss';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/HorizontalMutipleLandscapeloader.js'))
 
@@ -28,25 +29,33 @@ const HorizontalMutipleLandscape = ({title, indexTag}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
-  const [list, setList] = useState([]);
+  const [item, setItem] = useState([]);
   const [assetUrl, setAssetUrl] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     client.query({query: GET_REGROUPING(1,15)})
       .then((res)=>{
-        setList(res?.data?.lineups?.data[indexTag - 1]?.lineup_type_detail?.detail);
+        const result = [];
+        for (let i = 0; i < res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.data.length; i += 3) {
+          result.push(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.data.slice(i, i + 3));
+        }
+
+        setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path);
+        setItem(result);
+        // setItem(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{
         console.log(err);
       });
-  },[list]);
+  },[]);
   useEffect(() => {
-    setAssetUrl(list?.meta && list.meta?.image_path ? list?.meta?.image_path : null);
-    if (list?.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list.data?.length < 20) {
+    console.log(item);
+
+    if (item?.data && (item?.meta?.pagination?.current_page < item?.meta?.pagination?.total_page) && show && item.data?.length < 20) {
       setLoadingMore(true);
     }
-  }, [show, list])
+  }, [show, item]);
 
   const _goToDetail = (article) => {
     let category = '';
@@ -58,31 +67,52 @@ const HorizontalMutipleLandscape = ({title, indexTag}) => {
     return ('news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)));
   };
   return (
-    <li className="regroupping-by-section">
+    <li>
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
-          {list?.data === undefined || list?.data === null? (<Loader />) : (<Swiper
+          {item?.length === 0 || item === undefined ? (<Loader />) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}
             slidesPerView={1}
-            onReachEnd={()=> alert("yes")}
           >
-            {list?.data.map((item, index) => {
+            {item.map((list, index) => {
               return (
                 <SwiperSlide key={index}>
-                  <Link href={_goToDetail(item)}  >
-                    <div className="regroupping-by-section_thumbnail-wrapper">
-                      {
-                        imageNews(item.title, item.image_url, item.image, 320, assetUrl, 'thumbnail')
-                      }
-                      <div className="regroupping-by-section_thumbnail-title" >
-                        <h1>{getTruncate(item.title, '...', 100)}</h1>
-                        <h2>{item.subcategory_name} | {item.source} | <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
-                      </div>
-                    </div>
-                  </Link>
+                  {
+                    list.map((data, index2) =>{
+                      return(
+                        <div key={index2} className={`list_tags_thumb tagsItems`}>
+                          <div className="lt_img">
+                            <div className="lt_img_wrap">
+                              <a onClick={(e) => {
+                                e.preventDefault();
+                                _goToDetail(data);
+                              }}>
+                                {
+                                  imageNews(data.title, data.cover, data.image, 200, assetUrl, 'news-interest_thumbnail')
+                                }
+                              </a>
+                            </div>
+                          </div>
+                          <div className="lt_content">
+                            <a onClick={(e) => {
+                              e.preventDefault();
+                              _goToDetail(data);
+                            }}>
+                              <h2 dangerouslySetInnerHTML={{ __html: getTruncate(data.title, '...', 100)}}></h2>
+                            </a>
+                            <div className="lt_content-info">
+                              <h5>{data.source}</h5>
+                              <h6>{formatDateWordID(new Date(data.pubDate * 1000))}</h6>
+                            </div>
+                          </div>
+                        </div>
+                        )
+                    })
+                  }
+
                 </SwiperSlide>
               );
             })}

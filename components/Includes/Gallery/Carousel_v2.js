@@ -67,7 +67,8 @@ class Crs_v2 extends Component {
             case 'url':
                 window.open(program.type_value, '_blank');
                 break;
-            case 'episode':
+            case '' +
+            '':
                 if(program.type_value && program.program_id) {
                     const title = program.title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-')
                     Router.push(`/programs/${program.program_id}/${title}/episode/${program.type_value}/${title}`)
@@ -86,45 +87,45 @@ class Crs_v2 extends Component {
                 break;
             case 'program':
                 Router.push(`/programs/${program.type_value}/${program.title.replace(/ +/g, '-')}`);
-                break;  
+                break;
             default:
                 return Router.push(`/tv/rcti`);
-        }        
+        }
     }
 
     render() {
         return (
-                <div style={{ 
-                    position: 'relative', 
+                <div style={{
+                    position: 'relative',
                     paddingTop: this.props.showStickyInstall ? 135 : this.props.detailCategory? 0 : 70,
                 }}>
-                    {this.state.banner === undefined || this.state.banner === null ? 
-                        <div className="banner-carousel" style={{ 
-                            width: '100%', 
+                    {this.state.banner === undefined || this.state.banner === null ?
+                        <div className="banner-carousel" style={{
+                            width: '100%',
                             minHeight: 320,
                             display: "flex",
                             justifyContent:"center",
                             alignItems:"center"
                         }}>
-                            <Img 
+                            <Img
                                 alt="placeholder"
                                 src={<img alt="placeholder" src="/static/placeholders/placeholder_landscape.png"/>}
                                 unloader={<img alt="placeholder" src="/static/placeholders/placeholder_landscape.png"/>}
                                 loader={<img alt="placeholder" src="/static/placeholders/placeholder_landscape.png"/>}/>
                         </div>
                         :
-                        <Carousel 
+                        <Carousel
                             className="banner-carousel"
-                            statusFormatter={(current, total) => `${current}/${total}`} 
-                            autoPlay 
-                            showThumbs={false} 
-                            showIndicators 
-                            stopOnHover 
-                            showArrows={false} 
-                            showStatus={false} 
-                            swipeScrollTolerance={1} 
+                            statusFormatter={(current, total) => `${current}/${total}`}
+                            autoPlay
+                            showThumbs={false}
+                            showIndicators
+                            stopOnHover
+                            showArrows={false}
+                            showStatus={false}
+                            swipeScrollTolerance={1}
                             infiniteLoop
-                            swipeable 
+                            swipeable
                             onSwipeEnd={(e) => {
                                 const swipedIndex = e.target.getAttribute('data-index');
                                 if (this.state.banner[swipedIndex]) {
@@ -134,11 +135,11 @@ class Crs_v2 extends Component {
                             }}
                         >
                             {this.state?.banner?.map((b, i) => (
-                                <div data-index={i} onClick={this.goToProgram.bind(this, b)} key={b.id} style={{ 
-                                    width: '100%', 
+                                <div data-index={i} onClick={this.goToProgram.bind(this, b)} key={b.id} style={{
+                                    width: '100%',
                                     minHeight: 320
                                 }}>
-                                    <Img 
+                                    <Img
                                         alt={b.title}
                                         src={[`${this.state.meta.image_path + this.state.resolution + b.square_image}`, '/static/placeholders/placeholder_landscape.png']}
                                         unloader={<img alt={b.title} src="/static/placeholders/placeholder_landscape.png"/>}
