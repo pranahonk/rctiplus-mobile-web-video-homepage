@@ -52,7 +52,7 @@ class Index_v2 extends React.Component {
         meta: null,
         resolution: 320,
         is_loading: false,
-        length: 10,
+        length: 20,
         show_sticky_install: false,
         sticky_ads_closed: false,
         isShimmer: true,
@@ -114,10 +114,10 @@ class Index_v2 extends React.Component {
     }
 
     bottomScrollFetch() {
-        const { pagination } = this.props.contents.meta
-        if (pagination?.total_page === pagination?.current_page) return
+        const { pagination } = this.props.contents.meta;
+        if (pagination?.total_page === pagination?.current_page) return;
 
-        this.getHomePageLineups(pagination.current_page + 1, this.state.length)
+        this.getHomePageLineups(pagination.current_page ? pagination.current_page + 1 : 2, this.state.length);
     }
 
     closeStickyInstall(self) {
