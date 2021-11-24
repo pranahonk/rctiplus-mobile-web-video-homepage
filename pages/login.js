@@ -62,7 +62,7 @@ class Signin extends React.Component {
 					// window.location.href = this.constructReferrerUrl(token);
 				}
 				else {
-					Router.push('/');
+					// Router.push('/');
 				}
 			}
 		}, 500);
