@@ -4,7 +4,7 @@ import { gql } from '@apollo/client';
 export const GET_REGROUPING = (page = 1, pageSize= 15) => {
   return gql`
     query {
-      lineups {
+      lineups(page: 1, page_size: 100) {
         data {
           lineup_type_detail {
             ... on LineupTypeNewsRegrouping {
