@@ -4,27 +4,50 @@ import { gql } from '@apollo/client';
 export const GET_REGROUPING = (page = 1, pageSize= 15) => {
   return gql`
     query {
-      lineups(page: 1, page_size: 100) {
+      lineups(page:1, page_size: 100) {
         data {
           lineup_type_detail {
             ... on LineupTypeNewsRegrouping {
-              detail(page: ${page}, page_size: ${pageSize}) {
+              detail {
                 data {
                   author
-                  category
-                  category_id
+                  category_source
                   content
                   count
+                  country_id
+                  country_name
+                  cover
+                  created_at
                   deeplink
+                  description
+                  exclusive
+                  ga_partner_id
+                  google_index
                   id
                   image
-                  image_url
+                  is_headline
                   link
+                  meta_description
+                  meta_keyword
+                  meta_title
                   permalink
-                  pubdate
+                  pinned
+                  pubDate
+                  publish
+                  publish_date
+                  publisher_id
+                  rss_id
+                  share_link
+                  sorting
                   source
+                  subcategory_id
+                  subcategory_name
+                  tags
                   title
                   total_like
+                  total_views
+                  updated_at
+
                 }
                 meta {
                   pagination {
