@@ -34,36 +34,38 @@ const HorizontalHastags = ({title, indexTag, id}) => {
         console.log(err);
       });
   },[]);
-  useEffect(() => {
-    console.log(show);
 
+  const getHastagPagination = (page) =>{
+    client.query({query: GET_HASTAGS_PAGINATION(id, page)})
+      .then((res)=>{
+        setHastags((list) => ({...list, data: [...list.data, ...res.data.lineup_news_tagars.data]}))
+        setMeta(res.data.lineup_news_tagars.meta);
+        setLoadingMore(false);
+        setShow(null);
+      })
+      .catch((err)=>{
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
     if (hastags.data && show) {
       setLoadingMore(true);
-      let page;
       if(meta?.pagination){
-        if(meta?.pagination?.current_page < meta?.pagination?.total){
-          page = meta?.pagination?.current_page + 1;
-        }else{
-          page =  meta?.pagination?.total;
+        if(meta?.pagination?.current_page < meta?.pagination?.total_page){
+         getHastagPagination(meta?.pagination?.current_page + 1);
         }
-      }else{
-        page = 2
-      }
-      client.query({query: GET_HASTAGS_PAGINATION(id, page)})
-        .then((res)=>{
-          setHastags((list) => ({...list, data: [...list.data, ...res.data.lineup_news_tagars.data]}))
-          setMeta(res.data.lineup_news_tagars.meta);
+        else{
           setLoadingMore(false);
           setShow(null);
-        })
-        .catch((err)=>{
-          console.log(err);
-        });
+        }
+      }else{
+        getHastagPagination(2);
+      }
+
     }
   },[show]);
-  useEffect(()=>{
-    console.log(meta)
-  }, [meta])
+
   const _goToDetail = (article) => {
     return `news/topic/tag/${article.tag}`
   };
