@@ -28,13 +28,17 @@ import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
+import HorizontalLandscape from '../components/lineups/news/HorizontalMutipleLandscape';
+import HorizontalMutipleLandscape from '../components/lineups/news/HorizontalMutipleLandscape';
 
 const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
 const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
 const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
 
 // NEW RPLUS LINEUP CONTENTS
-const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/Square"))
+const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/Square"));
+const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
+const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
 const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
 
 class Index_v2 extends React.Component {
@@ -48,11 +52,11 @@ class Index_v2 extends React.Component {
         meta: null,
         resolution: 320,
         is_loading: false,
-        length: 10,
+        length: 20,
         show_sticky_install: false,
         sticky_ads_closed: false,
         isShimmer: true,
-        token: ""
+        token: "",
     }
 
     swipe = {}
@@ -97,6 +101,7 @@ class Index_v2 extends React.Component {
             query: GET_LINEUPS(page, pageSize)
         })
             .then(({ data }) => {
+                console.log(data);
                 this.props.setHomepageLineups({
                     data: data.lineups.data,
                     meta: data.lineups.meta
@@ -109,10 +114,10 @@ class Index_v2 extends React.Component {
     }
 
     bottomScrollFetch() {
-        const { pagination } = this.props.contents.meta
-        if (pagination.total_page === pagination.current_page) return
+        const { pagination } = this.props.contents.meta;
+        if (pagination?.total_page === pagination?.current_page) return;
 
-        this.getHomePageLineups(pagination.current_page + 1, this.state.length)
+      this.getHomePageLineups(pagination.current_page + 1, this.state.length);
     }
 
     closeStickyInstall(self) {
@@ -121,29 +126,19 @@ class Index_v2 extends React.Component {
     }
 
     renderLineup(lineups, meta) {
-       return lineups.map((lineup) => {
+       return lineups.map((lineup, index) => {
             switch(lineup.display_type) {
-              case "horizontal" :
-                if (lineup.lineup_type !== "default") return null
-
+              case 'news_tagar':
                 return (
-                    null
-                //   <VideoSquareView
-                //     token={this.state.token}
-                //     loadingBar={this.LoadingBar}
-                //     key={lineup.id}
-                //     contentId={lineup.id}
-                //     title={lineup.title}
-                //     content={lineup.lineup_type_detail.detail.data}
-                //     imagePath={meta.image_path} />
+                  <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
                 )
-              case "horizontal_square" :
+              case 'square_list_news':
                 return (
-                  null
+                  <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} />
                 )
-              case "vertical" :
+              case "horizontal_landscape_news" :
                 return (
-                  null
+                  <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} />
                 )
             }
         })

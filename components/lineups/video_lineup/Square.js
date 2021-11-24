@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import { connect } from 'react-redux';
 import BottomScrollListener from 'react-bottom-scroll-listener';
@@ -39,7 +39,6 @@ function SquareView (props) {
       .catch(_ => setEndPage(true))
       .finally(_ => props.loadingBar.complete())
 	}
-  
   return (
     <div
       onTouchStart={e => onTouchStart(e)}
