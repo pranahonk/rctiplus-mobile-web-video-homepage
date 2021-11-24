@@ -5,7 +5,7 @@ export const GET_REGROUPING = (page = 1, pageSize= 15) => {
   return gql`
     # Write your query or mutation here
     query {
-      lineups(page:1, page_size: 13) {
+      lineups(page:1, page_size: 100) {
         data {
           lineup_type_detail {
             ... on LineupTypeNewsRegrouping {
