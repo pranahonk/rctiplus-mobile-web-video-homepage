@@ -117,7 +117,7 @@ class Index_v2 extends React.Component {
         const { pagination } = this.props.contents.meta;
         if (pagination?.total_page === pagination?.current_page) return;
 
-        this.getHomePageLineups(pagination.current_page ? pagination.current_page + 1 : 2, this.state.length);
+      this.getHomePageLineups(pagination.current_page + 1, this.state.length);
     }
 
     closeStickyInstall(self) {
