@@ -36,22 +36,22 @@ const HorizontalMutipleLandscape = ({title, indexTag}) => {
   useEffect(() => {
     client.query({query: GET_REGROUPING(1,15)})
       .then((res)=>{
-        const result = []
-        // for (let i = 0; i < res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail.length; i += 3) {
-        //   result.push(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail).slice(i, i + 3))
-        // }
-        // console.log(result)
+        const result = [];
+        for (let i = 0; i < res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.data.length; i += 3) {
+          result.push(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.data.slice(i, i + 3));
+        }
 
-        console.log(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
-        setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.meta?.image_path);
-        setItem(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
+        setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path);
+        setItem(result);
+        // setItem(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{
         console.log(err);
       });
-  },[item]);
+  },[]);
   useEffect(() => {
     console.log(item);
+
     if (item?.data && (item?.meta?.pagination?.current_page < item?.meta?.pagination?.total_page) && show && item.data?.length < 20) {
       setLoadingMore(true);
     }
@@ -71,41 +71,48 @@ const HorizontalMutipleLandscape = ({title, indexTag}) => {
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
-          {item?.data?.length < 1  || item?.data === undefined? (<Loader />) : (<Swiper
+          {item?.length === 0 || item === undefined ? (<Loader />) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}
             slidesPerView={1}
           >
-            {item?.data?.map((list, index) => {
+            {item.map((list, index) => {
               return (
                 <SwiperSlide key={index}>
-                  <div className={`list_tags_thumb tagsItems`}>
-                    <div className="lt_img">
-                      <div className="lt_img_wrap">
-                        <a onClick={(e) => {
-                          e.preventDefault();
-                          _goToDetail(list);
-                        }}>
-                          {
-                            imageNews(list.title, list.cover, list.image, 200, assetUrl, 'news-interest_thumbnail')
-                          }
-                        </a>
-                      </div>
-                    </div>
-                    <div className="lt_content">
-                      <a onClick={(e) => {
-                        e.preventDefault();
-                        _goToDetail(list);
-                      }}>
-                        <h2 dangerouslySetInnerHTML={{ __html: getTruncate(list.title, '...', 100)}}></h2>
-                      </a>
-                      <div className="lt_content-info">
-                        <h5>{list.source}</h5>
-                        <h6>{formatDateWordID(new Date(list.pubDate * 1000))}</h6>
-                      </div>
-                    </div>
-                  </div>
+                  {
+                    list.map((data, index2) =>{
+                      return(
+                        <div key={index2} className={`list_tags_thumb tagsItems`}>
+                          <div className="lt_img">
+                            <div className="lt_img_wrap">
+                              <a onClick={(e) => {
+                                e.preventDefault();
+                                _goToDetail(data);
+                              }}>
+                                {
+                                  imageNews(data.title, data.cover, data.image, 200, assetUrl, 'news-interest_thumbnail')
+                                }
+                              </a>
+                            </div>
+                          </div>
+                          <div className="lt_content">
+                            <a onClick={(e) => {
+                              e.preventDefault();
+                              _goToDetail(data);
+                            }}>
+                              <h2 dangerouslySetInnerHTML={{ __html: getTruncate(data.title, '...', 100)}}></h2>
+                            </a>
+                            <div className="lt_content-info">
+                              <h5>{data.source}</h5>
+                              <h6>{formatDateWordID(new Date(data.pubDate * 1000))}</h6>
+                            </div>
+                          </div>
+                        </div>
+                        )
+                    })
+                  }
+
                 </SwiperSlide>
               );
             })}
