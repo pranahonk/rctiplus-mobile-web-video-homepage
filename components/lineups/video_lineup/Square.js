@@ -39,7 +39,6 @@ function SquareView (props) {
       .catch(_ => setEndPage(true))
       .finally(_ => props.loadingBar.complete())
 	}
-
   return (
     <div
       onTouchStart={e => onTouchStart(e)}
@@ -57,11 +56,11 @@ function SquareView (props) {
                 key={`${i}-square-video`}
                 className="swiper-slide">
                 <div>
-                  {/*<Img*/}
-                  {/*  alt={props.title}*/}
-                  {/*  unloader={<img src={placeHolderImgUrl} />}*/}
-                  {/*  loader={<img src={placeHolderImgUrl} />}*/}
-                  {/*  src={[`${rootImageUrl}${content.content_type_detail.detail.data.square_image}`, placeHolderImgUrl]} />*/}
+                  <Img 
+                    alt={props.title} 
+                    unloader={<img src={placeHolderImgUrl} />}
+                    loader={<img src={placeHolderImgUrl} />}
+                    src={[`${rootImageUrl}${content.content_type_detail.detail.data.square_image}`, placeHolderImgUrl]} />
                 </div>
               </div>
             ))}

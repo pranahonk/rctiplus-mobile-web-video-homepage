@@ -5,6 +5,7 @@ export const GET_BANNERS = gql`
   query {
     banners {
       data {
+        permalink
         id
         title
         square_image

@@ -140,9 +140,6 @@ class Index_v2 extends React.Component {
                 return (
                   <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} />
                 )
-                return (
-                  null
-                )
             }
         })
     }
