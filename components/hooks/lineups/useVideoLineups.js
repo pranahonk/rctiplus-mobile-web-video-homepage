@@ -1,12 +1,20 @@
 
 
+import { useState } from 'react';
 import Router from 'next/router';
 
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../../utils/appier'
 import { showSignInAlert } from '../../../utils/helpers';
 import { urlRegex, titleStringUrlRegex } from '../../../utils/regex';
+import { GET_LINEUP_CONTENT_VIDEO } from "../../../graphql/queries/homepage"
+import { client } from "../../../graphql/client"
 
 export default function useVideoLineups(props) {
+  const [ contents, setContents ] = useState([])
+  const [ nextPage, setNextPage ] = useState(1)
+  const [ endPage, setEndPage ] = useState(false)
+  const pageLength = 7
+
   let swipe = {}
 
   const onTouchStart = (e) => {
@@ -21,6 +29,29 @@ export default function useVideoLineups(props) {
 			homeGeneralClicked('mweb_homepage_scroll_horizontal');
 		}
   }
+
+  const fetchLineupContent = () => {
+    props.loadingBar.continuousStart()
+
+    client.query({ query: GET_LINEUP_CONTENT_VIDEO(nextPage, pageLength, props.contentId) })
+      .then(({ data }) => {
+        const lineupContents = data.lineup_contents.data
+          .filter(({ content_type_detail }) => content_type_detail.detail)
+        const { pagination } = data.lineup_contents.meta 
+
+        setContents(contents.concat(lineupContents))
+        setEndPage(pagination.current_page === pagination.total_page)
+        setNextPage(pagination.current_page + 1)
+      })
+      .catch(_ => setEndPage(true))
+      .finally(_ => props.loadingBar.complete())
+  }
+
+	const loadMore = () => {
+    if (endPage) return
+
+    fetchLineupContent()
+	}
 
   const generateLink = (data) => {
     // const contentGeneralEventArgs = [
@@ -156,6 +187,9 @@ export default function useVideoLineups(props) {
   return {
     generateLink,
     onTouchStart,
-    onTouchEnd
+    onTouchEnd,
+    loadMore,
+    fetchLineupContent,
+    contents
   }
 }

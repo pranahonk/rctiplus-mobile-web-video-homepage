@@ -29,15 +29,16 @@ import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
 
-const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
-const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
-const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
-
 // NEW RPLUS LINEUP CONTENTS
-const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/Square"))
-const VideoHorizontalView = dynamic(() => import("../components/lineups/video_lineup/Horizontal"))
-const VideoHorizontalLandscapeMdView = dynamic(() => import("../components/lineups/video_lineup/HorizontalLandscapeMd"))
-const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
+const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
+const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
+const VideoLandscapeLgWsView = dynamic(() => import("../components/lineups/LandscapeLgWs"))
+const VideoLandscape219View = dynamic(() => import("../components/lineups/Landscape219"))
+const VideoLandscapeLgView = dynamic(() => import("../components/lineups/LandscapeLg"))
+const VideoLandscapeMiniLiveView = dynamic(() => import("../components/lineups/LandscapeMiniLive"))
+const VideoPortraitView = dynamic(() => import("../components/lineups/Portrait"))
+const VideoSquareMiniView = dynamic(() => import("../components/lineups/SquareMini"))
+const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -124,12 +125,13 @@ class Index_v2 extends React.Component {
     }
 
     renderLineup(lineups, meta) {
-       return lineups.map((lineup) => {
+        return lineups.map((lineup) => {
+            if (lineup.lineup_type !== "default") return null
+
             switch(lineup.display_type) {
-              case "horizontal" :
-                    if (lineup.lineup_type !== "default") return null
+                case "portrait" :
                     return (
-                        <VideoHorizontalView
+                        <VideoPortraitView
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
@@ -137,8 +139,67 @@ class Index_v2 extends React.Component {
                             title={lineup.title}
                             imagePath={meta.image_path} />
                     )
-              case "horizontal_square" :
-                    if (lineup.lineup_type !== "default") return null
+                case "landscape_large_ws" :
+                    return (
+                        <VideoLandscapeLgWsView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_large" :
+                    return (
+                        <VideoLandscapeLgView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_219" :
+                    return (
+                        <VideoLandscape219View
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_mini_wt" :
+                    return (
+                        <VideoLandscapeMiniWtView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_mini" :
+                    return (
+                        <VideoLandscapeMiniView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "square_mini" :
+                    return (
+                        <VideoSquareMiniView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "square" :
                     return (
                         <VideoSquareView
                             token={this.state.token}
@@ -148,10 +209,9 @@ class Index_v2 extends React.Component {
                             title={lineup.title}
                             imagePath={meta.image_path} />
                     )
-                case "horizontal_landscape_medium" :
-                    if (lineup.lineup_type !== "default") return null
+                case "landscape_mini_live" :
                     return (
-                        <VideoHorizontalLandscapeMdView
+                        <VideoLandscapeMiniLiveView
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}

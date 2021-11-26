@@ -88,9 +88,11 @@ $panels:
     "pnl_horizontal_medium",
     "pnl_horizontal", 
     "pnl_vertical", 
-    "pnl_video_square";
+    "lineup_panels";
 @each $panel in $panels {
     .#{$panel}{
+        margin: 10px 0;
+
         .swiper-container::-webkit-scrollbar {
             display: none;
         }
@@ -141,13 +143,6 @@ $panels:
     }
 }
 
-.pnl_video_square {
-    img {
-        width: 150px;
-        height: 150px;
-    }
-}
-
 .pnl_horizontal {
     img {
         height: 184px;
@@ -168,11 +163,6 @@ $panels:
         width: 160px;
     }
 }
-
-
-
-
-
 
 .pnl_horizontal_landscape {
     .swiper-slide {
