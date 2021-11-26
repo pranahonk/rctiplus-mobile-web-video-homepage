@@ -16,7 +16,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/swiper.scss';
 import { useQuery } from '@apollo/client';
-import { GET_REGROUPING } from '../../../graphql/queries/regrouping';
+import { GET_REGROUPING, GET_REGROUPING_LINEUPS } from '../../../graphql/queries/regrouping';
 
 //import scss
 import '../../../assets/scss/components/horizontal-multiple.scss';
@@ -32,6 +32,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   const [show, setShow] = useState(null);
   const [item, setItem] = useState([]);
   const [assetUrl, setAssetUrl] = useState(null);
+  const [meta, setMeta] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
@@ -44,17 +45,39 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
 
         setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path);
         setItem(result);
-        // setItem(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{
         console.log(err);
       });
   },[]);
-  useEffect(() => {
-    console.log(item);
 
-    if (item?.data && (item?.meta?.pagination?.current_page < item?.meta?.pagination?.total_page) && show && item.data?.length < 20) {
-      setLoadingMore(true);
+  const getLineupsMultiplePagination = (page, page_size) =>{
+    client.query({query: GET_REGROUPING_LINEUPS(page, page_size, id)})
+      .then((res)=>{
+        console.log(res);
+        console.log(res?.data?.lineup_news_regroupings?.data);
+        const result = [];
+        for (let i = 0; i < res?.data?.lineup_news_regroupings?.data; i += 3) {
+          result.push(res?.data?.lineup_news_regroupings?.data.slice(i, i + 3));
+        }
+        console.log(result);
+        setItem((list)=> ([ ...list, [...list].concat(result)]))
+        setLoadingMore(false);
+        setShow(null);
+      })
+      .catch((err)=>{
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    setLoadingMore(true);
+    console.log(item)
+    if (item && show) {
+      // getLineupsMultiplePagination(2, 15, id);
+      if(meta?.pagination?.current_page < meta?.pagination?.total_page){
+        // getLineupsMultiplePagination(item?.meta?.pagination?.current_page + 1, 10, id);
+      }
     }
   }, [show, item]);
 
@@ -77,6 +100,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
             width={320}
             height={140}
             slidesPerView={1}
+            onReachEnd={setShow}
           >
             {item.map((list, index) => {
               return (
@@ -110,7 +134,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
                             </div>
                           </div>
                         </div>
-                        )
+                      )
                     })
                   }
 
