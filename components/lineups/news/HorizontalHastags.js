@@ -26,7 +26,7 @@ const HorizontalHastags = ({title, indexTag, id}) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_HASTAGS(1, 15)})
+    client.query({query: GET_HASTAGS(1, 100, 1, 100)})
       .then((res)=>{
         setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
@@ -38,7 +38,8 @@ const HorizontalHastags = ({title, indexTag, id}) => {
   const getHastagPagination = (page) =>{
     client.query({query: GET_HASTAGS_PAGINATION(id, page)})
       .then((res)=>{
-        setHastags((list) => ({...list, data: [...list.data, ...res.data.lineup_news_tagars.data]}))
+        console.log(res);
+        setHastags((list) => ({...list, data: [...list.detail.data, ...res.data.lineup_news_tagars.data]}))
         setMeta(res.data.lineup_news_tagars.meta);
         setLoadingMore(false);
         setShow(null);
@@ -53,7 +54,7 @@ const HorizontalHastags = ({title, indexTag, id}) => {
       setLoadingMore(true);
       if(meta?.pagination){
         if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-         getHastagPagination(meta?.pagination?.current_page + 1);
+          getHastagPagination(meta?.pagination?.current_page + 1);
         }
         else{
           setLoadingMore(false);

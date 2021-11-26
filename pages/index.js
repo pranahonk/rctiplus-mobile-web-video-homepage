@@ -52,7 +52,7 @@ class Index_v2 extends React.Component {
         meta: null,
         resolution: 320,
         is_loading: false,
-        length: 20,
+        length: 100,
         show_sticky_install: false,
         sticky_ads_closed: false,
         isShimmer: true,
@@ -134,11 +134,11 @@ class Index_v2 extends React.Component {
                 )
               case 'square_list_news':
                 return (
-                  <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} />
+                  <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
                 )
               case "horizontal_landscape_news" :
                 return (
-                  <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} />
+                  <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
                 )
                 return (
                   null

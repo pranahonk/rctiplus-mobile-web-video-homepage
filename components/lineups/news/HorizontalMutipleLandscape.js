@@ -25,8 +25,9 @@ import '../../../assets/scss/components/trending_v2.scss';
 const Loader = dynamic(() => import('../../Includes/Shimmer/HorizontalMutipleLandscapeloader.js'))
 
 
-const HorizontalMutipleLandscape = ({title, indexTag}) => {
+const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
+  console.log(id)
 
   const [show, setShow] = useState(null);
   const [item, setItem] = useState([]);
@@ -34,7 +35,7 @@ const HorizontalMutipleLandscape = ({title, indexTag}) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING(1,15)})
+    client.query({query: GET_REGROUPING(1,100)})
       .then((res)=>{
         const result = [];
         for (let i = 0; i < res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.data.length; i += 3) {
@@ -69,7 +70,7 @@ const HorizontalMutipleLandscape = ({title, indexTag}) => {
   return (
     <li>
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
-      <ul style={{paddingLeft: 0}}>
+      <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
           {item?.length === 0 || item === undefined ? (<Loader />) : (<Swiper
             spaceBetween={10}
@@ -109,7 +110,7 @@ const HorizontalMutipleLandscape = ({title, indexTag}) => {
                             </div>
                           </div>
                         </div>
-                        )
+                      )
                     })
                   }
 
