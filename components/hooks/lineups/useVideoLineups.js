@@ -1,13 +1,21 @@
 
 
+import { useState } from 'react';
 import Router from 'next/router';
 
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../../utils/appier'
 import { showSignInAlert } from '../../../utils/helpers';
 import { urlRegex, titleStringUrlRegex } from '../../../utils/regex';
+import { GET_LINEUP_CONTENT_VIDEO } from "../../../graphql/queries/homepage"
+import { client } from "../../../graphql/client"
 
 export default function useVideoLineups(props) {
-  const swipe = {}
+  const [ contents, setContents ] = useState([])
+  const [ nextPage, setNextPage ] = useState(1)
+  const [ endPage, setEndPage ] = useState(false)
+  const pageLength = 7
+
+  let swipe = {}
 
   const onTouchStart = (e) => {
 		const touch = e.touches[0];
@@ -22,78 +30,101 @@ export default function useVideoLineups(props) {
 		}
   }
 
+  const fetchLineupContent = () => {
+    props.loadingBar.continuousStart()
+
+    client.query({ query: GET_LINEUP_CONTENT_VIDEO(nextPage, pageLength, props.contentId) })
+      .then(({ data }) => {
+        const lineupContents = data.lineup_contents.data
+          .filter(({ content_type_detail }) => content_type_detail.detail)
+        const { pagination } = data.lineup_contents.meta 
+
+        setContents(contents.concat(lineupContents))
+        setEndPage(pagination.current_page === pagination.total_page)
+        setNextPage(pagination.current_page + 1)
+      })
+      .catch(_ => setEndPage(true))
+      .finally(_ => props.loadingBar.complete())
+  }
+
+	const loadMore = () => {
+    if (endPage) return
+
+    fetchLineupContent()
+	}
+
   const generateLink = (data) => {
-    const contentGeneralEventArgs = [
-      props.title,
-      data.content_type,
-      data.content_id,
-      data.content_title,
-      data.program_title ? data.program_title : 'N/A',
-      data.genre ? data.genre : 'N/A', 
-      `${props.imagePath}${props.resolution}${data.portrait_image}`, 
-      `${props.imagePath}${props.resolution}${data.landscape_image}`, 
-    ]
+    // const contentGeneralEventArgs = [
+    //   props.title,
+    //   data.content_type,
+    //   data.content_id,
+    //   data.content_title,
+    //   data.program_title ? data.program_title : 'N/A',
+    //   data.genre ? data.genre : 'N/A', 
+    //   `${props.imagePath}${props.resolution}${data.portrait_image}`, 
+    //   `${props.imagePath}${props.resolution}${data.landscape_image}`, 
+    // ]
 
-    const signInAlertArgs = [
-      `Please <b>Sign In</b><br/>
-		  Woops! Gonna sign in first!<br/>
-      Only a click away and you<br/>
-      can continue to enjoy<br/>
-      <b>RCTI+</b>`,
-      "",
-      () => {},
-      true,
-      "Sign Up",
-      "Sign In",
-      true,
-      true
-    ]
+    // const signInAlertArgs = [
+    //   `Please <b>Sign In</b><br/>
+		//   Woops! Gonna sign in first!<br/>
+    //   Only a click away and you<br/>
+    //   can continue to enjoy<br/>
+    //   <b>RCTI+</b>`,
+    //   "",
+    //   () => {},
+    //   true,
+    //   "Sign Up",
+    //   "Sign In",
+    //   true,
+    //   true
+    // ]
 
-		switch (data.content_type) {
-			case 'special':
-				contentGeneralEvent(...contentGeneralEventArgs, 'mweb_homepage_special_event_clicked')
-				let url = data.url ? data.url : data.link;
-				if (data.mandatory_login && props.user.isAuth) {
-					url += props.token;
-				}
+		// switch (data.content_type) {
+		// 	case 'special':
+		// 		contentGeneralEvent(...contentGeneralEventArgs, 'mweb_homepage_special_event_clicked')
+		// 		let url = data.url ? data.url : data.link;
+		// 		if (data.mandatory_login && props.user.isAuth) {
+		// 			url += props.token;
+		// 		}
 
-				try {
-					jwtDecode(props.token);
-					if (data.mandatory_login && !props.user.isAuth) {
-						showSignInAlert(...signInAlertArgs)
-					}
-					else {
-						handleActionClick(data, url)
-					}
-				}
-				catch (e) {
-					if (data.mandatory_login && !props.user.isAuth) showSignInAlert(...signInAlertArgs)
-				}
-				break;
+		// 		try {
+		// 			jwtDecode(props.token);
+		// 			if (data.mandatory_login && !props.user.isAuth) {
+		// 				showSignInAlert(...signInAlertArgs)
+		// 			}
+		// 			else {
+		// 				handleActionClick(data, url)
+		// 			}
+		// 		}
+		// 		catch (e) {
+		// 			if (data.mandatory_login && !props.user.isAuth) showSignInAlert(...signInAlertArgs)
+		// 		}
+		// 		break;
 
-			case 'program':
-				homeProgramClicked(
-          props.title,
-          data.program_id,
-          data.program_title ? data.program_title : 'N/A',
-          data.genre ? data.genre : 'N/A',
-          `${props.imagePath}${props.resolution}${data.portrait_image}`,
-          `${props.imagePath}${props.resolution}${data.landscape_image}`,
-          'mweb_homepage_program_clicked'
-        )
-				Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}?ref=homepage&homepage_title=${props.title}`);
-				break;
+		// 	case 'program':
+		// 		homeProgramClicked(
+    //       props.title,
+    //       data.program_id,
+    //       data.program_title ? data.program_title : 'N/A',
+    //       data.genre ? data.genre : 'N/A',
+    //       `${props.imagePath}${props.resolution}${data.portrait_image}`,
+    //       `${props.imagePath}${props.resolution}${data.landscape_image}`,
+    //       'mweb_homepage_program_clicked'
+    //     )
+		// 		Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}?ref=homepage&homepage_title=${props.title}`);
+		// 		break;
 
-			case 'live':
-				contentGeneralEvent(...contentGeneralEventArgs, 'mweb_homepage_live_event_clicked')
-				Router.push(`/live-event/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${props.title}`);
-				break;
+		// 	case 'live':
+		// 		contentGeneralEvent(...contentGeneralEventArgs, 'mweb_homepage_live_event_clicked')
+		// 		Router.push(`/live-event/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${props.title}`);
+		// 		break;
 
-			default:
-				contentGeneralEvent(...contentGeneralEventArgs, 'mweb_homepage_content_clicked')
-				Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}/${data.content_type}/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${props.title}`);
-				break;
-		}
+		// 	default:
+		// 		contentGeneralEvent(...contentGeneralEventArgs, 'mweb_homepage_content_clicked')
+		// 		Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}/${data.content_type}/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${props.title}`);
+		// 		break;
+		// }
 	}
 
   const handleActionClick = (program, url) => {
@@ -156,6 +187,9 @@ export default function useVideoLineups(props) {
   return {
     generateLink,
     onTouchStart,
-    onTouchEnd
+    onTouchEnd,
+    loadMore,
+    fetchLineupContent,
+    contents
   }
 }
