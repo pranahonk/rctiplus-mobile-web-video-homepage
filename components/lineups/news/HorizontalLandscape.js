@@ -16,37 +16,59 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/swiper.scss';
 import { useQuery } from '@apollo/client';
-import { GET_REGROUPING } from '../../../graphql/queries/regrouping';
+import { GET_REGROUPING, GET_REGROUPING_HASTAGS, GET_REGROUPING_LINEUPS } from '../../../graphql/queries/regrouping';
 
 //import scss
 import '../../../assets/scss/components/horizontal-landscape.scss';
+import { GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 
 const HorizontalLandspaceLoader = dynamic(() => import('../../Includes/Shimmer/HorizontalLandspaceLoader'))
 
 
-const HorizontalLandscape = ({title, indexTag}) => {
+const HorizontalLandscape = ({title, indexTag, id}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
   const [list, setList] = useState([]);
   const [assetUrl, setAssetUrl] = useState(null);
+  const [meta, setMeta] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING(1,15)})
+    client.query({query: GET_REGROUPING(1,100)})
       .then((res)=>{
-        setList(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
+        setList(res?.data?.lineups?.data[indexTag]?.lineup_type_detail.detail);
+        console.log(res?.data?.lineups?.data[indexTag]?.lineup_type_detail.detail.meta);
+        setMeta(res?.data?.lineups?.data[indexTag]?.lineup_type_detail.detail.meta);
+        setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path );
       })
       .catch((err)=>{
         console.log(err);
       });
-  },[list]);
+  },[]);
+
+  const getLineupsPagination = (page, page_size, id) =>{
+    client.query({query: GET_REGROUPING_LINEUPS(page, page_size, id)})
+      .then((res)=>{
+        console.log(res?.data?.lineup_news_regroupings?.data);
+        console.log(list?.data);
+        setList((list)=> ({ ...list, data: [...list.data, ...res.data.lineup_news_regroupings.data]}))
+        setLoadingMore(false);
+        setShow(null);
+      })
+      .catch((err)=>{
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
-    setAssetUrl(list?.meta && list.meta?.image_path ? list?.meta?.image_path : null);
-    if (list?.data && (list?.meta?.pagination?.current_page < list?.meta?.pagination?.total_page) && show && list.data?.length < 20) {
+    if (list?.data && show) {
       setLoadingMore(true);
+      if(meta?.pagination?.current_page < meta?.pagination?.total_page){
+        getLineupsPagination(list?.meta?.pagination?.current_page + 1, 10, id);
+      }
     }
-  }, [show, list])
+  }, [show]);
 
   const _goToDetail = (article) => {
     let category = '';
@@ -67,6 +89,7 @@ const HorizontalLandscape = ({title, indexTag}) => {
             width={320}
             height={140}
             slidesPerView={1}
+            onReachEnd={setShow}
           >
             {list?.data.map((item, index) => {
               return (
