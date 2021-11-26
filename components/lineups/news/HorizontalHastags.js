@@ -39,7 +39,7 @@ const HorizontalHastags = ({title, indexTag, id}) => {
     client.query({query: GET_HASTAGS_PAGINATION(id, page)})
       .then((res)=>{
         console.log(res);
-        setHastags((list) => ({...list, data: [...list.detail.data, ...res.data.lineup_news_tagars.data]}))
+        setHastags((list) => ({...list, data: [...list.data, ...res.data.lineup_news_tagars.data]}))
         setMeta(res.data.lineup_news_tagars.meta);
         setLoadingMore(false);
         setShow(null);
