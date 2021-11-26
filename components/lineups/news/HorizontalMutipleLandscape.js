@@ -27,10 +27,10 @@ const Loader = dynamic(() => import('../../Includes/Shimmer/HorizontalMutipleLan
 
 const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
-  console.log(id)
 
   const [show, setShow] = useState(null);
   const [item, setItem] = useState([]);
+  const [itemDimensional, setItemDimensional] = useState([]);
   const [assetUrl, setAssetUrl] = useState(null);
   const [meta, setMeta] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -38,13 +38,9 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   useEffect(() => {
     client.query({query: GET_REGROUPING(1,100)})
       .then((res)=>{
-        const result = [];
-        for (let i = 0; i < res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.data.length; i += 3) {
-          result.push(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.data.slice(i, i + 3));
-        }
-
         setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path);
-        setItem(result);
+        setMeta(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta);
+        setItem(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{
         console.log(err);
@@ -54,14 +50,8 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   const getLineupsMultiplePagination = (page, page_size) =>{
     client.query({query: GET_REGROUPING_LINEUPS(page, page_size, id)})
       .then((res)=>{
-        console.log(res);
-        console.log(res?.data?.lineup_news_regroupings?.data);
-        const result = [];
-        for (let i = 0; i < res?.data?.lineup_news_regroupings?.data; i += 3) {
-          result.push(res?.data?.lineup_news_regroupings?.data.slice(i, i + 3));
-        }
-        console.log(result);
-        setItem((list)=> ([ ...list, [...list].concat(result)]))
+        setMeta(res?.data?.lineup_news_regroupings?.meta);
+        setItem((list) => ({...list, data: [...list.data, ...res.data.lineup_news_regroupings.data], meta: { ...list.meta }}));
         setLoadingMore(false);
         setShow(null);
       })
@@ -70,16 +60,24 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
       });
   };
 
+  useEffect(()=>{
+    const result = [];
+    for (let i = 0; i < item?.data?.length; i += 3) {
+      result.push(item?.data?.slice(i, i + 3));
+    }
+
+    setItemDimensional(result);
+
+  }, [item]);
+
   useEffect(() => {
     setLoadingMore(true);
-    console.log(item)
-    if (item && show) {
-      // getLineupsMultiplePagination(2, 15, id);
+    if (meta?.pagination && show) {
       if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-        // getLineupsMultiplePagination(item?.meta?.pagination?.current_page + 1, 10, id);
+        getLineupsMultiplePagination(meta?.pagination?.current_page + 1, 15, id);
       }
     }
-  }, [show, item]);
+  }, [show]);
 
   const _goToDetail = (article) => {
     let category = '';
@@ -95,14 +93,14 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
-          {item?.length === 0 || item === undefined ? (<Loader />) : (<Swiper
+          {itemDimensional?.length === 0 || itemDimensional === undefined ? (<Loader />) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}
             slidesPerView={1}
             onReachEnd={setShow}
           >
-            {item.map((list, index) => {
+            {itemDimensional.map((list, index) => {
               return (
                 <SwiperSlide key={index}>
                   {
