@@ -36,7 +36,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING(1,100)})
+    client.query({query: GET_REGROUPING(1,15)})
       .then((res)=>{
         const result = [];
         for (let i = 0; i < res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.data.length; i += 3) {
@@ -51,12 +51,17 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
       });
   },[]);
 
-  const getLineupsMultiplePagination = (page, page_size, id) =>{
+  const getLineupsMultiplePagination = (page, page_size) =>{
     client.query({query: GET_REGROUPING_LINEUPS(page, page_size, id)})
       .then((res)=>{
+        console.log(res);
         console.log(res?.data?.lineup_news_regroupings?.data);
-        console.log(item?.data);
-        // setItem((list)=> ({ ...list, data: [...list.data, ...res.data.lineup_news_regroupings.data]}))
+        const result = [];
+        for (let i = 0; i < res?.data?.lineup_news_regroupings?.data; i += 3) {
+          result.push(res?.data?.lineup_news_regroupings?.data.slice(i, i + 3));
+        }
+        console.log(result);
+        setItem((list)=> ([ ...list, [...list].concat(result)]))
         setLoadingMore(false);
         setShow(null);
       })
@@ -66,12 +71,12 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   };
 
   useEffect(() => {
-    console.log(item );
-    console.log(show);
     setLoadingMore(true);
-    if (item?.data && show) {
+    console.log(item)
+    if (item && show) {
+      // getLineupsMultiplePagination(2, 15, id);
       if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-        getLineupsMultiplePagination(item?.meta?.pagination?.current_page + 1, 10, id);
+        // getLineupsMultiplePagination(item?.meta?.pagination?.current_page + 1, 10, id);
       }
     }
   }, [show, item]);
