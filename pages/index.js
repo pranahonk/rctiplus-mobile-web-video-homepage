@@ -23,7 +23,7 @@ import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
@@ -39,6 +39,9 @@ const VideoLandscapeMiniLiveView = dynamic(() => import("../components/lineups/L
 const VideoPortraitView = dynamic(() => import("../components/lineups/Portrait"))
 const VideoSquareMiniView = dynamic(() => import("../components/lineups/SquareMini"))
 const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
+const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
+const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
+const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/news/HorizontalMutipleLandscape"));
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -51,11 +54,11 @@ class Index_v2 extends React.Component {
         meta: null,
         resolution: 320,
         is_loading: false,
-        length: 10,
+        length: 100,
         show_sticky_install: false,
         sticky_ads_closed: false,
         isShimmer: true,
-        token: ""
+        token: "",
     }
 
     LoadingBar = null
@@ -101,6 +104,7 @@ class Index_v2 extends React.Component {
             query: GET_LINEUPS(page, pageSize)
         })
             .then(({ data }) => {
+                console.log(data);
                 this.props.setHomepageLineups({
                     data: data.lineups.data,
                     meta: data.lineups.meta
@@ -113,10 +117,10 @@ class Index_v2 extends React.Component {
     }
 
     bottomScrollFetch() {
-        const { pagination } = this.props.contents.meta
-        if (pagination.total_page === pagination.current_page) return
+        const { pagination } = this.props.contents.meta;
+        if (pagination?.total_page === pagination?.current_page) return;
 
-        this.getHomePageLineups(pagination.current_page + 1, this.state.length)
+      this.getHomePageLineups(pagination.current_page + 1, this.state.length);
     }
 
     closeStickyInstall(self) {
@@ -218,6 +222,18 @@ class Index_v2 extends React.Component {
                             contentId={lineup.id}
                             title={lineup.title}
                             imagePath={meta.image_path} />
+                    )
+                case 'news_tagar':
+                    return (
+                        <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                    )
+                case 'square_list_news':
+                    return (
+                        <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                    )
+                case "horizontal_landscape_news" :
+                    return (
+                        <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
                     )
             }
         })
