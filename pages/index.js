@@ -29,13 +29,8 @@ import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
 
-const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
-const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
-const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
-
 // NEW RPLUS LINEUP CONTENTS
 const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/Square"))
-const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -93,9 +88,7 @@ class Index_v2 extends React.Component {
 
     getHomePageLineups(page, pageSize) {
         this.LoadingBar.continuousStart();
-        client.query({
-            query: GET_LINEUPS(page, pageSize)
-        })
+        client.query({ query: GET_LINEUPS(page, pageSize)})
             .then(({ data }) => {
                 this.props.setHomepageLineups({
                     data: data.lineups.data,
@@ -135,42 +128,6 @@ class Index_v2 extends React.Component {
                     title={lineup.title}
                     content={lineup.lineup_type_detail.detail.data}
                     imagePath={meta.image_path} />
-                  // <Panel3
-                  //     token={this.state.token}
-                  //     loadingBar={this.LoadingBar}
-                  //     key={lineup.id}
-                  //     contentId={lineup.id}
-                  //     title={lineup.title}
-                  //     content={lineup.lineup_type_detail.detail.data}
-                  //     imagePath={meta.image_path}
-                  //     resolution={RESOLUTION_IMG}
-                  //     displayType={lineup.display_type}/>
-                )
-              case "horizontal_square" :
-                return (
-                  null
-                  // <VideoSquareView
-                  //     token={this.state.token}
-                  //     loadingBar={this.LoadingBar}
-                  //     key={lineup.id}
-                  //     contentId={lineup.id}
-                  //     title={lineup.title}
-                  //     content={lineup.lineup_type_detail.detail.data}
-                  //     imagePath={meta.image_path}/>
-                )
-              case "vertical" :
-                return (
-                  null
-                  // <VideoVerticalView
-                  //     token={this.state.token}
-                  //     loadingBar={this.LoadingBar}
-                  //     key={content.id}
-                  //     contentId={content.id}
-                  //     title={content.title}
-                  //     content={lineup.lineup_type_detail.detail.data}
-                  //     imagePath={meta.image_path}
-                  //     resolution={RESOLUTION_IMG}
-                  //     displayType={content.display_type}/>
                 )
             }
         })
@@ -266,10 +223,7 @@ class Index_v2 extends React.Component {
                                     } }
                                 </Sticky>
                             </StickyContainer>
-                            {/*
-                                --------------------------------- LINE UP CONTENTS ---------------------------------
-                                ------------------------------- SUBJECTED TO CHANGES -------------------------------
-                            */}
+
                             <div
                                 style={{marginBottom: 45, paddingTop: 10}}
                                 onTouchStart={this.onTouchStart.bind(this)}
