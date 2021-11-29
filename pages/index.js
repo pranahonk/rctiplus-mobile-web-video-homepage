@@ -100,9 +100,7 @@ class Index_v2 extends React.Component {
 
     getHomePageLineups(page, pageSize) {
         this.LoadingBar.continuousStart();
-        client.query({
-            query: GET_LINEUPS(page, pageSize)
-        })
+        client.query({ query: GET_LINEUPS(page, pageSize)})
             .then(({ data }) => {
                 console.log(data);
                 this.props.setHomepageLineups({
@@ -329,10 +327,7 @@ class Index_v2 extends React.Component {
                                     } }
                                 </Sticky>
                             </StickyContainer>
-                            {/*
-                                --------------------------------- LINE UP CONTENTS ---------------------------------
-                                ------------------------------- SUBJECTED TO CHANGES -------------------------------
-                            */}
+
                             <div
                                 style={{marginBottom: 45, paddingTop: 10}}
                                 onTouchStart={this.onTouchStart.bind(this)}
