@@ -219,18 +219,19 @@ class Index_v2 extends React.Component {
                             title={lineup.title}
                             imagePath={meta.image_path} />
                     )
-                case 'news_tagar':
-                    return (
-                        <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-                    )
-                case 'square_list_news':
-                    return (
-                        <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-                    )
-                case "horizontal_landscape_news" :
-                    return (
-                        <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-                    )
+              case 'tag':
+                return (
+                  <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                )
+
+              case 'landscape_news':
+                return (
+                  <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                )
+              case "square_list_news":
+                return (
+                  <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                )
             }
         })
     }

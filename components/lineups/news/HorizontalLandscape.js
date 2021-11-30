@@ -35,7 +35,7 @@ const HorizontalLandscape = ({title, indexTag, id}) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING(1,100)})
+    client.query({query: GET_REGROUPING(1,20)})
       .then((res)=>{
         setList(res?.data?.lineups?.data[indexTag]?.lineup_type_detail.detail);
         console.log(res?.data?.lineups?.data[indexTag]?.lineup_type_detail.detail.meta);
@@ -81,10 +81,10 @@ const HorizontalLandscape = ({title, indexTag, id}) => {
   };
   return (
     <li className="regroupping-by-section">
-      <h2 className="section-h2 mt-40 mb-2">{title}</h2>
+      <h2 className="section-h2 mt-40 mb-2">{list?.data?.length ? title : null}</h2>
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
-          {list?.data?.length === undefined || list?.data?.length < 1 ? (<HorizontalLandspaceLoader />) : (<Swiper
+          {list?.data?.length === undefined || list?.data?.length < 1 ? (null) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}

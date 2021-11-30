@@ -90,10 +90,10 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   };
   return (
     <li>
-      <h2 className="section-h2 mt-40 mb-2">{title}</h2>
+      <h2 className="section-h2 mt-40 mb-2">{itemDimensional?.length < 1 ? null : title}</h2>
       <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
-          {itemDimensional?.length === 0 || itemDimensional === undefined ? (<Loader />) : (<Swiper
+          {itemDimensional?.length === 0 || itemDimensional === undefined ? (null) : (<Swiper
             spaceBetween={10}
             width={320}
             height={140}
