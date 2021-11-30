@@ -127,9 +127,7 @@ class Index_v2 extends React.Component {
     }
 
     renderLineup(lineups, meta) {
-        return lineups.map((lineup) => {
-            if (lineup.lineup_type !== "default") return null
-
+        return lineups.map((lineup, index) => {
             switch(lineup.display_type) {
                 case "portrait" :
                     return (
