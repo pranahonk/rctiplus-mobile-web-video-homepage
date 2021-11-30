@@ -22,6 +22,7 @@ function squareView (props) {
   
   return (
     <div
+      id="lineup-square"
       onTouchStart={e => onTouchStart(e)}
       onTouchEnd={e => onTouchEnd(e)}
       className="lineup_panels">
@@ -30,13 +31,14 @@ function squareView (props) {
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
-          <div ref={scrollRef} className="swiper-container">
+          <div ref={scrollRef} className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
                   onClick={() => generateLink(content)}
                   key={`${i}-square-video`}
-                  className="swiper-slide">
+                  id={`${i}-square-video`}
+                  className="lineup-contents">
                   <div>
                     <Img 
                       alt={props.title} 

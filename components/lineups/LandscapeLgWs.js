@@ -22,6 +22,7 @@ function landscapeLgWs (props) {
   
   return (
     <div
+      id="lineup-landscapelgws"
       onTouchStart={e => onTouchStart(e)}
       onTouchEnd={e => onTouchEnd(e)}
       className="lineup_panels">
@@ -30,13 +31,14 @@ function landscapeLgWs (props) {
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
-          <div ref={scrollRef} className="swiper-container">
+          <div ref={scrollRef} className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
                   onClick={() => generateLink(content)}
+                  id={`${i}-landscapelgws-video`}
                   key={`${i}-landscapelgws-video`}
-                  className="swiper-slide">
+                  className="lineup-contents">
                   <div>
                     <Img 
                       alt={props.title} 
