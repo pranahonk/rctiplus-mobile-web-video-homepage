@@ -93,10 +93,6 @@ $panels:
     .#{$panel}{
         margin: 10px 0;
 
-        .swiper-container::-webkit-scrollbar {
-            display: none;
-        }
-
         .content-title{
             font-stretch: normal;
             font-style: normal;
@@ -109,13 +105,19 @@ $panels:
             color: #FFFFFF;
         }
         
-        .swiper-container {
+        .swiper-container,
+        .lineup-containers {
             overflow: auto;
             white-space: nowrap;
             display: block;
             padding: 0px 0px 12px 12px;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
     
-            .swiper-slide {
+            .swiper-slide,
+            .lineup-contents {
                 margin: 2px;
                 position: relative;
                 text-align: center;
