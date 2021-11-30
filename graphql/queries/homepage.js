@@ -5,9 +5,13 @@ export const GET_BANNERS = gql`
   query {
     banners {
       data {
-        landscape_image
+        permalink
         id
-        sorting
+        title
+        square_image
+      }
+      meta {
+        image_path
       }
     }
   }
@@ -18,13 +22,13 @@ export const GET_LINEUPS = (page = 1, pageSize = 10) => {
     query {
       lineups(page: ${page}, page_size: ${pageSize}) {
         data {
-            id
-            lineup_type
-            content_type
-            service
-            title
-            display_type
-            sorting
+          id
+          lineup_type
+          content_type
+          service
+          title
+          display_type
+          sorting
         }
         meta {
           pagination {
@@ -73,6 +77,42 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, pageSize = 10, lineupId = 0) 
             total_page
             current_page
           }
+        }
+      }
+    }
+  `
+}
+
+export const GET_HOME_CATEGORY_LIST = gql`
+  query {
+    categories {
+      data {
+        icon 
+        id
+        is_active
+        name
+        type
+      }
+      meta {
+        image_path
+      }
+    }
+  }
+`
+
+export const GET_SUB_CATEGORY_LIST = (categoryId = 0) => {
+  return gql`
+    query {
+      sub_categories(category_id: ${categoryId}) {
+        data {
+          icon
+          id
+          is_active
+          name
+          type
+        }
+        meta {
+          image_path
         }
       }
     }
