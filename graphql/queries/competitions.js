@@ -12,17 +12,12 @@ export const GET_HOT_COMPETITIONS = (page = 1, pageSize= 100, page_lineups = 1, 
                   content_id
                   content_type
                   content_type_detail {
-                    ... on ContentTypeHOTVideo {
+                    ... on ContentTypeHOTCompetition {
                       detail(page: ${page_lineups}, page_size: ${pageSize_lineups}){
                         data{
-                          category_id
-                          challenge_id
-                          comment_for_video_id
-                          competition_id
-                          contestant_id
-                          create_at
-                          downloaded
-                          duration
+                          thumbnail
+                          id
+                          title
                         }
                         meta{
                           assets_url

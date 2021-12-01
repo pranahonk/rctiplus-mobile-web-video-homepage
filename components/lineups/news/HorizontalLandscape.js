@@ -38,7 +38,6 @@ const HorizontalLandscape = ({title, indexTag, id}) => {
     client.query({query: GET_REGROUPING(1,20)})
       .then((res)=>{
         setList(res?.data?.lineups?.data[indexTag]?.lineup_type_detail.detail);
-        console.log(res?.data?.lineups?.data[indexTag]?.lineup_type_detail.detail.meta);
         setMeta(res?.data?.lineups?.data[indexTag]?.lineup_type_detail.detail.meta);
         setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path );
       })
