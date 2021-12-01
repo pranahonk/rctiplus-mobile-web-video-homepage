@@ -148,7 +148,7 @@ const Category = () => {
                 <Header title={category_title} />
                 
                 <div style={{marginTop: -3}}>
-                    <Carousel detailCategory={true} data={{banner: subBanner?.data, meta: subBanner?.meta}} >
+                    <Carousel detailCategory={true}>
                         {subCategory && subCategory?.data?.length >= 3 && <GridMenu contents={subCategory} />}
                     </Carousel>
                 </div>
