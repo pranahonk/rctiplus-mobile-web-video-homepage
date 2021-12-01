@@ -41,6 +41,7 @@ function squareView (props) {
                   className="lineup-contents">
                   <div>
                     <Img 
+                      className="lineup-image"
                       alt={props.title} 
                       unloader={<img src={placeHolderImgUrl} />}
                       loader={<img src={placeHolderImgUrl} />}

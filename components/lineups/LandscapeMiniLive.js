@@ -1,11 +1,15 @@
-import React, { useEffect } from 'react';
-import Img from 'react-image';
-import { connect } from 'react-redux';
-import BottomScrollListener from 'react-bottom-scroll-listener';
+import React, { useEffect } from 'react'
+import Img from 'react-image'
+import { connect } from 'react-redux'
+import BottomScrollListener from 'react-bottom-scroll-listener'
+import dynamic from 'next/dynamic'
 
 import contentActions from '../../redux/actions/contentActions'
 import useVideoLineups from "../hooks/lineups/useVideoLineups"
 import { RESOLUTION_IMG } from "../../config"
+import { parseDateObject } from "../../utils/helpers"
+
+const CountDownTimer = dynamic(() => import("../Includes/Common/CountdownTimer"))
 
 import '../../assets/scss/components/panel.scss'
 
@@ -17,6 +21,34 @@ function landscapeMiniLiveView (props) {
   useEffect(() => {
     fetchLineupContent()
   }, [])
+
+  const renderDescription = (contentDetail) => {
+    const isLive = (contentDetail.countdown === 0 || contentDetail.is_live)
+    const { year, month, date, day } = parseDateObject(contentDetail.start_ts * 1000)
+
+    let component = (
+      <p className="desc-text">
+        <strong>{day}</strong> 
+        {` • ${date} ${month} ${year} - ${contentDetail.start}`}
+      </p>
+    )
+    let liveBadge = <span className="live-badge"></span>
+
+    if (!isLive) {
+      component = <CountDownTimer time={contentDetail.countdown} />
+      liveBadge = null
+    }
+
+    return(
+      <>
+        { liveBadge }
+        <div>
+          <p className="desc-title mini">{ contentDetail.title }</p>
+          { component }
+        </div>
+      </>
+    )
+  }
 
   if (contents.length === 0) return null
   
@@ -41,13 +73,15 @@ function landscapeMiniLiveView (props) {
                   className="lineup-contents">
                   <div>
                     <Img 
+                      className="lineup-image"
                       alt={props.title} 
                       unloader={<img src={placeHolderImgUrl} />}
                       loader={<img src={placeHolderImgUrl} />}
-                      width={160}
-                      height={90}
+                      width={180}
+                      height={101}
                       src={[`${rootImageUrl}${content.content_type_detail.detail.data.landscape_image}`, placeHolderImgUrl]} />
                   </div>
+                  { renderDescription(content.content_type_detail.detail.data) }
                 </div>
               )
             })}

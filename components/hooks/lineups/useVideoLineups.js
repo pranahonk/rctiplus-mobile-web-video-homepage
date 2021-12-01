@@ -31,20 +31,27 @@ export default function useVideoLineups(props) {
   }
 
   const fetchLineupContent = () => {
-    props.loadingBar.continuousStart()
+    if (nextPage > 1) props.loadingBar.continuousStart()
 
     client.query({ query: GET_LINEUP_CONTENT_VIDEO(nextPage, pageLength, props.contentId) })
       .then(({ data }) => {
-        const lineupContents = data.lineup_contents.data
-          .filter(({ content_type_detail }) => content_type_detail.detail)
-        const { pagination } = data.lineup_contents.meta 
+        const { pagination } = data.lineup_contents.meta
 
-        setContents(contents.concat(lineupContents))
+        const mappedContents = new Map()
+        contents.concat(data.lineup_contents.data).forEach(content => {
+          if (content.content_type_detail.detail && content.content_type_detail.detail.status.code === 0) {
+            mappedContents.set(content.content_type_detail.detail.data.id, content)
+          }
+        })
+
+        setContents([ ...mappedContents.values() ])
         setEndPage(pagination.current_page === pagination.total_page)
         setNextPage(pagination.current_page + 1)
       })
       .catch(_ => setEndPage(true))
-      .finally(_ => props.loadingBar.complete())
+      .finally(_ => {
+        if (nextPage > 1) props.loadingBar.complete()
+      })
   }
 
 	const loadMore = () => {
@@ -53,7 +60,9 @@ export default function useVideoLineups(props) {
     fetchLineupContent()
 	}
 
-  const generateLink = (data) => {
+  const generateLink = (content) => {
+    const url = content.content_type_detail.detail.data.permalink || "/"
+    Router.push(url)
     // const contentGeneralEventArgs = [
     //   props.title,
     //   data.content_type,

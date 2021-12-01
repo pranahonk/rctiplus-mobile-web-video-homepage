@@ -1,6 +1,14 @@
 
 import { gql } from "@apollo/client"
 
+function getQueryParams(args) {
+  let output = []
+  for (const key in args) {
+    if (args[key] > 0) output.push(`${key}: ${args[key]}`)
+  }
+  return output.join(", ")
+}
+
 export const GET_BANNERS = gql`
   query {
     banners {
@@ -17,10 +25,12 @@ export const GET_BANNERS = gql`
   }
 `
 
-export const GET_LINEUPS = (page = 1, pageSize = 10) => {
+export const GET_LINEUPS = (page = 1, page_size = 10, category_id = 0) => {
+  const queryParams = getQueryParams({ page, page_size, category_id })
+
   return gql`
     query {
-      lineups(page: ${page}, page_size: ${pageSize}) {
+      lineups(${queryParams}) {
         data {
           id
           lineup_type
@@ -42,10 +52,12 @@ export const GET_LINEUPS = (page = 1, pageSize = 10) => {
   `
 }
 
-export const GET_LINEUP_CONTENT_VIDEO = (page = 1, pageSize = 10, lineupId = 0) => {
+export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 10, lineup_id = 0) => {
+  const queryParams = getQueryParams({ page, page_size, lineup_id })
+
   return gql`
     query {
-      lineup_contents(page: ${page}, page_size: ${pageSize}, lineup_id: ${lineupId}){
+      lineup_contents(${queryParams}){
         data {
           content_id
           content_type
@@ -53,20 +65,50 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, pageSize = 10, lineupId = 0) 
             ... on ContentTypeProgram {
               detail {
                 data {
+                  id
                   portrait_image
                   landscape_image
                   square_image
                   medium_landscape_image
+                  title
+                  summary
+                  permalink
+                }
+                status {
+                  code
                 }
               }
             }
-            ...on ContentTypeEpisode {
+            ... on ContentTypeEpisode {
               detail {
                 data {
+                  id
                   square_image
                   portrait_image
                   landscape_image
                   medium_landscape_image
+                  title
+                  summary
+                  permalink
+                }
+                status {
+                  code
+                }
+              }
+            }
+            ... on ContentTypeLiveEPG {
+              detail {
+                data {
+                  id
+                  countdown
+                  title
+                  is_live
+                  start
+                  landscape_image
+                  start_ts
+                }
+                status {
+                  code
                 }
               }
             }

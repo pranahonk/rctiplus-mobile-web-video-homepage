@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, {useEffect, useState, useRef } from 'react';
+import { withRouter } from 'next/router';
 import { useSelector } from "react-redux"
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
-import { withRouter } from 'next/router';
 
 import { StickyContainer, Sticky } from 'react-sticky';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
@@ -13,13 +13,151 @@ import Carousel from '../components/Includes/Gallery/Carousel_v2';
 import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import Stories from '../components/Includes/Gallery/Stories_v2';
 import StickyAds from '../components/Includes/Banner/StickyAds';
+import { client } from "../graphql/client" 
+import { GET_LINEUPS } from "../graphql/queries/homepage"
+import { getCookie, getVisitorToken } from "../utils/cookie"
 
 function category (props) {
     const loadingBar = useRef(null)
     const { ads_displayed } = useSelector(state => state.ads)
     const [ isShimmer, setIsShimmer ] = useState(false)
+    const [ lineups, setLineups ] = useState([])
+    const [ meta, setMeta ] = useState({})
+    const [ nextPage, setNextPage ] = useState(1)
+    const [ categoryId, setCategoryId ] = useState(props.router.query.category_id)
+    const [ token, setToken ] = useState("")
+    const length = 10
 
-    const bottomScrollFetch = () => {}
+    const bottomScrollFetch = () => {
+        if (meta.pagination.total_page === nextPage) return
+        getCategoryLineups()
+    }
+
+    useEffect(() => {
+        getCategoryLineups()
+        const accessToken = getCookie('ACCESS_TOKEN')
+        setToken((accessToken == undefined) ? getVisitorToken() : accessToken)
+    }, [ categoryId ])
+
+    useEffect(() => {
+        if (props.router.query.category_id !== categoryId) {
+            setCategoryId(props.router.query.category_id)
+        }
+    })
+
+    const getCategoryLineups = () => {
+        if (nextPage === 1) setIsShimmer(true)
+        client
+            .query({ query: GET_LINEUPS(nextPage, length, categoryId) })
+            .then(({ data }) => {
+                setLineups(data.lineups.data)
+                setMeta(data.lineups.meta)
+
+                const { pagination } = data.lineups.meta
+                if (pagination.current_page < pagination.total_page) setNextPage(nextPage + 1)
+            })
+            .catch(e => {})
+            .finally(_ => {
+                if (nextPage === 1) setIsShimmer(false)
+            })
+    }
+
+    const renderLineups = () => {
+        return lineups.map((lineup) => {
+            switch(lineup.display_type) {
+                case "portrait" :
+                    return (
+                        <VideoPortraitView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_large_ws" :
+                    return (
+                        <VideoLandscapeLgWsView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_large" :
+                    return (
+                        <VideoLandscapeLgView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_219" :
+                    return (
+                        <VideoLandscape219View
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_mini_wt" :
+                    return (
+                        <VideoLandscapeMiniWtView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_mini" :
+                    return (
+                        <VideoLandscapeMiniView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "square_mini" :
+                    return (
+                        <VideoSquareMiniView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "square" :
+                    return (
+                        <VideoSquareView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_mini_live" :
+                    return (
+                        <VideoLandscapeMiniLiveView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+            }
+        })
+    }
 
     return (
         <Layout >
@@ -33,19 +171,19 @@ function category (props) {
                 offset={150} 
                 onBottom={bottomScrollFetch} />
 
-            {isShimmer 
+            { isShimmer 
                 ? <HomeLoader /> 
                 : (
                     <div style={{marginTop: "56px"}}>
                         <Header title={props.router.query.category_title} />
-                    
+                        
                         <div style={{marginTop: -3}}>
-                            <Carousel detailCategory={true} >
+                            <Carousel detailCategory={true}>
                                 <GridMenu />
                             </Carousel>
                         </div>
 
-                        <div style={{ marginTop: "25px" }}>
+                        <div style={{marginTop: "25px"}}>
                             <Stories 
                                 loadingBar={loadingBar.current} 
                                 detailCategory={true} 
@@ -87,9 +225,16 @@ function category (props) {
                                 } }
                             </Sticky>
                         </StickyContainer>
+
+                        <div style={{ marginBottom: 45}}>
+                            <div style={{marginTop: 10}}>
+                                { renderLineups() }
+                            </div>
+                        </div>
+                        
                     </div>
                 )
-            }
+            }  
         </Layout>
     )
 }
