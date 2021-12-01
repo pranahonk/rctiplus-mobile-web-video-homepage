@@ -436,6 +436,13 @@ export const dataShareSeo = (data, filter) => {
   }
 }
 
+export const statusTrailer = (data) => {
+  return {
+    type: "SET_TRAILER",
+    payload: data
+  };
+};
+
 
 
 export const FETCH_REQUEST = 'FETCH_REQUEST';

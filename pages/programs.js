@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector, useDispatch  } from 'react-redux';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Router, { withRouter, useRouter } from 'next/router';
@@ -17,7 +17,7 @@ import {
   fetchClip, fetchPhoto, setClearClip,
   setClearExtra, fetchPlayerUrl, clearPlayer,
   fetchBookmark, postBookmark, deleteBookmark,
-  fetchLike, postLike, fetchDetailDesc, dataShareSeo,
+  fetchLike, postLike, fetchDetailDesc, dataShareSeo, statusTrailer
 } from '../redux/actions/program-detail/programDetail';
 import { postContinueWatching } from '../redux/actions/historyActions';
 import Layout from '../components/Layouts/Default_v2';
@@ -107,7 +107,7 @@ class Index extends React.Component {
       titleProgram: '',
       action_sheet: false,
       rate_modal: false,
-      trailer: false,
+      // trailer: this.props.data.trailer,
       title: 'title-program',
       statusProgram: false,
       statusError: 0,
@@ -204,6 +204,7 @@ class Index extends React.Component {
         const {content_id , content_type} = this.props.router.query;
         this.props.dispatch(fetchDetailDesc(content_id, 'description-player', content_type));
       }
+
       this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] && this.props.server[this.type], 'tracking-program'));
       this.loadRelated(this.props.router.query.id,1);
       this.setState({clipClearStore: true, transform: 'rotate(0deg)', isOpen: false}, () => {
@@ -296,6 +297,7 @@ class Index extends React.Component {
               href={`/programs/${mainData.id}/${urlRegex(mainData.title)}/episode/${detailData.id}/${urlRegex(detailData.title)}${this.reference ? '?ref=' + this.reference : ''}`}
               shallow>
               <a onClick={ () => { 
+                this.props.dispatch(statusTrailer(!this.props.data.trailer))
                 this.props.dispatch(fetchPlayerUrl(detailData.id,'data-player','episode'))
                   const dataPlayer = {
                     program_id: this.props && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data && this.props.server['program-detail'].data.id,
@@ -317,9 +319,10 @@ class Index extends React.Component {
               shallow
             >
             <a onClick={ () => {
-              this.setState({ trailer: !this.state.trailer }, () => {
-                {/* this.props.dispatch(fetchPlayerUrl(mainData.id,'data-player','episode', true)) */}
-                  });
+               this.props.dispatch(statusTrailer(!this.props.data.trailer))
+              // this.setState({ trailer: !this.state.trailer }, () => {
+              //   {/* this.props.dispatch(fetchPlayerUrl(mainData.id,'data-player','episode', true)) */}
+              //     });
                 }}>
               <ButtonOutline text="Trailer" />
             </a>
@@ -712,11 +715,33 @@ class Index extends React.Component {
     );
   }
   trailer() {
+    // if (this.props.server && this.props.server[this.type] && this.props.server[this.type]) {
+    //   const data = this.props.server && this.props.server[this.type];
+    //   return (
+    //     <div className="program-detail-player-wrapper trailer">
+    //         <JwPlayer 
+    //           data={ data.data } 
+    //           ref={this.ref} isFullscreen={ true }
+    //           isResume={true} 
+    //           geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
+    //           customData= {{
+    //             isLogin: this.props.auth.isAuth, 
+    //             programType: data.program_type_name,
+    //             sectionPage: 'VOD',
+    //             }}
+    //           />
+    //         {/* <Player data={ data.data } ref={this.ref} isFullscreen={ true }/> */}
+    //     </div>
+    //   );
+    // }
+
     if (this.props.server && this.props.server[this.type] && this.props.server[this.type]) {
       const data = this.props.server && this.props.server[this.type];
+      console.log(`data player`, data.data)
+      
       return (
-        <div className="program-detail-player-wrapper trailer">
-            <JwPlayer 
+        <div style={{width:"100%", position: "fixed", height: "25%", borderRadius: "3px"}}>
+           <JwPlayer 
               data={ data.data } 
               ref={this.ref} isFullscreen={ true }
               isResume={true} 
@@ -1014,9 +1039,10 @@ class Index extends React.Component {
               onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
              />
             <Trailer
-              open={state.trailer}
+              open={this.props.data.trailer}
               toggle={() => {
-                this.setState({ trailer: !state.trailer });
+                // this.setState({ trailer: !state.trailer });
+                this.props.dispatch(statusTrailer(!this.props.data.trailer))
                 onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail']);
                 }}
               player={this.trailer()}
@@ -1029,6 +1055,7 @@ class Index extends React.Component {
 
 const mapStateToProps = state => {
   const { Program, user, miniplayer } = state;
+  console.log(`program`, Program)
   return { data: Program, auth: user, miniplayer };
 };
 

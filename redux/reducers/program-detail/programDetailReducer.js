@@ -39,6 +39,7 @@ const initialState = {
   paid_video: null,
   error: '',
   filter: '',
+  trailer: true
 };
 
 export default (state = initialState, action) => {
@@ -298,12 +299,18 @@ export default (state = initialState, action) => {
         [action.filter]: action.payload,
         loading: false,
       };
-    case DATA_SHARE_SEO:
+   case DATA_SHARE_SEO:
       return {
         ...state,
         [action.filter]: action.payload,
         loading: false,
-      };
+      }; 
+    case "SET_TRAILER":
+      return {
+        ...state,
+        trailer: action.payload,
+        loading: false,
+      }; 
     default:
       return state;
   }

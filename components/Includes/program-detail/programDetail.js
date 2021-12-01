@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect, forwardRef } from 'react';
+import { useSelector, useDispatch } from "react-redux";
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Img from 'react-image';
@@ -11,6 +12,7 @@ import ThumbUpIcon, {ThumbUpIconSolid} from '../IconCustom/Actions';
 import Dialog from '../../Modals/Dialog';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
+import CloseIcon from '@material-ui/icons/Close';
 import GetApp from '@material-ui/icons/GetApp';
 import { RESOLUTION_IMG } from '../../../config';
 import { showAlert, showSignInAlert } from '../../../utils/helpers';
@@ -346,20 +348,32 @@ export const RatedModal = (props) => {
   );
 };
 export const Trailer = (props) => {
-  return (
-    <div>
-      <Modal isOpen={props.open} toggle={props.toggle} className="modal-custom trailer-modal">
-        <div>{ props.player }</div>
-        <div className="close-modal">
-          <ButtonPrimary
-            className="button-20"
-            icon={ <CancelIcon /> }
-            onclick={props.toggle}
-             />
+  if(props.open){
+    return (
+      <div style={{height: "25%", width:"100%", position: "fixed", top:5, zIndex: 9939239293}}>
+        <div>
+          <div onClick={props.toggle} style={{color:"white", position: "absolute", right: 5, top: 5,  zIndex: 999999999}}>
+            <CloseIcon/>
+          </div>
+        <div >{ props.player }</div>
         </div>
-      </Modal>
-    </div>
-  );
+        
+        {/* <Modal isOpen={props.open} toggle={props.toggle} >
+          <div>{ props.player }</div>
+          <div className="close-modal">
+            <ButtonPrimary
+              className="button-20"
+              icon={ <CancelIcon /> }
+              onclick={props.toggle}
+               />
+          </div>
+        </Modal> */}
+      </div>
+    );
+  }
+  else{
+    return <div></div>
+  }
 };
 export const ActionMenu = (props) => {
   const indifferent = (status, filter, type) => {
