@@ -23,7 +23,7 @@ import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
@@ -39,6 +39,9 @@ const VideoLandscapeMiniLiveView = dynamic(() => import("../components/lineups/L
 const VideoPortraitView = dynamic(() => import("../components/lineups/Portrait"))
 const VideoSquareMiniView = dynamic(() => import("../components/lineups/SquareMini"))
 const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
+const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
+const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
+const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/news/HorizontalMutipleLandscape"));
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -52,7 +55,7 @@ class Index_v2 extends React.Component {
         show_sticky_install: false,
         sticky_ads_closed: false,
         isShimmer: true,
-        token: ""
+        token: "",
     }
 
     LoadingBar = null
@@ -113,7 +116,7 @@ class Index_v2 extends React.Component {
         const { pagination } = this.state.meta
         if (pagination.total_page === pagination.current_page) return
 
-        this.getHomePageLineups(pagination.current_page + 1, this.state.length)
+        this.getHomePageLineups(pagination.current_page + 1, this.state.length);
     }
 
     closeStickyInstall(self) {
@@ -214,6 +217,19 @@ class Index_v2 extends React.Component {
                             title={lineup.title}
                             imagePath={meta.image_path} />
                     )
+              case 'tag':
+                return (
+                  <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                )
+
+              case 'landscape_news':
+                return (
+                  <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                )
+              case "square_list_news":
+                return (
+                  <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                )
             }
         })
     }
@@ -305,10 +321,7 @@ class Index_v2 extends React.Component {
                                     } }
                                 </Sticky>
                             </StickyContainer>
-                            {/*
-                                --------------------------------- LINE UP CONTENTS ---------------------------------
-                                ------------------------------- SUBJECTED TO CHANGES -------------------------------
-                            */}
+
                             <div
                                 style={{marginBottom: 45, paddingTop: 10}}
                                 onTouchStart={this.onTouchStart.bind(this)}
