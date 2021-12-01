@@ -41,11 +41,12 @@ function landscapeMiniView (props) {
                   className="lineup-contents">
                   <div>
                     <Img 
+                      className="lineup-image"
                       alt={props.title} 
                       unloader={<img src={placeHolderImgUrl} />}
                       loader={<img src={placeHolderImgUrl} />}
-                      width={160}
-                      height={90}
+                      width={180}
+                      height={101}
                       src={[`${rootImageUrl}${content.content_type_detail.detail.data.landscape_image}`, placeHolderImgUrl]} />
                   </div>
                 </div>

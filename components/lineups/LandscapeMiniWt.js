@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import Img from 'react-image';
-import { connect } from 'react-redux';
-import BottomScrollListener from 'react-bottom-scroll-listener';
+import React, { useEffect } from 'react'
+import Img from 'react-image'
+import { connect } from 'react-redux'
+import BottomScrollListener from 'react-bottom-scroll-listener'
 
 import contentActions from '../../redux/actions/contentActions'
 import useVideoLineups from "../hooks/lineups/useVideoLineups"
@@ -17,6 +17,16 @@ function landscapeMiniWtView (props) {
   useEffect(() => {
     fetchLineupContent()
   }, [])
+
+  const renderDescription = (contentDetail) => {
+    return(
+      <div className="desc-wrapper">
+        <div className="dashline"></div>
+        <p className="desc-title mini"> { contentDetail.title } </p>
+        <div className="desc-summary"> {contentDetail.summary} </div>
+      </div>
+    )
+  }
 
   if (contents.length === 0) return null
   
@@ -40,14 +50,16 @@ function landscapeMiniWtView (props) {
                   id={`${i}-landscapeminiwt-video`}
                   className="lineup-contents">
                   <div>
-                    <Img 
+                    <Img
+                      className="lineup-image with-schedule"
                       alt={props.title} 
                       unloader={<img src={placeHolderImgUrl} />}
                       loader={<img src={placeHolderImgUrl} />}
-                      width={160}
-                      height={90}
+                      width={180}
+                      height={101}
                       src={[`${rootImageUrl}${content.content_type_detail.detail.data.landscape_image}`, placeHolderImgUrl]} />
                   </div>
+                  { renderDescription(content.content_type_detail.detail.data) }
                 </div>
               )
             })}
