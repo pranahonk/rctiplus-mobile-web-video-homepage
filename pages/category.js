@@ -3,10 +3,11 @@ import { withRouter } from 'next/router';
 import { useSelector } from "react-redux"
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
-import { StickyContainer, Sticky } from 'react-sticky';
 
+import { StickyContainer, Sticky } from 'react-sticky';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import Layout from '../components/Layouts/Default_v2';
+
 import Header from "../components/Includes/HomeCategory/DetailCategory/Header"
 import Carousel from '../components/Includes/Gallery/Carousel_v2';
 import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
@@ -16,10 +17,9 @@ import { client } from "../graphql/client"
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { getCookie, getVisitorToken } from "../utils/cookie"
 
-function Category (props) {
+function category (props) {
     const loadingBar = useRef(null)
     const { ads_displayed } = useSelector(state => state.ads)
-
     const [ isShimmer, setIsShimmer ] = useState(false)
     const [ lineups, setLineups ] = useState([])
     const [ meta, setMeta ] = useState({})
@@ -239,4 +239,4 @@ function Category (props) {
     )
 }
 
-export default withRouter(Category)
+export default withRouter(category)
