@@ -9,7 +9,7 @@ import { RESOLUTION_IMG } from '../../../config';
 import { homeBannerEvent } from '../../../utils/appier';
 import { titleStringUrlRegex } from '../../../utils/regex';
 import { client } from "../../../graphql/client"
-import { GET_BANNERS } from "../../../graphql/queries/homepage" 
+import { GET_BANNERS } from "../../../graphql/queries/homepage"
 
 import '../../../assets/scss/plugins/carousel/carousel.scss';
 

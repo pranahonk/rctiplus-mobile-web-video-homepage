@@ -117,7 +117,7 @@ export const PanelEpisode = forwardRef((props, ref) => {
                     <h3>{ `E${(item.episode < 10 ? '0'+item.episode : ''+item.episode).slice(0)}:S${(item.season < 10 ? '0'+item.season : ''+item.season).slice(0)} ${item.title}` }</h3>
                     <div className="action-button__content ">
                       { bookmark(props.bookmark && props.bookmark.data, item, 'episode', props, 'content_bookmark') }
-                      <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
+                      <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item)}/>
                       <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'episode', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
                     </div>
                   </div>
@@ -181,7 +181,7 @@ export const PanelExtra = (props) => {
                   <h3>{ item.title }</h3>
                   <div className="action-button__content ">
                       { bookmark(props.bookmark && props.bookmark.data, item, 'extra', props, 'content_bookmark') }
-                      <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
+                      <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item)}/>
                       <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'extra', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
                   </div>
                 </div>
@@ -244,7 +244,7 @@ export const PanelClip = (props) => {
                   <h3>{ item.title }</h3>
                   <div className="action-button__content ">
                     { bookmark(props.bookmark && props.bookmark.data, item, 'clip', props, 'content_bookmark') }
-                    <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item.title, item)}/>
+                    <ButtonPrimary icon={ <ShareIcon/> } onclick={props.onShare(item)}/>
                     <ButtonPrimary icon={ <GetApp/> } onclick={() => { alertDownload(item, 'clip', props.dataTracking.idContent, props.dataTracking.title , props.dataTracking.ref) }}/>
                   </div>
                 </div>

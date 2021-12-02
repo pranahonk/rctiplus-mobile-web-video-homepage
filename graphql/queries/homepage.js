@@ -33,26 +33,135 @@ export const GET_BANNERS = (category_id = 0) => {
   `
 }
 
-export const GET_LINEUPS = (page = 1, page_size = 10) => {
-  const queryParams = getQueryParams({ page, page_size })
+export const GET_LINEUPS = (page = 1, page_size = 10, category_id = 0) => {
+  const queryParams = getQueryParams({ page, page_size, category_id })
 
   return gql`
     query {
       lineups(${queryParams}) {
         data {
-            id
-            lineup_type
-            content_type
-            service
-            title
-            display_type
-            sorting
+          id
+          lineup_type
+          content_type
+          service
+          title
+          display_type
+          sorting
         }
         meta {
           pagination {
             current_page
             total_page
           }
+          image_path
+        }
+      }
+    }
+  `
+}
+
+export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 10, lineup_id = 0) => {
+  const queryParams = getQueryParams({ page, page_size, lineup_id })
+
+  return gql`
+    query {
+      lineup_contents(${queryParams}){
+        data {
+          content_id
+          content_type
+          content_type_detail {
+            ... on ContentTypeProgram {
+              detail {
+                data {
+                  id
+                  portrait_image
+                  landscape_image
+                  square_image
+                  medium_landscape_image
+                  title
+                  summary
+                  permalink
+                }
+                status {
+                  code
+                }
+              }
+            }
+            ... on ContentTypeEpisode {
+              detail {
+                data {
+                  id
+                  square_image
+                  portrait_image
+                  landscape_image
+                  medium_landscape_image
+                  title
+                  summary
+                  permalink
+                }
+                status {
+                  code
+                }
+              }
+            }
+            ... on ContentTypeLiveEPG {
+              detail {
+                data {
+                  id
+                  countdown
+                  title
+                  is_live
+                  start
+                  landscape_image
+                  start_ts
+                }
+                status {
+                  code
+                }
+              }
+            }
+          }
+        }
+        meta {
+          pagination {
+            total_page
+            current_page
+          }
+        }
+      }
+    }
+  `
+}
+
+export const GET_HOME_CATEGORY_LIST = gql`
+  query {
+    categories {
+      data {
+        icon 
+        id
+        is_active
+        name
+        type
+      }
+      meta {
+        image_path
+      }
+    }
+  }
+`
+
+export const GET_SUB_CATEGORY_LIST = (categoryId = 0) => {
+  return gql`
+    query {
+      sub_categories(category_id: ${categoryId}) {
+        data {
+          icon
+          id
+          is_active
+          name
+          type
+        }
+        meta {
           image_path
         }
       }
