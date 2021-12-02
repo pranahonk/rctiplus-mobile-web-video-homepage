@@ -41,6 +41,8 @@ const VideoSquareMiniView = dynamic(() => import("../components/lineups/SquareMi
 const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
 const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
 const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
+const LandscapeHotCompetition = dynamic(() => import("../components/lineups/hot/LandscapeHotCompetition"));
+const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
 const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/news/HorizontalMutipleLandscape"));
 
 class Index_v2 extends React.Component {
@@ -222,15 +224,19 @@ class Index_v2 extends React.Component {
                   <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
                 )
 
-              case 'landscape_news':
-                return (
-                  <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-                )
-              case "square_list_news":
-                return (
-                  <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-                )
-            }
+           case 'landscape_news':
+             return (
+               <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+             )
+           case "square_list_news":
+             return (
+               <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+             )
+           case "landscape_hot_competition":
+             return(
+               <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+             )
+         }
         })
     }
 
