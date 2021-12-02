@@ -144,3 +144,68 @@
         }
     }
 }
+
+.modal-comingsoon {
+    height: 100vh;
+    top: 0;
+    position: fixed;
+    z-index: 11;
+    width: 100vw;
+    display: flex;
+    align-items: end;
+    background: #282828cf;
+
+    & > div {
+        width: 100%;
+        background: #282828;
+        padding: 20px;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 0 1rem 0.5rem #000000d1;
+    
+        .close-bar {
+            padding: 0 0 20px 0;
+            display: flex;
+            justify-content: center;
+    
+            & > div {
+                height: 3px;
+                background: white;
+                width: 80px;
+            }
+        }
+    
+        .img-comingsoon {
+            background: linear-gradient(45deg, #181818, transparent);
+            margin: 0 auto;
+            display: block;
+            border-radius: 10px;
+        }
+    
+        .desc-comingsoon {
+            & > p, span {
+                color: white;
+                &:not(p:first-child) {
+                    font-size: 12px;
+                    margin: 0;
+                }
+            }
+    
+            & > p:first-child {
+                font-size: 14px;
+                font-weight: bold;
+                margin: 10px 0;
+            }
+    
+            & > div {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+    
+                & > p {
+                    text-align: right;
+                    color: #8F8F8F;
+                }
+            }
+        }
+    }
+}

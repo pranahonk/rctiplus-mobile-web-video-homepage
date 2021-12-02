@@ -58,56 +58,15 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 10, lineup_id = 0
           content_id
           content_type
           content_type_detail {
-            ... on ContentTypeProgram {
-              detail {
-                data {
-                  id
-                  portrait_image
-                  landscape_image
-                  square_image
-                  medium_landscape_image
-                  title
-                  summary
-                  permalink
-                }
-                status {
-                  code
-                }
-              }
-            }
-            ... on ContentTypeEpisode {
-              detail {
-                data {
-                  id
-                  square_image
-                  portrait_image
-                  landscape_image
-                  medium_landscape_image
-                  title
-                  summary
-                  permalink
-                }
-                status {
-                  code
-                }
-              }
-            }
-            ... on ContentTypeLiveEPG {
-              detail {
-                data {
-                  id
-                  countdown
-                  title
-                  is_live
-                  start
-                  landscape_image
-                  start_ts
-                }
-                status {
-                  code
-                }
-              }
-            }
+            ${contentTypeProgramFragment}
+            ${contentTypeEpisodeFragment}
+            ${contentTypeExtraFragment}
+            ${contentTypeClipFragment}
+            ${contentTypeCatchupFragment}
+            ${contentTypeLiveEventFragment}
+            ${contentTypeLiveEPGFragment}
+            ${contentTypeSpecialFragment}
+            ${contentTypeSeasonFragment}
           }
         }
         meta {
@@ -120,3 +79,181 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 10, lineup_id = 0
     }
   `
 }
+
+const contentTypeProgramFragment = `
+... on ContentTypeProgram {
+  detail {
+    data {
+      id
+      portrait_image
+      landscape_image
+      square_image
+      medium_landscape_image
+      title
+      summary
+      permalink
+    }
+    status {
+      code
+    }
+  }
+}`
+
+const contentTypeEpisodeFragment = `
+... on ContentTypeEpisode {
+  detail {
+    data {
+      id
+      square_image
+      portrait_image
+      landscape_image
+      medium_landscape_image
+      title
+      summary
+      permalink
+    }
+    status {
+      code
+    }
+  }
+}
+`
+
+const contentTypeExtraFragment = `
+... on ContentTypeExtra {
+  detail {
+    data {
+      id
+      square_image
+      portrait_image
+      landscape_image
+      medium_landscape_image
+      title
+      summary
+      permalink
+    }
+    status {
+      code
+    }
+  }
+}
+`
+
+const contentTypeClipFragment = `
+... on ContentTypeClip {
+  detail {
+    data {
+      id
+      square_image
+      portrait_image
+      landscape_image
+      medium_landscape_image
+      title
+      summary
+      permalink
+    }
+    status {
+      code
+    }
+  }
+}
+`
+
+const contentTypeCatchupFragment = `
+... on ContentTypeCatchUp {
+  detail {
+    data {
+      id
+      countdown
+      title
+      is_live
+      start
+      landscape_image
+      start_ts
+      permalink
+    }
+    status {
+      code
+    }
+  }
+}
+`
+
+const contentTypeLiveEventFragment = `
+... on ContentTypeLiveEvent {
+  detail {
+    data {
+      id
+      countdown
+      title
+      live_at
+      start_date
+      landscape_image
+      permalink
+    }
+    status {
+      code
+    }
+  }
+}
+`
+
+const contentTypeLiveEPGFragment = `
+... on ContentTypeLiveEPG {
+  detail {
+    data {
+      id
+      countdown
+      title
+      is_live
+      start
+      landscape_image
+      start_ts
+      permalink
+    }
+    status {
+      code
+    }
+  }
+}
+`
+
+const contentTypeSpecialFragment = `
+... on ContentTypeSpecial {
+  detail {
+    data {
+      id
+      square_image
+      portrait_image
+      landscape_image
+      medium_landscape_image
+      title
+      summary
+      permalink
+    }
+    status {
+      code
+    }
+  }
+}
+`
+
+const contentTypeSeasonFragment = `
+... on ContentTypeSeason {
+  detail {
+    data {
+      id
+      square_image
+      portrait_image
+      landscape_image
+      medium_landscape_image
+      title
+      summary
+      permalink
+    }
+    status {
+      code
+    }
+  }
+}
+`
