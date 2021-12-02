@@ -39,6 +39,7 @@ const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
 const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/square"));
 const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
 const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
+const LandscapeHotCompetition = dynamic(() => import("../components/lineups/hot/LandscapeHotCompetition"));
 const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
 
 class Index_v2 extends React.Component {
@@ -101,7 +102,6 @@ class Index_v2 extends React.Component {
             query: GET_LINEUPS(page, pageSize)
         })
             .then(({ data }) => {
-                console.log(data);
                 this.props.setHomepageLineups({
                     data: data.lineups.data,
                     meta: data.lineups.meta
@@ -140,6 +140,10 @@ class Index_v2 extends React.Component {
            case "square_list_news":
              return (
                <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+             )
+           case "landscape_hot_competition":
+             return(
+               <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
              )
          }
         })
