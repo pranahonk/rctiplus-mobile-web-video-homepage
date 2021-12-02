@@ -42,7 +42,6 @@ const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
 const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
 const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
 const LandscapeHotCompetition = dynamic(() => import("../components/lineups/hot/LandscapeHotCompetition"));
-const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
 const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/news/HorizontalMutipleLandscape"));
 
 class Index_v2 extends React.Component {
