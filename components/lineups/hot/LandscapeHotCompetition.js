@@ -11,12 +11,12 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper.scss';
 
 //import scss
-import '../../../assets/scss/components/horizontal-hastags.scss';
+import '../../../assets/scss/components/hot-competitions.scss';
 import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 import { GET_HOT_COMPETITIONS } from '../../../graphql/queries/competitions';
 import { imageNews } from '../../../utils/helpers';
 
-const HastagLoader = dynamic(() => import('../../Includes/Shimmer/HastagLoader'));
+const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
 
 const LandscapeHotCompetition = ({title, indexTag, id}) => {
@@ -29,9 +29,9 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
   const [assetUrl, setAssetUrl] = useState(null);
 
   useEffect(() => {
-    client.query({query: GET_HOT_COMPETITIONS(1, 100, 1, 100)})
+    client.query({query: GET_HOT_COMPETITIONS(1, 100, 1, 20)})
       .then((res)=>{
-        console.log(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail);
+        setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
         setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
         setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
@@ -41,37 +41,30 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
   },[]);
 
   const getHastagPagination = (page) =>{
-    client.query({query: GET_HOT_COMPETITIONS(id, page)})
+    client.query({query: GET_HOT_COMPETITIONS(1, 100, page, 20)})
       .then((res)=>{
-        console.log(res);
-        setHastags((list) => ({...list, data: [...list.data, ...res.data.lineup_news_tagars.data]}))
-        setMeta(res.data.lineup_news_tagars.meta);
-        setLoadingMore(false);
-        setShow(null);
+        setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
+        setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail]}))
       })
       .catch((err)=>{
         console.log(err);
       });
   };
 
-  useEffect(()=>{
-    console.log(hastags.data)
-  }, [hastags])
-
   useEffect(() => {
-    if (hastags.data && show) {
+    if (hastags.data && show && meta) {
       setLoadingMore(true);
-      // if(meta?.pagination){
-      //   if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-      //     getHastagPagination(meta?.pagination?.current_page + 1);
-      //   }
-      //   else{
-      //     setLoadingMore(false);
-      //     setShow(null);
-      //   }
-      // }else{
-      //   getHastagPagination(2);
-      // }
+      if(meta?.pagination){
+        if(meta?.pagination?.current_page < meta?.pagination?.total_page){
+          getHastagPagination(meta?.pagination?.current_page + 1);
+        }
+        else{
+          setLoadingMore(false);
+          setShow(null);
+        }
+      }else{
+        getHastagPagination(2);
+      }
 
     }
   },[show]);
@@ -85,31 +78,32 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
-          {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<HastagLoader />) : (<Swiper
+          {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<Loader />) : (<Swiper
             spaceBetween={10}
             height={150}
             width={192}
             onReachEnd={setShow}
           >
             {hastags?.data.map((item, index) => {
-              console.log(item?.content_type_detail?.detail?.data)
-              console.log(item?.content_type_detail?.detail?.data?.thumbnail)
               return (
                 <SwiperSlide key={index}>
                   <Link href={_goToDetail(item)}  >
-                    <div className="horizontal-tags">
+                    <div className="hot-competitions">
                       {
-                        imageNews(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 192, assetUrl, 'thumbnail')
+                        imageNews(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
                       }
-                      {/*<span className="horizontal-tags_text">#</span>*/}
+                      <button className="hot-competitions__button">
+                        JOIN
+                      </button>
                     </div>
+
                   </Link>
                 </SwiperSlide>
               );
             })}
             {loadingMore && (
               <SwiperSlide>
-                <HastagLoader />
+                <Loader />
               </SwiperSlide>)}
           </Swiper>) }
         </li>
