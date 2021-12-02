@@ -73,14 +73,14 @@ function carouselBanner(props) {
         // }    
     }
 
-    const sendTracker = (func, type, program) => {
+    const sendTracker = (func, type, banner) => {
         const eventArgs = {
             homeBanner: [
-                program.id, 
-                program.type, 
-                program.title, 
-                `${meta.image_path}${RESOLUTION_IMG}${program.portrait_image}`, 
-                `${meta.image_path}${RESOLUTION_IMG}${program.landscape_image}`, 
+                banner.id, 
+                banner.type, 
+                banner.title, 
+                `${meta.image_path}${RESOLUTION_IMG}${banner.portrait_image}`, 
+                `${meta.image_path}${RESOLUTION_IMG}${banner.landscape_image}`, 
                 'mweb_homepage_banner_clicked'
             ]
         }
@@ -117,8 +117,8 @@ function carouselBanner(props) {
                         onSwipeEnd={(e) => {
                             const swipedIndex = e.target.getAttribute('data-index');
                             if (banners[swipedIndex]) {
-                                const program = banners[swipedIndex];
-                                sendTracker(homeBannerEvent, "homeBanner", program)
+                                const banner = banners[swipedIndex];
+                                sendTracker(homeBannerEvent, "homeBanner", banner)
                             }
                         }}>
                         {banners.map((banner, i) => {

@@ -12,7 +12,6 @@ function getQueryParams(args) {
 export const GET_BANNERS = (category_id = 0) => {
   let queryParams = getQueryParams({ category_id })
   queryParams = Boolean(queryParams) ? `(${queryParams})` : ""
-  console.log(Boolean(queryParams) ,"asdasdasdasd")
 
   return gql`
     query {
@@ -22,6 +21,9 @@ export const GET_BANNERS = (category_id = 0) => {
           id
           title
           square_image
+          portrait_image
+          landscape_image
+          type
         }
         meta {
           image_path
