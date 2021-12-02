@@ -53,6 +53,7 @@ const HorizontalHastags = ({title, indexTag, id}) => {
     if (hastags.data && show) {
       setLoadingMore(true);
       if(meta?.pagination){
+        console.log(meta?.pagination);
         if(meta?.pagination?.current_page < meta?.pagination?.total_page){
           getHastagPagination(meta?.pagination?.current_page + 1);
         }
