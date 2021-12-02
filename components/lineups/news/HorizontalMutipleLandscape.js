@@ -89,6 +89,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
     return ('news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)));
   };
   return (
+    itemDimensional?.length === 0 || itemDimensional === undefined ? <div/> :
     <li>
       <h2 className="section-h2 mt-40 mb-2">{itemDimensional?.length < 1 ? null : title}</h2>
       <ul style={{paddingLeft: 10}}>
