@@ -399,7 +399,7 @@ export const postLike = (id, type, filter, status = 'INDIFFERENT') => {
     const data = { id: id, content_type: type, status: status };
     dispatch(tempLikePost(data, filter))
     dispatch(fetchDetailProgramRequest());
-    axios.post(`/v1/like`, { 
+    axios.post(`/v1/like`, {
       id: id,
       type: type,
       status: status,
