@@ -392,6 +392,7 @@ class Index extends React.Component {
     };
     this.props.dispatch(fetchRelatedProgram(data));
   }
+
   loadFirstTab(programId) {
     this.props.dispatch(fetchBookmark(programId, 'bookmark'));
     this.props.dispatch(fetchLike(programId, 'like', 'program'));
