@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import Router from 'next/router';
+import React, { useEffect, useState } from 'react';
+import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import contentActions from '../../../redux/actions/contentActions';
 import { Carousel } from 'react-responsive-carousel';
@@ -14,21 +14,22 @@ import { GET_BANNERS } from "../../../graphql/queries/homepage"
 import '../../../assets/scss/plugins/carousel/carousel.scss';
 
 function carouselBanner(props) {
-    const landscapePlaceholderImg = "/static/placeholders/placeholder_landscape.png"
+    const placeholderImg = "/static/placeholders/placeholder_landscape.png"
+    const [ banners, setBanners ] = useState([])
+    const [ meta, setMeta ] = useState({})
 
     useEffect(() => {
-        if (props.contents.banner.length === 0) getBanners()
+        getBanners()
     }, [])
 
     const getBanners = _ => {
-        client.query({ query: GET_BANNERS })
+        const categoryId = props.router.query.category_id || 0
+        client.query({ query: GET_BANNERS(categoryId) })
             .then(({ data }) => {
-                props.setBanner({
-                    data: data.banners.data,
-                    meta: data.banners.meta
-                })
+                setBanners(data.banners.data)
+                setMeta(data.banners.meta)
             })
-            .catch(e => console.log(e))
+            .catch(e => {})
     }
 
     const goToProgram = (banner) => {
@@ -75,11 +76,11 @@ function carouselBanner(props) {
     const sendTracker = (func, type, banner) => {
         const eventArgs = {
             homeBanner: [
-                banner.id,
-                banner.type,
-                banner.title,
-                `${props.contents.meta.image_path}${RESOLUTION_IMG}${banner.portrait_image}`,
-                `${props.contents.meta.image_path}${RESOLUTION_IMG}${banner.landscape_image}`,
+                banner.id, 
+                banner.type, 
+                banner.title, 
+                `${meta.image_path}${RESOLUTION_IMG}${banner.portrait_image}`, 
+                `${meta.image_path}${RESOLUTION_IMG}${banner.landscape_image}`, 
                 'mweb_homepage_banner_clicked'
             ]
         }
@@ -88,50 +89,56 @@ function carouselBanner(props) {
 
     return (
         <div style={{ position: 'relative', paddingTop: props.showStickyInstall ? 135 : props.detailCategory? 0 : 70,}}>
-            {props.contents.banner.length === 0 ?
-                <div
-                    className="banner-carousel"
-                    style={{ width: '100%', minHeight: 320,display: "flex", justifyContent:"center", alignItems:"center"}}>
-                    <Img
-                        alt="placeholder"
-                        src={<img alt="placeholder" src={landscapePlaceholderImg}/>}
-                        unloader={<img alt="placeholder" src={landscapePlaceholderImg}/>}
-                        loader={<img alt="placeholder" src={landscapePlaceholderImg}/>}/>
-                </div>
-                :
-                <Carousel
-                    className="banner-carousel"
-                    statusFormatter={(current, total) => `${current}/${total}`}
-                    autoPlay
-                    showThumbs={false}
-                    showIndicators
-                    stopOnHover
-                    showArrows={false}
-                    showStatus={false}
-                    swipeScrollTolerance={1}
-                    infiniteLoop
-                    swipeable
-                    onSwipeEnd={(e) => {
-                        const swipedIndex = e.target.getAttribute('data-index');
-                        if (props.contents.banner[swipedIndex]) {
-                            const program = props.contents.banner[swipedIndex];
-                            sendTracker(homeBannerEvent, "homeBanner", program)
-                        }
-                    }}>
-                    {props.contents.banner.map((banner, i) => (
-                        <div
-                            data-index={i}
-                            onClick={_ => goToProgram(banner)}
-                            key={banner.id}
-                            style={{  width: '100%', minHeight: 320}}>
-                            <Img
-                                alt={banner.title}
-                                src={[`${props.contents.meta.image_path}${RESOLUTION_IMG}${banner.square_image}`, landscapePlaceholderImg]}
-                                unloader={<img alt={banner.title} src={landscapePlaceholderImg}/>}
-                                loader={<img alt={banner.title} src={landscapePlaceholderImg}/>}/>
-                        </div>
-                    ))}
-                </Carousel>
+            {banners.length === 0 
+                ? (
+                    <div 
+                        className="banner-carousel" 
+                        style={{ width: '100%', minHeight: 320,display: "flex", justifyContent:"center", alignItems:"center"}}>
+                        <Img 
+                            alt="placeholder"
+                            src={<img alt="placeholder" src={placeholderImg}/>}
+                            unloader={<img alt="placeholder" src={placeholderImg}/>}
+                            loader={<img alt="placeholder" src={placeholderImg}/>}/>
+                    </div>
+                )
+                : (
+                    <Carousel 
+                        className="banner-carousel"
+                        statusFormatter={(current, total) => `${current}/${total}`} 
+                        autoPlay 
+                        showThumbs={false} 
+                        showIndicators 
+                        stopOnHover 
+                        showArrows={false} 
+                        showStatus={false} 
+                        swipeScrollTolerance={1} 
+                        infiniteLoop
+                        swipeable 
+                        onSwipeEnd={(e) => {
+                            const swipedIndex = e.target.getAttribute('data-index');
+                            if (banners[swipedIndex]) {
+                                const banner = banners[swipedIndex];
+                                sendTracker(homeBannerEvent, "homeBanner", banner)
+                            }
+                        }}>
+                        {banners.map((banner, i) => {
+                            const imgSrc = meta.image_path ? `${meta.image_path}${RESOLUTION_IMG}${banner.square_image}` : placeholderImg
+                            return (
+                                <div 
+                                    data-index={i} 
+                                    onClick={_ => goToProgram(banner)} 
+                                    key={banner.id} 
+                                    style={{  width: '100%', minHeight: 320}}>
+                                    <Img 
+                                        alt={banner.title}
+                                        src={imgSrc}
+                                        unloader={<img alt={banner.title} src={placeholderImg}/>}
+                                        loader={<img alt={banner.title} src={placeholderImg}/>}/>
+                                </div>
+                            )
+                        })}
+                    </Carousel>
+                )
             }
             {props.children}
             <div style={{ position: 'absolute', bottom: -1.5, background: 'linear-gradient(180deg, #282828 9.89%, rgba(0, 0, 0, 0.0001) 100%)', transform: 'matrix(1, 0, 0, -1, 0, 0)', width: '100%', height: 136 }}></div>
@@ -139,4 +146,4 @@ function carouselBanner(props) {
     );
 }
 
-export default connect(state => state, contentActions)(carouselBanner);
+export default connect(state => state, contentActions)(withRouter(carouselBanner));
