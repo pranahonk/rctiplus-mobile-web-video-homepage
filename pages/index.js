@@ -6,7 +6,6 @@ import LoadingBar from 'react-top-loading-bar';
 import { StickyContainer, Sticky } from 'react-sticky';
 import dynamic from "next/dynamic"
 
-
 import contentActions from '../redux/actions/contentActions';
 import pageActions from '../redux/actions/pageActions';
 import adsActions from '../redux/actions/adsActions';
@@ -43,6 +42,7 @@ const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news
 const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
 const LandscapeHotCompetition = dynamic(() => import("../components/lineups/hot/LandscapeHotCompetition"));
 const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/news/HorizontalMutipleLandscape"));
+const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"))
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -57,6 +57,8 @@ class Index_v2 extends React.Component {
         sticky_ads_closed: false,
         isShimmer: true,
         token: "",
+        openComingSoonModal: false,
+        contentComingSoonModal: {}
     }
 
     LoadingBar = null
@@ -125,6 +127,13 @@ class Index_v2 extends React.Component {
         self.setState({ show_sticky_install: false });
     }
 
+    setComingSoonModalState(open, content) {
+        this.setState({
+            openComingSoonModal: open,
+            contentComingSoonModal: content
+        })
+    }
+
     renderLineup(lineups, meta) {
         return lineups.map((lineup, index) => {
             switch(lineup.display_type) {
@@ -146,6 +155,7 @@ class Index_v2 extends React.Component {
                             loadingBar={this.LoadingBar}
                             contentId={lineup.id}
                             title={lineup.title}
+                            showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
                             imagePath={meta.image_path} />
                     )
                 case "landscape_large" :
@@ -215,6 +225,7 @@ class Index_v2 extends React.Component {
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
                             contentId={lineup.id}
+                            showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
                             title={lineup.title}
                             imagePath={meta.image_path} />
                     )
@@ -333,6 +344,10 @@ class Index_v2 extends React.Component {
                                 onTouchEnd={this.onTouchEnd.bind(this)}>
                                 { this.renderLineup(this.state.lineups, this.state.meta) }
                             </div>
+                            <ComingSoonModal 
+                                open={this.state.openComingSoonModal}
+                                onClose={_ => this.setState({ openComingSoonModal: false })}
+                                content={this.state.contentComingSoonModal} />
                         </div>
                     )
                 }
