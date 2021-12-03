@@ -11,24 +11,28 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper.scss';
 
 //import scss
-import '../../../assets/scss/components/horizontal-hastags.scss';
-import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
+import '../../../assets/scss/components/hot-competitions.scss';
+import { imageHot, imageNews } from '../../../utils/helpers';
+import { GET_HOT_VIDEO } from '../../../graphql/queries/hot-video';
 
-const HastagLoader = dynamic(() => import('../../Includes/Shimmer/HastagLoader'));
+const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
 
-const HorizontalHastags = ({title, indexTag, id}) => {
+const LandscapeHotVideo = ({title, indexTag, id}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
   const [hastags, setHastags] = useState([]);
   const [meta, setMeta] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [assetUrl, setAssetUrl] = useState(null);
 
   useEffect(() => {
-    client.query({query: GET_HASTAGS(1, 100, 1, 5)})
+    client.query({query: GET_HOT_VIDEO(1, 100, 1, 20)})
       .then((res)=>{
-        console.log(res);
+        console.log(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail);
+        setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
+        setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
         setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{
@@ -37,13 +41,10 @@ const HorizontalHastags = ({title, indexTag, id}) => {
   },[]);
 
   const getHastagPagination = (page) =>{
-    client.query({query: GET_HASTAGS_PAGINATION(id, page, 5)})
+    client.query({query: GET_HOT_VIDEO(1, 100, page, 20)})
       .then((res)=>{
-        console.log(res);
-        setHastags((list) => ({...list, data: [...list.data, ...res.data.lineup_news_tagars.data]}))
-        setMeta(res.data.lineup_news_tagars.meta);
-        setLoadingMore(false);
-        setShow(null);
+        setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
+        setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail]}))
       })
       .catch((err)=>{
         console.log(err);
@@ -51,7 +52,7 @@ const HorizontalHastags = ({title, indexTag, id}) => {
   };
 
   useEffect(() => {
-    if (hastags.data && show) {
+    if (hastags.data && show && meta) {
       setLoadingMore(true);
       if(meta?.pagination){
         if(meta?.pagination?.current_page < meta?.pagination?.total_page){
@@ -77,26 +78,32 @@ const HorizontalHastags = ({title, indexTag, id}) => {
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
-          {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<HastagLoader />) : (<Swiper
+          {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<Loader />) : (<Swiper
             spaceBetween={10}
             height={150}
-            width={180}
+            width={192}
             onReachEnd={setShow}
           >
             {hastags?.data.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
                   <Link href={_goToDetail(item)}  >
-                    <div className="horizontal-tags">
-                      <span className="horizontal-tags_text">#{item.tag}</span>
+                    <div className="hot-videos">
+                      {
+                        imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,212, assetUrl, 'thumbnail')
+                      }
+                      <button className="hot-competitions__button">
+                        JOIN
+                      </button>
                     </div>
+
                   </Link>
                 </SwiperSlide>
               );
             })}
             {loadingMore && (
               <SwiperSlide>
-                <HastagLoader />
+                <Loader />
               </SwiperSlide>)}
           </Swiper>) }
         </li>
@@ -105,4 +112,4 @@ const HorizontalHastags = ({title, indexTag, id}) => {
   );
 };
 
-export default HorizontalHastags;
+export default LandscapeHotVideo;
