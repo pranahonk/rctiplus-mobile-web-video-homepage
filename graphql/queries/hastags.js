@@ -4,11 +4,11 @@ import { gql } from '@apollo/client';
 export const GET_HASTAGS = (page = 1, pageSize= 100, page_lineups = 1, pageSize_lineups =100) => {
   return gql`
     query {
-      lineups(page: ${page_lineups}, page_size: ${pageSize_lineups}){
+      lineups(page: ${page}, page_size: ${pageSize}){
         data {
           lineup_type_detail {
             ... on LineupTypeNewsTagar {
-              detail(page: ${page}, page_size: ${pageSize}) {
+              detail(page: ${page_lineups}, page_size: ${pageSize_lineups}) {
                 data {
                   tag
                   type
