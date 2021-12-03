@@ -246,6 +246,10 @@ class Index_v2 extends React.Component {
              return(
                <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
              )
+           case "portrait_hot":
+             return(
+               <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+             )
          }
         })
     }
@@ -344,7 +348,7 @@ class Index_v2 extends React.Component {
                                 onTouchEnd={this.onTouchEnd.bind(this)}>
                                 { this.renderLineup(this.state.lineups, this.state.meta) }
                             </div>
-                            <ComingSoonModal 
+                            <ComingSoonModal
                                 open={this.state.openComingSoonModal}
                                 onClose={_ => this.setState({ openComingSoonModal: false })}
                                 content={this.state.contentComingSoonModal} />
