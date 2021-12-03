@@ -42,6 +42,7 @@ const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news
 const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
 const LandscapeHotCompetition = dynamic(() => import("../components/lineups/hot/LandscapeHotCompetition"));
 const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/news/HorizontalMutipleLandscape"));
+const LandscapeHotVideo = dynamic(() => import("../components/lineups/hot/LandscapeHotVideo"));
 const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"))
 
 class Index_v2 extends React.Component {
