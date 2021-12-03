@@ -12,9 +12,8 @@ import 'swiper/swiper.scss';
 
 //import scss
 import '../../../assets/scss/components/hot-competitions.scss';
-import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
-import { GET_HOT_COMPETITIONS } from '../../../graphql/queries/competitions';
-import { imageNews } from '../../../utils/helpers';
+import { imageHot, imageNews } from '../../../utils/helpers';
+import { GET_HOT_VIDEO } from '../../../graphql/queries/hot-video';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
@@ -29,8 +28,9 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
   const [assetUrl, setAssetUrl] = useState(null);
 
   useEffect(() => {
-    client.query({query: GET_HOT_COMPETITIONS(1, 100, 1, 20)})
+    client.query({query: GET_HOT_VIDEO(1, 100, 1, 20)})
       .then((res)=>{
+        console.log(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail);
         setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
         setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
         setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
@@ -41,7 +41,7 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
   },[]);
 
   const getHastagPagination = (page) =>{
-    client.query({query: GET_HOT_COMPETITIONS(1, 100, page, 20)})
+    client.query({query: GET_HOT_VIDEO(1, 100, page, 20)})
       .then((res)=>{
         setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
         setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail]}))
@@ -88,9 +88,9 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
               return (
                 <SwiperSlide key={index}>
                   <Link href={_goToDetail(item)}  >
-                    <div className="hot-competitions">
+                    <div className="hot-videos">
                       {
-                        imageNews(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
+                        imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,212, assetUrl, 'thumbnail')
                       }
                       <button className="hot-competitions__button">
                         JOIN

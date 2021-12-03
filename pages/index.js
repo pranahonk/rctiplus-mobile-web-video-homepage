@@ -40,7 +40,7 @@ const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup
 const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
 const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
 const LandscapeHotCompetition = dynamic(() => import("../components/lineups/hot/LandscapeHotCompetition"));
-const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
+const LandscapeHotVideo = dynamic(() => import("../components/lineups/hot/LandscapeHotVideo"))
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -144,6 +144,10 @@ class Index_v2 extends React.Component {
            case "landscape_hot_competition":
              return(
                <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+             )
+           case "portrait_hot":
+             return(
+               <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
              )
          }
         })
