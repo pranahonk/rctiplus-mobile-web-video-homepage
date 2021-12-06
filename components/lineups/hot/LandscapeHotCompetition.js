@@ -78,7 +78,7 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
-          {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<Loader />) : (<Swiper
+          {hastags?.data?.length === 0 || hastags?.data?.length < 1 === undefined ? (<Loader />) : (<Swiper
             spaceBetween={10}
             height={150}
             width={192}
