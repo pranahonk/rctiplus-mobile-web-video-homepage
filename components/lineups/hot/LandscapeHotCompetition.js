@@ -14,7 +14,7 @@ import 'swiper/swiper.scss';
 import '../../../assets/scss/components/hot-competitions.scss';
 import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 import { GET_HOT_COMPETITIONS } from '../../../graphql/queries/competitions';
-import { imageNews } from '../../../utils/helpers';
+import { imageHot, imageNews } from '../../../utils/helpers';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
@@ -90,7 +90,7 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
                   <Link href={_goToDetail(item)}  >
                     <div className="hot-competitions">
                       {
-                        imageNews(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
+                        imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
                       }
                       <button className="hot-competitions__button">
                         JOIN
