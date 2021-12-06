@@ -11,7 +11,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper.scss';
 
 //import scss
-import '../../../assets/scss/components/hot-competitions.scss';
+import '../../../assets/scss/components/hot-video.scss';
 import { getTruncate, imageHot, imageHotProfile, imageNews } from '../../../utils/helpers';
 import { GET_HOT_VIDEO } from '../../../graphql/queries/hot-video';
 import Views from '@material-ui/icons/RemoveRedEyeSharp';
