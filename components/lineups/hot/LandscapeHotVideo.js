@@ -31,7 +31,6 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
   useEffect(() => {
     client.query({query: GET_HOT_VIDEO(1, 100, 1, 1)})
       .then((res)=>{
-        console.log(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail);
         setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
         setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
         setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
