@@ -12,8 +12,9 @@ import 'swiper/swiper.scss';
 
 //import scss
 import '../../../assets/scss/components/hot-competitions.scss';
-import { imageHot, imageNews } from '../../../utils/helpers';
+import { getTruncate, imageHot, imageHotProfile, imageNews } from '../../../utils/helpers';
 import { GET_HOT_VIDEO } from '../../../graphql/queries/hot-video';
+import Views from '@material-ui/icons/RemoveRedEyeSharp';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
@@ -28,7 +29,7 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
   const [assetUrl, setAssetUrl] = useState(null);
 
   useEffect(() => {
-    client.query({query: GET_HOT_VIDEO(1, 100, 1, 20)})
+    client.query({query: GET_HOT_VIDEO(1, 100, 1, 1)})
       .then((res)=>{
         console.log(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail);
         setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
@@ -90,13 +91,34 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
                   <Link href={_goToDetail(item)}  >
                     <div className="hot-videos">
                       {
-                        imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,212, assetUrl, 'thumbnail')
+                        imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,220, assetUrl, 'thumbnail')
                       }
-                      <button className="hot-competitions__button">
-                        JOIN
-                      </button>
+                      <div className="hot-videos_card">
+                        <div className="hot-videos_card-profile">
+                          <div className="hot-videos_card-profile__image">
+                            <img src="/static/HOT+ White-01.png" alt='Gambar HOT+' />
+                          </div>
+                          <div className='row'>
+                            <div className="hot-videos_card-profile__photo col-3">
+                              {
+                                imageHotProfile(item?.content_type_detail?.detail?.data?.id, item?.content_type_detail?.detail?.data?.contestant?.thumbnail,item?.content_type_detail?.detail?.data?.contestant?.thumbnail, 20,20, assetUrl, 'profile-photo')
+                              }
+                            </div>
+                            <div className="hot-videos_card-profile__name col">
+                              {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.nick_name, "...", "17")}
+                            </div>
+                          </div>
+                          <div className='row'>
+                            <div className="hot-videos_card-profile__views col-3">
+                              <Views style={{ fontSize: '1.5rem', color: "white" }} />
+                            </div>
+                            <div className="hot-videos_card-profile__viewsCount col">
+                              {item?.content_type_detail?.detail?.data?.views}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-
                   </Link>
                 </SwiperSlide>
               );
