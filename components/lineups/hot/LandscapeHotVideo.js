@@ -29,7 +29,7 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
   const [assetUrl, setAssetUrl] = useState(null);
 
   useEffect(() => {
-    client.query({query: GET_HOT_VIDEO(1, 100, 1, 20)})
+    client.query({query: GET_HOT_VIDEO(1, 100, 1, 1)})
       .then((res)=>{
         console.log(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail);
         setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
@@ -86,7 +86,6 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
             onReachEnd={setShow}
           >
             {hastags?.data.map((item, index) => {
-              console.log(item?.content_type_detail?.detail?.data?.contestant?.thumbnail);
               return (
                 <SwiperSlide key={index}>
                   <Link href={_goToDetail(item)}  >
@@ -96,6 +95,9 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
                       }
                       <div className="hot-videos_card">
                         <div className="hot-videos_card-profile">
+                          <div className="hot-videos_card-profile__image">
+                            <img src="/static/HOT+ White-01.png" alt='Gambar HOT+' />
+                          </div>
                           <div className='row'>
                             <div className="hot-videos_card-profile__photo col-3">
                               {
@@ -104,7 +106,6 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
                             </div>
                             <div className="hot-videos_card-profile__name col">
                               {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.nick_name, "...", "17")}
-
                             </div>
                           </div>
                           <div className='row'>

@@ -53,14 +53,22 @@
       line-height: 16px;
       color: #FFFFFF;
 
+      &__image{
+        position: absolute;
+        top: -150px;
+        margin: 0 125px;
+      }
+
       &__name{
         display: flex;
         align-items: center;
+        text-shadow: 2px 2px #0000006e
       }
 
       &__viewsCount{
         display: flex;
         align-items: center;
+        text-shadow: 2px 2px #0000006e
       }
 
       &__photo{
