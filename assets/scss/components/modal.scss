@@ -149,11 +149,11 @@
     height: 100vh;
     top: 0;
     position: fixed;
-    z-index: 11;
+    z-index: 1030;
     width: 100vw;
     display: flex;
-    align-items: end;
-    background: #282828cf;
+    align-items: flex-end;
+    background: #282828eb;
 
     & > div {
         width: 100%;
