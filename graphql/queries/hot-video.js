@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const GET_HOT_VIDEO = (page = 1, pageSize= 100, page_lineups = 1, pageSize_lineups =100) => {
+  console.log(pageSize_lineups)
   return gql`
     query {
       lineups(page: ${page}, page_size: ${pageSize}) {
