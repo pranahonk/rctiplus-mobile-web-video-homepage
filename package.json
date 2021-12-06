@@ -39,6 +39,7 @@
     "push:prod": "git checkout az-sprint2 && git add . && git commit -m \"bug fix\" && git push origin az-sprint2 && git checkout production && git merge az-sprint2 && git push origin production && git checkout az-sprint2"
   },
   "dependencies": {
+    "@apollo/client": "^3.4.16",
     "@babel/polyfill": "^7.2.5",
     "@babel/runtime": "^7.8.7",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
@@ -76,6 +77,7 @@
     "express-rate-limit": "^5.0.0",
     "firebase": "^7.8.0",
     "fs-extra": "^10.0.0",
+    "graphql": "^16.0.1",
     "helmet": "^3.21.2",
     "http-proxy-middleware": "^1.0.5",
     "ios-inner-height": "^1.1.1",
