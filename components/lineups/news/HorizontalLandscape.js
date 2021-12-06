@@ -79,7 +79,7 @@ const HorizontalLandscape = ({title, indexTag, id}) => {
     return ('news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)));
   };
   return (
-    list?.data?.length === undefined || list?.data?.length ? <div /> :
+    list?.data?.length === undefined || list?.data?.length < 1 ? <div /> :
     <li className="regroupping-by-section">
       <h2 className="section-h2 mt-40 mb-2">{list?.data?.length ? title : null}</h2>
       <ul style={{paddingLeft: 0}}>
