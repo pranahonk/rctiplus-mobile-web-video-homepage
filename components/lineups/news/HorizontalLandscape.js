@@ -97,7 +97,7 @@ const HorizontalLandscape = ({title, indexTag, id}) => {
                   <Link href={_goToDetail(item)}  >
                     <div className="regroupping-by-section_thumbnail-wrapper">
                       {
-                        imageNews(item.title, item.image_url, item.image, 320, assetUrl, 'thumbnail')
+                        imageNews(item.title, item.cover, item.image, 320, assetUrl, 'thumbnail')
                       }
                       <div className="regroupping-by-section_thumbnail-title" >
                         <h1>{getTruncate(item.title, '...', 100)}</h1>
