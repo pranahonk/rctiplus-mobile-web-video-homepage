@@ -36,7 +36,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING(1,100)})
+    client.query({query: GET_REGROUPING(1,21)})
       .then((res)=>{
         setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path);
         setMeta(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta);
