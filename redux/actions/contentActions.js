@@ -122,22 +122,8 @@ const getContentShareLink = (id, type) => {
     });
 };
 
-const getBanner = (page = 1, length = 21, infos = 'id,title,portrait_image,image_landscape,type,type_value,sorting,program_id,popup_img,link,summary,square_image,program_name') => {
-    return dispatch => new Promise(async (resolve, reject) => {
-        try {
-            const response = await axios.get(`/v1/banner?page=${page}&length=${length}&appierid=${getUidAppier()}`);
-            if (response.data.status.code === 0) {
-                dispatch({ type: 'BANNER', data: response.data.data, meta: response.data.meta });
-                resolve(response);
-            }
-            else {
-                reject(response);
-            }
-        }
-        catch (e) {
-            reject(e);
-        }
-    });
+const setBanner = ({ data, meta }) => {
+    return dispatch => dispatch({ type: 'BANNER', data, meta })
 };
 
 const getEpisodeDetail = episodeId => {
@@ -445,10 +431,15 @@ const setShowMoreAllowed = (allowed, type = 'EPISODES') => {
     }
 }
 
+
+const setHomepageLineups = ({ data, meta }) => dispatch => {
+    dispatch({ type: 'HOMEPAGE_CONTENT', data, meta });
+}
+
 export default {
     getContents,
     getHomepageContents,
-    getBanner,
+    setBanner,
     getEpisodeDetail,
     getEpisodeUrl,
     getExtraDetail,
@@ -464,5 +455,6 @@ export default {
     getProgramClip,
     getContentShareLink,
     selectSeason,
-    setShowMoreAllowed
+    setShowMoreAllowed,
+    setHomepageLineups
 };
