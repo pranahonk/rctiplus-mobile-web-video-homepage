@@ -223,6 +223,7 @@ export default (state = initialState, action) => {
         [action.filter]: action.payload,
         loading: false,
       };
+
     case FETCH_EPISODE_SUCCESS: {
       const page = action && action.payload.meta.pagination.current_page;
       if (page > 1) {
