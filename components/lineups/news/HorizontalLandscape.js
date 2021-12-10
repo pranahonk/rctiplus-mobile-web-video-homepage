@@ -15,12 +15,10 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
 import 'swiper/swiper.scss';
-import { useQuery } from '@apollo/client';
-import { GET_REGROUPING, GET_REGROUPING_HASTAGS, GET_REGROUPING_LINEUPS } from '../../../graphql/queries/regrouping';
+import { GET_REGROUPING, GET_REGROUPING_LINEUPS } from '../../../graphql/queries/regrouping';
 
 //import scss
 import '../../../assets/scss/components/horizontal-landscape.scss';
-import { GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 
 const HorizontalLandspaceLoader = dynamic(() => import('../../Includes/Shimmer/HorizontalLandspaceLoader'))
 

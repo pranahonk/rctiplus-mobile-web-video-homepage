@@ -18,6 +18,7 @@ export const GET_HOT_COMPETITIONS = (page = 1, pageSize= 100, page_lineups = 1, 
                           thumbnail
                           id
                           title
+                          permalink
                         }
                         meta{
                           assets_url

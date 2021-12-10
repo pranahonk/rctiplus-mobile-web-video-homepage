@@ -19,6 +19,7 @@ export const GET_HOT_VIDEO = (page = 1, pageSize= 100, page_lineups = 1, pageSiz
                           thumbnail
                           id
                           views
+                          permalink
                           contestant{
                             nick_name
                             thumbnail

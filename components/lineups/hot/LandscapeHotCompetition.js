@@ -14,7 +14,7 @@ import 'swiper/swiper.scss';
 import '../../../assets/scss/components/hot-competitions.scss';
 import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 import { GET_HOT_COMPETITIONS } from '../../../graphql/queries/competitions';
-import { imageHot, imageNews } from '../../../utils/helpers';
+import { imageNews } from '../../../utils/helpers';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
@@ -70,7 +70,7 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
   },[show]);
 
   const _goToDetail = (article) => {
-    return `news/topic/tag/${article.tag}`
+    return window.location.href = article
   };
 
   return (
@@ -78,7 +78,7 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
-          {hastags?.data?.length === 0 || hastags?.data?.length < 1 === undefined ? (<Loader />) : (<Swiper
+          {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<Loader />) : (<Swiper
             spaceBetween={10}
             height={150}
             width={192}
@@ -87,17 +87,14 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
             {hastags?.data?.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
-                  <Link href={_goToDetail(item)}  >
-                    <div className="hot-competitions">
-                      {
-                        imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
-                      }
-                      <button className="hot-competitions__button">
-                        JOIN
-                      </button>
-                    </div>
-
-                  </Link>
+                  <div className="hot-competitions">
+                    {
+                      imageNews(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
+                    }
+                    <button className="hot-competitions__button" onClick={()=> _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}>
+                      JOIN
+                    </button>
+                  </div>
                 </SwiperSlide>
               );
             })}
