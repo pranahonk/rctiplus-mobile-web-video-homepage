@@ -70,7 +70,7 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
   },[show]);
 
   const _goToDetail = (article) => {
-    return `news/topic/tag/${article.tag}`
+    return window.location.href = article
   };
 
   return (
@@ -87,17 +87,14 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
             {hastags?.data.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
-                  <Link href={_goToDetail(item)}  >
-                    <div className="hot-competitions">
-                      {
-                        imageNews(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
-                      }
-                      <button className="hot-competitions__button">
-                        JOIN
-                      </button>
-                    </div>
-
-                  </Link>
+                  <div className="hot-competitions">
+                    {
+                      imageNews(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
+                    }
+                    <button className="hot-competitions__button" onClick={()=> _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}>
+                      JOIN
+                    </button>
+                  </div>
                 </SwiperSlide>
               );
             })}
