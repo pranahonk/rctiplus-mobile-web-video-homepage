@@ -38,6 +38,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   useEffect(() => {
     client.query({query: GET_REGROUPING(1,21)})
       .then((res)=>{
+        console.log(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
         setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path);
         setMeta(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta);
         setItem(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
@@ -71,10 +72,14 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   }, [item]);
 
   useEffect(() => {
-    setLoadingMore(true);
     if (meta?.pagination && show) {
+      setLoadingMore(true);
       if(meta?.pagination?.current_page < meta?.pagination?.total_page){
         getLineupsMultiplePagination(meta?.pagination?.current_page + 1, 15, id);
+      }
+      else{
+        setLoadingMore(false);
+        setShow(null);
       }
     }
   }, [show]);
