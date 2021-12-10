@@ -153,11 +153,11 @@
   width: 180px !important;
   padding: 1rem;
   opacity: 0;
-  
+
   &.forward {
     justify-content: flex-start !important;
   }
-  
+
   &.backward {
     justify-content: flex-end !important;
   }
@@ -172,7 +172,6 @@
   from { opacity: 1; }
   to { opacity: 0; }
 }
-
 @media screen and (orientation:landscape) {
   .jw-overlay-wrapper {
     width: 468px;
