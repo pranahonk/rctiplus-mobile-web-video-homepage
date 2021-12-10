@@ -100,7 +100,7 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
                         <div className='row'>
                           <div className="hot-videos_card-profile__photo col-3">
                             {
-                              imageHotProfile(item?.content_type_detail?.detail?.data?.id, item?.content_type_detail?.detail?.data?.contestant?.thumbnail,item?.content_type_detail?.detail?.data?.contestant?.thumbnail, 20,20, assetUrl, 'profile-photo')
+                              imageHotProfile(item?.content_type_detail?.detail?.data?.id, item?.content_type_detail?.detail?.data?.contestant?.thumbnail,item?.content_type_detail?.detail?.data?.contestant?.thumbnail, 20,20, assetUrl, '')
                             }
                           </div>
                           <div className="hot-videos_card-profile__name col">
