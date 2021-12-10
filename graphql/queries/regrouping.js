@@ -10,44 +10,12 @@ export const GET_REGROUPING = (page = 1, pageSize= 15, page_lineups = 1, pageSiz
             ... on LineupTypeNewsRegrouping {
               detail (page: ${page}, page_size: ${pageSize}) {
                 data {
-                  author
-                  category_source
-                  content
-                  count
-                  country_id
-                  country_name
                   cover
-                  created_at
-                  deeplink
-                  description
-                  exclusive
-                  ga_partner_id
-                  google_index
                   id
                   image
-                  is_headline
-                  link
-                  meta_description
-                  meta_keyword
-                  meta_title
-                  permalink
-                  pinned
                   pubDate
-                  publish
-                  publish_date
-                  publisher_id
-                  rss_id
-                  share_link
-                  sorting
                   source
-                  subcategory_id
-                  subcategory_name
-                  tags
                   title
-                  total_like
-                  total_views
-                  updated_at
-
                 }
                 meta {
                   pagination {
