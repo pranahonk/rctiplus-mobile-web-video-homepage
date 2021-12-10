@@ -7,6 +7,7 @@ import Wrench from '../Common/Wrench';
 import '../../../assets/scss/jwplayer.scss';
 
 import useCustomPlayerButton from "../../hooks/Jwplayer/useCustomPlayerButton"
+import useOverlayPlayerAds from "../../hooks/Jwplayer/useOverlayPlayerAds"
 import useSetupBitrate from "../../hooks/Jwplayer/useSetupBitrate"
 import useConvivaInitiator from "../../hooks/Jwplayer/useConvivaInitiator"
 import useOverlayPlayerAds from "../../hooks/Jwplayer/useOverlayPlayerAds"
@@ -35,6 +36,7 @@ const JwPlayer = (props) => {
     isError08: false,
   });
 
+  // Custom Hooks
   const [ setBitrateLevels ] = useSetupBitrate({ ...props, player })
   const { setInitConviva } = useConvivaInitiator({ ...props, player })
   const [ adsState, setAdsState, stateOfAds ] = useOverlayPlayerAds({ ...props, player })
@@ -65,7 +67,7 @@ const JwPlayer = (props) => {
       hide: true,
     },
   };
-  
+
   // Initial Setup
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
@@ -94,6 +96,8 @@ const JwPlayer = (props) => {
 
       setIsPlayerReady(false)
       setAdsState(stateOfAds.NONE)
+
+      console.log(props.data.url)
     }
   }, [props.data && props.data.url, props.data && props.data.vmap]);
 
@@ -102,6 +106,7 @@ const JwPlayer = (props) => {
     if (player !== null) {
       player.on('ready', (event) => {
         const playerContainer = player.getContainer();
+
         setAdsState(stateOfAds.INIT)
         setIsPlayerReady(true)
 
@@ -146,12 +151,13 @@ const JwPlayer = (props) => {
         }
       })
 
-      player.on('play', () => {
+      player.on('play', () =>{
         setBitrateLevels(player.getQualityLevels())
         setInitConviva(true)
 
         convivaJwPlayer().playing();
         setAdsState(stateOfAds.START)
+        setHideBtns(false)
       });
 
       player.on('pause', () =>{
@@ -161,22 +167,22 @@ const JwPlayer = (props) => {
       player.on('buffer', (event) =>{
         convivaJwPlayer().buffer();
       });
-      
+
       player.on('adError', (event) => {
         setAdsState(stateOfAds.NONE)
       });
-      
+
       player.on('time', (event) => {
         setDuration(player.getPosition());
       });
-      
+
       player.on('complete', (event) => {
         const convivaTracker = convivaJwPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
       });
-      
+
       // ads event
       player.on('adImpression', (event) => {
         setAdsState(stateOfAds.NONE)
@@ -186,21 +192,19 @@ const JwPlayer = (props) => {
       })
 
       player.on('adSkipped', (event) => {
-        setHideBtns(false)
         setAdsState(stateOfAds.START)
       });
-      
+
       player.on('adComplete', (event) => {
-        setHideBtns(false)
         setAdsState(stateOfAds.START)
       });
-      
+
       player.on('userActive', (event) => {
         if (document.querySelector('.jw-ads-overlay')) {
           document.querySelector('.jw-ads-overlay').style.bottom = '70px';
         }
       });
-      
+
       player.on('userInactive', (event) => {
         if (document.querySelector('.jw-ads-overlay')) {
           document.querySelector('.jw-ads-overlay').style.bottom = '5px';
@@ -303,7 +307,7 @@ const JwPlayer = (props) => {
       </>
     )
   }
-  
+
   const error = (msg = msgError02, icon = (<Wrench />)) => {
     return (
       <div id="jwplayer-rctiplus" style={{
@@ -337,7 +341,7 @@ const JwPlayer = (props) => {
         <span style={{ fontSize: 12 }}>we are working to fix the problem</span>
       </div>
     )
-  }  
+  }
 
   return (
     <>

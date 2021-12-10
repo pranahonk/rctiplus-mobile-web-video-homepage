@@ -24,14 +24,14 @@ export default function useOverlayPlayerAds(props) {
   useEffect(() => {
     deviceOrientationListener()
   })
-  
+
   const deviceOrientationListener = async () => {
     const isPortrait = window.matchMedia("(orientation: portrait)").matches
 
-    if (isPortrait === screenAngle) return    
+    if (isPortrait === screenAngle) return
     if (!slotDivGPT || !props.data) return
     setScreenAngle(isPortrait)
-    
+
     const adsIframe = document.getElementById(slotDivGPT).querySelector("iframe")
     const gpt = props.data.gpt
     if (!adsIframe || !gpt) return
@@ -39,16 +39,16 @@ export default function useOverlayPlayerAds(props) {
     const adsImage = adsIframe.contentWindow.document.querySelector("#google_image_div img.img_ad")
 
     if (!isPortrait) {
-      adsIframe.width = gpt.size_width_2 
-      adsIframe.height = gpt.size_height_2 
-      adsImage.width = gpt.size_width_2 
-      adsImage.height = gpt.size_height_2 
+      adsIframe.width = gpt.size_width_2
+      adsIframe.height = gpt.size_height_2
+      adsImage.width = gpt.size_width_2
+      adsImage.height = gpt.size_height_2
     }
     else {
-      adsIframe.width = gpt.size_width_1 
-      adsIframe.height = gpt.size_height_1 
-      adsImage.width = gpt.size_width_1 
-      adsImage.height = gpt.size_height_1 
+      adsIframe.width = gpt.size_width_1
+      adsIframe.height = gpt.size_height_1
+      adsImage.width = gpt.size_width_1
+      adsImage.height = gpt.size_height_1
     }
   }
 
@@ -59,7 +59,7 @@ export default function useOverlayPlayerAds(props) {
     const playerContainer = props.player.getContainer()
     const adsWrapper = playerContainer.querySelector(".jw-ads-overlay")
     if (!adsWrapper) return
-    
+
     if (adsState.includes("start")) {
       initAds()
     }
@@ -86,7 +86,7 @@ export default function useOverlayPlayerAds(props) {
 
     window.googletag = window.googletag || {cmd: []}
     adsWrapper.style.display = ""
-    
+
     const slot = googletag.defineSlot(gpt.path, [ gpt.size_width_1, gpt.size_height_1 ], divGPTString)
     if (slot) {
       slot.addService(googletag.pubads())
@@ -100,7 +100,7 @@ export default function useOverlayPlayerAds(props) {
       googletag.enableServices();
     }
     googletag.display(divGPTString)
-    
+
     googletag.pubads().refresh()
   }
 
@@ -108,7 +108,7 @@ export default function useOverlayPlayerAds(props) {
     if (!props.player) return
     if (!props.type.includes("live")) return
     if (!props.data.gpt) return
-    
+
     const { gpt } = props.data
     if (!gpt.path) return
 
@@ -133,10 +133,10 @@ export default function useOverlayPlayerAds(props) {
   const handleClickOverlayAds = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const { refreshDuration } = props.adsOverlayData
     googletag.destroySlots()
-    
+
     const playerContainer = props.player.getContainer()
     const adsWrapper = playerContainer.querySelector(".jw-ads-overlay")
     adsWrapper.style.display = "none"
@@ -148,10 +148,10 @@ export default function useOverlayPlayerAds(props) {
 
   const generateDivGPTString = () => {
     const { gpt } = props.data
-    const envDivGPTString = (props.type === 'live tv') 
-      ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV 
+    const envDivGPTString = (props.type === 'live tv')
+      ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV
       : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
-    
+
     return gpt.div_gpt ? gpt.div_gpt : envDivGPTString
   }
 
@@ -159,7 +159,7 @@ export default function useOverlayPlayerAds(props) {
     const adsOverlayElement = document.createElement('div')
     adsOverlayElement.classList.add('jw-ads-overlay')
     adsOverlayElement.style.display = "none"
-    
+
     const divGPTString = generateDivGPTString()
     refreshOverlayChildNodes(adsOverlayElement)
 
@@ -179,7 +179,7 @@ export default function useOverlayPlayerAds(props) {
       uniqueChildNode.set(childNode.className, childNode)
     }
     uniqueChildNode.set(adsWrapperNode.className, adsWrapperNode)
-    
+
     Array.from([ ...uniqueChildNode.values() ])
       .forEach(childNode => playerContainer.appendChild(childNode))
   }

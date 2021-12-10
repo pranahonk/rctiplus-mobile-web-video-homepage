@@ -17,8 +17,7 @@ import {
   fetchClip, fetchPhoto, setClearClip,
   setClearExtra, fetchPlayerUrl, clearPlayer,
   fetchBookmark, postBookmark, deleteBookmark,
-  fetchLike, postLike, fetchDetailDesc, dataShareSeo, fetchRecommendHOT,
-  fetchDetailProgramRequest
+  fetchLike, postLike, fetchDetailDesc, dataShareSeo, fetchDetailProgramRequest, fetchRecommendHOT
 } from '../redux/actions/program-detail/programDetail';
 import { postContinueWatching } from '../redux/actions/historyActions';
 import Layout from '../components/Layouts/Default_v2';
@@ -141,7 +140,6 @@ class Index extends React.Component {
       episodeClearStore: true,
     }, () => this.loadFirstTab(this.programId));
     this.loadRelated(this.programId,1);
-
     this.loadRecommendHOT(1);
     if (this.props.router.query.content_id) {
       this.setState({ activeContentId: +this.props.router.query.content_id })
@@ -1093,8 +1091,9 @@ class Index extends React.Component {
                   </TabContent>
                 </div>
               </div>
-
               {this.renderVisionPlusComponent()}
+
+              {this.panelRecommendHOT(this.props?.data['recommend-hot'])}
 
               {this.panelRelated(
                 this.props.data &&

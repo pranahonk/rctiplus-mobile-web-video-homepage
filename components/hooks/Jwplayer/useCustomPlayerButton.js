@@ -70,19 +70,17 @@ export default function useCustomPlayerButton (props) {
     const disabled = direction === disabledDirection || disabledDirection === "all"
     
     const skipBtn = (
-      // <figure
-      //   key={`${index}-skipbtn`}
-      //   ref={skipPosIconContainer}
-      //   className={`jwplayer-action jw-icon ${direction}`}
-      //   role="button"
-      //   onDoubleClick={() => fastForwardBackwardClicked(direction)}>
-      //   <img
-      //     src={`/static/player_icons/player_fast${direction}.svg`}
-      //     alt={`fast-${direction}-btn`} />
-      // </figure>
       <figure
-        key={`${index}-skipbtn`}
-        role="button">
+        ref={skipPosIconContainer}
+        key={`${index}-skipbtn`}>
+        {/* 
+          ---------------- TEMPORARY HIDE ---------------
+        className={`jwplayer-action jw-icon ${direction}`}
+        role="button"
+        onDoubleClick={() => fastForwardBackwardClicked(direction)}>
+        <img
+          src={`/static/player_icons/player_fast${direction}.svg`}
+          alt={`fast-${direction}-btn`} /> */}
       </figure>
     )
     const navBtn = (
