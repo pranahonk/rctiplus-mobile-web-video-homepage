@@ -144,7 +144,7 @@ export default (state = initialState, action) => {
           loading: false,
           loading_extra: false,
           loading_more: false,
-          [action.filter]: { 
+          [action.filter]: {
             ...action.payload,
             data: [ ...uniqueEntries.values() ]
           },
@@ -225,7 +225,7 @@ export default (state = initialState, action) => {
       };
     case FETCH_RECOMMEND_HOT_SUCCESS:
       const initPageRecommendHOT = action && action.payload.meta.pagination.current_page;
-      
+
       if (initPageRecommendHOT > 1) {
         const initStateRecommendHOT = state[action.filter].data;
         const newStateRecommendHOT = action.payload.data;
@@ -250,7 +250,7 @@ export default (state = initialState, action) => {
           [`season-${action.filter[1]}`]: {data: []}
         }
         const currentEntries = state['program-episode'][`season-${action.filter[1]}`]
-        
+
         // Find and overwrite intermittent data duplicates
         const uniqueEntries = new Map()
         Array.from([ ...currentEntries.data, ...action.payload.data ])
@@ -261,9 +261,9 @@ export default (state = initialState, action) => {
           loading: false,
           loading_more: false,
           loading_episode: false,
-          [action.filter[0]]: { 
+          [action.filter[0]]: {
             ...state[action.filter[0]],
-            ['season-' + action.filter[1]]: { 
+            ['season-' + action.filter[1]]: {
               ...action.payload,
               data: [ ...uniqueEntries.values() ]
             }
@@ -273,7 +273,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         [action.filter[0]]: {
-          ...state[action.filter[0]], 
+          ...state[action.filter[0]],
           ['season-' + action.filter[1]] : {
             ...action.payload
           }
@@ -283,6 +283,25 @@ export default (state = initialState, action) => {
         loading_episode: false,
       }
     }
+    case FETCH_RECOMMEND_HOT_SUCCESS:
+      const initPageRecommendHOT = action && action.payload.meta.pagination.current_page;
+
+      if (initPageRecommendHOT > 1) {
+        const initStateRecommendHOT = state[action.filter].data;
+        const newStateRecommendHOT = action.payload.data;
+        const dataRecommendHOT = [...initStateRecommendHOT, ...newStateRecommendHOT];
+        return {
+          ...state,
+          [action.filter]: {...action.payload, data: dataRecommendHOT},
+          loading: false,
+          loading_more: false,
+        };
+      }
+      return {
+        ...state,
+        [action.filter]: action.payload,
+        loading: false,
+      };
     case FETCH_PLAYER_URL_SUCCESS:
       return {
         ...state,
@@ -307,7 +326,7 @@ export default (state = initialState, action) => {
           [action.filter[0]]: { ...state.bookmark, data: combine },
           loading: false,
         };
-      } 
+      }
       return {
         ...state,
         [action.filter[0]]: {data: { [action.filter[1]] : [action.payload] }},
@@ -317,8 +336,8 @@ export default (state = initialState, action) => {
       const initStateBookmark = state && state.bookmark.data
       const newStateBookmark = action.payload
       const dataBookmark = [...initStateBookmark[action.filter[1]], newStateBookmark]
-      const resultBookmark = dataBookmark.filter((item) => { 
-        return (item.id !== action.payload.id) 
+      const resultBookmark = dataBookmark.filter((item) => {
+        return (item.id !== action.payload.id)
       })
       const combine = {...initStateBookmark, [action.filter[1]]: resultBookmark}
       return {

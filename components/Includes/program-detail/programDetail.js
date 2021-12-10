@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, forwardRef } from 'react';
+import React, { useRef, useCallback, useEffect, forwardRef } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Img from 'react-image';
@@ -318,6 +318,8 @@ export const PanelRecommendHOT = (props) => {
   const recommendationVideoURL = (id) => `${LINK_HOT}recommendation/video/${id}${hasToken ? `?token=${token}` : ''}`
   const onClickItem = (id) => window.location.href = recommendationVideoURL(id);
 
+  const seeMore = () => Router.push(`${LINK_HOT}${hasToken ? `?token=${token}` : ''}`)
+
   return (
     <div className="recommend__HOT-wrapper">
       <div className="recommend__HOT-header-wrapper">
@@ -351,12 +353,10 @@ export const PanelRecommendHOT = (props) => {
             </Link>
           );
         })}
-        {hasMore && (
-          <div className="recommend__HOT-more-wrapper" onClick={props.hasMore}>
-            <img className="recommend__HOT-more-icon" alt="See More Icon" src={SeeMoreIcon} />
-            <p className="recommend__HOT-more-label">See More</p>
-          </div>
-        )}
+        <div className="recommend__HOT-more-wrapper" onClick={seeMore}>
+          <img className="recommend__HOT-more-icon" alt="See More Icon" src={SeeMoreIcon} />
+          <p className="recommend__HOT-more-label">See More</p>
+        </div>
       </div>
     </div>
   );
@@ -546,6 +546,8 @@ const  getPathImage = (path,resolution,imgSrc, status, potrait) => {
 };
 
 const bookmark = (data, item, type, props, typeTracking = null) => {
+  console.log(`ini adalah data bookmark`, data)
+  console.log(`ini adalah item bookmark`, item)
   if (data && data[type]) {
     const isBookmark = data && data[type].find((list) => list.id === item.id);
     if (isBookmark) {

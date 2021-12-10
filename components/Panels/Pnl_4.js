@@ -71,7 +71,6 @@ class Pnl_4 extends React.Component {
 				case 'homepage_news':
 					Router.push("/news")
 				break;
-				case 'news_detail' :
 				case 'news_category':
 				case 'news_tags' :
 						window.open(program.link, '_parent');
@@ -106,38 +105,21 @@ class Pnl_4 extends React.Component {
 			case 'special':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
 
-				// window.open(data.link, '_blank');
 				let url = data.url ? data.url : data.link;
-				// console.log('token:', this.props.token);
+				
 				if (data.mandatory_login && this.props.user.isAuth) {
 					url += this.props.token;
 				}
 
-				let payload = {};
-				try {
-					payload = jwtDecode(this.props.token);
-					// console.log(payload && !payload.vid);
-					if (data.mandatory_login && !this.props.user.isAuth) {
-						showSignInAlert(`Please <b>Sign In</b><br/>
-							Woops! Gonna sign in first!<br/>
-							Only a click away and you<br/>
-							can continue to enjoy<br/>
-							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
-					}
-					else {
-						this.handleActionClick(data, url)
-						// window.open(url, '_blank');
-						// window.location.href = url;
-					}
+				if (data.mandatory_login && !this.props.user.isAuth) {
+					showSignInAlert(`Please <b>Sign In</b><br/>
+					Woops! Gonna sign in first!<br/>
+					Only a click away and you<br/>
+					can continue to enjoy<br/>
+					<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
 				}
-				catch (e) {
-					if (data.mandatory_login && !this.props.user.isAuth) {
-						showSignInAlert(`Please <b>Sign In</b><br/>
-							Woops! Gonna sign in first!<br/>
-							Only a click away and you<br/>
-							can continue to enjoy<br/>
-							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
-					}
+				else {
+					this.handleActionClick(data, url)
 				}
 				break;
 

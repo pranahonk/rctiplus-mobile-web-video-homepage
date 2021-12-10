@@ -10,6 +10,7 @@ import useCustomPlayerButton from "../../hooks/Jwplayer/useCustomPlayerButton"
 import useOverlayPlayerAds from "../../hooks/Jwplayer/useOverlayPlayerAds"
 import useSetupBitrate from "../../hooks/Jwplayer/useSetupBitrate"
 import useConvivaInitiator from "../../hooks/Jwplayer/useConvivaInitiator"
+import useOverlayPlayerAds from "../../hooks/Jwplayer/useOverlayPlayerAds"
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -66,7 +67,7 @@ const JwPlayer = (props) => {
       hide: true,
     },
   };
-  
+
   // Initial Setup
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
@@ -149,7 +150,7 @@ const JwPlayer = (props) => {
           }
         }
       })
-      
+
       player.on('play', () =>{
         setBitrateLevels(player.getQualityLevels())
         setInitConviva(true)
@@ -166,45 +167,44 @@ const JwPlayer = (props) => {
       player.on('buffer', (event) =>{
         convivaJwPlayer().buffer();
       });
-      
+
       player.on('adError', (event) => {
         setAdsState(stateOfAds.NONE)
       });
-      
+
       player.on('time', (event) => {
         setDuration(player.getPosition());
       });
-      
+
       player.on('complete', (event) => {
         const convivaTracker = convivaJwPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
       });
-      
+
       // ads event
       player.on('adImpression', (event) => {
         setAdsState(stateOfAds.NONE)
       });
-
       player.on("adPlay", _ => {
         setHideBtns(true)
       })
-      
+
       player.on('adSkipped', (event) => {
         setAdsState(stateOfAds.START)
       });
-      
+
       player.on('adComplete', (event) => {
         setAdsState(stateOfAds.START)
       });
-      
+
       player.on('userActive', (event) => {
         if (document.querySelector('.jw-ads-overlay')) {
           document.querySelector('.jw-ads-overlay').style.bottom = '70px';
         }
       });
-      
+
       player.on('userInactive', (event) => {
         if (document.querySelector('.jw-ads-overlay')) {
           document.querySelector('.jw-ads-overlay').style.bottom = '5px';
@@ -294,7 +294,6 @@ const JwPlayer = (props) => {
     }
   }, [props.geoblockStatus]);
 
-
   const getPlayer = (error1, error2) => {
     if (error1) {
       return error(msgError01)
@@ -308,7 +307,7 @@ const JwPlayer = (props) => {
       </>
     )
   }
-  
+
   const error = (msg = msgError02, icon = (<Wrench />)) => {
     return (
       <div id="jwplayer-rctiplus" style={{
@@ -327,7 +326,6 @@ const JwPlayer = (props) => {
       </div>
     );
   };
-  
   const msgError01 = () => {
     return(
       <div>
