@@ -677,7 +677,8 @@ class Index extends React.Component {
     const { query } = this.props.router
     const programDetail = this.props.server['program-detail']
 
-    if (((programClip.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
+    if (programClip == null || ((programClip.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
+
 
     const pagination = {
       ...programClip.meta.pagination,
