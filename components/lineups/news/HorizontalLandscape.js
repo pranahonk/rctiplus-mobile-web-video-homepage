@@ -47,8 +47,6 @@ const HorizontalLandscape = ({title, indexTag, id}) => {
   const getLineupsPagination = (page, page_size, id) =>{
     client.query({query: GET_REGROUPING_LINEUPS(page, page_size, id)})
       .then((res)=>{
-        console.log(res?.data?.lineup_news_regroupings?.data);
-        console.log(list?.data);
         setList((list)=> ({ ...list, data: [...list.data, ...res.data.lineup_news_regroupings.data]}))
         setLoadingMore(false);
         setShow(null);
@@ -63,6 +61,9 @@ const HorizontalLandscape = ({title, indexTag, id}) => {
       setLoadingMore(true);
       if(meta?.pagination?.current_page < meta?.pagination?.total_page){
         getLineupsPagination(list?.meta?.pagination?.current_page + 1, 10, id);
+      } else{
+        setLoadingMore(false);
+        setShow(null);
       }
     }
   }, [show]);
