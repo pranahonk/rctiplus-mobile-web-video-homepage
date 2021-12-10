@@ -124,8 +124,6 @@ class Index_v2 extends React.Component {
        return lineups.map((lineup) => {
             switch(lineup.display_type) {
               case "horizontal" :
-                if (lineup.lineup_type !== "default") return null
-
                 return (
                   <VideoSquareView
                     token={this.state.token}
@@ -135,42 +133,6 @@ class Index_v2 extends React.Component {
                     title={lineup.title}
                     content={lineup.lineup_type_detail.detail.data}
                     imagePath={meta.image_path} />
-                  // <Panel3
-                  //     token={this.state.token}
-                  //     loadingBar={this.LoadingBar}
-                  //     key={lineup.id}
-                  //     contentId={lineup.id}
-                  //     title={lineup.title}
-                  //     content={lineup.lineup_type_detail.detail.data}
-                  //     imagePath={meta.image_path}
-                  //     resolution={RESOLUTION_IMG}
-                  //     displayType={lineup.display_type}/>
-                )
-              case "horizontal_square" :
-                return (
-                  null
-                  // <VideoSquareView
-                  //     token={this.state.token}
-                  //     loadingBar={this.LoadingBar}
-                  //     key={lineup.id}
-                  //     contentId={lineup.id}
-                  //     title={lineup.title}
-                  //     content={lineup.lineup_type_detail.detail.data}
-                  //     imagePath={meta.image_path}/>
-                )
-              case "vertical" :
-                return (
-                  null
-                  // <VideoVerticalView
-                  //     token={this.state.token}
-                  //     loadingBar={this.LoadingBar}
-                  //     key={content.id}
-                  //     contentId={content.id}
-                  //     title={content.title}
-                  //     content={lineup.lineup_type_detail.detail.data}
-                  //     imagePath={meta.image_path}
-                  //     resolution={RESOLUTION_IMG}
-                  //     displayType={content.display_type}/>
                 )
             }
         })
@@ -227,9 +189,7 @@ class Index_v2 extends React.Component {
                                 <GridMenu />
                             </Carousel>
 
-                            <div style={{marginTop: "25px"}}>
-                                <Stories loadingBar={this.LoadingBar} homepage={true}/>
-                            </div>
+                            <Stories />
 
                             <StickyContainer>
                                 <Sticky disableHardwareAcceleration>
