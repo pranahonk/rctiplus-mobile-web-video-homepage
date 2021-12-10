@@ -10,7 +10,6 @@ import useCustomPlayerButton from "../../hooks/Jwplayer/useCustomPlayerButton"
 import useOverlayPlayerAds from "../../hooks/Jwplayer/useOverlayPlayerAds"
 import useSetupBitrate from "../../hooks/Jwplayer/useSetupBitrate"
 import useConvivaInitiator from "../../hooks/Jwplayer/useConvivaInitiator"
-import useOverlayPlayerAds from "../../hooks/Jwplayer/useOverlayPlayerAds"
 
 const pubAdsRefreshInterval = {
   timeObject: null,
