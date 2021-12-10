@@ -223,25 +223,6 @@ export default (state = initialState, action) => {
         [action.filter]: action.payload,
         loading: false,
       };
-    case FETCH_RECOMMEND_HOT_SUCCESS:
-      const initPageRecommendHOT = action && action.payload.meta.pagination.current_page;
-
-      if (initPageRecommendHOT > 1) {
-        const initStateRecommendHOT = state[action.filter].data;
-        const newStateRecommendHOT = action.payload.data;
-        const dataRecommendHOT = [...initStateRecommendHOT, ...newStateRecommendHOT];
-        return {
-          ...state,
-          [action.filter]: {...action.payload, data: dataRecommendHOT},
-          loading: false,
-          loading_more: false,
-        };
-      }
-      return {
-        ...state,
-        [action.filter]: action.payload,
-        loading: false,
-      };
     case FETCH_EPISODE_SUCCESS: {
       const page = action && action.payload.meta.pagination.current_page;
       if (page > 1) {
@@ -283,7 +264,25 @@ export default (state = initialState, action) => {
         loading_episode: false,
       }
     }
+    case FETCH_RECOMMEND_HOT_SUCCESS:
+      const initPageRecommendHOT = action && action.payload.meta.pagination.current_page;
 
+      if (initPageRecommendHOT > 1) {
+        const initStateRecommendHOT = state[action.filter].data;
+        const newStateRecommendHOT = action.payload.data;
+        const dataRecommendHOT = [...initStateRecommendHOT, ...newStateRecommendHOT];
+        return {
+          ...state,
+          [action.filter]: {...action.payload, data: dataRecommendHOT},
+          loading: false,
+          loading_more: false,
+        };
+      }
+      return {
+        ...state,
+        [action.filter]: action.payload,
+        loading: false,
+      };
     case FETCH_PLAYER_URL_SUCCESS:
       return {
         ...state,
