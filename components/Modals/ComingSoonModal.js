@@ -14,6 +14,9 @@ export default function comingSoonModal(props) {
 
   useEffect(() => {
     setOpen(props.open)
+    if (props.open) {
+      document.body.style.overflow = "hidden"
+    }
   }, [props.open])
 
   const onTouchStart = (e) => {
@@ -35,6 +38,7 @@ export default function comingSoonModal(props) {
     
     if (distance > 100) {
       props.onClose()
+      document.body.style.overflow = "unset"
     }
   }
 
