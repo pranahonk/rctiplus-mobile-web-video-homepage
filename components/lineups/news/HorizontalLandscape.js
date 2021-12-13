@@ -65,10 +65,6 @@ const HorizontalLandscape = ({title, indexTag, id}) => {
         setLoadingMore(false);
         setShow(null);
       }
-      else{
-        setLoadingMore(false);
-        setShow(null);
-      }
     }
   }, [show]);
 
