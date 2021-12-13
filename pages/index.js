@@ -48,7 +48,7 @@ class Index_v2 extends React.Component {
     }
 
     state = {
-        contents: [],
+        lineups: [],
         fetchAllowed: true,
         meta: null,
         resolution: 320,
@@ -97,27 +97,28 @@ class Index_v2 extends React.Component {
     }
 
     getHomePageLineups(page, pageSize) {
-        this.LoadingBar.continuousStart();
-        client.query({
-            query: GET_LINEUPS(page, pageSize)
+      this.LoadingBar.continuousStart();
+      client.query({ query: GET_LINEUPS(page, pageSize) })
+        .then(({ data }) => {
+          this.setState({
+            lineups: this.state.lineups.concat(data.lineups.data),
+            meta: data.lineups.meta
+          }, _ => {
+            return
+          })
         })
-            .then(({ data }) => {
-                this.props.setHomepageLineups({
-                    data: data.lineups.data,
-                    meta: data.lineups.meta
-                })
-            })
-            .finally(_ => {
-                if (page === 1) this.setState({ isShimmer: false })
-                this.LoadingBar.complete();
-            })
+        .finally(_ => {
+          if (page === 1) this.setState({ isShimmer: false })
+          this.LoadingBar.complete();
+        })
     }
 
-    bottomScrollFetch() {
+
+  bottomScrollFetch() {
         const { pagination } = this.props.contents.meta
         if (pagination.total_page === pagination.current_page) return
 
-        this.getHomePageLineups(pagination.current_page + 1, this.state.length)
+        this.getHomePageLineups(pagination.current_page + 1, this.state.length);
     }
 
     closeStickyInstall(self) {
@@ -183,8 +184,8 @@ class Index_v2 extends React.Component {
                 </Head>
 
                 <BottomScrollListener
-                    offset={150}
-                    onBottom={this.bottomScrollFetch.bind(this)} />
+                  offset={150}
+                  onBottom={this.bottomScrollFetch.bind(this)} />
 
                 <LoadingBar
                     progress={0}
@@ -251,7 +252,7 @@ class Index_v2 extends React.Component {
                                 style={{marginBottom: 45, paddingTop: 10}}
                                 onTouchStart={this.onTouchStart.bind(this)}
                                 onTouchEnd={this.onTouchEnd.bind(this)}>
-                                { this.renderLineup(lineupContents, lineupMeta) }
+                              { this.renderLineup(this.state.lineups, this.state.meta) }
                             </div>
                         </div>
                     )
