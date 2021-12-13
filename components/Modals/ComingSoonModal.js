@@ -38,7 +38,7 @@ export default function comingSoonModal(props) {
     
     if (distance > 100) {
       props.onClose()
-      document.body.style.overflow = ""
+      document.body.style.overflow = "unset"
     }
   }
 
