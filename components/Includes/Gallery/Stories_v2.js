@@ -14,7 +14,7 @@ import '../../../assets/scss/components/stories.scss'
 function homeStories (props) {
     const [ stories,setStories ] = useState([])
     const [ meta, setMeta ] = useState({})
-    const [ activeStory, setActiveStory ] = useState(null)
+    const [ activeStory, setActiveStory ] = useState({})
     const [ storyIndex, setStoryIndex ] = useState(0)
 
     useEffect(() => {
@@ -35,30 +35,29 @@ function homeStories (props) {
     const openStory = (story, index) => {
         setActiveStory(story)
         setStoryIndex(index)
+
+        console.log(index, storyIndex, "uhuy");
     }
 
     const onSwipe = (direction) => {
         if ((storyIndex - 1) < 0 && direction === "left") {
-            setActiveStory(null)
-            setStoryIndex(0)
-            return
+            openStory({}, 0)
         }
-        if ((storyIndex + 1) > (stories.length - 1) && direction === "right") {
-            setActiveStory(null)
-            setStoryIndex(0)
-            return
+        else if (direction === "left") {
+            openStory(stories[storyIndex - 1], storyIndex - 1)
         }
 
-        if (direction === "right") {
-            setActiveStory(stories[storyIndex + 1])
-            setStoryIndex(storyIndex + 1)
-            return
+        if ((storyIndex + 1) > (stories.length - 1) && direction === "right") {
+            openStory({}, 0)
         }
-        if (direction === "left") {
-            setActiveStory(stories[storyIndex - 1])
-            setStoryIndex(storyIndex - 1)
-            return
+        else if (direction === "right") {
+            openStory(stories[storyIndex + 1], storyIndex + 1)
         }
+    }
+
+    const onProgressBarComplete = () => {
+        openStory(stories[storyIndex + 1], storyIndex + 1)
+        console.log(storyIndex, stories[storyIndex + 1])
     }
 
     if (stories.length === 0) return null
@@ -86,9 +85,9 @@ function homeStories (props) {
             
             <StoryModal 
                 story={activeStory}
-                onswipe={e => onSwipe(e)}
-                storyIndex={storyIndex}
-                onclose={_ => setActiveStory(null)}  />
+                onSwipe={e => onSwipe(e)}
+                onClose={_ => setActiveStory({})}
+                onProgressBarComplete={_ => onProgressBarComplete()}  />
         </>
     )
     // constructor(props) {

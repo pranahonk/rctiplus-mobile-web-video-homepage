@@ -14,32 +14,34 @@ function storyModal(props) {
   const swipe = {
     clientX: 0
   }
-
+  
   useEffect(() => {
-    if (props.story) setActiveProgressbar()
+    if (props.story.story) setActiveProgressbar()
   }, [
-    props.story,
-    props.storyIndex,
-    activeIndex
+    props.story.program_id,
+    activeIndex,
   ])
+
+  if (!props.story.story) return null
 
   const setActiveProgressbar = () => {
     if (!progressBarWrapper.current) return
+    if (activeIndex > props.story.story.length - 1) return
 
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     progressBars[activeIndex].classList.add("active")
     progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
     progressBars[activeIndex].children[0].addEventListener("animationend", _ => {
-      if ((activeIndex + 1 === props.story.story.length)) {
-        // setActiveIndex(0)
-        // props.onswipe("right")
-        // progressBars[0].children[0].style.animation
+      if ((activeIndex === props.story.story.length - 1)) {
+        setActiveIndex(0)
+        props.onProgressBarComplete()
       }
-      else if ((activeIndex + 1) < props.story.story.length) setActiveIndex(activeIndex + 1)
+      else if (activeIndex < props.story.story.length - 1) {
+        setActiveIndex(activeIndex + 1)
+        progressBars[activeIndex].children[0].style.animation = "unset"
+      }
     })
   }
-
-  if (!props.story) return null
 
   const touchStart = (e) => {
     const activeProgressBar = progressBarWrapper.current.querySelectorAll(".progressbars")[activeIndex].children[0]
@@ -74,7 +76,7 @@ function storyModal(props) {
   }
 
   const closeModal = () => {
-    props.onclose()
+    props.onClose()
     setActiveIndex(0)
   }
 
@@ -104,7 +106,8 @@ function storyModal(props) {
     progressBars[activeIndex].classList.remove("active")
     progressBars[activeIndex].children[0].style.animation = "unset"
 
-    props.onswipe(direction)
+    props.onSwipe(direction)
+
     setTimeout(() => {
       progressBars[activeIndex].classList.add("active")
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
@@ -138,7 +141,6 @@ function storyModal(props) {
     }
     setActiveIndex(targetIndex)
     progressBars[activeIndex].children[0].style.animation = "unset"
-
   }
 
   return (
