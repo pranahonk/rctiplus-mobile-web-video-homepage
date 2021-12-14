@@ -21,6 +21,7 @@ import { GET_REGROUPING, GET_REGROUPING_LINEUPS } from '../../../graphql/queries
 //import scss
 import '../../../assets/scss/components/horizontal-multiple.scss';
 import '../../../assets/scss/components/trending_v2.scss';
+import Router from 'next/router';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/HorizontalMutipleLandscapeloader.js'))
 
@@ -85,13 +86,14 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   }, [show]);
 
   const _goToDetail = (article) => {
+    console.log("masuk sini")
     let category = '';
     if (article.subcategory_name?.length < 1) {
       category = 'berita-utama';
     } else {
       category = urlRegex(article.subcategory_name)
     }
-    return ('news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)));
+    Router.push('news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)));
   };
   return (
     itemDimensional?.length === 0 || itemDimensional === undefined ? <div/> :
