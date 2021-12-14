@@ -7,7 +7,7 @@ export default function JsonLDVideo ({content, isProgram}) {
     "@context": "https://schema.org",
     "@type": "VideoObject",
     "contentURL": `${oneSegment}${content?.asPath}`,
-    "description": `${channel(content?.title)} Live Streaming`,
+    "description": `${content?.description}`,
     // "duration": "PT37M14S",
     "embedUrl": `${oneSegment}${content?.asPath}`,
     "expires": `${content?.expires || '1 Januari 9999'}`,

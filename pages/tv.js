@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
-import nextCookie from 'next-cookies' 
+import nextCookie from 'next-cookies'
 import { Picker } from 'emoji-mart';
 import Img from 'react-image';
 import TimeAgo from 'react-timeago';
@@ -242,6 +242,7 @@ class Tv extends React.Component {
 		const currentTime = new Date().getTime();
 		const startTime = new Date(formatDate(this.currentDate) + 'T' + epg.s).getTime();
 		const endTime = new Date(formatDate(this.currentDate) + 'T' + epg.e).getTime();
+
 		return currentTime > startTime && currentTime < endTime;
 	}
 
@@ -335,13 +336,13 @@ class Tv extends React.Component {
 
 		const channelData = this.state.live_events[index]
 		const liveEventId = channelData.id || channelData.content_id
-		const selectedDate = this.props.params_date 
-			? formatDateWord(new Date(this.props.params_date)) 
+		const selectedDate = this.props.params_date
+			? formatDateWord(new Date(this.props.params_date))
 			: formatDateWord(new Date())
 
 		this.props.setCatchupDate(selectedDate)
 		this.props.setChannelCode(channelData.channel_code);
-			
+
 		setTimeout(() => {
 			if (this.state.chat_open) {
 				if (liveEventId) {
@@ -385,7 +386,7 @@ class Tv extends React.Component {
 				if (first === true && this.props.context_data.epg_id) {
 					this.selectCatchup(this.props.context_data.epg_id, 'url');
 				}
-				
+
 				this.props.setCatchupData(catchup)
 				this.setState({
 					data_player: liveEventUrl.data.data,
@@ -416,7 +417,7 @@ class Tv extends React.Component {
 
 	selectCatchup(id, ref = false) {
 		// this.props.setPageLoader();
-		
+
 		if (!ref) {
 			liveTvCatchupScheduleClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_catchup_schedule_clicked');
 		}
@@ -733,6 +734,19 @@ class Tv extends React.Component {
 		}
 	}
 
+  _dscriptionLD(channel){
+    if(channel === 'rcti'){
+      return 'Rajawali Citra Televisi (RCTI) merupakan stasiun TV swasta pertama dan terbesar di Indonesia. Stasiun TV ini resmi mengudara pada Agustus 1989 dengan memegang motto “Kebanggaan Bersama Milik Bangsa”. Pada Oktober 2003, RCTI resmi masuk ke kelompok perusahaaan media yaitu Media Nusantara Citra (MNC). Setelah itu, tumbuhlah menjadi stasiun tv yang besar dan digemari masyarakat indonesia. Seperti halnya vidio com, useetv, k-vision & mivo tv, RCTI+ hadir dengan layanan televisi internet secara live streaming yang dapat dinikmati semua kalangan dengan konten eksklusif dan gratis. Channel RCTI menjadi stasiun TV yang konsisten menghadirkan tayangan televisi berkualitas dan menarik yang dapat di tonton secara live streaming di tv online RCTI+. Di tv internet RCTI+ menyajikan mulai dari program berita, musik, sinetron, sitkom, infotainment, musik, memasak, acara olahraga, kartun dan film lainnya. Salah satu program sinetron populer terkini di RCTI adalah Sinetron Ikatan Cinta, Master Chef Indonesia, Si Doel Anak Sekolahan hingga Preman Pensiun yang telah memberikan kontribusi besar dalam pasar hiburan di Indonesia. Kini, RCTI dengan slogannya “Semakin Oke” menghadirkan program-program pilihan seperti Sinetron Ikatan Cinta, Putri Untuk Pangeran hingga Preman Pensiun. Selain itu info dan update berita terbaru juga disajikan oleh RCTI dengan program Seputar iNews Pagi, Go Spot, Silet dan Seputar iNews Siang.';
+    }else if(channel === 'mnctv'){
+      return 'Dengan visi menjadi pilihan utama pemirsa Indonesia “Selalu di Hati”, MNCTV terus menghadirkan program yang memanjakan mata mulai dari sinetron, variety show, talent show, animasi dan program seru lainnya. Beberapa program acara yang ditayangkan di MNCTV seperti Upin & Ipin, Raden Kian Santang, Rising Star Dangdut dan masih banyak lainnya. Adapun dalam kategori program berita seperti Lintas iNews Pagi, Lintas iNews Siang & Lintas iNews Malam. Semuanya dapat ditonton melalui siaran live streaming MNCTV hari ini di RCTI+ gratis tanpa buffer.';
+    }else if(channel === 'gtv'){
+    return 'Live streaming acara Global TV (GTV) online hari ini gratis di RCTI+, tanpa buffer! Daftar acara GTV menyajikan pilihan kategori program menarik yang dapat ditonton secara live stream seperti kartun animasi: Zak Storm, Naruto & SpongeBob. Untuk kategori program film acara saat ini terdapat film premier Big Movies, Family & Platinum. Selain itu pada kategori Berita tersedia Buletin News dan Gerebek. Untuk kategori terakhir yang juga populer yang disiarkan yaitu The Voice Indonesia & The Voice Kids Indonesia';
+    }else if(channel === 'inews'){
+      return 'Televisi lokal yang awalnya bernama Sindo TV, pada tanggal 6 April 2015 secara resmi diubah menjadi iNews. iNews merupakan televisi nasional yang memiliki jaringan televisi lokal terbanyak di seluruh Indonesia. Dengan didukung jaringan yang luas, iNews mampu memberikan program-program berita unggulan dan informasi yang cepat, akurat, informatif, mendidik serta menginspirasi. Di RCTI+, kamu bisa nonton live streaming iNews TV hari ini secara langsung yang sudah terjadwal dengan beragam pilihan seperti news berita terkini, sport, religi & entertainment. Salah satu program berita populer terkini yang disajikan oleh iNews adalah iNews Pagi, iNews Siang, iNews Sore & iNews Malam. Untuk program acara lainnya menyiarkan juga Cahaya Hati Indonesia dan beberapa program pilihan lainnya seperti yang sudah dijadwalkan.';
+    }
+    return channel;
+	}
+
 	routingQueryGenerator(targetContent) {
     let targetHref = [],
       targetHrefAlias = []
@@ -751,7 +765,7 @@ class Tv extends React.Component {
 
     return {
       href: targetHref.join("&"), // actual target url
-      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser 
+      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser
     }
   }
 
@@ -774,17 +788,17 @@ class Tv extends React.Component {
 
 	getCurrentViewingVideoIndex() {
 		const catchup = this.state.catchup
-		
+
 		if (this.state.catchup.length === 0) return
 		if (!this.props.params_date) return
-		
+
 		const currentCatchupId = +this.props.router.query.epg_id
 		const indexes = {
 			...this.state.catchUpIndexing,
 			maxQueue: catchup.length
 		}
 		const catchUpIndexing = this.generateIndexing(catchup, indexes, currentCatchupId)
-		
+
     if (this.state.catchUpIndexing.current !== catchUpIndexing.current) {
       this.setState({ catchUpIndexing })
     }
@@ -810,8 +824,12 @@ class Tv extends React.Component {
 		const contentData = {
 			asPath: props.router.asPath,
 			title: props.context_data?.epg_title || props.context_data?.channel,
-			thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image
+			description: this._dscriptionLD(props.context_data?.channel),
+			thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image,
+      startDate : state.selected_date
 		}
+
+
 		let playerRef = (<div></div>);
 		if (this.state.error) {
 			playerRef = (
