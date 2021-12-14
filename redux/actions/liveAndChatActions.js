@@ -224,27 +224,23 @@ const getMissedEvent = (page = 1, length = 10) => {
 };
 
 const getLiveEventDetail = liveEventId => {
+<<<<<<< HEAD
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/live-event/${liveEventId}`);
             console.log('HASIL',response)
             if (response.data.status.code === 0) {
+=======
+    return dispatch => {
+        axios.get(`/v1/live-event/${liveEventId}`)
+            .then((res) => {
+>>>>>>> development
                 dispatch({
                     type: 'GET_LIVE_EVENT_DETAIL',
-                    data: response.data.data,
-                    meta: response.data.meta,
-                    status: response.data.status
-                });
-                resolve(response);
-            }
-            else {
-                reject(response);
-            }
-        }
-        catch (error) {
-            reject(error);
-        }
-    });
+                    payload: res.data
+                })
+            })
+    }
 };
 
 const getLiveEventUrl = liveEventId => {
