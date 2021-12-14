@@ -86,7 +86,6 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   }, [show]);
 
   const _goToDetail = (article) => {
-    console.log("masuk sini")
     let category = '';
     if (article.subcategory_name?.length < 1) {
       category = 'berita-utama';
