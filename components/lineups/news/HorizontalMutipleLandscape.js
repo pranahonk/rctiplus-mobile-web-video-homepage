@@ -37,7 +37,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING(1,21)})
+    client.query({query: GET_REGROUPING(1,20)})
       .then((res)=>{
         setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path);
         setMeta(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta);
@@ -75,7 +75,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
     if (meta?.pagination && show) {
       setLoadingMore(true);
       if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-        getLineupsMultiplePagination(meta?.pagination?.current_page + 1, 15, id);
+        getLineupsMultiplePagination(meta?.pagination?.current_page + 1, 20, id);
       }
       else{
         setLoadingMore(false);
