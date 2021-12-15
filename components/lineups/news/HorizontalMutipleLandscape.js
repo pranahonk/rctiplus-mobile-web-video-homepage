@@ -21,6 +21,7 @@ import { GET_REGROUPING, GET_REGROUPING_LINEUPS } from '../../../graphql/queries
 //import scss
 import '../../../assets/scss/components/horizontal-multiple.scss';
 import '../../../assets/scss/components/trending_v2.scss';
+import Router from 'next/router';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/HorizontalMutipleLandscapeloader.js'))
 
@@ -36,7 +37,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING(1,21)})
+    client.query({query: GET_REGROUPING(1,20)})
       .then((res)=>{
         setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path);
         setMeta(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta);
@@ -71,10 +72,14 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   }, [item]);
 
   useEffect(() => {
-    setLoadingMore(true);
     if (meta?.pagination && show) {
+      setLoadingMore(true);
       if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-        getLineupsMultiplePagination(meta?.pagination?.current_page + 1, 15, id);
+        getLineupsMultiplePagination(meta?.pagination?.current_page + 1, 20, id);
+      }
+      else{
+        setLoadingMore(false);
+        setShow(null);
       }
     }
   }, [show]);
@@ -86,7 +91,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
     } else {
       category = urlRegex(article.subcategory_name)
     }
-    return ('news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)));
+    Router.push('news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)));
   };
   return (
     itemDimensional?.length === 0 || itemDimensional === undefined ? <div/> :

@@ -282,8 +282,8 @@ class Index_v2 extends React.Component {
                 </Head>
 
                 <BottomScrollListener
-                    offset={150}
-                    onBottom={this.bottomScrollFetch.bind(this)} />
+                  offset={150}
+                  onBottom={this.bottomScrollFetch.bind(this)} />
 
                 <LoadingBar
                     progress={0}
