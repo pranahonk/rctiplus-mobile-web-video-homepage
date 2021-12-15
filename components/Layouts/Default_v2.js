@@ -13,7 +13,7 @@ import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
 import { getUidAppier } from '../../utils/appier';
 
-import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GRAPH_SITEMAP, SHARE_BASE_URL, GTM_AUTH, MODE, APPIER_ID } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GRAPH_SITEMAP, SHARE_BASE_URL, GTM_AUTH, GA_4_ID, GA_INIT_ID,  MODE, APPIER_ID } from '../../config';
 import { Spinner } from 'reactstrap';
 const PaidVideo = dynamic(() => import('../Includes/program-detail/PaidVideo'), { ssr: false });
 
@@ -197,24 +197,27 @@ class Default_v2 extends React.Component {
 
                     <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
 
-                    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
+                    {/* ganti ke G4 */}
+                    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script> 
 
-                    {/* <script src="/static/js/firebase.js"></script> */}
-                    {/* <script async dangerouslySetInnerHTML={{ __html: `
-                        var firebaseConfig = { 
-                                apiKey: "${FIREBASE_apiKey}",
-                                authDomain: "${FIREBASE_authDomain}",
-                                databaseURL: "${FIREBASE_databaseURL}",
-                                projectId: "${FIREBASE_projectId}",
-                                storageBucket: "${FIREBASE_storageBucket}",
-                                messagingSenderId: "${FIREBASE_messagingSenderId}",
-                                appId: "${FIREBASE_appId}",
-                                measurementId: "${FIREBASE_measurementId}"
-                            };
-                            firebase.initializeApp(firebaseConfig);
-                            firebase.analytics();
-                    `}}>
-                    </script> */}
+                    {/* <!-- Global site tag (gtag.js) - Google Analytics GA 4 --> */}
+                    <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_4_ID}`}></script>
+                    <script dangerouslySetInnerHTML={{ __html: `
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments)}
+                        gtag('js', new Date());
+                        gtag('config', '${GA_4_ID}');
+                     `}}></script>
+
+                    {/* <!-- Global site tag (gtag.js) - Google Analytics GA Classic Pillar Video --> */}
+                    <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_INIT_ID}`}></script>
+                    <script dangerouslySetInnerHTML={{ __html: `
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments)}
+                        gtag('js', new Date());
+                        gtag('config', '${GA_INIT_ID}');
+                    `}} ></script>
+
                 </Head>
                 <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}

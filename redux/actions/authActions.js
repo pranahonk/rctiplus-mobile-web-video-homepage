@@ -62,8 +62,9 @@ const logout = (device_id, platform = 'mweb') => {
             });
 
             if (response.data.status.code === 0) {
-                removeCookie('ACCESS_TOKEN');
                 removeCookie('NEWS_TOKEN_V2');
+                removeCookie('ACCESS_TOKEN');
+                dispatch({ type: "USER_DATA", data: null, meta: null });
                 dispatch({ type: DEAUTHENTICATE });
                 resolve(response);
             }
