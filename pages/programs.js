@@ -109,6 +109,7 @@ class Index extends React.Component {
       trailer: false,
       title: 'title-program',
       statusProgram: false,
+      share_link: "",
       statusError: 0,
       videoIndexing: {},
       activeContentId: 0
@@ -263,6 +264,8 @@ class Index extends React.Component {
     
     // Set max video queue length once it has the value from request call
     if (this.state.videoIndexing.maxQueue !== meta.pagination.total) {
+      if (this.state.videoIndexing.maxQueue === data.length) return
+
       this.setState({
         videoIndexing: { ...this.state.videoIndexing, maxQueue: meta.pagination.total }
       })
@@ -394,7 +397,7 @@ class Index extends React.Component {
     this.props.dispatch(fetchLike(programId, 'like', 'program'));
     if (this.props.server && this.props.server[this.type].data) {
       if (this.props.server[this.type].data.category === 'movie') {
-        this.props.dispatch(fetchEpisode(programId, 'program-episode'));
+        this.props.dispatch(fetchEpisode(programId, 'program-episode', this.props.router.query.content_id));
         this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
         this.props.dispatch(seasonSelected(1));
       }
@@ -404,7 +407,7 @@ class Index extends React.Component {
             if (!this.props.data['program-episode'] || this.state.episodeClearStore) {
               if (this.props.data.seasonSelected) break
 
-              this.props.dispatch(fetchEpisode(programId, 'program-episode'));
+              this.props.dispatch(fetchEpisode(programId, 'program-episode', this.props.router.query.content_id));
               this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
               this.props.dispatch(seasonSelected(1));
             }
@@ -509,7 +512,7 @@ class Index extends React.Component {
         return {
           contentType: "episode",
           contentDispatcher: fetchEpisode,
-          dispatcherArgs: [ query.id, "program-episode", seasonSelected, page ]
+          dispatcherArgs: [ query.id, "program-episode", this.props.router.query.content_id, seasonSelected, page ]
         }
       case "extra":
         return {
@@ -561,8 +564,10 @@ class Index extends React.Component {
     
     const { query } = this.props.router
     const programDetail = this.props.server['program-detail']
-
+    
+    if (!programEpisode) return null
     if (((programEpisode.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
+
     
     const pagination = {
       ...programEpisode.meta.pagination,
@@ -592,7 +597,7 @@ class Index extends React.Component {
           onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
           bookmark={bookmark}
           isLogin={this.props.auth.isAuth}
-          onShare={(title, item) => this.toggleActionSheet.bind(this, 'episode', title, 'content_share', item)}
+          onShare={(item) => this.toggleActionSheet.bind(this, 'episode', 'content_share', item)}
           dataTracking={dataTracking}
           isActive={query.content_id}
         />
@@ -639,7 +644,7 @@ class Index extends React.Component {
         onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
         bookmark={bookmark}
         isLogin={this.props.auth.isAuth}
-        onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
+        onShare={(item) => this.toggleActionSheet.bind(this, 'extra', 'content_share', item)}
         dataTracking={dataTracking}
         isActive={this.props.router &&  this.props.router.query.content_id}
       />
@@ -686,7 +691,7 @@ class Index extends React.Component {
         onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
         bookmark={bookmark}
         isLogin={this.props.auth.isAuth}
-        onShare={(title, item) => this.toggleActionSheet.bind(this, 'extra', title, 'content_share', item)}
+        onShare={(item) => this.toggleActionSheet.bind(this, 'extra', 'content_share', item)}
         dataTracking={dataTracking}
         isActive={this.props.router &&  this.props.router.query.content_id}
       />
@@ -837,9 +842,13 @@ class Index extends React.Component {
         videoIndexing["prev"] = i - 1 < 0 ? 0 : i - 1
         videoIndexing["current"] = i
         videoIndexing["next"] = i + 1 > queueingContents.length - 1 ? queueingContents.length - 1 : i + 1
+        videoIndexing["maxQueue"] = i + 1 > queueingContents.length - 1 ? queueingContents.length : videoIndexing["maxQueue"]
         return
       }
     })
+
+    console.log(videoIndexing, "uhuy")
+
 
     if (this.state.videoIndexing.current !== videoIndexing.current) {
       this.setState({ videoIndexing })
@@ -904,29 +913,19 @@ class Index extends React.Component {
       </div>
     );
   }
-  toggleActionSheet(value, title = 'title-program', trackingType, item) {
-    const { props, state } = this;
+  toggleActionSheet(value, trackingType, item = {}) {
     this.setState({
       action_sheet: !this.state.action_sheet,
-    });
-    if (value === 'program') {
-      this.setState({title: props.data && props.data['tracking-program'] && props.data['tracking-program'].data && props.data['tracking-program'].data.title, statusProgram: true});
-    }
-    if (value === 'episode') {
-      this.setState({title: title, statusProgram: false});
-    }
-    if (value === 'extra') {
-      this.setState({title: title, statusProgram: false});
-    }
-    if (value === 'clip') {
-      this.setState({title: title, statusProgram: false});
-    }
+      statusProgram: value === "program" ? true : false,
+      share_link: item.share_link || `${BASE_URL}${this.props.router.asPath}`,
+      title: item.title || "title-program"
+    })
+
     if (!this.state.action_sheet) {
       if (this.props.server['program-detail']) {
         onTrackingClick(this.reference, this.props.router.query.id, this.props.server['program-detail'], trackingType, item, value);
       }
     }
-
     return 'title-program';
   }
   toggleRateModal(test = '') {
@@ -934,11 +933,11 @@ class Index extends React.Component {
   }
 
   renderVisionPlusComponent() {
-    const programDetail = this.props.data.programDetail
+    const programDetail = this.props.data.programDetail.data
     const programEpisode = this.props.data["program-episode"]
 
     if (!programDetail || !programEpisode) return null
-    if (!programDetail.data.show_vision_plus_disclaimer) return null
+    if (!programDetail.show_vision_plus_disclaimer) return null
     if (this.state.toggle.toLowerCase() !== "episodes") return null
 
     const { pagination } = programEpisode[`season-${this.props.data.seasonSelected}`].meta
@@ -975,39 +974,50 @@ class Index extends React.Component {
             }
 
             <div className="action__button--wrapper">
-                <ActionMenu
-                  onRate={this.toggleRateModal.bind(this)}
-                  bookmark={props.data && props.data.bookmark}
-                  like={props.data && props.data.like}
-                  onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
-                  isLogin={this.props.auth.isAuth}
-                  data={ props.server && props.server['program-detail'] && props.server['program-detail'].data }
-                  onBookmarkAdd={(id, type) => { this.props.dispatch(postBookmark(id,type, 'bookmark')); }}
-                  onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
-                  dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
-                  />
-              <ButtonPrimary className="button-20" icon={ <ShareIcon/> } text="Share" onclick={this.toggleActionSheet.bind(this, 'program', null, 'program_share')}/>
+              <ActionMenu
+                onRate={this.toggleRateModal.bind(this)}
+                bookmark={props.data && props.data.bookmark}
+                like={props.data && props.data.like}
+                onLike={(status, filter, type) => this.props.dispatch(postLike(props.router.query.id,type,filter,status))}
+                isLogin={this.props.auth.isAuth}
+                data={ props.server && props.server['program-detail'] && props.server['program-detail'].data }
+                onBookmarkAdd={(id, type) => { this.props.dispatch(postBookmark(id,type, 'bookmark')); }}
+                onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
+                dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
+                />
+              <ButtonPrimary 
+                className="button-20" 
+                icon={ <ShareIcon/> } 
+                text="Share" 
+                onclick={this.toggleActionSheet.bind(this, 'program', 'program_share', props.data.programDetail.data)}/>
               { this.props.router.query.content_id ? (
-                <>
-                  <ButtonPrimary className="button-20" icon={ <GetApp/> } text="Download" onclick={() => alertDownload()} />
-                  <ButtonPrimary className="button-20"
-                  onclick={()=> this.setState({transform: this.state.transform === 'rotate(0deg)' ? 'rotate(180deg)' : 'rotate(0deg)', isOpen: this.state.transform === 'rotate(0deg)' ? true : false}, () => {
-                    if(this.state.isOpen) {
-                      onTrackingClick(null, null, null, 'content_click', null, null, null, props && props.data && props.data['data-player'] && props.data['data-player'].data, 'mweb_homepage_program_description_clicked')
-                    }
-                  })}
-                  icon={ <KeyboardArrowDown className="arrow-rotate" style={{ transform: this.state.transform }}/> }
-                  text="Description"
-                  />
-                </>) : '' }
-                {!(props.router.query.content_id) && (props?.data?.paid_video?.data?.is_paid) ? 
-                (
-                  <span style={{ width: '100% !important', textAlign: 'right', display: 'inline-block' }}>
-                    <div style={{fontSize: 10}}>Expired in <strong>{ props?.data?.paid_video?.data?.order_detail?.expired_in }</strong></div>
-                    <div style={{fontSize: 10}}>(counted after first watch)</div>
-                  </span>
-                ) : ''}
-              </div>
+                  <>
+                    <ButtonPrimary 
+                      className="button-20" 
+                      icon={ <GetApp/> } 
+                      text="Download" 
+                      onclick={() => alertDownload()} />
+                    <ButtonPrimary 
+                      className="button-20"
+                      onclick={()=> this.setState({transform: this.state.transform === 'rotate(0deg)' ? 'rotate(180deg)' : 'rotate(0deg)', isOpen: this.state.transform === 'rotate(0deg)' ? true : false}, () => {
+                        if(this.state.isOpen) {
+                          onTrackingClick(null, null, null, 'content_click', null, null, null, props && props.data && props.data['data-player'] && props.data['data-player'].data, 'mweb_homepage_program_description_clicked')
+                        }
+                      })}
+                      icon={ <KeyboardArrowDown className="arrow-rotate" style={{ transform: this.state.transform }}/> }
+                      text="Description"/>
+                  </>
+                ) : ''
+              }
+              {!(props.router.query.content_id) && (props?.data?.paid_video?.data?.is_paid) ? 
+              (
+                <span style={{ width: '100% !important', textAlign: 'right', display: 'inline-block' }}>
+                  <div style={{fontSize: 10}}>Expired in <strong>{ props?.data?.paid_video?.data?.order_detail?.expired_in }</strong></div>
+                  <div style={{fontSize: 10}}>(counted after first watch)</div>
+                </span>
+              ) : ''}
+            </div>
+
               <Collapse isOpen={this.state.isOpen}>
                 <div className="detail__content-description-wrapper">
                   <div className="content-description">
@@ -1063,7 +1073,7 @@ class Index extends React.Component {
                         props.router.pathname
                         }
               caption={state.title}
-              url={BASE_URL + props.router.asPath}
+              url={state.share_link}
               open={state.action_sheet}
               hashtags={props.data && props.data['tracking-program'] && props.data['tracking-program'].data && props.data['tracking-program'].data.tag}
                />

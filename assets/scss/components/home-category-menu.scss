@@ -62,11 +62,13 @@
                 font-stretch: normal;
                 font-style: normal;
                 line-height: 14px;
-                // letter-spacing: 0.29px;
                 text-align: center;
                 color: #FFFFFF;
                 margin-top: 10px;
                 text-transform: capitalize;
+                width: 54px;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
 

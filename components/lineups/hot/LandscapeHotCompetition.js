@@ -84,7 +84,7 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
             width={192}
             onReachEnd={setShow}
           >
-            {hastags?.data.map((item, index) => {
+            {hastags?.data?.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
                   <div className="hot-competitions">

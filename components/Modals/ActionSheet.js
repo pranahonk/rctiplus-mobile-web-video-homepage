@@ -15,11 +15,6 @@ import '../../assets/scss/components/modal.scss';
 import '../../assets/scss/components/action-sheet.scss';
 
 class ActionSheet extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
     copyToClipboard() {
         const url = document.getElementById('url-copy');
         url.type = 'text';
@@ -135,6 +130,7 @@ class ActionSheet extends React.Component {
         }
         // const urlShare = SHARE_BASE_URL + `${this.props.url}`;
         const urlShare = this.props.url;
+        console.log(urlShare, "uhuyyy")
 
         return (
             <Modal className="modal-edit" isOpen={this.props.open} toggle={this.props.toggle}>
@@ -146,7 +142,10 @@ class ActionSheet extends React.Component {
                     </p>
                     <div className="sheet-action-button-container-share">
                         <div className="sheet-action-button-share">
-                            <FacebookShareButton hashtag={hashtag.map(h => '#' + h).join(' ')} quote={this.props.caption + ' ' + urlShare + this.shareUtm('fb', this.props.caption)} url={urlShare + this.shareUtm.bind(this,'fb', this.props.caption)}>
+                            <FacebookShareButton 
+                                hashtag={hashtag.map(h => '#' + h).join(' ')} 
+                                quote={this.props.caption + ' ' + urlShare + this.shareUtm('fb', this.props.caption)} 
+                                url={urlShare + this.shareUtm.bind(this,'fb', this.props.caption)}>
                                 <i className="fab fa-facebook-f"></i>
                             </FacebookShareButton>
                         </div>

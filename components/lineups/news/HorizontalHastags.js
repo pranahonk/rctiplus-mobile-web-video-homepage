@@ -28,7 +28,6 @@ const HorizontalHastags = ({title, indexTag, id}) => {
   useEffect(() => {
     client.query({query: GET_HASTAGS(1, 100, 1, 5)})
       .then((res)=>{
-        console.log(res);
         setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
       })
       .catch((err)=>{

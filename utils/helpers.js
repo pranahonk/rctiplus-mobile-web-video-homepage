@@ -289,3 +289,16 @@ export const userAgents = {
 export const getUserAgent = () => {
     return /android|windows/ig.test(navigator.userAgent) ? userAgents.ANDROID : userAgents.IOS
 }
+
+export function parseDateObject(dateObject) {
+    const days = [ "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu" ]
+    const months = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ]
+    const date = new Date(dateObject).getDate()
+
+    return {
+        year: new Date(dateObject).getFullYear(),
+        month: months[new Date(dateObject).getMonth()],
+        date: (date < 10 ? `0${date}` : date),
+        day: days[new Date(dateObject).getDay()]
+    }
+}
