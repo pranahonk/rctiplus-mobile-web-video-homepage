@@ -146,8 +146,8 @@
 }
 
 .modal-comingsoon {
-    height: 100vh;
-    bottom: 0;
+    height: calc(100vh - 60px);
+    bottom: 60px;
     position: fixed;
     z-index: 1030;
     width: 100vw;

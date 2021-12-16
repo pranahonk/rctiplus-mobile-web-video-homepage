@@ -230,28 +230,28 @@ class Index_v2 extends React.Component {
                             title={lineup.title}
                             imagePath={meta.image_path} />
                     )
-              case 'tag':
-                return (
-                  <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-                )
+                case 'tag':
+                    return (
+                        <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                    )
 
-           case 'landscape_news':
-             return (
-               <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-             )
-           case "square_list_news":
-             return (
-               <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-             )
-           case "landscape_hot_competition":
-             return(
-               <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-             )
-           case "portrait_hot":
-             return(
-               <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-             )
-         }
+                case 'landscape_news':
+                    return (
+                        <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                    )
+                case "square_list_news":
+                    return (
+                        <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                    )
+                case "landscape_hot_competition":
+                    return(
+                        <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                    )
+                case "portrait_hot":
+                    return(
+                        <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                    )
+            }
         })
     }
 
@@ -303,9 +303,7 @@ class Index_v2 extends React.Component {
                                 <GridMenu />
                             </Carousel>
 
-                            <div style={{marginTop: "25px"}}>
-                                <Stories loadingBar={this.LoadingBar} homepage={true}/>
-                            </div>
+                            <Stories />
 
                             <StickyContainer>
                                 <Sticky disableHardwareAcceleration>
