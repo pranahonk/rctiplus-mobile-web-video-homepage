@@ -7,13 +7,13 @@ export default function HastagLoader({withList}) {
       <SkeletonTheme color="#393939" highlightColor="#282828">
         <div style={{ display: 'flex' }}>
           <div>
-              <Skeleton width={192} height={154}/>
+              <Skeleton width={192} height={217}/>
           </div>
           <div style={{ padding: '0 0 0 10px'}}>
-            <Skeleton width={192} height={154}/>
+            <Skeleton width={192} height={217}/>
           </div>
           <div style={{ padding: '0 0 0 10px'}}>
-            <Skeleton width={192} height={154}/>
+            <Skeleton width={192} height={217}/>
           </div>
         </div>
       </SkeletonTheme>
