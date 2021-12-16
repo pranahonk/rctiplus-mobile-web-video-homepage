@@ -128,6 +128,33 @@ export const GET_SUB_CATEGORY_LIST = (categoryId = 0) => {
   `
 }
 
+export const GET_HOME_STORIES = (page = 1, page_size = 10, category_id = 0) => {
+  return gql`
+    query {
+      stories {
+        data {
+          identifier
+          program_id
+          program_img
+          title
+          story {
+            id
+            permalink
+            story_img
+            link_video
+          }
+        }
+        meta {
+          image_path
+          pagination {
+            current_page
+            total_page
+          }
+        }
+      }
+    }
+  `
+}
 const contentTypeProgramFragment = `
 ... on ContentTypeProgram {
   detail {
