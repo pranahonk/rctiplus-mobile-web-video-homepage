@@ -107,6 +107,22 @@ and open the template in the editor.
         justify-content: center;
         align-items: center;
     }
+
+    .stories-cta {
+        position: absolute;
+        bottom: 40px;
+        width: 100%;
+        text-align: center;
+
+        & > a {
+            color: white;
+            border: 1px solid;
+            border-radius: 10px;
+            padding: 5px 10px;
+            background: #00000080;
+            box-shadow: 0 0 0.5rem 0.2rem #00000080;
+        }
+    }
 }
 
 .modalview-wrapper {

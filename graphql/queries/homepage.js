@@ -48,6 +48,7 @@ export const GET_HOME_STORIES = (page = 1, page_size = 10, category_id = 0) => {
           program_img
           title
           story {
+            id
             permalink
             story_img
             link_video
