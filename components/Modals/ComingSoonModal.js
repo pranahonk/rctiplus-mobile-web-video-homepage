@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react"
-import dynamic from "next/dynamic"
 
 import { parseDateObject } from "../../utils/helpers"
+import CountdownTimer from "../../components/Includes/Common/CountdownTimer"
 
 import "../../assets/scss/components/modal.scss"
-
-const CountdownTimer = dynamic(() => import("../../components/Includes/Common/CountdownTimer"))
 
 export default function comingSoonModal(props) {
   let swipe = {}
@@ -36,10 +34,12 @@ export default function comingSoonModal(props) {
     const touch = e.changedTouches[0]
     const distance = touch.clientY - swipe.y
     
-    if (distance > 100) {
-      props.onClose()
-      document.body.style.overflow = "unset"
-    }
+    if (distance > 100) destroyModal()
+  }
+
+  const destroyModal = _ => {
+    props.onClose()
+    document.body.style.overflow = "unset"
   }
 
   const renderDateDetail = () => {
@@ -58,7 +58,9 @@ export default function comingSoonModal(props) {
       id="modal-comingsoon" 
       className="modal-comingsoon">
       <div>
-        <div onClick={_ => props.onClose()}></div>
+        <div 
+          id="destroy-modal-area" 
+          onClick={_ => destroyModal()}></div>
         <div ref={ref}>
           <div 
             id="close-bar" 
