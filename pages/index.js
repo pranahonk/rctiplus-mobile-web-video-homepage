@@ -6,7 +6,6 @@ import LoadingBar from 'react-top-loading-bar';
 import { StickyContainer, Sticky } from 'react-sticky';
 import dynamic from "next/dynamic"
 
-
 import contentActions from '../redux/actions/contentActions';
 import pageActions from '../redux/actions/pageActions';
 import adsActions from '../redux/actions/adsActions';
@@ -23,19 +22,28 @@ import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
 
-const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
-const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
-const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
-
 // NEW RPLUS LINEUP CONTENTS
-const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/Square"))
-const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
+const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
+const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
+const VideoLandscapeLgWsView = dynamic(() => import("../components/lineups/LandscapeLgWs"))
+const VideoLandscape219View = dynamic(() => import("../components/lineups/Landscape219"))
+const VideoLandscapeLgView = dynamic(() => import("../components/lineups/LandscapeLg"))
+const VideoLandscapeMiniLiveView = dynamic(() => import("../components/lineups/LandscapeMiniLive"))
+const VideoPortraitView = dynamic(() => import("../components/lineups/Portrait"))
+const VideoSquareMiniView = dynamic(() => import("../components/lineups/SquareMini"))
+const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
+const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
+const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
+const LandscapeHotCompetition = dynamic(() => import("../components/lineups/hot/LandscapeHotCompetition"));
+const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/news/HorizontalMutipleLandscape"));
+const LandscapeHotVideo = dynamic(() => import("../components/lineups/hot/LandscapeHotVideo"));
+const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"))
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -43,18 +51,18 @@ class Index_v2 extends React.Component {
     }
 
     state = {
-        contents: [],
-        fetchAllowed: true,
-        meta: null,
-        resolution: 320,
-        is_loading: false,
+        lineups: [],
+        meta: {},
         length: 10,
         show_sticky_install: false,
         sticky_ads_closed: false,
         isShimmer: true,
-        token: ""
+        token: "",
+        openComingSoonModal: false,
+        contentComingSoonModal: {}
     }
 
+    LoadingBar = null
     swipe = {}
 
     onTouchStart(e) {
@@ -93,13 +101,13 @@ class Index_v2 extends React.Component {
 
     getHomePageLineups(page, pageSize) {
         this.LoadingBar.continuousStart();
-        client.query({
-            query: GET_LINEUPS(page, pageSize)
-        })
+        client.query({ query: GET_LINEUPS(page, pageSize) })
             .then(({ data }) => {
-                this.props.setHomepageLineups({
-                    data: data.lineups.data,
+                this.setState({
+                    lineups: this.state.lineups.concat(data.lineups.data),
                     meta: data.lineups.meta
+                }, _ => {
+                    return
                 })
             })
             .finally(_ => {
@@ -109,10 +117,10 @@ class Index_v2 extends React.Component {
     }
 
     bottomScrollFetch() {
-        const { pagination } = this.props.contents.meta
+        const { pagination } = this.state.meta
         if (pagination.total_page === pagination.current_page) return
 
-        this.getHomePageLineups(pagination.current_page + 1, this.state.length)
+        this.getHomePageLineups(pagination.current_page + 1, this.state.length);
     }
 
     closeStickyInstall(self) {
@@ -120,28 +128,134 @@ class Index_v2 extends React.Component {
         self.setState({ show_sticky_install: false });
     }
 
+    setComingSoonModalState(open, content) {
+        this.setState({
+            openComingSoonModal: open,
+            contentComingSoonModal: content
+        })
+    }
+
     renderLineup(lineups, meta) {
-       return lineups.map((lineup) => {
+        return lineups.map((lineup, index) => {
             switch(lineup.display_type) {
-              case "horizontal" :
-                return (
-                  <VideoSquareView
-                    token={this.state.token}
-                    loadingBar={this.LoadingBar}
-                    key={lineup.id}
-                    contentId={lineup.id}
-                    title={lineup.title}
-                    content={lineup.lineup_type_detail.detail.data}
-                    imagePath={meta.image_path} />
-                )
+                case "portrait" :
+                    return (
+                        <VideoPortraitView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_large_ws" :
+                    return (
+                        <VideoLandscapeLgWsView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_large" :
+                    return (
+                        <VideoLandscapeLgView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_219" :
+                    return (
+                        <VideoLandscape219View
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_mini_wt" :
+                    return (
+                        <VideoLandscapeMiniWtView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_mini" :
+                    return (
+                        <VideoLandscapeMiniView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "square_mini" :
+                    return (
+                        <VideoSquareMiniView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "square" :
+                    return (
+                        <VideoSquareView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_mini_live" :
+                    return (
+                        <VideoLandscapeMiniLiveView
+                            token={this.state.token}
+                            key={lineup.id}
+                            loadingBar={this.LoadingBar}
+                            contentId={lineup.id}
+                            showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case 'tag':
+                    return (
+                        <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                    )
+
+                case 'landscape_news':
+                    return (
+                        <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                    )
+                case "square_list_news":
+                    return (
+                        <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                    )
+                case "landscape_hot_competition":
+                    return(
+                        <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                    )
+                case "portrait_hot":
+                    return(
+                        <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+                    )
             }
         })
     }
 
     render() {
-        const lineupContents = this.props.contents.homepage_content
-        const lineupMeta = this.props.contents.meta
-
         return (
             <Layout title={SITEMAP.home.title}>
                 <Head>
@@ -226,16 +340,17 @@ class Index_v2 extends React.Component {
                                     } }
                                 </Sticky>
                             </StickyContainer>
-                            {/*
-                                --------------------------------- LINE UP CONTENTS ---------------------------------
-                                ------------------------------- SUBJECTED TO CHANGES -------------------------------
-                            */}
+
                             <div
                                 style={{marginBottom: 45, paddingTop: 10}}
                                 onTouchStart={this.onTouchStart.bind(this)}
                                 onTouchEnd={this.onTouchEnd.bind(this)}>
-                                { this.renderLineup(lineupContents, lineupMeta) }
+                                { this.renderLineup(this.state.lineups, this.state.meta) }
                             </div>
+                            <ComingSoonModal
+                                open={this.state.openComingSoonModal}
+                                onClose={_ => this.setState({ openComingSoonModal: false })}
+                                content={this.state.contentComingSoonModal} />
                         </div>
                     )
                 }
