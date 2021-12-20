@@ -25,7 +25,7 @@ function categoryMenu (props) {
                 setCategories(contents.data)
                 setMeta(contents.meta)
             })
-            .catch(e => {})
+            .catch(_ => {})
     }, [ categoryId ])
 
     useEffect(() => {
