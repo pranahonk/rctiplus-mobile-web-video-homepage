@@ -27,7 +27,7 @@ function storyModal(props) {
   const swipe = {
     clientX: 0
   }
-  
+
   useEffect(() => {
     if (props.story.story) setActiveProgressbar()
   }, [
@@ -40,6 +40,7 @@ function storyModal(props) {
   const setActiveProgressbar = () => {
     if (!progressBarWrapper.current) return
     if (activeIndex > props.story.story.length - 1) return
+    document.getElementById("nav-footer-v2").style.display = "none"
     
     mountJwplayer()
     
@@ -132,15 +133,21 @@ function storyModal(props) {
     })
     progressBars[activeIndex].children[0].style.animation = "unset"
     setPlayer(jwplayer)
+    pauseProgressBar(progressBars)
     
     jwplayer.on("play", _ => {
       const duration = jwplayer.getDuration()
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${duration}s`
+      runProgressBar(progressBars)
     })
 
     jwplayer.on("error", _ => {
       progressBars[activeIndex].children[0].style.animation = "unset"
       removeModalPlayer()
+    })
+
+    jwplayer.on("buffer", _ => {
+      pauseProgressBar(progressBars)
     })
   }
 
@@ -188,7 +195,9 @@ function storyModal(props) {
     
     if (!isForward) {
       progressBars[activeIndex].classList.remove("active")
-      if (activeIndex - 1 >= 0) props.story.story[activeIndex - 1].seen = false
+      if (activeIndex - 1 >= 0 && props.story.story[activeIndex - 1].seen) {
+        props.story.story[activeIndex - 1].seen = false
+      }
     }
     
     if (targetIndex < 0) {
@@ -234,6 +243,17 @@ function storyModal(props) {
               </div>
             )
           })}
+        </div>
+
+        <div className="story-title">
+          <img
+            src={`${props.story.image_path}${RESOLUTION_IMG}${props.story.program_img}`}
+            alt="story-avatar"
+            width="50"
+            height="50" />
+          <label>
+            { props.story.story[activeIndex].title }
+          </label>
         </div>
 
         <button
