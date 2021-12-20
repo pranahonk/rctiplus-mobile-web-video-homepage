@@ -264,6 +264,7 @@ const contentTypeLiveEventFragment = `
       live_at
       start_date
       landscape_image
+      event_type
       permalink
     }
     status {
