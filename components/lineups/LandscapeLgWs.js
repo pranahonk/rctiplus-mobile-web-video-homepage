@@ -32,10 +32,11 @@ function landscapeLgWs (props) {
 
   const renderDescription = (contentDetail) => {
     if (contentDetail.countdown === 0 || contentDetail.is_live) return null
-    const { year, month, date, day } = parseDateObject(contentDetail.start_ts * 1000)
+    const startTime = contentDetail.start_ts || contentDetail.live_at
+    const { year, month, date, day, time } = parseDateObject(startTime * 1000)
     return(
     <div>
-      <p className="desc-title">{`${day}, ${date} ${month} ${year} - ${contentDetail.start}`}</p>
+      <p className="desc-title">{`${day}, ${date} ${month} ${year} - ${time}`}</p>
       <CountDownTimer time={contentDetail.countdown} />
     </div>
     )
@@ -58,7 +59,7 @@ function landscapeLgWs (props) {
             {contents.map((content, i) => {
               return (
                 <div
-                  onClick={() => generateLink(content)}
+                  onClick={() => generateLink({ ...content, rootImageUrl })}
                   id={`${i}-landscapelgws-video`}
                   key={`${i}-landscapelgws-video`}
                   className="lineup-contents">

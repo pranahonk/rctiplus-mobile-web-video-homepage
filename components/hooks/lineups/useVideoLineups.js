@@ -67,26 +67,26 @@ export default function useVideoLineups(props) {
       url = `${location.origin}${url.split("rctiplus.com")[1]}`
     }
 
-    switch(content.content_type) {
-      case "live_epg": {
-        const started = content.content_type_detail.detail.data.is_live
-        
-        if (started) Router.push(url)
-        else if (props.showComingSoonModal) {
-          const contentDetail = content.content_type_detail.detail.data
-          props.showComingSoonModal(true, {
-            countdown: contentDetail.countdown,
-            start: contentDetail.start_ts,
-            title: contentDetail.title,
-            start_time: contentDetail.start
-          })
-        }
-        return
-      }
-      default:
-        Router.push(url)
-    }
+    if (content.content_type.includes("live")) {
+      const started = content.content_type_detail.detail.data.countdown === 0
 
+      if (started) Router.push(url)
+      else if (props.showComingSoonModal) {
+        const contentDetail = content.content_type_detail.detail.data
+        const image = contentDetail.landscape_image 
+          ? `${content.rootImageUrl}${contentDetail.landscape_image}` 
+          : "../static/placeholders/placeholder_landscape.png"
+  
+        props.showComingSoonModal(true, {
+          countdown: contentDetail.countdown,
+          start: contentDetail.start_ts || contentDetail.live_at,
+          title: contentDetail.title,
+          start_time: contentDetail.start,
+          image
+        })
+      }
+    }
+    else Router.push(url)
 	}
 
   return {

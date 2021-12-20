@@ -43,13 +43,9 @@ export default function comingSoonModal(props) {
   }
 
   const renderDateDetail = () => {
-    const { year, month, date, day } = parseDateObject(props.content.start * 1000)
-    return `${day}, ${date} ${month} ${year} - ${props.content.start_time}`
+    const { year, month, date, day, time } = parseDateObject(props.content.start * 1000)
+    return `${day}, ${date} ${month} ${year} - ${time}`
   }
-
-  const imageSrc = Boolean(props.content.landscape_image) 
-    ? props.content.landscape_image 
-    : "../static/placeholders/placeholder_landscape.png"
 
   if (!open) return null
 
@@ -72,7 +68,7 @@ export default function comingSoonModal(props) {
           </div>
           <img
             className="img-comingsoon"
-            src={imageSrc} 
+            src={ props.content.image } 
             alt="modal coming soon"
             width="328"
             height="185" />

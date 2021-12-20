@@ -24,12 +24,13 @@ function landscapeMiniLiveView (props) {
 
   const renderDescription = (contentDetail) => {
     const isLive = (contentDetail.countdown === 0 || contentDetail.is_live)
-    const { year, month, date, day } = parseDateObject(contentDetail.start_ts * 1000)
+    const startTime = contentDetail.start_ts || contentDetail.live_at
+    const { year, month, date, day, time } = parseDateObject(startTime * 1000)
 
     let component = (
       <p className="desc-text">
         <strong>{day}</strong> 
-        {` • ${date} ${month} ${year} - ${contentDetail.start}`}
+        {` • ${date} ${month} ${year} - ${time}`}
       </p>
     )
     let liveBadge = <span className="live-badge"></span>
@@ -67,7 +68,7 @@ function landscapeMiniLiveView (props) {
             {contents.map((content, i) => {
               return (
                 <div
-                  onClick={() => generateLink(content)}
+                  onClick={() => generateLink({ ...content, rootImageUrl })}
                   key={`${i}-landscapeminilive-video`}
                   id={`${i}-landscapeminilive-video`}
                   className="lineup-contents">
