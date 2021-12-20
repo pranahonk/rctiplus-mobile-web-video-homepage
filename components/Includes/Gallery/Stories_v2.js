@@ -39,6 +39,7 @@ function homeStories (props) {
     const onSwipe = (direction, seenStory) => {
         if ((storyIndex - 1) < 0 && direction === "left") {
             openStory({}, 0)
+            document.getElementById("nav-footer-v2").style.display = ""
         }
         else if (direction === "left") {
             openStory(stories[storyIndex - 1], storyIndex - 1)
@@ -46,6 +47,7 @@ function homeStories (props) {
 
         if ((storyIndex + 1) > (stories.length - 1) && direction === "right") {
             openStory({}, 0)
+            document.getElementById("nav-footer-v2").style.display = ""
         }
         else if (direction === "right") {
             setStories(stories.map(story => {
@@ -54,6 +56,11 @@ function homeStories (props) {
             }))
             openStory(stories[storyIndex + 1], storyIndex + 1)
         }
+    }
+
+    const onClose = _ => {
+        setActiveStory({})
+        document.getElementById("nav-footer-v2").style.display = ""
     }
 
     if (stories.length === 0) return null
@@ -82,7 +89,7 @@ function homeStories (props) {
             <StoryModal 
                 story={activeStory}
                 onSwipe={(dir, story) => onSwipe(dir, story)}
-                onClose={_ => setActiveStory({})} />
+                onClose={_ => onClose()} />
         </>
     )
 }
