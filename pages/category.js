@@ -3,11 +3,13 @@ import { withRouter } from 'next/router';
 import { useSelector } from "react-redux"
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
+
 import { StickyContainer, Sticky } from 'react-sticky';
 import dynamic from "next/dynamic"
 
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import Layout from '../components/Layouts/Default_v2';
+
 import Header from "../components/Includes/HomeCategory/DetailCategory/Header"
 import Carousel from '../components/Includes/Gallery/Carousel_v2';
 import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
@@ -79,6 +81,96 @@ function Category (props) {
                             lineupId={lineup.id}
                             key={lineup.id} />
                     )
+                case "portrait" :
+                    return (
+                        <VideoPortraitView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_large_ws" :
+                    return (
+                        <VideoLandscapeLgWsView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_large" :
+                    return (
+                        <VideoLandscapeLgView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_219" :
+                    return (
+                        <VideoLandscape219View
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_mini_wt" :
+                    return (
+                        <VideoLandscapeMiniWtView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_mini" :
+                    return (
+                        <VideoLandscapeMiniView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "square_mini" :
+                    return (
+                        <VideoSquareMiniView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "square" :
+                    return (
+                        <VideoSquareView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
+                case "landscape_mini_live" :
+                    return (
+                        <VideoLandscapeMiniLiveView
+                            token={token}
+                            key={lineup.id}
+                            loadingBar={loadingBar}
+                            contentId={lineup.id}
+                            title={lineup.title}
+                            imagePath={meta.image_path} />
+                    )
             }
         })
     }
@@ -95,14 +187,14 @@ function Category (props) {
                 offset={150} 
                 onBottom={bottomScrollFetch} />
 
-            {isShimmer 
+            { isShimmer 
                 ? <HomeLoader /> 
                 : (
                     <div style={{marginTop: "56px"}}>
                         <Header title={props.router.query.category_title} />
                         
                         <div style={{marginTop: -3}}>
-                            <Carousel >
+                            <Carousel detailCategory={true}>
                                 <GridMenu />
                             </Carousel>
                         </div>
