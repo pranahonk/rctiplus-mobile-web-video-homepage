@@ -103,11 +103,13 @@ class Index_v2 extends React.Component {
         this.LoadingBar.continuousStart();
         client.query({ query: GET_LINEUPS(page, pageSize) })
             .then(({ data }) => {
+                const mappedContents = new Map()
+                this.state.lineups.concat(data.lineups.data).forEach(content => {
+                    mappedContents.set(content.id, content)
+                })
                 this.setState({
-                    lineups: this.state.lineups.concat(data.lineups.data),
+                    lineups: [ ...mappedContents.values() ],
                     meta: data.lineups.meta
-                }, _ => {
-                    return
                 })
             })
             .finally(_ => {
