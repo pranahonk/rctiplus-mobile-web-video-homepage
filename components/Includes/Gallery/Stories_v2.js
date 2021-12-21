@@ -161,14 +161,14 @@ class Stories extends React.Component {
 
         }
         
-        if(this.props.homepage){
+        if(this.props.homepage){ 
             this.setState({
                 zuckJS: require('../../../assets/js/zuck')
             }, () => {
                 this.props.getStories(this.state.page, this.state.length)
                 .then(() => {
                     const timelines = [];
-
+                    console.log(`ini data story homepage`, this.props.stories.data)
                     const stories = this.props.stories.data;
                     for (const story of stories) {
                         timelines.push(this.buildTimeline(story));
@@ -284,9 +284,7 @@ class Stories extends React.Component {
                     console.log(error);
                 });
             });
-        }
-
-        
+        } 
     }
 
     componentWillUnmount() {
@@ -595,7 +593,6 @@ class Stories extends React.Component {
 
                         for (let i = 0; i < this.state.stories.length; i++) {
                             const story = {...this.state.stories[i]};
-                            console.log(`ini data story`, story)
                             if (story.name.includes('ads')) {
                                 const [str, storyParentId] = story.name.split('_');
                                 if (this.state.stories[storyParentId].seen) {
@@ -621,7 +618,6 @@ class Stories extends React.Component {
                         this.props.loadingBar && this.props.loadingBar.complete();
                     });
                 } else if (this.props.detailCategory) {
-                    console.log(`ini dariii category`, this.props.detailCategory)
                     this.props.getStoriesCategory(page, this.state.length, this.props.id)
                     .then(() => {
                         const buildedStories = [];
@@ -670,7 +666,6 @@ class Stories extends React.Component {
     }
 
     render() {
-      
         const timelineItems = []
         this.state.stories.forEach((story, storyId) => {
             const storyItems = [];
@@ -709,7 +704,7 @@ class Stories extends React.Component {
         });
 
         return (
-            <div style={{paddingTop: 35}} >
+            <div style={{paddingTop: 35} } >
                 <Head>
                     <script src="/static/js/dash.js"></script>
                     <link rel="stylesheet" href="static/css/zuck.css?v=2" />
@@ -722,6 +717,7 @@ class Stories extends React.Component {
                         </div>
                     )}
                 </BottomScrollListener> */}
+                
                 <div style={{paddingLeft: "14px"}} ref={node => this.storiesElement = node} id="stories-react" className="storiesWrapper">
                     {timelineItems}
                 </div>
