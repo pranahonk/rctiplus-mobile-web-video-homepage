@@ -677,12 +677,8 @@ class Index extends React.Component {
     const { query } = this.props.router
     const programDetail = this.props.server['program-detail']
 
-<<<<<<< HEAD
-    if (((programClip.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
-=======
     if (programClip == null || ((programClip.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
 
->>>>>>> release-candidate
 
     const pagination = {
       ...programClip.meta.pagination,
@@ -1097,11 +1093,8 @@ class Index extends React.Component {
               </div>
               {this.renderVisionPlusComponent()}
 
-<<<<<<< HEAD
-=======
               {this.panelRecommendHOT(this.props?.data['recommend-hot'])}
 
->>>>>>> release-candidate
               {this.panelRelated(
                 this.props.data &&
                 this.props.data['program-related']
