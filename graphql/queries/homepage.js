@@ -1,6 +1,14 @@
 
 import { gql } from "@apollo/client"
 
+function getQueryParams(args) {
+  let output = []
+  for (const key in args) {
+    if (args[key] > 0) output.push(`${key}: ${args[key]}`)
+  }
+  return output.join(", ")
+}
+
 export const GET_BANNERS = gql`
   query {
     banners {
@@ -13,10 +21,12 @@ export const GET_BANNERS = gql`
   }
 `
 
-export const GET_LINEUPS = (page = 1, pageSize = 10) => {
+export const GET_LINEUPS = (page = 1, page_size = 10) => {
+  const queryParams = getQueryParams({ page, page_size })
+
   return gql`
     query {
-      lineups(page: ${page}, page_size: ${pageSize}) {
+      lineups(${queryParams}) {
         data {
             id
             lineup_type
@@ -39,9 +49,11 @@ export const GET_LINEUPS = (page = 1, pageSize = 10) => {
 }
 
 export const GET_LINEUP_STORIES = (page = 1, page_size = 7, lineup_id = 0) => {
+  const queryParams = getQueryParams({ page, page_size, lineup_id })
+
   return gql`
     query {
-      lineup_stories(lineup_id: ${lineup_id}, page: ${page}, page_size: ${page_size}) {
+      lineup_stories(${queryParams}) {
         data {
           program_img
           program_id
@@ -67,9 +79,11 @@ export const GET_LINEUP_STORIES = (page = 1, page_size = 7, lineup_id = 0) => {
 }
 
 export const GET_HOME_STORIES = (page = 1, page_size = 10, category_id = 0) => {
+  const queryParams = getQueryParams({ page, page_size, category_id })
+
   return gql`
     query {
-      stories {
+      stories(${queryParams}) {
         data {
           program_img
           program_id

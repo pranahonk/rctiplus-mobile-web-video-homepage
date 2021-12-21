@@ -28,7 +28,7 @@ function lineupStory (props) {
                 setStories(stories)
                 setMeta(data.lineup_stories.meta)
             })
-            .catch(e => {})
+            .catch(_ => {})
     }, [])
 
     const openStory = (story, index) => {
@@ -67,36 +67,38 @@ function lineupStory (props) {
 
     return (
         <>
-            <div 
-                id="lineup-stories" 
-                className="stories-components">
-                { stories.map((story, i) => {
-                    return (
-                        <div 
-                            key={`${i}-story-lineup`} 
-                            className="lineupstory storywrapper">
+            <div id="lineup-stories" >
+                <h2>Test story</h2>
+
+                <div className="stories-components">
+                    { stories.map((story, i) => {
+                        return (
                             <div 
-                                id={`story-lineup-${i}`}
-                                onClick={_ => openStory(story, i)}>
-                                <img
-                                    width="48"
-                                    height="48"
-                                    src={`${meta.image_path}${RESOLUTION_IMG}${story.program_img}`}
-                                    alt={`story ${i}`} />
+                                key={`${i}-story-lineup`} 
+                                className="lineupstory storywrapper">
+                                <div 
+                                    id={`story-lineup-${i}`}
+                                    onClick={_ => openStory(story, i)}>
+                                    <img
+                                        width="48"
+                                        height="48"
+                                        src={`${meta.image_path}${RESOLUTION_IMG}${story.program_img}`}
+                                        alt={`story ${i}`} />
+                                </div>
+                                <label>{ story.title }</label>
+                                
+                                <div 
+                                    className="masked-storyimg"
+                                    style={{
+                                        backgroundImage: `url(${meta.image_path}${RESOLUTION_IMG}${story.program_img})`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "cover",
+                                    }}></div>
                             </div>
-                            <label>{ story.title }</label>
-                            
-                            <div 
-                                className="masked-storyimg"
-                                style={{
-                                    backgroundImage: `url(${meta.image_path}${RESOLUTION_IMG}${story.program_img})`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                    backgroundSize: "cover",
-                                }}></div>
-                        </div>
-                    )
-                }) }
+                        )
+                    }) }
+                </div>
             </div>
             
             <StoryModal 
