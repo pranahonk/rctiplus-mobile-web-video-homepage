@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
-import nextCookie from 'next-cookies' 
+import nextCookie from 'next-cookies'
 import { Picker } from 'emoji-mart';
 import Img from 'react-image';
 import TimeAgo from 'react-timeago';
@@ -81,6 +81,13 @@ class Tv extends React.Component {
 		const idEpg = ctx.query.epg_id;
 		let dataEpg = null;
 		let q = null;
+    let seoData = null;
+
+    const visitorToken = nextCookie(ctx)?.VISITOR_TOKEN
+    const userToken = nextCookie(ctx)?.ACCESS_TOKEN
+    let token = userToken?.VALUE || visitorToken?.VALUE || ''
+    console.log('SFAAFFSFF', idEpg)
+
 		if(idEpg) {
 			const findQueryString = ctx.asPath.split(/\?/);
 			if(findQueryString.length > 1) {
@@ -89,9 +96,7 @@ class Tv extends React.Component {
 					q = formatMonthEngToID(q.date)
 				}
 			}
-			const visitorToken = nextCookie(ctx)?.VISITOR_TOKEN
-			const userToken = nextCookie(ctx)?.ACCESS_TOKEN
-			let token = userToken?.VALUE || visitorToken?.VALUE || ''
+
 			if(!token) {
 				const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
 				if (response_visitor.statusCode === 200) {
@@ -112,7 +117,20 @@ class Tv extends React.Component {
 			const data_epg = await response_epg.json();
 			dataEpg = data_epg.status.code === 0 ? data_epg.data : null
 		}
-		return { context_data: ctx.query, data_epg: dataEpg, params_date: q };
+
+    const id_channel= SITEMAP[`live_tv_${ctx.query.channel?.toLowerCase()}`]?.id_channel;
+    const response_seo = await fetch(`${DEV_API}/api/v1/seo/content/live-stream/${id_channel}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': token,
+      }
+    });
+    const data_seo = await response_seo.json();
+    if (response_seo.status == 200) {
+      seoData = data_seo.status.code === 0 ? data_seo.data : null
+    }
+
+		return {  context_data: ctx.query, data_epg: dataEpg, params_date: q, data_seo: seoData, meta_seo: data_seo.meta};
 	}
 
 	constructor(props) {
@@ -335,13 +353,13 @@ class Tv extends React.Component {
 
 		const channelData = this.state.live_events[index]
 		const liveEventId = channelData.id || channelData.content_id
-		const selectedDate = this.props.params_date 
-			? formatDateWord(new Date(this.props.params_date)) 
+		const selectedDate = this.props.params_date
+			? formatDateWord(new Date(this.props.params_date))
 			: formatDateWord(new Date())
 
 		this.props.setCatchupDate(selectedDate)
 		this.props.setChannelCode(channelData.channel_code);
-			
+
 		setTimeout(() => {
 			if (this.state.chat_open) {
 				if (liveEventId) {
@@ -385,7 +403,7 @@ class Tv extends React.Component {
 				if (first === true && this.props.context_data.epg_id) {
 					this.selectCatchup(this.props.context_data.epg_id, 'url');
 				}
-				
+
 				this.props.setCatchupData(catchup)
 				this.setState({
 					data_player: liveEventUrl.data.data,
@@ -416,7 +434,7 @@ class Tv extends React.Component {
 
 	selectCatchup(id, ref = false) {
 		// this.props.setPageLoader();
-		
+
 		if (!ref) {
 			liveTvCatchupScheduleClicked(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, this.state.live_events[this.state.selected_index].name, 'mweb_livetv_catchup_schedule_clicked');
 		}
@@ -730,6 +748,7 @@ class Tv extends React.Component {
 			description: titleEpg ? `Nonton streaming ${titleEpg} - ${paramsDate}  online tanpa buffering dan acara favorit lainnya 7 hari kemarin. Dapatkan juga jadwal acara ${channel == 'inews' ? 'iNEWS' : channel?.toUpperCase()} terbaru hanya di RCTI+` : descriptionChannel,
 			keywords: titleEpg ? `streaming ${channel}, live streaming ${channel}, ${channel} live, ${channel} streaming, ${channel} live streaming. ${titleEpg}, ${paramsDate}` : keywordsChannel,
 			twitter_img_alt: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel == 'inews' ? 'iNEWS' : channel?.toUpperCase()} - RCTI+` : twitter_img_alt,
+      pathimage:`${this.props?.meta_seo?.image_path+`500`+this.props?.data_seo?.image}`,
 		}
 	}
 
@@ -751,7 +770,7 @@ class Tv extends React.Component {
 
     return {
       href: targetHref.join("&"), // actual target url
-      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser 
+      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser
     }
   }
 
@@ -774,17 +793,17 @@ class Tv extends React.Component {
 
 	getCurrentViewingVideoIndex() {
 		const catchup = this.state.catchup
-		
+
 		if (this.state.catchup.length === 0) return
 		if (!this.props.params_date) return
-		
+
 		const currentCatchupId = +this.props.router.query.epg_id
 		const indexes = {
 			...this.state.catchUpIndexing,
 			maxQueue: catchup.length
 		}
 		const catchUpIndexing = this.generateIndexing(catchup, indexes, currentCatchupId)
-		
+
     if (this.state.catchUpIndexing.current !== catchUpIndexing.current) {
       this.setState({ catchUpIndexing })
     }
@@ -893,12 +912,13 @@ class Tv extends React.Component {
 					<meta name="keywords" content={this._metaTags().keywords} />
 					<meta property="og:title" content={this._metaTags().title} />
 					<meta property="og:description" content={this._metaTags().description} />
-					<meta property="og:image" itemProp="image" content={this._metaTags().image} />
+					<meta property="og:image" itemProp="image" content={this._metaTags().pathimage} />
 					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
-					<meta property="og:type" content="article" />
+					<meta property="og:type" content="video.tv_show" />
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
 					<meta property="og:image:height" content="315" />
+          <meta property="og:image:alt" content={this._metaTags().twitter_img_alt} />
 					<meta property="og:site_name" content={SITE_NAME} />
 					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
