@@ -86,7 +86,6 @@ class Tv extends React.Component {
     const visitorToken = nextCookie(ctx)?.VISITOR_TOKEN
     const userToken = nextCookie(ctx)?.ACCESS_TOKEN
     let token = userToken?.VALUE || visitorToken?.VALUE || ''
-    console.log('SFAAFFSFF', idEpg)
 
 		if(idEpg) {
 			const findQueryString = ctx.asPath.split(/\?/);
