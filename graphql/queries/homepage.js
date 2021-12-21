@@ -38,14 +38,41 @@ export const GET_LINEUPS = (page = 1, pageSize = 10) => {
   `
 }
 
+export const GET_LINEUP_STORIES = (page = 1, page_size = 7, lineup_id = 0) => {
+  return gql`
+    query {
+      lineup_stories(lineup_id: ${lineup_id}, page: ${page}, page_size: ${page_size}) {
+        data {
+          program_img
+          program_id
+          title
+          story {
+            id
+            permalink
+            story_img
+            link_video
+            title
+          }
+        }
+        meta {
+          pagination {
+            current_page
+            total_page
+          }
+          image_path
+        }
+      }
+    }
+  `
+}
+
 export const GET_HOME_STORIES = (page = 1, page_size = 10, category_id = 0) => {
   return gql`
     query {
       stories {
         data {
-          identifier
-          program_id
           program_img
+          program_id
           title
           story {
             id

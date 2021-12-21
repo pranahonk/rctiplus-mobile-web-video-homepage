@@ -2,31 +2,31 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import dynamic from 'next/dynamic'
 
-import storiesActions from '../../../redux/actions/storiesActions'
-import { RESOLUTION_IMG } from '../../../config'
-import { client } from "../../../graphql/client"
-import { GET_HOME_STORIES } from "../../../graphql/queries/homepage"
+import storiesActions from '../../redux/actions/storiesActions'
+import { RESOLUTION_IMG } from '../../config'
+import { client } from "../../graphql/client"
+import { GET_LINEUP_STORIES } from "../../graphql/queries/homepage"
 
-const StoryModal = dynamic(() => import("../../Modals/StoryModal"))
+const StoryModal = dynamic(() => import("../Modals/StoryModal"))
 
-import '../../../assets/scss/components/stories.scss'
+import '../../assets/scss/components/stories.scss'
 
-function homeStories (props) {
+function lineupStory (props) {
     const [ stories,setStories ] = useState([])
     const [ meta, setMeta ] = useState({})
     const [ activeStory, setActiveStory ] = useState({})
     const [ storyIndex, setStoryIndex ] = useState(0)
 
     useEffect(() => {
-        client.query({ query: GET_HOME_STORIES() })
+        client.query({ query: GET_LINEUP_STORIES(1, 7, props.lineupId) })
             .then(({ data }) => {
-                const stories = data.stories.data.map(story => ({
+                const stories = data.lineup_stories.data.map(story => ({
                     ...story,
-                    image_path: data.stories.meta.image_path
+                    image_path: data.lineup_stories.meta.image_path
                 }))
 
                 setStories(stories)
-                setMeta(data.stories.meta)
+                setMeta(data.lineup_stories.meta)
             })
             .catch(e => {})
     }, [])
@@ -68,21 +68,32 @@ function homeStories (props) {
     return (
         <>
             <div 
-                id="home-stories" 
+                id="lineup-stories" 
                 className="stories-components">
                 { stories.map((story, i) => {
                     return (
-                        <div key={i} className="homestory storywrapper">
+                        <div 
+                            key={`${i}-story-lineup`} 
+                            className="lineupstory storywrapper">
                             <div 
-                                id={`home-story-${i}`} 
+                                id={`story-lineup-${i}`}
                                 onClick={_ => openStory(story, i)}>
                                 <img
-                                    width="97"
-                                    height="97"
+                                    width="48"
+                                    height="48"
                                     src={`${meta.image_path}${RESOLUTION_IMG}${story.program_img}`}
-                                    alt={`story ${story.identifier}`} />
+                                    alt={`story ${i}`} />
                             </div>
                             <label>{ story.title }</label>
+                            
+                            <div 
+                                className="masked-storyimg"
+                                style={{
+                                    backgroundImage: `url(${meta.image_path}${RESOLUTION_IMG}${story.program_img})`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "center",
+                                    backgroundSize: "cover",
+                                }}></div>
                         </div>
                     )
                 }) }
@@ -96,4 +107,4 @@ function homeStories (props) {
     )
 }
 
-export default connect(state => state, storiesActions)(homeStories);
+export default connect(state => state, storiesActions)(lineupStory);

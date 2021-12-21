@@ -29,13 +29,8 @@ import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
 
-const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
-const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
-const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
-
 // NEW RPLUS LINEUP CONTENTS
-const VideoSquareView = dynamic(() => import("../components/lineups/video_lineup/Square"))
-const VideoVerticalView = dynamic(() => import("../components/lineups/video_lineup/Vertical"))
+const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -123,16 +118,10 @@ class Index_v2 extends React.Component {
     renderLineup(lineups, meta) {
        return lineups.map((lineup) => {
             switch(lineup.display_type) {
-              case "horizontal" :
+              case "portrait_short" :
                 return (
-                  <VideoSquareView
-                    token={this.state.token}
-                    loadingBar={this.LoadingBar}
-                    key={lineup.id}
-                    contentId={lineup.id}
-                    title={lineup.title}
-                    content={lineup.lineup_type_detail.detail.data}
-                    imagePath={meta.image_path} />
+                    <PortraitShortView
+                        lineupId={lineup.id} />
                 )
             }
         })

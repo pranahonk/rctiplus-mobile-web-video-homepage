@@ -9,23 +9,56 @@ and open the template in the editor.
 */
 
 #home-stories {
+    margin-top: 50px;
+}
+
+.stories-components {
     display: -webkit-box;
     overflow: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    margin-top: 50px;
 
     ::-webkit-scrollbar {
         display: none;
     }
 
-    .homestory-wrapper {
-        display: flex;
-        flex-direction: column;
-
-        & > div {
+    .homestory {
+        & > div:first-child {
             width: 104px;
             height: 104px;
+        }
+    }
+
+    .lineupstory {
+        height: 168px;
+        width: 114px;
+        position: relative;
+        justify-content: flex-end;
+
+        & > div:first-child {
+            width: 52px;
+            height: 52px;
+        }
+
+        .masked-storyimg {
+            height: 168px;
+            width: 114px;
+            position: absolute;
+            z-index: -1;
+            border-radius: 10px;
+            -webkit-mask-image: radial-gradient(circle, black 20%, transparent);
+            mask-image: radial-gradient(circle, black 20%, transparent);;
+        }
+    }
+
+    .storywrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 114px;
+        margin: 0 3px;
+
+        & > div:first-child {
             background: linear-gradient(135deg, #00FFFD, #FF5BD8);
             border-radius: 50%;
             margin: 5px;
@@ -44,7 +77,6 @@ and open the template in the editor.
             font-size: 10px;
             color: white;
             text-align: center;
-            width: 114px;
             font-weight: bold;
         }
     }
