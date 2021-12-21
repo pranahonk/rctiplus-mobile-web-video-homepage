@@ -29,6 +29,7 @@ import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
 
 // NEW RPLUS LINEUP CONTENTS
+const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
 const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
 const VideoLandscapeLgWsView = dynamic(() => import("../components/lineups/LandscapeLgWs"))
@@ -140,6 +141,12 @@ class Index_v2 extends React.Component {
     renderLineup(lineups, meta) {
         return lineups.map((lineup, index) => {
             switch(lineup.display_type) {
+              case "portrait_short" :
+                return (
+                    <PortraitShortView
+                        lineupId={lineup.id}
+                        key={lineup.id} />
+                )
                 case "portrait" :
                     return (
                         <VideoPortraitView

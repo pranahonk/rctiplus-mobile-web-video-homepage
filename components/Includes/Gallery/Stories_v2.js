@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from "next/router"
 import dynamic from 'next/dynamic'
 
 import storiesActions from '../../../redux/actions/storiesActions'
@@ -12,13 +13,13 @@ const StoryModal = dynamic(() => import("../../Modals/StoryModal"))
 import '../../../assets/scss/components/stories.scss'
 
 function homeStories (props) {
-    const [ stories,setStories ] = useState([])
+    const [ stories, setStories ] = useState([])
     const [ meta, setMeta ] = useState({})
     const [ activeStory, setActiveStory ] = useState({})
     const [ storyIndex, setStoryIndex ] = useState(0)
 
     useEffect(() => {
-        client.query({ query: GET_HOME_STORIES() })
+        client.query({ query: GET_HOME_STORIES(props.router.query.category_id) })
             .then(({ data }) => {
                 const stories = data.stories.data.map(story => ({
                     ...story,
@@ -28,7 +29,7 @@ function homeStories (props) {
                 setStories(stories)
                 setMeta(data.stories.meta)
             })
-            .catch(e => {})
+            .catch(_ => {})
     }, [])
 
     const openStory = (story, index) => {
@@ -67,10 +68,12 @@ function homeStories (props) {
 
     return (
         <>
-            <div id="home-stories">
+            <div 
+                id="home-stories" 
+                className="stories-components">
                 { stories.map((story, i) => {
                     return (
-                        <div key={i} className="homestory-wrapper">
+                        <div key={i} className="homestory storywrapper">
                             <div 
                                 id={`home-story-${i}`} 
                                 onClick={_ => openStory(story, i)}>
@@ -94,4 +97,4 @@ function homeStories (props) {
     )
 }
 
-export default connect(state => state, storiesActions)(homeStories);
+export default connect(state => state, storiesActions)(withRouter(homeStories));

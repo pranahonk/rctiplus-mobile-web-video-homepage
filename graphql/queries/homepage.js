@@ -128,14 +128,45 @@ export const GET_SUB_CATEGORY_LIST = (categoryId = 0) => {
   `
 }
 
-export const GET_HOME_STORIES = (page = 1, page_size = 10, category_id = 0) => {
+export const GET_LINEUP_STORIES = (page = 1, page_size = 7, lineup_id = 0) => {
+  const queryParams = getQueryParams({ page, page_size, lineup_id })
+
   return gql`
     query {
-      stories {
+      lineup_stories(${queryParams}) {
         data {
-          identifier
-          program_id
           program_img
+          program_id
+          title
+          story {
+            id
+            permalink
+            story_img
+            link_video
+            title
+          }
+        }
+        meta {
+          pagination {
+            current_page
+            total_page
+          }
+          image_path
+        }
+      }
+    }
+  `
+}
+
+export const GET_HOME_STORIES = (page = 1, page_size = 10, category_id = 0) => {
+  const queryParams = getQueryParams({ page, page_size, category_id })
+
+  return gql`
+    query {
+      stories(${queryParams}) {
+        data {
+          program_img
+          program_id
           title
           story {
             id

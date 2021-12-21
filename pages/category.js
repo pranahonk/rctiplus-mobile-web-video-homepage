@@ -5,6 +5,8 @@ import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 
 import { StickyContainer, Sticky } from 'react-sticky';
+import dynamic from "next/dynamic"
+
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import Layout from '../components/Layouts/Default_v2';
 
@@ -17,9 +19,12 @@ import { client } from "../graphql/client"
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { getCookie, getVisitorToken } from "../utils/cookie"
 
-function category (props) {
+const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
+
+function Category (props) {
     const loadingBar = useRef(null)
     const { ads_displayed } = useSelector(state => state.ads)
+
     const [ isShimmer, setIsShimmer ] = useState(false)
     const [ lineups, setLineups ] = useState([])
     const [ meta, setMeta ] = useState({})
@@ -50,7 +55,12 @@ function category (props) {
         client
             .query({ query: GET_LINEUPS(nextPage, length, categoryId) })
             .then(({ data }) => {
-                setLineups(data.lineups.data)
+                const mappedContents = new Map()
+                lineups.concat(data.lineups.data).forEach(content => {
+                    mappedContents.set(content.id, content)
+                })
+                
+                setLineups([ ...mappedContents.values() ])
                 setMeta(data.lineups.meta)
 
                 const { pagination } = data.lineups.meta
@@ -65,6 +75,12 @@ function category (props) {
     const renderLineups = () => {
         return lineups.map((lineup) => {
             switch(lineup.display_type) {
+                case "portrait_short" :
+                    return (
+                        <PortraitShortView
+                            lineupId={lineup.id}
+                            key={lineup.id} />
+                    )
                 case "portrait" :
                     return (
                         <VideoPortraitView
@@ -184,10 +200,7 @@ function category (props) {
                         </div>
 
                         <div style={{marginTop: "25px"}}>
-                            <Stories 
-                                loadingBar={loadingBar.current} 
-                                detailCategory={true} 
-                                id={props.router.query.category_id} />
+                            <Stories />
                         </div>
 
                         <StickyContainer>
@@ -231,7 +244,6 @@ function category (props) {
                                 { renderLineups() }
                             </div>
                         </div>
-                        
                     </div>
                 )
             }  
@@ -239,4 +251,4 @@ function category (props) {
     )
 }
 
-export default withRouter(category)
+export default withRouter(Category)
