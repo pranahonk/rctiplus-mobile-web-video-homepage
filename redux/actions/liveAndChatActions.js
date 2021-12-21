@@ -227,7 +227,6 @@ const getLiveEventDetail = liveEventId => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v1/live-event/${liveEventId}`);
-            console.log('HASIL',response)
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_LIVE_EVENT_DETAIL',
