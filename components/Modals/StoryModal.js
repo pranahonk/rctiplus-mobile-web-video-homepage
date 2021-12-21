@@ -215,14 +215,23 @@ function storyModal(props) {
   }
 
   const renderCTAButton = _ => {
-    let ctaLink = props.story.story[activeIndex].permalink
-  
-    if (!ctaLink) return
-    ctaLink = `${location.origin}${ctaLink.split(".rctiplus.com")[1]}`
+    const { type, external_link, permalink } = props.story.story[activeIndex]
+    let href = permalink,
+      target = "_self"
 
+    if (type === "url") {
+      href = external_link
+      target = "_blank"
+    }
+  
+    if (!href) return null
+    href = `${location.origin}${href.split(".rctiplus.com")[1]}`
+    
     return (
-      <Link href={ctaLink}>
-        <a>Click Here</a>
+      <Link href={href} passHref>
+        <a href={href} target={target}>
+          Click Here
+        </a>
       </Link>
     )
   }
