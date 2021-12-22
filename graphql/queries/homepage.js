@@ -144,6 +144,8 @@ export const GET_LINEUP_STORIES = (page = 1, page_size = 7, lineup_id = 0) => {
             story_img
             link_video
             title
+            type
+            external_link
           }
         }
         meta {
@@ -174,6 +176,8 @@ export const GET_HOME_STORIES = (page = 1, page_size = 10, category_id = 0) => {
             story_img
             link_video
             title
+            type
+            external_link
           }
         }
         meta {

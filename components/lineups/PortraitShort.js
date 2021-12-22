@@ -68,7 +68,7 @@ function lineupStory (props) {
     return (
         <>
             <div id="lineup-stories" >
-                <h2>Test story</h2>
+                <h2>{props.title}</h2>
 
                 <div className="stories-components">
                     { stories.map((story, i) => {

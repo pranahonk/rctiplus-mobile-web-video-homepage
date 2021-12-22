@@ -141,12 +141,13 @@ class Index_v2 extends React.Component {
     renderLineup(lineups, meta) {
         return lineups.map((lineup, index) => {
             switch(lineup.display_type) {
-              case "portrait_short" :
-                return (
-                    <PortraitShortView
-                        lineupId={lineup.id}
-                        key={lineup.id} />
-                )
+                case "portrait_short" :
+                    return (
+                        <PortraitShortView
+                            lineupId={lineup.id}
+                            title={lineup.title}
+                            key={lineup.id} />
+                    )
                 case "portrait" :
                     return (
                         <VideoPortraitView
