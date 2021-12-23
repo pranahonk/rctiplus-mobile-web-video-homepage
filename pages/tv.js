@@ -81,8 +81,8 @@ class Tv extends React.Component {
 		const idEpg = ctx.query.epg_id;
 		let dataEpg = null;
 		let q = null;
-		let seoDate = null;
-		let q = null;
+    let seoData = null;
+    let seoDate = null;
 
     const visitorToken = nextCookie(ctx)?.VISITOR_TOKEN
     const userToken = nextCookie(ctx)?.ACCESS_TOKEN
