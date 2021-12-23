@@ -81,6 +81,14 @@ class Tv extends React.Component {
 		const idEpg = ctx.query.epg_id;
 		let dataEpg = null;
 		let q = null;
+		let seoDate = null;
+		let q = null;
+
+    const visitorToken = nextCookie(ctx)?.VISITOR_TOKEN
+    const userToken = nextCookie(ctx)?.ACCESS_TOKEN
+    let token = userToken?.VALUE || visitorToken?.VALUE || ''
+
+
 		if(idEpg) {
 			const findQueryString = ctx.asPath.split(/\?/);
 			if(findQueryString.length > 1) {
@@ -89,9 +97,7 @@ class Tv extends React.Component {
 					q = formatMonthEngToID(q.date)
 				}
 			}
-			const visitorToken = nextCookie(ctx)?.VISITOR_TOKEN
-			const userToken = nextCookie(ctx)?.ACCESS_TOKEN
-			let token = userToken?.VALUE || visitorToken?.VALUE || ''
+
 			if(!token) {
 				const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
 				if (response_visitor.statusCode === 200) {
@@ -112,7 +118,33 @@ class Tv extends React.Component {
 			const data_epg = await response_epg.json();
 			dataEpg = data_epg.status.code === 0 ? data_epg.data : null
 		}
-		return { context_data: ctx.query, data_epg: dataEpg, params_date: q };
+
+    // getseo
+    const id_channel= SITEMAP[`live_tv_${ctx.query.channel?.toLowerCase()}`]?.id_channel;
+    const response_seo = await fetch(`${DEV_API}/api/v1/seo/content/live-stream/${id_channel}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': token,
+      }
+    });
+    const data_seo = await response_seo.json();
+    if (response_seo.status == 200) {
+      seoData = data_seo.status.code === 0 ? data_seo.data : null
+    }
+
+    //getdateseo
+    const response_date = await fetch(`${DEV_API}/api/v1/live-event/${id_channel}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': token,
+      }
+    });
+    const date_seo = await response_date.json();
+    if (response_date.status == 200) {
+      seoDate = date_seo.status.code === 0 ? date_seo.data : null
+    }
+
+    return {  context_data: ctx.query, data_epg: dataEpg, params_date: q, data_seo: seoData, meta_seo: data_seo.meta, date_seo: seoDate};
 	}
 
 	constructor(props) {
