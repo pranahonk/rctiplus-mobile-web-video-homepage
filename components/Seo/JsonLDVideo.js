@@ -3,27 +3,29 @@
 const oneSegment = 'm.rctiplus.com';
 export default function JsonLDVideo ({content, isProgram}) {
     // console.log('Meta seo: ',content)
-  const structurData = {
-    "@context": "https://schema.org",
-    "@type": "VideoObject",
-    "contentURL": `${oneSegment}${content?.asPath}`,
-    "description": `${content?.description}`,
-    // "duration": "PT37M14S",
-    "embedUrl": `${oneSegment}${content?.asPath}`,
-    "expires": `${content?.expires || '1 Januari 9999'}`,
-    "interactionCount": "4756",
-    "name": `Live ${channel(content?.title)} livestream!`,
-    "thumbnailUrl": `${content?.thumbnailUrl}`,
-    "uploadDate": content?.startDate || "2018-10-27T14:00:00+00:00",
-    "publication": [
-      {
-        "@type": "BroadcastEvent",
-        "isLiveBroadcast": true,
-        "startDate": content?.startDate || '1 Januari 1979',
-        "endDate": content?.endDate || '1 Januari 9999'
-      }
-    ]
-  }
+    export default function JsonLDVideo ({content, isProgram}) {
+      // console.log('Meta seo: ',content)
+    const structurData = {
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      "contentURL": `${oneSegment}${content?.asPath}`,
+      "description": `${content?.description}`,
+      // "duration": "PT37M14S",
+      "embedUrl": `${oneSegment}${content?.asPath}`,
+      "expires": `${content?.expires || '1 Januari 9999'}`,
+      "interactionCount": "4756",
+      "name": `Live ${channel(content?.title)} livestream!`,
+      "thumbnailUrl": `${content?.thumbnailUrl}`,
+      "uploadDate": content?.startDate || "2018-10-27T14:00:00+00:00",
+      "publication": [
+        {
+          "@type": "BroadcastEvent",
+          "isLiveBroadcast": true,
+          "startDate": content?.startDate || '1 Januari 1979',
+          "endDate": content?.endDate || '1 Januari 9999'
+        }
+      ]
+    }
   const structurDataProgram = {
         "@context": "https://schema.org",
         "@type": "VideoObject",
