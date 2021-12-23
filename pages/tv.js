@@ -971,7 +971,7 @@ class Tv extends React.Component {
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
 					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
 					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-					<meta name="twitter:image" content={this._metaTags().image} />
+					<meta name="twitter:image" content={this._metaTags().pathimage} />
 					<meta name="twitter:image:alt" content={this._metaTags().twitter_img_alt} />
 					<meta name="twitter:title" content={this._metaTags().title} />
 					<meta name="twitter:description" content={this._metaTags().description} />
