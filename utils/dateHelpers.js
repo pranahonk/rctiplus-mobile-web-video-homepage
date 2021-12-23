@@ -17,6 +17,43 @@ export const formatDateTime = date => {
     return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
 };
 
+export const formatDateTimeID = date => {
+  const year = date.getFullYear();
+  const month = ('0' + (date.getMonth() + 1)).slice(-2);
+  const day = ('0' + date.getDate()).slice(-2);
+
+  const hour = ('0' + (date.getHours())).slice(-2);
+  const minute = ('0' + (date.getMinutes())).slice(-2);
+  const second = ('0' + (date.getSeconds())).slice(-2);
+
+  return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+};
+
+export const formatDateTimeID2 = date => {
+  const date2 = new Date(date);
+
+  let year = date2.getFullYear();
+  let month = date2.getMonth()+1;
+  let dt = date2.getDate();
+
+  if (dt < 10) {
+    dt = '0' + dt;
+  }
+  if (month < 10) {
+    month = '0' + month;
+  }
+
+  const hour = ('0' + (date2.getHours())).slice(-2);
+  const minute = ('0' + (date2.getMinutes())).slice(-2);
+  const second = ('0' + (date2.getSeconds())).slice(-2);
+
+  console.log(year+'-' + month + '-'+dt);
+  // return `${year+'-' + month + '-'+dt 'T'+}`;
+  return `${year}-${month}-${dt}T${hour}:${minute}:${second}`;
+
+};
+
+
 export const formatDateWordID = date => {
     const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
     const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];

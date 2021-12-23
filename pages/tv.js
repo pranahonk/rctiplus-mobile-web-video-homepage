@@ -28,7 +28,7 @@ import MuteChat from '../components/Includes/Common/MuteChat';
 import Toast from '../components/Includes/Common/Toast';
 import JsonLDVideo from '../components/Seo/JsonLDVideo';
 
-import { formatDate, formatDateWord, getFormattedDateBefore, formatMonthEngToID } from '../utils/dateHelpers';
+import { formatDate, formatDateWord, formatDateTimeID, getFormattedDateBefore, formatMonthEngToID, formatDateTimeID2 } from '../utils/dateHelpers';
 import { showAlert, showSignInAlert } from '../utils/helpers';
 
 import { Row, Col, Button, Nav, NavItem, NavLink, TabContent, TabPane, Input } from 'reactstrap';
@@ -136,6 +136,8 @@ class Tv extends React.Component {
 			meta: {},
 			dates_before: getFormattedDateBefore(7),
 			selected_date: formatDateWord(now),
+			selected_dateID: formatDateTimeID(now),
+			selected_dateID2: formatDateTimeID2(this.props.date_seo.end_date),
 			select_modal: false,
 			player_url: '',
 			player_vmap: '',
@@ -735,16 +737,27 @@ class Tv extends React.Component {
 	}
 
   _dscriptionLD(channel){
+    let sameas = '';
+    let samearr = '';
+    let description ='';
     if(channel === 'rcti'){
-      return 'Rajawali Citra Televisi (RCTI) merupakan stasiun TV swasta pertama dan terbesar di Indonesia. Stasiun TV ini resmi mengudara pada Agustus 1989 dengan memegang motto “Kebanggaan Bersama Milik Bangsa”. Pada Oktober 2003, RCTI resmi masuk ke kelompok perusahaaan media yaitu Media Nusantara Citra (MNC). Setelah itu, tumbuhlah menjadi stasiun tv yang besar dan digemari masyarakat indonesia. Seperti halnya vidio com, useetv, k-vision & mivo tv, RCTI+ hadir dengan layanan televisi internet secara live streaming yang dapat dinikmati semua kalangan dengan konten eksklusif dan gratis. Channel RCTI menjadi stasiun TV yang konsisten menghadirkan tayangan televisi berkualitas dan menarik yang dapat di tonton secara live streaming di tv online RCTI+. Di tv internet RCTI+ menyajikan mulai dari program berita, musik, sinetron, sitkom, infotainment, musik, memasak, acara olahraga, kartun dan film lainnya. Salah satu program sinetron populer terkini di RCTI adalah Sinetron Ikatan Cinta, Master Chef Indonesia, Si Doel Anak Sekolahan hingga Preman Pensiun yang telah memberikan kontribusi besar dalam pasar hiburan di Indonesia. Kini, RCTI dengan slogannya “Semakin Oke” menghadirkan program-program pilihan seperti Sinetron Ikatan Cinta, Putri Untuk Pangeran hingga Preman Pensiun. Selain itu info dan update berita terbaru juga disajikan oleh RCTI dengan program Seputar iNews Pagi, Go Spot, Silet dan Seputar iNews Siang.';
+      sameas = '["https://www.rcti.tv/","https://www.google.com/search?q=RCTI&kponly&kgmid=/m/0824qb "," https://id.wikipedia.org/wiki/RCTI","https://www.wikidata.org/wiki/Q5257835"]';
+      description = 'Rajawali Citra Televisi (RCTI) merupakan stasiun TV swasta pertama dan terbesar di Indonesia. Stasiun TV ini resmi mengudara pada Agustus 1989 dengan memegang motto “Kebanggaan Bersama Milik Bangsa”. Pada Oktober 2003, RCTI resmi masuk ke kelompok perusahaaan media yaitu Media Nusantara Citra (MNC). Setelah itu, tumbuhlah menjadi stasiun tv yang besar dan digemari masyarakat indonesia. Seperti halnya vidio com, useetv, k-vision & mivo tv, RCTI+ hadir dengan layanan televisi internet secara live streaming yang dapat dinikmati semua kalangan dengan konten eksklusif dan gratis. Channel RCTI menjadi stasiun TV yang konsisten menghadirkan tayangan televisi berkualitas dan menarik yang dapat di tonton secara live streaming di tv online RCTI+. Di tv internet RCTI+ menyajikan mulai dari program berita, musik, sinetron, sitkom, infotainment, musik, memasak, acara olahraga, kartun dan film lainnya. Salah satu program sinetron populer terkini di RCTI adalah Sinetron Ikatan Cinta, Master Chef Indonesia, Si Doel Anak Sekolahan hingga Preman Pensiun yang telah memberikan kontribusi besar dalam pasar hiburan di Indonesia. Kini, RCTI dengan slogannya “Semakin Oke” menghadirkan program-program pilihan seperti Sinetron Ikatan Cinta, Putri Untuk Pangeran hingga Preman Pensiun. Selain itu info dan update berita terbaru juga disajikan oleh RCTI dengan program Seputar iNews Pagi, Go Spot, Silet dan Seputar iNews Siang.';
+      samearr = '["https://www.google.com/search?q=streaming+tv+internet&kponly&kgmid=/m/03x49v","https://id.wikipedia.org/wiki/Televisi_Internet"]';
     }else if(channel === 'mnctv'){
-      return 'Dengan visi menjadi pilihan utama pemirsa Indonesia “Selalu di Hati”, MNCTV terus menghadirkan program yang memanjakan mata mulai dari sinetron, variety show, talent show, animasi dan program seru lainnya. Beberapa program acara yang ditayangkan di MNCTV seperti Upin & Ipin, Raden Kian Santang, Rising Star Dangdut dan masih banyak lainnya. Adapun dalam kategori program berita seperti Lintas iNews Pagi, Lintas iNews Siang & Lintas iNews Malam. Semuanya dapat ditonton melalui siaran live streaming MNCTV hari ini di RCTI+ gratis tanpa buffer.';
+      sameas = '["https://www.google.com/search?q=mnctv&kponly&kgmid=/m/0dvf5k"," http://mnctv.com/ ","https://www.wikidata.org/wiki/Q6683165","https://id.wikipedia.org/wiki/MNCTV"]';
+      description = 'Dengan visi menjadi pilihan utama pemirsa Indonesia “Selalu di Hati”, MNCTV terus menghadirkan program yang memanjakan mata mulai dari sinetron, variety show, talent show, animasi dan program seru lainnya. Beberapa program acara yang ditayangkan di MNCTV seperti Upin & Ipin, Raden Kian Santang, Rising Star Dangdut dan masih banyak lainnya. Adapun dalam kategori program berita seperti Lintas iNews Pagi, Lintas iNews Siang & Lintas iNews Malam. Semuanya dapat ditonton melalui siaran live streaming MNCTV hari ini di RCTI+ gratis tanpa buffer.';
+      samearr = '[ "https://www.google.com/search?q=streaming+tv+internet&kponly&kgmid=/m/03x49v","https://id.wikipedia.org/wiki/Televisi_Internet"]';
     }else if(channel === 'gtv'){
-    return 'Live streaming acara Global TV (GTV) online hari ini gratis di RCTI+, tanpa buffer! Daftar acara GTV menyajikan pilihan kategori program menarik yang dapat ditonton secara live stream seperti kartun animasi: Zak Storm, Naruto & SpongeBob. Untuk kategori program film acara saat ini terdapat film premier Big Movies, Family & Platinum. Selain itu pada kategori Berita tersedia Buletin News dan Gerebek. Untuk kategori terakhir yang juga populer yang disiarkan yaitu The Voice Indonesia & The Voice Kids Indonesia';
+      sameas = '["https://www.google.com/search?q=global+tv&kponly&kgmid=/m/0b7bnq","https://www.gtv.id/","https://www.wikidata.org/wiki/Q4201809","https://id.wikipedia.org/wiki/GTV_(Indonesia)"]';
+      description = 'Live streaming acara Global TV (GTV) online hari ini gratis di RCTI+, tanpa buffer! Daftar acara GTV menyajikan pilihan kategori program menarik yang dapat ditonton secara live stream seperti kartun animasi: Zak Storm, Naruto & SpongeBob. Untuk kategori program film acara saat ini terdapat film premier Big Movies, Family & Platinum. Selain itu pada kategori Berita tersedia Buletin News dan Gerebek. Untuk kategori terakhir yang juga populer yang disiarkan yaitu The Voice Indonesia & The Voice Kids Indonesia';
+      samearr = '[ "https://www.google.com/search?q=streaming+tv+internet&kponly&kgmid=/m/03x49v","https://id.wikipedia.org/wiki/Televisi_Internet"]';
     }else if(channel === 'inews'){
-      return 'Televisi lokal yang awalnya bernama Sindo TV, pada tanggal 6 April 2015 secara resmi diubah menjadi iNews. iNews merupakan televisi nasional yang memiliki jaringan televisi lokal terbanyak di seluruh Indonesia. Dengan didukung jaringan yang luas, iNews mampu memberikan program-program berita unggulan dan informasi yang cepat, akurat, informatif, mendidik serta menginspirasi. Di RCTI+, kamu bisa nonton live streaming iNews TV hari ini secara langsung yang sudah terjadwal dengan beragam pilihan seperti news berita terkini, sport, religi & entertainment. Salah satu program berita populer terkini yang disajikan oleh iNews adalah iNews Pagi, iNews Siang, iNews Sore & iNews Malam. Untuk program acara lainnya menyiarkan juga Cahaya Hati Indonesia dan beberapa program pilihan lainnya seperti yang sudah dijadwalkan.';
+      sameas = '["https://www.google.com/search?q=iNews&kponly&kgmid=/m/0gh85nz","https://www.inews.id/","https://id.wikipedia.org/wiki/INews","https://www.wikidata.org/wiki/Q4213609"]';
+      description = 'Televisi lokal yang awalnya bernama Sindo TV, pada tanggal 6 April 2015 secara resmi diubah menjadi iNews. iNews merupakan televisi nasional yang memiliki jaringan televisi lokal terbanyak di seluruh Indonesia. Dengan didukung jaringan yang luas, iNews mampu memberikan program-program berita unggulan dan informasi yang cepat, akurat, informatif, mendidik serta menginspirasi. Di RCTI+, kamu bisa nonton live streaming iNews TV hari ini secara langsung yang sudah terjadwal dengan beragam pilihan seperti news berita terkini, sport, religi & entertainment. Salah satu program berita populer terkini yang disajikan oleh iNews adalah iNews Pagi, iNews Siang, iNews Sore & iNews Malam. Untuk program acara lainnya menyiarkan juga Cahaya Hati Indonesia dan beberapa program pilihan lainnya seperti yang sudah dijadwalkan.';
+      samearr = '[ "https://www.google.com/search?q=streaming+tv+internet&kponly&kgmid=/m/03x49v","https://id.wikipedia.org/wiki/Televisi_Internet"]';
     }
-    return channel;
+    return {same: sameas, description: description, samearr: samearr};
 	}
 
 	routingQueryGenerator(targetContent) {
@@ -823,10 +836,13 @@ class Tv extends React.Component {
 		const { props, state } = this
 		const contentData = {
 			asPath: props.router.asPath,
-			title: props.context_data?.epg_title || props.context_data?.channel,
-			description: this._dscriptionLD(props.context_data?.channel),
-			thumbnailUrl: SITEMAP[`live_tv_${this.state.channel_code?.toLowerCase()}`]?.image,
-      startDate : state.selected_date
+			title: props.data_seo.title,
+			description: this._dscriptionLD(props.context_data?.channel).description,
+			thumbnailUrl: this._metaTags().pathimage,
+			sameAs: this._dscriptionLD(props.context_data?.channel).same,
+      startDate : state.selected_dateID+'+07:00',
+      endDate : state.selected_dateID2+'+07:00',
+			sameAs_arr: this._dscriptionLD(props.context_data?.channel).samearr
 		}
 
 
