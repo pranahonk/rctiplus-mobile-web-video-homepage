@@ -8,7 +8,7 @@ const structurData = {
   "@type": "VideoObject",
   "contentURL": `${oneSegment}${content?.asPath}`,
   "description": `${content?.description}`,
-  "name": `Live ${content?.title} `,
+  "name": `${content?.title} `,
   "thumbnailUrl": `${content?.thumbnailUrl}`,
   "sameAs": `${content?.sameAs}`,
   "uploadDate": content?.startDate || "2018-10-27T14:00:00+00:00",

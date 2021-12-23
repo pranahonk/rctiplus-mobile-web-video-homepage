@@ -28,7 +28,7 @@ import MuteChat from '../components/Includes/Common/MuteChat';
 import Toast from '../components/Includes/Common/Toast';
 import JsonLDVideo from '../components/Seo/JsonLDVideo';
 
-import { formatDate, formatDateWord, formatDateTimeID, getFormattedDateBefore, formatMonthEngToID, formatDateTimeID2 } from '../utils/dateHelpers';
+import { formatDate, formatDateWord, formatDateTimeID, getFormattedDateBefore, formatMonthEngToID } from '../utils/dateHelpers';
 import { showAlert, showSignInAlert } from '../utils/helpers';
 
 import { Row, Col, Button, Nav, NavItem, NavLink, TabContent, TabPane, Input } from 'reactstrap';
@@ -168,7 +168,7 @@ class Tv extends React.Component {
 			dates_before: getFormattedDateBefore(7),
 			selected_date: formatDateWord(now),
 			selected_dateID: formatDateTimeID(now),
-			selected_dateID2: formatDateTimeID2(this.props.date_seo.end_date),
+			selected_dateID2: formatDateTimeID(this.props.date_seo.end_date),
 			select_modal: false,
 			player_url: '',
 			player_vmap: '',
