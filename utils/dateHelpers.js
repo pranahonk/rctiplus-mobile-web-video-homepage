@@ -47,8 +47,6 @@ export const formatDateTimeID2 = date => {
   const minute = ('0' + (date2.getMinutes())).slice(-2);
   const second = ('0' + (date2.getSeconds())).slice(-2);
 
-  console.log(year+'-' + month + '-'+dt);
-  // return `${year+'-' + month + '-'+dt 'T'+}`;
   return `${year}-${month}-${dt}T${hour}:${minute}:${second}`;
 
 };
