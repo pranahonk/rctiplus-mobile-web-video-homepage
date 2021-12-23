@@ -88,7 +88,6 @@ class Tv extends React.Component {
     const userToken = nextCookie(ctx)?.ACCESS_TOKEN
     let token = userToken?.VALUE || visitorToken?.VALUE || ''
 
-
 		if(idEpg) {
 			const findQueryString = ctx.asPath.split(/\?/);
 			if(findQueryString.length > 1) {
@@ -960,12 +959,13 @@ class Tv extends React.Component {
 					<meta name="keywords" content={this._metaTags().keywords} />
 					<meta property="og:title" content={this._metaTags().title} />
 					<meta property="og:description" content={this._metaTags().description} />
-					<meta property="og:image" itemProp="image" content={this._metaTags().image} />
+					<meta property="og:image" itemProp="image" content={this._metaTags().pathimage} />
 					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
-					<meta property="og:type" content="article" />
+					<meta property="og:type" content="video.tv_show" />
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
 					<meta property="og:image:height" content="315" />
+          <meta property="og:image:alt" content={this._metaTags().twitter_img_alt} />
 					<meta property="og:site_name" content={SITE_NAME} />
 					<meta property="fb:app_id" content={GRAPH_SITEMAP.appId} />
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
