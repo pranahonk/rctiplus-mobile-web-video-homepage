@@ -11,13 +11,13 @@ const structurData = {
   "name": `${content?.title} `,
   "thumbnailUrl": `${content?.thumbnailUrl}`,
   "sameAs": `${content?.sameAs}`,
-  "uploadDate": content?.startDate || "2018-10-27T14:00:00+00:00",
+  "uploadDate": content?.startDate || "2018-12-23T11:16:07+07:00",
   "publication":
     {
       "@type": "BroadcastEvent",
       "isLiveBroadcast": true,
-      "startDate": content?.startDate || '1 Januari 1979',
-      "endDate": content?.endDate || '1 Januari 9999',
+      "startDate": content?.startDate || "2018-12-23T11:16:07+07:00",
+      "endDate": content?.endDate || "3018-12-23T11:16:07+07:00",
       "sameAs": `${content?.sameAs_arr}`,
     }
 
