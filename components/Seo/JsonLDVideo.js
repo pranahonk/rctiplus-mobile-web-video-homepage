@@ -1,8 +1,7 @@
 
 // import { BASE_URL, SHARE_BASE_URL } from '../../config'
 const oneSegment = 'm.rctiplus.com';
-export default function JsonLDVideo ({content, isProgram}) {
-  // console.log('Meta seo: ',content)
+export default function JsonLDVideo ({content}) {
 const structurData = {
   "@context": "https://schema.org",
   "@type": "VideoObject",
@@ -22,22 +21,10 @@ const structurData = {
     }
 
 }
-  const structurDataProgram = {
-        "@context": "https://schema.org",
-        "@type": "VideoObject",
-        "name": content?.title,
-        "description": content?.title,
-        "thumbnailUrl": [
-            content?.thumbnailUrl
-        ],
-        "uploadDate": content?.startDate || '1 Januari 1979',
-        // "duration": "PT1M54S",
-        "contentUrl": `${oneSegment}${content?.asPath}`,
-        // "embedUrl": `${oneSegment}${content?.asPath}`,
-    }
+
   return(
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(isProgram ? structurDataProgram : structurData) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structurData) }} />
     </>
   )
 }
@@ -57,3 +44,4 @@ const channel = (title) => {
   }
   return title
 }
+
