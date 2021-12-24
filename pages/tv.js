@@ -889,7 +889,7 @@ class Tv extends React.Component {
 		const { props, state } = this
 		const contentData = {
 			asPath: props.router.asPath,
-			title: props.data_seo.title,
+			title: props.data_seo.data.title,
 			description: this._dscriptionLD(props.context_data?.channel).description,
 			thumbnailUrl: this._metaTags().pathimage,
 			sameAs: this._dscriptionLD(props.context_data?.channel).same,
