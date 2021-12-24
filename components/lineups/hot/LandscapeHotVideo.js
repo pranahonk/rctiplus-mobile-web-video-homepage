@@ -105,7 +105,7 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
                             }
                           </div>
                           <div className="hot-videos_card-profile__name col">
-                            {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.nick_name || item?.content_type_detail?.detail?.data?.contestant?.display_name, "...", "17")}
+                            {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.display_name || item?.content_type_detail?.detail?.data?.contestant?.nick_name ||  item?.content_type_detail?.detail?.data?.contestant?.email || item?.content_type_detail?.detail?.data?.contestant?.phone_number, "...", "17")}
                           </div>
                         </div>
                         <div className='row'>
