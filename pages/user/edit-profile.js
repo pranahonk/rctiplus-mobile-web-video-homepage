@@ -277,8 +277,8 @@ class EditProfile extends React.Component {
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
                 </Head>
-                <NavBack 
-                    visible 
+                <NavBack
+                    visible
                     title="Edit Profile"
                     dropdownMenu={[
                         {
@@ -312,7 +312,7 @@ class EditProfile extends React.Component {
                                 <img className="profile-photo" src={this.state.profile_photo_src}/>
                                 <CameraAltIcon className="profile-photo-button"/>
                             </div>
-                            
+
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label-ep" for="nickname">Nickname (Live Chat)</Label>
