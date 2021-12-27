@@ -606,7 +606,7 @@ class Tv extends React.Component {
 		if (this.props.user.isAuth) {
 			if (this.state.chat != '') {
 				this.statusChatBlock(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
-				const userData = this.props.user;
+				const userData = this.props.user.data;
 				let user = userData.nickname ? userData.nickname :
 					userData.display_name ? userData.display_name :
 						userData.email ? userData.email.replace(/\d{4}$/, '****') :
@@ -662,7 +662,7 @@ class Tv extends React.Component {
 		lastChat.failed = false;
 		chats[index] = lastChat;
 		this.setState({ chats: chats, sending_chat: true }, () => {
-			const userData = this.props.user;
+			const userData = this.props.user.data;
 			let user = userData.nickname ? userData.nickname :
 				userData.display_name ? userData.display_name :
 					userData.email ? userData.email.replace(/\d{4}$/, '****') :
