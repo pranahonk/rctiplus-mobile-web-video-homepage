@@ -103,36 +103,58 @@ and open the template in the editor.
     height: 100%;
     position: relative;
 
-    .close-stories {
-        position: absolute;
-        right: 3px;
-        top: 20px;
-        background: transparent;
-        color: white;
-        font-weight: bold;
-        border: 1px solid;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-    }
+    // .close-stories {
+    //     position: absolute;
+    //     right: 3px;
+    //     top: 20px;
+    //     background: transparent;
+    //     color: white;
+    //     font-weight: bold;
+    //     border: 1px solid;
+    //     border-radius: 50%;
+    //     width: 30px;
+    //     height: 30px;
+    //     padding: 0;
+    // }
 
-    .story-title {
+    .story-head {
         position: absolute;
         top: 20px;
-        left: 5px;
+        left: 0;
+        width: 100%;
+        padding: 0 5px;
+        display: flex;
+        justify-content: space-between;
+        background: linear-gradient(180deg, black, transparent);
 
-        & > img {
-            border-radius: 50%;
+        & > div {
+            display: flex;
+            align-items: center;
+
+            & > img {
+                border-radius: 50%;
+            }
+    
+            & > label {
+                color: white;
+                font-size: 12px;
+                margin: 0 0 0 5px;
+                width: 250px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
         }
 
-        & > label {
+        & > button {
+            background: transparent;
             color: white;
-            font-size: 12px;
-            margin: 0 0 0 5px;
-            width: 250px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            font-weight: bold;
+            border: 1px solid;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            padding: 0;
         }
     }
 
