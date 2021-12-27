@@ -578,6 +578,7 @@ class Tv extends React.Component {
 				<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true, 'popup-action-signup', 'popup-action-signin');
 			return false;
 		}
+    console.log('TEST USER', this.props.user);
 		return true;
 	}
 
@@ -585,7 +586,7 @@ class Tv extends React.Component {
 		if (this.props.user.isAuth) {
 			if (this.state.chat != '') {
 				this.statusChatBlock(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
-				const userData = this.props.user;
+				const userData = this.props.user.data;
 				let user = userData.nickname ? userData.nickname :
 					userData.display_name ? userData.display_name :
 						userData.email ? userData.email.replace(/\d{4}$/, '****') :
@@ -606,6 +607,7 @@ class Tv extends React.Component {
 
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
+          console.log('TEST SET USER', user);
 
 					this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, newChat.m, user, this.props.user.photo_url)
 						.then(response => {
@@ -641,7 +643,7 @@ class Tv extends React.Component {
 		lastChat.failed = false;
 		chats[index] = lastChat;
 		this.setState({ chats: chats, sending_chat: true }, () => {
-			const userData = this.props.user;
+			const userData = this.props.user.data;
 			let user = userData.nickname ? userData.nickname :
 				userData.display_name ? userData.display_name :
 					userData.email ? userData.email.replace(/\d{4}$/, '****') :
