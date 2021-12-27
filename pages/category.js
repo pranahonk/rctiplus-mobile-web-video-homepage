@@ -19,6 +19,15 @@ import { client } from "../graphql/client"
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { getCookie, getVisitorToken } from "../utils/cookie"
 
+const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
+const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
+const VideoLandscapeLgWsView = dynamic(() => import("../components/lineups/LandscapeLgWs"))
+const VideoLandscape219View = dynamic(() => import("../components/lineups/Landscape219"))
+const VideoLandscapeLgView = dynamic(() => import("../components/lineups/LandscapeLg"))
+const VideoLandscapeMiniLiveView = dynamic(() => import("../components/lineups/LandscapeMiniLive"))
+const VideoPortraitView = dynamic(() => import("../components/lineups/Portrait"))
+const VideoSquareMiniView = dynamic(() => import("../components/lineups/SquareMini"))
+const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
 const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
 
 function Category (props) {
