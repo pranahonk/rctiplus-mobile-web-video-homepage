@@ -270,69 +270,71 @@ class Index_v2 extends React.Component {
                 {this.state.isShimmer
                     ? (<HomeLoader/>)
                     : (
-                        <div>
-                            <Nav
-                                parent={this}
-                                closeStickyInstallFunction={this.closeStickyInstall}
-                                showStickyInstall={this.state.show_sticky_install}/>
-                            <Carousel showStickyInstall={this.state.show_sticky_install} >
-                                <GridMenu />
-                            </Carousel>
+                        <>
+                            <div>
+                                <Nav
+                                    parent={this}
+                                    closeStickyInstallFunction={this.closeStickyInstall}
+                                    showStickyInstall={this.state.show_sticky_install}/>
+                                <Carousel showStickyInstall={this.state.show_sticky_install} >
+                                    <GridMenu />
+                                </Carousel>
 
-                            <div style={{marginTop: "25px"}}>
-                                <Stories loadingBar={this.LoadingBar} homepage={true}/>
-                            </div>
+                                <div style={{marginTop: "25px"}}>
+                                    <Stories loadingBar={this.LoadingBar} homepage={true}/>
+                                </div>
 
-                            <StickyContainer>
-                                <Sticky disableHardwareAcceleration>
-                                    { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
-                                        const topDistance = this.state.show_sticky_install ? 120 : 40;
-                                        if (distanceFromTop < topDistance) {
-                                            if (!this.props.ads.ads_displayed) {
+                                <StickyContainer>
+                                    <Sticky disableHardwareAcceleration>
+                                        { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
+                                            const topDistance = this.state.show_sticky_install ? 120 : 40;
+                                            if (distanceFromTop < topDistance) {
+                                                if (!this.props.ads.ads_displayed) {
+                                                    return (
+                                                        <div {...rest} >
+                                                            <StickyAds/>
+                                                        </div>
+                                                    );
+                                                }
+                                                const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
+                                                if (adsContents.length > 0) {
+                                                    if (adsContents[0].tagName == 'SCRIPT') {
+                                                        const stickyAds = document.getElementById('sticky-ads-container');
+                                                        if (stickyAds) {
+                                                            stickyAds.style.display = 'none'
+                                                        }
+                                                    }
+                                                }
                                                 return (
                                                     <div {...rest} >
-                                                        <StickyAds/>
+                                                        <StickyAds sticky/>
                                                     </div>
                                                 );
                                             }
-                                            const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
-                                            if (adsContents.length > 0) {
-                                                if (adsContents[0].tagName == 'SCRIPT') {
-                                                    const stickyAds = document.getElementById('sticky-ads-container');
-                                                    if (stickyAds) {
-                                                        stickyAds.style.display = 'none'
-                                                    }
-                                                }
-                                            }
                                             return (
                                                 <div {...rest} >
-                                                    <StickyAds sticky/>
+                                                    <StickyAds id='div-gpt-ad-1584677577539-0'/>
                                                 </div>
                                             );
-                                        }
-                                        return (
-                                            <div {...rest} >
-                                                <StickyAds id='div-gpt-ad-1584677577539-0'/>
-                                            </div>
-                                        );
-                                    } }
-                                </Sticky>
-                            </StickyContainer>
-                            {/*
-                                --------------------------------- LINE UP CONTENTS ---------------------------------
-                                ------------------------------- SUBJECTED TO CHANGES -------------------------------
-                            */}
-                            <div
-                                style={{marginBottom: 45, paddingTop: 10}}
-                                onTouchStart={this.onTouchStart.bind(this)}
-                                onTouchEnd={this.onTouchEnd.bind(this)}>
-                                { this.renderLineup(this.state.lineups, this.state.meta) }
+                                        } }
+                                    </Sticky>
+                                </StickyContainer>
+                                {/*
+                                    --------------------------------- LINE UP CONTENTS ---------------------------------
+                                    ------------------------------- SUBJECTED TO CHANGES -------------------------------
+                                */}
+                                <div
+                                    style={{marginBottom: 45, paddingTop: 10}}
+                                    onTouchStart={this.onTouchStart.bind(this)}
+                                    onTouchEnd={this.onTouchEnd.bind(this)}>
+                                    { this.renderLineup(this.state.lineups, this.state.meta) }
+                                </div>
                             </div>
                             <ComingSoonModal 
                                 open={this.state.openComingSoonModal}
                                 onClose={_ => this.setState({ openComingSoonModal: false })}
                                 content={this.state.contentComingSoonModal} />
-                        </div>
+                        </>
                     )
                 }
         </Layout>
