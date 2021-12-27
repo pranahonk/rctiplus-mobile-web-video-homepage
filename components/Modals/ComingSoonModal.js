@@ -13,7 +13,12 @@ export default function comingSoonModal(props) {
   useEffect(() => {
     setOpen(props.open)
     if (props.open) {
+
+      // disable scroll event
       document.body.style.overflow = "hidden"
+      document.body.style.position = "fixed"
+      document.body.style.width = "100vw"
+      window.scrollTo(0, 1)
     }
   }, [props.open])
 
@@ -39,7 +44,11 @@ export default function comingSoonModal(props) {
 
   const destroyModal = _ => {
     props.onClose()
-    document.body.style.overflow = "unset"
+
+    // enable scroll event
+    document.body.style.overflow = ""
+    document.body.style.position = ""
+    document.body.style.width = ""
   }
 
   const renderDateDetail = () => {
