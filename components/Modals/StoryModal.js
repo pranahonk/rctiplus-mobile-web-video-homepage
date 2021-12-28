@@ -231,8 +231,6 @@ function storyModal(props) {
         href = permalink ? permalink.split(".rctiplus.com")[1] : ""
         break
     }
-
-    console.log(href, target, type, external_link, permalink, "uhuyyyy")
     
     if (!href) return null
     
