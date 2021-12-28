@@ -86,7 +86,9 @@ export default function comingSoonModal(props) {
             <p>{ props.content.title }</p>
             <p>{ renderDateDetail() }</p>
             <div>
-              <CountdownTimer time={props.content.countdown} />
+              <CountdownTimer 
+                time={props.content.countdown} 
+                name={"Live In"} />
               <span>
                 This program hasn't started yet.<br/>
                 Please comeback later.
