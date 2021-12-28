@@ -11,7 +11,7 @@ import '../../assets/scss/components/panel.scss'
 
 function squareMiniView (props) {
   const { generateLink, onTouchStart, onTouchEnd, fetchLineupContent, loadMore, contents } = useVideoLineups(props)
-  const placeHolderImgUrl = "/static/placeholders/placeholder_landscape.png"
+  const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
   const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
   useEffect(() => {
@@ -47,7 +47,7 @@ function squareMiniView (props) {
                       loader={<img src={placeHolderImgUrl} />}
                       width={100}
                       height={100}
-                      src={[`${rootImageUrl}${content.content_type_detail.detail.data.landscape_image}`, placeHolderImgUrl]} />
+                      src={[`${rootImageUrl}${content.content_type_detail.detail.data.square_image}`, placeHolderImgUrl]} />
                   </div>
                 </div>
               )
