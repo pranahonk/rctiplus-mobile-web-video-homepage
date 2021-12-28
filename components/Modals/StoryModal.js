@@ -261,21 +261,22 @@ function storyModal(props) {
           })}
         </div>
 
-        <div className="story-title">
-          <img
-            src={`${props.story.image_path}${RESOLUTION_IMG}${props.story.program_img}`}
-            alt="story-avatar"
-            width="50"
-            height="50" />
-          <label>
-            { props.story.story[activeIndex].title }
-          </label>
+        <div className="story-head">
+          <div>
+            <img
+              src={`${props.story.image_path}${RESOLUTION_IMG}${props.story.program_img}`}
+              alt="story-avatar"
+              width="50"
+              height="50" />
+            <label>
+              { props.story.story[activeIndex].title }
+            </label>
+          </div>
+          <button
+            id="close-stories"
+            className="close-stories"
+            onClick={_ => closeModal()}>X</button>
         </div>
-
-        <button
-          id="close-stories"
-          className="close-stories"
-          onClick={_ => closeModal()}>X</button>
 
         <div
           id="stories-content"
