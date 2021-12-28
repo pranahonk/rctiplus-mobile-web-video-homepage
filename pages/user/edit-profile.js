@@ -291,13 +291,9 @@ class EditProfile extends React.Component {
                             id: 'action-logout',
                             callback: () => {
                                 accountGeneralEvent('mweb_account_signout_clicked');
-                                const deviceId = new DeviceUUID().get();
-                                this.props.logout(deviceId)
-                                    .then(() => {
-                                        console.log("asdasdasdasd")
-                                        Router.push('/login')
-                                    })
-                                    .catch((e) => console.log("asdasdas", e));
+                                this.props.logout()
+                                    .then(() => Router.push('/login'))
+                                    .catch(() => removeCookie('ACCESS_TOKEN'));
                             }
                         }
                     ]}/>
