@@ -37,3 +37,60 @@ and open the template in the editor.
         transform: translateY(-50%);
     }
 }
+
+.modal-stories{
+    outline: 0 !important;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100%;
+    background: black;
+    z-index: 10000000;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.contain-circle{
+    white-space: nowrap;
+    overflow: auto;
+}
+
+.cont-circle{
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 70% 70%,#ff5bd8 42%,#7ab1ec 59%,#00fffd 0) !important;
+    position: relative !important;
+    padding-bottom: calc(100% - 2px) !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    width: auto;
+}
+
+.circle-box{
+    display: inline-block;
+    width: 30%;
+    max-width: 30%;
+    margin: 0 2px;
+    vertical-align: top;
+}
+
+.circle-img{
+    display: block;
+    box-sizing: border-box;
+    height: 95%;
+    width: 95%;
+    background-size: cover;
+    background-position: center;
+    object-fit: cover;
+
+    border-radius: 100% !important;
+    border: 3px solid #282828!important;
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    right: 2px !important;
+    bottom: 2px !important;
+}
