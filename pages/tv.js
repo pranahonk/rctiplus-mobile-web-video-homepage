@@ -601,7 +601,7 @@ class Tv extends React.Component {
 	}
 
 	checkLogin() {
-		if (!this.state.user_data) {
+		if (!this.props.user.isAuth) {
 			showSignInAlert(`Please <b>Sign In</b><br/>
 				Woops! Gonna sign in first!<br/>
 				Only a click away and you<br/>
@@ -613,10 +613,10 @@ class Tv extends React.Component {
 	}
 
 	sendChat() {
-		if (this.state.user_data) {
+		if (this.props.user.isAuth) {
 			if (this.state.chat != '') {
 				this.statusChatBlock(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
-				const userData = this.state.user_data;
+				const userData = this.props.user.data;
 				let user = userData.nickname ? userData.nickname :
 					userData.display_name ? userData.display_name :
 						userData.email ? userData.email.replace(/\d{4}$/, '****') :
@@ -625,7 +625,7 @@ class Tv extends React.Component {
 					ts: Date.now(),
 					m: this.state.chat,
 					u: user,
-					i: this.state.user_data.photo_url,
+					i: this.props.user.photo_url,
 					sent: false,
 					failed: false
 				};
@@ -638,7 +638,7 @@ class Tv extends React.Component {
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
 
-					this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, newChat.m, user, this.state.user_data.photo_url)
+					this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, newChat.m, user, this.props.user.photo_url)
 						.then(response => {
 							newChat.sent = true;
 							if (response.status !== 200 || response.data.status.code !== 0) {
@@ -672,12 +672,12 @@ class Tv extends React.Component {
 		lastChat.failed = false;
 		chats[index] = lastChat;
 		this.setState({ chats: chats, sending_chat: true }, () => {
-			const userData = this.state.user_data;
+			const userData = this.props.user.data;
 			let user = userData.nickname ? userData.nickname :
 				userData.display_name ? userData.display_name :
 					userData.email ? userData.email.replace(/\d{4}$/, '****') :
 						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
-			this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, lastChat.m, user, this.state.user_data.photo_url)
+			this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, lastChat.m, user, this.props.user.photo_url)
 				.then(response => {
 					lastChat.sent = true;
 					if (response.status !== 200 || response.data.status.code !== 0) {
@@ -1164,7 +1164,8 @@ class Tv extends React.Component {
 												className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
 										</Col>
 										<Col className="chat-message" xs={10}>
-											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
+											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}>
+                        <RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
 										</Col>
 									</Row>
 								))}
