@@ -1,7 +1,7 @@
 import ax from 'axios';
 import { AUTHENTICATE, DEAUTHENTICATE, WRONG_AUTHENTICATION } from '../types';
 import { DEV_API } from '../../config';
-import { setCookie, removeCookie, getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
+import { setCookie, removeCookie, getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../../utils/cookie';
 
 const axios = ax.create({
     // baseURL: API + '/api',
@@ -10,7 +10,7 @@ const axios = ax.create({
 
 axios.interceptors.request.use(async (request) => {
     await checkToken();
-    request.headers['Authorization'] = getVisitorToken();
+    request.headers['Authorization'] = getUserAccessToken() || getVisitorToken();
     return request;
 });
 
