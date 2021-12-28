@@ -21,13 +21,13 @@ const setDeviceId = deviceId => {
     });
 };
 
-const login = ({ emailphone, password, deviceId = '1', phone_code }) => {
+const login = ({ emailphone, password, deviceId, phone_code }) => {
     return dispatch => new Promise((resolve, reject) => {
         axios.post('/v3/login', {
                 phone_code: phone_code,
                 username: phone_code + emailphone,
                 password: password,
-                device_id: deviceId,
+                device_id: deviceId || new DeviceUUID().get(),
                 platform: 'mweb'
             }, {
                 headers: {
@@ -57,7 +57,7 @@ const logout = (device_id, platform = 'mweb') => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.post(`/v1/logout`, {
-                device_id: device_id,
+                device_id: device_id || new DeviceUUID().get(),
                 platform: platform
             });
 
