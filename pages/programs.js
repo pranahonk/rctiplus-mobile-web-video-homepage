@@ -400,6 +400,8 @@ class Index extends React.Component {
         this.props.dispatch(fetchEpisode(programId, 'program-episode', this.props.router.query.content_id));
         this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
         this.props.dispatch(seasonSelected(1));
+      }else if(this.props.server[this.type].data.category === 'series'){
+        this.props.dispatch(fetchEpisode(programId, 'program-episode', this.props.router.query.content_id));
       }
       if (this.isTabs(this.props.server[this.type].data).length > 0) {
         switch (this.isTabs(this.props.server[this.type].data)[0]) {
