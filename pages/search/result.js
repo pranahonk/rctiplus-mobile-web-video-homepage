@@ -1,32 +1,46 @@
 import React from 'react';
 import Router from 'next/router';
-import Link from 'next/link';
 import { connect } from 'react-redux';
-import Img from 'react-image';
 import classnames from 'classnames';
+import dynamic from 'next/dynamic';
+
+import AllResult from './Result/AllResult';
+import ProgramResult from './Result/ProgramResult';
+import EpisodeResult from './Result/EpisodeResult';
+import ExtraResult from './Result/ExtraResult';
+import CatchupResult from './Result/CatchUpResult';
+import ClipResult from './Result/ClipResult';
+import PhotoResult from './Result/PhotoResult';
 
 import searchActions from '../../redux/actions/searchActions';
+import bookmarkActions from '../../redux/actions/bookmarkActions';
 
-import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
-import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
+import { TabContent, Nav, NavItem, NavLink } from 'reactstrap';
 
 import '../../assets/scss/components/search-results.scss';
 
 import { searchTabClicked, searchProgramClicked, searchScrollVerticalEvent } from '../../utils/appier';
+import { showAlert } from '../../utils/helpers';
+import { isIOS } from 'react-device-detect';
 
+const ActionSheet = dynamic(() => import('../../components/Modals/ActionSheet'), { ssr: false });
 class Result extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            active_tab: 'program',
+            active_tab: 'all',
             results: [],
             meta: {},
             show_more_allowed: {},
-            length: 9
+            length: 9,
+            action_sheet: false,
+            urlShare: "",
+            title: "title-program",
+            data: {}
         };
 
-        this.tabs = ['program', 'episode', 'extra', 'clip', 'photo'];
+        this.tabs = ['all', 'program', 'episode', 'catchup', 'extras', 'clips', 'photos'];
         this.swipe = {};
     }
 
@@ -53,6 +67,7 @@ class Result extends React.Component {
     }
 
     link(data, type) {
+        this.props.popularTracking(data?.ref_id)
         searchProgramClicked(data.title, data.id, type, 'mweb_search_program_clicked');
 		switch (type) {
 			case 'program':                
@@ -63,6 +78,44 @@ class Result extends React.Component {
 				break;
 		}
 	}
+
+    alertDownload() {
+        showAlert('To be able to watch this episode offline, please download RCTI+ application on ' + (isIOS ? 'App Store' : 'Playstore'),
+             '',
+             'Open ' + (isIOS ? 'App Store' : 'Playstore'),
+             'Cancel', () => { window.open((isIOS ? 'https://apps.apple.com/us/app/rcti/id1472168599' : 'https://play.google.com/store/apps/details?id=com.fta.rctitv'), '_blank'); });
+    }
+
+    toggleActionSheet(title = 'title-program', url) {
+        this.setState({
+            action_sheet: !this.state.action_sheet,
+            title: title,
+            urlShare: url
+        });
+    
+        return 'title-program';
+    }
+
+    addBookmark(id, type){
+        this.props.bookmark(id,type)
+    }
+
+    deleteBookmark(id, type){
+        this.props.deleteBookmark(id,type)
+    }
+
+    handleBookmark(status, id, type){
+        
+        if(status) {
+            this.setState({data: {id, type, status: false} })
+            this.deleteBookmark(id,type)
+        }
+        else {
+            this.setState({data: {id, type, status: true} })
+            this.addBookmark(id,type)
+        }
+
+    }
 
     render() {
         return (
@@ -75,11 +128,76 @@ class Result extends React.Component {
                     ))}
                 </Nav>
                 <TabContent className="container-box-search-result" activeTab={this.state.active_tab}>
-                    {this.tabs.map((t, i) => (
+                    {this.state.active_tab === "all" && 
+                        <AllResult 
+                            handleTab={(val) => this.toggleTab(val) } 
+                            data={this.state.data}
+                            onShare={(title, url, type) => this.toggleActionSheet(title, url)} 
+                            onDownload={() => this.alertDownload()} 
+                            onBookmark={(status, id, type) => this.handleBookmark(status, id, type)}
+                            onClick={(c, t) => this.link( c, t)} 
+                        />
+                    }
+                    {this.state.active_tab === "program" && <ProgramResult onClick={(c) => this.link( c, "program")}  />}
+                    {this.state.active_tab === "episode" && 
+                        <EpisodeResult 
+                            data={this.state.data}
+                            onShare={(title, url) => this.toggleActionSheet(title, url)} 
+                            onDownload={() => this.alertDownload()} 
+                            onBookmark={(status, id, type) => this.handleBookmark(status, id, type)}
+                            onClick={(c) => this.link(c, "episode")} 
+                        />
+                    }
+                    {this.state.active_tab === "extras" && 
+                        <ExtraResult 
+                            data={this.state.data}
+                            onShare={(title, url) => this.toggleActionSheet(title, url)} 
+                            onDownload={() => this.alertDownload()} 
+                            onBookmark={(status, id, type) => this.handleBookmark(status, id, type)}
+                            onClick={(c) => this.link(c, "extras")}  
+                        />
+                    }
+                    {this.state.active_tab === "catchup" && 
+                        <CatchupResult 
+                            onShare={(title, url) => this.toggleActionSheet(title, url)} 
+                            onClick={(c) => this.link(c, "catchup")} 
+                        />
+                    }
+                    {this.state.active_tab === "clips" && 
+                        <ClipResult 
+                            data={this.state.data}
+                            onShare={(title, url) => this.toggleActionSheet( title, url)} 
+                            onDownload={() => this.alertDownload()} 
+                            onBookmark={(status, id, type) => this.handleBookmark(status, id, type)}
+                            onClick={(c) => this.link(c, "clips")} 
+                        />
+                    }
+                    {this.state.active_tab === "photos" && <PhotoResult onClick={(c) => this.link(c, "photo")} />}
+                </TabContent>
+
+                { this.state.action_sheet &&
+                    <ActionSheet
+                        toggle={this.toggleActionSheet.bind(this)}
+                        caption={this.state.title}
+                        url={this.state.urlShare}
+                        open={this.state.action_sheet}
+                    />
+                }
+            </div>
+        );
+    }
+}
+
+export default connect(state => state, {
+	...bookmarkActions,
+	...searchActions
+})(Result);
+
+{/* {this.tabs.map((t, i) => (
                         <TabPane key={i} tabId={t}>
-                            <div className="content-search">
+                            <div style={{background: "#282828"}} className="content-search">
                                 <div className="header-list">
-                                    <p className="title">Search Result</p>
+                                    <p className="title">Result</p>
                                 </div>
                                 <div className="content-list">
                                     
@@ -123,13 +241,4 @@ class Result extends React.Component {
                                 </div>
                             </div>
                         </TabPane>
-                    ))}
-                    
-                </TabContent>
-            </div>
-        );
-    }
-
-}
-
-export default connect(state => state, searchActions)(Result);
+                    ))} */}

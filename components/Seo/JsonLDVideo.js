@@ -1,3 +1,4 @@
+import { SITEMAP } from "../../config"
 
 // import { BASE_URL, SHARE_BASE_URL } from '../../config'
 const oneSegment = 'm.rctiplus.com';
