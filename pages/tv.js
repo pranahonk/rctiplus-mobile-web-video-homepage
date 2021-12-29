@@ -894,18 +894,18 @@ class Tv extends React.Component {
 
 		if (this.state.error) {
 			playerRef = (
-				<div 
-					ref={ this.playerContainerRef } 
+				<div
+					ref={ this.playerContainerRef }
 					style={{ textAlign: 'center', padding: 30, minHeight: 180 }}>
 					<Wrench />
 
 					<h5 style={{ color: '#8f8f8f' }}>
-						{this.state.status && this.state.status.code === 12 
+						{this.state.status && this.state.status.code === 12
 						? (
 							<div>
 								<span style={{ fontSize: 12 }}>{this.state.status.message_client}</span>
 							</div>
-							) 
+							)
 						: (
 								<div>
 									<strong style={{ fontSize: 14 }}>Cannot load the video</strong><br />
@@ -947,8 +947,8 @@ class Tv extends React.Component {
 						</div>
 					</div>
 
-					{this.state.ad_closed 
-						? null 
+					{this.state.ad_closed
+						? null
 						: (
 								<div className='ads_wrapper'>
 									<div className='close_button' onClick={this.adsClose.bind(this)}>x</div>
@@ -965,6 +965,7 @@ class Tv extends React.Component {
 		return (
 			<Layout className="live-tv-layout" title={this._metaTags().title}>
 				<Head>
+          <JsonLDVideo content={contentData} />
 					<meta name="description" content={this._metaTags().description} />
 					<meta name="keywords" content={this._metaTags().keywords} />
 					<meta property="og:title" content={this._metaTags().title} />
@@ -989,13 +990,6 @@ class Tv extends React.Component {
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 					<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 				</Head>
-
-				<JsonLDVideo 
-					seoContent={this.props.seoContent} 
-					stream={{ 
-						url: props.router.asPath,
-						detail: props.chats.live_event_detail
-					}} />
 
 				<SelectDateModal
 					open={this.state.select_modal}
@@ -1069,7 +1063,7 @@ class Tv extends React.Component {
 						<TabContent activeTab={this.state.selected_tab}>
 							<TabPane tabId={'live'}>
 								{this.state.epg.map((e, i) => {
-									
+
 									if (this.isLiveProgram(e)) {
 										return (<Row key={i} className={'program-item selected'}>
 											<Col xs={9}>
@@ -1109,8 +1103,8 @@ class Tv extends React.Component {
 												</Link>
 											</Col>
 											<Col className="right-side">
-												<ShareIcon 
-													onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + `/tv/${this.props.router.query.channel}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`, ['rctiplus', this.props.chats.channel_code], 'catchup')} 
+												<ShareIcon
+													onClick={this.toggleActionSheet.bind(this, 'Catch Up TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + c.title, BASE_URL + `/tv/${this.props.router.query.channel}/${c.id}/${c.title.replace(/ +/g, '-').toLowerCase()}`, ['rctiplus', this.props.chats.channel_code], 'catchup')}
 													className="share-btn" />
 											</Col>
 										</Row>
@@ -1121,31 +1115,31 @@ class Tv extends React.Component {
 					</div>
 
 					<div
-						ref={ this.chatBoxRef } 
-						className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} 
+						ref={ this.chatBoxRef }
+						className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')}
 						style={this.state.chat_open ? { height: this.setHeightChatBox() } : null}>
 						<div className="btn-chat">
 							<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
 								<ExpandLessIcon className="expand-icon" />
-								Live Chat 
+								Live Chat
 								<FiberManualRecordIcon className="indicator-dot" />
 							</Button>
-							{this.state.ads_data 
+							{this.state.ads_data
 								? (
-										<Toast 
-											callbackCount={this.callbackCount.bind(this)} 
-											count={this.callbackAds.bind(this)} 
-											data={this.state.ads_data.data} 
+										<Toast
+											callbackCount={this.callbackCount.bind(this)}
+											count={this.callbackAds.bind(this)}
+											data={this.state.ads_data.data}
 											isAds={this.getStatusAds.bind(this)}/>
-									) 
+									)
 								: (<div/>)}
 						</div>
 						<div className="box-chat">
 							<div
-								className="wrap-live-chat__block" 
+								className="wrap-live-chat__block"
 								style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
-								<div 
-									className="block_chat" 
+								<div
+									className="block_chat"
 									style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
 									<div>
 										<MuteChat className="icon-block__chat" />
