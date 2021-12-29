@@ -13,7 +13,7 @@ import 'swiper/swiper.scss';
 //import scss
 import '../../../assets/scss/components/hot-video.scss';
 import { getTruncate, imageHot, imageHotProfile } from '../../../utils/helpers';
-import { GET_HOT_VIDEO } from '../../../graphql/queries/hot-video';
+import { GET_HOT_VIDEO, GET_HOT_VIDEO_PAGINATIONS } from '../../../graphql/queries/hot-video';
 import Views from '@material-ui/icons/RemoveRedEyeSharp';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
@@ -29,9 +29,8 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
   const [assetUrl, setAssetUrl] = useState(null);
 
   useEffect(() => {
-    client.query({query: GET_HOT_VIDEO(1, 100, 1, 1)})
+    client.query({query: GET_HOT_VIDEO(1, 100, 1, 10)})
       .then((res)=>{
-        console.log(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail);
         setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
         setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
         setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
@@ -42,10 +41,12 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
   },[]);
 
   const getHastagPagination = (page) =>{
-    client.query({query: GET_HOT_VIDEO(1, 100, page, 20)})
+    client.query({query: GET_HOT_VIDEO_PAGINATIONS(page, 20, id)})
       .then((res)=>{
         setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
-        setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail]}))
+        setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineup_contents?.data]}));
+        setLoadingMore(false);
+        setShow(null);
       })
       .catch((err)=>{
         console.log(err);
@@ -104,7 +105,7 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
                             }
                           </div>
                           <div className="hot-videos_card-profile__name col">
-                            {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.nick_name, "...", "17")}
+                            {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.display_name || item?.content_type_detail?.detail?.data?.contestant?.nick_name ||  item?.content_type_detail?.detail?.data?.contestant?.email || item?.content_type_detail?.detail?.data?.contestant?.phone_number, "...", "17")}
                           </div>
                         </div>
                         <div className='row'>
