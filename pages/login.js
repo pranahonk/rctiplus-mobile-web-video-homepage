@@ -53,19 +53,6 @@ class Signin extends React.Component {
 
 	componentDidMount() {
 		this.props.getListCountry();
-		// setTimeout(() => {
-		// 	const token = getCookie('ACCESS_TOKEN');
-		// 	if (token) {
-		// 		const query = this.props.router.query;
-		// 		if (query && Object.keys(query).length > 0 && query.referrer) {
-		// 			removeCookie('ACCESS_TOKEN')
-		// 			// window.location.href = this.constructReferrerUrl(token);
-		// 		}
-		// 		else {
-		// 			// Router.push('/');
-		// 		}
-		// 	}
-		// }, 500);
 		this.LoadingBar.complete();
 	}
 
@@ -105,7 +92,7 @@ class Signin extends React.Component {
 			// console.log('EMAIL');
 		}
 }
-	
+
 
 	handleSubmit(e) {
 		e.preventDefault();
@@ -292,8 +279,8 @@ class Signin extends React.Component {
 						toggle={() => this.setState({ status: !state.status })}
 						getCountryCode={(e) => {
 								this.props.setPhoneCode(e.phone_code);
-								this.setState({ 
-									codeCountry: e.code, 
+								this.setState({
+									codeCountry: e.code,
 									phone_code: e.phone_code,
 									emailphone: state.emailphone,
 									});}
@@ -306,7 +293,7 @@ class Signin extends React.Component {
 }
 
 export default connect(state => state, {
-	...actions, 
+	...actions,
 	...countryList,
 	...registerActions,
 })(withRouter(Signin));

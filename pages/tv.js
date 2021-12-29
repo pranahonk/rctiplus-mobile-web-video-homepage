@@ -30,7 +30,7 @@ import MuteChat from '../components/Includes/Common/MuteChat';
 import Toast from '../components/Includes/Common/Toast';
 import JsonLDVideo from '../components/Seo/JsonLDVideo';
 
-import { formatDate, formatDateWord, getFormattedDateBefore, formatMonthEngToID } from '../utils/dateHelpers';
+import { formatDate, formatDateWord, formatDateTimeID, getFormattedDateBefore, formatMonthEngToID } from '../utils/dateHelpers';
 import { showAlert, showSignInAlert } from '../utils/helpers';
 
 import { Row, Col, Button, Nav, NavItem, NavLink, TabContent, TabPane, Input } from 'reactstrap';
@@ -48,7 +48,7 @@ import { isIOS } from 'react-device-detect';
 import socketIOClient from 'socket.io-client';
 import ax from 'axios';
 
-import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
+import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, API_TIMEOUT } from '../config';
 
 import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
@@ -84,6 +84,7 @@ class Tv extends React.Component {
 		let dataEpg = null;
 		let q = null;
     let seoData = null;
+    let seoDate = null;
 
     const visitorToken = nextCookie(ctx)?.VISITOR_TOKEN
     const userToken = nextCookie(ctx)?.ACCESS_TOKEN
@@ -119,19 +120,53 @@ class Tv extends React.Component {
 			dataEpg = data_epg.status.code === 0 ? data_epg.data : null
 		}
 
+    // getseo
     const id_channel= SITEMAP[`live_tv_${ctx.query.channel?.toLowerCase()}`]?.id_channel;
     const response_seo = await fetch(`${DEV_API}/api/v1/seo/content/live-stream/${id_channel}`, {
       method: 'GET',
       headers: {
         'Authorization': token,
+      },
+      timeout: API_TIMEOUT
+    }).catch(err=> console.log('Error: ' + err));
+
+    if (response_seo && response_seo.status == 200) {
+        seoData = await response_seo.json();
+    }else{
+      seoData ={
+        data:{
+          title:'Live Streaming RCTI Hari Ini - TV Online Indonesia',
+          description:'Nonton tv online bersama Indonesia',
+          keywords:'live streaming rcti, rcti live, tv online',
+          image:'/files/fta_rcti/SEO Assets/streaming_rcti.jpg'
+        },
+        meta: {
+          image_path: 'https://static.rctiplus.id/media/',
+          video_path: 'https://static.rctiplus.id'
+        }
       }
-    });
-    const data_seo = await response_seo.json();
-    if (response_seo.status == 200) {
-      seoData = data_seo.status.code === 0 ? data_seo.data : null
     }
 
-		return {  context_data: ctx.query, data_epg: dataEpg, params_date: q, data_seo: seoData, meta_seo: data_seo.meta};
+    //getdateseo
+    const response_date = await fetch(`${DEV_API}/api/v1/live-event/${id_channel}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': token,
+      },
+      timeout: API_TIMEOUT
+    }).catch(err=> console.log('Error: ' + err));
+
+    if (response_date && response_date.status == 200) {
+        seoDate = await response_date.json();
+    }else{
+      seoDate ={
+        data:{
+          end_date:'2029-04-30 19:00:00'
+        }
+      }
+    }
+
+    return {  context_data: ctx.query, data_epg: dataEpg, params_date: q, data_seo: seoData, meta_seo: seoData.meta, date_seo: seoDate};
 	}
 
 	constructor(props) {
@@ -155,6 +190,8 @@ class Tv extends React.Component {
 			meta: {},
 			dates_before: getFormattedDateBefore(7),
 			selected_date: formatDateWord(now),
+			selected_dateID: formatDateTimeID(now),
+			selected_dateID2: formatDateTimeID(this.props.date_seo.data.end_date),
 			select_modal: false,
 			player_url: '',
 			player_vmap: '',
@@ -273,6 +310,7 @@ class Tv extends React.Component {
 		const currentTime = new Date().getTime();
 		const startTime = new Date(formatDate(this.currentDate) + 'T' + epg.s).getTime();
 		const endTime = new Date(formatDate(this.currentDate) + 'T' + epg.e).getTime();
+
 		return currentTime > startTime && currentTime < endTime;
 	}
 
@@ -563,7 +601,7 @@ class Tv extends React.Component {
 	}
 
 	checkLogin() {
-		if (!this.state.user_data) {
+		if (!this.props.user.isAuth) {
 			showSignInAlert(`Please <b>Sign In</b><br/>
 				Woops! Gonna sign in first!<br/>
 				Only a click away and you<br/>
@@ -575,10 +613,10 @@ class Tv extends React.Component {
 	}
 
 	sendChat() {
-		if (this.state.user_data) {
+		if (this.props.user.isAuth) {
 			if (this.state.chat != '') {
 				this.statusChatBlock(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
-				const userData = this.state.user_data;
+				const userData = this.props.user.data;
 				let user = userData.nickname ? userData.nickname :
 					userData.display_name ? userData.display_name :
 						userData.email ? userData.email.replace(/\d{4}$/, '****') :
@@ -587,7 +625,7 @@ class Tv extends React.Component {
 					ts: Date.now(),
 					m: this.state.chat,
 					u: user,
-					i: this.state.user_data.photo_url,
+					i: this.props.user.photo_url,
 					sent: false,
 					failed: false
 				};
@@ -600,7 +638,7 @@ class Tv extends React.Component {
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
 
-					this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, newChat.m, user, this.state.user_data.photo_url)
+					this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, newChat.m, user, this.props.user.photo_url)
 						.then(response => {
 							newChat.sent = true;
 							if (response.status !== 200 || response.data.status.code !== 0) {
@@ -634,12 +672,12 @@ class Tv extends React.Component {
 		lastChat.failed = false;
 		chats[index] = lastChat;
 		this.setState({ chats: chats, sending_chat: true }, () => {
-			const userData = this.state.user_data;
+			const userData = this.props.user.data;
 			let user = userData.nickname ? userData.nickname :
 				userData.display_name ? userData.display_name :
 					userData.email ? userData.email.replace(/\d{4}$/, '****') :
 						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
-			this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, lastChat.m, user, this.state.user_data.photo_url)
+			this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, lastChat.m, user, this.props.user.photo_url)
 				.then(response => {
 					lastChat.sent = true;
 					if (response.status !== 200 || response.data.status.code !== 0) {
@@ -750,8 +788,32 @@ class Tv extends React.Component {
 			description: titleEpg ? `Nonton streaming ${titleEpg} - ${paramsDate}  online tanpa buffering dan acara favorit lainnya 7 hari kemarin. Dapatkan juga jadwal acara ${channel == 'inews' ? 'iNEWS' : channel?.toUpperCase()} terbaru hanya di RCTI+` : descriptionChannel,
 			keywords: titleEpg ? `streaming ${channel}, live streaming ${channel}, ${channel} live, ${channel} streaming, ${channel} live streaming. ${titleEpg}, ${paramsDate}` : keywordsChannel,
 			twitter_img_alt: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel == 'inews' ? 'iNEWS' : channel?.toUpperCase()} - RCTI+` : twitter_img_alt,
-      pathimage:`${this.props?.meta_seo?.image_path+`500`+this.props?.data_seo?.image}`,
+      pathimage:`${this.props?.meta_seo?.image_path+`500`+this.props?.data_seo?.data?.image}`,
 		}
+	}
+
+  _dscriptionLD(channel){
+    let sameas = '';
+    let samearr = '';
+    let description ='';
+    if(channel === 'rcti'){
+      sameas = '["https://www.rcti.tv/","https://www.google.com/search?q=RCTI&kponly&kgmid=/m/0824qb "," https://id.wikipedia.org/wiki/RCTI","https://www.wikidata.org/wiki/Q5257835"]';
+      description = 'Rajawali Citra Televisi (RCTI) merupakan stasiun TV swasta pertama dan terbesar di Indonesia. Stasiun TV ini resmi mengudara pada Agustus 1989 dengan memegang motto “Kebanggaan Bersama Milik Bangsa”. Pada Oktober 2003, RCTI resmi masuk ke kelompok perusahaaan media yaitu Media Nusantara Citra (MNC). Setelah itu, tumbuhlah menjadi stasiun tv yang besar dan digemari masyarakat indonesia. Seperti halnya vidio com, useetv, k-vision & mivo tv, RCTI+ hadir dengan layanan televisi internet secara live streaming yang dapat dinikmati semua kalangan dengan konten eksklusif dan gratis. Channel RCTI menjadi stasiun TV yang konsisten menghadirkan tayangan televisi berkualitas dan menarik yang dapat di tonton secara live streaming di tv online RCTI+. Di tv internet RCTI+ menyajikan mulai dari program berita, musik, sinetron, sitkom, infotainment, musik, memasak, acara olahraga, kartun dan film lainnya. Salah satu program sinetron populer terkini di RCTI adalah Sinetron Ikatan Cinta, Master Chef Indonesia, Si Doel Anak Sekolahan hingga Preman Pensiun yang telah memberikan kontribusi besar dalam pasar hiburan di Indonesia. Kini, RCTI dengan slogannya “Semakin Oke” menghadirkan program-program pilihan seperti Sinetron Ikatan Cinta, Putri Untuk Pangeran hingga Preman Pensiun. Selain itu info dan update berita terbaru juga disajikan oleh RCTI dengan program Seputar iNews Pagi, Go Spot, Silet dan Seputar iNews Siang.';
+      samearr = '["https://www.google.com/search?q=streaming+tv+internet&kponly&kgmid=/m/03x49v","https://id.wikipedia.org/wiki/Televisi_Internet"]';
+    }else if(channel === 'mnctv'){
+      sameas = '["https://www.google.com/search?q=mnctv&kponly&kgmid=/m/0dvf5k"," http://mnctv.com/ ","https://www.wikidata.org/wiki/Q6683165","https://id.wikipedia.org/wiki/MNCTV"]';
+      description = 'Dengan visi menjadi pilihan utama pemirsa Indonesia “Selalu di Hati”, MNCTV terus menghadirkan program yang memanjakan mata mulai dari sinetron, variety show, talent show, animasi dan program seru lainnya. Beberapa program acara yang ditayangkan di MNCTV seperti Upin & Ipin, Raden Kian Santang, Rising Star Dangdut dan masih banyak lainnya. Adapun dalam kategori program berita seperti Lintas iNews Pagi, Lintas iNews Siang & Lintas iNews Malam. Semuanya dapat ditonton melalui siaran live streaming MNCTV hari ini di RCTI+ gratis tanpa buffer.';
+      samearr = '[ "https://www.google.com/search?q=streaming+tv+internet&kponly&kgmid=/m/03x49v","https://id.wikipedia.org/wiki/Televisi_Internet"]';
+    }else if(channel === 'gtv'){
+      sameas = '["https://www.google.com/search?q=global+tv&kponly&kgmid=/m/0b7bnq","https://www.gtv.id/","https://www.wikidata.org/wiki/Q4201809","https://id.wikipedia.org/wiki/GTV_(Indonesia)"]';
+      description = 'Live streaming acara Global TV (GTV) online hari ini gratis di RCTI+, tanpa buffer! Daftar acara GTV menyajikan pilihan kategori program menarik yang dapat ditonton secara live stream seperti kartun animasi: Zak Storm, Naruto & SpongeBob. Untuk kategori program film acara saat ini terdapat film premier Big Movies, Family & Platinum. Selain itu pada kategori Berita tersedia Buletin News dan Gerebek. Untuk kategori terakhir yang juga populer yang disiarkan yaitu The Voice Indonesia & The Voice Kids Indonesia';
+      samearr = '[ "https://www.google.com/search?q=streaming+tv+internet&kponly&kgmid=/m/03x49v","https://id.wikipedia.org/wiki/Televisi_Internet"]';
+    }else if(channel === 'inews'){
+      sameas = '["https://www.google.com/search?q=iNews&kponly&kgmid=/m/0gh85nz","https://www.inews.id/","https://id.wikipedia.org/wiki/INews","https://www.wikidata.org/wiki/Q4213609"]';
+      description = 'Televisi lokal yang awalnya bernama Sindo TV, pada tanggal 6 April 2015 secara resmi diubah menjadi iNews. iNews merupakan televisi nasional yang memiliki jaringan televisi lokal terbanyak di seluruh Indonesia. Dengan didukung jaringan yang luas, iNews mampu memberikan program-program berita unggulan dan informasi yang cepat, akurat, informatif, mendidik serta menginspirasi. Di RCTI+, kamu bisa nonton live streaming iNews TV hari ini secara langsung yang sudah terjadwal dengan beragam pilihan seperti news berita terkini, sport, religi & entertainment. Salah satu program berita populer terkini yang disajikan oleh iNews adalah iNews Pagi, iNews Siang, iNews Sore & iNews Malam. Untuk program acara lainnya menyiarkan juga Cahaya Hati Indonesia dan beberapa program pilihan lainnya seperti yang sudah dijadwalkan.';
+      samearr = '[ "https://www.google.com/search?q=streaming+tv+internet&kponly&kgmid=/m/03x49v","https://id.wikipedia.org/wiki/Televisi_Internet"]';
+    }
+    return {same: sameas, description: description, samearr: samearr};
 	}
 
 	routingQueryGenerator(targetContent) {
@@ -828,6 +890,21 @@ class Tv extends React.Component {
 		this.getCurrentViewingVideoIndex()
 
 		const { props, state } = this
+<<<<<<< HEAD
+=======
+		const contentData = {
+			asPath: props.router.asPath,
+			title: props.data_seo.data.title,
+			description: this._dscriptionLD(props.context_data?.channel).description,
+			thumbnailUrl: this._metaTags().pathimage,
+			sameAs: this._dscriptionLD(props.context_data?.channel).same,
+      startDate : state.selected_dateID+'+07:00',
+      endDate : state.selected_dateID2+'+07:00',
+			sameAs_arr: this._dscriptionLD(props.context_data?.channel).samearr
+		}
+
+
+>>>>>>> 8e3329020bdf49ecd32bc63b94457832bcc6ff5d
 		let playerRef = (<div></div>);
 
 		if (this.state.error) {
@@ -919,7 +996,7 @@ class Tv extends React.Component {
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
 					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
 					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-					<meta name="twitter:image" content={this._metaTags().image} />
+					<meta name="twitter:image" content={this._metaTags().pathimage} />
 					<meta name="twitter:image:alt" content={this._metaTags().twitter_img_alt} />
 					<meta name="twitter:title" content={this._metaTags().title} />
 					<meta name="twitter:description" content={this._metaTags().description} />
@@ -1102,7 +1179,8 @@ class Tv extends React.Component {
 												className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
 										</Col>
 										<Col className="chat-message" xs={10}>
-											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
+											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}>
+                        <RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
 										</Col>
 									</Row>
 								))}
