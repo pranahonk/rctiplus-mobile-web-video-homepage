@@ -159,6 +159,19 @@ $panels:
                     position: relative;
                 }
 
+                .continue-watch-bar {
+                    width: 100%;
+                    position: absolute;
+                    bottom: 0;
+                    height: 4px;
+                    background: #545454;
+
+                    & > div {
+                        background: #c50000;
+                        height: inherit;
+                    }
+                }
+
                 .dashline {
                     height: 46px;
                     position: absolute;

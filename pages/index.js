@@ -141,8 +141,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "landscape_large_ws" :
@@ -151,8 +150,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
                             imagePath={meta.image_path} />
                     )
@@ -162,8 +160,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "landscape_219" :
@@ -172,8 +169,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "landscape_mini_wt" :
@@ -182,8 +178,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "landscape_mini" :
@@ -192,8 +187,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "square_mini" :
@@ -202,8 +196,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "square" :
@@ -212,8 +205,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "landscape_mini_live" :
@@ -222,9 +214,8 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
+                            lineup={lineup}
                             showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
-                            title={lineup.title}
                             imagePath={meta.image_path} />
                     )
             }
