@@ -10,13 +10,24 @@ import { RESOLUTION_IMG } from "../../config"
 import '../../assets/scss/components/panel.scss'
 
 function landscapeLgView (props) {
-  const { generateLink, onTouchStart, onTouchEnd, fetchLineupContent, loadMore, contents } = useVideoLineups(props)
+  const { generateLink, onTouchStart, onTouchEnd, fetchContents, loadMore, contents } = useVideoLineups(props)
   const placeHolderImgUrl = "/static/placeholders/placeholder_landscape.png"
   const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
   useEffect(() => {
-    fetchLineupContent()
+    fetchContents()
   }, [])
+
+  const renderContinueWatchProgress = (content) => {
+    if (props.lineup.lineup_type !== "custom") return null
+
+    const lastProgress = ((content.duration - content.last_duration) / content.duration) * 100
+    return (
+      <div className="continue-watch-bar">
+        <div style={{ width: `${lastProgress}%` }}></div>
+      </div>
+    )
+  }
 
   if (contents.length === 0) return null
   
@@ -27,7 +38,7 @@ function landscapeLgView (props) {
       onTouchEnd={e => onTouchEnd(e)}
       className="lineup_panels">
       <h2 className="content-title">
-        {props.title}
+        {props.lineup.title}
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
@@ -42,13 +53,14 @@ function landscapeLgView (props) {
                   <div>
                     <Img 
                       className="lineup-image"
-                      alt={props.title} 
+                      alt={props.lineup.title} 
                       unloader={<img src={placeHolderImgUrl} />}
                       loader={<img src={placeHolderImgUrl} />}
                       width={336}
                       height={189}
-                      src={[`${rootImageUrl}${content.content_type_detail.detail.data.landscape_image}`, placeHolderImgUrl]} />
+                      src={[`${rootImageUrl}${content.landscape_image}`, placeHolderImgUrl]} />
                   </div>
+                  { renderContinueWatchProgress(content) }
                 </div>
               )
             })}

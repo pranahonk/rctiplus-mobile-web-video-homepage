@@ -92,6 +92,36 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 10, lineup_id = 0
   `
 }
 
+export const GET_CONTINUE_WATCHING = (page = 1, page_size = 10, lineup_id = 0) => {
+  const queryParams = getQueryParams({ page, page_size, lineup_id })
+
+  return gql`
+    query {
+      lineup_continue_watching(${queryParams}) {
+        data {
+          landscape_image
+          portrait_image
+          square_image
+          medium_landscape_image
+          permalink
+          duration
+          last_duration
+        }
+        meta {
+          image_path
+          pagination {
+            current_page
+            total_page
+          }
+        }
+        status {
+          code
+        }
+      }
+    }
+  `
+}
+
 export const GET_HOME_CATEGORY_LIST = gql`
   query {
     categories {
@@ -191,6 +221,7 @@ export const GET_HOME_STORIES = (page = 1, page_size = 10, category_id = 0) => {
     }
   `
 }
+
 const contentTypeProgramFragment = `
 ... on ContentTypeProgram {
   detail {
