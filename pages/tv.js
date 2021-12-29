@@ -86,13 +86,10 @@ class Tv extends React.Component {
 
     const visitorToken = nextCookie(ctx)?.VISITOR_TOKEN
     const userToken = nextCookie(ctx)?.ACCESS_TOKEN
-    let token = userToken?.VALUE || visitorToken?.VALUE || ''
+    let token = userToken?.VALUE || visitorToken?.VALUE;
 
     if(!token) {
       const response_visitor = await fetch(`${DEV_API}/api/v1/visitor?platform=mweb&device_id=69420`);
-      if (response_visitor.statusCode === 200) {
-          return {};
-      }
       const data_visitor = await response_visitor.json();
       token = data_visitor.status.code === 0 ? data_visitor.data.access_token : 'undefined'
     }
