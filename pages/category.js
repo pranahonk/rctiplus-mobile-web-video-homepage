@@ -3,10 +3,13 @@ import { withRouter } from 'next/router';
 import { useSelector } from "react-redux"
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
+
 import { StickyContainer, Sticky } from 'react-sticky';
+import dynamic from "next/dynamic"
 
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import Layout from '../components/Layouts/Default_v2';
+
 import Header from "../components/Includes/HomeCategory/DetailCategory/Header"
 import Carousel from '../components/Includes/Gallery/Carousel_v2';
 import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
@@ -25,6 +28,7 @@ const VideoLandscapeMiniLiveView = dynamic(() => import("../components/lineups/L
 const VideoPortraitView = dynamic(() => import("../components/lineups/Portrait"))
 const VideoSquareMiniView = dynamic(() => import("../components/lineups/SquareMini"))
 const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
+const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
 
 function Category (props) {
     const loadingBar = useRef(null)
@@ -60,7 +64,12 @@ function Category (props) {
         client
             .query({ query: GET_LINEUPS(nextPage, length, categoryId) })
             .then(({ data }) => {
-                setLineups(data.lineups.data)
+                const mappedContents = new Map()
+                lineups.concat(data.lineups.data).forEach(content => {
+                    mappedContents.set(content.id, content)
+                })
+                
+                setLineups([ ...mappedContents.values() ])
                 setMeta(data.lineups.meta)
 
                 const { pagination } = data.lineups.meta
@@ -75,6 +84,12 @@ function Category (props) {
     const renderLineups = () => {
         return lineups.map((lineup) => {
             switch(lineup.display_type) {
+                case "portrait_short" :
+                    return (
+                        <PortraitShortView
+                            lineupId={lineup.id}
+                            key={lineup.id} />
+                    )
                 case "portrait" :
                     return (
                         <VideoPortraitView
@@ -194,10 +209,7 @@ function Category (props) {
                         </div>
 
                         <div style={{marginTop: "25px"}}>
-                            <Stories 
-                                loadingBar={loadingBar.current} 
-                                detailCategory={true} 
-                                id={props.router.query.category_id} />
+                            <Stories />
                         </div>
 
                         <StickyContainer>
@@ -241,7 +253,6 @@ function Category (props) {
                                 { renderLineups() }
                             </div>
                         </div>
-                        
                     </div>
                 )
             }  
