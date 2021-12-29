@@ -890,6 +890,17 @@ class Tv extends React.Component {
 		this.getCurrentViewingVideoIndex()
 
 		const { props, state } = this
+    const contentData = {
+			asPath: props.router.asPath,
+			title: props.data_seo.data.title,
+			description: this._dscriptionLD(props.context_data?.channel).description,
+			thumbnailUrl: this._metaTags().pathimage,
+			sameAs: this._dscriptionLD(props.context_data?.channel).same,
+      startDate : state.selected_dateID+'+07:00',
+      endDate : state.selected_dateID2+'+07:00',
+			sameAs_arr: this._dscriptionLD(props.context_data?.channel).samearr
+		}
+
 		let playerRef = (<div></div>);
 
 		if (this.state.error) {
