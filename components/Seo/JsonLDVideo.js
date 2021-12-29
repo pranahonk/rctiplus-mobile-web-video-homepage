@@ -1,45 +1,31 @@
+import { SITEMAP } from "../../config"
 
 // import { BASE_URL, SHARE_BASE_URL } from '../../config'
 const oneSegment = 'm.rctiplus.com';
-export default function JsonLDVideo ({content, isProgram}) {
-    // console.log('Meta seo: ',content)
-  const structurData = {
-    "@context": "https://schema.org",
-    "@type": "VideoObject",
-    "contentURL": `${oneSegment}${content?.asPath}`,
-    "description": `${channel(content?.title)} Live Streaming`,
-    // "duration": "PT37M14S",
-    "embedUrl": `${oneSegment}${content?.asPath}`,
-    "expires": `${content?.expires || '1 Januari 9999'}`,
-    "interactionCount": "4756",
-    "name": `Live ${channel(content?.title)} livestream!`,
-    "thumbnailUrl": `${content?.thumbnailUrl}`,
-    "uploadDate": content?.startDate || "2018-10-27T14:00:00+00:00",
-    "publication": [
-      {
-        "@type": "BroadcastEvent",
-        "isLiveBroadcast": true,
-        "startDate": content?.startDate || '1 Januari 1979',
-        "endDate": content?.endDate || '1 Januari 9999'
-      }
-    ]
-  }
-  const structurDataProgram = {
-        "@context": "https://schema.org",
-        "@type": "VideoObject",
-        "name": content?.title,
-        "description": content?.title,
-        "thumbnailUrl": [
-            content?.thumbnailUrl
-        ],
-        "uploadDate": content?.startDate || '1 Januari 1979',
-        // "duration": "PT1M54S",
-        "contentUrl": `${oneSegment}${content?.asPath}`,
-        // "embedUrl": `${oneSegment}${content?.asPath}`,
+export default function JsonLDVideo ({content}) {
+const structurData = {
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "contentURL": `${oneSegment}${content?.asPath}`,
+  "description": `${content?.description}`,
+  "name": `${content?.title} `,
+  "thumbnailUrl": `${content?.thumbnailUrl}`,
+  "sameAs": `${content?.sameAs}`,
+  "uploadDate": content?.startDate || "2018-12-23T11:16:07+07:00",
+  "publication":
+    {
+      "@type": "BroadcastEvent",
+      "isLiveBroadcast": true,
+      "startDate": content?.startDate || "2018-12-23T11:16:07+07:00",
+      "endDate": content?.endDate || "3018-12-23T11:16:07+07:00",
+      "sameAs": `${content?.sameAs_arr}`,
     }
+
+}
+
   return(
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(isProgram ? structurDataProgram : structurData) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structurData) }} />
     </>
   )
 }
@@ -59,3 +45,4 @@ const channel = (title) => {
   }
   return title
 }
+

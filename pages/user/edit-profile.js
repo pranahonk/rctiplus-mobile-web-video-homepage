@@ -277,8 +277,8 @@ class EditProfile extends React.Component {
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
                 </Head>
-                <NavBack 
-                    visible 
+                <NavBack
+                    visible
                     title="Edit Profile"
                     dropdownMenu={[
                         {
@@ -293,8 +293,11 @@ class EditProfile extends React.Component {
                                 accountGeneralEvent('mweb_account_signout_clicked');
                                 const deviceId = new DeviceUUID().get();
                                 this.props.logout(deviceId)
-                                    .then(() => Router.push('/login'))
-                                    .catch(() => removeCookie('ACCESS_TOKEN'));
+                                    .then(() => {
+                                        console.log("asdasdasdasd")
+                                        Router.push('/login')
+                                    })
+                                    .catch((e) => console.log("asdasdas", e));
                             }
                         }
                     ]}/>
@@ -312,7 +315,7 @@ class EditProfile extends React.Component {
                                 <img className="profile-photo" src={this.state.profile_photo_src}/>
                                 <CameraAltIcon className="profile-photo-button"/>
                             </div>
-                            
+
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label-ep" for="nickname">Nickname (Live Chat)</Label>

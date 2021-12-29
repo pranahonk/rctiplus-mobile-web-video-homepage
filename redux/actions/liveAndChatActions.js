@@ -152,7 +152,7 @@ const getLiveChatBlock = (channelId) => {
 const getLiveEvent = (type, infos = 'id,type,portrait_image,landscape_image,name,url,channel_code,epg_code,is_tvod,is_drm,chat,start_date,sorting', page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            
+
             const response = await axios.get(`/v2/live-event?type=${type}&length=${length}`);
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({
@@ -224,26 +224,15 @@ const getMissedEvent = (page = 1, length = 10) => {
 };
 
 const getLiveEventDetail = liveEventId => {
-    return dispatch => new Promise(async (resolve, reject) => {
-        try {
-            const response = await axios.get(`/v1/live-event/${liveEventId}`);
-            if (response.data.status.code === 0) {
+    return dispatch => {
+        axios.get(`/v1/live-event/${liveEventId}`)
+            .then((res) => {
                 dispatch({
                     type: 'GET_LIVE_EVENT_DETAIL',
-                    data: response.data.data,
-                    meta: response.data.meta,
-                    status: response.data.status
-                });
-                resolve(response);
-            }
-            else {
-                reject(response);
-            }
-        }
-        catch (error) {
-            reject(error);
-        }
-    });
+                    payload: res.data
+                })
+            })
+    }
 };
 
 const getLiveEventUrl = liveEventId => {
