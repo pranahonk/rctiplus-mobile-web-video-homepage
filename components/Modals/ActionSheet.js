@@ -130,21 +130,20 @@ class ActionSheet extends React.Component {
         }
         // const urlShare = SHARE_BASE_URL + `${this.props.url}`;
         const urlShare = this.props.url;
-        console.log(urlShare, "uhuyyy")
 
         return (
             <Modal className="modal-edit" isOpen={this.props.open} toggle={this.props.toggle}>
                 <CloseIcon id="close-action-sheet" className="close-icon-button" onClick={this.props.toggle}/>
                 <ModalBody className="modal-body-edit">
-                    
+
                     <p className="sheet-title">
                         <strong>Share this program</strong>
                     </p>
                     <div className="sheet-action-button-container-share">
                         <div className="sheet-action-button-share">
-                            <FacebookShareButton 
-                                hashtag={hashtag.map(h => '#' + h).join(' ')} 
-                                quote={this.props.caption + ' ' + urlShare + this.shareUtm('fb', this.props.caption)} 
+                            <FacebookShareButton
+                                hashtag={hashtag.map(h => '#' + h).join(' ')}
+                                quote={this.props.caption + ' ' + urlShare + this.shareUtm('fb', this.props.caption)}
                                 url={urlShare + this.shareUtm.bind(this,'fb', this.props.caption)}>
                                 <i className="fab fa-facebook-f"></i>
                             </FacebookShareButton>
