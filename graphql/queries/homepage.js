@@ -87,6 +87,7 @@ export const GET_CONTINUE_WATCHING = (page = 1, page_size = 10, lineup_id = 0) =
     query {
       lineup_continue_watching(${queryParams}) {
         data {
+          id
           landscape_image
           portrait_image
           square_image
