@@ -56,7 +56,6 @@
                     background: linear-gradient(146.31deg, #05B5F5 14.04%, #0079FF 88.41%);
                     opacity: 0.47;
                     border-radius: 50%;
-                    z-index: 99;
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -68,7 +67,6 @@
                     background: linear-gradient(146.31deg, #05B5F5 14.04%, #0079FF 88.41%);
                     border-radius: 50%;
                     opacity: 1 !important;
-                    z-index: 999;
                 }
             }
             .listener-wrapper {
