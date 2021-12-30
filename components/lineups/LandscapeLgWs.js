@@ -47,7 +47,7 @@ function landscapeLgWs (props) {
   const renderContinueWatchProgress = (content) => {
     if (props.lineup.lineup_type !== "custom") return null
 
-    const lastProgress = ((content.duration - content.last_duration) / content.duration) * 100
+    const lastProgress = (content.last_duration / content.duration) * 100
     return (
       <div className="continue-watch-bar">
         <div style={{ width: `${lastProgress}%` }}></div>
