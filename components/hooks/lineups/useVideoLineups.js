@@ -48,9 +48,6 @@ export default function useVideoLineups(props) {
         contents.concat(data.lineup_continue_watching.data)
           .forEach(content => mappedContents.set(content.id, content))
 
-        
-        console.log(data.lineup_continue_watching.data, [ ...mappedContents.values() ], "adasdsadadas")
-
         setContents([ ...mappedContents.values() ])
         setEndPage(pagination.current_page === pagination.total_page)
         setNextPage(pagination.current_page + 1)
