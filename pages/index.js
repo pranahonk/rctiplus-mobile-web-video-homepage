@@ -44,7 +44,9 @@ const HorizontalHastags = dynamic(() => import("../components/lineups/news/Horiz
 const LandscapeHotCompetition = dynamic(() => import("../components/lineups/hot/LandscapeHotCompetition"));
 const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/news/HorizontalMutipleLandscape"));
 const LandscapeHotVideo = dynamic(() => import("../components/lineups/hot/LandscapeHotVideo"));
-const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"))
+const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"));
+const AudioHorizontalDisc = dynamic(() => import("../components/lineups/audio_lineup/Disc"));
+const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"));
 
 class Index_v2 extends React.Component {
     static async getInitialProps(ctx) {
@@ -343,12 +345,13 @@ class Index_v2 extends React.Component {
                                     </Sticky>
                                 </StickyContainer>
 
-                                <div
-                                    style={{marginBottom: 45, paddingTop: 10}}
-                                    onTouchStart={this.onTouchStart.bind(this)}
-                                    onTouchEnd={this.onTouchEnd.bind(this)}>
-                                    { this.renderLineup(this.state.lineups, this.state.meta) }
-                                </div>
+                            <div
+                                style={{marginBottom: 45, paddingTop: 10}}
+                                onTouchStart={this.onTouchStart.bind(this)}
+                                onTouchEnd={this.onTouchEnd.bind(this)}>
+                                { this.renderLineup(this.state.lineups, this.state.meta) }
+                                <AudioHorizontalDisc/>
+                                <AudioHorizontalList/>
                             </div>
                             <ComingSoonModal
                                 open={this.state.openComingSoonModal}
