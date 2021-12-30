@@ -1095,7 +1095,7 @@ class Index extends React.Component {
               </div>
 
               {this.renderVisionPlusComponent()}
-
+              {this.panelRecommendHOT(this.props?.data['recommend-hot'])}
               {this.panelRelated(
                 this.props.data &&
                 this.props.data['program-related']
