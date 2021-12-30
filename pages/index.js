@@ -344,6 +344,7 @@ class Index_v2 extends React.Component {
                                         }}
                                     </Sticky>
                                 </StickyContainer>
+                            </div>
 
                             <div
                                 style={{marginBottom: 45, paddingTop: 10}}
