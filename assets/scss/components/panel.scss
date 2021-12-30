@@ -139,8 +139,8 @@ $panels:
                     height: 23px;
                     border-radius: 7px;
                     background-color: #F63F54;
-                    top: 12px;
-                    left: 12px;
+                    top: 6px;
+                    left: 6px;
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -157,6 +157,19 @@ $panels:
                     padding: 0 10px 10px 20px;
                     border-radius: 0 0 10px 10px;
                     position: relative;
+                }
+
+                .continue-watch-bar {
+                    width: 100%;
+                    position: absolute;
+                    bottom: 0;
+                    height: 4px;
+                    background: #545454;
+
+                    & > div {
+                        background: #c50000;
+                        height: inherit;
+                    }
                 }
 
                 .dashline {

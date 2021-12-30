@@ -19,7 +19,7 @@ function landscapeLgWs (props) {
     generateLink, 
     onTouchStart, 
     onTouchEnd, 
-    fetchLineupContent, 
+    fetchContents, 
     loadMore, 
     contents 
   } = useVideoLineups(props)
@@ -27,17 +27,31 @@ function landscapeLgWs (props) {
   const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
   useEffect(() => {
-    fetchLineupContent()
+    fetchContents()
   }, [])
 
-  const renderDescription = (contentDetail) => {
-    if (contentDetail.countdown === 0 || contentDetail.is_live) return null
-    const { year, month, date, day } = parseDateObject(contentDetail.start_ts * 1000)
+  const renderDescription = (content) => {
+    if (props.lineup.lineup_type === "custom") return null
+    if (content.countdown === 0 || content.is_live) return null
+
+    const startTime = content.start_ts || content.live_at
+    const { year, month, date, day, time } = parseDateObject(startTime * 1000)
     return(
     <div>
-      <p className="desc-title">{`${day}, ${date} ${month} ${year} - ${contentDetail.start}`}</p>
-      <CountDownTimer time={contentDetail.countdown} />
+      <p className="desc-title">{`${day}, ${date} ${month} ${year} - ${time}`}</p>
+      <CountDownTimer time={content.countdown} />
     </div>
+    )
+  }
+
+  const renderContinueWatchProgress = (content) => {
+    if (props.lineup.lineup_type !== "custom") return null
+
+    const lastProgress = ((content.duration - content.last_duration) / content.duration) * 100
+    return (
+      <div className="continue-watch-bar">
+        <div style={{ width: `${lastProgress}%` }}></div>
+      </div>
     )
   }
 
@@ -50,7 +64,7 @@ function landscapeLgWs (props) {
       onTouchEnd={e => onTouchEnd(e)}
       className="lineup_panels">
       <h2 className="content-title">
-        {props.title}
+        {props.lineup.title}
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
@@ -58,21 +72,22 @@ function landscapeLgWs (props) {
             {contents.map((content, i) => {
               return (
                 <div
-                  onClick={() => generateLink(content)}
+                  onClick={() => generateLink({ ...content, rootImageUrl })}
                   id={`${i}-landscapelgws-video`}
                   key={`${i}-landscapelgws-video`}
                   className="lineup-contents">
                   <div>
                     <Img 
                       className="lineup-image"
-                      alt={props.title} 
+                      alt={props.lineup.title} 
                       unloader={<img src={placeHolderImgUrl} />}
                       loader={<img src={placeHolderImgUrl} />}
                       width={336}
                       height={189}
-                      src={[`${rootImageUrl}${content.content_type_detail.detail.data.landscape_image}`, placeHolderImgUrl]} />
+                      src={[`${rootImageUrl}${content.landscape_image}`, placeHolderImgUrl]} />
                   </div>
-                  {renderDescription(content.content_type_detail.detail.data)}
+                  {renderDescription(content)}
+                  { renderContinueWatchProgress(content) }
                 </div>
               )
             })}

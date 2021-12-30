@@ -10,8 +10,10 @@ function countdownTimer (props) {
   const [ seconds, setSeconds ] = useState(Math.floor(((((props.time / (1000 * 3600)) - hour) * 60) - minutes) * 60))
   
   useEffect(() => {
-    timer()
+    if (props.time) timer()
   }, [])
+
+  if (!props.time) return null
 
   const timer = () => {
     let sec = seconds
@@ -47,7 +49,7 @@ function countdownTimer (props) {
 
   return (
     <div className="countdown">
-      <p>COMING SOON</p>
+      <p>{ props.name || "COMING SOON" }</p>
       <p>{renderCountDownTimer()}</p>
     </div>
   )

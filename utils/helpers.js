@@ -299,6 +299,7 @@ export function parseDateObject(dateObject) {
         year: new Date(dateObject).getFullYear(),
         month: months[new Date(dateObject).getMonth()],
         date: (date < 10 ? `0${date}` : date),
-        day: days[new Date(dateObject).getDay()]
+        day: days[new Date(dateObject).getDay()],
+        time: new Date(dateObject).toLocaleTimeString("en-GB").split(":").slice(0, 2).join(":")
     }
 }

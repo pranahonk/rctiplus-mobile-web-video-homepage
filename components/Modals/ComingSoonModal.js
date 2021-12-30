@@ -13,7 +13,12 @@ export default function comingSoonModal(props) {
   useEffect(() => {
     setOpen(props.open)
     if (props.open) {
+
+      // disable scroll event
+      document.getElementById("nav-footer-v2").style.display = "none"
       document.body.style.overflow = "hidden"
+      document.body.style.position = "fixed"
+      document.body.style.width = "100vw"
     }
   }, [props.open])
 
@@ -39,17 +44,18 @@ export default function comingSoonModal(props) {
 
   const destroyModal = _ => {
     props.onClose()
-    document.body.style.overflow = "unset"
+
+    // enable scroll event
+    document.body.style.removeProperty("position")
+    document.body.style.removeProperty("overflow")
+    document.body.style.removeProperty("width")
+    document.getElementById("nav-footer-v2").style.removeProperty("display")
   }
 
   const renderDateDetail = () => {
-    const { year, month, date, day } = parseDateObject(props.content.start * 1000)
-    return `${day}, ${date} ${month} ${year} - ${props.content.start_time}`
+    const { year, month, date, day, time } = parseDateObject(props.content.start * 1000)
+    return `${day}, ${date} ${month} ${year} - ${time}`
   }
-
-  const imageSrc = Boolean(props.content.landscape_image) 
-    ? props.content.landscape_image 
-    : "../static/placeholders/placeholder_landscape.png"
 
   if (!open) return null
 
@@ -72,7 +78,7 @@ export default function comingSoonModal(props) {
           </div>
           <img
             className="img-comingsoon"
-            src={imageSrc} 
+            src={ props.content.image } 
             alt="modal coming soon"
             width="328"
             height="185" />
@@ -80,7 +86,9 @@ export default function comingSoonModal(props) {
             <p>{ props.content.title }</p>
             <p>{ renderDateDetail() }</p>
             <div>
-              <CountdownTimer time={props.content.countdown} />
+              <CountdownTimer 
+                time={props.content.countdown} 
+                name={"Live In"} />
               <span>
                 This program hasn't started yet.<br/>
                 Please comeback later.

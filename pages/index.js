@@ -29,6 +29,7 @@ import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
 
 // NEW RPLUS LINEUP CONTENTS
+const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
 const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
 const VideoLandscapeLgWsView = dynamic(() => import("../components/lineups/LandscapeLgWs"))
@@ -105,11 +106,13 @@ class Index_v2 extends React.Component {
         this.LoadingBar.continuousStart();
         client.query({ query: GET_LINEUPS(page, pageSize) })
             .then(({ data }) => {
+                const mappedContents = new Map()
+                this.state.lineups.concat(data.lineups.data).forEach(content => {
+                    mappedContents.set(content.id, content)
+                })
                 this.setState({
-                    lineups: this.state.lineups.concat(data.lineups.data),
+                    lineups: [ ...mappedContents.values() ],
                     meta: data.lineups.meta
-                }, _ => {
-                    return
                 })
             })
             .finally(_ => {
@@ -140,14 +143,20 @@ class Index_v2 extends React.Component {
     renderLineup(lineups, meta) {
         return lineups.map((lineup, index) => {
             switch(lineup.display_type) {
+                case "portrait_short" :
+                    return (
+                        <PortraitShortView
+                            lineupId={lineup.id}
+                            title={lineup.title}
+                            key={lineup.id} />
+                    )
                 case "portrait" :
                     return (
                         <VideoPortraitView
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "landscape_large_ws" :
@@ -156,8 +165,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
                             imagePath={meta.image_path} />
                     )
@@ -167,8 +175,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "landscape_219" :
@@ -177,8 +184,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "landscape_mini_wt" :
@@ -187,8 +193,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "landscape_mini" :
@@ -197,8 +202,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "square_mini" :
@@ -207,8 +211,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "square" :
@@ -217,8 +220,7 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
-                            title={lineup.title}
+                            lineup={lineup}
                             imagePath={meta.image_path} />
                     )
                 case "landscape_mini_live" :
@@ -227,9 +229,8 @@ class Index_v2 extends React.Component {
                             token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
-                            contentId={lineup.id}
+                            lineup={lineup}
                             showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
-                            title={lineup.title}
                             imagePath={meta.image_path} />
                     )
                 case 'tag':
@@ -296,52 +297,53 @@ class Index_v2 extends React.Component {
                 {this.state.isShimmer
                     ? (<HomeLoader/>)
                     : (
-                        <div>
-                            <Nav
-                                parent={this}
-                                closeStickyInstallFunction={this.closeStickyInstall}
-                                showStickyInstall={this.state.show_sticky_install}/>
-                            <Carousel showStickyInstall={this.state.show_sticky_install} >
-                                <GridMenu />
-                            </Carousel>
+                        <>
+                            <div>
+                                <Nav
+                                    parent={this}
+                                    closeStickyInstallFunction={this.closeStickyInstall}
+                                    showStickyInstall={this.state.show_sticky_install}/>
+                                <Carousel showStickyInstall={this.state.show_sticky_install} >
+                                    <GridMenu />
+                                </Carousel>
 
-                            <Stories />
+                                <Stories />
 
-                            <StickyContainer>
-                                <Sticky disableHardwareAcceleration>
-                                    { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
-                                        const topDistance = this.state.show_sticky_install ? 120 : 40;
-                                        if (distanceFromTop < topDistance) {
-                                            if (!this.props.ads.ads_displayed) {
+                                <StickyContainer>
+                                    <Sticky disableHardwareAcceleration>
+                                        { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
+                                            const topDistance = this.state.show_sticky_install ? 120 : 40;
+                                            if (distanceFromTop < topDistance) {
+                                                if (!this.props.ads.ads_displayed) {
+                                                    return (
+                                                        <div {...rest} >
+                                                            <StickyAds/>
+                                                        </div>
+                                                    );
+                                                }
+                                                const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
+                                                if (adsContents.length > 0) {
+                                                    if (adsContents[0].tagName == 'SCRIPT') {
+                                                        const stickyAds = document.getElementById('sticky-ads-container');
+                                                        if (stickyAds) {
+                                                            stickyAds.style.display = 'none'
+                                                        }
+                                                    }
+                                                }
                                                 return (
                                                     <div {...rest} >
-                                                        <StickyAds/>
+                                                        <StickyAds sticky/>
                                                     </div>
                                                 );
                                             }
-                                            const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
-                                            if (adsContents.length > 0) {
-                                                if (adsContents[0].tagName == 'SCRIPT') {
-                                                    const stickyAds = document.getElementById('sticky-ads-container');
-                                                    if (stickyAds) {
-                                                        stickyAds.style.display = 'none'
-                                                    }
-                                                }
-                                            }
                                             return (
                                                 <div {...rest} >
-                                                    <StickyAds sticky/>
+                                                    <StickyAds id='div-gpt-ad-1584677577539-0'/>
                                                 </div>
                                             );
-                                        }
-                                        return (
-                                            <div {...rest} >
-                                                <StickyAds id='div-gpt-ad-1584677577539-0'/>
-                                            </div>
-                                        );
-                                    } }
-                                </Sticky>
-                            </StickyContainer>
+                                        }}
+                                    </Sticky>
+                                </StickyContainer>
 
                             <div
                                 style={{marginBottom: 45, paddingTop: 10}}
@@ -355,7 +357,7 @@ class Index_v2 extends React.Component {
                                 open={this.state.openComingSoonModal}
                                 onClose={_ => this.setState({ openComingSoonModal: false })}
                                 content={this.state.contentComingSoonModal} />
-                        </div>
+                        </>
                     )
                 }
         </Layout>
