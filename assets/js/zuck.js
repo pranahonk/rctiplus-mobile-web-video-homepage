@@ -104,120 +104,120 @@ module.exports = (window => {
 		}
 
 		const parsingMessage = (event) => {
-			if (!isJson(event.data)) return;
-			const data = JSON.parse(event.data);
+			// if (!isJson(event.data)) return;
+			// const data = JSON.parse(event.data);
 			
-			if (data?.state) {
-				const storyViewer = query('#zuck-modal .viewing')
-				const currentViewingStory = zuck.data[storyViewer.getAttribute("data-story-id")]
-				switch(data.state) {
-					case 'init':
-						{
-							const story = zuck.data.find(element => element.id == data.storyId);
-							const item = story.items.find(element => element.id == data.itemId);
+			// if (data?.state) {
+			// 	const storyViewer = query('#zuck-modal .viewing')
+			// 	const currentViewingStory = zuck.data[storyViewer.getAttribute("data-story-id")]
+			// 	switch(data.state) {
+			// 		case 'init':
+			// 			{
+			// 				const story = zuck.data.find(element => element.id == data.storyId);
+			// 				const item = story.items.find(element => element.id == data.itemId);
 
-							item.contentType = data.contentType;
+			// 				item.contentType = data.contentType;
 
-							if (item.contentType == 'image') {
-								const items = storyViewer.querySelectorAll('[data-index].active');
-								const itemPointer = items[0]
+			// 				if (item.contentType == 'image') {
+			// 					const items = storyViewer.querySelectorAll('[data-index].active');
+			// 					const itemPointer = items[0]
 
-								// start progress bar soon when currently displaying ads is an image
-								if (currentViewingStory.items[currentViewingStory.currentItem].id === item.id) {
-									storyViewer.classList.remove("loading")
-									storyViewer.classList.remove("initial")
-								}
+			// 					// start progress bar soon when currently displaying ads is an image
+			// 					if (currentViewingStory.items[currentViewingStory.currentItem].id === item.id) {
+			// 						storyViewer.classList.remove("loading")
+			// 						storyViewer.classList.remove("initial")
+			// 					}
 
-							} else {
+			// 				} else {
 
-								// Stop now for a moment the progress bar when it is a video ads
-								// NOTE!! It will start only when video are playing
-								if (currentViewingStory.items[currentViewingStory.currentItem].id === item.id) {
-									storyViewer.classList.add("initial")
-								}
+			// 					// Stop now for a moment the progress bar when it is a video ads
+			// 					// NOTE!! It will start only when video are playing
+			// 					if (currentViewingStory.items[currentViewingStory.currentItem].id === item.id) {
+			// 						storyViewer.classList.add("initial")
+			// 					}
 
-								const storyId = zuck.internalData['currentStory'];
-								let items = query(`#zuck-modal [data-story-id="${storyId}"]`);
-								items = items.querySelectorAll('[data-index].active');
+			// 					const storyId = zuck.internalData['currentStory'];
+			// 					let items = query(`#zuck-modal [data-story-id="${storyId}"]`);
+			// 					items = items.querySelectorAll('[data-index].active');
 
-								if (items) {
-									const storyViewer = query(`#zuck-modal .story-viewer[data-story-id="${storyId}"]`);
-									playVideoItem(storyViewer, [items[0], items[1]], false);
-								}
-							}
-						}
-						break;
-					case 'play':
-						{
-							const items = storyViewer.querySelectorAll('[data-index].active');
-							const itemPointer = items[0];
+			// 					if (items) {
+			// 						const storyViewer = query(`#zuck-modal .story-viewer[data-story-id="${storyId}"]`);
+			// 						playVideoItem(storyViewer, [items[0], items[1]], false);
+			// 					}
+			// 				}
+			// 			}
+			// 			break;
+			// 		case 'play':
+			// 			{
+			// 				const items = storyViewer.querySelectorAll('[data-index].active');
+			// 				const itemPointer = items[0];
 							
-							setVendorVariable(
-								itemPointer.getElementsByTagName('b')[0].style,
-								'AnimationDuration',
-								`${data.duration}s`
-							)
+			// 				setVendorVariable(
+			// 					itemPointer.getElementsByTagName('b')[0].style,
+			// 					'AnimationDuration',
+			// 					`${data.duration}s`
+			// 				)
 
-							// When video are ready and playing start the progress bar and tell user it is no longer loading
-							storyViewer.classList.remove("loading")
-							storyViewer.classList.remove("initial")
-						}
-						break;
-					case 'unmute':
-						{
-							if (storyViewer) {
-								storyViewer.classList.remove('paused');
+			// 				// When video are ready and playing start the progress bar and tell user it is no longer loading
+			// 				storyViewer.classList.remove("loading")
+			// 				storyViewer.classList.remove("initial")
+			// 			}
+			// 			break;
+			// 		case 'unmute':
+			// 			{
+			// 				if (storyViewer) {
+			// 					storyViewer.classList.remove('paused');
 
-								if (storyViewer.classList.contains('muted')) {
-									storyViewer.classList.remove('muted');
-								}
-							}
-						}
-						break;
-					case 'onplay':
-						{
-							storyViewer.classList.remove('stopped');
-							storyViewer.classList.remove('paused');
-							storyViewer.classList.remove('loading');
-						}
-						break;
-					case 'onload':
-						{
-							storyViewer.classList.remove('loading');
-						}
-						break;
-					case 'onwaiting':
-						{
-							if (data.paused) {
-								storyViewer.classList.add('paused');
-								storyViewer.classList.add('loading');
-							}
-						}
-						break;
-					case 'touchNext':
-						zuck.navigateItem('next', true)
-						break;
-					case 'touchPrev':
-						zuck.navigateItem('previous', true)
-						break;
-					case 'onmute':
-						{
-							// TEMP FIX
-							/* if (data.muted) {
-								storyViewer.classList.add('muted');
-							} else {
-								storyViewer.classList.remove('muted');
-							} */
-						}
-						break;
-					case "holdStory":
-						storyViewer.classList.add('paused');
-						break
-					case "releaseStory":
-						storyViewer.classList.remove('paused');
-						break
-				}
-			}
+			// 					if (storyViewer.classList.contains('muted')) {
+			// 						storyViewer.classList.remove('muted');
+			// 					}
+			// 				}
+			// 			}
+			// 			break;
+			// 		case 'onplay':
+			// 			{
+			// 				storyViewer.classList.remove('stopped');
+			// 				storyViewer.classList.remove('paused');
+			// 				storyViewer.classList.remove('loading');
+			// 			}
+			// 			break;
+			// 		case 'onload':
+			// 			{
+			// 				storyViewer.classList.remove('loading');
+			// 			}
+			// 			break;
+			// 		case 'onwaiting':
+			// 			{
+			// 				if (data.paused) {
+			// 					storyViewer.classList.add('paused');
+			// 					storyViewer.classList.add('loading');
+			// 				}
+			// 			}
+			// 			break;
+			// 		case 'touchNext':
+			// 			zuck.navigateItem('next', true)
+			// 			break;
+			// 		case 'touchPrev':
+			// 			zuck.navigateItem('previous', true)
+			// 			break;
+			// 		case 'onmute':
+			// 			{
+			// 				// TEMP FIX
+			// 				/* if (data.muted) {
+			// 					storyViewer.classList.add('muted');
+			// 				} else {
+			// 					storyViewer.classList.remove('muted');
+			// 				} */
+			// 			}
+			// 			break;
+			// 		case "holdStory":
+			// 			storyViewer.classList.add('paused');
+			// 			break
+			// 		case "releaseStory":
+			// 			storyViewer.classList.remove('paused');
+			// 			break
+			// 	}
+			// }
 		}
 
 		window.addEventListener('message', (event) => {
