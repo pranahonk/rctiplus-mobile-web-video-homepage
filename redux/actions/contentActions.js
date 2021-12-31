@@ -24,7 +24,6 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
             let contents = [];
             if (response.data.status.code === 0) {
                 const data = response.data.data;
-                console.log(`ini data home page`, data)
                 let selectedData = [];
                 let promises = [];
                 for (let i = 0; i < data.length; i++) {
@@ -32,14 +31,12 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                         if(data[i].content_type === "content"){
                             promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?page=${1}&length=${7}`)
                             .catch((err) => {
-                                console.log('err', err);
                             }));
                             selectedData.push(data[i]);
                         }
                         else if(data[i].content_type === "story"){
                             promises.push(axios.get(`/v1/homepage/${data[i].id}/stories?page=${1}&length=${7}`)
                             .catch((err) => {
-                                console.log('err', err);
                             }));
                             selectedData.push(data[i]);
                         }
@@ -47,7 +44,6 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                     else if (data[i].type === 'custom' && data[i].api) {
                         promises.push(axios.get(data[i].api)
                         .catch((err) => {
-                            console.log('err', err);
                         }));
                         selectedData.push(data[i]);
                     }

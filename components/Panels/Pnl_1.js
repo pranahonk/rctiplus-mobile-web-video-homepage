@@ -34,7 +34,6 @@ class Pnl_1 extends React.Component {
 	
 		this.swipe = {};
 
-		console.log(this.props.resolution);
 	}
 
 	onTouchStart(e) {
@@ -114,7 +113,6 @@ class Pnl_1 extends React.Component {
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
 
 				let url = data.url ? data.url : data.link;
-				// console.log('token:', this.props.token);
 				if (data.mandatory_login && this.props.user.isAuth) {
 					url += this.props.token;
 				}
@@ -122,7 +120,6 @@ class Pnl_1 extends React.Component {
 				let payload = {};
 				try {
 					payload = jwtDecode(this.props.token);
-					// console.log(payload && !payload.vid);
 					if (data.mandatory_login && !this.props.user.isAuth) {
 						showSignInAlert(`Please <b>Sign In</b><br/>
 							Woops! Gonna sign in first!<br/>
@@ -186,7 +183,6 @@ class Pnl_1 extends React.Component {
 						this.props.loadingBar && this.props.loadingBar.complete();
 					})
 					.catch(error => {
-						console.log(error);
 						this.setState({ loading: false, endpage: true })
 						this.props.loadingBar && this.props.loadingBar.complete();
 					});

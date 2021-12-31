@@ -100,14 +100,12 @@ class Pnl_2 extends React.Component {
 		}       
 	}
 	link(data) {
-		console.log('PANEL 2', data);
 		switch (data.content_type) {
 			case 'special':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
 
 				// window.open(data.link, '_blank');
 				let url = data.url ? data.url : data.link;
-				// console.log('token:', this.props.user.isAuth);
 				if (data.mandatory_login && this.props.user.isAuth) {
 					url += this.props.token;
 				}
@@ -115,7 +113,6 @@ class Pnl_2 extends React.Component {
 				let payload = {};
 				try {
 					payload = jwtDecode(this.props.token);
-					// console.log(payload && !payload.vid);
 					if (data.mandatory_login && !this.props.user.isAuth) {
 						showSignInAlert(`Please <b>Sign In</b><br/>
 							Woops! Gonna sign in first!<br/>
@@ -178,7 +175,6 @@ class Pnl_2 extends React.Component {
 						this.props.loadingBar && this.props.loadingBar.complete();
 					})
 					.catch(error => {
-						console.log(error);
 						this.setState({ loading: false })
 						this.props.loadingBar && this.props.loadingBar.complete();
 					});

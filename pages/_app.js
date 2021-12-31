@@ -54,8 +54,6 @@ export default withRedux(initStore, { debug: false })(
                 window.location.href = process.env.REDIRECT_WEB_DESKTOP + window.location.pathname + window.location.search;
             }
 
-            console.log('WILL MOUNT -> SET TOKEN');
-
             const visitorTokenNews = getVisitorTokenNews();
             const visitorToken = getVisitorToken();
 
@@ -87,13 +85,7 @@ export default withRedux(initStore, { debug: false })(
 
             // setVisitorTokenNews();
             // setNewsTokenV2();
-
-            console.log('VISITOR TOKEN:', getVisitorToken());
-            //console.log('NEWS TOKEN:', getNewsToken());
-
             // 4kuG@nteng
-
-            // console.log('CONVIVA:', conviva);
 
             // switch (process.env.MODE) {
             //     case 'DEVELOPMENT':
@@ -114,12 +106,8 @@ export default withRedux(initStore, { debug: false })(
             //         break;
             // }
 
-            // console.log('conviva integrated');
-
             // switch (process.env.MODE) {
             //     case 'DEVELOPMENT':
-            //         console.log(Conviva.Constants.GATEWAY_URL)
-            //         console.log(Conviva.Constants.LOG_LEVEL)
             //         // Conviva.LivePass.toggleTraces(true);
             //         // const callbackFunctions = {};
             //         const settings = {  };

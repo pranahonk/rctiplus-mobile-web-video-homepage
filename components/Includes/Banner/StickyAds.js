@@ -12,56 +12,63 @@ class StickyAds extends React.Component {
 
     fetchAds(custParams) {
         switch (process.env.MODE) {
-            case 'PRODUCTION':
-                window.googletag = window.googletag || { cmd: [] };
-                googletag.cmd.push(function() {
-                    googletag.defineSlot('/21865661642/PRO_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1584677487159-0').addService(googletag.pubads());
-                    if (custParams.length > 0) {
-                        for (const custParam of custParams) {
-                            googletag.pubads().setTargeting(custParam.name, custParam.value);
+            case 'PRODUCTION': {
+                    window.googletag = window.googletag || { cmd: [] };
+                    googletag.cmd.push(function() {
+                        googletag.defineSlot('/21865661642/PRO_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1584677487159-0')
+                            .addService(googletag.pubads())
+
+                        if (custParams.length > 0) {
+                            for (const custParam of custParams) {
+                                googletag.pubads().setTargeting(custParam.name, custParam.value);
+                            }
                         }
-                    }
-                    googletag.pubads().enableSingleRequest();
-                    googletag.pubads().collapseEmptyDivs();
-                    googletag.pubads().addEventListener('slotRenderEnded', function(event) {
-                        if (event.isEmpty) {
-                            document.getElementById('sticky-ads-container').style.display = 'none';
-                        }
+                        googletag.pubads().enableSingleRequest();
+                        googletag.pubads().collapseEmptyDivs();
+                        googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+                            if (event.isEmpty) {
+                                document.getElementById('sticky-ads-container').style.display = 'none';
+                            }
+                        });
+                        googletag.enableServices();
                     });
-                    googletag.enableServices();
-                });
-                googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584677487159-0'); });
+                    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584677487159-0'); });
+                }
                 break;
 
-            case 'DEVELOPMENT':
-                window.googletag = window.googletag || {cmd: []};
-                googletag.cmd.push(function() {
-                    googletag.defineSlot('/21865661642/RC_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1584677577539-0').addService(googletag.pubads());
-                    if (custParams.length > 0) {
-                        for (const custParam of custParams) {
-                            googletag.pubads().setTargeting(custParam.name, custParam.value);
-                        }
-                    }
-                    googletag.pubads().enableSingleRequest();
-                    googletag.pubads().collapseEmptyDivs();
+            case 'DEVELOPMENT': {
+                    window.googletag = window.googletag || {cmd: []};
+                    googletag.cmd.push(function() {
+                        googletag.defineSlot('/21865661642/RC_MIDDLE_MOBILE', [320, 50], 'div-gpt-ad-1584677577539-0')
+                            .addService(googletag.pubads());
 
-                    googletag.pubads().addEventListener('slotRenderEnded', function(event) {
-                        if (event.isEmpty) {
-                            document.getElementById('sticky-ads-container').style.display = 'none';
-                            console.log('EMPTY ADS');
+                        if (custParams.length > 0) {
+                            for (const custParam of custParams) {
+                                googletag.pubads().setTargeting(custParam.name, custParam.value);
+                            }
                         }
+                        googletag.pubads().enableSingleRequest();
+                        googletag.pubads().collapseEmptyDivs();
+
+                        googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+                            if (event.isEmpty) {
+                                document.getElementById('sticky-ads-container').style.display = 'none';
+                                console.log('EMPTY ADS');
+                            }
+                        });
+                        googletag.enableServices();
                     });
-                    googletag.enableServices();
-                });
-                googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584677577539-0'); });
+                    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1584677577539-0'); });
+                }
                 break;
         }
     }
     componentDidMount() {
+        googletag.destroySlots()
         this.props.fetchTargetingAds()
         .then((res) => {
-                this.fetchAds(res)
-            })
+            this.fetchAds(res)
+        })
         .catch((err) => this.fetchAds([]))
         
     }

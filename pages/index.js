@@ -83,11 +83,9 @@ class Index_v2 extends React.Component {
 
         this.props.getContents(this.state.page, this.state.length)
             .then(response => {
-                console.log(response);
                 this.setState({ contents: this.props.contents.homepage_content, meta: this.props.contents.meta, isShimmer:false }, () => this.props.unsetPageLoader());
             })
             .catch(error => {
-                console.log(error);
                 this.props.unsetPageLoader();
                 this.setState({ isShimmer: false });
             });
@@ -124,7 +122,6 @@ class Index_v2 extends React.Component {
                     })
                     .catch(error => {
                         this.LoadingBar.complete();
-                        console.log(error);
                         this.setState({ is_loading: false });
                     });
             });
