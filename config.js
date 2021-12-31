@@ -15,6 +15,12 @@ export const GTM_AUTH = process.env.GTM_AUTH;
 
 export const DEV_API = process.env.DEV_API;
 
+console.log(DEV_API, process.env.DEV_API, "ASDASDAS")
+
+export const GA_4_ID = process.env.GA_4_ID;
+
+export const GA_INIT_ID = process.env.GA_INIT_ID;
+
 export const API_V2 = process.env.API_V2 ? process.env.API_V2 : process.env.DEV_API;
 
 export const CHAT_API = process.env.CHAT_API;
@@ -63,6 +69,7 @@ export const GPT_ID_SEARCH = process.env.GPT_ID_SEARCH
 export const GPT_ID_DETAIL = process.env.GPT_ID_DETAIL
 
 export const REDIRECT_SSR = process.env.REDIRECT_SSR;
+export const API_TIMEOUT = process.env.API_TIMEOUT;
 
 export const CONVIVA_TRACKING_KEY = process.env.CONVIVA_TRACKING_KEY;
 export const CONVIVA_TRACKING_HOST = process.env.CONVIVA_TRACKING_HOST;
