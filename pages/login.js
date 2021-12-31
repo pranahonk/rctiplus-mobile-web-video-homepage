@@ -101,7 +101,6 @@ class Signin extends React.Component {
 			password: this.state.password,
 			phone_code: this.state.isPhoneNumber ? this.state.phone_code : '',
 		};
-		// console.log(data)
 		this.props.login(data).then(response => {
 			if(this.props?.authentication?.code === 8) {
 				return this.setState({
@@ -121,7 +120,12 @@ class Signin extends React.Component {
 					if(redirect.redirectTo) {
 						Router.push(redirect.redirectTo)
 					} else {
-						Router.push('/');
+						const { refpage } = this.props.router.query
+						const routerObj = Boolean(refpage) 
+							? { pathname: refpage, query: { refpage: "login" } }
+							: { pathname: "/" }
+						
+						Router.push(routerObj)
 					}
 				}
 			}

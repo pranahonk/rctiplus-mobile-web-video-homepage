@@ -155,11 +155,22 @@ export const showSignInAlert = (text, title, callback, buttonInverse = false, co
 
     Swal.fire(options)
         .then(result => {
+            const routerObj = (location.pathname.startsWith("/tv") || location.pathname.startsWith("/live-event")) 
+                ? { query: { refpage: location.pathname }}
+                : {}
+
             if (result.value) {
-                Router.push('/register');
+                Router.push({
+                    ...routerObj,
+                    pathname: "/register"
+                })
             }
             else if (result.dismiss == 'cancel') {
-                Router.push('/login');
+                routerObj.pathname = "/login"
+                Router.push({
+                    ...routerObj,
+                    pathname: "/login"
+                })
             }
         });
 
