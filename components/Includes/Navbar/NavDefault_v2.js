@@ -111,7 +111,7 @@ class NavbarDef_v2 extends Component {
                 newPage: false
             },
             { 
-                href: "https://dev-webm.rctiplus.com",
+                href: "https://dev-webm.rctiplus.com/news",
                 service: "news", 
                 isActive: false,
                 newPage: false
