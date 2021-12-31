@@ -111,7 +111,7 @@ class NavbarDef_v2 extends Component {
                 newPage: false
             },
             { 
-                href: "https://m.rctiplus.com/news",
+                href: LINK_NEWS,
                 service: "news", 
                 isActive: false,
                 newPage: false
@@ -138,7 +138,7 @@ class NavbarDef_v2 extends Component {
         return iconData.map(({ href, service, isActive, newPage }, i) => {
             const activeSrcSuffix = isActive ? "_active" : ""
             return (
-                <Link href={href} key={i} passHref>
+                // <Link href={href} key={i} passHref>
                     <a href={href} target={newPage ? "_blank" : "_self"}>
                         <Image 
                             src={`/icons-menu/${service}plus${activeSrcSuffix}.svg`}
@@ -147,7 +147,7 @@ class NavbarDef_v2 extends Component {
                             height={20}
                             />
                     </a>
-                </Link>
+                // </Link>
             )
         })
     }
