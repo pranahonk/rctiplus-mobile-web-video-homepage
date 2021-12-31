@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import Image from "next/image"
-import Link from "next/link"
 
 import actions from '../../../redux/actions';
 import pageActions from '../../../redux/actions/pageActions';
@@ -82,18 +81,24 @@ class NavbarDef_v2 extends Component {
         }
     }
 
+    onScrollEvent() {
+        const isTop = window.scrollY < 150;
+        if (isTop !== this.state.is_top) {
+            this.setState({is_top: isTop});
+        }
+    }
+
     componentDidMount() {
         this.setState({token: this.getToken()});
         if (!this.props.disableScrollListener) {
-            document.addEventListener('scroll', () => {
-                const isTop = window.scrollY < 150;
-                if (isTop !== this.state.is_top) {
-                    this.setState({is_top: isTop});
-                }
-            });
+            document.addEventListener('scroll', this.onScrollEvent())
         } else {
             this.setState({is_top: false});
         }
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('scroll', this.onScrollEvent())
     }
 
     getToken() {
@@ -111,7 +116,7 @@ class NavbarDef_v2 extends Component {
                 newPage: false
             },
             { 
-                href: "https://m.rctiplus.com/news",
+                href: LINK_NEWS,
                 service: "news", 
                 isActive: false,
                 newPage: false
@@ -138,16 +143,14 @@ class NavbarDef_v2 extends Component {
         return iconData.map(({ href, service, isActive, newPage }, i) => {
             const activeSrcSuffix = isActive ? "_active" : ""
             return (
-                <Link href={href} key={i} passHref>
-                    <a href={href} target={newPage ? "_blank" : "_self"}>
-                        <Image 
-                            src={`/icons-menu/${service}plus${activeSrcSuffix}.svg`}
-                            alt={`${service}+`}
-                            width={67}
-                            height={20}
-                            />
-                    </a>
-                </Link>
+                <a key={i} href={href} target={newPage ? "_blank" : "_self"}>
+                    <Image 
+                        src={`/icons-menu/${service}plus${activeSrcSuffix}.svg`}
+                        alt={`${service}+`}
+                        width={67}
+                        height={20}
+                        />
+                </a>
             )
         })
     }
