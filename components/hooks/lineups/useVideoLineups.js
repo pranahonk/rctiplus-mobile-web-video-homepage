@@ -51,7 +51,7 @@ export default function useVideoLineups(props) {
     
       case "default":
         contents.concat(data).forEach(content => {
-          if (content.content_type_detail.detail) {
+          if (content.content_type_detail.detail && content.content_type_detail.detail.status.code === 0) {
             mappedContents.set(
               content.content_type_detail.detail.data.id, 
               { ...content, ...content.content_type_detail.detail.data }

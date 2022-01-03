@@ -76,10 +76,6 @@ class Index_v2 extends React.Component {
     componentDidMount() {
         RPLUSAppVisit();
 
-        const accessToken = getCookie('ACCESS_TOKEN');
-        this.setState({
-            token: (accessToken == undefined) ? getVisitorToken() : accessToken
-        })
         window.onbeforeunload = _ => {
             homeGeneralClicked('mweb_homepage_refresh');
         };
@@ -140,7 +136,6 @@ class Index_v2 extends React.Component {
                 case "portrait" :
                     return (
                         <VideoPortraitView
-                            token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
                             lineup={lineup}
@@ -149,7 +144,6 @@ class Index_v2 extends React.Component {
                 case "landscape_large_ws" :
                     return (
                         <VideoLandscapeLgWsView
-                            token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
                             lineup={lineup}
@@ -159,7 +153,6 @@ class Index_v2 extends React.Component {
                 case "landscape_large" :
                     return (
                         <VideoLandscapeLgView
-                            token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
                             lineup={lineup}
@@ -168,7 +161,6 @@ class Index_v2 extends React.Component {
                 case "landscape_219" :
                     return (
                         <VideoLandscape219View
-                            token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
                             lineup={lineup}
@@ -177,7 +169,6 @@ class Index_v2 extends React.Component {
                 case "landscape_mini_wt" :
                     return (
                         <VideoLandscapeMiniWtView
-                            token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
                             lineup={lineup}
@@ -186,7 +177,6 @@ class Index_v2 extends React.Component {
                 case "landscape_mini" :
                     return (
                         <VideoLandscapeMiniView
-                            token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
                             lineup={lineup}
@@ -195,7 +185,6 @@ class Index_v2 extends React.Component {
                 case "square_mini" :
                     return (
                         <VideoSquareMiniView
-                            token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
                             lineup={lineup}
@@ -204,7 +193,6 @@ class Index_v2 extends React.Component {
                 case "square" :
                     return (
                         <VideoSquareView
-                            token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
                             lineup={lineup}
@@ -213,7 +201,6 @@ class Index_v2 extends React.Component {
                 case "landscape_mini_live" :
                     return (
                         <VideoLandscapeMiniLiveView
-                            token={this.state.token}
                             key={lineup.id}
                             loadingBar={this.LoadingBar}
                             lineup={lineup}

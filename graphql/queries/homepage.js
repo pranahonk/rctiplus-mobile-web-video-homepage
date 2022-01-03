@@ -56,11 +56,11 @@ export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
             sorting
             lineup_type
             lineup_type_detail {
-              ${lineupContinueWatchingFragment(getQueryParams({ page: 1, page_size, category_id }))}
-              ${lineupTypeStoryFragment(getQueryParams({ page: 1, page_size, category_id }))}
-              ${lineupDefaultFragment(getQueryParams({ page: 1, page_size, category_id }))}
-              ${lineupTypeNewsRegrouping(getQueryParams({ page: 1, page_size, category_id }))}
-              ${lineupTypeNewsTagar(getQueryParams({ page: 1, page_size, category_id }))}
+              ${lineupContinueWatchingFragment(getQueryParams({ page: 1, page_size }))}
+              ${lineupTypeStoryFragment(getQueryParams({ page: 1, page_size }))}
+              ${lineupDefaultFragment(getQueryParams({ page: 1, page_size }))}
+              ${lineupTypeNewsRegrouping(getQueryParams({ page: 1, page_size }))}
+              ${lineupTypeNewsTagar(getQueryParams({ page: 1, page_size }))}
             }
         }
         meta {

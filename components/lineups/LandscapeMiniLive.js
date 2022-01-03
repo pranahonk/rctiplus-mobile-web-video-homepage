@@ -27,6 +27,7 @@ function landscapeMiniLiveView (props) {
 
     const isLive = (contentDetail.countdown === 0 || contentDetail.is_live)
     const startTime = contentDetail.start_ts || contentDetail.live_at
+    console.log(startTime, "asdasdasdasdas")
     const { year, month, date, day, time } = parseDateObject(startTime * 1000)
 
     let component = (
