@@ -53,6 +53,19 @@ class Signin extends React.Component {
 
 	componentDidMount() {
 		this.props.getListCountry();
+		setTimeout(() => {
+			const token = getCookie('ACCESS_TOKEN');
+			if (token) {
+				const query = this.props.router.query;
+				if (query && Object.keys(query).length > 0 && query.referrer) {
+					removeCookie('ACCESS_TOKEN')
+					// window.location.href = this.constructReferrerUrl(token);
+				}
+				else {
+					Router.push("/")
+				}
+			}
+		}, 500);
 		this.LoadingBar.complete();
 	}
 
@@ -101,7 +114,6 @@ class Signin extends React.Component {
 			password: this.state.password,
 			phone_code: this.state.isPhoneNumber ? this.state.phone_code : '',
 		};
-		// console.log(data)
 		this.props.login(data).then(response => {
 			if(this.props?.authentication?.code === 8) {
 				return this.setState({
@@ -121,7 +133,12 @@ class Signin extends React.Component {
 					if(redirect.redirectTo) {
 						Router.push(redirect.redirectTo)
 					} else {
-						Router.push('/');
+						const { refpage } = this.props.router.query
+						const routerObj = Boolean(refpage) 
+							? { pathname: refpage, query: { refpage: "login" } }
+							: { pathname: "/" }
+						
+						Router.push(routerObj)
 					}
 				}
 			}

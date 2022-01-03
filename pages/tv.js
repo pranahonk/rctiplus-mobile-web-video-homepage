@@ -56,7 +56,7 @@ import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTra
 // import { RPLUSAdsShowing, RPLUSAdsClicked } from '../utils/internalTracking';
 import queryString from 'query-string';
 
-import { getCookie, getVisitorToken, checkToken } from '../utils/cookie';
+import { getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../utils/cookie';
 
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
 const innerHeight = require('ios-inner-height');
@@ -282,6 +282,8 @@ class Tv extends React.Component {
 							return
 						}
 					})
+
+					if (location.search.includes("refpage=login")) this.toggleChat()
 				})
 			})
 			.finally(_ => this.props.unsetPageLoader())
