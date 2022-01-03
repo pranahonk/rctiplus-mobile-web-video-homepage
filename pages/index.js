@@ -135,16 +135,17 @@ class Index_v2 extends React.Component {
     render() {
         const contents = this.state.contents;
         const meta = this.state.meta || {};
+        const homeSeoMeta = SITEMAP.home || {}
 
         return (
-            <Layout title={SITEMAP.home.title}>
+            <Layout title={homeSeoMeta.title || ""}>
                 <Head>
                     <JsonLDWebsite keyword={'Home'} />
-                    <meta name="description" content={SITEMAP.home.description} />
-                    <meta name="keywords" content={SITEMAP.home.keywords} />
-                    <meta property="og:title" content={SITEMAP.home.title} />
-                    <meta property="og:description" content={SITEMAP.home.description} />
-                    <meta property="og:image" itemProp="image" content={SITEMAP.home.image} />
+                    <meta name="description" content={homeSeoMeta.description || ""} />
+                    <meta name="keywords" content={homeSeoMeta.keywords || ""} />
+                    <meta property="og:title" content={homeSeoMeta.title || ""} />
+                    <meta property="og:description" content={homeSeoMeta.description || ""} />
+                    <meta property="og:image" itemProp="image" content={homeSeoMeta.image || ""} />
                     <meta property="og:url" content={REDIRECT_WEB_DESKTOP} />
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
@@ -154,9 +155,9 @@ class Index_v2 extends React.Component {
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
                     <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
                     <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-                    <meta name="twitter:image" content={SITEMAP.home.image} />
-                    <meta name="twitter:title" content={SITEMAP.home.title} />
-                    <meta name="twitter:description" content={SITEMAP.home.description} />
+                    <meta name="twitter:image" content={homeSeoMeta.image || ""} />
+                    <meta name="twitter:title" content={homeSeoMeta.title || ""} />
+                    <meta name="twitter:description" content={homeSeoMeta.description || ""} />
                     <meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
                     <meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
                 </Head>

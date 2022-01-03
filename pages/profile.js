@@ -158,14 +158,16 @@ class Profile extends React.Component {
 			);
 		}
 
+		const profileSeoMeta = SITEMAP.profile || {}
+
 		return (
-			<Layout title={SITEMAP.profile.title}>
+			<Layout title={profileSeoMeta.title || ""}>
 				<Head>
-					<meta name="description" content={SITEMAP.profile.description}/>
-					<meta name="keywords" content={SITEMAP.profile.keywords}/>
-					<meta property="og:title" content={SITEMAP.profile.title} />
-					<meta property="og:description" content={SITEMAP.profile.description} />
-					<meta property="og:image" itemProp="image" content={SITEMAP.profile.image} />
+					<meta name="description" content={profileSeoMeta.description || ""}/>
+					<meta name="keywords" content={profileSeoMeta.keywords || ""}/>
+					<meta property="og:title" content={profileSeoMeta.title || ""} />
+					<meta property="og:description" content={profileSeoMeta.description || ""} />
+					<meta property="og:image" itemProp="image" content={profileSeoMeta.image || ""} />
 					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
@@ -175,10 +177,10 @@ class Profile extends React.Component {
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
 					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
 					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-					<meta name="twitter:image" content={SITEMAP.profile.image} />
-					<meta name="twitter:image:alt" content={SITEMAP.profile.title} />
-					<meta name="twitter:title" content={SITEMAP.profile.title} />
-					<meta name="twitter:description" content={SITEMAP.profile.description} />
+					<meta name="twitter:image" content={profileSeoMeta.image || ""} />
+					<meta name="twitter:image:alt" content={profileSeoMeta.title || ""} />
+					<meta name="twitter:title" content={profileSeoMeta.title || ""} />
+					<meta name="twitter:description" content={profileSeoMeta.description || ""} />
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
