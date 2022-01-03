@@ -158,16 +158,14 @@ class Profile extends React.Component {
 			);
 		}
 
-		const profileSeoMeta = SITEMAP.profile || {}
-
 		return (
-			<Layout title={profileSeoMeta.title || ""}>
+			<Layout title={"Profile User - RCTI+"}>
 				<Head>
-					<meta name="description" content={profileSeoMeta.description || ""}/>
-					<meta name="keywords" content={profileSeoMeta.keywords || ""}/>
-					<meta property="og:title" content={profileSeoMeta.title || ""} />
-					<meta property="og:description" content={profileSeoMeta.description || ""} />
-					<meta property="og:image" itemProp="image" content={profileSeoMeta.image || ""} />
+					<meta name="description" content={"Profile user untuk melanjutkan video yang belum selesai ditonton"}/>
+					<meta name="keywords" content={"rctiplus, rcti+"}/>
+					<meta property="og:title" content={"Profile User - RCTI+"} />
+					<meta property="og:description" content={"Profile user untuk melanjutkan video yang belum selesai ditonton"} />
+					<meta property="og:image" itemProp="image" content={"https://rctiplus.com/assets/image/elements/logo.b9f35229.png"} />
 					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
@@ -177,10 +175,10 @@ class Profile extends React.Component {
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
 					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
 					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-					<meta name="twitter:image" content={profileSeoMeta.image || ""} />
-					<meta name="twitter:image:alt" content={profileSeoMeta.title || ""} />
-					<meta name="twitter:title" content={profileSeoMeta.title || ""} />
-					<meta name="twitter:description" content={profileSeoMeta.description || ""} />
+					<meta name="twitter:image" content={"https://rctiplus.com/assets/image/elements/logo.b9f35229.png"} />
+					<meta name="twitter:image:alt" content={"Profile User - RCTI+"} />
+					<meta name="twitter:title" content={"Profile User - RCTI+"} />
+					<meta name="twitter:description" content={"Profile user untuk melanjutkan video yang belum selesai ditonton"} />
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>
