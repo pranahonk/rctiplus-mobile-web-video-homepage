@@ -56,7 +56,7 @@ class Index_v2 extends React.Component {
     state = {
         lineups: [],
         meta: {},
-        length: 10,
+        length: 5,
         show_sticky_install: false,
         sticky_ads_closed: false,
         isShimmer: true,
@@ -92,7 +92,7 @@ class Index_v2 extends React.Component {
             homeGeneralClicked('mweb_homepage_refresh');
         };
 
-        this.getHomePageLineups(1, this.state.length)
+        this.getHomePageLineups()
 
         if (getCookie('STICKY_INSTALL_CLOSED')) {
             this.setState({ show_sticky_install: !getCookie('STICKY_INSTALL_CLOSED') });
@@ -102,13 +102,15 @@ class Index_v2 extends React.Component {
         }
     }
 
-    getHomePageLineups(page, pageSize) {
+    getHomePageLineups(page = 1, pageSize = 5) {
         this.LoadingBar.continuousStart();
         client.query({ query: GET_LINEUPS(page, pageSize) })
             .then(({ data }) => {
                 const mappedContents = new Map()
                 this.state.lineups.concat(data.lineups.data).forEach(content => {
-                    mappedContents.set(content.id, content)
+                    if (content.lineup_type_detail.detail) {
+                        mappedContents.set(content.id, content)
+                    }
                 })
                 this.setState({
                     lineups: [ ...mappedContents.values() ],
@@ -125,7 +127,7 @@ class Index_v2 extends React.Component {
         const { pagination } = this.state.meta
         if (pagination.total_page === pagination.current_page) return
 
-        this.getHomePageLineups(pagination.current_page + 1, this.state.length);
+        this.getHomePageLineups(pagination.current_page + 1)
     }
 
     closeStickyInstall(self) {

@@ -19,7 +19,7 @@ function landscapeLgWs (props) {
     generateLink, 
     onTouchStart, 
     onTouchEnd, 
-    fetchContents, 
+    setInitialContents, 
     loadMore, 
     contents 
   } = useVideoLineups(props)
@@ -27,7 +27,7 @@ function landscapeLgWs (props) {
   const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
   useEffect(() => {
-    fetchContents()
+    setInitialContents()
   }, [])
 
   const renderDescription = (content) => {
