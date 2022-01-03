@@ -46,7 +46,7 @@ import { isIOS } from 'react-device-detect';
 import socketIOClient from 'socket.io-client';
 import ax from 'axios';
 
-import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
+import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, API_TIMEOUT } from '../config';
 
 import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
@@ -124,11 +124,25 @@ class Tv extends React.Component {
       method: 'GET',
       headers: {
         'Authorization': token,
+      },
+      timeout: API_TIMEOUT
+    }).catch(err=> console.log('Error: ' + err));
+
+    if (response_seo && response_seo.status == 200) {
+        seoData = await response_seo.json();
+    }else{
+      seoData ={
+        data:{
+          title:'Live Streaming RCTI Hari Ini - TV Online Indonesia',
+          description:'Nonton tv online bersama Indonesia',
+          keywords:'live streaming rcti, rcti live, tv online',
+          image:'/files/fta_rcti/SEO Assets/streaming_rcti.jpg'
+        },
+        meta: {
+          image_path: 'https://static.rctiplus.id/media/',
+          video_path: 'https://static.rctiplus.id'
+        }
       }
-    });
-    const data_seo = await response_seo.json();
-    if (response_seo.status == 200) {
-      seoData = data_seo.status.code === 0 ? data_seo.data : null
     }
 
     //getdateseo
@@ -136,14 +150,21 @@ class Tv extends React.Component {
       method: 'GET',
       headers: {
         'Authorization': token,
+      },
+      timeout: API_TIMEOUT
+    }).catch(err=> console.log('Error: ' + err));
+
+    if (response_date && response_date.status == 200) {
+        seoDate = await response_date.json();
+    }else{
+      seoDate ={
+        data:{
+          end_date:'2029-04-30 19:00:00'
+        }
       }
-    });
-    const date_seo = await response_date.json();
-    if (response_date.status == 200) {
-      seoDate = date_seo.status.code === 0 ? date_seo.data : null
     }
 
-    return {  context_data: ctx.query, data_epg: dataEpg, params_date: q, data_seo: seoData, meta_seo: data_seo.meta, date_seo: seoDate};
+    return {  context_data: ctx.query, data_epg: dataEpg, params_date: q, data_seo: seoData, meta_seo: seoData.meta, date_seo: seoDate};
 	}
 
 	constructor(props) {
@@ -168,7 +189,7 @@ class Tv extends React.Component {
 			dates_before: getFormattedDateBefore(7),
 			selected_date: formatDateWord(now),
 			selected_dateID: formatDateTimeID(now),
-			selected_dateID2: formatDateTimeID(this.props.date_seo.end_date),
+			selected_dateID2: formatDateTimeID(this.props.date_seo.data.end_date),
 			select_modal: false,
 			player_url: '',
 			player_vmap: '',
@@ -766,7 +787,7 @@ class Tv extends React.Component {
 			description: titleEpg ? `Nonton streaming ${titleEpg} - ${paramsDate}  online tanpa buffering dan acara favorit lainnya 7 hari kemarin. Dapatkan juga jadwal acara ${channel == 'inews' ? 'iNEWS' : channel?.toUpperCase()} terbaru hanya di RCTI+` : descriptionChannel,
 			keywords: titleEpg ? `streaming ${channel}, live streaming ${channel}, ${channel} live, ${channel} streaming, ${channel} live streaming. ${titleEpg}, ${paramsDate}` : keywordsChannel,
 			twitter_img_alt: titleEpg ? `Streaming ${titleEpg} - ${paramsDate} di ${channel == 'inews' ? 'iNEWS' : channel?.toUpperCase()} - RCTI+` : twitter_img_alt,
-      pathimage:`${this.props?.meta_seo?.image_path+`500`+this.props?.data_seo?.image}`,
+      pathimage:`${this.props?.meta_seo?.image_path+`500`+this.props?.data_seo?.data?.image}`,
 		}
 	}
 
@@ -870,7 +891,7 @@ class Tv extends React.Component {
 		const { props, state } = this
 		const contentData = {
 			asPath: props.router.asPath,
-			title: props.data_seo.title,
+			title: props.data_seo.data.title,
 			description: this._dscriptionLD(props.context_data?.channel).description,
 			thumbnailUrl: this._metaTags().pathimage,
 			sameAs: this._dscriptionLD(props.context_data?.channel).same,
@@ -1158,7 +1179,8 @@ class Tv extends React.Component {
 												className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
 										</Col>
 										<Col className="chat-message" xs={10}>
-											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
+											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}>
+                        <RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
 										</Col>
 									</Row>
 								))}
