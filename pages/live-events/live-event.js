@@ -275,6 +275,8 @@ class LiveEvent extends React.Component {
 				// this.initPlayer();
 				this.props.setSeamlessLoad(false);
 				this.props.unsetPageLoader();
+
+				if (location.search.includes("refpage=login")) this.toggleChat()
 			});
 		})
 		.catch(error => {
