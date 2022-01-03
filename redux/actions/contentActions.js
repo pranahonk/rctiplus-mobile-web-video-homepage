@@ -24,21 +24,26 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
             let contents = [];
             if (response.data.status.code === 0) {
                 const data = response.data.data;
-                console.log(`ini data home page`, data)
                 let selectedData = [];
                 let promises = [];
                 for (let i = 0; i < data.length; i++) {
                     if (data[i].total_content > 0) {
-                        promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?page=${1}&length=${7}`)
-                        .catch((err) => {
-                            console.log('err', err);
-                        }));
-                        selectedData.push(data[i]);
+                        if(data[i].content_type === "content"){
+                            promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?page=${1}&length=${7}`)
+                            .catch((err) => {
+                            }));
+                            selectedData.push(data[i]);
+                        }
+                        else if(data[i].content_type === "story"){
+                            promises.push(axios.get(`/v1/homepage/${data[i].id}/stories?page=${1}&length=${7}`)
+                            .catch((err) => {
+                            }));
+                            selectedData.push(data[i]);
+                        }
                     }
                     else if (data[i].type === 'custom' && data[i].api) {
                         promises.push(axios.get(data[i].api)
                         .catch((err) => {
-                            console.log('err', err);
                         }));
                         selectedData.push(data[i]);
                     }
@@ -93,6 +98,29 @@ const getHomepageContents = (id, platform = 'mweb', page = 1, length = 21) => {
                     meta: response.data.meta,
                     status: response.data.status
                 });
+                resolve(response);
+            }
+            else {
+                reject(response);
+            }
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const getStoryLineup = (id, page, length) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`/v1/homepage/${id}/stories?page=${page}&length=${length}`);
+            if (response.data.status.code === 0) {
+                // dispatch({
+                //     type: 'GET_HOMEPAGE_CONTENTS',
+                //     data: response.data.data,
+                //     meta: response.data.meta,
+                //     status: response.data.status
+                // });
                 resolve(response);
             }
             else {
@@ -463,6 +491,7 @@ export default {
     getProgramPhoto,
     getProgramClip,
     getContentShareLink,
+    getStoryLineup,
     selectSeason,
     setShowMoreAllowed
 };
