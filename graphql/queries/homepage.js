@@ -1,6 +1,26 @@
 
 import { gql } from "@apollo/client"
 
+import {
+  lineupContinueWatchingFragment,
+  lineupTypeStoryFragment,
+  lineupDefaultFragment,
+  lineupTypeNewsTagar,
+  lineupTypeNewsRegrouping
+} from "../fragments/lineups"
+
+import {
+  contentTypeCatchupFragment,
+  contentTypeClipFragment,
+  contentTypeEpisodeFragment,
+  contentTypeExtraFragment,
+  contentTypeLiveEPGFragment,
+  contentTypeLiveEventFragment,
+  contentTypeProgramFragment,
+  contentTypeSeasonFragment,
+  contentTypeSpecialFragment,
+} from "../fragments/content_types"
+
 function getQueryParams(args) {
   let output = []
   for (const key in args) {
@@ -21,7 +41,7 @@ export const GET_BANNERS = gql`
   }
 `
 
-export const GET_LINEUPS = (page = 1, page_size = 10, category_id = 0) => {
+export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
   const queryParams = getQueryParams({ page, page_size, category_id })
 
   return gql`
@@ -29,12 +49,19 @@ export const GET_LINEUPS = (page = 1, page_size = 10, category_id = 0) => {
       lineups(${queryParams}) {
         data {
             id
-            lineup_type
             content_type
             service
             title
             display_type
             sorting
+            lineup_type
+            lineup_type_detail {
+              ${lineupContinueWatchingFragment(getQueryParams({ page: 1, page_size, category_id }))}
+              ${lineupTypeStoryFragment(getQueryParams({ page: 1, page_size, category_id }))}
+              ${lineupDefaultFragment(getQueryParams({ page: 1, page_size, category_id }))}
+              ${lineupTypeNewsRegrouping(getQueryParams({ page: 1, page_size, category_id }))}
+              ${lineupTypeNewsTagar(getQueryParams({ page: 1, page_size, category_id }))}
+            }
         }
         meta {
           pagination {
@@ -48,7 +75,7 @@ export const GET_LINEUPS = (page = 1, page_size = 10, category_id = 0) => {
   `
 }
 
-export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 10, lineup_id = 0) => {
+export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 7, lineup_id = 0) => {
   const queryParams = getQueryParams({ page, page_size, lineup_id })
 
   return gql`
@@ -80,7 +107,7 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 10, lineup_id = 0
   `
 }
 
-export const GET_CONTINUE_WATCHING = (page = 1, page_size = 10, lineup_id = 0) => {
+export const GET_CONTINUE_WATCHING = (page = 1, page_size = 7, lineup_id = 0) => {
   const queryParams = getQueryParams({ page, page_size, lineup_id })
 
   return gql`
@@ -110,182 +137,3 @@ export const GET_CONTINUE_WATCHING = (page = 1, page_size = 10, lineup_id = 0) =
     }
   `
 }
-
-const contentTypeProgramFragment = `
-... on ContentTypeProgram {
-  detail {
-    data {
-      id
-      portrait_image
-      landscape_image
-      square_image
-      medium_landscape_image
-      title
-      summary
-      permalink
-    }
-    status {
-      code
-    }
-  }
-}`
-
-const contentTypeEpisodeFragment = `
-... on ContentTypeEpisode {
-  detail {
-    data {
-      id
-      square_image
-      portrait_image
-      landscape_image
-      medium_landscape_image
-      title
-      summary
-      permalink
-    }
-    status {
-      code
-    }
-  }
-}
-`
-
-const contentTypeExtraFragment = `
-... on ContentTypeExtra {
-  detail {
-    data {
-      id
-      square_image
-      portrait_image
-      landscape_image
-      medium_landscape_image
-      title
-      summary
-      permalink
-    }
-    status {
-      code
-    }
-  }
-}
-`
-
-const contentTypeClipFragment = `
-... on ContentTypeClip {
-  detail {
-    data {
-      id
-      square_image
-      portrait_image
-      landscape_image
-      medium_landscape_image
-      title
-      summary
-      permalink
-    }
-    status {
-      code
-    }
-  }
-}
-`
-
-const contentTypeCatchupFragment = `
-... on ContentTypeCatchUp {
-  detail {
-    data {
-      id
-      countdown
-      title
-      is_live
-      start
-      landscape_image
-      start_ts
-      permalink
-    }
-    status {
-      code
-    }
-  }
-}
-`
-
-const contentTypeLiveEventFragment = `
-... on ContentTypeLiveEvent {
-  detail {
-    data {
-      id
-      countdown
-      title
-      live_at
-      start_date
-      landscape_image
-      event_type
-      permalink
-    }
-    status {
-      code
-    }
-  }
-}
-`
-
-const contentTypeLiveEPGFragment = `
-... on ContentTypeLiveEPG {
-  detail {
-    data {
-      id
-      countdown
-      title
-      is_live
-      start
-      landscape_image
-      start_ts
-      permalink
-    }
-    status {
-      code
-    }
-  }
-}
-`
-
-const contentTypeSpecialFragment = `
-... on ContentTypeSpecial {
-  detail {
-    data {
-      id
-      square_image
-      portrait_image
-      landscape_image
-      medium_landscape_image
-      title
-      summary
-      permalink
-    }
-    status {
-      code
-    }
-  }
-}
-`
-
-const contentTypeSeasonFragment = `
-... on ContentTypeSeason {
-  detail {
-    data {
-      id
-      square_image
-      portrait_image
-      landscape_image
-      medium_landscape_image
-      title
-      summary
-      permalink
-    }
-    status {
-      code
-    }
-  }
-}
-`

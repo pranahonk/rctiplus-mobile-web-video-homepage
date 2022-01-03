@@ -28,7 +28,9 @@ export default function useVideoLineups(props) {
 		}
   }
 
-  const fetchContents = () => {
+  const loadMore = () => {
+    if (endPage) return
+
     switch (props.lineup.lineup_type) {
       case "custom":
         return getContinueWatching()
@@ -37,8 +39,35 @@ export default function useVideoLineups(props) {
     }
   }
 
+  const setInitialContents = () => {
+    const { data, meta } = props.lineup.lineup_type_detail.detail
+    const mappedContents = new Map()
+
+    switch (props.lineup.lineup_type) {
+      case "custom":
+        contents.concat(data)
+          .forEach(content => mappedContents.set(content.id, content))
+        break
+    
+      case "default":
+        contents.concat(data).forEach(content => {
+          if (content.content_type_detail.detail) {
+            mappedContents.set(
+              content.content_type_detail.detail.data.id, 
+              { ...content, ...content.content_type_detail.detail.data }
+            )
+          }
+        })
+        break
+    }
+
+    setContents([ ...mappedContents.values() ])
+    setEndPage(meta.pagination.current_page === meta.pagination.total_page)
+    setNextPage(meta.pagination.current_page + 1)
+  }
+
   const getContinueWatching = () => {
-    if (nextPage > 1) props.loadingBar.continuousStart()
+    props.loadingBar.continuousStart()
 
     client.query({ query: GET_CONTINUE_WATCHING(nextPage, pageLength, props.lineup.id)})
       .then(({ data }) => {
@@ -53,13 +82,11 @@ export default function useVideoLineups(props) {
         setNextPage(pagination.current_page + 1)
       })
       .catch(_ => setEndPage(true))
-      .finally(_ => {
-        if (nextPage > 1) props.loadingBar.complete()
-      })
+      .finally(_ => props.loadingBar.complete())
   }
 
   const getLineupContents = () => {
-    if (nextPage > 1) props.loadingBar.continuousStart()
+    props.loadingBar.continuousStart()
 
     client.query({ query: GET_LINEUP_CONTENT_VIDEO(nextPage, pageLength, props.lineup.id)})
       .then(({ data }) => {
@@ -80,16 +107,8 @@ export default function useVideoLineups(props) {
         setNextPage(pagination.current_page + 1)
       })
       .catch(_ => setEndPage(true))
-      .finally(_ => {
-        if (nextPage > 1) props.loadingBar.complete()
-      })
+      .finally(_ => props.loadingBar.complete())
   }
-
-	const loadMore = () => {
-    if (endPage) return
-
-    fetchContents()
-	}
 
   const generateLink = (content) => {
     let url = content.permalink || "/"
@@ -133,7 +152,7 @@ export default function useVideoLineups(props) {
     onTouchStart,
     onTouchEnd,
     loadMore,
-    fetchContents,
+    setInitialContents,
     contents
   }
 }

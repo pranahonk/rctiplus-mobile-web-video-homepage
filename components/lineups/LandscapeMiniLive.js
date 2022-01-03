@@ -14,12 +14,12 @@ const CountDownTimer = dynamic(() => import("../Includes/Common/CountdownTimer")
 import '../../assets/scss/components/panel.scss'
 
 function landscapeMiniLiveView (props) {
-  const { generateLink, onTouchStart, onTouchEnd, fetchContents, loadMore, contents } = useVideoLineups(props)
+  const { generateLink, onTouchStart, onTouchEnd, setInitialContents, loadMore, contents } = useVideoLineups(props)
   const placeHolderImgUrl = "/static/placeholders/placeholder_landscape.png"
   const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
   useEffect(() => {
-    fetchContents()
+    setInitialContents()
   }, [])
 
   const renderDescription = (contentDetail) => {
