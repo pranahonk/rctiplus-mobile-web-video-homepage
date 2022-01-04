@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import contentActions from '../../../redux/actions/contentActions';
+import newsCountViewTag from '../../../redux/actions/newsCountView';
 import { Carousel } from 'react-responsive-carousel';
 import Img from 'react-image';
 
@@ -11,6 +12,7 @@ import { client } from "../../../graphql/client"
 import { GET_BANNERS } from "../../../graphql/queries/homepage"
 
 import '../../../assets/scss/plugins/carousel/carousel.scss';
+import Cookie from 'js-cookie';
 
 function carouselBanner(props) {
     const placeholderImg = "/static/placeholders/placeholder_landscape.png"
@@ -35,17 +37,32 @@ function carouselBanner(props) {
         sendTracker(homeBannerEvent, "homeBanner", banner)
 
         if (!banner.permalink) return
+        if(banner.type === "news_tags"){
+            const params = {
+              'tag': banner.permalink.split('/')[6],
+            };
+
+            props.newsCountViewTag(params)
+        }else if(banner.type === "news_detail"){
+          if(!Cookie.get('uid_ads')) {
+            Cookie.set('uid_ads', new DeviceUUID().get())
+          }
+          else{
+
+            props.newsCountViewDetail(Cookie.get('uid_ads'), parseInt(banner.permalink.split('/')[6]))
+          }
+        }
         Router.push(banner.permalink)
     }
 
     const sendTracker = (func, type, banner) => {
         const eventArgs = {
             homeBanner: [
-                banner.id, 
-                banner.type, 
-                banner.title, 
-                `${meta.image_path}${RESOLUTION_IMG}${banner.portrait_image}`, 
-                `${meta.image_path}${RESOLUTION_IMG}${banner.landscape_image}`, 
+                banner.id,
+                banner.type,
+                banner.title,
+                `${meta.image_path}${RESOLUTION_IMG}${banner.portrait_image}`,
+                `${meta.image_path}${RESOLUTION_IMG}${banner.landscape_image}`,
                 'mweb_homepage_banner_clicked'
             ]
         }
@@ -54,12 +71,12 @@ function carouselBanner(props) {
 
     return (
         <div style={{ position: 'relative', paddingTop: props.showStickyInstall ? 135 : props.detailCategory? 0 : 70,}}>
-            {banners.length === 0 
+            {banners.length === 0
                 ? (
-                    <div 
-                        className="banner-carousel" 
+                    <div
+                        className="banner-carousel"
                         style={{ width: '100%', minHeight: 320,display: "flex", justifyContent:"center", alignItems:"center"}}>
-                        <Img 
+                        <Img
                             alt="placeholder"
                             src={<img alt="placeholder" src={placeholderImg}/>}
                             unloader={<img alt="placeholder" src={placeholderImg}/>}
@@ -67,18 +84,18 @@ function carouselBanner(props) {
                     </div>
                 )
                 : (
-                    <Carousel 
+                    <Carousel
                         className="banner-carousel"
-                        statusFormatter={(current, total) => `${current}/${total}`} 
-                        autoPlay 
-                        showThumbs={false} 
-                        showIndicators 
-                        stopOnHover 
-                        showArrows={false} 
-                        showStatus={false} 
-                        swipeScrollTolerance={1} 
+                        statusFormatter={(current, total) => `${current}/${total}`}
+                        autoPlay
+                        showThumbs={false}
+                        showIndicators
+                        stopOnHover
+                        showArrows={false}
+                        showStatus={false}
+                        swipeScrollTolerance={1}
                         infiniteLoop
-                        swipeable 
+                        swipeable
                         onSwipeEnd={(e) => {
                             const swipedIndex = e.target.getAttribute('data-index');
                             if (banners[swipedIndex]) {
@@ -89,12 +106,12 @@ function carouselBanner(props) {
                         {banners.map((banner, i) => {
                             const imgSrc = meta.image_path ? `${meta.image_path}${RESOLUTION_IMG}${banner.square_image}` : placeholderImg
                             return (
-                                <div 
-                                    data-index={i} 
-                                    onClick={_ => goToProgram(banner)} 
-                                    key={banner.id} 
+                                <div
+                                    data-index={i}
+                                    onClick={_ => goToProgram(banner)}
+                                    key={banner.id}
                                     style={{  width: '100%', minHeight: 320}}>
-                                    <Img 
+                                    <Img
                                         alt={banner.title}
                                         src={imgSrc}
                                         unloader={<img alt={banner.title} src={placeholderImg}/>}
@@ -111,4 +128,7 @@ function carouselBanner(props) {
     );
 }
 
-export default connect(state => state, contentActions)(withRouter(carouselBanner));
+export default connect(state => state, {
+  ...contentActions,
+  ...newsCountViewTag
+})(withRouter(carouselBanner));
