@@ -185,13 +185,13 @@ class Signin extends React.Component {
 	render() {
 		const { state, props } = this;
 		return (
-			<Layout title={SITEMAP.login.title}>
+			<Layout title={"Login Akun - RCTI+"}>
 				<Head>
-					<meta name="description" content={SITEMAP.login.description}/>
-					<meta name="keywords" content={SITEMAP.login.keywords}/>
-					<meta property="og:title" content={SITEMAP.login.title} />
-					<meta property="og:description" content={SITEMAP.login.description} />
-					<meta property="og:image" itemProp="image" content={SITEMAP.login.image} />
+					<meta name="description" content={"Login akun untuk menikmati semua layanan entertainment gratis di RCTI+."}/>
+					<meta name="keywords" content={"login, login akun, login rcti plus, login rctiplus, login rcti+, masuk rctiplus"}/>
+					<meta property="og:title" content={"Login Akun - RCTI+"} />
+					<meta property="og:description" content={"Login akun untuk menikmati semua layanan entertainment gratis di RCTI+."} />
+					<meta property="og:image" itemProp="image" content={"https://rctiplus.com/assets/image/elements/logo.b9f35229.png"} />
 					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
 					<meta property="og:image:type" content="image/jpeg" />
 					<meta property="og:image:width" content="600" />
@@ -202,10 +202,10 @@ class Signin extends React.Component {
 					<meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
 					<meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
 					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-					<meta name="twitter:image" content={SITEMAP.login.image} />
-					<meta name="twitter:image:alt" content={SITEMAP.login.title} />
-					<meta name="twitter:title" content={SITEMAP.login.title} />
-					<meta name="twitter:description" content={SITEMAP.login.description} />
+					<meta name="twitter:image" content={"https://rctiplus.com/assets/image/elements/logo.b9f35229.png"} />
+					<meta name="twitter:image:alt" content={"Login Akun - RCTI+"} />
+					<meta name="twitter:title" content={"Login Akun - RCTI+"} />
+					<meta name="twitter:description" content={"Login akun untuk menikmati semua layanan entertainment gratis di RCTI+."} />
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 				</Head>

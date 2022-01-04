@@ -64,10 +64,10 @@ class StickyAds extends React.Component {
         }
     }
     componentDidMount() {
-        googletag.destroySlots()
         this.props.fetchTargetingAds()
         .then((res) => {
-            this.fetchAds(res)
+            googletag.destroySlots()
+            setTimeout(() => this.fetchAds(res), 200)
         })
         .catch((err) => this.fetchAds([]))
         
