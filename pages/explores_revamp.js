@@ -110,7 +110,13 @@ class ExploresRevamp extends React.Component {
 				twitter_img_alt: `${name} Di RCTIPlus`
 			}
 		}	
-		return SITEMAP['explore_for_you'];
+		return {
+			title: `Nonton Streaming Film Drama Sub Indo, Serial, Sinetron - RCTI+`,
+			description: `Nonton kumpulan for you program, sinetron dan acara TV RCTI, MNCTV, GTV, iNews TV terbaru full episode tanpa buffering hanya di RCTI+`,
+			image: `https://static.rctiplus.id/assets/metaimages/MetaCover_Explore%20Program-min.png`,
+			keywords: `film sub indo, nonton film, nonton film indonesia, nonton drama korea, nonton sinetron, kumpulan ftv, drama, Realilty Show, Special Event, Variety Show, Sport Hightlight, Music, Talet Search, Match, Documentary, Hard News, Infotainment, Animation, Kids Entertainment, Comedy, Skill / Hobbies, Travel, Action, Horror, Game Show, Sitcom Comedy, Pearch Dialog, Trailer, Talkshow, Crime, TV Magazine, Edutaiment, Sport Hightlight, Quiz, Kids Game Show, Series, Exercise, Light Entertainement, drama indonesia, sinetron indonesia`,
+			twitter_img_alt: 'ExploreRCTIPlus'
+		}
 	}
 
 	getMetaOg() {
