@@ -1,11 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
-import queryString from 'query-string';
 import {getTruncate} from '../../../utils/helpers';
 import { formatDateWordID } from '../../../utils/dateHelpers';
 import { urlRegex } from '../../../utils/regex';
 import { imageNews } from '../../../utils/helpers';
-import isEmpty from 'lodash/isEmpty';
 import dynamic from 'next/dynamic';
 import {client }  from "../../../graphql/client"
 
@@ -15,18 +12,22 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
 import 'swiper/swiper.scss';
-import { useQuery } from '@apollo/client';
 import { GET_REGROUPING, GET_REGROUPING_LINEUPS } from '../../../graphql/queries/regrouping';
 
 //import scss
 import '../../../assets/scss/components/horizontal-multiple.scss';
 import '../../../assets/scss/components/trending_v2.scss';
 import Router from 'next/router';
+import Cookie from 'js-cookie';
 
-const Loader = dynamic(() => import('../../Includes/Shimmer/HorizontalMutipleLandscapeloader.js'))
+const Loader = dynamic(() => import('../../Includes/Shimmer/HorizontalMutipleLandscapeloader.js'));
+
+//import redux
+import newsCountView from '../../../redux/actions/newsCountView';
+import { connect } from 'react-redux';
 
 
-const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
+const HorizontalMutipleLandscape = ({title, indexTag, id, ...props}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -91,8 +92,16 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
     } else {
       category = urlRegex(article.subcategory_name)
     }
+    if(!Cookie.get('uid_ads')) {
+      Cookie.set('uid_ads', new DeviceUUID().get())
+    }
+    else{
+      props.newsCountViewDetail(Cookie.get('uid_ads'), article.id)
+    }
     Router.push('news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)));
   };
+
+
   return (
     itemDimensional?.length === 0 || itemDimensional === undefined ? <div/> :
     <li>
@@ -156,4 +165,8 @@ const HorizontalMutipleLandscape = ({title, indexTag, id}) => {
   );
 };
 
-export default HorizontalMutipleLandscape;
+
+export default connect(state => state, {
+  ...newsCountView
+})(HorizontalMutipleLandscape);
+
