@@ -11,8 +11,6 @@ import dynamic from 'next/dynamic';
 
 import initialize from '../utils/initialize';
 import { getCountdown } from '../utils/helpers';
-import { convivaJwPlayer } from '../utils/conviva';
-import { urlRegex } from '../utils/regex';
 
 // Redux Actions
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
@@ -23,7 +21,6 @@ import seoActions from "../redux/actions/seoActions"
 
 import Layout from '../components/Layouts/Default_v2';
 import SelectDateModal from '../components/Modals/SelectDateModal';
-import { GeoblockModal } from '../components/Modals/Geoblock';
 import ActionSheet from '../components/Modals/ActionSheet';
 import Wrench from '../components/Includes/Common/Wrench';
 import MuteChat from '../components/Includes/Common/MuteChat';
@@ -44,8 +41,7 @@ import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import PauseIcon from '../components/Includes/Common/PauseIcon';
-import { isIOS } from 'react-device-detect';
-import socketIOClient from 'socket.io-client';
+
 import ax from 'axios';
 
 import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, API_TIMEOUT } from '../config';
@@ -55,7 +51,6 @@ import 'emoji-mart/css/emoji-mart.css';
 
 import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId, appierAdsShow, appierAdsClicked } from '../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTracking';
-// import { RPLUSAdsShowing, RPLUSAdsClicked } from '../utils/internalTracking';
 import queryString from 'query-string';
 
 import { getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../utils/cookie';
@@ -601,7 +596,7 @@ class Tv extends React.Component {
 	}
 
 	checkLogin() {
-		if (!this.props.user.isAuth) {
+		if (!this.props.user.isAuth && !getUserAccessToken()) {
 			showSignInAlert(`Please <b>Sign In</b><br/>
 				Woops! Gonna sign in first!<br/>
 				Only a click away and you<br/>
