@@ -49,9 +49,9 @@ const AudioHorizontalDisc = dynamic(() => import("../components/lineups/audio_li
 const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"));
 
 class Index_v2 extends React.Component {
-    static async getInitialProps(ctx) {
-        initialize(ctx);
-    }
+  static async getInitialProps(ctx) {
+    initialize(ctx);
+  }
 
     state = {
         lineups: [],
@@ -65,42 +65,42 @@ class Index_v2 extends React.Component {
         contentComingSoonModal: {}
     }
 
-    LoadingBar = null
-    swipe = {}
+  LoadingBar = null
+  swipe = {}
 
-    onTouchStart(e) {
-		const touch = e.touches[0];
-		this.swipe = { y: touch.clientY };
-	}
+  onTouchStart(e) {
+    const touch = e.touches[0];
+    this.swipe = { y: touch.clientY };
+  }
 
-	onTouchEnd(e) {
-		const touch = e.changedTouches[0];
-		const absY = Math.abs(touch.clientY - this.swipe.y);
-		if (absY > 50) {
-			homeGeneralClicked('mweb_homepage_scroll_vertical');
-        }
-	}
+  onTouchEnd(e) {
+    const touch = e.changedTouches[0];
+    const absY = Math.abs(touch.clientY - this.swipe.y);
+    if (absY > 50) {
+      homeGeneralClicked('mweb_homepage_scroll_vertical');
+    }
+  }
 
-    componentDidMount() {
-        RPLUSAppVisit();
+  componentDidMount() {
+    RPLUSAppVisit();
 
-        const accessToken = getCookie('ACCESS_TOKEN');
-        this.setState({
-            token: (accessToken == undefined) ? getVisitorToken() : accessToken
-        })
-        window.onbeforeunload = _ => {
-            homeGeneralClicked('mweb_homepage_refresh');
-        };
+    const accessToken = getCookie('ACCESS_TOKEN');
+    this.setState({
+      token: (accessToken == undefined) ? getVisitorToken() : accessToken
+    })
+    window.onbeforeunload = _ => {
+      homeGeneralClicked('mweb_homepage_refresh');
+    };
 
         this.getHomePageLineups()
 
-        if (getCookie('STICKY_INSTALL_CLOSED')) {
-            this.setState({ show_sticky_install: !getCookie('STICKY_INSTALL_CLOSED') });
-        }
-        else {
-            this.setState({ show_sticky_install: true });
-        }
+    if (getCookie('STICKY_INSTALL_CLOSED')) {
+      this.setState({ show_sticky_install: !getCookie('STICKY_INSTALL_CLOSED') });
     }
+    else {
+      this.setState({ show_sticky_install: true });
+    }
+  }
 
     getHomePageLineups(page = 1, pageSize = 5) {
         this.LoadingBar.continuousStart();
@@ -123,24 +123,24 @@ class Index_v2 extends React.Component {
             })
     }
 
-    bottomScrollFetch() {
-        const { pagination } = this.state.meta
-        if (pagination.total_page === pagination.current_page) return
+  bottomScrollFetch() {
+    const { pagination } = this.state.meta
+    if (pagination.total_page === pagination.current_page) return
 
         this.getHomePageLineups(pagination.current_page + 1)
     }
 
-    closeStickyInstall(self) {
-        setCookie('STICKY_INSTALL_CLOSED', 1);
-        self.setState({ show_sticky_install: false });
-    }
+  closeStickyInstall(self) {
+    setCookie('STICKY_INSTALL_CLOSED', 1);
+    self.setState({ show_sticky_install: false });
+  }
 
-    setComingSoonModalState(open, content) {
-        this.setState({
-            openComingSoonModal: open,
-            contentComingSoonModal: content
-        })
-    }
+  setComingSoonModalState(open, content) {
+    this.setState({
+      openComingSoonModal: open,
+      contentComingSoonModal: content
+    })
+  }
 
     renderLineup(lineups, meta) {
         return lineups.map((lineup, index) => {
@@ -240,61 +240,61 @@ class Index_v2 extends React.Component {
                         <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
                     )
 
-                case 'landscape_news':
-                    return (
-                        <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-                    )
-                case "square_list_news":
-                    return (
-                        <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-                    )
-                case "landscape_hot_competition":
-                    return(
-                        <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-                    )
-                case "portrait_hot":
-                    return(
-                        <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-                    )
-            }
-        })
-    }
+        case 'landscape_news':
+          return (
+            <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+          )
+        case "square_list_news":
+          return (
+            <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+          )
+        case "landscape_hot_competition":
+          return(
+            <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+          )
+        case "portrait_hot":
+          return(
+            <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+          )
+      }
+    })
+  }
 
-    render() {
-        return (
-            <Layout title={SITEMAP.home.title}>
-                <Head>
-                    <JsonLDWebsite keyword={'Home'} />
-                    <meta name="description" content={SITEMAP.home.description} />
-                    <meta name="keywords" content={SITEMAP.home.keywords} />
-                    <meta property="og:title" content={SITEMAP.home.title} />
-                    <meta property="og:description" content={SITEMAP.home.description} />
-                    <meta property="og:image" itemProp="image" content={SITEMAP.home.image} />
-                    <meta property="og:url" content={REDIRECT_WEB_DESKTOP} />
-                    <meta property="og:image:type" content="image/jpeg" />
-                    <meta property="og:image:width" content="600" />
-                    <meta property="og:image:height" content="315" />
-                    <meta property="og:site_name" content={SITE_NAME} />
-                    <meta property="og:type" content="article" />
-                    <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
-                    <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
-                    <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-                    <meta name="twitter:image" content={SITEMAP.home.image} />
-                    <meta name="twitter:title" content={SITEMAP.home.title} />
-                    <meta name="twitter:description" content={SITEMAP.home.description} />
-                    <meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
-                    <meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
-                </Head>
+  render() {
+    return (
+      <Layout title={SITEMAP.home.title}>
+        <Head>
+          <JsonLDWebsite keyword={'Home'} />
+          <meta name="description" content={SITEMAP.home.description} />
+          <meta name="keywords" content={SITEMAP.home.keywords} />
+          <meta property="og:title" content={SITEMAP.home.title} />
+          <meta property="og:description" content={SITEMAP.home.description} />
+          <meta property="og:image" itemProp="image" content={SITEMAP.home.image} />
+          <meta property="og:url" content={REDIRECT_WEB_DESKTOP} />
+          <meta property="og:image:type" content="image/jpeg" />
+          <meta property="og:image:width" content="600" />
+          <meta property="og:image:height" content="315" />
+          <meta property="og:site_name" content={SITE_NAME} />
+          <meta property="og:type" content="article" />
+          <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
+          <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
+          <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
+          <meta name="twitter:image" content={SITEMAP.home.image} />
+          <meta name="twitter:title" content={SITEMAP.home.title} />
+          <meta name="twitter:description" content={SITEMAP.home.description} />
+          <meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
+          <meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
+        </Head>
 
-                <BottomScrollListener
-                    offset={150}
-                    onBottom={this.bottomScrollFetch.bind(this)} />
+        <BottomScrollListener
+          offset={150}
+          onBottom={this.bottomScrollFetch.bind(this)} />
 
-                <LoadingBar
-                    progress={0}
-                    height={3}
-                    color={this.state.show_sticky_install ? '#000' : '#fff'}
-                    onRef={ref => (this.LoadingBar = ref)} />
+        <LoadingBar
+          progress={0}
+          height={3}
+          color={this.state.show_sticky_install ? '#000' : '#fff'}
+          onRef={ref => (this.LoadingBar = ref)} />
 
                 {this.state.isShimmer
                     ? (<HomeLoader/>)
@@ -370,7 +370,7 @@ class Index_v2 extends React.Component {
 }
 
 export default connect(state => state, {
-    ...contentActions,
-    ...pageActions,
-    ...adsActions
+  ...contentActions,
+  ...pageActions,
+  ...adsActions
 })(Index_v2);

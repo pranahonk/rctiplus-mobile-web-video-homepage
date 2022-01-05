@@ -20,7 +20,7 @@ import newsCountViewTag from '../../../redux/actions/newsCountView';
 const HastagLoader = dynamic(() => import('../../Includes/Shimmer/HastagLoader'));
 
 
-const HorizontalHastags = ({title, indexTag, id, ...props}) => {
+const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -29,13 +29,7 @@ const HorizontalHastags = ({title, indexTag, id, ...props}) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_HASTAGS(1, 100, 1, 5)})
-      .then((res)=>{
-        setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
-      })
-      .catch((err)=>{
-        console.log(err);
-      });
+    setHastags(data?.lineup_type_detail?.detail);
   },[]);
 
   const getHastagPagination = (page) =>{

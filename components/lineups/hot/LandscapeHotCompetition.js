@@ -19,8 +19,9 @@ import { imageNews } from '../../../utils/helpers';
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
 
-const LandscapeHotCompetition = ({title, indexTag, id}) => {
+const LandscapeHotCompetition = ({title, indexTag, id, data}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
+  console.log(data)
 
   const [show, setShow] = useState(null);
   const [hastags, setHastags] = useState([]);
