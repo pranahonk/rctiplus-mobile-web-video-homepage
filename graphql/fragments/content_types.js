@@ -150,6 +150,8 @@ export const contentTypeSpecialFragment = `
       title
       summary
       permalink
+      external_link
+      action_type
     }
     status {
       code

@@ -84,15 +84,11 @@ class Index_v2 extends React.Component {
   componentDidMount() {
     RPLUSAppVisit();
 
-    const accessToken = getCookie('ACCESS_TOKEN');
-    this.setState({
-      token: (accessToken == undefined) ? getVisitorToken() : accessToken
-    })
     window.onbeforeunload = _ => {
       homeGeneralClicked('mweb_homepage_refresh');
     };
 
-        this.getHomePageLineups()
+    this.getHomePageLineups()
 
     if (getCookie('STICKY_INSTALL_CLOSED')) {
       this.setState({ show_sticky_install: !getCookie('STICKY_INSTALL_CLOSED') });
@@ -142,104 +138,94 @@ class Index_v2 extends React.Component {
     })
   }
 
-    renderLineup(lineups, meta) {
-        return lineups.map((lineup, index) => {
-            switch(lineup.display_type) {
-                case "portrait_short" :
-                    return (
-                        <PortraitShortView
-                            lineupId={lineup.id}
-                            title={lineup.title}
-                            key={lineup.id} />
-                    )
-                case "portrait" :
-                    return (
-                        <VideoPortraitView
-                            token={this.state.token}
-                            key={lineup.id}
-                            loadingBar={this.LoadingBar}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "landscape_large_ws" :
-                    return (
-                        <VideoLandscapeLgWsView
-                            token={this.state.token}
-                            key={lineup.id}
-                            loadingBar={this.LoadingBar}
-                            lineup={lineup}
-                            showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
-                            imagePath={meta.image_path} />
-                    )
-                case "landscape_large" :
-                    return (
-                        <VideoLandscapeLgView
-                            token={this.state.token}
-                            key={lineup.id}
-                            loadingBar={this.LoadingBar}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "landscape_219" :
-                    return (
-                        <VideoLandscape219View
-                            token={this.state.token}
-                            key={lineup.id}
-                            loadingBar={this.LoadingBar}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "landscape_mini_wt" :
-                    return (
-                        <VideoLandscapeMiniWtView
-                            token={this.state.token}
-                            key={lineup.id}
-                            loadingBar={this.LoadingBar}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "landscape_mini" :
-                    return (
-                        <VideoLandscapeMiniView
-                            token={this.state.token}
-                            key={lineup.id}
-                            loadingBar={this.LoadingBar}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "square_mini" :
-                    return (
-                        <VideoSquareMiniView
-                            token={this.state.token}
-                            key={lineup.id}
-                            loadingBar={this.LoadingBar}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "square" :
-                    return (
-                        <VideoSquareView
-                            token={this.state.token}
-                            key={lineup.id}
-                            loadingBar={this.LoadingBar}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "landscape_mini_live" :
-                    return (
-                        <VideoLandscapeMiniLiveView
-                            token={this.state.token}
-                            key={lineup.id}
-                            loadingBar={this.LoadingBar}
-                            lineup={lineup}
-                            showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
-                            imagePath={meta.image_path} />
-                    )
-                case 'tag':
-                    return (
-                        <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
-                    )
-
+  renderLineup(lineups, meta) {
+    return lineups.map((lineup, index) => {
+      switch(lineup.display_type) {
+        case "portrait_short" :
+          return (
+            <PortraitShortView
+              lineupId={lineup.id}
+              title={lineup.title}
+              key={lineup.id} />
+          )
+        case "portrait" :
+          return (
+            <VideoPortraitView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "landscape_large_ws" :
+          return (
+            <VideoLandscapeLgWsView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
+              imagePath={meta.image_path} />
+          )
+        case "landscape_large" :
+          return (
+            <VideoLandscapeLgView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "landscape_219" :
+          return (
+            <VideoLandscape219View
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "landscape_mini_wt" :
+          return (
+            <VideoLandscapeMiniWtView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "landscape_mini" :
+          return (
+            <VideoLandscapeMiniView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "square_mini" :
+          return (
+            <VideoSquareMiniView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "square" :
+          return (
+            <VideoSquareView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "landscape_mini_live" :
+          return (
+            <VideoLandscapeMiniLiveView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
+              imagePath={meta.image_path} />
+          )
+        case 'tag':
+          return (
+            <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+          )
         case 'landscape_news':
           return (
             <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />

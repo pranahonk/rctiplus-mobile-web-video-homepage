@@ -6,6 +6,8 @@ import Router from 'next/router';
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../../utils/appier'
 import { GET_LINEUP_CONTENT_VIDEO, GET_CONTINUE_WATCHING } from "../../../graphql/queries/homepage"
 import { client } from "../../../graphql/client"
+import { getUserAccessToken } from "../../../utils/cookie"
+import { showSignInAlert } from "../../../utils/helpers"
 
 export default function useVideoLineups(props) {
   const [ contents, setContents ] = useState([])
@@ -51,7 +53,7 @@ export default function useVideoLineups(props) {
     
       case "default":
         contents.concat(data).forEach(content => {
-          if (content.content_type_detail.detail) {
+          if (content.content_type_detail.detail && content.content_type_detail.detail.status.code === 0) {
             mappedContents.set(
               content.content_type_detail.detail.data.id, 
               { ...content, ...content.content_type_detail.detail.data }
@@ -60,7 +62,7 @@ export default function useVideoLineups(props) {
         })
         break
     }
-
+    
     setContents([ ...mappedContents.values() ])
     setEndPage(meta.pagination.current_page === meta.pagination.total_page)
     setNextPage(meta.pagination.current_page + 1)
@@ -111,11 +113,9 @@ export default function useVideoLineups(props) {
   }
 
   const generateLink = (content) => {
-    let url = content.permalink || "/"
-
-    if (url !== "/") {
-      url = `${location.origin}${url.split("rctiplus.com")[1]}`
-    }
+    let url = (Boolean(content.permalink) === /^http:|^https:/.test(content.permalink))
+      ? `${location.origin}${content.permalink.split("rctiplus.com")[1]}`
+      : "/"
 
     switch(props.lineup.lineup_type) {
       case "custom":
@@ -123,7 +123,7 @@ export default function useVideoLineups(props) {
         else Router.push(url)
         break
 
-      default: 
+      default:
         if (content.content_type.includes("live")) {
           const started = content.countdown === 0
 
@@ -141,6 +141,19 @@ export default function useVideoLineups(props) {
               image
             })
           }
+        }
+        else if (content.content_type === "special") {
+          const isUrl = /^http:|^https:/.test(content.external_link)
+
+          if (!isUrl) return
+          if (!getUserAccessToken()) return showSignInAlert(
+            `Please <b>Sign In</b><br/>
+            Woops! Gonna sign in first!<br/>
+            Only a click away and you<br/>
+            can continue to enjoy<br/>
+            <b>RCTI+</b>`, '', () => {}, true, 'Register', 'Login', true, true
+          )
+          Router.push(`${content.external_link}${getUserAccessToken()}`)
         }
         else Router.push(url)
         break
