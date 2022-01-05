@@ -258,7 +258,7 @@ class Index_v2 extends React.Component {
           )
         case "portrait_hot":
           return(
-            <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+            <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
           )
       }
     })

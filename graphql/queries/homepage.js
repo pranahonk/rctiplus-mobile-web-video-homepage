@@ -136,3 +136,39 @@ export const GET_CONTINUE_WATCHING = (page = 1, page_size = 7, lineup_id = 0) =>
     }
   `
 }
+
+export const GET_HOME_CATEGORY_LIST = gql`
+  query {
+    categories {
+      data {
+        icon
+        id
+        is_active
+        name
+        type
+      }
+      meta {
+        image_path
+      }
+    }
+  }
+`
+
+export const GET_SUB_CATEGORY_LIST = (categoryId = 0) => {
+  return gql`
+    query {
+      sub_categories(category_id: ${categoryId}) {
+        data {
+          icon
+          id
+          is_active
+          name
+          type
+        }
+        meta {
+          image_path
+        }
+      }
+    }
+  `
+}
