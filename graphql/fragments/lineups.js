@@ -114,6 +114,8 @@ export const lineupTypeNewsTagarFragment = (queryParams) => {
         tag
         type
         sorting
+        permalink
+        deeplink
       }
        meta {
           pagination {
