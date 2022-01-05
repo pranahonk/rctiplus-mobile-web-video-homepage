@@ -1,13 +1,21 @@
 
 
+import { useState } from 'react';
 import Router from 'next/router';
 
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../../utils/appier'
-import { showSignInAlert } from '../../../utils/helpers';
-import { urlRegex, titleStringUrlRegex } from '../../../utils/regex';
+import { GET_LINEUP_CONTENT_VIDEO, GET_CONTINUE_WATCHING } from "../../../graphql/queries/homepage"
+import { client } from "../../../graphql/client"
+import { getUserAccessToken } from "../../../utils/cookie"
+import { showSignInAlert } from "../../../utils/helpers"
 
 export default function useVideoLineups(props) {
-  const swipe = {}
+  const [ contents, setContents ] = useState([])
+  const [ nextPage, setNextPage ] = useState(1)
+  const [ endPage, setEndPage ] = useState(false)
+  const pageLength = 7
+
+  let swipe = {}
 
   const onTouchStart = (e) => {
 		const touch = e.touches[0];
@@ -22,140 +30,142 @@ export default function useVideoLineups(props) {
 		}
   }
 
-  const generateLink = (data) => {
-    const contentGeneralEventArgs = [
-      props.title,
-      data.content_type,
-      data.content_id,
-      data.content_title,
-      data.program_title ? data.program_title : 'N/A',
-      data.genre ? data.genre : 'N/A', 
-      `${props.imagePath}${props.resolution}${data.portrait_image}`, 
-      `${props.imagePath}${props.resolution}${data.landscape_image}`, 
-    ]
+  const loadMore = () => {
+    if (endPage) return
 
-    const signInAlertArgs = [
-      `Please <b>Sign In</b><br/>
-		  Woops! Gonna sign in first!<br/>
-      Only a click away and you<br/>
-      can continue to enjoy<br/>
-      <b>RCTI+</b>`,
-      "",
-      () => {},
-      true,
-      "Sign Up",
-      "Sign In",
-      true,
-      true
-    ]
-
-		switch (data.content_type) {
-			case 'special':
-				contentGeneralEvent(...contentGeneralEventArgs, 'mweb_homepage_special_event_clicked')
-				let url = data.url ? data.url : data.link;
-				if (data.mandatory_login && props.user.isAuth) {
-					url += props.token;
-				}
-
-				try {
-					jwtDecode(props.token);
-					if (data.mandatory_login && !props.user.isAuth) {
-						showSignInAlert(...signInAlertArgs)
-					}
-					else {
-						handleActionClick(data, url)
-					}
-				}
-				catch (e) {
-					if (data.mandatory_login && !props.user.isAuth) showSignInAlert(...signInAlertArgs)
-				}
-				break;
-
-			case 'program':
-				homeProgramClicked(
-          props.title,
-          data.program_id,
-          data.program_title ? data.program_title : 'N/A',
-          data.genre ? data.genre : 'N/A',
-          `${props.imagePath}${props.resolution}${data.portrait_image}`,
-          `${props.imagePath}${props.resolution}${data.landscape_image}`,
-          'mweb_homepage_program_clicked'
-        )
-				Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}?ref=homepage&homepage_title=${props.title}`);
-				break;
-
-			case 'live':
-				contentGeneralEvent(...contentGeneralEventArgs, 'mweb_homepage_live_event_clicked')
-				Router.push(`/live-event/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${props.title}`);
-				break;
-
-			default:
-				contentGeneralEvent(...contentGeneralEventArgs, 'mweb_homepage_content_clicked')
-				Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}/${data.content_type}/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${props.title}`);
-				break;
-		}
-	}
-
-  const handleActionClick = (program, url) => {
-    switch (program.action_type) {
-      case 'live_streaming' : {
-          const channels = {
-            "1": "rcti",
-            "2": "mnctv",
-            "3": "gtv",
-            "4": "inews",
-          }
-          Router.push(`/tv/${channels[program?.link]}`)
-        }
-        break;
-      case 'catchup': {
-          if (!program.link || !program.channel || !program.catchup_date) break
-          const title = titleStringUrlRegex(program?.content_title)
-          Router.push(`/tv/${program.channel}/${program.link}/${title}?date=${program.catchup_date}`)
-        }
-        break;
-      case 'scan_qr':
-        Router.push("/qrcode")
-        break;
-      case 'homepage_news':
-        Router.push("/news")
-        break;
-      case 'news_tags' :
-        window.open(program.link, '_parent');
-        break;
-      case 'episode': {
-          if(!program.link || !program.program_id) return
-          const title = titleStringUrlRegex(program.content_title)
-          Router.push(`/programs/${program.program_id}/${title}/episode/${program.link}/${title}`)
-        }
-        break;
-      case 'live_event': {
-          if (!program.link) return
-          const title = titleStringUrlRegex(program.content_title)
-          Router.push(`/live-event/${program.link}/${title}`);
-        }
-        break;
-      case 'genre': {
-          const title = titleStringUrlRegex(program.content_title)
-          Router.push(`/explores/${program.link}/${title}`);
-        }
-        break;  
-      case 'program': {
-          const title = titleStringUrlRegex(program.content_title)
-          Router.push(`/programs/${program.link}/${title}`);
-        }
-        break;  
-      case 'popup':
-        window.open(url, '_parent');
-        break;  
+    switch (props.lineup.lineup_type) {
+      case "custom":
+        return getContinueWatching()
       default:
-        Router.push(url);
-		} 
+        return getLineupContents()
+    }
   }
+
+  const setInitialContents = () => {
+    const { data, meta } = props.lineup.lineup_type_detail.detail
+    const mappedContents = new Map()
+
+    switch (props.lineup.lineup_type) {
+      case "custom":
+        contents.concat(data)
+          .forEach(content => mappedContents.set(content.id, content))
+        break
+    
+      case "default":
+        contents.concat(data).forEach(content => {
+          if (content.content_type_detail.detail && content.content_type_detail.detail.status.code === 0) {
+            mappedContents.set(
+              content.content_type_detail.detail.data.id, 
+              { ...content, ...content.content_type_detail.detail.data }
+            )
+          }
+        })
+        break
+    }
+    
+    setContents([ ...mappedContents.values() ])
+    setEndPage(meta.pagination.current_page === meta.pagination.total_page)
+    setNextPage(meta.pagination.current_page + 1)
+  }
+
+  const getContinueWatching = () => {
+    props.loadingBar.continuousStart()
+
+    client.query({ query: GET_CONTINUE_WATCHING(nextPage, pageLength, props.lineup.id)})
+      .then(({ data }) => {
+        const { pagination } = data.lineup_continue_watching.meta
+
+        const mappedContents = new Map()
+        contents.concat(data.lineup_continue_watching.data)
+          .forEach(content => mappedContents.set(content.id, content))
+
+        setContents([ ...mappedContents.values() ])
+        setEndPage(pagination.current_page === pagination.total_page)
+        setNextPage(pagination.current_page + 1)
+      })
+      .catch(_ => setEndPage(true))
+      .finally(_ => props.loadingBar.complete())
+  }
+
+  const getLineupContents = () => {
+    props.loadingBar.continuousStart()
+
+    client.query({ query: GET_LINEUP_CONTENT_VIDEO(nextPage, pageLength, props.lineup.id)})
+      .then(({ data }) => {
+        const { pagination } = data.lineup_contents.meta
+
+        const mappedContents = new Map()
+        contents.concat(data.lineup_contents.data).forEach(content => {
+          if (content.content_type_detail.detail && content.content_type_detail.detail.status.code === 0) {
+            mappedContents.set(
+              content.content_type_detail.detail.data.id, 
+              { ...content, ...content.content_type_detail.detail.data }
+            )
+          }
+        })
+
+        setContents([ ...mappedContents.values() ])
+        setEndPage(pagination.current_page === pagination.total_page)
+        setNextPage(pagination.current_page + 1)
+      })
+      .catch(_ => setEndPage(true))
+      .finally(_ => props.loadingBar.complete())
+  }
+
+  const generateLink = (content) => {
+    let url = (Boolean(content.permalink) === /^http:|^https:/.test(content.permalink))
+      ? `${location.origin}${content.permalink.split("rctiplus.com")[1]}`
+      : "/"
+
+    switch(props.lineup.lineup_type) {
+      case "custom":
+        if (props.lineup.content_type === "continue_watching") Router.push(`${url}?ref=continue_watching`)
+        else Router.push(url)
+        break
+
+      default:
+        if (content.content_type.includes("live")) {
+          const started = content.countdown === 0
+
+          if (started) Router.push(url)
+          else if (props.showComingSoonModal) {
+            const image = content.landscape_image 
+              ? `${content.rootImageUrl}${content.landscape_image}` 
+              : "../static/placeholders/placeholder_landscape.png"
+      
+            props.showComingSoonModal(true, {
+              countdown: content.countdown,
+              start: content.start_ts || content.live_at,
+              title: content.title,
+              start_time: content.start,
+              image
+            })
+          }
+        }
+        else if (content.content_type === "special") {
+          const isUrl = /^http:|^https:/.test(content.external_link)
+
+          if (!isUrl) return
+          if (!getUserAccessToken()) return showSignInAlert(
+            `Please <b>Sign In</b><br/>
+            Woops! Gonna sign in first!<br/>
+            Only a click away and you<br/>
+            can continue to enjoy<br/>
+            <b>RCTI+</b>`, '', () => {}, true, 'Register', 'Login', true, true
+          )
+          Router.push(`${content.external_link}${getUserAccessToken()}`)
+        }
+        else Router.push(url)
+        break
+    }
+	}
 
   return {
     generateLink,
     onTouchStart,
-    onTouchEnd
+    onTouchEnd,
+    loadMore,
+    setInitialContents,
+    contents
   }
 }

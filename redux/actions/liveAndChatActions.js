@@ -152,7 +152,7 @@ const getLiveChatBlock = (channelId) => {
 const getLiveEvent = (type, infos = 'id,type,portrait_image,landscape_image,name,url,channel_code,epg_code,is_tvod,is_drm,chat,start_date,sorting', page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            
+
             const response = await axios.get(`/v2/live-event?type=${type}&length=${length}`);
             if (response.status === 200 && response.data.status.code === 0) {
                 dispatch({

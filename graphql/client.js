@@ -6,7 +6,7 @@ import {
   HttpLink
 } from "@apollo/client"
 
-import { getVisitorToken } from "../utils/cookie"
+import { getVisitorToken, getUserAccessToken } from "../utils/cookie"
 
 const authMiddleware = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers = {} }) => {
@@ -14,7 +14,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
       headers: {
         ...headers,
         apikey: process.env.GRAPHQL_APIKEY,
-        "x_api_token": getVisitorToken()
+        "x_api_token": getUserAccessToken() || getVisitorToken()
       }
     }
   })
