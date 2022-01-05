@@ -1,4 +1,3 @@
-
 export const contentTypeProgramFragment = `
 ... on ContentTypeProgram {
   detail {

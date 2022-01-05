@@ -144,9 +144,9 @@ class Index_v2 extends React.Component {
         case "portrait_short" :
           return (
             <PortraitShortView
-              lineupId={lineup.id}
-              title={lineup.title}
-              key={lineup.id} />
+              lineup={lineup}
+              key={lineup.id}
+              imagePath={meta.image_path} />
           )
         case "portrait" :
           return (

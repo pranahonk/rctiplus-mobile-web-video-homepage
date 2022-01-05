@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import dynamic from 'next/dynamic'
+import BottomScrollListener from 'react-bottom-scroll-listener';
 
 import storiesActions from '../../redux/actions/storiesActions'
 import { RESOLUTION_IMG } from '../../config'
@@ -18,7 +19,18 @@ function lineupStory (props) {
     const [ storyIndex, setStoryIndex ] = useState(0)
 
     useEffect(() => {
-        client.query({ query: GET_LINEUP_STORIES(1, 7, props.lineupId) })
+        const { data, meta } = props.lineup.lineup_type_detail.detail
+        const stories = data.map(story => ({
+            ...story,
+            image_path: meta.image_path
+        }))
+
+        setStories(stories)
+        setMeta(meta)
+    }, [])
+
+    const loadMore = () => {
+        client.query({ query: GET_LINEUP_STORIES(meta.pagination.current_page + 1, 7, props.lineup.id) })
             .then(({ data }) => {
                 const stories = data.lineup_stories.data.map(story => ({
                     ...story,
@@ -29,7 +41,7 @@ function lineupStory (props) {
                 setMeta(data.lineup_stories.meta)
             })
             .catch(_ => {})
-    }, [])
+    }
 
     const openStory = (story, index) => {
         setActiveStory(story)
@@ -68,37 +80,41 @@ function lineupStory (props) {
     return (
         <>
             <div id="lineup-stories" >
-                <h2>{props.title}</h2>
+                <h2>{props.lineup.title}</h2>
 
-                <div className="stories-components">
-                    { stories.map((story, i) => {
-                        return (
-                            <div 
-                                key={`${i}-story-lineup`} 
-                                className="lineupstory storywrapper">
-                                <div 
-                                    id={`story-lineup-${i}`}
-                                    onClick={_ => openStory(story, i)}>
-                                    <img
-                                        width="48"
-                                        height="48"
-                                        src={`${meta.image_path}${RESOLUTION_IMG}${story.program_img}`}
-                                        alt={`story ${i}`} />
-                                </div>
-                                <label>{ story.title }</label>
-                                
-                                <div 
-                                    className="masked-storyimg"
-                                    style={{
-                                        backgroundImage: `url(${meta.image_path}${RESOLUTION_IMG}${story.program_img})`,
-                                        backgroundRepeat: "no-repeat",
-                                        backgroundPosition: "center",
-                                        backgroundSize: "cover",
-                                    }}></div>
-                            </div>
-                        )
-                    }) }
-                </div>
+                <BottomScrollListener offset={40} onBottom={() => loadMore()}>
+                    {scrollRef => (
+                        <div ref={scrollRef} className="stories-components">
+                            { stories.map((story, i) => {
+                                return (
+                                    <div 
+                                        key={`${i}-story-lineup`} 
+                                        className="lineupstory storywrapper">
+                                        <div 
+                                            id={`story-lineup-${i}`}
+                                            onClick={_ => openStory(story, i)}>
+                                            <img
+                                                width="48"
+                                                height="48"
+                                                src={`${meta.image_path}${RESOLUTION_IMG}${story.program_img}`}
+                                                alt={`story ${i}`} />
+                                        </div>
+                                        <label>{ story.title }</label>
+                                        
+                                        <div 
+                                            className="masked-storyimg"
+                                            style={{
+                                                backgroundImage: `url(${meta.image_path}${RESOLUTION_IMG}${story.program_img})`,
+                                                backgroundRepeat: "no-repeat",
+                                                backgroundPosition: "center",
+                                                backgroundSize: "cover",
+                                            }}></div>
+                                    </div>
+                                )
+                            }) }
+                        </div>
+                    )}
+                </BottomScrollListener>
             </div>
             
             <StoryModal 
