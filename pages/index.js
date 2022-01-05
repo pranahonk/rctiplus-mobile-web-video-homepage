@@ -224,7 +224,7 @@ class Index_v2 extends React.Component {
           )
         case 'tag':
           return (
-            <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+            <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
           )
         case 'landscape_news':
           return (
