@@ -1,6 +1,14 @@
 
 import { gql } from "@apollo/client"
 
+import {
+  lineupContinueWatchingFragment,
+  lineupTypeStoryFragment,
+  lineupDefaultFragment,
+  lineupTypeNewsTagarFragment,
+  lineupTypeNewsRegroupingFragment
+} from "../fragments/lineups"
+
 function getQueryParams(args) {
   let output = []
   for (const key in args) {
@@ -21,20 +29,27 @@ export const GET_BANNERS = gql`
   }
 `
 
-export const GET_LINEUPS = (page = 1, page_size = 10) => {
-  const queryParams = getQueryParams({ page, page_size })
+export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
+  const queryParams = getQueryParams({ page, page_size, category_id })
 
   return gql`
     query {
       lineups(${queryParams}) {
         data {
             id
-            lineup_type
             content_type
             service
             title
             display_type
             sorting
+            lineup_type
+            lineup_type_detail {
+              ${lineupContinueWatchingFragment(getQueryParams({ page: 1, page_size }))}
+              ${lineupTypeStoryFragment(getQueryParams({ page: 1, page_size }))}
+              ${lineupDefaultFragment(getQueryParams({ page: 1, page_size }))}
+              ${lineupTypeNewsRegroupingFragment(getQueryParams({ page: 1, page_size }))}
+              ${lineupTypeNewsTagarFragment(getQueryParams({ page: 1, page_size }))}
+            }
         }
         meta {
           pagination {

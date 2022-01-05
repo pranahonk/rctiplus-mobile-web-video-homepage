@@ -229,7 +229,7 @@ function storyModal(props) {
         href = permalink ? permalink.split(".rctiplus.com")[1] : ""
         break
     }
-    
+
     if (!href) return null
     
     return (

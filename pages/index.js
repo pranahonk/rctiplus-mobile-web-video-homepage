@@ -38,7 +38,8 @@ class Index_v2 extends React.Component {
     }
 
     state = {
-        contents: [],
+        lineups: [],
+        meta: {},
         fetchAllowed: true,
         meta: null,
         resolution: 320,
@@ -92,10 +93,16 @@ class Index_v2 extends React.Component {
             query: GET_LINEUPS(page, pageSize)
         })
             .then(({ data }) => {
-                this.props.setHomepageLineups({
-                    data: data.lineups.data,
-                    meta: data.lineups.meta
-                })
+              const mappedContents = new Map()
+              this.state.lineups.concat(data.lineups.data).forEach(content => {
+                  if (content.lineup_type_detail.detail) {
+                      mappedContents.set(content.id, content)
+                  }
+              })
+              this.setState({
+                  lineups: [ ...mappedContents.values() ],
+                  meta: data.lineups.meta
+              })
             })
             .finally(_ => {
                 if (page === 1) this.setState({ isShimmer: false })
@@ -104,7 +111,7 @@ class Index_v2 extends React.Component {
     }
 
     bottomScrollFetch() {
-        const { pagination } = this.props.contents.meta
+        const { pagination } = this.state.meta
         if (pagination.total_page === pagination.current_page) return
 
         this.getHomePageLineups(pagination.current_page + 1, this.state.length)
@@ -119,20 +126,17 @@ class Index_v2 extends React.Component {
        return lineups.map((lineup) => {
             switch(lineup.display_type) {
                 case "portrait_short" :
-                    return (
-                        <PortraitShortView
-                            lineupId={lineup.id}
-                            title={lineup.title}
-                            key={lineup.id} />
-                    )
+                  return (
+                      <PortraitShortView
+                          lineup={lineup}
+                          key={lineup.id}
+                          imagePath={meta.image_path} />
+                  )
             }
         })
     }
 
     render() {
-        const lineupContents = this.props.contents.homepage_content
-        const lineupMeta = this.props.contents.meta
-
         return (
             <Layout title={SITEMAP.home.title}>
                 <Head>
@@ -225,7 +229,7 @@ class Index_v2 extends React.Component {
                                 style={{marginBottom: 45, paddingTop: 10}}
                                 onTouchStart={this.onTouchStart.bind(this)}
                                 onTouchEnd={this.onTouchEnd.bind(this)}>
-                                { this.renderLineup(lineupContents, lineupMeta) }
+                                { this.renderLineup(this.state.lineups, this.state.meta) }
                             </div>
                         </div>
                     )
