@@ -37,8 +37,6 @@ const LandscapeHotCompetition = ({title, indexTag, id, data}) => {
   const getHastagPagination = (page) =>{
     client.query({query: GET_HOT_COMPETITIONS(1, 100, page, 5)})
       .then((res)=>{
-        console.log(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data)
-        console.log(hastags)
         setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
         setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data]}))
       })
