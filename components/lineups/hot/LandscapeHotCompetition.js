@@ -31,14 +31,16 @@ const LandscapeHotCompetition = ({title, indexTag, id, data}) => {
   useEffect(() => {
     setMeta(data?.lineup_type_detail?.detail?.meta);
     setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
-    setHastags(data?.lineup_type_detail?.detail);
+    setHastags(data?.lineup_type_detail?.detail?.data);
   },[]);
 
   const getHastagPagination = (page) =>{
     client.query({query: GET_HOT_COMPETITIONS(1, 100, page, 5)})
       .then((res)=>{
+        console.log(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data)
+        console.log(hastags)
         setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
-        setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail]}))
+        setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data]}))
       })
       .catch((err)=>{
         console.log(err);
@@ -50,8 +52,7 @@ const LandscapeHotCompetition = ({title, indexTag, id, data}) => {
       setLoadingMore(true);
       if(meta?.pagination){
         if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-          console.log(meta?.pagination?.current_page + 1)
-          // getHastagPagination(meta?.pagination?.current_page + 1);
+          getHastagPagination(meta?.pagination?.current_page + 1);
         }
         else{
           setLoadingMore(false);
@@ -73,13 +74,13 @@ const LandscapeHotCompetition = ({title, indexTag, id, data}) => {
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
-          {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<Loader />) : (<Swiper
+          {hastags?.length === 0 || hastags?.length === undefined ? (<Loader />) : (<Swiper
             spaceBetween={10}
             height={150}
             width={192}
             onReachEnd={setShow}
           >
-            {hastags?.data?.map((item, index) => {
+            {hastags?.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
                   <div className="hot-competitions">
