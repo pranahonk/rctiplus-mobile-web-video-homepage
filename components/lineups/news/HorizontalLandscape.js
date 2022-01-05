@@ -28,7 +28,7 @@ import Cookie from 'js-cookie';
 const HorizontalLandspaceLoader = dynamic(() => import('../../Includes/Shimmer/HorizontalLandspaceLoader'))
 
 
-const HorizontalLandscape = ({title, indexTag, id, ...props}) => {
+const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -38,15 +38,9 @@ const HorizontalLandscape = ({title, indexTag, id, ...props}) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING(1,20)})
-      .then((res)=>{
-        setList(res?.data?.lineups?.data[indexTag]?.lineup_type_detail.detail);
-        setMeta(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta);
-        setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path );
-      })
-      .catch((err)=>{
-        console.log(err);
-      });
+    setList(data?.lineup_type_detail.detail);
+    setMeta(data?.lineup_type_detail?.detail?.meta);
+    setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path );
   },[]);
 
   const getLineupsPagination = (page, page_size, id) =>{

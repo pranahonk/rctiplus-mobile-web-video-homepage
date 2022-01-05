@@ -39,10 +39,9 @@ function AudioList (props) {
                             <span className="podcast-title">{content.title}</span>
                             <span className="podcaster-name">Roov Official</span>
                             <div className="buttons-wrapper">
-                                <img src="audio-icons/bookmark-icon.svg"/>
                                 <img src="audio-icons/share-icon.svg"/>
+                                <img src="audio-icons/bookmark-icon.svg"/>
                                 <img src="audio-icons/download-icon.svg"/>
-                                <img src="audio-icons/delete-icon.svg"/>
                             </div>
                         </div>
                         <img src="audio-icons/play-button.svg"/>

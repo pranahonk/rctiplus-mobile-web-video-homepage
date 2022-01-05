@@ -19,7 +19,7 @@ import { imageNews } from '../../../utils/helpers';
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
 
-const LandscapeHotCompetition = ({title, indexTag, id}) => {
+const LandscapeHotCompetition = ({title, indexTag, id, data}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -29,19 +29,13 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
   const [assetUrl, setAssetUrl] = useState(null);
 
   useEffect(() => {
-    client.query({query: GET_HOT_COMPETITIONS(1, 100, 1, 20)})
-      .then((res)=>{
-        setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
-        setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
-        setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
-      })
-      .catch((err)=>{
-        console.log(err);
-      });
+    setMeta(data?.lineup_type_detail?.detail?.meta);
+    setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
+    setHastags(data?.lineup_type_detail?.detail);
   },[]);
 
   const getHastagPagination = (page) =>{
-    client.query({query: GET_HOT_COMPETITIONS(1, 100, page, 20)})
+    client.query({query: GET_HOT_COMPETITIONS(1, 100, page, 5)})
       .then((res)=>{
         setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
         setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail]}))
@@ -56,7 +50,8 @@ const LandscapeHotCompetition = ({title, indexTag, id}) => {
       setLoadingMore(true);
       if(meta?.pagination){
         if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-          getHastagPagination(meta?.pagination?.current_page + 1);
+          console.log(meta?.pagination?.current_page + 1)
+          // getHastagPagination(meta?.pagination?.current_page + 1);
         }
         else{
           setLoadingMore(false);
