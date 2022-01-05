@@ -9,7 +9,8 @@ import {
   contentTypeProgramFragment,
   contentTypeSeasonFragment,
   contentTypeSpecialFragment,
-  contentTypeHotCompetitions
+  contentTypeHotCompetitions,
+  contentTypeHotVideo
 }
 from "./content_types"
 
@@ -90,6 +91,7 @@ export const lineupDefaultFragment = (queryParams) => {
           ${contentTypeSpecialFragment}
           ${contentTypeSeasonFragment}
           ${contentTypeHotCompetitions}
+          ${contentTypeHotVideo}
         }
       }
      meta {
