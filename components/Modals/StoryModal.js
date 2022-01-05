@@ -216,13 +216,11 @@ function storyModal(props) {
 
   const renderCTAButton = _ => {
     const { type, external_link, permalink } = props.story.story[activeIndex]
-    let href = "",
-      target = "_self"
+    let href = ""
 
     switch (type) {
       case "url":
         href = external_link ? external_link.split(".rctiplus.com")[1] : ""
-        target = "_blank"
         break
       case "scan_qr":
         href = "/qrcode"
@@ -235,11 +233,9 @@ function storyModal(props) {
     if (!href) return null
     
     return (
-      <Link href={href} passHref>
-        <a href={href} target={target}>
-          Click Here
-        </a>
-      </Link>
+      <a href={href}>
+        Click Here
+      </a>
     )
   }
 
