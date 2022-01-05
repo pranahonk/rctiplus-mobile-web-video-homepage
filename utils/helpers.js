@@ -234,6 +234,42 @@ export const imageNews = (title, source, staticUrl, size = 200, assetsUrl, class
     />;
 }
 
+export const imageHot = (title, source, staticUrl, size = 200, heightImage = 200, assetsUrl, classCSS = 'thumbnail', rotation = 'landscape') => {
+  const imgUrl = source?.includes("https") ? source : imgURL(source, staticUrl, size, assetsUrl);
+    let width = size;
+    let height = heightImage;
+    return <Img
+        className={classCSS}
+        alt={title}
+        src={[
+            imgUrl,
+            `/static/placeholders/placeholder_${rotation}.png`
+        ]}
+        width={width}
+        height={height}
+        loader={<img alt={title} className={classCSS} src={`/static/placeholders/placeholder_${rotation}.png`} />}
+        unloader={<img alt={title} className={classCSS} src={`/static/placeholders/placeholder_${rotation}.png`} />}
+    />;
+}
+
+export const imageHotProfile = (title, source, staticUrl, size = 200, heightImage = 200, assetsUrl, classCSS = 'thumbnail', rotation = 'landscape') => {
+  const imgUrl = source?.includes("https") ? source : imgURL(source, staticUrl, size, assetsUrl);
+    let width = size;
+    let height = heightImage;
+    return <Img
+        className={classCSS}
+        alt={title}
+        src={[
+            imgUrl,
+            `/static/placeholders/Profile.png`
+        ]}
+        width={width}
+        height={height}
+        loader={<img alt={title} className={classCSS} src={`/static/placeholders/Profile.png`} />}
+        unloader={<img alt={title} className={classCSS} src={`/static/placeholders/Profile.png`} />}
+    />;
+}
+
 export const imagePath = (source, staticUrl, size = 200, assetsUrl, imgDefault) => {
     const imgUrl = imgURL(source, staticUrl, size, assetsUrl, imgDefault);
     return imgUrl;
