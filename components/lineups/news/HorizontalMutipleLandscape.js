@@ -27,7 +27,7 @@ import newsCountView from '../../../redux/actions/newsCountView';
 import { connect } from 'react-redux';
 
 
-const HorizontalMutipleLandscape = ({title, indexTag, id, ...props}) => {
+const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -38,15 +38,9 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, ...props}) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING(1,20)})
-      .then((res)=>{
-        setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path);
-        setMeta(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta);
-        setItem(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
-      })
-      .catch((err)=>{
-        console.log(err);
-      });
+    setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
+    setMeta(data?.lineup_type_detail?.detail?.meta);
+    setItem(data?.lineup_type_detail?.detail);
   },[]);
 
   const getLineupsMultiplePagination = (page, page_size) =>{
@@ -76,7 +70,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, ...props}) => {
     if (meta?.pagination && show) {
       setLoadingMore(true);
       if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-        getLineupsMultiplePagination(meta?.pagination?.current_page + 1, 20, id);
+        getLineupsMultiplePagination(meta?.pagination?.current_page + 1, 6, id);
       }
       else{
         setLoadingMore(false);

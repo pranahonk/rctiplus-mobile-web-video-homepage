@@ -1,62 +1,48 @@
-import React, {useEffect, useState} from 'react'
-import Link from "next/link"
-import { withRouter } from 'next/router'
-
-import { client } from "../../../graphql/client"
-import { GET_HOME_CATEGORY_LIST, GET_SUB_CATEGORY_LIST } from "../../../graphql/queries/homepage"
-
+import React, {useEffect, useState} from 'react';
+// import Link from "next/link";
+import {useSelector, useDispatch} from "react-redux";
+import {getActiveCategory} from "../../../redux/actions/homeCategoryActions";
+import TextLength from "../../../utils/textLength";
 import '../../../assets/scss/components/home-category-menu.scss';
 
-function categoryMenu (props) {
-    const imgSize = 150
-    const [ categories, setCategories ] = useState([])
-    const [ meta, setMeta ] = useState({})
-    const [ categoryId, setCategoryId ] = useState(props.router.query.category_id)
+const CategoryMenu = ({contents}) => {
+  const size = 150;
+  const dispatch = useDispatch();
+  const [listMenu, setListMenu] = useState([{}])
+  const {listMenuHomeCategory} = useSelector(state => state.homeCategory);
 
-    useEffect(() => {        
-        const query = categoryId 
-            ? GET_SUB_CATEGORY_LIST(categoryId) 
-            : GET_HOME_CATEGORY_LIST
-        
-        client
-            .query({ query })
-            .then(({ data }) => {
-                const contents = categoryId ? data.sub_categories : data.categories
-                setCategories(contents.data)
-                setMeta(contents.meta)
-            })
-            .catch(e => {})
-    }, [ categoryId ])
+  useEffect(() => {
+    if(contents) setListMenu(contents)
+    else dispatch(getActiveCategory());
+  }, []);
 
-    useEffect(() => {
-        if (props.router.query.category_id !== categoryId) {
-            setCategoryId(props.router.query.category_id)
-        }
-    })
+  useEffect(() => {
+    if(contents) setListMenu(contents)
+    else setListMenu(listMenuHomeCategory)
+  }, [listMenuHomeCategory])
 
-    return (
-        <div className="h-category-container">
-            <div className="grid-h-category-container">
-                {categories.map((category) => (
-                    <div 
-                        key={`${category.id}-home-category`} 
-                        className="menu-item-cat">
-                        <Link href={`/category?category_id=${category.id}&category_title=${category.name}`}>
-                            <a style={{display: "flex",  flexDirection: "column", justifyContent: "center", alignItems: "center", maxWidth: "54px", minWidth: "54px"}}>
-                                <div className="container-menu-icon-cat">
-                                    <img 
-                                        alt={category.name} 
-                                        className="menu-icon-cat" 
-                                        src={`${meta.image_path}${imgSize}${category.icon}`}/>
-                                </div>
-                                <p className="menu-label-cat">{category.name}</p>
-                            </a>
-                        </Link>
-                    </div>
-                ))}
+  return (
+    <div className="h-category-container">
+      <div style={listMenu?.data?.length <= 4 ? {display: "flex", justifyContent: "center", borderRadius: "20px"} : {width: "100%", maxWidth: "1200px"}} className="grid-h-category-container">
+
+        {listMenu?.data &&
+        listMenu.data.map((val, ind) => (
+          <div key={ ind } className="menu-item-cat">
+            {/* <Link href={`/category?category_id=${val.id}&category_title=${val.name}`}> */}
+            <div onClick={() => window.location.href=`/category?category_id=${val.id}&category_title=${val.name}`}>
+              <div style={{display: "flex",  flexDirection: "column", justifyContent: "center", alignItems: "center", maxWidth: "54px", minWidth: "54px"}}>
+                <div className="container-menu-icon-cat">
+                  <img alt={val.name} className="menu-icon-cat" src={`${listMenu?.meta?.image_path}${size}${val.icon}`}/>
+                </div>
+                <p className="menu-label-cat">{TextLength(val.name, 10)}</p>
+              </div>
             </div>
-        </div>
-    )
+            {/* </Link> */}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }
 
-export default withRouter(categoryMenu)
+export default CategoryMenu

@@ -58,7 +58,7 @@ export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
               ${lineupContinueWatchingFragment(getQueryParams({ page: 1, page_size, category_id }))}
               ${lineupTypeStoryFragment(getQueryParams({ page: 1, page_size, category_id }))}
               ${lineupDefaultFragment(getQueryParams({ page: 1, page_size, category_id }))}
-              ${lineupTypeNewsRegroupingFragment(getQueryParams({ page: 1, page_size, category_id }))}
+              ${lineupTypeNewsRegroupingFragment(getQueryParams({ page: 1, page_size: 6, category_id }))}
               ${lineupTypeNewsTagarFragment(getQueryParams({ page: 1, page_size, category_id }))}
             }
         }

@@ -43,7 +43,6 @@ const HorizontalHastags = dynamic(() => import("../components/lineups/news/Horiz
 const LandscapeHotCompetition = dynamic(() => import("../components/lineups/hot/LandscapeHotCompetition"));
 const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/news/HorizontalMutipleLandscape"));
 const LandscapeHotVideo = dynamic(() => import("../components/lineups/hot/LandscapeHotVideo"));
-const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"));
 const AudioHorizontalDisc = dynamic(() => import("../components/lineups/audio_lineup/Disc"));
 const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"));
 
@@ -242,20 +241,20 @@ class Index_v2 extends React.Component {
           )
         case 'tag':
           return (
-            <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+            <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
           )
 
         case 'landscape_news':
           return (
-            <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+            <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
           )
         case "square_list_news":
           return (
-            <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+            <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
           )
         case "landscape_hot_competition":
           return(
-            <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} />
+            <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
           )
         case "portrait_hot":
           return(
@@ -358,13 +357,9 @@ class Index_v2 extends React.Component {
                 onTouchStart={this.onTouchStart.bind(this)}
                 onTouchEnd={this.onTouchEnd.bind(this)}>
                 { this.renderLineup(this.state.lineups, this.state.meta) }
-                <AudioHorizontalDisc/>
-                <AudioHorizontalList/>
+                {/*<AudioHorizontalDisc/>*/}
+                {/*<AudioHorizontalList/>*/}
               </div>
-              <ComingSoonModal
-                open={this.state.openComingSoonModal}
-                onClose={_ => this.setState({ openComingSoonModal: false })}
-                content={this.state.contentComingSoonModal} />
             </div>
           )
         }
