@@ -217,36 +217,30 @@ function storyModal(props) {
 
   const renderCTAButton = _ => {
     const { type, external_link, permalink } = props.story.story[activeIndex]
-    let href = "",
+    let href = permalink ? permalink.replace(/-webm.|-webd./, "-webm-v2.") : "",
       onClick = () => {}
 
     switch (type) {
       case "url":
-        href = external_link ? external_link.split(".rctiplus.com")[1] : ""
+        if (!external_link) break
+
+        if (/^http:|^https:/.test(external_link)) href = external_link
+        else href = `https://${external_link}`
         break
       case "scan_qr":
         href = "/qrcode"
         break
       case "news_tags":
         {
-          if (!permalink) break
-
-          href = permalink.split(".rctiplus.com")[1]
           const tag = permalink.split("/").reverse()[0]
           onClick =  () => props.newsCountViewTag(tag)
         }
         break
       case "news_detail":
         {
-          if (!permalink) break
-
-          href = permalink.split(".rctiplus.com")[1]
           const detailId = +(permalink.split("/").reverse()[1])
           onClick = () => props.newsCountViewDetail(new DeviceUUID().get(), detailId)
         }
-        break
-      default:
-        href = permalink ? permalink.split(".rctiplus.com")[1] : ""
         break
     }
 
