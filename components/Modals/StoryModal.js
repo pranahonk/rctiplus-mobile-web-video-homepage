@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react"
-import Link from "next/link"
+import { connect } from "react-redux"
 
 import { RESOLUTION_IMG } from '../../config'
+import newsCountView from "../../redux/actions/newsCountView"
 
 import "../../assets/scss/components/stories.scss"
 
@@ -216,7 +217,8 @@ function storyModal(props) {
 
   const renderCTAButton = _ => {
     const { type, external_link, permalink } = props.story.story[activeIndex]
-    let href = ""
+    let href = "",
+      onClick = () => {}
 
     switch (type) {
       case "url":
@@ -224,6 +226,24 @@ function storyModal(props) {
         break
       case "scan_qr":
         href = "/qrcode"
+        break
+      case "news_tags":
+        {
+          if (!permalink) break
+
+          href = permalink.split(".rctiplus.com")[1]
+          const tag = permalink.split("/").reverse()[0]
+          onClick =  () => props.newsCountViewTag(tag)
+        }
+        break
+      case "news_detail":
+        {
+          if (!permalink) break
+
+          href = permalink.split(".rctiplus.com")[1]
+          const detailId = +(permalink.split("/").reverse()[1])
+          onClick = () => props.newsCountViewDetail(new DeviceUUID().get(), detailId)
+        }
         break
       default:
         href = permalink ? permalink.split(".rctiplus.com")[1] : ""
@@ -233,7 +253,7 @@ function storyModal(props) {
     if (!href) return null
     
     return (
-      <a href={href}>
+      <a href={href} onClick={onClick}>
         Click Here
       </a>
     )
@@ -303,4 +323,6 @@ function storyModal(props) {
   )
 }
 
-export default storyModal
+export default connect(state => state, { 
+  ...newsCountView
+})(storyModal)
