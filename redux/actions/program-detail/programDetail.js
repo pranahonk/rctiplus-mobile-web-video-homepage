@@ -283,8 +283,10 @@ export const fetchEpisode = (programId, filter, contentId = 0, season = 1, page 
       .then(response => {
         const data = response.data;
         dispatch(fetchDetailEpisodeSuccess(data, [filter, season]));
-        if(data?.meta?.pagination?.total === 1) {
-          return axios.get(`v1/episode/${data?.data[0]?.id}/payment-detail`)
+        if(data?.status?.code != 1){
+          if(data?.meta?.pagination?.total === 1) {
+            return axios.get(`v1/episode/${data?.data[0]?.id}/payment-detail`)
+          }
         }
       })
       .then((response) => {
@@ -427,7 +429,7 @@ export const postLike = (id, type, filter, status = 'INDIFFERENT') => {
     const data = { id: id, content_type: type, status: status };
     dispatch(tempLikePost(data, filter))
     dispatch(fetchDetailProgramRequest());
-    axios.post(`/v1/like`, { 
+    axios.post(`/v1/like`, {
       id: id,
       type: type,
       status: status,
