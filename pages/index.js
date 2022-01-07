@@ -23,7 +23,7 @@ import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
+import { SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG, STATIC } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
 
@@ -137,14 +137,14 @@ class Index_v2 extends React.Component {
         const meta = this.state.meta || {};
 
         return (
-            <Layout title={SITEMAP.home.title}>
+            <Layout title={"RCTI+ - Satu Aplikasi, Semua Hiburan"}>
                 <Head>
                     <JsonLDWebsite keyword={'Home'} />
-                    <meta name="description" content={SITEMAP.home.description} />
-                    <meta name="keywords" content={SITEMAP.home.keywords} />
-                    <meta property="og:title" content={SITEMAP.home.title} />
-                    <meta property="og:description" content={SITEMAP.home.description} />
-                    <meta property="og:image" itemProp="image" content={SITEMAP.home.image} />
+                    <meta name="description" content={"Nonton Film & Live Streaming TV Online di RCTI Plus. Satu Aplikasi, Semua Hiburan: Video, Berita, Radio, Podcast, Games, dan Ajang Pencarian Bakat. Download sekarang."} />
+                    <meta name="keywords" content={"rcti plus, rcti+, tv online, streaming tv, live streaming, nonton film"} />
+                    <meta property="og:title" content={"RCTI+ - Satu Aplikasi, Semua Hiburan"} />
+                    <meta property="og:description" content={"Nonton Film & Live Streaming TV Online di RCTI Plus. Satu Aplikasi, Semua Hiburan: Video, Berita, Radio, Podcast, Games, dan Ajang Pencarian Bakat. Download sekarang."} />
+                    <meta property="og:image" itemProp="image" content={`${STATIC}/media/600/files/fta_rcti/metaimages/Home-RCTIPlus-compress.jpg`} />
                     <meta property="og:url" content={REDIRECT_WEB_DESKTOP} />
                     <meta property="og:image:type" content="image/jpeg" />
                     <meta property="og:image:width" content="600" />
@@ -154,9 +154,9 @@ class Index_v2 extends React.Component {
                     <meta name="twitter:card" content={GRAPH_SITEMAP.twitterCard} />
                     <meta name="twitter:creator" content={GRAPH_SITEMAP.twitterCreator} />
                     <meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
-                    <meta name="twitter:image" content={SITEMAP.home.image} />
-                    <meta name="twitter:title" content={SITEMAP.home.title} />
-                    <meta name="twitter:description" content={SITEMAP.home.description} />
+                    <meta name="twitter:image" content={`${STATIC}/media/600/files/fta_rcti/metaimages/Home-RCTIPlus-compress.jpg`} />
+                    <meta name="twitter:title" content={"RCTI+ - Satu Aplikasi, Semua Hiburan"} />
+                    <meta name="twitter:description" content={"Nonton Film & Live Streaming TV Online di RCTI Plus. Satu Aplikasi, Semua Hiburan: Video, Berita, Radio, Podcast, Games, dan Ajang Pencarian Bakat. Download sekarang."} />
                     <meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
                     <meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
                 </Head>
