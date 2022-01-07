@@ -11,8 +11,6 @@ import dynamic from 'next/dynamic';
 
 import initialize from '../utils/initialize';
 import { getCountdown } from '../utils/helpers';
-import { convivaJwPlayer } from '../utils/conviva';
-import { urlRegex } from '../utils/regex';
 
 import liveAndChatActions from '../redux/actions/liveAndChatActions';
 import pageActions from '../redux/actions/pageActions';
@@ -21,7 +19,6 @@ import userActions from '../redux/actions/userActions';
 
 import Layout from '../components/Layouts/Default_v2';
 import SelectDateModal from '../components/Modals/SelectDateModal';
-import { GeoblockModal } from '../components/Modals/Geoblock';
 import ActionSheet from '../components/Modals/ActionSheet';
 import Wrench from '../components/Includes/Common/Wrench';
 import MuteChat from '../components/Includes/Common/MuteChat';
@@ -42,8 +39,7 @@ import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import PauseIcon from '../components/Includes/Common/PauseIcon';
-import { isIOS } from 'react-device-detect';
-import socketIOClient from 'socket.io-client';
+
 import ax from 'axios';
 
 import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, API_TIMEOUT } from '../config';
@@ -53,10 +49,9 @@ import 'emoji-mart/css/emoji-mart.css';
 
 import { liveTvTabClicked, liveTvShareClicked, liveTvShareCatchupClicked, liveTvLiveChatClicked, liveTvChannelClicked, liveTvCatchupSchedulePlay, liveTvCatchupScheduleClicked, getUserId, appierAdsShow, appierAdsClicked } from '../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTracking';
-// import { RPLUSAdsShowing, RPLUSAdsClicked } from '../utils/internalTracking';
 import queryString from 'query-string';
 
-import { getCookie, getVisitorToken, checkToken } from '../utils/cookie';
+import { getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../utils/cookie';
 
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
 const innerHeight = require('ios-inner-height');
@@ -282,6 +277,8 @@ class Tv extends React.Component {
 							return
 						}
 					})
+
+					if (location.search.includes("refpage=login")) this.toggleChat()
 				})
 			})
 			.finally(_ => this.props.unsetPageLoader())
@@ -591,7 +588,7 @@ class Tv extends React.Component {
 	}
 
 	checkLogin() {
-		if (!this.state.user_data) {
+		if (!this.props.user.isAuth && !getUserAccessToken()) {
 			showSignInAlert(`Please <b>Sign In</b><br/>
 				Woops! Gonna sign in first!<br/>
 				Only a click away and you<br/>
@@ -603,10 +600,10 @@ class Tv extends React.Component {
 	}
 
 	sendChat() {
-		if (this.state.user_data) {
+		if (this.props.user.isAuth) {
 			if (this.state.chat != '') {
 				this.statusChatBlock(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id);
-				const userData = this.state.user_data;
+				const userData = this.props.user.data;
 				let user = userData.nickname ? userData.nickname :
 					userData.display_name ? userData.display_name :
 						userData.email ? userData.email.replace(/\d{4}$/, '****') :
@@ -615,7 +612,7 @@ class Tv extends React.Component {
 					ts: Date.now(),
 					m: this.state.chat,
 					u: user,
-					i: this.state.user_data.photo_url,
+					i: this.props.user.photo_url,
 					sent: false,
 					failed: false
 				};
@@ -628,7 +625,7 @@ class Tv extends React.Component {
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `24px`;
 
-					this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, newChat.m, user, this.state.user_data.photo_url)
+					this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, newChat.m, user, this.props.user.photo_url)
 						.then(response => {
 							newChat.sent = true;
 							if (response.status !== 200 || response.data.status.code !== 0) {
@@ -662,12 +659,12 @@ class Tv extends React.Component {
 		lastChat.failed = false;
 		chats[index] = lastChat;
 		this.setState({ chats: chats, sending_chat: true }, () => {
-			const userData = this.state.user_data;
+			const userData = this.props.user.data;
 			let user = userData.nickname ? userData.nickname :
 				userData.display_name ? userData.display_name :
 					userData.email ? userData.email.replace(/\d{4}$/, '****') :
 						userData.phone_number ? userData.phone_number.substring(0, userData.phone_number.lastIndexOf("@")) : 'anonymous';
-			this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, lastChat.m, user, this.state.user_data.photo_url)
+			this.props.setChat(this.state.live_events[this.state.selected_index].id ? this.state.live_events[this.state.selected_index].id : this.state.live_events[this.state.selected_index].content_id, lastChat.m, user, this.props.user.photo_url)
 				.then(response => {
 					lastChat.sent = true;
 					if (response.status !== 200 || response.data.status.code !== 0) {
