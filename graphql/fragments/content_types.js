@@ -1,4 +1,3 @@
-
 export const contentTypeProgramFragment = `
 ... on ContentTypeProgram {
   detail {
@@ -178,4 +177,60 @@ export const contentTypeSeasonFragment = `
     }
   }
 }
+`
+
+export const contentTypeHotCompetitions = `
+     ... on ContentTypeHOTCompetition {
+       detail(page: 1, page_size: 10){
+         data{
+           thumbnail
+           id
+           permalink
+         }
+         meta{
+           assets_url
+           image_path
+           pagination{
+             current_page
+             per_page
+             total
+             total_page
+           }
+           video_path
+         }
+       }
+     }
+`
+
+export const contentTypeHotVideo = `
+       ... on ContentTypeHOTVideo {
+         detail(page: 1, page_size: 1){
+           data{
+             thumbnail
+             id
+             views
+             deeplink
+             permalink
+             contestant{
+               nick_name
+               thumbnail
+               display_name
+               email
+               phone_code
+               phone_number
+             }
+           }
+           meta{
+             assets_url
+             image_path
+             pagination{
+               current_page
+               per_page
+               total
+               total_page
+             }
+             video_path
+           }
+         }
+       }
 `
