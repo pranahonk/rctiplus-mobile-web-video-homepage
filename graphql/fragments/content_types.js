@@ -151,6 +151,7 @@ export const contentTypeSpecialFragment = `
       permalink
       external_link
       action_type
+      mandatory_login
     }
     status {
       code
