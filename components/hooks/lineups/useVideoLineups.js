@@ -145,14 +145,18 @@ export default function useVideoLineups(props) {
           const isUrl = /^http:|^https:/.test(content.external_link)
 
           if (!isUrl) return
-          if (!getUserAccessToken()) return showSignInAlert(
+          let url = `${content.external_link}${getUserAccessToken()}`
+
+          if (!getUserAccessToken() && content.mandatory_login) return showSignInAlert(
             `Please <b>Sign In</b><br/>
             Woops! Gonna sign in first!<br/>
             Only a click away and you<br/>
             can continue to enjoy<br/>
             <b>RCTI+</b>`, '', () => {}, true, 'Register', 'Login', true, true
           )
-          Router.push(`${content.external_link}${getUserAccessToken()}`)
+          else if (!content.mandatory_login) url = content.external_link
+
+          Router.push(url)
         }
         else Router.push(url)
         break
