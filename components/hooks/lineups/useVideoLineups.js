@@ -62,9 +62,6 @@ export default function useVideoLineups(props) {
         })
         break
     }
-
-    console.log([ ...mappedContents.values() ], "asdasdada")
-
     setContents([ ...mappedContents.values() ])
     setEndPage(meta.pagination.current_page === meta.pagination.total_page)
     setNextPage(meta.pagination.current_page + 1)
