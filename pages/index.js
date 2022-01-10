@@ -29,6 +29,7 @@ import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
 
 // NEW RPLUS LINEUP CONTENTS
+const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
 const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
 const VideoLandscapeLgWsView = dynamic(() => import("../components/lineups/LandscapeLgWs"))
@@ -147,6 +148,13 @@ class Index_v2 extends React.Component {
   renderLineup(lineups, meta) {
     return lineups.map((lineup, index) => {
       switch(lineup.display_type) {
+        case "portrait_short" :
+            return (
+                <PortraitShortView
+                    lineup={lineup}
+                    key={lineup.id}
+                    imagePath={meta.image_path} />
+            )
         case "portrait" :
           return (
             <VideoPortraitView
@@ -312,9 +320,7 @@ class Index_v2 extends React.Component {
                 <GridMenu />
               </Carousel>
 
-              <div style={{marginTop: "25px"}}>
-                <Stories loadingBar={this.LoadingBar} homepage={true}/>
-              </div>
+              <Stories />
 
               <StickyContainer>
                 <Sticky disableHardwareAcceleration>
