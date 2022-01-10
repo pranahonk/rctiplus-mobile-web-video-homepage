@@ -13,7 +13,12 @@ export default function comingSoonModal(props) {
   useEffect(() => {
     setOpen(props.open)
     if (props.open) {
+
+      // disable scroll event
+      document.getElementById("nav-footer").style.display = "none"
       document.body.style.overflow = "hidden"
+      document.body.style.position = "fixed"
+      document.body.style.width = "100vw"
     }
   }, [props.open])
 
@@ -39,7 +44,12 @@ export default function comingSoonModal(props) {
 
   const destroyModal = _ => {
     props.onClose()
-    document.body.style.overflow = "unset"
+
+    // enable scroll event
+    document.body.style.removeProperty("position")
+    document.body.style.removeProperty("overflow")
+    document.body.style.removeProperty("width")
+    document.getElementById("nav-footer").style.removeProperty("display")
   }
 
   const renderDateDetail = () => {
@@ -76,7 +86,9 @@ export default function comingSoonModal(props) {
             <p>{ props.content.title }</p>
             <p>{ renderDateDetail() }</p>
             <div>
-              <CountdownTimer time={props.content.countdown} />
+              <CountdownTimer 
+                time={props.content.countdown} 
+                name={"Live In"} />
               <span>
                 This program hasn't started yet.<br/>
                 Please comeback later.
