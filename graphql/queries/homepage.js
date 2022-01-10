@@ -28,17 +28,29 @@ function getQueryParams(args) {
   return output.join(", ")
 }
 
-export const GET_BANNERS = gql`
-  query {
-    banners {
+export const GET_BANNERS = (category_id = 0) => {
+  let queryParams = getQueryParams({ category_id })
+  queryParams = Boolean(queryParams) ? `(${queryParams})` : ""
+
+  return gql`
+    query {
+      banners${queryParams} {
       data {
-        landscape_image
+        permalink
         id
-        sorting
+        title
+        square_image
+        portrait_image
+        landscape_image
+        type
+      }
+      meta {
+        image_path
       }
     }
-  }
-`
+    }
+  `
+}
 
 export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
   const queryParams = getQueryParams({ page, page_size, category_id })
