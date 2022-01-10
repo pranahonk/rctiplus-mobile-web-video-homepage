@@ -19,7 +19,7 @@ import Views from '@material-ui/icons/RemoveRedEyeSharp';
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
 
-const LandscapeHotVideo = ({title, indexTag, id}) => {
+const LandscapeHotVideo = ({title, indexTag, id, data}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -29,15 +29,9 @@ const LandscapeHotVideo = ({title, indexTag, id}) => {
   const [assetUrl, setAssetUrl] = useState(null);
 
   useEffect(() => {
-    client.query({query: GET_HOT_VIDEO(1, 100, 1, 10)})
-      .then((res)=>{
-        setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
-        setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
-        setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
-      })
-      .catch((err)=>{
-        console.log(err);
-      });
+    setMeta(data?.lineup_type_detail?.detail?.meta);
+    setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
+    setHastags(data?.lineup_type_detail?.detail);
   },[]);
 
   const getHastagPagination = (page) =>{

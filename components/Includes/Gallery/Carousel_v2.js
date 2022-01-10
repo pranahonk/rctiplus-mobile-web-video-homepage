@@ -41,11 +41,11 @@ function carouselBanner(props) {
     const sendTracker = (func, type, banner) => {
         const eventArgs = {
             homeBanner: [
-                banner.id, 
-                banner.type, 
-                banner.title, 
-                `${meta.image_path}${RESOLUTION_IMG}${banner.portrait_image}`, 
-                `${meta.image_path}${RESOLUTION_IMG}${banner.landscape_image}`, 
+                banner.id,
+                banner.type,
+                banner.title,
+                `${meta.image_path}${RESOLUTION_IMG}${banner.portrait_image}`,
+                `${meta.image_path}${RESOLUTION_IMG}${banner.landscape_image}`,
                 'mweb_homepage_banner_clicked'
             ]
         }
@@ -54,12 +54,12 @@ function carouselBanner(props) {
 
     return (
         <div style={{ position: 'relative', paddingTop: props.showStickyInstall ? 135 : props.detailCategory? 0 : 70,}}>
-            {banners.length === 0 
+            {banners.length === 0
                 ? (
-                    <div 
-                        className="banner-carousel" 
+                    <div
+                        className="banner-carousel"
                         style={{ width: '100%', minHeight: 320,display: "flex", justifyContent:"center", alignItems:"center"}}>
-                        <Img 
+                        <Img
                             alt="placeholder"
                             src={<img alt="placeholder" src={placeholderImg}/>}
                             unloader={<img alt="placeholder" src={placeholderImg}/>}
@@ -67,18 +67,18 @@ function carouselBanner(props) {
                     </div>
                 )
                 : (
-                    <Carousel 
+                    <Carousel
                         className="banner-carousel"
-                        statusFormatter={(current, total) => `${current}/${total}`} 
-                        autoPlay 
-                        showThumbs={false} 
-                        showIndicators 
-                        stopOnHover 
-                        showArrows={false} 
-                        showStatus={false} 
-                        swipeScrollTolerance={1} 
+                        statusFormatter={(current, total) => `${current}/${total}`}
+                        autoPlay
+                        showThumbs={false}
+                        showIndicators
+                        stopOnHover
+                        showArrows={false}
+                        showStatus={false}
+                        swipeScrollTolerance={1}
                         infiniteLoop
-                        swipeable 
+                        swipeable
                         onSwipeEnd={(e) => {
                             const swipedIndex = e.target.getAttribute('data-index');
                             if (banners[swipedIndex]) {
@@ -89,12 +89,12 @@ function carouselBanner(props) {
                         {banners.map((banner, i) => {
                             const imgSrc = meta.image_path ? `${meta.image_path}${RESOLUTION_IMG}${banner.square_image}` : placeholderImg
                             return (
-                                <div 
-                                    data-index={i} 
-                                    onClick={_ => goToProgram(banner)} 
-                                    key={banner.id} 
+                                <div
+                                    data-index={i}
+                                    onClick={_ => goToProgram(banner)}
+                                    key={banner.id}
                                     style={{  width: '100%', minHeight: 320}}>
-                                    <Img 
+                                    <Img
                                         alt={banner.title}
                                         src={imgSrc}
                                         unloader={<img alt={banner.title} src={placeholderImg}/>}

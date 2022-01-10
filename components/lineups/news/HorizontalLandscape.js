@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import queryString from 'query-string';
+import { connect } from 'react-redux';
 import {getTruncate} from '../../../utils/helpers';
 import { formatDateWordID } from '../../../utils/dateHelpers';
 import { urlRegex } from '../../../utils/regex';
@@ -20,10 +21,14 @@ import { GET_REGROUPING, GET_REGROUPING_LINEUPS } from '../../../graphql/queries
 //import scss
 import '../../../assets/scss/components/horizontal-landscape.scss';
 
+//import redux
+import newsCountView from '../../../redux/actions/newsCountView';
+import Cookie from 'js-cookie';
+
 const HorizontalLandspaceLoader = dynamic(() => import('../../Includes/Shimmer/HorizontalLandspaceLoader'))
 
 
-const HorizontalLandscape = ({title, indexTag, id}) => {
+const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -33,15 +38,9 @@ const HorizontalLandscape = ({title, indexTag, id}) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_REGROUPING(1,20)})
-      .then((res)=>{
-        setList(res?.data?.lineups?.data[indexTag]?.lineup_type_detail.detail);
-        setMeta(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta);
-        setAssetUrl(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail?.meta?.image_path );
-      })
-      .catch((err)=>{
-        console.log(err);
-      });
+    setList(data?.lineup_type_detail.detail);
+    setMeta(data?.lineup_type_detail?.detail?.meta);
+    setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path );
   },[]);
 
   const getLineupsPagination = (page, page_size, id) =>{
@@ -75,8 +74,18 @@ const HorizontalLandscape = ({title, indexTag, id}) => {
     } else {
       category = urlRegex(article.subcategory_name)
     }
-    return ('news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)));
+
+  return 'news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title));
   };
+
+  const sendAnalytics = (article) => {
+    if(!Cookie.get('uid_ads')) {
+      Cookie.set('uid_ads', new DeviceUUID().get())
+    }
+    else{
+      props.newsCountViewDetail(Cookie.get('uid_ads'), article.id)
+    }
+  }
   return (
     list?.data?.length === undefined || list?.data?.length < 1 ? <div /> :
     <li className="regroupping-by-section">
@@ -93,16 +102,18 @@ const HorizontalLandscape = ({title, indexTag, id}) => {
             {list?.data.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
-                  <Link href={_goToDetail(item)}  >
-                    <div className="regroupping-by-section_thumbnail-wrapper">
-                      {
-                        imageNews(item.title, item.cover, item.image, 320, assetUrl, 'thumbnail')
-                      }
-                      <div className="regroupping-by-section_thumbnail-title" >
-                        <h1>{getTruncate(item.title, '...', 100)}</h1>
-                        <h2>{item.subcategory_name} | {item.source} | <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
+                  <Link href={_goToDetail(item)}>
+                    <a onClick={() => sendAnalytics(item)}>
+                      <div className="regroupping-by-section_thumbnail-wrapper">
+                        {
+                          imageNews(item.title, item.cover, item.image, 320, assetUrl, 'thumbnail')
+                        }
+                        <div className="regroupping-by-section_thumbnail-title" >
+                          <h1>{getTruncate(item.title, '...', 100)}</h1>
+                          <h2>{item.subcategory_name} | {item.source} | <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
+                        </div>
                       </div>
-                    </div>
+                    </a>
                   </Link>
                 </SwiperSlide>
               );
@@ -118,4 +129,7 @@ const HorizontalLandscape = ({title, indexTag, id}) => {
   );
 };
 
-export default HorizontalLandscape;
+
+export default connect(state => state, {
+  ...newsCountView
+})(HorizontalLandscape);

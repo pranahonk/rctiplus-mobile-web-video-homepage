@@ -1,4 +1,3 @@
-
 import {
   contentTypeCatchupFragment,
   contentTypeClipFragment,
@@ -9,6 +8,8 @@ import {
   contentTypeProgramFragment,
   contentTypeSeasonFragment,
   contentTypeSpecialFragment,
+  contentTypeHotCompetitions,
+  contentTypeHotVideo
 }
 from "./content_types"
 
@@ -88,38 +89,65 @@ export const lineupDefaultFragment = (queryParams) => {
           ${contentTypeLiveEPGFragment}
           ${contentTypeSpecialFragment}
           ${contentTypeSeasonFragment}
+          ${contentTypeHotCompetitions}
+          ${contentTypeHotVideo}
         }
       }
-      meta {
-        pagination {
-          total_page
-          current_page
-        }
+     meta {
+      pagination {
+        current_page
+        total_page
+      }
+      image_path
       }
     }
   }
   `
 }
 
-export const lineupTypeNewsTagar = (queryParams) => {
+export const lineupTypeNewsTagarFragment = (queryParams) => {
   return `
   ... on LineupTypeNewsTagar {
     detail(${queryParams}) {
       data {
-        permalink
+        tag
+        type
+        sorting
       }
+       meta {
+          pagination {
+            current_page
+            total_page
+          }
+          image_path
+       }
     }
   }
   `
 }
 
-export const lineupTypeNewsRegrouping = (queryParams) => {
+export const lineupTypeNewsRegroupingFragment = (queryParams) => {
   return `
   ... on LineupTypeNewsRegrouping {
     detail(${queryParams}) {
       data {
-        permalink
+         cover
+         id
+         image
+         pubDate
+         subcategory_name
+         source
+         title
       }
+       meta {
+         pagination {
+           current_page
+           per_page
+           total
+           total_page
+         }
+         image_path
+       }
     }
   }
   `
