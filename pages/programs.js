@@ -8,6 +8,7 @@ import Img from 'react-image';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import GetApp from '@material-ui/icons/GetApp';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
+import { isIOS } from "react-device-detect";
 import { urlRegex } from '../utils/regex';
 import { convivaJwPlayer } from '../utils/conviva';
 import queryString from 'query-string';
@@ -176,6 +177,11 @@ class Index extends React.Component {
         filter: "episode",
       })
     )
+    window.addEventListener('pageshow', this.handlePageShow)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('pageshow', this.handlePageShow)
   }
 
   shouldComponentUpdate() {
@@ -185,7 +191,6 @@ class Index extends React.Component {
 
   componentDidUpdate(prevProps) {
     this.onRouterChanged()
-
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
       if (this.props.router.query.content_id) {
         const {content_id , content_type} = this.props.router.query;
@@ -239,6 +244,14 @@ class Index extends React.Component {
       //     }
       //   }
       // }
+    }
+  }
+
+  handlePageShow(event) {
+    var historyTraversal = event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2);
+
+    if (historyTraversal && isIOS) {
+      window.location.reload();
     }
   }
 
