@@ -13,11 +13,14 @@ import 'swiper/swiper.scss';
 //import scss
 import '../../../assets/scss/components/horizontal-hastags.scss';
 import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
+import Cookie from 'js-cookie';
+import { connect } from 'react-redux';
+import newsCountViewTag from '../../../redux/actions/newsCountView';
 
 const HastagLoader = dynamic(() => import('../../Includes/Shimmer/HastagLoader'));
 
 
-const HorizontalHastags = ({title, indexTag, id}) => {
+const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -26,13 +29,7 @@ const HorizontalHastags = ({title, indexTag, id}) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    client.query({query: GET_HASTAGS(1, 100, 1, 5)})
-      .then((res)=>{
-        setHastags(res?.data?.lineups?.data[indexTag]?.lineup_type_detail?.detail);
-      })
-      .catch((err)=>{
-        console.log(err);
-      });
+    setHastags(data?.lineup_type_detail?.detail);
   },[]);
 
   const getHastagPagination = (page) =>{
@@ -70,6 +67,19 @@ const HorizontalHastags = ({title, indexTag, id}) => {
     return `news/topic/tag/${article.tag}`
   };
 
+  const sendAnalytics = (article) => {
+    if(!Cookie.get('uid_ads')) {
+      Cookie.set('uid_ads', new DeviceUUID().get())
+    }
+    else{
+      const params = {
+        'tag': article.tag,
+      };
+
+      props.newsCountViewTag(params)
+    }
+  }
+
   return (
     <li className="regroupping-by-section">
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
@@ -84,10 +94,12 @@ const HorizontalHastags = ({title, indexTag, id}) => {
             {hastags?.data.map((item, index) => {
               return (
                 <SwiperSlide key={index}>
-                  <Link href={_goToDetail(item)}  >
-                    <div className="horizontal-tags">
-                      <span className="horizontal-tags_text">#{item.tag}</span>
-                    </div>
+                  <Link href={_goToDetail(item)}>
+                    <a onClick={() => sendAnalytics(item)}>
+                      <div className="horizontal-tags">
+                        <span className="horizontal-tags_text">#{item.tag}</span>
+                      </div>
+                    </a>
                   </Link>
                 </SwiperSlide>
               );
@@ -103,4 +115,8 @@ const HorizontalHastags = ({title, indexTag, id}) => {
   );
 };
 
-export default HorizontalHastags;
+
+export default connect(state => state, {
+  ...newsCountViewTag
+})(HorizontalHastags);
+
