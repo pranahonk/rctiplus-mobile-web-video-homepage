@@ -232,75 +232,58 @@ class LiveEvent extends React.Component {
 		if(this.props.router.asPath.match('/live-event/') && this.props?.selected_event?.data?.chat !== "inactive") this.loadChatMessages(this.props.router.query.id);
 		initGA();
 		this.getAvailable();
+
 		if (this.props.router.asPath.match('/missed-event/')) {
 			this.setState({
 				selected_tab: 'missed-event',
 			});
 		}
-		this.getMissedEvent();
-		this.getLiveEvent();
 
-		this.props.getUserData()
-			.then(response => {
-				if (response.status === 200 && response.data.status.code === 0) {
-					this.setState({ user_data: response.data.data });
+		this.props.setPageLoader()
+		this.props.setSeamlessLoad(true)
+		Promise.all([
+			this.props.getLiveEvent('non on air'),
+			this.props.getMissedEvent(),
+			this.props.getLiveEventUrl(this.props.router.query.id),
+			axios.get('/v1/get-ads-duration'),
+			this.props.getUserData()
+		])
+			.then(res => {
+				const [ liveEvent, missedEvent, _, adsDuration, userData ] = res
+
+				let stateToChange = {
+					live_events: liveEvent.data.data,
+					missed_event: missedEvent.data.data,
+					meta: liveEvent.data.meta.image_path,
 				}
+
+				if (adsDuration.data.data) {
+					const [ refresh, reload ] = adsDuration.data.data
+					stateToChange = {
+						...stateToChange,
+						adsOverlayDuration: {
+							refreshDuration: refresh.duration,
+							reloadDuration: reload ? reload.duration : refresh.duration
+						}
+					}
+				}
+
+				if (userData.status === 200 && userData.data.status.code === 0) {
+					stateToChange = {
+						...stateToChange,
+						user_data: userData.data.data
+					}
+				}
+
+				this.setState(stateToChange, () => {
+					if (location.search.includes("refpage=login")) this.toggleChat()
+				})
 			})
-
-    axios.get('/v1/get-ads-duration')
-      .then(response => {
-        if (response.data.data) {
-					const [ refresh, reload ] = response.data.data
-
-          this.setState({
-            adsOverlayDuration: {
-              refreshDuration: refresh.duration,
-              reloadDuration: reload ? reload.duration : refresh.duration
-            }
-          })
-        }
-      })
+			.finally(_ => {
+				this.props.unsetPageLoader()
+				this.props.setSeamlessLoad(false)
+			})
 	}
-	getLiveEvent() {
-		this.props.setPageLoader();
-		this.props.setSeamlessLoad(true);
-		this.props.getLiveEvent('non on air')
-		.then(response => {
-			this.setState({
-				live_events: response.data.data ,
-				meta: response.data.meta.image_path,
-			}, () => {
-				// this.initVOD();
-				// this.initPlayer();
-				this.props.setSeamlessLoad(false);
-				this.props.unsetPageLoader();
-
-				if (location.search.includes("refpage=login")) this.toggleChat()
-			});
-		})
-		.catch(error => {
-			// this.initPlayer();
-			this.props.setSeamlessLoad(false);
-			this.props.unsetPageLoader();
-		});
-	}
-	getMissedEvent() {
-		this.props.setSeamlessLoad(true);
-    this.props.setPageLoader();
-    this.props.getMissedEvent()
-    .then(({data: lists}) => {
-			this.props.setSeamlessLoad(false);
-			this.props.unsetPageLoader();
-      this.setState({
-				missed_event: lists.data,
-				meta: lists.meta.image_path,
-      });
-    })
-    .catch((error) => {
-			this.props.setSeamlessLoad(false);
-			this.props.unsetPageLoader();
-    });
-  }
 
 	isLive() {
 		if (this.props.selected_event && this.props.selected_event.data) {
