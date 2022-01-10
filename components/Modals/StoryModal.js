@@ -41,7 +41,7 @@ function storyModal(props) {
   const setActiveProgressbar = () => {
     if (!progressBarWrapper.current) return
     if (activeIndex > props.story.story.length - 1) return
-    document.getElementById("nav-footer-v2").style.display = "none"
+    document.getElementById("nav-footer").style.display = "none"
     
     mountJwplayer()
     

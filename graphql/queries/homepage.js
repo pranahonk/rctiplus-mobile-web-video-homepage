@@ -9,6 +9,18 @@ import {
   lineupTypeNewsRegroupingFragment
 } from "../fragments/lineups"
 
+import {
+  contentTypeCatchupFragment,
+  contentTypeClipFragment,
+  contentTypeEpisodeFragment,
+  contentTypeExtraFragment,
+  contentTypeLiveEPGFragment,
+  contentTypeLiveEventFragment,
+  contentTypeProgramFragment,
+  contentTypeSeasonFragment,
+  contentTypeSpecialFragment,
+} from "../fragments/content_types"
+
 function getQueryParams(args) {
   let output = []
   for (const key in args) {
@@ -17,17 +29,29 @@ function getQueryParams(args) {
   return output.join(", ")
 }
 
-export const GET_BANNERS = gql`
-  query {
-    banners {
-      data {
-        landscape_image
-        id
-        sorting
+export const GET_BANNERS = (category_id = 0) => {
+  let queryParams = getQueryParams({ category_id })
+  queryParams = Boolean(queryParams) ? `(${queryParams})` : ""
+
+  return gql`
+    query {
+      banners${queryParams} {
+        data {
+          permalink
+          id
+          title
+          square_image
+          portrait_image
+          landscape_image
+          type
+        }
+        meta {
+          image_path
+        }
       }
     }
-  }
-`
+  `
+}
 
 export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
   const queryParams = getQueryParams({ page, page_size, category_id })
@@ -121,6 +145,105 @@ export const GET_HOME_STORIES = (page = 1, page_size = 10, category_id = 0) => {
             current_page
             total_page
           }
+        }
+      }
+    }
+  `
+}
+
+export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 7, lineup_id = 0) => {
+  const queryParams = getQueryParams({ page, page_size, lineup_id })
+
+  return gql`
+    query {
+      lineup_contents(${queryParams}){
+        data {
+          content_id
+          content_type
+          content_type_detail {
+            ${contentTypeProgramFragment}
+            ${contentTypeEpisodeFragment}
+            ${contentTypeExtraFragment}
+            ${contentTypeClipFragment}
+            ${contentTypeCatchupFragment}
+            ${contentTypeLiveEventFragment}
+            ${contentTypeLiveEPGFragment}
+            ${contentTypeSpecialFragment}
+            ${contentTypeSeasonFragment}
+          }
+        }
+        meta {
+          pagination {
+            total_page
+            current_page
+          }
+        }
+      }
+    }
+  `
+}
+
+export const GET_CONTINUE_WATCHING = (page = 1, page_size = 7, lineup_id = 0) => {
+  const queryParams = getQueryParams({ page, page_size, lineup_id })
+
+  return gql`
+    query {
+      lineup_continue_watching(${queryParams}) {
+        data {
+          id
+          landscape_image
+          portrait_image
+          square_image
+          medium_landscape_image
+          permalink
+          duration
+          last_duration
+        }
+        meta {
+          image_path
+          pagination {
+            current_page
+            total_page
+          }
+        }
+        status {
+          code
+        }
+      }
+    }
+  `
+}
+
+export const GET_HOME_CATEGORY_LIST = gql`
+  query {
+    categories {
+      data {
+        icon 
+        id
+        is_active
+        name
+        type
+      }
+      meta {
+        image_path
+      }
+    }
+  }
+`
+
+export const GET_SUB_CATEGORY_LIST = (categoryId = 0) => {
+  return gql`
+    query {
+      sub_categories(category_id: ${categoryId}) {
+        data {
+          icon
+          id
+          is_active
+          name
+          type
+        }
+        meta {
+          image_path
         }
       }
     }

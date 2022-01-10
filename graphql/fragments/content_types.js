@@ -149,6 +149,9 @@ export const contentTypeSpecialFragment = `
       title
       summary
       permalink
+      external_link
+      action_type
+      mandatory_login
     }
     status {
       code
