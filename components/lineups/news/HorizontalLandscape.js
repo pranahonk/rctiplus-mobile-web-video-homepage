@@ -101,7 +101,7 @@ const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
           >
             {list?.data.map((item, index) => {
               return (
-                <SwiperSlide key={index}>
+                <SwiperSlide key={index} id={`horizontal-${index}`}>
                   <Link href={_goToDetail(item)}>
                     <a onClick={() => sendAnalytics(item)}>
                       <div className="regroupping-by-section_thumbnail-wrapper">
