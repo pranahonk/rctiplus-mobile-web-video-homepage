@@ -76,7 +76,7 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
         'tag': article.tag,
       };
 
-      props.newsCountViewTag(params)
+      props.newsCountViewTag(JSON.parse(params))
     }
   }
 
