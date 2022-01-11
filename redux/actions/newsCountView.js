@@ -5,11 +5,12 @@ import {
   getCookie, checkToken,
 } from '../../utils/cookie';
 
-const axios = ax.create({ baseURL: 'https://hera.mncplus.id' });
+const axios = ax.create({ baseURL: process.env.HERA_URL });
 axios.interceptors.request.use(async (request) => {
   await checkToken();
   const accessToken = getCookie('ACCESS_TOKEN');
   request.headers['Authorization'] = accessToken == undefined ? getVisitorToken() : accessToken;
+  request.headers['apikey'] = process.env.GRAPHQL_APIKEY;
   return request;
 });
 
@@ -17,7 +18,7 @@ axios.interceptors.request.use(async (request) => {
 const newsCountViewTag = (tag ) => {
   return () => new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.post(`/news/tags/count?apikey=Tpa0pF9gLU989TKBslyWvhS6ghWXVm0V`, tag);
+      const response = await axios.post(`/news/tags/count`, tag);
       if (response.status === 200) {
         resolve(response);
       } else {
@@ -35,7 +36,7 @@ const newsCountViewTag = (tag ) => {
 const newsCountViewDetail = (device_id = null, userid =  null) => {
   return () => new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.post(`/news/news/count?apikey=Tpa0pF9gLU989TKBslyWvhS6ghWXVm0V`, {
+      const response = await axios.post(`/news/news/count`, {
         visitor_id: device_id,
         news_id: userid,
       });
