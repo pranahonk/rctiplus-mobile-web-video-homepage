@@ -20,7 +20,6 @@ import { getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../.
 import { showSignInAlert } from '../../utils/helpers';
 import { contentGeneralEvent, liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked } from '../../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../utils/firebaseTracking';
-// import { RPLUSAdsShowing, RPLUSAdsClicked } from '../../utils/internalTracking';
 
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
@@ -67,16 +66,6 @@ import { triggerQualityButtonClick } from '../../utils/player';
 
 import ax from 'axios';
 import cookies from 'next-cookies'
-
-// import videojs from 'video.js';
-// import 'videojs-contrib-ads';
-// import 'videojs-ima';
-// import 'video.js/src/css/video-js.scss';
-// import 'videojs-hls-quality-selector';
-// import qualitySelector from '../../assets/js/videojs-hls-quality-selector/dist/videojs-hls-quality-selector.cjs';
-// import qualityLevels from 'videojs-contrib-quality-levels';
-// import 'videojs-seek-buttons';
-// import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
 const JwPlayer = dynamic(() => import('../../components/Includes/Player/JwPlayer'));
 const innerHeight = require('ios-inner-height');
 
@@ -96,37 +85,6 @@ class LiveEvent extends React.Component {
 
 	static async getInitialProps(ctx) {
 		initialize(ctx);
-			const id = ctx.query.id;
-        // const id = 19;
-		const accessToken = getCookie('ACCESS_TOKEN');
-		const options = {
-			method: 'GET',
-			headers: {
-				'Authorization': accessToken ? accessToken : VISITOR_TOKEN
-			}
-		};
-		let res = null;
-		if (ctx.asPath.match('/missed-event/')) {
-			res = await Promise.all([
-				fetch(`${DEV_API}/api/v1/missed-event/${id}`, options),
-				fetch(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${cookies(ctx)?.QGUserId || getUidAppier()}`, options)
-			]);
-		}
-		else {
-			res = await Promise.all([
-				fetch(`${DEV_API}/api/v1/live-event/${id}`, options),
-				fetch(`${DEV_API}/api/v1/live-event/${id}/url?appierid=${cookies(ctx)?.QGUserId || getUidAppier()}`, options)
-			]);
-		}
-
-		const error_code = res[0].status > 200 ? res[0].status : false;
-		const error_code_2 = res[1].status > 200 ? res[1].status : false;
-		if (error_code || error_code_2) {
-			return {
-				selected_event: false,
-				selected_event_url: false
-			};
-		}
 
 		let userAgent;
 		if (ctx.req) {
@@ -139,13 +97,7 @@ class LiveEvent extends React.Component {
 			/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
 		));
 
-		const data = await Promise.all([
-			res[0].json(),
-			res[1].json(),
-		]);
 		return {
-			selected_event: data[0],
-			selected_event_url: data[1],
 			user_agent: userAgent,
 			is_mobile: isMobile,
 		};
@@ -178,20 +130,22 @@ class LiveEvent extends React.Component {
 			isAds: false,
 			meta: '',
 			resolution: RESOLUTION_IMG,
-			status: this.props.selected_event_url ? this.props.selected_event_url.status : false,
+			status: false,
 			screen_width: 320,
 			quality_selector_shown: false,
 			playing: false,
             user_active: false,
 			selected_tab: 'live-event',
-			is_live: this.isLive(),
+			is_live: false,
 			action_sheet: false,
 			caption: '',
 			url: '',
+			selected_event: {},
+			selected_event_url: {},
 			hashtags: [],
 			tab_status: '',
 			refreshUrl: null,
-			statusError: this.props.selected_event_url && this.props.selected_event_url.status && this.props.selected_event_url.status.code === 12 ? 2 : 0,
+			statusError: 0,
       adsOverlayDuration: {
         refreshDuration: 0,
         reloadDuration: 0
@@ -230,7 +184,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 	componentDidMount() {
-		if(this.props.router.asPath.match('/live-event/') && this.props?.selected_event?.data?.chat !== "inactive") this.loadChatMessages(this.props.router.query.id);
+		if(this.props.router.asPath.match('/live-event/') && this.state.selected_event?.data?.chat !== "inactive") this.loadChatMessages(this.props.router.query.id);
 		initGA();
 		this.getAvailable();
 
@@ -246,16 +200,28 @@ class LiveEvent extends React.Component {
 			this.props.getLiveEvent('non on air'),
 			this.props.getMissedEvent(),
 			this.props.getLiveEventUrl(this.props.router.query.id),
+			this.props.getLiveEventDetail(this.props.router.query.id),
 			axios.get('/v1/get-ads-duration'),
-			this.props.getUserData()
+			this.props.getUserData(),
 		])
 			.then(res => {
-				const [ liveEvent, missedEvent, _, adsDuration, userData ] = res
+				const [ liveEvent, missedEvent, liveEventUrl, liveEventDetail, adsDuration, userData ] = res
 
 				let stateToChange = {
 					live_events: liveEvent.data.data,
 					missed_event: missedEvent.data.data,
 					meta: liveEvent.data.meta.image_path,
+					selected_event: liveEventDetail,
+					selected_event_url: liveEventUrl
+				}
+
+				const failedToFetchUrlAndDetail = (liveEventDetail.status > 200 ? liveEventDetail.status : false) || (liveEventUrl.status > 200 ? liveEventUrl.status : false)
+				if (failedToFetchUrlAndDetail) {
+					stateToChange = {
+						...stateToChange,
+						selected_event: {},
+						selected_event_url: {}
+					}
 				}
 
 				if (adsDuration.data.data) {
@@ -276,6 +242,8 @@ class LiveEvent extends React.Component {
 					}
 				}
 
+				if (stateToChange.selected_event) this.isLive()
+
 				this.setState(stateToChange, () => {
 					if (location.search.includes("refpage=login")) this.toggleChat()
 				})
@@ -287,8 +255,8 @@ class LiveEvent extends React.Component {
 	}
 
 	isLive() {
-		if (this.props.selected_event && this.props.selected_event.data) {
-			const { data } = this.props.selected_event;
+		if (this.state.selected_event && this.state.selected_event.data) {
+			const { data } = this.state.selected_event;
 			const currentTime = new Date(data.current_date * 1000).getTime();
 			const startTime = new Date(data.release_date_quiz * 1000).getTime();
 			if (currentTime < startTime) {
@@ -302,9 +270,9 @@ class LiveEvent extends React.Component {
 		return false;
 	}
 	getAvailable() {
-		if (this.props.selected_event && this.props.selected_event.data && this.props.selected_event_url && this.props.selected_event_url.data) {
+		if (this.state.selected_event && this.state.selected_event.data && this.state.selected_event_url && this.state.selected_event_url.data) {
 
-			const { data } = this.props.selected_event;
+			const { data } = this.state.selected_event;
 			const currentTime = new Date().getTime();
 			const endTime = new Date(data.end_date).getTime();
 			if(this.props.router.asPath.match('/live-event/')) {
@@ -319,7 +287,7 @@ class LiveEvent extends React.Component {
 			this.setState({ isAvailable: true })
 			return false
 		}
-		if(this.props.router.asPath.match('/live-event/') || !(this.props.selected_event_url && this.props.selected_event_url.data)) {
+		if(this.props.router.asPath.match('/live-event/') || !(this.state.selected_event_url && this.state.selected_event_url.data)) {
 
 			this.setState({ errorEnd: true })
 			return false
@@ -534,8 +502,8 @@ class LiveEvent extends React.Component {
 		if (this.checkLogin()) {
 			this.setState({ chat_open: !this.state.chat_open }, () => {
 				if (this.state.chat_open && !this.state.isAds) {
-					if(this.props.selected_event.data) {
-						this.getAds(this.props.selected_event.data.id);
+					if(this.state.selected_event.data) {
+						this.getAds(this.state.selected_event.data.id);
 					}
 				}
 				if (!this.state.chat_open) {
@@ -614,7 +582,7 @@ class LiveEvent extends React.Component {
 	sendChat() {
 		if (this.state.user_data) {
 			if (this.state.chat != '') {
-				const { id } = this.props.selected_event.data;
+				const { id } = this.state.selected_event.data;
 				const userData = this.state.user_data;
 				let user = userData.nickname ? userData.nickname :
 					userData.display_name ? userData.display_name :
@@ -637,7 +605,7 @@ class LiveEvent extends React.Component {
 					const chatInput = document.getElementById('chat-input');
 					chatInput.style.height = `100%`;
 
-					this.props.setChat(this.props.selected_event.data.id ? this.props.selected_event.data.id : this.props.selected_event.data.content_id, newChat.m, user, this.state.user_data.photo_url)
+					this.props.setChat(this.state.selected_event.data.id ? this.state.selected_event.data.id : this.state.selected_event.data.content_id, newChat.m, user, this.state.user_data.photo_url)
 						.then(response => {
 							newChat.sent = true;
 							if (response.status !== 200 || response.data.status.code !== 0) {
@@ -797,7 +765,7 @@ class LiveEvent extends React.Component {
 				image: '',
 			}
 		}
-		const { data, meta } = this.props.selected_event;
+		const { data, meta } = this.state.selected_event;
 		return {
 			title: this.props.router.asPath.includes('/missed-event') ? `Nonton Tayangan Ulang Streaming ${this.props.router.query.title.replace(/-/gi, ' ') || ''}`: 'Nonton Live Streaming ' + (this.props.router.query.title.replace(/-/gi, ' ') || ''),
 			description: this.props.router.asPath.includes('/missed-event') ? `Tonton siaran ulang ${(this.props.router.query.title.replace(/-/gi, ' ') || '')} gratis dan tanpa buffering di RCTI+` : `Tonton siaran langsung ${(this.props.router.query.title.replace(/-/gi, ' ') || '')} gratis dan tanpa buffering di RCTI+` ,
@@ -826,8 +794,8 @@ class LiveEvent extends React.Component {
 			ads_data: null,
 		}, () => {
 			setTimeout(() => {
-				if (this.props.selected_event.data) {
-					this.getAds(this.props.selected_event.data.id);
+				if (this.state.selected_event.data) {
+					this.getAds(this.state.selected_event.data.id);
 				}
 			}, 100);
 		});
@@ -846,8 +814,8 @@ class LiveEvent extends React.Component {
 					}, () => {
 						if(this.state.chat_open) {
 							setTimeout(() => {
-								if (this.props.selected_event.data) {
-									this.getAds(this.props.selected_event.data.id);
+								if (this.state.selected_event.data) {
+									this.getAds(this.state.selected_event.data.id);
 								}
 							}, 100);
 						}
@@ -944,7 +912,8 @@ class LiveEvent extends React.Component {
 		this.getCurrentViewingVideoIndex()
 
 		const { state, props } = this;
-		const  { selected_event, selected_event_url } = this.props;
+		const  { selected_event, selected_event_url } = this.state
+
 		let errorEvent = (<Col xs="12" key="1" className="le-error">
 				<LiveIcon />
 				<p>Ups! No Data Found</p>
@@ -1015,10 +984,10 @@ class LiveEvent extends React.Component {
 					<NavBack navPlayer={true} stylePos="absolute"/>
 
 						<JwPlayer
-							data={ selected_event_url && selected_event_url.data }
+							data={ selected_event_url.data && selected_event_url.data.data }
 							type={ this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' }
 							customData={{
-								program_name: this.props.selected_event && this.props.selected_event.data && this.props.selected_event.data.name,
+								program_name: selected_event && selected_event.data && selected_event.data.name,
 								isLogin: this.props.user.isAuth,
 								sectionPage: this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' ,
 								}}
@@ -1048,12 +1017,12 @@ class LiveEvent extends React.Component {
 									statusTimer="1"/>
 							) : null}
 
-							{this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'}
+							{selected_event && selected_event.data ? selected_event.data.name : 'Live Streaming'}
 						</h1>
 
 						<ShareIcon onClick={() => {
 							liveShareEvent(selected_event.data && selected_event.data.id || 'error', selected_event.data && selected_event.data.name || 'error');
-							this.toggleActionSheet((this.props.selected_event && this.props.selected_event.data ? this.props.selected_event.data.name : 'Live Streaming'), BASE_URL + this.props.router.asPath, ['rctiplus'], 'livetv')
+							this.toggleActionSheet((selected_event && selected_event.data ? selected_event.data.name : 'Live Streaming'), BASE_URL + this.props.router.asPath, ['rctiplus'], 'livetv')
 						}}/>
 					</div>
 					<div className="live-event-content-wrap">
