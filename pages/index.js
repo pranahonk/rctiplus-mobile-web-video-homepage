@@ -22,7 +22,7 @@ import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
@@ -46,7 +46,7 @@ const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/n
 const LandscapeHotVideo = dynamic(() => import("../components/lineups/hot/LandscapeHotVideo"));
 const AudioHorizontalDisc = dynamic(() => import("../components/lineups/audio_lineup/Disc"));
 const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"));
-const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"))
+const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"));
 
 class Index_v2 extends React.Component {
   static async getInitialProps(ctx) {
@@ -141,85 +141,91 @@ class Index_v2 extends React.Component {
   renderLineup(lineups, meta) {
     return lineups.map((lineup, index) => {
       switch(lineup.display_type) {
+        case "portrait_short" :
+          return (
+            <PortraitShortView
+              lineup={lineup}
+              key={lineup.id}
+              imagePath={meta.image_path} />
+          )
         case "portrait" :
-            return (
-                <VideoPortraitView
-                    key={lineup.id}
-                    loadingBar={this.LoadingBar}
-                    lineup={lineup}
-                    imagePath={meta.image_path} />
-            )
+          return (
+            <VideoPortraitView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
         case "landscape_large_ws" :
-            return (
-                <VideoLandscapeLgWsView
-                    key={lineup.id}
-                    loadingBar={this.LoadingBar}
-                    lineup={lineup}
-                    showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
-                    imagePath={meta.image_path} />
-            )
+          return (
+            <VideoLandscapeLgWsView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
+              imagePath={meta.image_path} />
+          )
         case "landscape_large" :
-            return (
-                <VideoLandscapeLgView
-                    key={lineup.id}
-                    loadingBar={this.LoadingBar}
-                    lineup={lineup}
-                    imagePath={meta.image_path} />
-            )
+          return (
+            <VideoLandscapeLgView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
         case "landscape_219" :
-            return (
-                <VideoLandscape219View
-                    key={lineup.id}
-                    loadingBar={this.LoadingBar}
-                    lineup={lineup}
-                    imagePath={meta.image_path} />
-            )
+          return (
+            <VideoLandscape219View
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
         case "landscape_mini_wt" :
-            return (
-                <VideoLandscapeMiniWtView
-                    key={lineup.id}
-                    loadingBar={this.LoadingBar}
-                    lineup={lineup}
-                    imagePath={meta.image_path} />
-            )
+          return (
+            <VideoLandscapeMiniWtView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
         case "landscape_mini" :
-            return (
-                <VideoLandscapeMiniView
-                    key={lineup.id}
-                    loadingBar={this.LoadingBar}
-                    lineup={lineup}
-                    imagePath={meta.image_path} />
-            )
+          return (
+            <VideoLandscapeMiniView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
         case "square_mini" :
-            return (
-                <VideoSquareMiniView
-                    key={lineup.id}
-                    loadingBar={this.LoadingBar}
-                    lineup={lineup}
-                    imagePath={meta.image_path} />
-            )
+          return (
+            <VideoSquareMiniView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
         case "square" :
-            return (
-                <VideoSquareView
-                    key={lineup.id}
-                    loadingBar={this.LoadingBar}
-                    lineup={lineup}
-                    imagePath={meta.image_path} />
-            )
+          return (
+            <VideoSquareView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
         case "landscape_mini_live" :
-            return (
-                <VideoLandscapeMiniLiveView
-                    key={lineup.id}
-                    loadingBar={this.LoadingBar}
-                    lineup={lineup}
-                    showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
-                    imagePath={meta.image_path} />
-            )
+          return (
+            <VideoLandscapeMiniLiveView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
+              imagePath={meta.image_path} />
+          )
         case 'tag':
           return (
-            <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+            <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
           )
-
         case 'landscape_news':
           return (
             <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
@@ -276,77 +282,77 @@ class Index_v2 extends React.Component {
           color={this.state.show_sticky_install ? '#000' : '#fff'}
           onRef={ref => (this.LoadingBar = ref)} />
 
-        {this.state.isShimmer
-          ? (<HomeLoader/>)
-          : (
-            <>
-              <div>
-                <Nav
-                  parent={this}
-                  closeStickyInstallFunction={this.closeStickyInstall}
-                  showStickyInstall={this.state.show_sticky_install}/>
+          {this.state.isShimmer
+            ? (<HomeLoader/>)
+            : (
+              <>
+                <div>
+                  <Nav
+                    parent={this}
+                    closeStickyInstallFunction={this.closeStickyInstall}
+                    showStickyInstall={this.state.show_sticky_install}/>
 
-                <Carousel showStickyInstall={this.state.show_sticky_install} >
-                  <GridMenu />
-                </Carousel>
+                  <Carousel showStickyInstall={this.state.show_sticky_install} >
+                    <GridMenu />
+                  </Carousel>
 
-                <Stories />
+                  <Stories />
 
-                <StickyContainer>
-                  <Sticky disableHardwareAcceleration>
-                    { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
-                      const topDistance = this.state.show_sticky_install ? 120 : 40;
-                      if (distanceFromTop < topDistance) {
-                        if (!this.props.ads.ads_displayed) {
+                  <StickyContainer>
+                    <Sticky disableHardwareAcceleration>
+                      { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
+                        const topDistance = this.state.show_sticky_install ? 120 : 40;
+                        if (distanceFromTop < topDistance) {
+                          if (!this.props.ads.ads_displayed) {
+                            return (
+                              <div {...rest} >
+                                <StickyAds/>
+                              </div>
+                            );
+                          }
+                          const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
+                          if (adsContents.length > 0) {
+                            if (adsContents[0].tagName == 'SCRIPT') {
+                              const stickyAds = document.getElementById('sticky-ads-container');
+                              if (stickyAds) {
+                                stickyAds.style.display = 'none'
+                              }
+                            }
+                          }
                           return (
                             <div {...rest} >
-                              <StickyAds/>
+                              <StickyAds sticky/>
                             </div>
                           );
                         }
-                        const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
-                        if (adsContents.length > 0) {
-                          if (adsContents[0].tagName == 'SCRIPT') {
-                            const stickyAds = document.getElementById('sticky-ads-container');
-                            if (stickyAds) {
-                              stickyAds.style.display = 'none'
-                            }
-                          }
-                        }
                         return (
                           <div {...rest} >
-                            <StickyAds sticky/>
+                            <StickyAds id='div-gpt-ad-1584677577539-0'/>
                           </div>
                         );
-                      }
-                      return (
-                        <div {...rest} >
-                          <StickyAds id='div-gpt-ad-1584677577539-0'/>
-                        </div>
-                      );
-                    } }
-                  </Sticky>
-                </StickyContainer>
+                      }}
+                    </Sticky>
+                  </StickyContainer>
+                </div>
 
                 <div
                   style={{marginBottom: 45, paddingTop: 10}}
                   onTouchStart={this.onTouchStart.bind(this)}
                   onTouchEnd={this.onTouchEnd.bind(this)}>
                   { this.renderLineup(this.state.lineups, this.state.meta) }
-                  {/*<AudioHorizontalDisc/>*/}
-                  {/*<AudioHorizontalList/>*/}
+                  <AudioHorizontalDisc/>
+                  <AudioHorizontalList/>
                 </div>
-              </div>
-              <ComingSoonModal 
-                open={this.state.openComingSoonModal}
-                onClose={_ => this.setState({ openComingSoonModal: false })}
-                content={this.state.contentComingSoonModal} />
-            </>
-          )
-        }
-      </Layout>
-    );
-  }
+                <ComingSoonModal
+                  open={this.state.openComingSoonModal}
+                  onClose={_ => this.setState({ openComingSoonModal: false })}
+                  content={this.state.contentComingSoonModal} />
+              </>
+            )
+          }
+        </Layout>
+      );
+    }
 
 }
 
