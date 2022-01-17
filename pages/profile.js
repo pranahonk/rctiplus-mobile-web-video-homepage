@@ -25,7 +25,6 @@ import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-
 import HeadsetMic from '@material-ui/icons/HeadsetMic';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
