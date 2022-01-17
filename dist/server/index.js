@@ -48,17 +48,17 @@ const UIVersion = '2.0';
     });
 
     server.get('/programs/:id/:title', (req, res) => {
-      return app.render(req, res, '/programs', { 
-        id: req.params.id, 
-        title: req.params.title 
+      return app.render(req, res, '/programs', {
+        id: req.params.id,
+        title: req.params.title
       });
     });
 
     server.get('/programs/:id/:title/:content_type', (req, res) => {
-      return app.render(req, res, '/programs', { 
-        id: req.params.id, 
+      return app.render(req, res, '/programs', {
+        id: req.params.id,
         title: req.params.title,
-        content_type: req.params.content_type 
+        content_type: req.params.content_type
       });
     });
 
@@ -72,12 +72,12 @@ const UIVersion = '2.0';
     });
 
     server.get('/programs/:id/:title/:content_type/:content_id/:content_title', (req, res) => {
-      return app.render(req, res, '/detail/content', { 
-        id: req.params.id, 
+      return app.render(req, res, '/detail/content', {
+        id: req.params.id,
         title: req.params.title,
         type: req.params.content_type,
         content_id: req.params.content_id,
-        content_title: req.params.content_title 
+        content_title: req.params.content_title
       });
     });
 
@@ -158,7 +158,7 @@ const UIVersion = '2.0';
     //     subcategory_title: req.params.subcategory_title
     //   });
     // });
-    
+
     // server.get('/trending/detail/:id/:title', (req, res) => {
     //   return app.render(req, res, '/trending/detail', {
     //     id: req.params.id,
@@ -239,7 +239,7 @@ const UIVersion = '2.0';
       return handle(req, res);
     });
 
-    
+
 
     server.listen(port, err => {
       if (err) {

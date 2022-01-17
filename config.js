@@ -70,6 +70,7 @@ export const GPT_ID_DETAIL = process.env.GPT_ID_DETAIL
 
 export const REDIRECT_SSR = process.env.REDIRECT_SSR;
 export const API_TIMEOUT = process.env.API_TIMEOUT;
+export const WA_CS = process.env.WA_CS;
 
 export const CONVIVA_TRACKING_KEY = process.env.CONVIVA_TRACKING_KEY;
 export const CONVIVA_TRACKING_HOST = process.env.CONVIVA_TRACKING_HOST;
