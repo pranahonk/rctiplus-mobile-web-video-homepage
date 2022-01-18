@@ -366,7 +366,6 @@ class Index_v2 extends React.Component {
       </Layout>
     );
   }
-
 }
 
 export default connect(state => state, {
