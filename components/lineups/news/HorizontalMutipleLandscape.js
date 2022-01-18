@@ -111,7 +111,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
           >
             {itemDimensional.map((list, index) => {
               return (
-                <SwiperSlide key={index} id={`multiple-${index}`}>
+                <SwiperSlide key={index}>
                   {
                     list.map((data, index2) =>{
                       return(

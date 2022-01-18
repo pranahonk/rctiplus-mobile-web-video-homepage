@@ -80,7 +80,7 @@ const LandscapeHotCompetition = ({title, indexTag, id, data}) => {
           >
             {hastags?.map((item, index) => {
               return (
-                <SwiperSlide key={index} id={`hot-competitions-${index}`}>
+                <SwiperSlide key={index}>
                   <div className="hot-competitions">
                     {
                       imageNews(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
