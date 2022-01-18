@@ -86,7 +86,7 @@ const LandscapeHotCompetition = ({title, indexTag, id, data}) => {
             {hastags?.map((item, index) => {
               return (
                 <SwiperSlide key={index} id={`hot-competitions-${index}`}>
-                  <div className="hot-competitions" onClick={()=> _goToDetail(item?.content_type_detail?.detail?.data?.deeplink)}>
+                  <div className="hot-competitions" onClick={()=> _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}>
                     {
                       item?.content_type_detail?.detail?.data?.thumbnail.includes("https") ?
                         imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200,112, assetUrl, 'thumbnail')
