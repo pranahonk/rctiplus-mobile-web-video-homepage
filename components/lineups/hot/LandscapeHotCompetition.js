@@ -14,7 +14,7 @@ import 'swiper/swiper.scss';
 import '../../../assets/scss/components/hot-competitions.scss';
 import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 import { GET_HOT_COMPETITIONS } from '../../../graphql/queries/competitions';
-import { imageNews } from '../../../utils/helpers';
+import { imageHot, imageNews } from '../../../utils/helpers';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
@@ -37,8 +37,13 @@ const LandscapeHotCompetition = ({title, indexTag, id, data}) => {
   const getHastagPagination = (page) =>{
     client.query({query: GET_HOT_COMPETITIONS(1, 100, page, 5)})
       .then((res)=>{
+        console.log(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data)
+        setHastags((list) => ([...list, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data]))
         setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
-        setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data]}))
+        setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
+        setLoadingMore(false);
+        setShow(null);
+        // setHastags((list) => ({...list, data: [...list, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data]}))
       })
       .catch((err)=>{
         console.log(err);
@@ -46,7 +51,7 @@ const LandscapeHotCompetition = ({title, indexTag, id, data}) => {
   };
 
   useEffect(() => {
-    if (hastags.data && show && meta) {
+    if (hastags && show && meta) {
       setLoadingMore(true);
       if(meta?.pagination){
         if(meta?.pagination?.current_page < meta?.pagination?.total_page){
@@ -81,11 +86,14 @@ const LandscapeHotCompetition = ({title, indexTag, id, data}) => {
             {hastags?.map((item, index) => {
               return (
                 <SwiperSlide key={index} id={`hot-competitions-${index}`}>
-                  <div className="hot-competitions">
+                  <div className="hot-competitions" onClick={()=> _goToDetail(item?.content_type_detail?.detail?.data?.deeplink)}>
                     {
-                      imageNews(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
+                      item?.content_type_detail?.detail?.data?.thumbnail.includes("https") ?
+                        imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200,112, assetUrl, 'thumbnail')
+                        :
+                        imageNews(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
                     }
-                    <button className="hot-competitions__button" onClick={()=> _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}>
+                    <button className="hot-competitions__button">
                       JOIN
                     </button>
                   </div>
