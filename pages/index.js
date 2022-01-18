@@ -339,8 +339,8 @@ class Index_v2 extends React.Component {
                                 onTouchStart={this.onTouchStart.bind(this)}
                                 onTouchEnd={this.onTouchEnd.bind(this)}>
                                 { this.renderLineup(this.state.lineups, this.state.meta) }
-                                <AudioHorizontalDisc/>
-                                <AudioHorizontalList/>
+                                {/*<AudioHorizontalDisc/>*/}
+                                {/*<AudioHorizontalList/>*/}
                             </div>
                             <ComingSoonModal
                                 open={this.state.openComingSoonModal}
