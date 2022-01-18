@@ -33,7 +33,6 @@ function PortraitView (props) {
   
   return (
     <div
-      id="lineup-portrait"
       onTouchStart={e => onTouchStart(e)}
       onTouchEnd={e => onTouchEnd(e)}
       className="lineup_panels">
@@ -42,13 +41,15 @@ function PortraitView (props) {
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
-          <div ref={scrollRef} className="lineup-containers">
+          <div 
+            id="portrait-video"
+            ref={scrollRef} 
+            className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
                   onClick={() => generateLink(content)}
                   key={`${i}-portrait-video`}
-                  id={`${i}-portrait-video`}
                   className="lineup-contents">
                   <div>
                     <Img 
