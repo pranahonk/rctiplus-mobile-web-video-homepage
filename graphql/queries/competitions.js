@@ -7,13 +7,13 @@ export const GET_HOT_COMPETITIONS = (page = 1, pageSize= 100, page_lineups = 1, 
         data {
           lineup_type_detail {
             ... on LineupTypeDefault {
-              detail {
+              detail (page: ${page_lineups}, page_size: ${pageSize_lineups}) {
                 data {
                   content_id
                   content_type
                   content_type_detail {
                     ... on ContentTypeHOTCompetition {
-                      detail(page: ${page_lineups}, page_size: ${pageSize_lineups}){
+                      detail{
                         data{
                           thumbnail
                           id

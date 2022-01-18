@@ -186,7 +186,7 @@ export const contentTypeHotCompetitions = `
          data{
            thumbnail
            id
-           permalink
+           deeplink
          }
          meta{
            assets_url
