@@ -76,7 +76,7 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
         'tag': article.tag,
       };
 
-      props.newsCountViewTag(JSON.parse(params))
+      props.newsCountViewTag(params)
     }
   }
 
@@ -93,7 +93,7 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
           >
             {hastags?.data.map((item, index) => {
               return (
-                <SwiperSlide key={index} id={`hastgas-${index}`}>
+                <SwiperSlide key={index}>
                   <Link href={_goToDetail(item)}>
                     <a onClick={() => sendAnalytics(item)}>
                       <div className="horizontal-tags">

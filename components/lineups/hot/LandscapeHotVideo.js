@@ -82,7 +82,7 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
           >
             {hastags?.data.map((item, index) => {
               return (
-                <SwiperSlide key={index} id={`video-${index}`}>
+                <SwiperSlide key={index}>
                   <div className="hot-videos" onClick={()=>{_goToDetail(item?.content_type_detail?.detail?.data?.permalink)}}>
                     {
                       imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,220, assetUrl, 'thumbnail')
