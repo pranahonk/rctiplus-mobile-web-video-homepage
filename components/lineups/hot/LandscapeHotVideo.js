@@ -16,7 +16,7 @@ import { getTruncate, imageHot, imageHotProfile } from '../../../utils/helpers';
 import { GET_HOT_VIDEO, GET_HOT_VIDEO_PAGINATIONS } from '../../../graphql/queries/hot-video';
 import Views from '@material-ui/icons/RemoveRedEyeSharp';
 
-const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
+const Loader = dynamic(() => import('../../Includes/Shimmer/hotVideoLoader'));
 
 
 const LandscapeHotVideo = ({title, indexTag, id, data}) => {
@@ -35,9 +35,9 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
   },[]);
 
   const getHastagPagination = (page) =>{
-    client.query({query: GET_HOT_VIDEO_PAGINATIONS(page, 20, id)})
+    client.query({query: GET_HOT_VIDEO_PAGINATIONS(page, 5, id)})
       .then((res)=>{
-        setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
+        setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
         setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineup_contents?.data]}));
         setLoadingMore(false);
         setShow(null);
@@ -48,7 +48,7 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
   };
 
   useEffect(() => {
-    if (hastags.data && show && meta) {
+    if (hastags && show && meta) {
       setLoadingMore(true);
       if(meta?.pagination){
         if(meta?.pagination?.current_page < meta?.pagination?.total_page){
@@ -85,7 +85,7 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
                 <SwiperSlide key={index}>
                   <div className="hot-videos" onClick={()=>{_goToDetail(item?.content_type_detail?.detail?.data?.permalink)}}>
                     {
-                      imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,220, assetUrl, 'thumbnail')
+                      imageHotProfile(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,220, assetUrl, 'thumbnail')
                     }
                     <div className="hot-videos_card">
                       <div className="hot-videos_card-profile">
@@ -95,7 +95,7 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
                         <div className='row'>
                           <div className="hot-videos_card-profile__photo col-3">
                             {
-                              imageHotProfile(item?.content_type_detail?.detail?.data?.id, item?.content_type_detail?.detail?.data?.contestant?.thumbnail,item?.content_type_detail?.detail?.data?.contestant?.thumbnail, 20,20, assetUrl, '')
+                              imageHotProfile(item?.content_type_detail?.detail?.data?.id, item?.content_type_detail?.detail?.data?.contestant?.thumbnail,assetUrl, 20,20, assetUrl, '')
                             }
                           </div>
                           <div className="hot-videos_card-profile__name col">

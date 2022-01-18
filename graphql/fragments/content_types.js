@@ -181,26 +181,27 @@ export const contentTypeSeasonFragment = `
 `
 
 export const contentTypeHotCompetitions = `
-  ... on ContentTypeHOTCompetition {
-    detail(page: 1, page_size: 10){
-      data{
-        thumbnail
-        id
-        permalink
-      }
-      meta{
-        assets_url
-        image_path
-        pagination{
-          current_page
-          per_page
-          total
-          total_page
-        }
-        video_path
-      }
-    }
-  }
+     ... on ContentTypeHOTCompetition {
+       detail(page: 1, page_size: 10){
+         data{
+           thumbnail
+           id
+           deeplink
+           permalink
+         }
+         meta{
+           assets_url
+           image_path
+           pagination{
+             current_page
+             per_page
+             total
+             total_page
+           }
+           video_path
+         }
+       }
+     }
 `
 
 export const contentTypeHotVideo = `
