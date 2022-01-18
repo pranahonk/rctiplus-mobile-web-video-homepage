@@ -254,6 +254,7 @@ export const imageHot = (title, source, staticUrl, size = 200, heightImage = 200
 
 export const imageHotProfile = (title, source, staticUrl, size = 200, heightImage = 200, assetsUrl, classCSS = 'thumbnail', rotation = 'landscape') => {
   const imgUrl = source?.includes("https") ? source : imgURL(source, staticUrl, size, assetsUrl);
+  console.log(staticUrl,source, size)
     let width = size;
     let height = heightImage;
     return <Img
