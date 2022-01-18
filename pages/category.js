@@ -27,6 +27,7 @@ const VideoPortraitView = dynamic(() => import("../components/lineups/Portrait")
 const VideoSquareMiniView = dynamic(() => import("../components/lineups/SquareMini"))
 const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
 const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"))
+const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
 
 function category (props) {
     const { ads_displayed } = useSelector(state => state.ads)
@@ -84,6 +85,12 @@ function category (props) {
     const renderLineups = () => {
         return lineups.map((lineup, index) => {
             switch(lineup.display_type) {
+                case "portrait_short" :
+                    return (
+                        <PortraitShortView
+                            lineupId={lineup.id}
+                            key={lineup.id} />
+                    )
                 case "portrait" :
                     return (
                         <VideoPortraitView
@@ -174,7 +181,7 @@ function category (props) {
                 offset={150} 
                 onBottom={bottomScrollFetch} />
 
-            { isShimmer 
+            {isShimmer 
                 ? <HomeLoader /> 
                 : (
                     <>
@@ -182,16 +189,13 @@ function category (props) {
                             <Header title={props.router.query.category_title} />
                             
                             <div style={{marginTop: -3}}>
-                                <Carousel detailCategory={true}>
+                                <Carousel >
                                     <GridMenu />
                                 </Carousel>
                             </div>
 
                             <div style={{marginTop: "25px"}}>
-                                <Stories 
-                                    loadingBar={loadingBar.current} 
-                                    detailCategory={true} 
-                                    id={props.router.query.category_id} />
+                                <Stories />
                             </div>
 
                             <StickyContainer>
@@ -235,7 +239,6 @@ function category (props) {
                                     { renderLineups() }
                                 </div>
                             </div>
-                            
                         </div>
                         <ComingSoonModal 
                             open={openComingSoonModal}
