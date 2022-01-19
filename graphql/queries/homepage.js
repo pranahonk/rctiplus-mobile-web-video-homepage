@@ -77,6 +77,8 @@ export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
         meta {
           pagination {
             current_page
+            per_page
+            total
             total_page
           }
           image_path

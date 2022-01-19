@@ -59,6 +59,8 @@ export const GET_HOT_COMPETITIONS = (page = 1, pageSize = 100, page_lineups = 1,
         meta {
           pagination {
             current_page
+            per_page
+            total
             total_page
           }
           image_path
