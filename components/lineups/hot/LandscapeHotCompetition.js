@@ -14,7 +14,7 @@ import 'swiper/swiper.scss';
 import '../../../assets/scss/components/hot-competitions.scss';
 import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 import { GET_HOT_COMPETITIONS } from '../../../graphql/queries/competitions';
-import { imageHot, imageNews } from '../../../utils/helpers';
+import { imageHot, imageHotProfile, imageNews } from '../../../utils/helpers';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
@@ -31,16 +31,15 @@ const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
   useEffect(() => {
     setMeta(data?.lineup_type_detail?.detail?.meta);
     setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
-    setHastags(data?.lineup_type_detail?.detail?.data);
+    setHastags(data?.lineup_type_detail?.detail);
   }, []);
 
   const getHastagPagination = (page) => {
     client.query({ query: GET_HOT_COMPETITIONS(1, 100, page, 5) })
       .then((res) => {
-        if(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data){
-          setHastags((list) => ([...list, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data]));
+        if(Array.isArray(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data)){
+          setHastags((list)=> ({...list, data: [...list.data, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data]}))
         }
-        setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
         setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
         setLoadingMore(false);
         setShow(null);
@@ -77,22 +76,22 @@ const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
       <h2 className='section-h2 mt-40 mb-2'>{title}</h2>
       <ul style={{ paddingLeft: 10 }}>
         <li style={{ border: 'none' }}>
-          {hastags?.length === 0 || hastags?.length === undefined ? (<Loader />) : (<Swiper
+          {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<Loader />) : (<Swiper
             spaceBetween={10}
             height={150}
             width={192}
             onReachEnd={setShow}
           >
-            {hastags?.map((item, index) => {
+            {hastags?.data.map((item, index) => {
               return (
                 <SwiperSlide key={index} id={`hot-competitions-${index}`}>
                   <div className='hot-competitions'
                        onClick={() => _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}>
                     {
                       item?.content_type_detail?.detail?.data?.thumbnail.includes('https') ?
-                        imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail, item?.content_type_detail?.detail?.data?.thumbnail, 200, 112, assetUrl, 'thumbnail')
-                        :
                         imageNews(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail, item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
+                        :
+                        imageHotProfile(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail, item?.content_type_detail?.detail?.data?.thumbnail, 200, 112, assetUrl, 'thumbnail')
                     }
                     <button className='hot-competitions__button'>
                       JOIN
