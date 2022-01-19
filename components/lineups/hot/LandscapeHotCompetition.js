@@ -13,13 +13,14 @@ import 'swiper/swiper.scss';
 //import scss
 import '../../../assets/scss/components/hot-competitions.scss';
 import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
-import { GET_HOT_COMPETITIONS } from '../../../graphql/queries/competitions';
+import { GET_HOT_COMPETITIONS, GET_HOT_COMPETITIONS_UPDATE } from '../../../graphql/queries/competitions';
 import { imageHot, imageHotProfile, imageNews } from '../../../utils/helpers';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
 
 const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
+  console.log(id)
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -35,15 +36,14 @@ const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
   }, []);
 
   const getHastagPagination = (page) => {
-    client.query({ query: GET_HOT_COMPETITIONS(1, 100, page, 5) })
+    client.query({ query: GET_HOT_COMPETITIONS_UPDATE(page, 5, id)})
       .then((res) => {
-        if(Array.isArray(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data)){
-          setHastags((list)=> ({...list, data: [...list.data, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data]}))
-        }
-        setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
+        console.log(res.data?.lineup_contents?.meta)
+        setHastags((list)=>({...list, data: [...list.data, ...res.data?.lineup_contents?.data]}))
+        setMeta(res.data?.lineup_contents?.meta);
+        setAssetUrl(res.data?.lineup_contents?.meta?.image_path);
         setLoadingMore(false);
         setShow(null);
-        // setHastags((list) => ({...list, data: [...list, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data]}))
       })
       .catch((err) => {
         console.log(err);
@@ -88,9 +88,6 @@ const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
                   <div className='hot-competitions'
                        onClick={() => _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}>
                     {
-                      item?.content_type_detail?.detail?.data?.thumbnail.includes('https') ?
-                        imageNews(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail, item?.content_type_detail?.detail?.data?.thumbnail, 200, assetUrl, 'thumbnail')
-                        :
                         imageHotProfile(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail, item?.content_type_detail?.detail?.data?.thumbnail, 200, 112, assetUrl, 'thumbnail')
                     }
                     <button className='hot-competitions__button'>
