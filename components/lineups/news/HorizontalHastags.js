@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import {client }  from "../../../graphql/client"
+import { client } from '../../../graphql/client';
 
 
 // Import Swiper React components
@@ -20,7 +20,7 @@ import newsCountViewTag from '../../../redux/actions/newsCountView';
 const HastagLoader = dynamic(() => import('../../Includes/Shimmer/HastagLoader'));
 
 
-const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
+const HorizontalHastags = ({ title, indexTag, id, data, ...props }) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -30,17 +30,17 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
 
   useEffect(() => {
     setHastags(data?.lineup_type_detail?.detail);
-  },[]);
+  }, []);
 
-  const getHastagPagination = (page) =>{
-    client.query({query: GET_HASTAGS_PAGINATION(id, page, 5)})
-      .then((res)=>{
-        setHastags((list) => ({...list, data: [...list.data, ...res.data.lineup_news_tagars.data]}))
+  const getHastagPagination = (page) => {
+    client.query({ query: GET_HASTAGS_PAGINATION(id, page, 5) })
+      .then((res) => {
+        setHastags((list) => ({ ...list, data: [...list.data, ...res.data.lineup_news_tagars.data] }));
         setMeta(res.data.lineup_news_tagars.meta);
         setLoadingMore(false);
         setShow(null);
       })
-      .catch((err)=>{
+      .catch((err) => {
         console.log(err);
       });
   };
@@ -48,43 +48,41 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   useEffect(() => {
     if (hastags.data && show) {
       setLoadingMore(true);
-      if(meta?.pagination){
-        if(meta?.pagination?.current_page < meta?.pagination?.total_page){
+      if (meta?.pagination) {
+        if (meta?.pagination?.current_page < meta?.pagination?.total_page) {
           getHastagPagination(meta?.pagination?.current_page + 1);
-        }
-        else{
+        } else {
           setLoadingMore(false);
           setShow(null);
         }
-      }else{
+      } else {
         getHastagPagination(2);
       }
 
     }
-  },[show]);
+  }, [show]);
 
   const _goToDetail = (article) => {
-    return `news/topic/tag/${article.tag}`
+    return `news/topic/tag/${article.tag}`;
   };
 
   const sendAnalytics = (article) => {
-    if(!Cookie.get('uid_ads')) {
-      Cookie.set('uid_ads', new DeviceUUID().get())
-    }
-    else{
+    if (!Cookie.get('uid_ads')) {
+      Cookie.set('uid_ads', new DeviceUUID().get());
+    } else {
       const params = {
         'tag': article.tag,
       };
 
-      props.newsCountViewTag(params)
+      props.newsCountViewTag(JSON.parse(params));
     }
-  }
+  };
 
   return (
-    <li className="regroupping-by-section">
-      <h2 className="section-h2 mt-40 mb-2">{title}</h2>
-      <ul style={{paddingLeft: 10}}>
-        <li style={{border: 'none'}}>
+    <li className='regroupping-by-section'>
+      <h2 className='section-h2 mt-40 mb-2'>{title}</h2>
+      <ul style={{ paddingLeft: 10 }}>
+        <li style={{ border: 'none' }}>
           {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<HastagLoader />) : (<Swiper
             spaceBetween={10}
             height={150}
@@ -93,11 +91,11 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
           >
             {hastags?.data.map((item, index) => {
               return (
-                <SwiperSlide key={index}>
+                <SwiperSlide key={index} id={`hastgas-${index}`}>
                   <Link href={_goToDetail(item)}>
                     <a onClick={() => sendAnalytics(item)}>
-                      <div className="horizontal-tags">
-                        <span className="horizontal-tags_text">#{item.tag}</span>
+                      <div className='horizontal-tags'>
+                        <span className='horizontal-tags_text'>#{item.tag}</span>
                       </div>
                     </a>
                   </Link>
@@ -108,7 +106,7 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
               <SwiperSlide>
                 <HastagLoader />
               </SwiperSlide>)}
-          </Swiper>) }
+          </Swiper>)}
         </li>
       </ul>
     </li>
@@ -117,6 +115,6 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
 
 
 export default connect(state => state, {
-  ...newsCountViewTag
+  ...newsCountViewTag,
 })(HorizontalHastags);
 

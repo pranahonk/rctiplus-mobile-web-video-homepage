@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import {client }  from "../../../graphql/client"
+import { client } from '../../../graphql/client';
 
 
 // Import Swiper React components
@@ -19,7 +19,7 @@ import Views from '@material-ui/icons/RemoveRedEyeSharp';
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotVideoLoader'));
 
 
-const LandscapeHotVideo = ({title, indexTag, id, data}) => {
+const LandscapeHotVideo = ({ title, indexTag, id, data }) => {
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -32,17 +32,17 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
     setMeta(data?.lineup_type_detail?.detail?.meta);
     setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
     setHastags(data?.lineup_type_detail?.detail);
-  },[]);
+  }, []);
 
-  const getHastagPagination = (page) =>{
-    client.query({query: GET_HOT_VIDEO_PAGINATIONS(page, 5, id)})
-      .then((res)=>{
+  const getHastagPagination = (page) => {
+    client.query({ query: GET_HOT_VIDEO_PAGINATIONS(page, 5, id) })
+      .then((res) => {
         setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
-        setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineup_contents?.data]}));
+        setHastags((list) => ({ ...list, data: [...list.data, ...res?.data?.lineup_contents?.data] }));
         setLoadingMore(false);
         setShow(null);
       })
-      .catch((err)=>{
+      .catch((err) => {
         console.log(err);
       });
   };
@@ -50,30 +50,29 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
   useEffect(() => {
     if (hastags && show && meta) {
       setLoadingMore(true);
-      if(meta?.pagination){
-        if(meta?.pagination?.current_page < meta?.pagination?.total_page){
+      if (meta?.pagination) {
+        if (meta?.pagination?.current_page < meta?.pagination?.total_page) {
           getHastagPagination(meta?.pagination?.current_page + 1);
-        }
-        else{
+        } else {
           setLoadingMore(false);
           setShow(null);
         }
-      }else{
+      } else {
         getHastagPagination(2);
       }
 
     }
-  },[show]);
+  }, [show]);
 
   const _goToDetail = (article) => {
-      return window.location.href = article
+    return window.location.href = article;
   };
 
   return (
-    <li className="regroupping-by-section">
-      <h2 className="section-h2 mt-40 mb-2">{title}</h2>
-      <ul style={{paddingLeft: 10}}>
-        <li style={{border: 'none'}}>
+    <li className='regroupping-by-section'>
+      <h2 className='section-h2 mt-40 mb-2'>{title}</h2>
+      <ul style={{ paddingLeft: 10 }}>
+        <li style={{ border: 'none' }}>
           {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<Loader />) : (<Swiper
             spaceBetween={10}
             height={150}
@@ -82,31 +81,33 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
           >
             {hastags?.data.map((item, index) => {
               return (
-                <SwiperSlide key={index}>
-                  <div className="hot-videos" onClick={()=>{_goToDetail(item?.content_type_detail?.detail?.data?.permalink)}}>
+                <SwiperSlide key={index} id={`video-${index}`}>
+                  <div className='hot-videos' onClick={() => {
+                    _goToDetail(item?.content_type_detail?.detail?.data?.permalink);
+                  }}>
                     {
-                      imageHotProfile(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,220, assetUrl, 'thumbnail')
+                      imageHotProfile(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail, item?.content_type_detail?.detail?.data?.thumbnail, 175, 220, assetUrl, 'thumbnail')
                     }
-                    <div className="hot-videos_card">
-                      <div className="hot-videos_card-profile">
-                        <div className="hot-videos_card-profile__image">
-                          <img src="/static/HOT+ White-01.png" alt='Gambar HOT+' />
+                    <div className='hot-videos_card'>
+                      <div className='hot-videos_card-profile'>
+                        <div className='hot-videos_card-profile__image'>
+                          <img src='/static/HOT+ White-01.png' alt='Gambar HOT+' />
                         </div>
                         <div className='row'>
-                          <div className="hot-videos_card-profile__photo col-3">
+                          <div className='hot-videos_card-profile__photo col-3'>
                             {
-                              imageHotProfile(item?.content_type_detail?.detail?.data?.id, item?.content_type_detail?.detail?.data?.contestant?.thumbnail,assetUrl, 20,20, assetUrl, '')
+                              imageHotProfile(item?.content_type_detail?.detail?.data?.id, item?.content_type_detail?.detail?.data?.contestant?.thumbnail, assetUrl, 20, 20, assetUrl, '')
                             }
                           </div>
-                          <div className="hot-videos_card-profile__name col">
-                            {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.display_name || item?.content_type_detail?.detail?.data?.contestant?.nick_name ||  item?.content_type_detail?.detail?.data?.contestant?.email || item?.content_type_detail?.detail?.data?.contestant?.phone_number, "...", "17")}
+                          <div className='hot-videos_card-profile__name col'>
+                            {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.display_name || item?.content_type_detail?.detail?.data?.contestant?.nick_name || item?.content_type_detail?.detail?.data?.contestant?.email || item?.content_type_detail?.detail?.data?.contestant?.phone_number, '...', '17')}
                           </div>
                         </div>
                         <div className='row'>
-                          <div className="hot-videos_card-profile__views col-3">
-                            <Views style={{ fontSize: '1.5rem', color: "white" }} />
+                          <div className='hot-videos_card-profile__views col-3'>
+                            <Views style={{ fontSize: '1.5rem', color: 'white' }} />
                           </div>
-                          <div className="hot-videos_card-profile__viewsCount col">
+                          <div className='hot-videos_card-profile__viewsCount col'>
                             {item?.content_type_detail?.detail?.data?.views}
                           </div>
                         </div>
@@ -120,7 +121,7 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
               <SwiperSlide>
                 <Loader />
               </SwiperSlide>)}
-          </Swiper>) }
+          </Swiper>)}
         </li>
       </ul>
     </li>
