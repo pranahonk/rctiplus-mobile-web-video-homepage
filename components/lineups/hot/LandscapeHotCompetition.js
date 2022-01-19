@@ -37,8 +37,9 @@ const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
   const getHastagPagination = (page) => {
     client.query({ query: GET_HOT_COMPETITIONS(1, 100, page, 5) })
       .then((res) => {
-        console.log(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data);
-        setHastags((list) => ([...list, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data]));
+        if(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data){
+          setHastags((list) => ([...list, ...res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.data]));
+        }
         setAssetUrl(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta?.image_path);
         setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
         setLoadingMore(false);

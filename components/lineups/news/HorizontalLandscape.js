@@ -47,6 +47,8 @@ const HorizontalLandscape = ({ title, indexTag, id, data, ...props }) => {
     client.query({ query: GET_REGROUPING_LINEUPS(page, page_size, id) })
       .then((res) => {
         setList((list) => ({ ...list, data: [...list.data, ...res.data.lineup_news_regroupings.data] }));
+        setMeta(res.data.lineup_news_regroupings?.meta);
+        setAssetUrl(res.data.lineup_news_regroupings?.meta?.image_path);
         setLoadingMore(false);
         setShow(null);
       })
@@ -59,7 +61,7 @@ const HorizontalLandscape = ({ title, indexTag, id, data, ...props }) => {
     if (list?.data && show) {
       setLoadingMore(true);
       if (meta?.pagination?.current_page < meta?.pagination?.total_page) {
-        getLineupsPagination(list?.meta?.pagination?.current_page + 1, 5, id);
+        getLineupsPagination(meta?.pagination?.current_page + 1, 5, id);
       } else {
         setLoadingMore(false);
         setShow(null);
