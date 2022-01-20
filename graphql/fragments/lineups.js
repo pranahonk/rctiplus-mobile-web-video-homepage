@@ -9,9 +9,9 @@ import {
   contentTypeSeasonFragment,
   contentTypeSpecialFragment,
   contentTypeHotCompetitions,
-  contentTypeHotVideo
+  contentTypeHotVideo,
 }
-from "./content_types"
+  from './content_types';
 
 export const lineupTypeStoryFragment = (queryParams) => {
   return `
@@ -40,8 +40,8 @@ export const lineupTypeStoryFragment = (queryParams) => {
       }
     }
   }
-  `
-}
+  `;
+};
 
 export const lineupContinueWatchingFragment = (queryParams) => {
   return `
@@ -69,8 +69,8 @@ export const lineupContinueWatchingFragment = (queryParams) => {
       }
     }
   }
-  `
-}
+  `;
+};
 
 export const lineupDefaultFragment = (queryParams) => {
   return `
@@ -102,8 +102,8 @@ export const lineupDefaultFragment = (queryParams) => {
       }
     }
   }
-  `
-}
+  `;
+};
 
 export const lineupTypeNewsTagarFragment = (queryParams) => {
   return `
@@ -123,21 +123,22 @@ export const lineupTypeNewsTagarFragment = (queryParams) => {
        }
     }
   }
-  `
-}
+  `;
+};
 
 export const lineupTypeNewsRegroupingFragment = (queryParams) => {
   return `
   ... on LineupTypeNewsRegrouping {
     detail(${queryParams}) {
       data {
-         cover
-         id
-         image
-         pubDate
-         subcategory_name
-         source
-         title
+        cover
+        id
+        image
+        pubDate
+        subcategory_name
+        source
+        title
+        permalink
       }
        meta {
          pagination {
@@ -150,5 +151,5 @@ export const lineupTypeNewsRegroupingFragment = (queryParams) => {
        }
     }
   }
-  `
-}
+  `;
+};

@@ -88,7 +88,7 @@ const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
                   <div className='hot-competitions'
                        onClick={() => _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}>
                     {
-                        imageHotProfile(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail, item?.content_type_detail?.detail?.data?.thumbnail, 200, 112, assetUrl, 'thumbnail')
+                      imageHotProfile(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail, item?.content_type_detail?.detail?.data?.thumbnail, 200, 112, assetUrl, 'thumbnail')
                     }
                     <button className='hot-competitions__button'>
                       JOIN
