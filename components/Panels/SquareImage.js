@@ -12,6 +12,7 @@ import { showSignInAlert } from '../../utils/helpers';
 import { urlRegex, titleStringUrlRegex } from '../../utils/regex';
 
 import '../../assets/scss/components/panel.scss';
+import { gaTrackerLineUp } from '../../utils/ga-360';
 
 const jwtDecode = require('jwt-decode');
 const CountdownTimer = dynamic(() => import("../Includes/Common/CountdownTimer"))
@@ -83,20 +84,20 @@ class SquareImage extends React.Component {
           const title = titleStringUrlRegex(program.content_title)
           Router.push(`/explores/${program.link}/${title}`);
         }
-        break;  
+        break;
       case 'program': {
           const title = titleStringUrlRegex(program.content_title)
           Router.push(`/programs/${program.link}/${title}`);
         }
-        break;  
+        break;
       case 'popup':
         window.open(url, '_parent');
-        break;  
+        break;
       default:
         Router.push(url);
-		}       
+		}
 	}
-  
+
 	link(data) {
     const contentGeneralEventArgs = [
       this.props.title,
@@ -104,9 +105,9 @@ class SquareImage extends React.Component {
       data.content_id,
       data.content_title,
       data.program_title ? data.program_title : 'N/A',
-      data.genre ? data.genre : 'N/A', 
-      `${this.props.imagePath}${this.props.resolution}${data.portrait_image}`, 
-      `${this.props.imagePath}${this.props.resolution}${data.landscape_image}`, 
+      data.genre ? data.genre : 'N/A',
+      `${this.props.imagePath}${this.props.resolution}${data.portrait_image}`,
+      `${this.props.imagePath}${this.props.resolution}${data.landscape_image}`,
     ]
 
     const signInAlertArgs = [
@@ -156,6 +157,10 @@ class SquareImage extends React.Component {
           `${this.props.imagePath}${this.props.resolution}${data.landscape_image}`,
           'mweb_homepage_program_clicked'
         )
+        gaTrackerLineUp('video_interaction', 'video_click_content_list', data.content_title, data.content_id, data.content_title,
+          data.content_type, 'not_available', data.program_id, 'not_available', 'not_available',
+          'not_available', 'not_available', 'not_available', 'not_available','not_available',
+          'not_available', 'not_available', 'not_available', 'not_available', data.premium === 0 ? 'no' : 'yes')
 				Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 
@@ -218,27 +223,27 @@ class SquareImage extends React.Component {
                   key={`${this.state.id}-${i}-square`}
                   className="swiper-slide">
                   <div>
-                    <Img 
-                      alt={c.program_title || c.content_title} 
+                    <Img
+                      alt={c.program_title || c.content_title}
                       unloader={<img src={placeHolderImgUrl} />}
                       loader={<img src={placeHolderImgUrl} />}
                       src={[`${rootImageUrl}${c.square_image}`, placeHolderImgUrl]} />
-                    
-                    {c.content_type === 'live' 
+
+                    {c.content_type === 'live'
                       ? (
                         <div style={{ position: 'absolute', right: 0 }}>
-                          <CountdownTimer 
-                            timer={getCountdown(c.release_date_quiz, c.current_date)[0]} 
+                          <CountdownTimer
+                            timer={getCountdown(c.release_date_quiz, c.current_date)[0]}
                             statusTimer="1"
                             statusPlay={getCountdown(c.release_date_quiz, c.current_date)[1]}/>
                         </div>
-                      ) 
+                      )
                       : null
                     }
                   </div>
-                  
-                  {c.display_type == 'hide_url' 
-                    ? null 
+
+                  {c.display_type == 'hide_url'
+                    ? null
                     : (
                       <div
                         style={{minHeight: "50px", maxHeight: "50px"}}

@@ -188,4 +188,38 @@ export const gaTrackerLineUp = (
 };
 
 
+export const gaTrackerProgram = (
+  event_category = 'string',
+  event_action = 'string',
+  event_label = 'string',
+  content_category, program_id, program_name, classification_id, classification, cluster_id,
+  cluster_name, channel_owner_id, channel_owner, genre_level_1, genre_level_2,
+  is_premium) => {
+  if (typeof window !== 'undefined' && userId !== null) {
+    window.dataLayer.push({
+      'event': 'general_event',
+      'event_category': event_category,
+      'event_action': event_action,
+      'event_label': event_label,
+      'user_id': userId,
+      'pillar': 'video',
+      'date_time': new Date().toISOString(),
+      'client_id': process.env.GA_360_USERID,
+      'content_category' : content_category,
+      'program_id' :program_id,
+      'program_name' : program_name,
+      'classification_id' : classification_id,
+      'classification' : classification,
+      'cluster_id' : cluster_id,
+      'cluster_name' : cluster_name,
+      'channel_owner_id' : channel_owner_id,
+      'channel_owner' : channel_owner,
+      'genre_level_1' : genre_level_1,
+      'genre_level_2' : genre_level_2,
+      'is_premium' : is_premium
+    });
+  }
+};
+
+
 
