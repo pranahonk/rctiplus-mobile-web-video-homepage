@@ -20,7 +20,6 @@ const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoade
 
 
 const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
-  console.log(id)
   // const {data, loading } = useQuery(GET_REGROUPING);
 
   const [show, setShow] = useState(null);
@@ -38,7 +37,6 @@ const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
   const getHastagPagination = (page) => {
     client.query({ query: GET_HOT_COMPETITIONS_UPDATE(page, 5, id)})
       .then((res) => {
-        console.log(res.data?.lineup_contents?.meta)
         setHastags((list)=>({...list, data: [...list.data, ...res.data?.lineup_contents?.data]}))
         setMeta(res.data?.lineup_contents?.meta);
         setAssetUrl(res.data?.lineup_contents?.meta?.image_path);
