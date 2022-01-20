@@ -68,7 +68,6 @@ const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
   }, [show]);
 
   const _goToDetail = (article) => {
-      console.log(article.permalink)
       return article.permalink
   };
 
