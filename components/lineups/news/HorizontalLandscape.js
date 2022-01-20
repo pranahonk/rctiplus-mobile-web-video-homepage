@@ -68,14 +68,8 @@ const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
   }, [show]);
 
   const _goToDetail = (article) => {
-    let category = '';
-    if (article.subcategory_name?.length < 1) {
-      category = 'berita-utama';
-    } else {
-      category = urlRegex(article.subcategory_name)
-    }
-
-  return 'news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title));
+      console.log(article.permalink)
+      return article.permalink
   };
 
   const sendAnalytics = (article) => {

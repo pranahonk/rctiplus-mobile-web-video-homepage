@@ -17,6 +17,7 @@ export const GET_REGROUPING = (page = 1, pageSize= 15, page_lineups = 1, pageSiz
                     subcategory_name
                     source
                     title
+                    permalink
                 }
                 meta {
                   pagination {
