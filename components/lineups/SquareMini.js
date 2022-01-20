@@ -33,7 +33,6 @@ function squareMiniView (props) {
 
   return (
     <div
-      id="lineup-squaremini"
       onTouchStart={e => onTouchStart(e)}
       onTouchEnd={e => onTouchEnd(e)}
       className="lineup_panels">
@@ -42,13 +41,15 @@ function squareMiniView (props) {
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
-          <div ref={scrollRef} className="lineup-containers">
+          <div 
+            id="squaremini-video"
+            ref={scrollRef} 
+            className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
                   onClick={() => generateLink(content)}
                   key={`${i}-squaremini-video`}
-                  id={`${i}-squaremini-video`}
                   className="lineup-contents">
                   <div>
                     <Img 
