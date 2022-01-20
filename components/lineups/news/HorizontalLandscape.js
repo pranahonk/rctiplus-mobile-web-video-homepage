@@ -59,7 +59,7 @@ const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
     if (list?.data && show) {
       setLoadingMore(true);
       if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-        getLineupsPagination(list?.meta?.pagination?.current_page + 1, 10, id);
+        getLineupsPagination(list?.meta?.pagination?.current_page + 1, 5, id);
       } else{
         setLoadingMore(false);
         setShow(null);
@@ -68,14 +68,7 @@ const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
   }, [show]);
 
   const _goToDetail = (article) => {
-    let category = '';
-    if (article.subcategory_name?.length < 1) {
-      category = 'berita-utama';
-    } else {
-      category = urlRegex(article.subcategory_name)
-    }
-
-  return 'news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title));
+      return article.permalink
   };
 
   const sendAnalytics = (article) => {
