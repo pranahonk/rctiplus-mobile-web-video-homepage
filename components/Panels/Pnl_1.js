@@ -13,6 +13,7 @@ import { showSignInAlert } from '../../utils/helpers';
 import { urlRegex } from '../../utils/regex';
 
 import '../../assets/scss/components/panel.scss';
+import { gaTrackerLineUp } from '../../utils/ga-360';
 
 /* horizontal_landscape_large  */
 
@@ -31,7 +32,7 @@ class Pnl_1 extends React.Component {
 			length: 7,
 			endpage: false
 		};
-	
+
 		this.swipe = {};
 
 	}
@@ -99,18 +100,22 @@ class Pnl_1 extends React.Component {
 						break;
 				case 'program':
 						Router.push(`/programs/${program.link}/${program.content_title.replace(/ +/g, '-')}`);
-						break;  
+						break;
 				case 'popup':
 						window.open(url, '_parent');
-						break;  
+						break;
 				default:
 						Router.push(url);
-		}       
+		}
 	}
 	link(data) {
 		switch (data.content_type) {
 			case 'special':
-				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
+        contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
+        gaTrackerLineUp('video_interaction', 'video_click_content_list', data.content_title, data.content_id, data.content_title,
+          data.content_type, 'not_available', data.program_id, 'not_available', 'not_available',
+          'not_available', 'not_available', 'not_available', 'not_available','not_available',
+          'not_available', 'not_available', 'not_available', 'not_available', data.premium === 0 ? 'no' : 'yes')
 
 				let url = data.url ? data.url : data.link;
 				if (data.mandatory_login && this.props.user.isAuth) {
@@ -142,7 +147,7 @@ class Pnl_1 extends React.Component {
 							<b>RCTI+</b>`, '', () => { }, true, 'Sign Up', 'Sign In', true, true);
 					}
 				}
-				
+
 				break;
 
 			case 'program':
@@ -200,16 +205,16 @@ class Pnl_1 extends React.Component {
 							{this.state.contents.map((c, i) => (
 								<div style={{ width: '96%' }} onClick={() => this.link(c)} key={`${this.props.contentId}-${i}`} className="swiper-slide">
 									<div>
-										<Img 
-											alt={c.program_title || c.content_title} 
+										<Img
+											alt={c.program_title || c.content_title}
 											unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 											loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 											src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
 										{this.props.type === 'custom' ? (<div className="ribbon">Live</div>) : (<div></div>)}
 										{c.content_type === 'live' ? (
 											<div style={{ position: 'absolute', right: 0 }}>
-												<CountdownTimer 
-												timer={getCountdown(c.release_date_quiz, c.current_date)[0]} 
+												<CountdownTimer
+												timer={getCountdown(c.release_date_quiz, c.current_date)[0]}
 												statusTimer="1"
 												statusPlay={getCountdown(c.release_date_quiz, c.current_date)[1]}/>
 											</div>
@@ -226,7 +231,7 @@ class Pnl_1 extends React.Component {
 						</div>
 					)}
 				</BottomScrollListener>
-				
+
 			</div>
 		);
 	}
