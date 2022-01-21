@@ -13,7 +13,9 @@ import 'swiper/swiper.scss';
 //import scss
 import '../../../assets/scss/components/hot-video.scss';
 import { getTruncate, imageHot, imageHotProfile } from '../../../utils/helpers';
-import { GET_HOT_VIDEO, GET_HOT_VIDEO_PAGINATIONS } from '../../../graphql/queries/hot-video';
+import {
+  GET_HOT_VIDEO_PAGINATIONS_UPDATE,
+} from '../../../graphql/queries/hot-video';
 import Views from '@material-ui/icons/RemoveRedEyeSharp';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotVideoLoader'));
@@ -35,9 +37,9 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
   },[]);
 
   const getHastagPagination = (page) =>{
-    client.query({query: GET_HOT_VIDEO_PAGINATIONS(page, 5, id)})
+    client.query({query: GET_HOT_VIDEO_PAGINATIONS_UPDATE(page, 5, id)})
       .then((res)=>{
-        setMeta(res?.data?.lineups?.data[indexTag].lineup_type_detail?.detail?.meta);
+        setMeta(res?.data?.lineup_contents?.meta);
         setHastags((list) => ({...list, data: [...list.data, ...res?.data?.lineup_contents?.data]}));
         setLoadingMore(false);
         setShow(null);
