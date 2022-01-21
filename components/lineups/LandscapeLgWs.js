@@ -32,15 +32,25 @@ function landscapeLgWs (props) {
 
   const renderDescription = (content) => {
     if (props.lineup.lineup_type === "custom") return null
-    if (content.countdown === 0 || content.is_live) return null
+
+    let liveLabel = null,
+      playingNow = <CountDownTimer time={content.countdown} />
+
+    if (content.countdown === 0 || content.is_live) {
+      liveLabel = <span className="live-badge"></span>
+      playingNow = <p className='playing-now'>Playing Now</p>
+    }
 
     const startTime = content.start_ts || content.live_at
     const { year, month, date, day, time } = parseDateObject(startTime * 1000)
     return(
-    <div>
-      <p className="desc-title">{`${day}, ${date} ${month} ${year} - ${time}`}</p>
-      <CountDownTimer time={content.countdown} />
-    </div>
+      <>
+        {liveLabel}
+        <div>
+          <p className="desc-title">{`${day}, ${date} ${month} ${year} - ${time}`}</p>
+          { playingNow }
+        </div>
+      </>
     )
   }
 

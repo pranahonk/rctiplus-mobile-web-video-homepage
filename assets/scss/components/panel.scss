@@ -213,6 +213,18 @@ $panels:
                     font-size: 12px;
                     margin: 0;
                 }
+
+                .playing-now {
+                    padding: 5px 10px;
+                    color: red;
+                    background: white;
+                    width: fit-content;
+                    width: -moz-fit-content;;
+                    font-size: 12px;
+                    border-radius: 10px;
+                    margin: 0;
+                    font-weight: bold;
+                }
             }
         }
     }
