@@ -40,7 +40,6 @@ function landscapeLgView (props) {
   
   return (
     <div
-      id="lineup-landscapelg"
       onTouchStart={e => onTouchStart(e)}
       onTouchEnd={e => onTouchEnd(e)}
       className="lineup_panels">
@@ -49,12 +48,14 @@ function landscapeLgView (props) {
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
-          <div ref={scrollRef} className="lineup-containers">
+          <div
+            id="landscapelg-video"
+            ref={scrollRef}
+            className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
                   onClick={() => generateLink(content)}
-                  id={`${i}-landscapelg-video`}
                   key={`${i}-landscapelg-video`}
                   className="lineup-contents">
                   <div>

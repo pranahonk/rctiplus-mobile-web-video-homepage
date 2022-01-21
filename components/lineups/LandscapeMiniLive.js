@@ -68,7 +68,6 @@ function landscapeMiniLiveView (props) {
   
   return (
     <div
-      id="lineup-landscapeminilive"
       onTouchStart={e => onTouchStart(e)}
       onTouchEnd={e => onTouchEnd(e)}
       className="lineup_panels">
@@ -77,13 +76,15 @@ function landscapeMiniLiveView (props) {
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
-          <div ref={scrollRef} className="lineup-containers">
+          <div
+            id="landscapeminilive-video"
+            ref={scrollRef} 
+            className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
                   onClick={() => generateLink({ ...content, rootImageUrl })}
                   key={`${i}-landscapeminilive-video`}
-                  id={`${i}-landscapeminilive-video`}
                   className="lineup-contents">
                   <div>
                     <Img 

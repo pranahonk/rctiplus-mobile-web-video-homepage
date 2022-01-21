@@ -32,15 +32,25 @@ function landscapeLgWs (props) {
 
   const renderDescription = (content) => {
     if (props.lineup.lineup_type === "custom") return null
-    if (content.countdown === 0 || content.is_live) return null
+
+    let liveLabel = null,
+      playingNow = <CountDownTimer time={content.countdown} />
+
+    if (content.countdown === 0 || content.is_live) {
+      liveLabel = <span className="live-badge"></span>
+      playingNow = <p className='playing-now'>Playing Now</p>
+    }
 
     const startTime = content.start_ts || content.live_at
     const { year, month, date, day, time } = parseDateObject(startTime * 1000)
     return(
-    <div>
-      <p className="desc-title">{`${day}, ${date} ${month} ${year} - ${time}`}</p>
-      <CountDownTimer time={content.countdown} />
-    </div>
+      <>
+        {liveLabel}
+        <div>
+          <p className="desc-title">{`${day}, ${date} ${month} ${year} - ${time}`}</p>
+          { playingNow }
+        </div>
+      </>
     )
   }
 
@@ -59,7 +69,6 @@ function landscapeLgWs (props) {
   
   return (
     <div
-      id="lineup-landscapelgws"
       onTouchStart={e => onTouchStart(e)}
       onTouchEnd={e => onTouchEnd(e)}
       className="lineup_panels">
@@ -68,12 +77,14 @@ function landscapeLgWs (props) {
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
-          <div ref={scrollRef} className="lineup-containers">
+          <div
+            id="landscapelgws-video"
+            ref={scrollRef}
+            className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
                   onClick={() => generateLink({ ...content, rootImageUrl })}
-                  id={`${i}-landscapelgws-video`}
                   key={`${i}-landscapelgws-video`}
                   className="lineup-contents">
                   <div>
