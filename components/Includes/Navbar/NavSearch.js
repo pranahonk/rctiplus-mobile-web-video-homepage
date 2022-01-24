@@ -1,12 +1,15 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { connect, useSelector } from 'react-redux';
+import React, { Component, useState, useCallback, useEffect } from 'react';
+import { connect } from 'react-redux';
+import Router, { withRouter } from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
+import LoadingBar from 'react-top-loading-bar';
 import { useRouter } from 'next/router'
 import searchActions from '../../../redux/actions/searchActions';
 import pageActions from '../../../redux/actions/pageActions';
+
 import '../../../assets/scss/components/navbar-search.scss';
 
-import { Navbar, NavbarBrand } from 'reactstrap';
+import { Navbar, NavbarBrand, Input } from 'reactstrap';
 
 import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
@@ -15,104 +18,54 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import _isEmpty from "lodash/isEmpty";
 import _debounce from "lodash/debounce";
+// import { Subject } from 'rxjs';
+// import { debounceTime } from 'rxjs/operators';
 
 import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked } from '../../../utils/appier';
-import { getCookie, setCookie } from '../../../utils/cookie';
+import { gaTrackerSearch } from '../../../utils/ga-360';
 
 const NavbarSearch = ({...props}) => {
-    const inputSearch = useRef(null);
-    const router = useRouter();
-
-    const {isAuth} = useSelector(state => state.user)
-    const [state, setState] = useState({q: router.query.q || '', length: 9});
-
-    // useEffect(() => {
-    //     // if(!_isEmpty(state.q)) {
-    //         // props.setPageLoader();
-    //         // props.searchAllCategory(state.q, 1, state.length)
-    //         //     .then(responses => props.unsetPageLoader())
-    //         //     .catch(error => props.unsetPageLoader());
-
-    //         // props.getSearchAll(state.q, 1, state.length)
-    //         //     .then(responses => props.unsetPageLoader())
-    //         //     .catch(error => props.unsetPageLoader());
-    //     // }
-    // }, [])
-
-    const handleFocus = () => {
-        props.getPopularSearch()
-            .then(responses => props.unsetPageLoader())
-            .catch(error => props.unsetPageLoader());
-        
-        props.getSearchHistory()
-            .then(responses => props.unsetPageLoader())
-            .catch(error => props.unsetPageLoader());
-    }
-
+    const router = useRouter()
+    const [state, setState] = useState({q: router.query.q || '', length: 9})
     useEffect(() => {
-        setTimeout(() => {
-            if(state.q.length >= 3 ){
-                props.getSearchAll(state.q, 1, state.length)
+        if(!_isEmpty(state.q)) {
+            props.setPageLoader();
+                props.searchAllCategory(state.q, 1, state.length)
                     .then(responses => {
-                        props.unsetPageLoader()
-                        props.handleKeyword(state.q)
-                        if(!isAuth){
-                            saveSearchHistory(state.q) 
-                        }
+                        console.log(responses);
+                        props.unsetPageLoader();
                     })
                     .catch(error => {
+                        console.log(error);
                         props.unsetPageLoader();
-                        if(!isAuth){
-                            saveSearchHistory(state.q)
-                        }
-                    });
-                props.searchAllCategory(state.q, 1, state.length)
-                    .then(responses => props.unsetPageLoader())
-                    .catch(error => props.unsetPageLoader());
-            }
-        }, 2000)
-    }, [state.q])
-
+                });
+        }
+    }, [])
     const _onChangeQuery = (e) => {
         setState({ ...state, q: e.target.value });
         _delayedQuery(e.target.value)
     }
     const _bottomScrollFetch = () => {
         if (state.q && props.searches.search_show_more_allowed[props.searches.active_tab]) {
+            console.log('testt tab')
             props.searchCategory(state.q, props.searches.active_tab, props.searches.search_page[props.searches.active_tab], state.length)
+                .then(response => {
+
+                })
+                .catch(error => {
+                    console.log(error);
+
+                });
         }
     }
     const _clearKeyword = () => {
         searchKeywordEvent(state.q, 'mweb_search_clear_keyword_clicked');
         setState({ ...state, q: '' });
     }
-
-    const saveSearchHistory = (q) => {
-        let searchHistory = getCookie('SEARCH_HISTORY');
-        if (!searchHistory) {
-            setCookie('SEARCH_HISTORY', [q]);
-        }
-        else {
-            searchHistory = JSON.parse(searchHistory);
-            if (searchHistory.indexOf(q) === -1) {
-                if (searchHistory.length >= 5) {
-                    searchHistory.pop();
-                }
-            }
-            else {
-                searchHistory.splice(searchHistory.indexOf(q), 1);
-            }
-
-            searchHistory.unshift(q);
-            setCookie('SEARCH_HISTORY', searchHistory);
-        }
+    const _search = (value) => {
+        router.replace(`/explores/search?q=${value}`, `/explores/keyword?q=${value}`, { shallow: true })
     }
-
-    const _search = (value) =>  {
-        router.push(`/explores/search`, `/explores/search?q=${value}`, { shallow: true })
-    }
-    const _delayedQuery = useCallback(_debounce(q => _search(q), 3000), [])
-
+    const _delayedQuery = useCallback(_debounce(q => _search(q), 500), [])
     return(
         <div className="nav-home-container nav-fixed-top">
             <BottomScrollListener offset={8} onBottom={() => _bottomScrollFetch()} />
@@ -121,9 +74,9 @@ const NavbarSearch = ({...props}) => {
                 <div className="left-top-link">
                     <div className="logo-top-wrapper">
                         <NavbarBrand onClick={() => {
-                            // if (router.asPath.indexOf('/explores') === 0) {
-                            //     searchBackClicked(state.q, 'mweb_search_back_clicked');
-                            // }
+                            if (router.asPath.indexOf('/explores') === 0) {
+                                searchBackClicked(state.q, 'mweb_search_back_clicked');
+                            }
                             router.back()
                         }} style={{ color: 'white' }}>
                             <ArrowBackIcon />
@@ -131,16 +84,11 @@ const NavbarSearch = ({...props}) => {
                     </div>
                 </div>
                 <div className="middle-top">
-                    <input
-                        ref={inputSearch}
-                        onClick={() => {
-                            libraryGeneralEvent('mweb_library_search_form_clicked');
-                        }}
+                    <Input
+                        onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
                         placeholder="Search for a program, genre, etc."
                         onChange={(e) => _onChangeQuery(e)}
-                        onFocus={handleFocus}
                         value={state.q}
-                        style={{width:"100%", outline: "none"}}
                         className="search-input" />
                 </div>
                 <div className="right-top-link">
@@ -182,7 +130,7 @@ export default connect(state => state, {
 //         //         if (this.state.q) {
 //         //             searchKeywordEvent(this.state.q, 'mweb_search_keyword');
 //         //         }
-                
+
 //         //         this.props.searchAllCategory(this.state.q, 1, this.state.length)
 //         //             .then(responses => {
 //         //                 console.log(responses);
@@ -202,7 +150,7 @@ export default connect(state => state, {
 //         // if (e.target.value) {
 //         //     searchKeywordEvent(e.target.value, 'mweb_search_keyword');
 //         // }
-        
+
 //         // this.props.searchAllCategory(e.target.value, 1, this.state.length)
 //         //     .then(responses => {
 //         //         console.log(responses);

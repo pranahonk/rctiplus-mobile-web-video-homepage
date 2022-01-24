@@ -26,6 +26,7 @@ import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 import { SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG, STATIC } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
+import { gaTrackerScreenView } from '../utils/ga-360';
 
 const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
 const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
@@ -74,6 +75,7 @@ class Index_v2 extends React.Component {
 
     componentDidMount() {
         RPLUSAppVisit();
+        gaTrackerScreenView()
 
         const accessToken = getCookie('ACCESS_TOKEN');
         this.token = accessToken == undefined ? getVisitorToken() : accessToken;
@@ -172,7 +174,7 @@ class Index_v2 extends React.Component {
                     <div style={{marginTop: "25px"}}>
                         <Stories loadingBar={this.LoadingBar} homepage={true}/>
                     </div>
-                    
+
                     <StickyContainer>
                         <Sticky disableHardwareAcceleration>
                             { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
@@ -239,9 +241,9 @@ class Index_v2 extends React.Component {
                                                 type={content.type}
                                                 resolution={RESOLUTION_IMG}
                                                 displayType={content.display_type}/>
-                                        );   
+                                        );
                                 }
-                                
+
                             })}
                         </div>
                 </div>
