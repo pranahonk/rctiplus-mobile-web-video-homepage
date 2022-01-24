@@ -221,5 +221,15 @@ export const gaTrackerProgram = (
   }
 };
 
+export const gaTrackerScreenView = () => {
+  if (typeof window !== 'undefined' && userId !== null) {
+    window.dataLayer.push({
+      'event': 'general_event',
+      'pillar': 'video',
+      'date_time': new Date().toISOString(),
+    });
+  }
+};
+
 
 
