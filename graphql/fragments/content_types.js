@@ -200,6 +200,11 @@ export const contentTypeHotCompetitions = `
            }
            video_path
          }
+         status{
+          code
+          message_client
+          message_server
+          }
        }
      }
 `
@@ -232,6 +237,11 @@ export const contentTypeHotVideo = `
           total_page
         }
         video_path
+      }
+       status{
+          code
+          message_client
+          message_server
       }
     }
   }

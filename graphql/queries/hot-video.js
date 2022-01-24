@@ -39,6 +39,11 @@ export const GET_HOT_VIDEO = (page = 1, pageSize= 100, page_lineups = 1, pageSiz
                           }
                           video_path
                         }
+                        status{
+                          code
+                          message_client
+                          message_server
+                        }
                       }
 
                     }
@@ -114,6 +119,11 @@ export const GET_HOT_VIDEO_PAGINATIONS_UPDATE = (page, page_size, lineup_id) =>{
                       total_page
                   }
                   video_path
+              }
+              status{
+                code
+                message_client
+                message_server
               }
           }
       }
