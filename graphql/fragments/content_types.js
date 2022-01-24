@@ -200,39 +200,49 @@ export const contentTypeHotCompetitions = `
            }
            video_path
          }
+         status{
+          code
+          message_client
+          message_server
+          }
        }
      }
 `
 
 export const contentTypeHotVideo = `
-       ... on ContentTypeHOTVideo {
-         detail(page: 1, page_size: 1){
-           data{
-             thumbnail
-             id
-             views
-             deeplink
-             permalink
-             contestant{
-               nick_name
-               thumbnail
-               display_name
-               email
-               phone_code
-               phone_number
-             }
-           }
-           meta{
-             assets_url
-             image_path
-             pagination{
-               current_page
-               per_page
-               total
-               total_page
-             }
-             video_path
-           }
-         }
-       }
+  ... on ContentTypeHOTVideo {
+    detail(page: 1, page_size: 1){
+      data{
+        thumbnail
+        id
+        views
+        deeplink
+        permalink
+        contestant{
+          nick_name
+          thumbnail
+          display_name
+          email
+          phone_code
+          phone_number
+        }
+      }
+      meta{
+        assets_url
+        image_path
+        pagination{
+          current_page
+          per_page
+          total
+          total_page
+        }
+        video_path
+      }
+       status{
+          code
+          message_client
+          message_server
+      }
+    }
+  }
 `

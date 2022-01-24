@@ -58,30 +58,35 @@ export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
   return gql`
     query {
       lineups(${queryParams}) {
-      data {
-        id
-        content_type
-        service
-        title
-        display_type
-        sorting
-        lineup_type
-        lineup_type_detail {
-          ${lineupContinueWatchingFragment(getQueryParams({ page: 1, page_size }))}
-          ${lineupTypeStoryFragment(getQueryParams({ page: 1, page_size }))}
-          ${lineupDefaultFragment(getQueryParams({ page: 1, page_size}))}
-          ${lineupTypeNewsRegroupingFragment(getQueryParams({ page: 1, page_size: 6 }))}
-          ${lineupTypeNewsTagarFragment(getQueryParams({ page: 1, page_size }))}
+        data {
+            id
+            content_type
+            service
+            title
+            display_type
+            sorting
+            lineup_type
+            lineup_type_detail {
+                ${lineupContinueWatchingFragment(getQueryParams({ page: 1, page_size }))}
+                ${lineupTypeStoryFragment(getQueryParams({ page: 1, page_size }))}
+                ${lineupDefaultFragment(getQueryParams({ page: 1, page_size}))}
+                ${lineupTypeNewsRegroupingFragment(getQueryParams({ page: 1, page_size: 6 }))}
+                ${lineupTypeNewsTagarFragment(getQueryParams({ page: 1, page_size }))}
+            }
         }
-      }
-      meta {
-        pagination {
-          current_page
-          per_page
-          total
-          total_page
+        meta {
+            pagination {
+                current_page
+                per_page
+                total
+                total_page
+            }
+            image_path
         }
-        image_path
+      status{
+          code
+          message_client
+          message_server
       }
     }
     }
