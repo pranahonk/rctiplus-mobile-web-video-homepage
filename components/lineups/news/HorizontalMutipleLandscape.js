@@ -80,19 +80,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
   }, [show]);
 
   const _goToDetail = (article) => {
-    let category = '';
-    if (article.subcategory_name?.length < 1) {
-      category = 'berita-utama';
-    } else {
-      category = urlRegex(article.subcategory_name)
-    }
-    if(!Cookie.get('uid_ads')) {
-      Cookie.set('uid_ads', new DeviceUUID().get())
-    }
-    else{
-      props.newsCountViewDetail(Cookie.get('uid_ads'), article.id)
-    }
-    Router.push('news/detail/' + category + '/' + article.id + '/' + encodeURI(urlRegex(article.title)));
+    return article.permalink
   };
 
 
