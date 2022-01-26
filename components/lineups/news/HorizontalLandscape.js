@@ -81,7 +81,7 @@ const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
   }
   return (
     list?.data?.length === undefined || list?.data?.length < 1 ? <div /> :
-    <li className="regroupping-by-section">
+    <li className="regroupping-by-section list-unstyled">
       <h2 className="section-h2 mt-40 mb-2">{list?.data?.length ? title : null}</h2>
       <ul style={{paddingLeft: 0}}>
         <li style={{border: 'none'}}>
