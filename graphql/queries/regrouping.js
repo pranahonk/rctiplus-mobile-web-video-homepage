@@ -55,13 +55,14 @@ export const GET_REGROUPING_LINEUPS = (page = 2, page_size = 15, lineup_id = 18)
     query {
       lineup_news_regroupings(page: ${page}, page_size: ${page_size}, lineup_id: ${lineup_id}) {
         data {
-            cover
-            id
-            image
-            pubDate
-            subcategory_name
-            source
-            title
+          cover
+          id
+          image
+          pubDate
+          subcategory_name
+          source
+          title
+          permalink
         }
         meta {
           pagination {
