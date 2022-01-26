@@ -25,6 +25,7 @@ export default withRedux(initStore, { debug: false })(
     }
 
     async componentDidMount() {
+      console.log(client)
       const segments = this.props.router.asPath
       let params = {}
       if (segments.length > 1) {

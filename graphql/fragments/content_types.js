@@ -149,6 +149,9 @@ export const contentTypeSpecialFragment = `
       title
       summary
       permalink
+      external_link
+      action_type
+      mandatory_login
     }
     status {
       code
@@ -175,4 +178,71 @@ export const contentTypeSeasonFragment = `
     }
   }
 }
+`
+
+export const contentTypeHotCompetitions = `
+     ... on ContentTypeHOTCompetition {
+       detail(page: 1, page_size: 10){
+         data{
+           thumbnail
+           id
+           deeplink
+           permalink
+         }
+         meta{
+           assets_url
+           image_path
+           pagination{
+             current_page
+             per_page
+             total
+             total_page
+           }
+           video_path
+         }
+         status{
+          code
+          message_client
+          message_server
+          }
+       }
+     }
+`
+
+export const contentTypeHotVideo = `
+  ... on ContentTypeHOTVideo {
+    detail(page: 1, page_size: 1){
+      data{
+        thumbnail
+        id
+        views
+        deeplink
+        permalink
+        contestant{
+          nick_name
+          thumbnail
+          display_name
+          email
+          phone_code
+          phone_number
+        }
+      }
+      meta{
+        assets_url
+        image_path
+        pagination{
+          current_page
+          per_page
+          total
+          total_page
+        }
+        video_path
+      }
+       status{
+          code
+          message_client
+          message_server
+      }
+    }
+  }
 `
