@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { withRouter } from "next/router"
 import dynamic from 'next/dynamic'
 
-import storiesActions from '../../../redux/actions/storiesActions'
 import { RESOLUTION_IMG } from '../../../config'
 import { client } from "../../../graphql/client"
 import { GET_HOME_STORIES } from "../../../graphql/queries/homepage"
@@ -97,4 +96,4 @@ function homeStories (props) {
     )
 }
 
-export default connect(state => state, storiesActions)(withRouter(homeStories));
+export default connect(state => state, {})(withRouter(homeStories));
