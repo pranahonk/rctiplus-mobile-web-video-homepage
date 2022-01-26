@@ -104,8 +104,10 @@ module.exports = (window => {
 		}
 
 		const parsingMessage = (event) => {
+			return
 			if (!isJson(event.data)) return;
 			const data = JSON.parse(event.data);
+
 			
 			if (data?.state) {
 				const storyViewer = query('#zuck-modal .viewing')
