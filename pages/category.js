@@ -28,7 +28,6 @@ function Category (props) {
     const [ meta, setMeta ] = useState({})
     const [ nextPage, setNextPage ] = useState(1)
     const [ categoryId, setCategoryId ] = useState(props.router.query.category_id)
-    const [ token, setToken ] = useState("")
     const length = 10
 
     const bottomScrollFetch = () => {
@@ -38,8 +37,6 @@ function Category (props) {
 
     useEffect(() => {
         getCategoryLineups()
-        const accessToken = getCookie('ACCESS_TOKEN')
-        setToken((accessToken == undefined) ? getVisitorToken() : accessToken)
     }, [ categoryId ])
 
     useEffect(() => {
@@ -76,8 +73,9 @@ function Category (props) {
                 case "portrait_short" :
                     return (
                         <PortraitShortView
-                            lineupId={lineup.id}
-                            key={lineup.id} />
+                            lineup={lineup}
+                            key={lineup.id}
+                            imagePath={meta.image_path} />
                     )
             }
         })
