@@ -43,7 +43,7 @@ const FooterNav_v2 = (props) => {
     }, [])
 
         return (
-            <div id="nav-footer-v2" className="nav-footer-v2">
+            <div id="nav-footer" className="nav-footer-v2">
                 <div className="footer-wrapper-list">
                     <div id="action-home" onClick={() => {
                         homeGeneralClicked('mweb_home_clicked');

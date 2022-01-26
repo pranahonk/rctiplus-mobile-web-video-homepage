@@ -51,7 +51,7 @@ function lineupStory (props) {
     const onSwipe = (direction, seenStory) => {
         if ((storyIndex - 1) < 0 && direction === "left") {
             openStory({}, 0)
-            document.getElementById("nav-footer-v2").style.display = ""
+            document.getElementById("nav-footer").style.display = ""
         }
         else if (direction === "left") {
             openStory(stories[storyIndex - 1], storyIndex - 1)
@@ -59,7 +59,7 @@ function lineupStory (props) {
 
         if ((storyIndex + 1) > (stories.length - 1) && direction === "right") {
             openStory({}, 0)
-            document.getElementById("nav-footer-v2").style.display = ""
+            document.getElementById("nav-footer").style.display = ""
         }
         else if (direction === "right") {
             setStories(stories.map(story => {
@@ -72,7 +72,7 @@ function lineupStory (props) {
 
     const onClose = _ => {
         setActiveStory({})
-        document.getElementById("nav-footer-v2").style.display = ""
+        document.getElementById("nav-footer").style.display = ""
     }
 
     if (stories.length === 0) return null

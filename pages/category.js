@@ -89,8 +89,9 @@ function Category (props) {
                 case "portrait_short" :
                     return (
                         <PortraitShortView
-                            lineupId={lineup.id}
-                            key={lineup.id} />
+                            lineup={lineup}
+                            key={lineup.id}
+                            imagePath={meta.image_path} />
                     )
                 case "portrait" :
                     return (
