@@ -33,7 +33,7 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   },[]);
 
   const getHastagPagination = (page) =>{
-    client.query({query: GET_HASTAGS_PAGINATION(id, page, 5)})
+    client.query({query: GET_HASTAGS_PAGINATION(id, page, 6)})
       .then((res)=>{
         setHastags((list) => ({...list, data: [...list.data, ...res.data.lineup_news_tagars.data]}))
         setMeta(res.data.lineup_news_tagars.meta);
