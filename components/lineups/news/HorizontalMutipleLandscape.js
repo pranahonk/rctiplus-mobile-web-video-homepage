@@ -80,7 +80,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
   }, [show]);
 
   const _goToDetail = (article) => {
-    return article.permalink
+    return window.location.href = article.permalink;
   };
 
 
