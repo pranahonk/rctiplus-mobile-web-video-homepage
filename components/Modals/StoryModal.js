@@ -35,16 +35,16 @@ function storyModal(props) {
     props.story.program_id,
     activeIndex,
   ])
-  
+
   if (!props.story.story) return null
-  
+
   const setActiveProgressbar = () => {
     if (!progressBarWrapper.current) return
     if (activeIndex > props.story.story.length - 1) return
     document.getElementById("nav-footer").style.display = "none"
-    
+
     mountJwplayer()
-    
+
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     if (props.story.story.every(item => item.seen)) {
       props.story.story.forEach((_, i) => {
@@ -126,7 +126,7 @@ function storyModal(props) {
       if (player) removeModalPlayer()
       return
     }
-    
+
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     const jwplayer = window.jwplayer(storyModalPlayerID).setup({
       ...options,
@@ -135,7 +135,7 @@ function storyModal(props) {
     progressBars[activeIndex].children[0].style.animation = "unset"
     setPlayer(jwplayer)
     pauseProgressBar(progressBars)
-    
+
     jwplayer.on("play", _ => {
       const duration = jwplayer.getDuration()
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${duration}s`
@@ -170,12 +170,12 @@ function storyModal(props) {
     if (direction === "right") {
       seenStories = {
         ...props.story,
-       story: props.story.story.map(item => ({ ...item, seen: true })) 
+       story: props.story.story.map(item => ({ ...item, seen: true }))
       }
     }
-    
+
     props.onSwipe(direction, seenStories)
-    
+
     setTimeout(() => {
       progressBars[activeIndex].classList.add("active")
     }, 100);
@@ -186,21 +186,21 @@ function storyModal(props) {
     const componentWidth = e.target.offsetWidth
     const isBackward = e.clientX < ( componentWidth / 4 )
     const isForward = e.clientX > ((componentWidth / 4) * 3)
-    
+
     let targetIndex = activeIndex
-    
+
     if (!isForward && !isBackward) return
-    
+
     if (isBackward) targetIndex = activeIndex - 1
     if (isForward) targetIndex = activeIndex + 1
-    
+
     if (!isForward) {
       progressBars[activeIndex].classList.remove("active")
       if (activeIndex - 1 >= 0 && props.story.story[activeIndex - 1].seen) {
         props.story.story[activeIndex - 1].seen = false
       }
     }
-    
+
     if (targetIndex < 0) {
       navigateStory(progressBars, "left")
       targetIndex = 0
@@ -217,7 +217,7 @@ function storyModal(props) {
 
   const renderCTAButton = _ => {
     const { type, external_link, permalink } = props.story.story[activeIndex]
-    let href = permalink ? permalink.replace(/-webm.|-webd./, "-webm-v2.") : "",
+    let href = permalink ? permalink.replace(/-web[a-z A-Z 0-9]+./, "-webm-v2.") : "",
       onClick = () => {}
 
     switch (type) {
@@ -245,7 +245,7 @@ function storyModal(props) {
     }
 
     if (!href) return null
-    
+
     return (
       <a href={href} onClick={onClick}>
         Click Here
@@ -255,8 +255,8 @@ function storyModal(props) {
 
   return (
     <div className="modalview-wrapper">
-      <div 
-        id="modalview-stories" 
+      <div
+        id="modalview-stories"
         ref={modal}
         onTouchStart={e => touchStart(e)}
         onTouchEnd={e => touchEnd(e)}
@@ -292,7 +292,7 @@ function storyModal(props) {
           id="stories-content"
           onClick={e => divideComponentOnClick(e)}
           className="stories-content" >
-          <div 
+          <div
             id={storyModalPlayerID}
             style={{ display: props.story.story[activeIndex].story_img ? "none" : ""}} />
           <img
@@ -303,7 +303,7 @@ function storyModal(props) {
             style={{ display: props.story.story[activeIndex].story_img ? "" : "none" }} />
         </div>
 
-        <div 
+        <div
           id="stories-cta"
           className="stories-cta">
           { renderCTAButton() }
@@ -317,6 +317,6 @@ function storyModal(props) {
   )
 }
 
-export default connect(state => state, { 
+export default connect(state => state, {
   ...newsCountView
 })(storyModal)
