@@ -119,10 +119,9 @@ function storyModal(props) {
   }
 
   const mountJwplayer = () => {
-    const isVideo = props.story.story[activeIndex].story_img ? false : true
     const linkVideo = props.story.story[activeIndex].link_video
 
-    if (!isVideo) {
+    if (!linkVideo) {
       if (player) removeModalPlayer()
       return
     }
@@ -144,7 +143,6 @@ function storyModal(props) {
 
     jwplayer.on("error", _ => {
       progressBars[activeIndex].children[0].style.animation = "unset"
-      removeModalPlayer()
     })
 
     jwplayer.on("buffer", _ => {
@@ -217,7 +215,7 @@ function storyModal(props) {
 
   const renderCTAButton = _ => {
     const { type, external_link, permalink } = props.story.story[activeIndex]
-    let href = permalink ? permalink.replace(/-webm.|-webd./, "-webm-v2.") : "",
+    let href = (/^http:|^https:/.test(permalink)) ? permalink : "",
       onClick = () => {}
 
     switch (type) {
