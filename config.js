@@ -22,6 +22,7 @@ export const LINK_RADIO = process.env.LINK_RADIO;
 export const LINK_GAMES = process.env.LINK_GAMES;
 export const LINK_HOT = process.env.LINK_HOT;
 export const LINK_NEWS = process.env.LINK_NEWS;
+export const LINK_HERA = process.env.LINK_NEWS;
 
 export const REDIRECT_WEB_DESKTOP = process.env.REDIRECT_WEB_DESKTOP;
 export const SHARE_BASE_URL = process.env.SHARE_BASE_URL;
@@ -63,6 +64,7 @@ export const GPT_ID_SEARCH = process.env.GPT_ID_SEARCH
 export const GPT_ID_DETAIL = process.env.GPT_ID_DETAIL
 
 export const REDIRECT_SSR = process.env.REDIRECT_SSR;
+export const API_TIMEOUT = process.env.API_TIMEOUT;
 
 export const CONVIVA_TRACKING_KEY = process.env.CONVIVA_TRACKING_KEY;
 export const CONVIVA_TRACKING_HOST = process.env.CONVIVA_TRACKING_HOST;
@@ -264,7 +266,8 @@ export const SITEMAP = {
         keywords: `rcti, streaming rcti, live streaming rcti, rcti live, tv online, streaming tv, live streaming, tv bersama, nonton tv`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_RCTI-min.png`,
         image_catchup: `${STATIC}/media/500/files/assets/metaimages/CATCH_UP_RCTI.png`,
-        twitter_img_alt: 'streaming rcti'
+        twitter_img_alt: 'streaming rcti',
+        id_channel:1
     },
     live_tv_mnctv: {
         title: `Nonton Live Streaming MNCTV Hari Ini - TV Online Indonesia - ${SITE_NAME}`,
@@ -272,7 +275,8 @@ export const SITEMAP = {
         keywords: `streaming mnctv, live streaming mnctv, mnctv, mnctv live, live mnctv, mnc, tv online mnctv, mnc tv, tv online indonesia, streaming tv indonesia`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_MNCTV-min.png`,
         image_catchup: `${STATIC}/media/500/files/assets/metaimages/CATCH_UP_MNCTV.png`,
-        twitter_img_alt: 'streaming mnc tv'
+        twitter_img_alt: 'streaming mnc tv',
+        id_channel:2
     },
     live_tv_globaltv: {
         title: `Nonton Live Streaming GTV Hari Ini - TV Online Indonesia - ${SITE_NAME}`,
@@ -280,7 +284,8 @@ export const SITEMAP = {
         keywords: `gtv, streaming gtv, live streaming gtv, global tv, gtv live, streaming global tv, live streaming global tv, global tv live, jadwal global tv hari ini, live tv online`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_GTV-min.png`,
         image_catchup: `${STATIC}/media/500/files/assets/metaimages/CATCH_UP_GTV.png`,
-        twitter_img_alt: 'streaming gtv'
+        twitter_img_alt: 'streaming gtv',
+        id_channel:3
     },
     live_tv_gtv: {
         title: `Nonton Live Streaming GTV Hari Ini - TV Online Indonesia - ${SITE_NAME}`,
@@ -288,7 +293,8 @@ export const SITEMAP = {
         keywords: `gtv, streaming gtv, live streaming gtv, global tv, gtv live, streaming global tv, live streaming global tv, global tv live, jadwal global tv hari ini, live tv online`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_GTV-min.png`,
         image_catchup: `${STATIC}/media/500/files/assets/metaimages/CATCH_UP_GTV.png`,
-        twitter_img_alt: 'streaming gtv'
+        twitter_img_alt: 'streaming gtv',
+        id_channel:3
     },
     live_tv_inews: {
         title: `Nonton Live Streaming iNews TV - Berita Terkini Terbaru Hari Ini - ${SITE_NAME}`,
@@ -296,7 +302,8 @@ export const SITEMAP = {
         keywords: `inews, inews tv, streaming inews, live streaming inews, inews tv online, inews live, streaming inews tv, berita terkini, berita terbaru`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_INEWS-min.png`,
         image_catchup: `${STATIC}/media/500/files/assets/metaimages/CATCH_UP_INEWS.png`,
-        twitter_img_alt: 'streaming inews tv'
+        twitter_img_alt: 'streaming inews tv',
+        id_channel:4
     },
     live_event_index: {
         title: `Nonton Streaming Live Event - Siaran Langsung - TV Online Indonesia - ${SITE_NAME}`,
