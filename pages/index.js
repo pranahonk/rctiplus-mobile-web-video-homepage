@@ -22,11 +22,12 @@ import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
-import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
+import { setCookie, getCookie, setVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
+import Cookies from 'js-cookie';
 
 // NEW RPLUS LINEUP CONTENTS
 const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
@@ -98,24 +99,26 @@ class Index_v2 extends React.Component {
     }
   }
 
-  getHomePageLineups(page = 1, pageSize = 5) {
-    this.LoadingBar.continuousStart();
-    client.query({ query: GET_LINEUPS(page, pageSize) })
+    async getHomePageLineups(page = 1, pageSize = 5) {
+      this.LoadingBar.continuousStart();
+      await setVisitorToken()
+
+      client.query({ query: GET_LINEUPS(page, pageSize) })
         .then(({ data }) => {
-            const mappedContents = new Map()
-            this.state.lineups.concat(data.lineups.data).forEach(content => {
-                if (content.lineup_type_detail.detail) {
-                    mappedContents.set(content.id, content)
-                }
-            })
-            this.setState({
-                lineups: [ ...mappedContents.values() ],
-                meta: data.lineups.meta
-            })
+          const mappedContents = new Map()
+          this.state.lineups.concat(data.lineups.data).forEach(content => {
+            if (content.lineup_type_detail.detail) {
+              mappedContents.set(content.id, content)
+            }
+          })
+          this.setState({
+            lineups: [ ...mappedContents.values() ],
+            meta: data.lineups.meta
+          })
         })
         .finally(_ => {
-            if (page === 1) this.setState({ isShimmer: false })
-            this.LoadingBar.complete();
+          if (page === 1) this.setState({ isShimmer: false })
+          this.LoadingBar.complete();
         })
   }
 

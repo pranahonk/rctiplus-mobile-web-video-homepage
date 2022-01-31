@@ -77,14 +77,14 @@ function landscapeMiniLiveView (props) {
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
           <div
-            id="landscapeminilive-video"
             ref={scrollRef} 
             className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
+                  id={`landscapeminilive-video-${i}`}
                   onClick={() => generateLink({ ...content, rootImageUrl })}
-                  key={`${i}-landscapeminilive-video`}
+                  key={i}
                   className="lineup-contents">
                   <div>
                     <Img 

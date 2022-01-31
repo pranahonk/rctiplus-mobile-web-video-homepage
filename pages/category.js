@@ -29,7 +29,7 @@ const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
 const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"))
 const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
 
-function category (props) {
+function Category (props) {
     const { ads_displayed } = useSelector(state => state.ads)
     const [ isShimmer, setIsShimmer ] = useState(false)
     const [ lineups, setLineups ] = useState([])
@@ -252,4 +252,4 @@ function category (props) {
     )
 }
 
-export default withRouter(category)
+export default withRouter(Category)
