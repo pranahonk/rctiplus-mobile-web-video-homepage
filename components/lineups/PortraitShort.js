@@ -13,7 +13,7 @@ const StoryModal = dynamic(() => import("../Modals/StoryModal"))
 import '../../assets/scss/components/stories.scss'
 
 function lineupStory (props) {
-    const [ stories,setStories ] = useState([])
+    const [ stories, setStories ] = useState([])
     const [ meta, setMeta ] = useState({})
     const [ activeStory, setActiveStory ] = useState({})
     const [ storyIndex, setStoryIndex ] = useState(0)
@@ -30,14 +30,19 @@ function lineupStory (props) {
     }, [])
 
     const loadMore = () => {
+        if (meta.pagination.current_page >= meta.pagination.total_page) return
+
         client.query({ query: GET_LINEUP_STORIES(meta.pagination.current_page + 1, 7, props.lineup.id) })
             .then(({ data }) => {
-                const stories = data.lineup_stories.data.map(story => ({
-                    ...story,
-                    image_path: data.lineup_stories.meta.image_path
-                }))
+                const mappedContents = new Map()
+                stories.concat(data.lineup_stories.data).forEach(story => {
+                    mappedContents.set(story.program_id, {
+                        ...story,
+                        image_path: data.lineup_stories.meta.image_path
+                    })
+                })
 
-                setStories(stories)
+                setStories([ ...mappedContents.values() ])
                 setMeta(data.lineup_stories.meta)
             })
             .catch(_ => {})
