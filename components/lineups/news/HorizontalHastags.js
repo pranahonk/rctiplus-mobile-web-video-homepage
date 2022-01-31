@@ -29,8 +29,6 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   const [hastags, setHastags] = useState([]);
   const [meta, setMeta] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
-  const placeHolderImgUrl = "/static/placeholders/placeholder_landscape.png"
-  const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
   useEffect(() => {
     setHastags(data?.lineup_type_detail?.detail);
