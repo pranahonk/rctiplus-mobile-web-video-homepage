@@ -121,6 +121,6 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
 
 
 export default connect(state => state, {
-  ...newsCountViewTag
+  ...newsCountViewTag,
 })(HorizontalHastags);
 
