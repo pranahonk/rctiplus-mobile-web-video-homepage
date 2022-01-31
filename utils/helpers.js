@@ -261,7 +261,7 @@ export const imageHotProfile = (title, source, staticUrl, size = 200, heightImag
     alt={title}
     src={[
       imgUrl,
-      `/static/placeholders/placeholder_${rotation}.png`
+      `/static/placeholders/Profile.png`
     ]}
     width={width}
     height={height}
