@@ -1,6 +1,6 @@
 const initialState = {
     homepage_content: [],
-    banner: null,
+    banner: [],
     meta: {},
     data: null,
     status: null,
@@ -22,13 +22,16 @@ const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
         case 'HOMEPAGE_CONTENT':
-            return {
-                ...state,
-                homepage_content: state.homepage_content.concat(action.data),
-                meta: action.meta
-            }
+            return Object.assign({}, state, { homepage_content: action.data, meta: action.meta });
         case 'BANNER':
             return Object.assign({}, state, { banner: action.data, meta: action.meta });
+        case 'GET_HOMEPAGE_CONTENTS':
+        case 'GET_EPISODE_DETAIL':
+        case 'GET_EPISODE_URL':
+        case 'GET_EXTRA_DETAIL':
+        case 'GET_EXTRA_URL':
+        case 'GET_CLIP_DETAIL':
+        case 'GET_CLIP_URL':
         case 'GET_PHOTO_DETAIL':
             return Object.assign({}, state, {
                 meta: action.meta,
@@ -36,9 +39,9 @@ export default (state = initialState, action) => {
                 status: action.status
             });
         case 'SELECT_SEASON':
-            return Object.assign({}, state, { 
+            return Object.assign({}, state, {
                 selected_season: action.season,
-                current_page: 1 
+                current_page: 1
             });
         case 'GET_PROGRAM_EPISODES':
             let episodes = state.episodes;

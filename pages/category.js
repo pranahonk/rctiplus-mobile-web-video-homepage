@@ -27,6 +27,7 @@ const VideoPortraitView = dynamic(() => import("../components/lineups/Portrait")
 const VideoSquareMiniView = dynamic(() => import("../components/lineups/SquareMini"))
 const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
 const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"))
+const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
 
 function Category (props) {
     const { ads_displayed } = useSelector(state => state.ads)
@@ -85,6 +86,13 @@ function Category (props) {
     const renderLineups = () => {
         return lineups.map((lineup, index) => {
             switch(lineup.display_type) {
+                case "portrait_short" :
+                    return (
+                        <PortraitShortView
+                            lineup={lineup}
+                            key={lineup.id}
+                            imagePath={meta.image_path} />
+                    )
                 case "portrait" :
                     return (
                         <VideoPortraitView
@@ -188,12 +196,9 @@ function Category (props) {
                                 </Carousel>
                             </div>
 
-                            <div style={{marginTop: "25px"}}>
-                                <Stories 
-                                    loadingBar={loadingBar.current} 
-                                    detailCategory={true} 
-                                    id={props.router.query.category_id} />
-                            </div>
+                        <div style={{marginTop: "25px"}}>
+                            <Stories />
+                        </div>
 
                             <StickyContainer>
                                 <Sticky disableHardwareAcceleration>
