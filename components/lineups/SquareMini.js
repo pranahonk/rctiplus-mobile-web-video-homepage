@@ -41,15 +41,15 @@ function squareMiniView (props) {
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
-          <div 
-            id="squaremini-video"
+          <div
             ref={scrollRef} 
             className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
+                  id={`squaremini-video-${i}`}
                   onClick={() => generateLink(content)}
-                  key={`${i}-squaremini-video`}
+                  key={i}
                   className="lineup-contents">
                   <div>
                     <Img 

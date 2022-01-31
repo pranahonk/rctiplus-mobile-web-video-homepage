@@ -48,15 +48,15 @@ function landscape219View (props) {
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
-          <div 
-            id="landscape219-video"
+          <div
             ref={scrollRef}
             className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
+                  id={`landscape219-video-${i}`}
                   onClick={() => generateLink(content)}
-                  key={`${i}-landscape219-video`}
+                  key={i}
                   className="lineup-contents">
                   <div>
                     <Img 
