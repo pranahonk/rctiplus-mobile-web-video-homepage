@@ -79,7 +79,7 @@ export default function useVideoLineups(props) {
           .forEach(content => mappedContents.set(content.id, content))
 
         setContents([ ...mappedContents.values() ])
-        setEndPage(pagination.current_page === pagination.total_page)
+        setEndPage(pagination.current_page >= pagination.total_page)
         setNextPage(pagination.current_page + 1)
       })
       .catch(_ => setEndPage(true))
@@ -104,7 +104,7 @@ export default function useVideoLineups(props) {
         })
 
         setContents([ ...mappedContents.values() ])
-        setEndPage(pagination.current_page === pagination.total_page)
+        setEndPage(pagination.current_page >= pagination.total_page)
         setNextPage(pagination.current_page + 1)
       })
       .catch(_ => setEndPage(true))
