@@ -89,7 +89,7 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
             spaceBetween={10}
             height={150}
             width={180}
-            onReachEnd={setShow}
+            onSlideChange={setShow}
           >
             {hastags?.data.map((item, index) => {
               return (
@@ -117,6 +117,6 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
 
 
 export default connect(state => state, {
-  ...newsCountViewTag
+  ...newsCountViewTag,
 })(HorizontalHastags);
 
