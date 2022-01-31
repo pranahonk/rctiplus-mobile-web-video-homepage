@@ -16,6 +16,8 @@ import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/ha
 import Cookie from 'js-cookie';
 import { connect } from 'react-redux';
 import newsCountViewTag from '../../../redux/actions/newsCountView';
+import Img from 'react-image';
+import { RESOLUTION_IMG } from '../../../config';
 
 const HastagLoader = dynamic(() => import('../../Includes/Shimmer/HastagLoader'));
 
@@ -27,6 +29,8 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   const [hastags, setHastags] = useState([]);
   const [meta, setMeta] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
+  const placeHolderImgUrl = "/static/placeholders/placeholder_landscape.png"
+  const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
   useEffect(() => {
     setHastags(data?.lineup_type_detail?.detail);
@@ -89,19 +93,19 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
             spaceBetween={10}
             height={150}
             width={180}
-            onReachEnd={setShow}
+            onSlideChange={setShow}
           >
             {hastags?.data.map((item, index) => {
               return (
-                <SwiperSlide key={index} id={`hastgas-${index}`}>
-                  <Link href={_goToDetail(item)}>
-                    <a onClick={() => sendAnalytics(item)}>
-                      <div className="horizontal-tags">
-                        <span className="horizontal-tags_text">#{item.tag}</span>
-                      </div>
-                    </a>
-                  </Link>
-                </SwiperSlide>
+                  <SwiperSlide key={index} id={`hastgas-${index}`}>
+                    <Link href={_goToDetail(item)}>
+                      <a onClick={() => sendAnalytics(item)}>
+                        <div className="horizontal-tags">
+                          <span className="horizontal-tags_text">#{item.tag}</span>
+                        </div>
+                      </a>
+                    </Link>
+                  </SwiperSlide>
               );
             })}
             {loadingMore && (
