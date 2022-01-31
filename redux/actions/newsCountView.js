@@ -56,5 +56,5 @@ const newsCountViewDetail = (device_id = null, userid =  null) => {
 
 export default {
   newsCountViewDetail,
-  newsCountViewTag
+  newsCountViewTag,
 };
