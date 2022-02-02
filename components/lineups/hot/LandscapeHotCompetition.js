@@ -4,17 +4,16 @@ import dynamic from 'next/dynamic';
 import { client } from '../../../graphql/client';
 
 
-// Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
 
-// Import Swiper styles
-import 'swiper/swiper.scss';
 
 //import scss
 import '../../../assets/scss/components/hot-competitions.scss';
-import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
-import { GET_HOT_COMPETITIONS, GET_HOT_COMPETITIONS_UPDATE } from '../../../graphql/queries/competitions';
-import { imageHot, imageHotProfile, imageNews } from '../../../utils/helpers';
+
+
+import {GET_HOT_COMPETITIONS_UPDATE } from '../../../graphql/queries/competitions';
+import {getTruncate, imageHot, imageHotProfile, imageNews} from '../../../utils/helpers';
+import BottomScrollListener from 'react-bottom-scroll-listener';
+import Views from '@material-ui/icons/RemoveRedEyeSharp';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 
@@ -65,44 +64,59 @@ const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
     }
   }, [show]);
 
+  let swipe = {};
+
+  const onTouchStart = (e) => {
+    const touch = e.touches[0];
+    swipe = {x: touch.clientX};
+  };
+
+  const onTouchEnd = (e) => {
+    const touch = e.changedTouches[0];
+    const absX = Math.abs(touch.clientX - swipe.x);
+    // if (absX > 50) {
+    //   homeGeneralClicked('mweb_homepage_scroll_horizontal');
+    // }
+  };
+
   const _goToDetail = (article) => {
     return window.location.href = article;
   };
 
   return (
-    <li className='regroupping-by-section list-unstyled'>
-      <h2 className='section-h2 mt-40 mb-2'>{title}</h2>
-      <ul style={{ paddingLeft: 10 }}>
-        <li style={{ border: 'none' }}>
-          {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<Loader />) : (<Swiper
-            spaceBetween={10}
-            height={150}
-            width={192}
-            onReachEnd={setShow}
-          >
-            {hastags?.data.map((item, index) => {
-              return (
-                <SwiperSlide key={index} id={`hot-competitions-${index}`}>
-                  <div className='hot-competitions'
-                       onClick={() => _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}>
-                    {
-                      imageHotProfile(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail, item?.content_type_detail?.detail?.data?.thumbnail, 200, 112, assetUrl, 'thumbnail')
-                    }
-                    <button className='hot-competitions__button'>
-                      JOIN
-                    </button>
+    hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<Loader />) :
+      <div
+        id="lineup-portrait"
+        onTouchStart={e => onTouchStart(e)}
+        onTouchEnd={e => onTouchEnd(e)}
+        className="lineup_panels">
+        <h2 className="content-title">
+          {title}
+        </h2>
+        <BottomScrollListener offset={40} onBottom={()=> setShow(true)}>
+          {scrollRef => (
+            <div ref={scrollRef} className="lineup-containers">
+              {hastags?.data.map((item, i) => {
+                return (
+                  <div
+                    onClick={() => _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}
+                    key={`${i}-portrait-video`}
+                    className="lineup-contents">
+                    <div className="hot-competitions">
+                      <button className="hot-competitions__button">
+                        JOIN
+                      </button>
+                      {
+                        imageHotProfile(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail, item?.content_type_detail?.detail?.data?.thumbnail, 200, 112, assetUrl, 'thumbnail')
+                      }
+                    </div>
                   </div>
-                </SwiperSlide>
-              );
-            })}
-            {loadingMore && (
-              <SwiperSlide>
-                <Loader />
-              </SwiperSlide>)}
-          </Swiper>)}
-        </li>
-      </ul>
-    </li>
+                );
+              })}
+            </div>
+          )}
+        </ BottomScrollListener>
+      </div>
   );
 };
 
