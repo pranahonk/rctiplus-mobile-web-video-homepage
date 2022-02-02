@@ -73,6 +73,10 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
   };
 
   useEffect(()=>{
+    console.log(itemDimensional);
+  }, [itemDimensional])
+
+  useEffect(()=>{
     const result = [];
     for (let i = 0; i < item?.data?.length; i += 3) {
       result.push(item?.data?.slice(i, i + 3));
@@ -103,7 +107,6 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
   return (
     itemDimensional?.length === 0 || itemDimensional === undefined ?(<Loader />) :
       <div
-        id="lineup-portrait"
         onTouchStart={e => onTouchStart(e)}
         onTouchEnd={e => onTouchEnd(e)}
         className="lineup_panels">
@@ -112,7 +115,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
         </h2>
         <BottomScrollListener offset={40} onBottom={()=> setShow(true)}>
           {scrollRef => (
-            <div ref={scrollRef} className="lineup-containers">
+            <div ref={scrollRef} className="lineup-containers-news-multiple">
               {itemDimensional.map((list, index) => {
                 return (
                   <div key={index} id={`multiple-${index}`}>
@@ -149,8 +152,10 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
                       })
                     }
                   </div>
-                );
-              })}
+                )
+              })
+              }
+
             </div>
           )}
         </ BottomScrollListener>
@@ -160,6 +165,6 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
 
 
 export default connect(state => state, {
-  ...newsCountView
+  ...newsCountView,
 })(HorizontalMutipleLandscape);
 
