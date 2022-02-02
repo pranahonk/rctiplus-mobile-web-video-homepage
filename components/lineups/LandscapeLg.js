@@ -49,14 +49,14 @@ function landscapeLgView (props) {
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
           <div
-            id="landscapelg-video"
             ref={scrollRef}
             className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
+                  id={`landscapelg-video-${i}`}
                   onClick={() => generateLink(content)}
-                  key={`${i}-landscapelg-video`}
+                  key={i}
                   className="lineup-contents">
                   <div>
                     <Img 
