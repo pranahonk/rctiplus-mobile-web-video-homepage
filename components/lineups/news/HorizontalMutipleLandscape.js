@@ -43,6 +43,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
     setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
     setMeta(data?.lineup_type_detail?.detail?.meta);
     setItem(data?.lineup_type_detail?.detail);
+    console.log(title, data?.lineup_type_detail?.detail);
   },[]);
 
   const getLineupsMultiplePagination = (page, page_size) =>{
@@ -73,10 +74,6 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
   };
 
   useEffect(()=>{
-    console.log(itemDimensional);
-  }, [itemDimensional])
-
-  useEffect(()=>{
     const result = [];
     for (let i = 0; i < item?.data?.length; i += 3) {
       result.push(item?.data?.slice(i, i + 3));
@@ -105,6 +102,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
 
 
   return (
+    item.length < 1 ? (<div></div>) :
     itemDimensional?.length === 0 || itemDimensional === undefined ?(<Loader />) :
       <div
         onTouchStart={e => onTouchStart(e)}
