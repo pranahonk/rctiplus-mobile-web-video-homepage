@@ -43,7 +43,6 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
     setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
     setMeta(data?.lineup_type_detail?.detail?.meta);
     setItem(data?.lineup_type_detail?.detail);
-    console.log(title, data?.lineup_type_detail?.detail);
   },[]);
 
   const getLineupsMultiplePagination = (page, page_size) =>{
@@ -102,7 +101,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
 
 
   return (
-    item.length < 1 ? (<div></div>) :
+    item.length < 1 ? (<div />) :
     itemDimensional?.length === 0 || itemDimensional === undefined ?(<Loader />) :
       <div
         onTouchStart={e => onTouchStart(e)}
