@@ -70,7 +70,22 @@ const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
   }, [show]);
 
   const _goToDetail = (article) => {
-      return article.permalink
+    return article.permalink
+  };
+
+  let swipe = {};
+
+  const onTouchStart = (e) => {
+    const touch = e.touches[0];
+    swipe = {x: touch.clientX};
+  };
+
+  const onTouchEnd = (e) => {
+    const touch = e.changedTouches[0];
+    const absX = Math.abs(touch.clientX - swipe.x);
+    // if (absX > 50) {
+    //   homeGeneralClicked('mweb_homepage_scroll_horizontal');
+    // }
   };
 
   let swipe = {};

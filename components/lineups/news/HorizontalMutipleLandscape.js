@@ -102,61 +102,61 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
 
   return (
     item.length < 1 ? (<div />) :
-    itemDimensional?.length === 0 || itemDimensional === undefined ?(<Loader />) :
-      <div
-        onTouchStart={e => onTouchStart(e)}
-        onTouchEnd={e => onTouchEnd(e)}
-        className="lineup_panels">
-        <h2 className="content-title">
-          {itemDimensional?.length < 1 ? null : title}
-        </h2>
-        <BottomScrollListener offset={40} onBottom={()=> setShow(true)}>
-          {scrollRef => (
-            <div ref={scrollRef} className="lineup-containers-news-multiple">
-              {itemDimensional.map((list, index) => {
-                return (
-                  <div key={index} id={`multiple-${index}`}>
-                    {
-                      list.map((data, index2) =>{
-                        return(
-                          <div key={index2} className={`list_tags_thumb tagsItems`}>
-                            <div className="lt_img">
-                              <div className="lt_img_wrap">
+      itemDimensional?.length === 0 || itemDimensional === undefined ?(<Loader />) :
+        <div
+          onTouchStart={e => onTouchStart(e)}
+          onTouchEnd={e => onTouchEnd(e)}
+          className="lineup_panels">
+          <h2 className="content-title">
+            {itemDimensional?.length < 1 ? null : title}
+          </h2>
+          <BottomScrollListener offset={40} onBottom={()=> setShow(true)}>
+            {scrollRef => (
+              <div ref={scrollRef} className="lineup-containers-news-multiple">
+                {itemDimensional.map((list, index) => {
+                  return (
+                    <div key={index} id={`multiple-${index}`}>
+                      {
+                        list.map((data, index2) =>{
+                          return(
+                            <div key={index2} className={`list_tags_thumb tagsItems`}>
+                              <div className="lt_img">
+                                <div className="lt_img_wrap">
+                                  <a onClick={(e) => {
+                                    e.preventDefault();
+                                    _goToDetail(data);
+                                  }}>
+                                    {
+                                      imageNews(data.title, data.cover, data.image, 200, assetUrl, 'news-interest_thumbnail')
+                                    }
+                                  </a>
+                                </div>
+                              </div>
+                              <div className="lt_content">
                                 <a onClick={(e) => {
                                   e.preventDefault();
                                   _goToDetail(data);
                                 }}>
-                                  {
-                                    imageNews(data.title, data.cover, data.image, 200, assetUrl, 'news-interest_thumbnail')
-                                  }
+                                  <h2 dangerouslySetInnerHTML={{ __html: getTruncate(data.title, '...', 100)}}></h2>
                                 </a>
+                                <div className="lt_content-info">
+                                  <h5>{data.source}</h5>
+                                  <h6>{formatDateWordID(new Date(data.pubDate * 1000))}</h6>
+                                </div>
                               </div>
                             </div>
-                            <div className="lt_content">
-                              <a onClick={(e) => {
-                                e.preventDefault();
-                                _goToDetail(data);
-                              }}>
-                                <h2 dangerouslySetInnerHTML={{ __html: getTruncate(data.title, '...', 100)}}></h2>
-                              </a>
-                              <div className="lt_content-info">
-                                <h5>{data.source}</h5>
-                                <h6>{formatDateWordID(new Date(data.pubDate * 1000))}</h6>
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      })
-                    }
-                  </div>
-                )
-              })
-              }
+                          )
+                        })
+                      }
+                    </div>
+                  )
+                })
+                }
 
-            </div>
-          )}
-        </ BottomScrollListener>
-      </div>
+              </div>
+            )}
+          </ BottomScrollListener>
+        </div>
   );
 };
 
