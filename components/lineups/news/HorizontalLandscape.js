@@ -24,8 +24,9 @@ import '../../../assets/scss/components/horizontal-landscape.scss';
 //import redux
 import newsCountView from '../../../redux/actions/newsCountView';
 import Cookie from 'js-cookie';
+import BottomScrollListener from 'react-bottom-scroll-listener';
 
-const HorizontalLandspaceLoader = dynamic(() => import('../../Includes/Shimmer/HorizontalLandspaceLoader'))
+const Loader = dynamic(() => import('../../Includes/Shimmer/HorizontalLandspaceLoader'))
 
 
 const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
@@ -69,7 +70,22 @@ const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
   }, [show]);
 
   const _goToDetail = (article) => {
-      return article.permalink
+    return article.permalink
+  };
+
+  let swipe = {};
+
+  const onTouchStart = (e) => {
+    const touch = e.touches[0];
+    swipe = {x: touch.clientX};
+  };
+
+  const onTouchEnd = (e) => {
+    const touch = e.changedTouches[0];
+    const absX = Math.abs(touch.clientX - swipe.x);
+    // if (absX > 50) {
+    //   homeGeneralClicked('mweb_homepage_scroll_horizontal');
+    // }
   };
 
   const sendAnalytics = (article) => {
@@ -81,45 +97,43 @@ const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
     }
   }
   return (
-    list?.data?.length === undefined || list?.data?.length < 1 ? <div /> :
-    <li className="regroupping-by-section list-unstyled">
-      <h2 className="section-h2 mt-40 mb-2">{list?.data?.length ? title : null}</h2>
-      <ul style={{paddingLeft: 0}}>
-        <li style={{border: 'none'}}>
-          {list?.data?.length === undefined || list?.data?.length < 1 ? (null) : (<Swiper
-            spaceBetween={10}
-            width={320}
-            height={140}
-            slidesPerView={1}
-            onReachEnd={setShow}
-          >
-            {list?.data.map((item, index) => {
-              return (
-                <SwiperSlide key={index} id={`horizontal-${index}`}>
-                  <Link href={_goToDetail(item)}>
-                    <a onClick={() => sendAnalytics(item)}>
-                      <div className="regroupping-by-section_thumbnail-wrapper">
-                        {
-                          imageNews(item.title, item.cover, item.image, 320, assetUrl, 'thumbnail')
-                        }
-                        <div className="regroupping-by-section_thumbnail-title" >
-                          <h1>{getTruncate(item.title, '...', 100)}</h1>
-                          <h2>{item.subcategory_name} | {item.source} | <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
-                        </div>
-                      </div>
-                    </a>
-                  </Link>
-                </SwiperSlide>
-              );
-            })}
-            {loadingMore && (
-              <SwiperSlide>
-                <HorizontalLandspaceLoader />
-              </SwiperSlide>)}
-          </Swiper>) }
-        </li>
-      </ul>
-    </li>
+    list.data?.length < 1 ? (<div />) :
+      list.data?.length === 0 || list.data?.length === undefined ?(<Loader />) :
+        <div
+          onTouchStart={e => onTouchStart(e)}
+          onTouchEnd={e => onTouchEnd(e)}
+          className="lineup_panels">
+          <h2 className="content-title">
+            {list.data?.length < 1 ? null : title}
+          </h2>
+          <BottomScrollListener offset={40} onBottom={()=> setShow(true)}>
+            {scrollRef => (
+              <div ref={scrollRef} className="lineup-containers-news-multiple">
+                {list.data?.map((item, index) => {
+                  return (
+                    <div key={index} id={`horizontal-${index}`}>
+                      <Link href={_goToDetail(item)}>
+                        <a onClick={() => sendAnalytics(item)}>
+                          <div className="regroupping-by-section_thumbnail-wrapper">
+                            {
+                              imageNews(item.title, item.cover, item.image, 320, assetUrl, 'thumbnail')
+                            }
+                            <div className="regroupping-by-section_thumbnail-title" >
+                              <h1>{getTruncate(item.title, '...', 90)}</h1>
+                              <h2>{item.subcategory_name} | {item.source} | <span>{formatDateWordID(new Date(item.pubDate * 1000))}</span></h2>
+                            </div>
+                          </div>
+                        </a>
+                      </Link>
+                    </div>
+                  )
+                })
+                }
+
+              </div>
+            )}
+          </ BottomScrollListener>
+        </div>
   );
 };
 
