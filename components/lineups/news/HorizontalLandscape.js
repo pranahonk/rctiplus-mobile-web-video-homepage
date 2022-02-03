@@ -88,21 +88,6 @@ const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
     // }
   };
 
-  let swipe = {};
-
-  const onTouchStart = (e) => {
-    const touch = e.touches[0];
-    swipe = {x: touch.clientX};
-  };
-
-  const onTouchEnd = (e) => {
-    const touch = e.changedTouches[0];
-    const absX = Math.abs(touch.clientX - swipe.x);
-    // if (absX > 50) {
-    //   homeGeneralClicked('mweb_homepage_scroll_horizontal');
-    // }
-  };
-
   const sendAnalytics = (article) => {
     if(!Cookie.get('uid_ads')) {
       Cookie.set('uid_ads', new DeviceUUID().get())
