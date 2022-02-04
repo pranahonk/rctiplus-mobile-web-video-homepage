@@ -70,7 +70,7 @@ export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
                 ${lineupContinueWatchingFragment(getQueryParams({ page: 1, page_size }))}
                 ${lineupTypeStoryFragment(getQueryParams({ page: 1, page_size }))}
                 ${lineupDefaultFragment(getQueryParams({ page: 1, page_size}))}
-                ${lineupTypeNewsRegroupingFragment(getQueryParams({ page: 1, page_size: 6 }))}
+                ${lineupTypeNewsRegroupingFragment(getQueryParams({ page: 1, page_size: 30 }))}
                 ${lineupTypeNewsTagarFragment(getQueryParams({ page: 1, page_size }))}
             }
         }
