@@ -83,7 +83,7 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   }
 
   return (
-    <li className="regroupping-by-section list-unstyled">
+    <li className="regroupping-by-section list-unstyled mb-35">
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
       <ul style={{paddingLeft: 10}}>
         <li style={{border: 'none'}}>
