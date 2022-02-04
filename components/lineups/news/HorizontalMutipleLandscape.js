@@ -86,7 +86,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
     if (meta?.pagination && show) {
       setLoadingMore(true);
       if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-        getLineupsMultiplePagination(meta?.pagination?.current_page + 1, 6, id);
+        getLineupsMultiplePagination(meta?.pagination?.current_page + 1, 18, id);
       }
       else{
         setLoadingMore(false);
@@ -115,7 +115,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
               <div ref={scrollRef} className="lineup-containers-news-multiple">
                 {itemDimensional.map((list, index) => {
                   return (
-                    <div key={index} id={`multiple-${index}`}>
+                    <div key={index} id={`multiple-${index}`} className="mx-1">
                       {
                         list.map((data, index2) =>{
                           return(
