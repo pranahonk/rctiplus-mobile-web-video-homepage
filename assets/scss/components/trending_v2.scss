@@ -361,10 +361,10 @@
   }
 }
 .list_tags_thumb {
-  padding-top: 17px;
   display: flex;
   flex-wrap: nowrap;
   width: 330px;
+  margin-bottom: 10px;
 
   h1,
   a {
@@ -526,6 +526,5 @@
   line-height: normal;
   letter-spacing: normal;
   color: #ffffff;
-  padding:13px 13px 0 13px;
   margin: 0;
 }
