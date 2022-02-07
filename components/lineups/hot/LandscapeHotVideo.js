@@ -97,7 +97,7 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
       </h2>
       <BottomScrollListener offset={40} onBottom={()=> setShow(true)}>
         {scrollRef => (
-          <div ref={scrollRef} className="lineup-containers">
+          <div ref={scrollRef} className="lineup-containers-hot">
             {hastags?.data.map((item, i) => {
               return (
                 <div
