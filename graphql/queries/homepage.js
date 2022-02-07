@@ -9,13 +9,12 @@ function getQueryParams(args) {
   return output.join(", ")
 }
 
-export const GET_BANNERS = (category_id = 0) => {
-  let queryParams = getQueryParams({ category_id })
-  queryParams = Boolean(queryParams) ? `(${queryParams})` : ""
+export const GET_BANNERS = (page = 1, category_id = 0) => {
+  const queryParams = getQueryParams({ page, category_id })
 
   return gql`
     query {
-      banners${queryParams} {
+      banners(${queryParams}) {
         data {
           permalink
           id
@@ -24,6 +23,7 @@ export const GET_BANNERS = (category_id = 0) => {
           portrait_image
           landscape_image
           type
+          external_link
         }
         meta {
           image_path

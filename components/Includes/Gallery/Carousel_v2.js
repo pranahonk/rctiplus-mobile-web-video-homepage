@@ -23,7 +23,7 @@ function carouselBanner(props) {
 
     const getBanners = _ => {
         const categoryId = props.router.query.category_id || 0
-        client.query({ query: GET_BANNERS(categoryId) })
+        client.query({ query: GET_BANNERS(1, categoryId) })
             .then(({ data }) => {
                 setBanners(data.banners.data)
                 setMeta(data.banners.meta)
@@ -34,8 +34,16 @@ function carouselBanner(props) {
     const goToProgram = (banner) => {
         sendTracker(homeBannerEvent, "homeBanner", banner)
 
-        if (!banner.permalink) return
-        Router.push(banner.permalink)
+        switch (banner.type) {
+            case "url":
+                if (!banner.external_link) return
+                return Router.push(banner.external_link)
+            case "scan_qr":
+                return Router.push("/qrcode")
+            default:
+                if (!banner.permalink) return
+                return Router.push(banner.permalink)
+        }
     }
 
     const sendTracker = (func, type, banner) => {
