@@ -1,19 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { client } from '../../../graphql/client';
-
-
 
 
 //import scss
 import '../../../assets/scss/components/hot-competitions.scss';
 
 
-import {GET_HOT_COMPETITIONS_UPDATE } from '../../../graphql/queries/competitions';
-import {getTruncate, imageHot, imageHotProfile, imageNews} from '../../../utils/helpers';
+import { GET_HOT_COMPETITIONS_UPDATE } from '../../../graphql/queries/competitions';
+import { imageHotProfile } from '../../../utils/helpers';
 import BottomScrollListener from 'react-bottom-scroll-listener';
-import Views from '@material-ui/icons/RemoveRedEyeSharp';
 
 const Loader = dynamic(() => import('../../Includes/Shimmer/hotCompetitionsLoader.js'));
 

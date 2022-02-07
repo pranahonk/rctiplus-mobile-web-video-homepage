@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import {client }  from "../../../graphql/client"
+import { client } from '../../../graphql/client';
 
 
 // Import Swiper React components
@@ -12,7 +12,7 @@ import 'swiper/swiper.scss';
 
 //import scss
 import '../../../assets/scss/components/horizontal-hastags.scss';
-import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
+import { GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 import Cookie from 'js-cookie';
 import { connect } from 'react-redux';
 import newsCountViewTag from '../../../redux/actions/newsCountView';
