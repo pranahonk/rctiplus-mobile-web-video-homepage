@@ -5,7 +5,7 @@ import { Carousel } from 'react-responsive-carousel'
 import Img from 'react-image'
 
 import contentActions from '../../../redux/actions/contentActions'
-import { newsCountViewDetail, newsCountViewTag } from "../../../redux/actions/newsCountView"
+import newsCountViewTag from "../../../redux/actions/newsCountView"
 import { RESOLUTION_IMG } from '../../../config'
 import { homeBannerEvent } from '../../../utils/appier'
 import { client } from "../../../graphql/client"
@@ -35,43 +35,29 @@ function carouselBanner(props) {
     const goToProgram = (banner) => {
         sendTracker(homeBannerEvent, "homeBanner", banner)
 
-
-    if(banner.type === "news_tags"){
-        const params = {
-          'tag': banner.permalink.split('/')[6],
-        }
-  
-        props.newsCountViewTag(params)
-      }else if(banner.type === "news_detail"){
-        if(!Cookie.get('uid_ads')) {
-          Cookie.set('uid_ads', new DeviceUUID().get())
-        }
-        else{
-  
-          props.newsCountViewDetail(Cookie.get('uid_ads'), parseInt(banner.permalink.split('/')[6]))
-        }
-      }
+        let url = banner.permalink
 
         switch (banner.type) {
             case "url":
-                if (!banner.external_link) return
-                return Router.push(banner.external_link)
+                url = banner.external_link
+                break
             case "news_tags": {
                 const tag = banner.permalink.split('/')[6]
                 props.newsCountViewTag({ tag })
-                return
+                break
             }
             case "news_detail" : {
                 const id = banner.permalink.split('/')[6] || 0
                 props.newsCountViewDetail(new DeviceUUID().get(), +id)
-                return
+                break
             }
             case "scan_qr":
-                return Router.push("/qrcode")
-            default:
-                if (!banner.permalink) return
-                return Router.push(banner.permalink)
+                url = "/qrcode"
+                break
         }
+
+        if (!Boolean(url)) return
+        Router.push(url)
     }
 
     const sendTracker = (func, type, banner) => {
@@ -147,4 +133,7 @@ function carouselBanner(props) {
     )
 }
 
-export default connect(state => state, contentActions)(withRouter(carouselBanner))
+export default connect(state => state, {
+    ...contentActions,
+    ...newsCountViewTag
+})(withRouter(carouselBanner))
