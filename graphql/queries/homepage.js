@@ -128,7 +128,7 @@ export const GET_LINEUP_STORIES = (page = 1, page_size = 7, lineup_id = 0) => {
   `
 }
 
-export const GET_HOME_STORIES = (page = 1, page_size = 10, category_id = 0) => {
+export const GET_HOME_STORIES = (category_id = 0, page = 1, page_size = 10) => {
   const queryParams = getQueryParams({ page, page_size, category_id })
 
   return gql`
