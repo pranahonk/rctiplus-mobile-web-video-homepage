@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import Router, { withRouter } from 'next/router';
-import { connect } from 'react-redux';
-import contentActions from '../../../redux/actions/contentActions';
-import newsCountViewTag from '../../../redux/actions/newsCountView';
-import { Carousel } from 'react-responsive-carousel';
-import Img from 'react-image';
+import React, { useEffect, useState } from 'react'
+import Router, { withRouter } from 'next/router'
+import { connect } from 'react-redux'
+import { Carousel } from 'react-responsive-carousel'
+import Img from 'react-image'
 
-import { RESOLUTION_IMG } from '../../../config';
-import { homeBannerEvent } from '../../../utils/appier';
+import contentActions from '../../../redux/actions/contentActions'
+import newsCountViewTag from "../../../redux/actions/newsCountView"
+import { RESOLUTION_IMG } from '../../../config'
+import { homeBannerEvent } from '../../../utils/appier'
 import { client } from "../../../graphql/client"
 import { GET_BANNERS } from "../../../graphql/queries/homepage"
 
-import '../../../assets/scss/plugins/carousel/carousel.scss';
-import Cookie from 'js-cookie';
+import '../../../assets/scss/plugins/carousel/carousel.scss'
 
 function carouselBanner(props) {
   const placeholderImg = "/static/placeholders/placeholder_landscape.png"
@@ -25,7 +24,7 @@ function carouselBanner(props) {
 
   const getBanners = _ => {
     const categoryId = props.router.query.category_id || 0
-    client.query({ query: GET_BANNERS(categoryId) })
+    client.query({ query: GET_BANNERS(1, categoryId) })
       .then(({ data }) => {
         setBanners(data.banners.data)
         setMeta(data.banners.meta)
@@ -35,24 +34,29 @@ function carouselBanner(props) {
 
   const goToProgram = (banner) => {
     sendTracker(homeBannerEvent, "homeBanner", banner)
+    let url = banner.permalink
 
-    if (!banner.permalink) return
-    if(banner.type === "news_tags"){
-      const params = {
-        'tag': banner.permalink.split('/')[6],
-      };
-
-      props.newsCountViewTag(params)
-    }else if(banner.type === "news_detail"){
-      if(!Cookie.get('uid_ads')) {
-        Cookie.set('uid_ads', new DeviceUUID().get())
+    switch (banner.type) {
+      case "url":
+        url = banner.external_link
+        break
+      case "news_tags": {
+        const tag = banner.permalink.split('/')[6]
+        props.newsCountViewTag({ tag })
+        break
       }
-      else{
-
-        props.newsCountViewDetail(Cookie.get('uid_ads'), parseInt(banner.permalink.split('/')[6]))
+      case "news_detail" : {
+        const id = banner.permalink.split('/')[6] || 0
+        props.newsCountViewDetail(new DeviceUUID().get(), +id)
+        break
       }
+      case "scan_qr":
+        url = "/qrcode"
+        break
     }
-    Router.push(banner.permalink)
+
+    if (!Boolean(url)) return
+    Router.push(url)
   }
 
   const sendTracker = (func, type, banner) => {
