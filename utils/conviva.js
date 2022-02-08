@@ -43,8 +43,6 @@ export const convivaVideoJs = (assetName, player, isLive, playerUrl, playerName,
 };
 
 export const convivaJwPlayer = (assetName = null, player = null, duration = null, playerUrl = null, tags = {}, cdn = 'Anevia', isLive = false) => {
-    // console.log('TAGS',isLive)
-    // console.log('TAGS 2',assetName)
     return {
         assetName: assetName,
         player: player,
@@ -129,18 +127,3 @@ export const convivaJwPlayer = (assetName = null, player = null, duration = null
         },
     };
 };
-
-// const getBufferLength = () => {
-//     var buffered = videoPlayer.buffered;
-//     if (buffered === undefined) return;
-
-//     var bufferLength = 0;
-//     for (var i = 0; i < buffered.length; i++) {
-//         var start = buffered.start(i);
-//         var end = buffered.end(i);
-//         if (start <= _s.videoPlayer.currentTime && _s.videoPlayer.currentTime < end) {
-//             bufferLength += end - _s.videoPlayer.currentTime;
-//         }
-//     }
-//     return bufferLength * 1000;
-// }
