@@ -52,7 +52,6 @@ export const GET_BANNERS = (page = 1, category_id = 0) => {
         image_path
       }
     }
-    }
   `
 }
 
