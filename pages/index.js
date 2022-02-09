@@ -83,7 +83,6 @@ class Index_v2 extends React.Component {
 
   componentDidMount() {
     RPLUSAppVisit();
-    alert(process.env.LINK_HOT)
 
     window.onbeforeunload = _ => {
       homeGeneralClicked('mweb_homepage_refresh');
