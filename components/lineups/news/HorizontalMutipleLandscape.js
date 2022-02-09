@@ -1,32 +1,25 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { getTruncate, imageHotProfile } from '../../../utils/helpers';
+import React, { useEffect, useState } from 'react';
+import { getTruncate, imageNews } from '../../../utils/helpers';
 import { formatDateWordID } from '../../../utils/dateHelpers';
-import { urlRegex } from '../../../utils/regex';
-import { imageNews } from '../../../utils/helpers';
 import dynamic from 'next/dynamic';
-import {client }  from "../../../graphql/client"
+import { client } from '../../../graphql/client';
 
 
 // Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
 import 'swiper/swiper.scss';
-import { GET_REGROUPING, GET_REGROUPING_LINEUPS } from '../../../graphql/queries/regrouping';
+import { GET_REGROUPING_LINEUPS } from '../../../graphql/queries/regrouping';
 
 //import scss
 import '../../../assets/scss/components/horizontal-multiple.scss';
 import '../../../assets/scss/components/trending_v2.scss';
-import Router from 'next/router';
-import Cookie from 'js-cookie';
-
-const Loader = dynamic(() => import('../../Includes/Shimmer/HorizontalMutipleLandscapeloader.js'));
-
 //import redux
 import newsCountView from '../../../redux/actions/newsCountView';
 import { connect } from 'react-redux';
 import BottomScrollListener from 'react-bottom-scroll-listener';
-import Views from '@material-ui/icons/RemoveRedEyeSharp';
+
+const Loader = dynamic(() => import('../../Includes/Shimmer/HorizontalMutipleLandscapeloader.js'));
 
 
 const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
@@ -86,7 +79,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
     if (meta?.pagination && show) {
       setLoadingMore(true);
       if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-        getLineupsMultiplePagination(meta?.pagination?.current_page + 1, 18, id);
+        getLineupsMultiplePagination(meta?.pagination?.current_page + 1, 30, id);
       }
       else{
         setLoadingMore(false);
@@ -110,7 +103,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
           <h2 className="content-title">
             {itemDimensional?.length < 1 ? null : title}
           </h2>
-          <BottomScrollListener offset={40} onBottom={()=> setShow(true)}>
+          <BottomScrollListener offset={1000} onBottom={()=> setShow(true)}>
             {scrollRef => (
               <div ref={scrollRef} className="lineup-containers-news-multiple">
                 {itemDimensional.map((list, index) => {
