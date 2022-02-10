@@ -366,6 +366,10 @@
   width: 330px;
   margin-bottom: 10px;
 
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   h1,
   a {
     font-size: 12px;
