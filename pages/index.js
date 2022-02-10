@@ -53,17 +53,17 @@ class Index_v2 extends React.Component {
     initialize(ctx);
   }
 
-    state = {
-        lineups: [],
-        meta: {},
-        length: 5,
-        show_sticky_install: false,
-        sticky_ads_closed: false,
-        isShimmer: true,
-        token: "",
-        openComingSoonModal: false,
-        contentComingSoonModal: {}
-    }
+  state = {
+    lineups: [],
+    meta: {},
+    length: 5,
+    show_sticky_install: false,
+    sticky_ads_closed: false,
+    isShimmer: true,
+    token: "",
+    openComingSoonModal: false,
+    contentComingSoonModal: {}
+  }
 
   LoadingBar = null
   swipe = {}
@@ -98,35 +98,35 @@ class Index_v2 extends React.Component {
     }
   }
 
-    async getHomePageLineups(page = 1, pageSize = 5) {
-        this.LoadingBar.continuousStart();
-        await setVisitorToken()
+  async getHomePageLineups(page = 1, pageSize = 5) {
+    this.LoadingBar.continuousStart();
+    await setVisitorToken()
 
-        client.query({ query: GET_LINEUPS(page, pageSize) })
-            .then(({ data }) => {
-                const mappedContents = new Map()
-                this.state.lineups.concat(data.lineups.data).forEach(content => {
-                    if (content.lineup_type_detail.detail) {
-                        mappedContents.set(content.id, content)
-                    }
-                })
-                this.setState({
-                    lineups: [ ...mappedContents.values() ],
-                    meta: data.lineups.meta
-                })
-            })
-            .finally(_ => {
-                if (page === 1) this.setState({ isShimmer: false })
-                this.LoadingBar.complete();
-            })
-    }
+    client.query({ query: GET_LINEUPS(page, pageSize) })
+      .then(({ data }) => {
+        const mappedContents = new Map()
+        this.state.lineups.concat(data.lineups.data).forEach(content => {
+          if (content.lineup_type_detail.detail) {
+            mappedContents.set(content.id, content)
+          }
+        })
+        this.setState({
+          lineups: [ ...mappedContents.values() ],
+          meta: data.lineups.meta
+        })
+      })
+      .finally(_ => {
+        if (page === 1) this.setState({ isShimmer: false })
+        this.LoadingBar.complete();
+      })
+  }
 
   bottomScrollFetch() {
-    const { pagination } = this.state.meta
+    const { pagination = {} } = this.state.meta
     if (pagination.total_page === pagination.current_page) return
 
-        this.getHomePageLineups(pagination.current_page + 1)
-    }
+    this.getHomePageLineups(pagination.current_page + 1)
+  }
 
   closeStickyInstall(self) {
     setCookie('STICKY_INSTALL_CLOSED', 1);
@@ -284,75 +284,76 @@ class Index_v2 extends React.Component {
           color={this.state.show_sticky_install ? '#000' : '#fff'}
           onRef={ref => (this.LoadingBar = ref)} />
 
-                {this.state.isShimmer
-                    ? (<HomeLoader/>)
-                    : (
-                        <>
-                            <div>
-                                <Nav
-                                    parent={this}
-                                    closeStickyInstallFunction={this.closeStickyInstall}
-                                    showStickyInstall={this.state.show_sticky_install}/>
-                                <Carousel showStickyInstall={this.state.show_sticky_install} >
-                                    <GridMenu />
-                                </Carousel>
+          {this.state.isShimmer
+            ? (<HomeLoader/>)
+            : (
+              <>
+                <div>
+                  <Nav
+                    parent={this}
+                    closeStickyInstallFunction={this.closeStickyInstall}
+                    showStickyInstall={this.state.show_sticky_install}/>
 
-                                <Stories />
+                  <Carousel showStickyInstall={this.state.show_sticky_install} >
+                    <GridMenu />
+                  </Carousel>
 
-                                <StickyContainer>
-                                    <Sticky disableHardwareAcceleration>
-                                        { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
-                                            const topDistance = this.state.show_sticky_install ? 120 : 40;
-                                            if (distanceFromTop < topDistance) {
-                                                if (!this.props.ads.ads_displayed) {
-                                                    return (
-                                                        <div {...rest} >
-                                                            <StickyAds/>
-                                                        </div>
-                                                    );
-                                                }
-                                                const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
-                                                if (adsContents.length > 0) {
-                                                    if (adsContents[0].tagName == 'SCRIPT') {
-                                                        const stickyAds = document.getElementById('sticky-ads-container');
-                                                        if (stickyAds) {
-                                                            stickyAds.style.display = 'none'
-                                                        }
-                                                    }
-                                                }
-                                                return (
-                                                    <div {...rest} >
-                                                        <StickyAds sticky/>
-                                                    </div>
-                                                );
-                                            }
-                                            return (
-                                                <div {...rest} >
-                                                    <StickyAds id='div-gpt-ad-1584677577539-0'/>
-                                                </div>
-                                            );
-                                        }}
-                                    </Sticky>
-                                </StickyContainer>
+                  <Stories />
+
+                  <StickyContainer>
+                    <Sticky disableHardwareAcceleration>
+                      { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
+                        const topDistance = this.state.show_sticky_install ? 120 : 40;
+                        if (distanceFromTop < topDistance) {
+                          if (!this.props.ads.ads_displayed) {
+                            return (
+                              <div {...rest} >
+                                <StickyAds/>
+                              </div>
+                            );
+                          }
+                          const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
+                          if (adsContents.length > 0) {
+                            if (adsContents[0].tagName == 'SCRIPT') {
+                              const stickyAds = document.getElementById('sticky-ads-container');
+                              if (stickyAds) {
+                                stickyAds.style.display = 'none'
+                              }
+                            }
+                          }
+                          return (
+                            <div {...rest} >
+                              <StickyAds sticky/>
                             </div>
+                          );
+                        }
+                        return (
+                          <div {...rest} >
+                            <StickyAds id='div-gpt-ad-1584677577539-0'/>
+                          </div>
+                        );
+                      }}
+                    </Sticky>
+                  </StickyContainer>
+                </div>
 
-                            <div
-                                style={{marginBottom: 45, paddingTop: 10}}
-                                onTouchStart={this.onTouchStart.bind(this)}
-                                onTouchEnd={this.onTouchEnd.bind(this)}>
-                                { this.renderLineup(this.state.lineups, this.state.meta) }
-                                {/*<AudioHorizontalDisc/>*/}
-                                {/*<AudioHorizontalList/>*/}
-                            </div>
-                            <ComingSoonModal
-                                open={this.state.openComingSoonModal}
-                                onClose={_ => this.setState({ openComingSoonModal: false })}
-                                content={this.state.contentComingSoonModal} />
-                        </>
-                    )
-                }
+                <div
+                  style={{marginBottom: 45, paddingTop: 10}}
+                  onTouchStart={this.onTouchStart.bind(this)}
+                  onTouchEnd={this.onTouchEnd.bind(this)}>
+                  { this.renderLineup(this.state.lineups, this.state.meta) }
+                  {/*<AudioHorizontalDisc/>*/}
+                  {/*<AudioHorizontalList/>*/}
+                </div>
+                <ComingSoonModal
+                  open={this.state.openComingSoonModal}
+                  onClose={_ => this.setState({ openComingSoonModal: false })}
+                  content={this.state.contentComingSoonModal} />
+              </>
+            )
+          }
         </Layout>
-        );
+      );
     }
 
 }
