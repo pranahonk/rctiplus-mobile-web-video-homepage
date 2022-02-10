@@ -93,7 +93,7 @@ export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
   `
 }
 
-export const GET_LINEUP_STORIES = (page = 1, page_size = 7, lineup_id = 0) => {
+export const GET_LINEUP_STORIES = (page = 1, page_size = 5, lineup_id = 0) => {
   const queryParams = getQueryParams({ page, page_size, lineup_id })
 
   return gql`
