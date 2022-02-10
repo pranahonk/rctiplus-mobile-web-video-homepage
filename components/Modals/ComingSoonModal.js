@@ -15,7 +15,7 @@ export default function comingSoonModal(props) {
     if (props.open) {
 
       // disable scroll event
-      document.getElementById("nav-footer-v2").style.display = "none"
+      document.getElementById("nav-footer").style.display = "none"
       document.body.style.overflow = "hidden"
       document.body.style.position = "fixed"
       document.body.style.width = "100vw"
@@ -49,7 +49,7 @@ export default function comingSoonModal(props) {
     document.body.style.removeProperty("position")
     document.body.style.removeProperty("overflow")
     document.body.style.removeProperty("width")
-    document.getElementById("nav-footer-v2").style.removeProperty("display")
+    document.getElementById("nav-footer").style.removeProperty("display")
   }
 
   const renderDateDetail = () => {

@@ -31,11 +31,9 @@ const PortraitShortView = dynamic(() => import("../components/lineups/PortraitSh
 
 function Category (props) {
     const { ads_displayed } = useSelector(state => state.ads)
-
     const [ isShimmer, setIsShimmer ] = useState(false)
     const [ lineups, setLineups ] = useState([])
     const [ meta, setMeta ] = useState({})
-    const [ categoryId, setCategoryId ] = useState(props.router.query.category_id)
     const [ openComingSoonModal, setOpenComingSoonModal ] = useState(false)
     const [ contentComingSoonModal, setContentComingSoonModal ] = useState({})
 
@@ -50,18 +48,12 @@ function Category (props) {
 
     useEffect(() => {
         getCategoryLineups()
-    }, [ categoryId ])
-
-    useEffect(() => {
-        if (props.router.query.category_id !== categoryId) {
-            setCategoryId(props.router.query.category_id)
-        }
-    })
+    }, [ props.router.query.category_id ])
 
     const getCategoryLineups = (page = 1, pageSize = 5) => {
         if (page === 1) setIsShimmer(true)
         client
-            .query({ query: GET_LINEUPS(page, pageSize, categoryId) })
+            .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
             .then(({ data }) => {
                 const mappedContents = new Map()
                 lineups.concat(data.lineups.data).forEach(content => {
@@ -191,14 +183,14 @@ function Category (props) {
                             <Header title={props.router.query.category_title} />
                             
                             <div style={{marginTop: -3}}>
-                                <Carousel detailCategory={true}>
+                                <Carousel >
                                     <GridMenu />
                                 </Carousel>
                             </div>
 
-                        <div style={{marginTop: "25px"}}>
-                            <Stories />
-                        </div>
+                            <div style={{marginTop: "25px"}}>
+                                <Stories />
+                            </div>
 
                             <StickyContainer>
                                 <Sticky disableHardwareAcceleration>
@@ -241,7 +233,6 @@ function Category (props) {
                                     { renderLineups() }
                                 </div>
                             </div>
-                            
                         </div>
                         <ComingSoonModal 
                             open={openComingSoonModal}
