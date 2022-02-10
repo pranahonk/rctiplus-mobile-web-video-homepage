@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import {client }  from "../../../graphql/client"
+import { client } from '../../../graphql/client';
 
 
 // Import Swiper React components
@@ -12,7 +12,7 @@ import 'swiper/swiper.scss';
 
 //import scss
 import '../../../assets/scss/components/horizontal-hastags.scss';
-import { GET_HASTAGS, GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
+import { GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 import Cookie from 'js-cookie';
 import { connect } from 'react-redux';
 import newsCountViewTag from '../../../redux/actions/newsCountView';
@@ -81,9 +81,9 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   }
 
   return (
-    <li className="regroupping-by-section list-unstyled mb-35">
+    <li className="regroupping-by-section list-unstyled">
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
-      <ul style={{paddingLeft: 0}}>
+      <ul style={{paddingLeft: 0, marginBottom: 0}}>
         <li style={{border: 'none'}}>
           {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<HastagLoader />) : (<Swiper
             spaceBetween={10}
