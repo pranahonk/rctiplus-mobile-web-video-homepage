@@ -16,6 +16,8 @@ import { GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 import Cookie from 'js-cookie';
 import { connect } from 'react-redux';
 import newsCountViewTag from '../../../redux/actions/newsCountView';
+import Img from 'react-image';
+import { RESOLUTION_IMG } from '../../../config';
 
 const HastagLoader = dynamic(() => import('../../Includes/Shimmer/HastagLoader'));
 
@@ -81,9 +83,9 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   }
 
   return (
-    <li className="regroupping-by-section list-unstyled">
+    <li className="lineup_panels list-unstyled">
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
-      <ul style={{paddingLeft: 0, marginBottom: 0}}>
+      <ul style={{paddingLeft: 0, margin: 0}}>
         <li style={{border: 'none'}}>
           {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<HastagLoader />) : (<Swiper
             spaceBetween={10}
@@ -93,15 +95,15 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
           >
             {hastags?.data.map((item, index) => {
               return (
-                <SwiperSlide key={index} id={`hastgas-${index}`}>
-                  <Link href={_goToDetail(item)}>
-                    <a onClick={() => sendAnalytics(item)}>
-                      <div className="horizontal-tags">
-                        <span className="horizontal-tags_text">#{item.tag}</span>
-                      </div>
-                    </a>
-                  </Link>
-                </SwiperSlide>
+                  <SwiperSlide key={index} id={`hastgas-${index}`}>
+                    <Link href={_goToDetail(item)}>
+                      <a onClick={() => sendAnalytics(item)}>
+                        <div className="horizontal-tags">
+                          <span className="horizontal-tags_text">#{item.tag}</span>
+                        </div>
+                      </a>
+                    </Link>
+                  </SwiperSlide>
               );
             })}
             {loadingMore && (

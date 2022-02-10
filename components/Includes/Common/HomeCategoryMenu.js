@@ -13,20 +13,20 @@ function categoryMenu (props) {
   const [ meta, setMeta ] = useState({})
   const [ categoryId, setCategoryId ] = useState(props.router.query.category_id)
 
-    useEffect(() => {
-        const query = categoryId
-            ? GET_SUB_CATEGORY_LIST(categoryId)
-            : GET_HOME_CATEGORY_LIST
+  useEffect(() => {
+    const query = categoryId
+      ? GET_SUB_CATEGORY_LIST(categoryId)
+      : GET_HOME_CATEGORY_LIST
 
-        client
-            .query({ query })
-            .then(({ data }) => {
-                const contents = categoryId ? data.sub_categories : data.categories
-                setCategories(contents.data)
-                setMeta(contents.meta)
-            })
-            .catch(_ => {})
-    }, [ categoryId ])
+    client
+      .query({ query })
+      .then(({ data }) => {
+        const contents = categoryId ? data.sub_categories : data.categories
+        setCategories(contents.data)
+        setMeta(contents.meta)
+      })
+      .catch(_ => {})
+  }, [ categoryId ])
 
   useEffect(() => {
     if (props.router.query.category_id !== categoryId) {
