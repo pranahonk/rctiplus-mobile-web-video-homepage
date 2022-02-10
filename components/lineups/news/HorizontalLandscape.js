@@ -61,7 +61,7 @@ const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
     if (list?.data && show) {
       setLoadingMore(true);
       if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-        getLineupsPagination(meta?.pagination?.current_page + 1, 6, id);
+        getLineupsPagination(meta?.pagination?.current_page + 1, 30, id);
       } else{
         setLoadingMore(false);
         setShow(null);
@@ -106,7 +106,7 @@ const HorizontalLandscape = ({title, indexTag, id, data, ...props}) => {
           <h2 className="content-title">
             {list.data?.length < 1 ? null : title}
           </h2>
-          <BottomScrollListener offset={40} onBottom={()=> setShow(true)}>
+          <BottomScrollListener offset={5000} onBottom={()=> setShow(true)}>
             {scrollRef => (
               <div ref={scrollRef} className="lineup-containers-news-multiple">
                 {list.data?.map((item, index) => {
