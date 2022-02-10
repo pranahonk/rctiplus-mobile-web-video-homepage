@@ -83,9 +83,9 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   }
 
   return (
-    <li className="lineup_panels list-unstyled">
+    <li className="regroupping-by-section list-unstyled">
       <h2 className="section-h2 mt-40 mb-2">{title}</h2>
-      <ul style={{paddingLeft: 0, margin: 0}}>
+      <ul style={{paddingLeft: 0, marginBottom: 0}}>
         <li style={{border: 'none'}}>
           {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<HastagLoader />) : (<Swiper
             spaceBetween={10}
