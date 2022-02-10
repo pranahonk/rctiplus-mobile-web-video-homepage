@@ -103,7 +103,7 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
           <h2 className="content-title">
             {itemDimensional?.length < 1 ? null : title}
           </h2>
-          <BottomScrollListener offset={1000} onBottom={()=> setShow(true)}>
+          <BottomScrollListener offset={5000} onBottom={()=> setShow(true)}>
             {scrollRef => (
               <div ref={scrollRef} className="lineup-containers-news-multiple">
                 {itemDimensional.map((list, index) => {
