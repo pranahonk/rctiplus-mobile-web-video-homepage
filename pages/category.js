@@ -34,7 +34,6 @@ function Category (props) {
     const [ isShimmer, setIsShimmer ] = useState(false)
     const [ lineups, setLineups ] = useState([])
     const [ meta, setMeta ] = useState({})
-    const [ categoryId, setCategoryId ] = useState(props.router.query.category_id)
     const [ openComingSoonModal, setOpenComingSoonModal ] = useState(false)
     const [ contentComingSoonModal, setContentComingSoonModal ] = useState({})
 
@@ -49,18 +48,12 @@ function Category (props) {
 
     useEffect(() => {
         getCategoryLineups()
-    }, [ categoryId ])
-
-    useEffect(() => {
-        if (props.router.query.category_id !== categoryId) {
-            setCategoryId(props.router.query.category_id)
-        }
-    })
+    }, [ props.router.query.category_id ])
 
     const getCategoryLineups = (page = 1, pageSize = 5) => {
         if (page === 1) setIsShimmer(true)
         client
-            .query({ query: GET_LINEUPS(page, pageSize, categoryId) })
+            .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
             .then(({ data }) => {
                 const mappedContents = new Map()
                 lineups.concat(data.lineups.data).forEach(content => {
@@ -182,7 +175,7 @@ function Category (props) {
                 offset={150} 
                 onBottom={bottomScrollFetch} />
 
-            {isShimmer 
+            { isShimmer 
                 ? <HomeLoader /> 
                 : (
                     <>

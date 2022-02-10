@@ -22,12 +22,11 @@ import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
+import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 import { setCookie, getCookie, setVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
-import Cookies from 'js-cookie';
 
 // NEW RPLUS LINEUP CONTENTS
 const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
@@ -45,9 +44,9 @@ const HorizontalHastags = dynamic(() => import("../components/lineups/news/Horiz
 const LandscapeHotCompetition = dynamic(() => import("../components/lineups/hot/LandscapeHotCompetition"));
 const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/news/HorizontalMutipleLandscape"));
 const LandscapeHotVideo = dynamic(() => import("../components/lineups/hot/LandscapeHotVideo"));
+const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"));
 const AudioHorizontalDisc = dynamic(() => import("../components/lineups/audio_lineup/Disc"));
 const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"));
-const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"));
 
 class Index_v2 extends React.Component {
   static async getInitialProps(ctx) {
@@ -99,31 +98,31 @@ class Index_v2 extends React.Component {
     }
   }
 
-    async getHomePageLineups(page = 1, pageSize = 5) {
-      this.LoadingBar.continuousStart();
-      await setVisitorToken()
+  async getHomePageLineups(page = 1, pageSize = 5) {
+    this.LoadingBar.continuousStart();
+    await setVisitorToken()
 
-      client.query({ query: GET_LINEUPS(page, pageSize) })
-        .then(({ data }) => {
-          const mappedContents = new Map()
-          this.state.lineups.concat(data.lineups.data).forEach(content => {
-            if (content.lineup_type_detail.detail) {
-              mappedContents.set(content.id, content)
-            }
-          })
-          this.setState({
-            lineups: [ ...mappedContents.values() ],
-            meta: data.lineups.meta
-          })
+    client.query({ query: GET_LINEUPS(page, pageSize) })
+      .then(({ data }) => {
+        const mappedContents = new Map()
+        this.state.lineups.concat(data.lineups.data).forEach(content => {
+          if (content.lineup_type_detail.detail) {
+            mappedContents.set(content.id, content)
+          }
         })
-        .finally(_ => {
-          if (page === 1) this.setState({ isShimmer: false })
-          this.LoadingBar.complete();
+        this.setState({
+          lineups: [ ...mappedContents.values() ],
+          meta: data.lineups.meta
         })
+      })
+      .finally(_ => {
+        if (page === 1) this.setState({ isShimmer: false })
+        this.LoadingBar.complete();
+      })
   }
 
   bottomScrollFetch() {
-    const { pagination } = this.state.meta
+    const { pagination = {} } = this.state.meta
     if (pagination.total_page === pagination.current_page) return
 
     this.getHomePageLineups(pagination.current_page + 1)
