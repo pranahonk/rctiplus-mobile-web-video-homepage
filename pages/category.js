@@ -40,6 +40,8 @@ function Category (props) {
     const loadingBar = useRef(null)
 
     const bottomScrollFetch = () => {
+        if (!meta.pagination) return
+        
         const { total_page, current_page } = meta.pagination
         if (total_page === current_page) return
 
@@ -156,7 +158,7 @@ function Category (props) {
                             key={lineup.id}
                             loadingBar={loadingBar.current}
                             lineup={lineup}
-                            showComingSoonModal={(open, content) => this.setComingSoonModalState(open, content)}
+                            showComingSoonModal={(open, content) => setComingSoonModalState(open, content)}
                             imagePath={meta.image_path} />
                     )
             }
