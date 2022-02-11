@@ -113,6 +113,7 @@ export const lineupTypeNewsTagarFragment = (queryParams) => {
         tag
         type
         sorting
+        permalink
       }
        meta {
           pagination {
