@@ -71,3 +71,23 @@ export const redirectToVisionPlus = (user) => {
     name: "general_event"
   })
 }
+
+export const redirectToTrebel = (user) => {
+  const rplusUserId = !user ? "" : user?.id
+  
+  ReactGA.initialize(process.env.GA_INIT_ID, {
+    titleCase: false
+  })
+  ReactGA.set({
+    "user_id": rplusUserId, // RCTI+ user id or leave blank if user is not logged in
+    "date_time": new Date().toISOString(),
+    "client_id": process.env.GA_INIT_ID,
+    "pillar": "video"
+  })
+  ReactGA.event({
+    category: 'trebel',
+    action: 'click_go_to_trebel',
+    label: 'redirect_to_trebel',
+    name: "general_event"
+  })
+}
