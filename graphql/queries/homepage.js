@@ -162,7 +162,7 @@ export const GET_HOME_STORIES = (category_id = 0, page = 1, page_size = 10) => {
   `
 }
 
-export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 7, lineup_id = 0) => {
+export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 5, lineup_id = 0) => {
   const queryParams = getQueryParams({ page, page_size, lineup_id })
 
   return gql`
@@ -194,7 +194,7 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 7, lineup_id = 0)
   `
 }
 
-export const GET_CONTINUE_WATCHING = (page = 1, page_size = 7, lineup_id = 0) => {
+export const GET_CONTINUE_WATCHING = (page = 1, page_size = 5, lineup_id = 0) => {
   const queryParams = getQueryParams({ page, page_size, lineup_id })
 
   return gql`
