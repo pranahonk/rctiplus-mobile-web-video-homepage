@@ -32,7 +32,7 @@ function landscapeMiniLiveView (props) {
     let component = (
       <p className="desc-text">
         <strong>{day}</strong> 
-        {` • ${date} ${month} ${year} - ${time}`}
+        {` • ${date} ${month} ${year} - ${time} WIB`}
       </p>
     )
     let liveBadge = <span className="live-badge"></span>
