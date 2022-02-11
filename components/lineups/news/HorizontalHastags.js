@@ -5,7 +5,6 @@ import { client } from '../../../graphql/client';
 
 
 // Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
 import 'swiper/swiper.scss';
@@ -16,10 +15,9 @@ import { GET_HASTAGS_PAGINATION } from '../../../graphql/queries/hastags';
 import Cookie from 'js-cookie';
 import { connect } from 'react-redux';
 import newsCountViewTag from '../../../redux/actions/newsCountView';
-import Img from 'react-image';
-import { RESOLUTION_IMG } from '../../../config';
+import BottomScrollListener from 'react-bottom-scroll-listener';
 
-const HastagLoader = dynamic(() => import('../../Includes/Shimmer/HastagLoader'));
+const Loader = dynamic(() => import('../../Includes/Shimmer/HastagLoader'));
 
 
 const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
@@ -45,6 +43,21 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
       .catch((err)=>{
         console.log(err);
       });
+  };
+
+  let swipe = {};
+
+  const onTouchStart = (e) => {
+    const touch = e.touches[0];
+    swipe = {x: touch.clientX};
+  };
+
+  const onTouchEnd = (e) => {
+    const touch = e.changedTouches[0];
+    const absX = Math.abs(touch.clientX - swipe.x);
+    // if (absX > 50) {
+    //   homeGeneralClicked('mweb_homepage_scroll_horizontal');
+    // }
   };
 
   useEffect(() => {
@@ -83,37 +96,35 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   }
 
   return (
-    <li className="regroupping-by-section list-unstyled">
-      <h2 className="section-h2 mt-40 mb-2">{title}</h2>
-      <ul style={{paddingLeft: 0, marginBottom: 0}}>
-        <li style={{border: 'none'}}>
-          {hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<HastagLoader />) : (<Swiper
-            spaceBetween={10}
-            height={150}
-            width={180}
-            onSlideChange={setShow}
-          >
-            {hastags?.data.map((item, index) => {
-              return (
-                  <SwiperSlide key={index} id={`hastgas-${index}`}>
-                    <Link href={_goToDetail(item)}>
+    hastags?.data?.length < 1 ? (<div />) :
+      hastags?.data?.length === 0 || hastags?.data === undefined ?(<Loader />) :
+        <div
+          onTouchStart={e => onTouchStart(e)}
+          onTouchEnd={e => onTouchEnd(e)}
+          className="lineup_panels">
+          <h2 className="content-title">
+            {hastags?.data.length < 1 ? null : title}
+          </h2>
+          <BottomScrollListener offset={5000} onBottom={()=> setShow(true)}>
+            {scrollRef => (
+              <div ref={scrollRef} className="lineup-containers-news-multiple">
+                {hastags?.data.map((item, index) => {
+                  return (
+                    <Link href={_goToDetail(item)} key={index} id={`hastgas-${index}`}>
                       <a onClick={() => sendAnalytics(item)}>
                         <div className="horizontal-tags">
                           <span className="horizontal-tags_text">#{item.tag}</span>
                         </div>
                       </a>
                     </Link>
-                  </SwiperSlide>
-              );
-            })}
-            {loadingMore && (
-              <SwiperSlide>
-                <HastagLoader />
-              </SwiperSlide>)}
-          </Swiper>) }
-        </li>
-      </ul>
-    </li>
+                  )
+                })
+                }
+
+              </div>
+            )}
+          </ BottomScrollListener>
+        </div>
   );
 };
 
