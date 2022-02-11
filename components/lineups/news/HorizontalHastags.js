@@ -79,7 +79,7 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   },[show]);
 
   const _goToDetail = (article) => {
-    return `news/topic/tag/${article.tag}`
+    return window.location.href = article.permalink;
   };
 
   const sendAnalytics = (article) => {
