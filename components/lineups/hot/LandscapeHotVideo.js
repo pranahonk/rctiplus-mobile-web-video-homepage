@@ -11,7 +11,7 @@ import 'swiper/swiper.scss';
 import '../../../assets/scss/components/hot-video.scss';
 
 //import helper
-import {getTruncate, imageHotProfile} from '../../../utils/helpers';
+import { getTruncate, imageHot, imageHotProfile } from '../../../utils/helpers';
 import {GET_HOT_VIDEO_PAGINATIONS_UPDATE} from '../../../graphql/queries/hot-video';
 import Views from '@material-ui/icons/RemoveRedEyeSharp';
 import BottomScrollListener from 'react-bottom-scroll-listener';
@@ -106,7 +106,7 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
                   className="lineup-contents">
                   <div className="hot-videos">
                     {
-                      imageHotProfile(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,220, assetUrl, 'thumbnail')
+                      imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,220, assetUrl, 'thumbnail')
                     }
                   </div>
                   <div>
