@@ -37,10 +37,10 @@ function categoryMenu (props) {
   return (
     <div className="h-category-container">
       <div className="grid-h-category-container">
-        {categories.map((category) => (
+        {categories.map((category, index) => (
           <div
             key={`${category.id}-home-category`}
-            className="menu-item-cat">
+            className="menu-item-cat" id={`category-${index}`}>
             <Link href={`/category?category_id=${category.id}&category_title=${category.name}`}>
               <a style={{display: "flex",  flexDirection: "column", justifyContent: "center", alignItems: "center", maxWidth: "54px", minWidth: "54px"}}>
                 <div className="container-menu-icon-cat">

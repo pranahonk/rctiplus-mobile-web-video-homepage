@@ -160,7 +160,7 @@ class Stories extends React.Component {
             });
 
         }
-        
+
         if(this.props.homepage){
             this.setState({
                 zuckJS: require('../../../assets/js/zuck')
@@ -286,7 +286,7 @@ class Stories extends React.Component {
             });
         }
 
-        
+
     }
 
     componentWillUnmount() {
@@ -377,7 +377,7 @@ class Stories extends React.Component {
         };
     }
 
-    
+
     buildTimeline = (story) => {
         const items = [];
 
@@ -388,7 +388,7 @@ class Stories extends React.Component {
                 10,
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
                 item.link_video != null ? (item.link_video) : (this.props.stories.meta.image_path + this.state.resolution + item.story_img),
-                this.handleActionClick(item), 
+                this.handleActionClick(item),
                 'Click Here',
                 false,
                 item.release_date,
@@ -475,11 +475,11 @@ class Stories extends React.Component {
                 '' // videoType
             ]);
         }
-        
+
         // Creation of source data for targetting ads
         const targettingAdsData = this.props.ads ? this.props.ads.data_ta : []
         targettingAdsData.push({
-            name: "logged_in", 
+            name: "logged_in",
             value : String(this.props.user.data !== null)
         })
 
@@ -559,7 +559,7 @@ class Stories extends React.Component {
                 return `/programs/${program.swipe_value}/${program.title.replace(/ +/g, '-')}`;
             default:
                 return "/"
-        }        
+        }
     }
 
     loadMore = () => {
@@ -567,8 +567,8 @@ class Stories extends React.Component {
             let page = this.state.page + 1;
 			this.setState({ loading: true }, () => {
                 this.props.loadingBar && this.props.loadingBar.continuousStart();
-                
-                if (this.props.homepage) {  
+
+                if (this.props.homepage) {
                     this.props.getStories(page, this.state.length)
                     .then(() => {
                     const buildedStories = [];
@@ -591,7 +591,7 @@ class Stories extends React.Component {
                         //     } else {
                         //         notseen.push({...story});
                         //     }
-                        // } 
+                        // }
 
                         for (let i = 0; i < this.state.stories.length; i++) {
                             const story = {...this.state.stories[i]};
@@ -670,7 +670,7 @@ class Stories extends React.Component {
     }
 
     render() {
-      
+
         const timelineItems = []
         this.state.stories.forEach((story, storyId) => {
             const storyItems = [];
@@ -689,7 +689,7 @@ class Stories extends React.Component {
 
             //let arrayFunc = story.seen ? 'push' : 'unshift';
             timelineItems.push(
-                <div className={(story.seen ? `story${story.name.includes('ads') ? ' ads' : ''} seen` : `story${story.name.includes('ads') ? ' ads' : ''}`)} key={story.id} data-id={story.id} data-last-updated={story.lastUpdated} data-photo={story.photo}>
+                <div id={`story-${storyId}`} className={(story.seen ? `story${story.name.includes('ads') ? ' ads' : ''} seen` : `story${story.name.includes('ads') ? ' ads' : ''}`)} key={story.id} data-id={story.id} data-last-updated={story.lastUpdated} data-photo={story.photo}>
                     <a className="item-link" href={story.link}>
                         <span className="item-preview">
                             <img src={story.photo} />
@@ -705,7 +705,7 @@ class Stories extends React.Component {
                     </ul>
                 </div>
             );
-            
+
         });
 
         return (
