@@ -32,7 +32,7 @@ function lineupStory (props) {
     const loadMore = () => {
         if (meta.pagination.current_page >= meta.pagination.total_page) return
 
-        client.query({ query: GET_LINEUP_STORIES(meta.pagination.current_page + 1, 7, props.lineup.id) })
+        client.query({ query: GET_LINEUP_STORIES(meta.pagination.current_page + 1, 5, props.lineup.id) })
             .then(({ data }) => {
                 const mappedContents = new Map()
                 stories.concat(data.lineup_stories.data).forEach(story => {

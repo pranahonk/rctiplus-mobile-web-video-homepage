@@ -46,17 +46,12 @@ function storyModal(props) {
     mountJwplayer()
 
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
-    if (props.story.story.every(item => item.seen)) {
-      props.story.story.forEach((_, i) => {
-        if (i === props.story.story.length - 1) {
-          setActiveIndex(props.story.story.length - 1)
-          progressBars[i].classList.add("active")
-          progressBars[i].children[0].style.animation = `story-progress-bar ${timesec}s`
-          return
-        }
-        progressBars[i].classList.add("active")
-        progressBars[i].children[0].style.animation = `unset`
-      })
+
+    if (props.story.story[activeIndex].seen) {
+      progressBars[activeIndex].classList.add("active")
+      progressBars[activeIndex].children[0].style.animation = `unset`
+      setActiveIndex(activeIndex + 1)
+
       return
     }
 
@@ -168,7 +163,11 @@ function storyModal(props) {
     if (direction === "right") {
       seenStories = {
         ...props.story,
-       story: props.story.story.map(item => ({ ...item, seen: true }))
+       story: props.story.story.map((item, i) => {
+         let story = item
+         if (i < activeIndex) story = { ...item, seen: true }
+         return story
+        })
       }
     }
 

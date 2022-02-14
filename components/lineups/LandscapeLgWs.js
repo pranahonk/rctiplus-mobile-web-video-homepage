@@ -47,7 +47,7 @@ function landscapeLgWs (props) {
       <>
         {liveLabel}
         <div>
-          <p className="desc-title">{`${day}, ${date} ${month} ${year} - ${time}`}</p>
+          <p className="desc-title large">{`${day}, ${date} ${month} ${year} - ${time} WIB`}</p>
           { playingNow }
         </div>
       </>
