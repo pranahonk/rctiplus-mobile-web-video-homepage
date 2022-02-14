@@ -13,6 +13,7 @@ export const GET_HASTAGS = (page = 1, pageSize= 100, page_lineups = 1, pageSize_
                   tag
                   type
                   sorting
+                  permalink
                 }
               }
             }
@@ -39,6 +40,7 @@ export const GET_HASTAGS_PAGINATION = (lineup_id = 8, page = 2, page_size = 15) 
           count
           created_at
           sorting
+          permalink
           tag
           type
           updated_at
