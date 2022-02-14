@@ -82,9 +82,12 @@ const JwPlayer = (props) => {
       jwplayer.setup(options);
     }
     return () => {
-      if (player !== null) {
-        jwplayer.remove();
+
+      // Continue watching when player destroyed
+      if (props.isResume && (props.data && props.data.id)) {
+        props.onResume(props.data.id, props.data.content_type, jwplayer.getPosition());
       }
+      jwplayer.remove();
     };
   }, []);
 
@@ -337,28 +340,19 @@ const JwPlayer = (props) => {
     }
   });
 
-  // Continue Watching
+  // Continue Watching when changing between video contents
   useEffect(() => {
     if(props.customData && props.customData.isLogin && props.isResume && (props.data && props.data.id)) {
       props.onResume(props.data.id, props.data.content_type, duration);
     }
   }, [isCustomSetup]);
 
+  // conviva tracker cleanup function
   useEffect(() => {
-    let ab = 0
-    if(player !== null) {
-      player.on('time', (event) => {
-        ab = event.currentTime
-      });
-    }
     return () => {
       if (window.convivaVideoAnalytics) {
         const convivaTracker = convivaJwPlayer();
         convivaTracker.cleanUpSession();
-      }
-
-      if (props.isResume && (props.data && props.data.id)) {
-        props.onResume(props.data.id, props.data.content_type, ab);
       }
     };
   }, [player])

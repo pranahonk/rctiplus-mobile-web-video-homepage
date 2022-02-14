@@ -13,7 +13,6 @@ export default function useVideoLineups(props) {
   const [ contents, setContents ] = useState([])
   const [ nextPage, setNextPage ] = useState(1)
   const [ endPage, setEndPage ] = useState(false)
-  const pageLength = 7
 
   let swipe = {}
 
@@ -70,7 +69,7 @@ export default function useVideoLineups(props) {
   const getContinueWatching = () => {
     props.loadingBar.continuousStart()
 
-    client.query({ query: GET_CONTINUE_WATCHING(nextPage, pageLength, props.lineup.id)})
+    client.query({ query: GET_CONTINUE_WATCHING(nextPage, 5, props.lineup.id)})
       .then(({ data }) => {
         const { pagination } = data.lineup_continue_watching.meta
 
@@ -89,7 +88,7 @@ export default function useVideoLineups(props) {
   const getLineupContents = () => {
     props.loadingBar.continuousStart()
 
-    client.query({ query: GET_LINEUP_CONTENT_VIDEO(nextPage, pageLength, props.lineup.id)})
+    client.query({ query: GET_LINEUP_CONTENT_VIDEO(nextPage, 5, props.lineup.id)})
       .then(({ data }) => {
         const { pagination } = data.lineup_contents.meta
 
