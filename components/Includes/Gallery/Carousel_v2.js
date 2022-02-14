@@ -111,6 +111,7 @@ function carouselBanner(props) {
               const imgSrc = meta.image_path ? `${meta.image_path}${RESOLUTION_IMG}${banner.square_image}` : placeholderImg
               return (
                 <div
+                  id={`banner-${i}`}
                   data-index={i}
                   onClick={_ => goToProgram(banner)}
                   key={banner.id}
