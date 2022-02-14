@@ -67,14 +67,14 @@ function homeStories (props) {
 
     return (
         <>
-            <div 
-                id="home-stories" 
+            <div
+                id="home-stories"
                 className="stories-components">
                 { stories.map((story, i) => {
                     return (
                         <div key={i} className="homestory storywrapper">
-                            <div 
-                                id={`home-story-${i}`} 
+                            <div
+                                id={`home-story-${i}`}
                                 onClick={_ => openStory(story, i)}>
                                 <img
                                     width="97"
@@ -87,8 +87,8 @@ function homeStories (props) {
                     )
                 }) }
             </div>
-            
-            <StoryModal 
+
+            <StoryModal
                 story={activeStory}
                 onSwipe={(dir, story) => onSwipe(dir, story)}
                 onClose={_ => onClose()} />

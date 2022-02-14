@@ -79,7 +79,7 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   },[show]);
 
   const _goToDetail = (article) => {
-    return `news/topic/tag/${article.tag}`
+    return window.location.href = article.permalink;
   };
 
   const sendAnalytics = (article) => {
@@ -110,13 +110,13 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
               <div ref={scrollRef} className="lineup-containers-news-multiple">
                 {hastags?.data.map((item, index) => {
                   return (
-                    <Link href={_goToDetail(item)} key={index} id={`hastgas-${index}`}>
+                    <div onClick={()=> _goToDetail(item)}  key={index} id={`hastgas-${index}`}>
                       <a onClick={() => sendAnalytics(item)}>
                         <div className="horizontal-tags">
                           <span className="horizontal-tags_text">#{item.tag}</span>
                         </div>
                       </a>
-                    </Link>
+                    </div>
                   )
                 })
                 }
