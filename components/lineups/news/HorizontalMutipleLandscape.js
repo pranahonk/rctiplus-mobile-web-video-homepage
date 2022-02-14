@@ -65,6 +65,8 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
     // }
   };
 
+  let indexId = 0;
+
   useEffect(()=>{
     const result = [];
     for (let i = 0; i < item?.data?.length; i += 3) {
@@ -108,11 +110,12 @@ const HorizontalMutipleLandscape = ({title, indexTag, id, data, ...props}) => {
               <div ref={scrollRef} className="lineup-containers-news-multiple">
                 {itemDimensional.map((list, index) => {
                   return (
-                    <div key={index} id={`multiple-${index}`} className="mx-1">
+                    <div key={index} className="mx-1">
                       {
                         list.map((data, index2) =>{
+                          indexId++;
                           return(
-                            <div key={index2} className={`list_tags_thumb tagsItems`}>
+                            <div key={index2} id={`multiple-${indexId}`} className={`list_tags_thumb tagsItems`}>
                               <div className="lt_img">
                                 <div className="lt_img_wrap">
                                   <a onClick={(e) => {
