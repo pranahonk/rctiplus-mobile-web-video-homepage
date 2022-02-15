@@ -104,31 +104,31 @@ class NavbarDef_v2 extends Component {
 
     navMenuIcons() {
         const iconData = [
-            { 
-                href: "/", 
-                service: "video", 
+            {
+                href: "/",
+                service: "video",
                 isActive: true,
                 newPage: false
             },
-            { 
+            {
                 href: "https://m.rctiplus.com/news",
-                service: "news", 
+                service: "news",
                 isActive: false,
                 newPage: false
             },
-            { 
+            {
                 href: `${LINK_RADIO}/?token=${this.getToken()}`,
                 service: "audio",
                 isActive: false,
                 newPage: false
             },
-            { 
+            {
                 href: LINK_HOT,
                 service: "hot",
                 isActive: false,
                 newPage: false
             },
-            { 
+            {
                 href: LINK_GAMES,
                 service: "games",
                 isActive: false,
@@ -140,7 +140,7 @@ class NavbarDef_v2 extends Component {
             return (
                 <Link href={href} key={i} passHref>
                     <a href={href} target={newPage ? "_blank" : "_self"}>
-                        <Image 
+                        <Image
                             src={`/icons-menu/${service}plus${activeSrcSuffix}.svg`}
                             alt={`${service}+`}
                             width={67}
@@ -179,7 +179,7 @@ class NavbarDef_v2 extends Component {
                     <div className="left-top-link">
                         <div className="logo-top-wrapper">
                             <NavbarBrand>
-                                <img className="logo-top" src="/static/logo/rcti-sm.png" width="28" height="28" alt="logo RCTI+" />
+                                <img id="logo-rcti" className="logo-top" src="/static/logo/rcti-sm.png" width="28" height="28" alt="logo RCTI+" />
                             </NavbarBrand>
                         </div>
                     </div>
