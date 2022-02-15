@@ -10,6 +10,7 @@ import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent } from '
 import '../../../assets/scss/components/footer-v2.scss';
 
 import { Badge } from 'reactstrap';
+import { bottomMenuClick } from '../../../utils/firebaseTracking';
 
 // import ImportantDevicesIcon from '@material-ui/icons/ImportantDevices';
 // import LiveEventIcon from '../Common/LiveEventIcon';
@@ -146,6 +147,7 @@ const FooterNav_v2 = (props) => {
                                 break;
                         }
 
+                        bottomMenuClick(props?.user?.data, { pillar: 'general', button_name: 'trebel' })
                         Router.push('/explores_revamp', "/explores")
                     }}>
                         <a>
