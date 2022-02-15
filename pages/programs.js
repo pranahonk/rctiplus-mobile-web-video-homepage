@@ -8,6 +8,7 @@ import Img from 'react-image';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import GetApp from '@material-ui/icons/GetApp';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
+import { isIOS } from "react-device-detect";
 import { urlRegex } from '../utils/regex';
 import { convivaJwPlayer } from '../utils/conviva';
 import queryString from 'query-string';
@@ -17,7 +18,8 @@ import {
   fetchClip, fetchPhoto, setClearClip,
   setClearExtra, fetchPlayerUrl, clearPlayer,
   fetchBookmark, postBookmark, deleteBookmark,
-  fetchLike, postLike, fetchDetailDesc, dataShareSeo, fetchDetailProgramRequest
+  fetchLike, postLike, fetchDetailDesc, dataShareSeo, fetchRecommendHOT,
+  fetchDetailProgramRequest
 } from '../redux/actions/program-detail/programDetail';
 import { postContinueWatching } from '../redux/actions/historyActions';
 import Layout from '../components/Layouts/Default_v2';
@@ -46,6 +48,7 @@ const PanelExtra = dynamic(() => import('../components/Includes/program-detail/p
 const PanelClip = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod) => mod.PanelClip));
 const PanelPhoto = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod) => mod.PanelPhoto));
 const PanelRelated = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod) => mod.PanelRelated));
+const PanelRecommendHOT = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod) => mod.PanelRecommendHOT));
 const ActionSheet = dynamic(() => import('../components/Modals/ActionSheet'), { ssr: false });
 const ActionMenu = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.ActionMenu), { ssr: false });
 const RatedModal = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.RatedModal), { ssr: false });
@@ -64,7 +67,7 @@ class Index extends React.Component {
         },
     });
     const error_code = res.statusCode > 200 ? res.statusCode : false;
-    
+
     if (error_code) {
         return { server: false, seo_content: false, seo_content_detail: false };
     }
@@ -88,9 +91,9 @@ class Index extends React.Component {
   //     return { server: false, seo_content: false, seo_content_detail: false };
   // }
 
-    return { 
+    return {
       server: {['program-detail']: data},
-      seo_content: data, 
+      seo_content: data,
       seo_content_detail: data_2,
     };
   }
@@ -140,6 +143,7 @@ class Index extends React.Component {
     }, () => this.loadFirstTab(this.programId));
     this.loadRelated(this.programId,1);
 
+    this.loadRecommendHOT(1);
     if (this.props.router.query.content_id) {
       this.setState({ activeContentId: +this.props.router.query.content_id })
       this.props.dispatch(fetchPlayerUrl(this.props.router.query.content_id,'data-player',this.props.router.query.content_type));
@@ -173,6 +177,11 @@ class Index extends React.Component {
         filter: "episode",
       })
     )
+    window.addEventListener('pageshow', this.handlePageShow)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('pageshow', this.handlePageShow)
   }
 
   shouldComponentUpdate() {
@@ -182,7 +191,6 @@ class Index extends React.Component {
 
   componentDidUpdate(prevProps) {
     this.onRouterChanged()
-
     if (prevProps.router.query.id !== this.props.router.query.id || prevProps.router.query.content_id !== this.props.router.query.content_id) {
       if (this.props.router.query.content_id) {
         const {content_id , content_type} = this.props.router.query;
@@ -190,6 +198,7 @@ class Index extends React.Component {
       }
       this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] && this.props.server[this.type], 'tracking-program'));
       this.loadRelated(this.props.router.query.id,1);
+      this.loadRecommendHOT(1);
       this.setState({clipClearStore: true, transform: 'rotate(0deg)', isOpen: false}, () => {
             this.loadFirstTab(this.props.router.query.id);
         }
@@ -238,20 +247,28 @@ class Index extends React.Component {
     }
   }
 
+  handlePageShow(event) {
+    var historyTraversal = event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2);
+
+    if (historyTraversal && isIOS) {
+      window.location.reload();
+    }
+  }
+
   onRouterChanged() {
     const { query } = this.props.router
     let programTypeDetail = this.props.data[`program-${query.content_type}`]
-    
+
     if (!programTypeDetail) return
 
     const { seasonSelected } = this.props.data
-    
+
     if (!programTypeDetail[`season-${seasonSelected}`]) return
     if (query.content_type === "episode") programTypeDetail = programTypeDetail[`season-${seasonSelected}`]
 
     const { data, meta } = programTypeDetail
     const { activeContentId } = this.state
-    
+
     if (!data || !meta || !query.content_id) return
 
     // When currently playing video is not on the list of queue, target to the first content instead
@@ -261,7 +278,7 @@ class Index extends React.Component {
       const { href, hrefAlias } = this.routingQueryGenerator({ ...data[0], content_type: query.content_type })
       this.props.router.push(`/programs?${href}`, `/programs/${hrefAlias}`)
     }
-    
+
     // Set max video queue length once it has the value from request call
     if (this.state.videoIndexing.maxQueue !== meta.pagination.total) {
       if (this.state.videoIndexing.maxQueue === data.length) return
@@ -270,7 +287,7 @@ class Index extends React.Component {
         videoIndexing: { ...this.state.videoIndexing, maxQueue: meta.pagination.total }
       })
     }
-    
+
     // Fetch video url everytime it has been pushed to new url
     if (+query.content_id !== activeContentId) {
       this.setState({ activeContentId: +query.content_id })
@@ -306,7 +323,7 @@ class Index extends React.Component {
           {(this.props?.data?.paid_video?.data?.is_paid && this.props?.server['program-detail'].data?.premium === 1) || this.props?.server['program-detail'].data?.premium === 0 ? (<Link
               href={`/programs/${mainData.id}/${urlRegex(mainData.title)}/episode/${detailData.id}/${urlRegex(detailData.title)}${this.reference ? '?ref=' + this.reference : ''}`}
               shallow>
-              <a onClick={ () => { 
+              <a onClick={ () => {
                 this.props.dispatch(fetchPlayerUrl(detailData.id,'data-player','episode'))
                   const dataPlayer = {
                     program_id: this.props && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data && this.props.server['program-detail'].data.id,
@@ -392,6 +409,15 @@ class Index extends React.Component {
     };
     this.props.dispatch(fetchRelatedProgram(data));
   }
+  loadRecommendHOT(page) {
+    const params = {
+      page: page,
+      length: 10,
+      filter: 'recommend-hot',
+    }
+
+    this.props.dispatch(fetchRecommendHOT(params));
+  }
   loadFirstTab(programId) {
     this.props.dispatch(fetchBookmark(programId, 'bookmark'));
     this.props.dispatch(fetchLike(programId, 'like', 'program'));
@@ -400,6 +426,8 @@ class Index extends React.Component {
         this.props.dispatch(fetchEpisode(programId, 'program-episode', this.props.router.query.content_id));
         this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
         this.props.dispatch(seasonSelected(1));
+      }else if(this.props.server[this.type].data.category === 'series'){
+        this.props.dispatch(fetchEpisode(programId, 'program-episode', this.props.router.query.content_id));
       }
       if (this.isTabs(this.props.server[this.type].data).length > 0) {
         switch (this.isTabs(this.props.server[this.type].data)[0]) {
@@ -561,14 +589,14 @@ class Index extends React.Component {
         </TabPane>
       );
     }
-    
+
     const { query } = this.props.router
     const programDetail = this.props.server['program-detail']
-    
+
     if (!programEpisode) return null
     if (((programEpisode.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
 
-    
+
     const pagination = {
       ...programEpisode.meta.pagination,
       nextPage: programEpisode.meta.pagination.current_page + 1,
@@ -617,7 +645,7 @@ class Index extends React.Component {
     const { query } = this.props.router
     const programDetail = this.props.server['program-detail']
 
-    if (((programExtra.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
+    if (programExtra == null ||((programExtra.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
 
     const pagination = {
       ...programExtra.meta.pagination,
@@ -664,8 +692,9 @@ class Index extends React.Component {
     const { query } = this.props.router
     const programDetail = this.props.server['program-detail']
 
-    if (((programClip.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
-    
+    if (programClip == null || ((programClip.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
+
+
     const pagination = {
       ...programClip.meta.pagination,
       nextPage: programClip.meta.pagination.current_page + 1,
@@ -711,8 +740,8 @@ class Index extends React.Component {
     const { query } = this.props.router
     const programDetail = this.props.server['program-detail']
 
-    if ((programPhoto.data.length === 0) && programDetail.data.id !== +query.id) return null
-    
+    if (programPhoto == null ||((programPhoto.data.length === 0) && programDetail.data.id !== +query.id)) return null
+
     const pagination = {
       ...programPhoto.meta.pagination,
       nextPage: programPhoto.meta.pagination.current_page + 1,
@@ -741,6 +770,27 @@ class Index extends React.Component {
     const vm = this;
     vm.props.dispatch(clearPlayer(filter));
   }
+
+  panelRecommendHOT(props) {
+    const { router, server } = this.props
+
+    if (props?.data?.length > 0) {
+      const pagination = {
+        page: props?.meta?.pagination?.current_page,
+        total_page: props?.meta?.pagination?.total_page,
+        nextPage: props?.meta?.pagination?.current_page + 1,
+      };
+
+      return (
+        <PanelRecommendHOT
+          data={props}
+          hasMore={() => { this.loadRecommendHOT(pagination.nextPage); }}
+          dataTracking={{ ref: this.reference, idContent: router.query.id, title: server['program-detail'] }}
+        />
+      );
+    }
+  }
+
   panelRelated(props) {
     if (props && props.data && props.data.length > 0) {
       const pagination = {
@@ -795,7 +845,7 @@ class Index extends React.Component {
 
     return {
       href: targetHref.join("&"), // actual target url
-      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser 
+      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser
     }
   }
 
@@ -812,7 +862,7 @@ class Index extends React.Component {
     const direction = action === "forward" ? "next" : "prev"
     const targetVideoContent = { ...data[videoIndexing[direction]], content_type }
     const { href, hrefAlias } = this.routingQueryGenerator(targetVideoContent)
-    
+
     // When current video is the last content on the pagination list, request the next page if any
     if ((data.length - 1) === videoIndexing.next) {
       this.handleShowMore({
@@ -867,18 +917,18 @@ class Index extends React.Component {
     }
 
     const dataPlayer = this.props.data['data-player'];
-    
+
     return (
       <div className="program-detail-player-wrapper">
         <JwPlayer
-          data={dataPlayer && dataPlayer.data } 
-          isFullscreen={ dataPlayer && dataPlayer.isFullscreen } 
-          ref={this.ref} 
-          onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
-          isResume={true} 
+          data={dataPlayer && dataPlayer.data }
+          isFullscreen={ dataPlayer && dataPlayer.isFullscreen }
+          ref={this.ref}
+          onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }}
+          isResume={true}
           geoblockStatus={ dataPlayer && dataPlayer.status && dataPlayer.status.code === 12 ? true : false }
           customData= {{
-            isLogin: this.props.auth.isAuth, 
+            isLogin: this.props.auth.isAuth,
             programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
             sectionPage: 'VOD',
           }}
@@ -893,13 +943,13 @@ class Index extends React.Component {
       const data = this.props.server && this.props.server[this.type];
       return (
         <div className="program-detail-player-wrapper trailer">
-            <JwPlayer 
-              data={ data.data } 
+            <JwPlayer
+              data={ data.data }
               ref={this.ref} isFullscreen={ true }
-              isResume={true} 
+              isResume={true}
               geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
               customData= {{
-                isLogin: this.props.auth.isAuth, 
+                isLogin: this.props.auth.isAuth,
                 programType: data.program_type_name,
                 sectionPage: 'VOD',
                 }}
@@ -955,7 +1005,7 @@ class Index extends React.Component {
 
     // set active video index to be used when user click next / back player button
     this.getCurrentViewingVideoIndex()
-   
+
     return (
       <Layout>
         <HeadMeta data={props.seo_content}
@@ -969,7 +1019,7 @@ class Index extends React.Component {
             overflowY: 'scroll'
           } : {height: 'auto'} }>
 
-            {props.seo_content_detail && 
+            {props.seo_content_detail &&
               <div className="title-player">{content?.episode ? <span>{`E${(content?.episode < 10 ? '0'+content?.episode : ''+content?.episode).slice(0)}:S${(content?.season < 10 ? '0'+content?.season : ''+content?.season).slice(0)} - ${content?.title}`}</span> : <span>{content?.title}</span> }</div>
             }
 
@@ -985,19 +1035,19 @@ class Index extends React.Component {
                 onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
                 dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
                 />
-              <ButtonPrimary 
-                className="button-20" 
-                icon={ <ShareIcon/> } 
-                text="Share" 
+              <ButtonPrimary
+                className="button-20"
+                icon={ <ShareIcon/> }
+                text="Share"
                 onclick={this.toggleActionSheet.bind(this, 'program', 'program_share', props.data.programDetail.data)}/>
               { this.props.router.query.content_id ? (
                   <>
-                    <ButtonPrimary 
-                      className="button-20" 
-                      icon={ <GetApp/> } 
-                      text="Download" 
+                    <ButtonPrimary
+                      className="button-20"
+                      icon={ <GetApp/> }
+                      text="Download"
                       onclick={() => alertDownload()} />
-                    <ButtonPrimary 
+                    <ButtonPrimary
                       className="button-20"
                       onclick={()=> this.setState({transform: this.state.transform === 'rotate(0deg)' ? 'rotate(180deg)' : 'rotate(0deg)', isOpen: this.state.transform === 'rotate(0deg)' ? true : false}, () => {
                         if(this.state.isOpen) {
@@ -1009,7 +1059,7 @@ class Index extends React.Component {
                   </>
                 ) : ''
               }
-              {!(props.router.query.content_id) && (props?.data?.paid_video?.data?.is_paid) ? 
+              {!(props.router.query.content_id) && (props?.data?.paid_video?.data?.is_paid) ?
               (
                 <span style={{ width: '100% !important', textAlign: 'right', display: 'inline-block' }}>
                   <div style={{fontSize: 10}}>Expired in <strong>{ props?.data?.paid_video?.data?.order_detail?.expired_in }</strong></div>
@@ -1032,7 +1082,7 @@ class Index extends React.Component {
               <div className="list__content-wrapper">
                 <div className="tab__content-wrapper">
                   { this.tabContent() }
-                  <TabContent activeTab={this.state.toggle}>
+                  <TabContent style={{ backgroundColor: '#3a3a3a' }} activeTab={this.state.toggle}>
                     { this.panelEpisode(
                         this.props.data &&
                         this.props.data['program-episode'] &&
@@ -1058,7 +1108,7 @@ class Index extends React.Component {
               </div>
 
               {this.renderVisionPlusComponent()}
-              
+              {this.panelRecommendHOT(this.props?.data['recommend-hot'])}
               {this.panelRelated(
                 this.props.data &&
                 this.props.data['program-related']

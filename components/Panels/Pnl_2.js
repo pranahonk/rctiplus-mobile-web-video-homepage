@@ -11,6 +11,7 @@ import { urlRegex } from '../../utils/regex';
 import { showSignInAlert } from '../../utils/helpers';
 const jwtDecode = require('jwt-decode');
 import '../../assets/scss/components/panel.scss';
+import { gaTrackerLineUp } from '../../utils/ga-360';
 
 class Pnl_2 extends React.Component {
 
@@ -91,13 +92,13 @@ class Pnl_2 extends React.Component {
 						break;
 				case 'program':
 						Router.push(`/programs/${program.link}/${program.content_title.replace(/ +/g, '-')}`);
-						break;  
+						break;
 				case 'popup':
 						window.open(url, '_parent');
-						break;  
+						break;
 				default:
 						Router.push(url);
-		}       
+		}
 	}
 	link(data) {
 		switch (data.content_type) {
@@ -145,13 +146,17 @@ class Pnl_2 extends React.Component {
 
 			case 'live':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_live_event_clicked');
-				
+
 				Router.push(`/live-event/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 
 			default:
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_content_clicked');
-				
+        gaTrackerLineUp('video_interaction', 'video_click_content_list', data.content_title, data.content_id, data.content_title,
+          data.content_type, 'not_available', data.program_id, 'not_available', 'not_available',
+          'not_available', 'not_available', 'not_available', 'not_available','not_available',
+          'not_available', 'not_available', 'not_available', 'not_available', data.premium === 0 ? 'no' : 'yes')
+
 				Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}/${data.content_type}/${data.content_id}/${urlRegex(data.content_title)}?ref=homepage&homepage_title=${this.props.title}`);
 				break;
 		}
@@ -207,9 +212,9 @@ class Pnl_2 extends React.Component {
 												</div>
 											</>
 											) : ''}
-											<Img 
+											<Img
 												className={c.display_type == 'hide_url' ? "img-text-desc" : ""}
-												alt={c.program_title || c.content_title} 
+												alt={c.program_title || c.content_title}
 												unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												src={[this.props.imagePath + this.props.resolution + c.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
@@ -222,16 +227,16 @@ class Pnl_2 extends React.Component {
 													<h3 className="txt-slider-panel-title">{c.program_title ? c.program_title : this.props.title}</h3>
 													<p>{c.content_title }</p>
 												</div>
-												
+
 											</div>
 										)}
-										
+
 									</div>
 							))}
 						</div>
 					)}
 				</BottomScrollListener>
-				
+
 			</div>
 		);
 	}

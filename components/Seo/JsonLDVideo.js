@@ -29,19 +29,3 @@ const structurData = {
   )
 }
 
-const channel = (title) => {
-  if(title === 'rcti') {
-    return 'RCTI'
-  }
-  if(title === 'mnctv') {
-    return 'MNCTV'
-  }
-  if(title === 'gtv') {
-    return 'GTV'
-  }
-  if(title === 'inews') {
-    return 'iNews TV'
-  }
-  return title
-}
-
