@@ -18,10 +18,8 @@ const pubAdsRefreshInterval = {
 let refreshCounter = 0;
 
 const JwPlayer = (props) => {
-  // Local States
   const [player, setPlayer] = useState(null);
-  const [duration, setDuration] = useState(0);
-  const [isCustomSetup, setIsCustomSetup] = useState(0);
+  const [ currentContent, setCurrentContent ] = useState({})
   const [status, setStatus] = useState({
     isPlayer: true,
     isError01: false,
@@ -53,7 +51,6 @@ const JwPlayer = (props) => {
     hlsjsdefault: true,
     aspectratio: '16:9',
     displaytitle: true,
-    // setFullscreen: true,
     stretching: 'uniform',
     height: 180,
     advertising: {
@@ -68,7 +65,7 @@ const JwPlayer = (props) => {
     },
   };
   
-  // Initial Setup
+  // player initial setup
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
     if (props.geoblockStatus) {
@@ -79,24 +76,41 @@ const JwPlayer = (props) => {
     }
     setPlayer(jwplayer);
     if (props.data && props.data.url) {
+      setCurrentContent(props.data)
       jwplayer.setup(options);
     }
+
+    // shall trigger only when content is not changed on player but immediately destroyed
+    jwplayer.on("remove", _ => {
+      if (!props.isResume || !props.data.id) return
+      props.onResume(props.data.id, props.data.content_type, jwplayer.getPosition());
+    })
+
     return () => {
-      if (player !== null) {
-        jwplayer.remove();
-      }
+      jwplayer.remove();
     };
   }, []);
 
-  // Update Setup
+  // listen data update on player
   useEffect(() => {
     if (player !== null) {
-      setIsCustomSetup(Math.random());
-      player.setup(options);
 
+      // Continue watching when changing between video contents
+      if (props.customData && props.customData.isLogin && props.isResume && (currentContent.id)) {
+        props.onResume(currentContent.id, currentContent.content_type, player.getPosition());
+      }
+      
+      player.setup(options);
       setIsPlayerReady(false)
+      setCurrentContent(props.data)
+
+      // shall trigger when there are content change on player before being destroyed
+      player.on("remove", _ => {
+        if (!props.isResume || !props.data.id) return
+        props.onResume(props.data.id, props.data.content_type, player.getPosition());
+      })
     }
-  }, [props.data && props.data.url, props.data && props.data.vmap]);
+  }, [props.data && props.data.url]);
 
   // Costum Setup
   useEffect(() => {
@@ -152,11 +166,8 @@ const JwPlayer = (props) => {
           const forwardElement = document.createElement('div');
           forwardElement.classList.add('jw-rplus-forward');
           forwardElement.innerHTML = foward10;
-          // const iconForward = document.querySelector('.icon-forward');
           forwardElement.addEventListener('dblclick', (ev) => {
-            // iconForward.classList.add('animated', 'fadeInRight', 'go');
             setTimeout(() => {
-              // iconForward.classList.remove('animated', 'fadeInRight', 'go');
               forwardElement.style.opacity = 0;
             }, 900);
           });
@@ -229,10 +240,6 @@ const JwPlayer = (props) => {
       });
 
       player.on('adError', (event) => {
-      });
-
-      player.on('time', (event) => {
-        setDuration(player.getPosition());
       });
 
       player.on('complete', (event) => {
@@ -337,28 +344,12 @@ const JwPlayer = (props) => {
     }
   });
 
-  // Continue Watching
+  // conviva tracker cleanup function
   useEffect(() => {
-    if(props.customData && props.customData.isLogin && props.isResume && (props.data && props.data.id)) {
-      props.onResume(props.data.id, props.data.content_type, duration);
-    }
-  }, [isCustomSetup]);
-
-  useEffect(() => {
-    let ab = 0
-    if(player !== null) {
-      player.on('time', (event) => {
-        ab = event.currentTime
-      });
-    }
     return () => {
       if (window.convivaVideoAnalytics) {
         const convivaTracker = convivaJwPlayer();
         convivaTracker.cleanUpSession();
-      }
-
-      if (props.isResume && (props.data && props.data.id)) {
-        props.onResume(props.data.id, props.data.content_type, ab);
       }
     };
   }, [player])

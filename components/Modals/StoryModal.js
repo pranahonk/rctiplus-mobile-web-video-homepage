@@ -87,7 +87,7 @@ function storyModal(props) {
     const distance = e.changedTouches[0].clientX - swipe.clientX
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
 
-    runProgressBar(progressBars)
+    runProgressBar()
     if (player) player.play()
 
     modal.current.style.transform = `unset`
@@ -128,12 +128,12 @@ function storyModal(props) {
     })
     progressBars[activeIndex].children[0].style.animation = "unset"
     setPlayer(jwplayer)
-    pauseProgressBar(progressBars)
+    pauseProgressBar()
 
     jwplayer.on("play", _ => {
       const duration = jwplayer.getDuration()
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${duration}s`
-      runProgressBar(progressBars)
+      runProgressBar()
     })
 
     jwplayer.on("error", _ => {
@@ -141,17 +141,17 @@ function storyModal(props) {
     })
 
     jwplayer.on("buffer", _ => {
-      pauseProgressBar(progressBars)
+      pauseProgressBar()
     })
   }
 
-  const pauseProgressBar = bars => {
-    const progressBars = bars || progressBarWrapper.current.querySelectorAll(".progressbars")
+  const pauseProgressBar = _ => {
+    const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     progressBars[activeIndex].children[0].style.animationPlayState = "paused"
   }
 
-  const runProgressBar = bars => {
-    const progressBars = bars || progressBarWrapper.current.querySelectorAll(".progressbars")
+  const runProgressBar = _ => {
+    const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     progressBars[activeIndex].children[0].style.animationPlayState = "running"
   }
 
