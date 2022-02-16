@@ -66,6 +66,8 @@ export const lineupContinueWatchingFragment = (queryParams) => {
       }
       status {
         code
+        message_client
+        message_server
       }
     }
   }
