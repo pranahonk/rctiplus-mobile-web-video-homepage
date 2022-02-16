@@ -82,12 +82,55 @@ export const redirectToTrebel = (user) => {
     "user_id": rplusUserId, // RCTI+ user id or leave blank if user is not logged in
     "date_time": new Date().toISOString(),
     "client_id": process.env.GA_INIT_ID,
-    "pillar": "video"
+    "pillar": "music"
   })
   ReactGA.event({
-    category: 'trebel',
+    category: 'music_interaction',
     action: 'click_go_to_trebel',
     label: 'redirect_to_trebel',
-    name: "general_event"
+    name: "click_go_to_trebel"
+  })
+}
+
+export const bottomMenuClick = (user, params) => {
+  const rplusUserId = !user ? "" : user?.id
+  
+  ReactGA.initialize(process.env.GA_INIT_ID, {
+    titleCase: false
+  })
+  ReactGA.set({
+    "user_id": rplusUserId, // RCTI+ user id or leave blank if user is not logged in
+    "date_time": new Date().toISOString(),
+    "client_id": process.env.GA_INIT_ID,
+    "pillar": params.pillar,
+    "button_name": params.button_name
+  })
+  ReactGA.event({
+    category: 'bottom_menu_clicked',
+    action: 'menu_navbar_tracking',
+    label: params.button_name,
+    name: "click_bottom_menu"
+  })
+}
+
+export const trebelPage = (user, source = '') => {
+  const rplusUserId = !user ? "" : user?.id
+  
+  ReactGA.initialize(process.env.GA_INIT_ID, {
+    titleCase: false
+  })
+  ReactGA.set({
+    "user_id": rplusUserId, // RCTI+ user id or leave blank if user is not logged in
+    "date_time": new Date().toISOString(),
+    "client_id": process.env.GA_INIT_ID,
+    "page_type": 'trebel_page',
+    "pillar": 'music',
+    "source": source
+  })
+  ReactGA.event({
+    category: 'trebel_page',
+    action: 'trebel_page',
+    label: 'trebel_page',
+    name: "trebel_page"
   })
 }

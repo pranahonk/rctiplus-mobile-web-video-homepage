@@ -10,6 +10,7 @@ import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent } from '
 import '../../../assets/scss/components/footer-v2.scss';
 
 import { Badge } from 'reactstrap';
+import { bottomMenuClick } from '../../../utils/firebaseTracking';
 import { gaTracker } from '../../../utils/ga-360';
 
 // import ImportantDevicesIcon from '@material-ui/icons/ImportantDevices';
@@ -149,7 +150,8 @@ const FooterNav_v2 = (props) => {
                                 homeGeneralClicked('mweb_library_clicked');
                                 break;
                         }
-                        gaTracker('menu_navbar_tracking','click_bottom_menu', 'Library')
+                        gaTracker('menu_navbar_tracking','click_bottom_menu', 'Trebel')
+                        bottomMenuClick(props?.user?.data, { pillar: 'general', button_name: 'trebel' })
 
                         Router.push('/explores_revamp', "/explores")
                     }}>

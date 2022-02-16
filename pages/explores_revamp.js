@@ -8,7 +8,7 @@ import fetch from 'isomorphic-unfetch';
 import pageActions from '../redux/actions/pageActions';
 import userActions from '../redux/actions/userActions';
 import searchActions from '../redux/actions/searchActions';
-import { initGA, redirectToTrebel } from '../utils/firebaseTracking';
+import { initGA, redirectToTrebel, trebelPage } from '../utils/firebaseTracking';
 
 import Layout from '../components/Layouts/Default_v2';
 import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
@@ -96,6 +96,10 @@ class ExploresRevamp extends React.Component {
 			selected_genre: selectedGenre,
 			selected_genre_name: selectedGenreName
 		})
+
+		let source = this.props.history.length > 0 ? window.location.origin + this.props.history[0] : ''
+
+		trebelPage(this.props.user.data, source)
 	}
 
 	getMetadata() {
