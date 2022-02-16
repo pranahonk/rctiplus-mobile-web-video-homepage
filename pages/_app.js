@@ -23,6 +23,13 @@ export default withRedux(initStore, { debug: false })(
             };
         }
 
+        constructor(props) {
+            super(props);
+            this.state = {
+                history: []
+            }
+        }
+
         async componentDidMount() {
             const segments = this.props.router.asPath;
             let params = {}
@@ -130,7 +137,9 @@ export default withRedux(initStore, { debug: false })(
             //         break;
             // }
 
-
+            // lets add initial route to `history`
+            this.setState(prevState => ({ history: [...prevState.history, segments] }));
+            
             register();
         }
 
@@ -150,7 +159,7 @@ export default withRedux(initStore, { debug: false })(
 
             return (
                 <Provider store={store}>
-                    <Component {...pageProps} />
+                    <Component history={this.state.history} {...pageProps} />
                 </Provider>
             );
         }
