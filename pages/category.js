@@ -7,6 +7,7 @@ import LoadingBar from 'react-top-loading-bar';
 import { StickyContainer, Sticky } from 'react-sticky';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import Layout from '../components/Layouts/Default_v2';
+import { gaTrackerScreenView } from '../utils/ga-360';
 
 import Header from "../components/Includes/HomeCategory/DetailCategory/Header"
 import Carousel from '../components/Includes/Gallery/Carousel_v2';
@@ -35,6 +36,7 @@ function category (props) {
 
     useEffect(() => {
         getCategoryLineups()
+				gaTrackerScreenView()
         const accessToken = getCookie('ACCESS_TOKEN')
         setToken((accessToken == undefined) ? getVisitorToken() : accessToken)
     }, [ categoryId ])
