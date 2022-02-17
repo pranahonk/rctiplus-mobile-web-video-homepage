@@ -236,3 +236,60 @@ ul#trending .trending-item{
     margin-right: 3px;
     position: relative;
 }
+
+.news-interest_thumbnail-wrapper {
+  position: relative;
+  width: calc(100% - 10px);
+  height: 256px;
+  margin: 17px 10px 10px 10px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, 0.5);
+
+  .news-interest_thumbnail-title {
+    content: '';
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: absolute;
+    width: 100%;
+    height: 63px;
+    bottom: 0;
+    padding: 7px;
+    background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(24,14,10,0) 100%, rgba(0,0,0,1) 100%);
+    h1 {
+      margin: 0;
+      font-size: 9.4px;
+      font-weight: 600;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.18;
+      letter-spacing: normal;
+      color: #ffffff;
+    }
+    h1.isRead{
+      color: #4a4a4a;
+      text-shadow: 0 0 #6b6666;
+    }
+    h2 {
+      margin: 0;
+      font-size: 7.9px;
+      font-weight: 600;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #8f8f8f;
+      &span {
+        font-size: 7.9px;
+        font-weight: 300;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: #8f8f8f;
+      }
+    }
+  }
+}
