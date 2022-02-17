@@ -11,8 +11,7 @@ import '../../../assets/scss/components/footer-v2.scss';
 
 import { Badge } from 'reactstrap';
 import { bottomMenuClick } from '../../../utils/firebaseTracking';
-import { gaTracker } from '../../../utils/ga-360';
-import { gaTrackerNavbarTrack } from '../../../utils/ga-360';
+import { gaTracker, gaTrackerNavbarTrack} from '../../../utils/ga-360';
 
 // import ImportantDevicesIcon from '@material-ui/icons/ImportantDevices';
 // import LiveEventIcon from '../Common/LiveEventIcon';
