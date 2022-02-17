@@ -6,7 +6,6 @@ import CountdownTimer from "../../components/Includes/Common/CountdownTimer"
 import "../../assets/scss/components/modal.scss"
 
 export default function comingSoonModal(props) {
-  let swipe = {}
   const ref = useRef(null)
   const [ open, setOpen ] = useState(props.open)
 
@@ -14,41 +13,15 @@ export default function comingSoonModal(props) {
     setOpen(props.open)
     if (props.open) {
 
-      // disable scroll event
+      // disable navbar temporarily
       document.getElementById("nav-footer").style.display = "none"
-      document.body.style.overflow = "hidden"
-      document.body.style.position = "fixed"
-      document.body.style.width = "100vw"
     }
   }, [props.open])
-
-  const onTouchStart = (e) => {
-		const touch = e.touches[0];
-		swipe = { y: touch.clientY };
-	}
-
-  const listenTouchModalComingSoon =  (e) => {
-		const touch = e.touches[0]
-    const distance = touch.clientY - swipe.y
-    if (distance < 0) return
-    ref.current.style.transform = `translateY(${distance}px)`
-  }
-
-  const closeComingSoonModal = (e) => {
-    ref.current.style.transform = "unset"
-    const touch = e.changedTouches[0]
-    const distance = touch.clientY - swipe.y
-    
-    if (distance > 100) destroyModal()
-  }
 
   const destroyModal = _ => {
     props.onClose()
 
-    // enable scroll event
-    document.body.style.removeProperty("position")
-    document.body.style.removeProperty("overflow")
-    document.body.style.removeProperty("width")
+    // re-enable navbar temporarily
     document.getElementById("nav-footer").style.removeProperty("display")
   }
 
@@ -66,14 +39,12 @@ export default function comingSoonModal(props) {
       <div>
         <div 
           id="destroy-modal-area" 
-          onClick={_ => destroyModal()}></div>
+          onClick={_ => destroyModal()}
+          onTouchStart={_ => destroyModal()}></div>
         <div ref={ref}>
           <div 
             id="close-bar" 
-            className="close-bar"
-            onTouchMove={e => listenTouchModalComingSoon(e)}
-            onTouchStart={e => onTouchStart(e)}
-            onTouchEnd={e => closeComingSoonModal(e)}>
+            className="close-bar">
             <div></div>
           </div>
           <img
