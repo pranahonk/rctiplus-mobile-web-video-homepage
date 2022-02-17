@@ -11,7 +11,7 @@ import '../../../assets/scss/components/footer-v2.scss';
 
 import { Badge } from 'reactstrap';
 import { bottomMenuClick } from '../../../utils/firebaseTracking';
-import { gaTracker } from '../../../utils/ga-360';
+import { gaTracker, gaTrackerNavbarTrack} from '../../../utils/ga-360';
 
 // import ImportantDevicesIcon from '@material-ui/icons/ImportantDevices';
 // import LiveEventIcon from '../Common/LiveEventIcon';
@@ -147,6 +147,7 @@ const FooterNav_v2 = (props) => {
                                 break;
 
                             default:
+                                gaTrackerNavbarTrack('menu_navbar_tracking','click_bottom_menu', 'trebel');
                                 homeGeneralClicked('mweb_library_clicked');
                                 break;
                         }
