@@ -52,8 +52,6 @@ class Index_v2 extends React.Component {
             sticky_ads_closed: false,
             isShimmer: true,
         };
-
-        // this.props.setPageLoader();
         this.swipe = {};
         this.token = '';
     }
