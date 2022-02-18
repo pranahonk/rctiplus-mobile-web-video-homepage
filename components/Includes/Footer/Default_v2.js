@@ -32,8 +32,8 @@ const FooterNav_v2 = (props) => {
 
     useEffect(() =>{
         props.getUserData()
-        .then(response => console.log(response))
-        .catch(error => console.log(error));
+        .then(response => {})
+        .catch(error => {});
         Router.events.on("routeChangeStart", () => {
             // const convivaSessionId = getCookie('CONVIVA_SESSION_ID');
             // if (convivaSessionId != null) {

@@ -27,6 +27,7 @@ import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
+import { gaTrackerScreenView } from '../utils/ga-360';
 
 // NEW RPLUS LINEUP CONTENTS
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
@@ -82,6 +83,7 @@ class Index_v2 extends React.Component {
 
   componentDidMount() {
     RPLUSAppVisit();
+    gaTrackerScreenView();
 
     const accessToken = getCookie('ACCESS_TOKEN');
     this.setState({
