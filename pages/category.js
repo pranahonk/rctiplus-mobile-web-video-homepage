@@ -17,7 +17,7 @@ import Stories from '../components/Includes/Gallery/Stories_v2'
 import StickyAds from '../components/Includes/Banner/StickyAds'
 import { client } from "../graphql/client"
 import { GET_LINEUPS } from "../graphql/queries/homepage"
-import { getCookie, getVisitorToken } from "../utils/cookie"
+import { getCookie, getVisitorToken, setAccessToken } from "../utils/cookie"
 
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
 const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
@@ -52,10 +52,8 @@ function Category (props) {
 
     useEffect(() => {
         getCategoryLineups()
-				gaTrackerScreenView()
-        const accessToken = getCookie('ACCESS_TOKEN')
-        setToken((accessToken == undefined) ? getVisitorToken() : accessToken)
-    }, [ categoryId ])
+        gaTrackerScreenView()
+    }, [ props.router.query.category_id ])
 
     const getCategoryLineups = (page = 1, pageSize = 5) => {
         if (page === 1) setIsShimmer(true)
