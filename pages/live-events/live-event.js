@@ -16,7 +16,7 @@ import MuteChat from '../../components/Includes/Common/MuteChat';
 
 
 import initialize from '../../utils/initialize';
-import { getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
+import { getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
 import { contentGeneralEvent, liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked } from '../../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../utils/firebaseTracking';
@@ -275,6 +275,8 @@ class LiveEvent extends React.Component {
 				// this.initPlayer();
 				this.props.setSeamlessLoad(false);
 				this.props.unsetPageLoader();
+
+				if (location.search.includes("refpage=login")) this.toggleChat()
 			});
 		})
 		.catch(error => {
@@ -357,7 +359,7 @@ class LiveEvent extends React.Component {
 	}
 
 	checkLogin() {
-		if (!this.state.user_data) {
+		if (!this.state.user_data && !getUserAccessToken()) {
 			showSignInAlert(`Please <b>Sign In</b><br/>
 				Woops! Gonna sign in first!<br/>
 				Only a click away and you<br/>
