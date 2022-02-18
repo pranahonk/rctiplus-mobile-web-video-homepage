@@ -6,14 +6,17 @@ import LoadingBar from 'react-top-loading-bar'
 import { StickyContainer, Sticky } from 'react-sticky'
 import dynamic from 'next/dynamic'
 
-import HomeLoader from '../components/Includes/Shimmer/HomeLoader'
-import Layout from '../components/Layouts/Default_v2'
+import { StickyContainer, Sticky } from 'react-sticky';
+import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
+import Layout from '../components/Layouts/Default_v2';
+import { gaTrackerScreenView } from '../utils/ga-360';
+
 import Header from "../components/Includes/HomeCategory/DetailCategory/Header"
 import Carousel from '../components/Includes/Gallery/Carousel_v2'
 import GridMenu from '../components/Includes/Common/HomeCategoryMenu'
 import Stories from '../components/Includes/Gallery/Stories_v2'
 import StickyAds from '../components/Includes/Banner/StickyAds'
-import { client } from "../graphql/client" 
+import { client } from "../graphql/client"
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { getCookie, getVisitorToken } from "../utils/cookie"
 
@@ -41,7 +44,7 @@ function Category (props) {
 
     const bottomScrollFetch = () => {
         if (!meta.pagination) return
-        
+
         const { total_page, current_page } = meta.pagination
         if (total_page === current_page) return
 
@@ -50,7 +53,10 @@ function Category (props) {
 
     useEffect(() => {
         getCategoryLineups()
-    }, [ props.router.query.category_id ])
+				gaTrackerScreenView()
+        const accessToken = getCookie('ACCESS_TOKEN')
+        setToken((accessToken == undefined) ? getVisitorToken() : accessToken)
+    }, [ categoryId ])
 
     const getCategoryLineups = (page = 1, pageSize = 5) => {
         if (page === 1) setIsShimmer(true)
@@ -167,23 +173,23 @@ function Category (props) {
 
     return (
         <Layout >
-            <LoadingBar 
-                progress={0} 
-                height={3} 
-                color={'#fff'} 
+            <LoadingBar
+                progress={0}
+                height={3}
+                color={'#fff'}
                 ref={loadingBar} />
 
-            <BottomScrollListener 
-                offset={150} 
+            <BottomScrollListener
+                offset={150}
                 onBottom={bottomScrollFetch} />
 
-            { isShimmer 
-                ? <HomeLoader /> 
+            { isShimmer
+                ? <HomeLoader />
                 : (
                     <>
                         <div style={{marginTop: "56px"}}>
                             <Header title={props.router.query.category_title} />
-                            
+
                             <div style={{marginTop: -3}}>
                                 <Carousel >
                                     <GridMenu />
@@ -236,13 +242,13 @@ function Category (props) {
                                 </div>
                             </div>
                         </div>
-                        <ComingSoonModal 
+                        <ComingSoonModal
                             open={openComingSoonModal}
                             onClose={_ => setOpenComingSoonModal(false)}
                             content={contentComingSoonModal} />
                     </>
                 )
-            }  
+            }
         </Layout>
     )
 }
