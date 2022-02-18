@@ -6,7 +6,6 @@ import LoadingBar from 'react-top-loading-bar'
 import { StickyContainer, Sticky } from 'react-sticky'
 import dynamic from 'next/dynamic'
 
-import { StickyContainer, Sticky } from 'react-sticky';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import Layout from '../components/Layouts/Default_v2';
 import { gaTrackerScreenView } from '../utils/ga-360';
