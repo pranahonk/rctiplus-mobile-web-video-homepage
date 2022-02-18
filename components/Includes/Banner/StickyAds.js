@@ -38,7 +38,7 @@ class StickyAds extends React.Component {
   }
 
   componentWillUnmount() {
-    googletag.destroySlots()
+    if (googletag.destroySlots) googletag.destroySlots()
   }
 
   render() {

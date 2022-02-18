@@ -191,7 +191,7 @@ function Category (props) {
                             <Header title={props.router.query.category_title} />
 
                             <div style={{marginTop: -3}}>
-                                <Carousel >
+                                <Carousel category >
                                     <GridMenu />
                                 </Carousel>
                             </div>
