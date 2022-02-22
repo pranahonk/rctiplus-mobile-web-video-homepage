@@ -74,7 +74,7 @@ function carouselBanner(props) {
   }
 
   return (
-    <div style={{ position: 'relative', paddingTop: props.showStickyInstall ? 135 : props.detailCategory? 0 : 70,}}>
+    <div style={{ position: 'relative', paddingTop: props.showStickyInstall ? 135 : props.category ? 0 : 70,}}>
       {banners.length === 0
         ? (
           <div

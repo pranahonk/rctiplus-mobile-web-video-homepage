@@ -34,11 +34,11 @@ class StickyAds extends React.Component {
   componentDidMount() {
     this.props.fetchTargetingAds()
       .then((res) => this.fetchAds(res))
-      .catch((err) => this.fetchAds([]))
+      .catch((_) => this.fetchAds([]))
   }
 
   componentWillUnmount() {
-    googletag.destroySlots()
+    if (googletag.destroySlots) googletag.destroySlots()
   }
 
   render() {
