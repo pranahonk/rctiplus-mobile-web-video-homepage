@@ -6,7 +6,7 @@ const TOKEN_KEY = 'ACCESS_TOKEN';
 
 export const getUserId = () => {
   const accessToken = getCookie(TOKEN_KEY);
-  let userId ="";
+  let userId = "";
   if (accessToken) {
     try {
       userId = jwtDecode(accessToken).vid;

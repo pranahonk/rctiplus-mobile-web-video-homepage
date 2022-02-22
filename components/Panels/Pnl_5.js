@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import BottomScrollListener from 'react-bottom-scroll-listener';
-import Stories from 'react-insta-stories'
+// import Stories from 'react-insta-stories'
 import '../../assets/scss/components/stories.scss';
 
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
@@ -156,14 +156,14 @@ class Pnl_5 extends React.Component {
 				{this.state.showInsta && 
 					<div className="modal-stories">
 						<div onClick={()=> this.setState({showInsta: false})} style={{position:"fixed", right: 25, top: 25, zIndex: 2000000, color:"white"}}><CloseRoundedIcon /></div>
-						<Stories
+						{/* <Stories
 							stories={this.state.storiesActive}
 							defaultInterval={7000}
 							width="100%"
 							height="100%"
 							onAllStoriesEnd= {() => this.setState({showInsta:false})}
 							keyboardNavigation={true}
-						/>
+						/> */}
 					</div>
 				}
 

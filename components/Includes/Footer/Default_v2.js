@@ -154,6 +154,7 @@ const FooterNav_v2 = (props) => {
                         gaTracker('menu_navbar_tracking','click_bottom_menu', 'Trebel')
                         bottomMenuClick(props?.user?.data, { pillar: 'general', button_name: 'trebel' })
 
+                        bottomMenuClick(props?.user?.data, { pillar: 'general', button_name: 'trebel' })
                         Router.push('/explores_revamp', "/explores")
                     }}>
                         <a>
