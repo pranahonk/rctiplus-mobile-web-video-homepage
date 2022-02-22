@@ -23,6 +23,19 @@ import { gaTrackerScreenView } from '../utils/ga-360';
 
 class ExploresRevamp extends React.Component {
 
+	constructor(props) {
+		super(props);
+		this.platform = null;
+		
+		const segments = this.props.router.asPath.split(/\?/);
+		if (segments.length > 1) {
+			const q = queryString.parse(segments[1]);
+			if (q.platform) {
+				this.platform = q.platform;
+			}
+		}
+	}
+
 	static async getInitialProps(ctx) {
 		const accessToken = getCookie('ACCESS_TOKEN');
 		const status = 'active';
@@ -176,7 +189,10 @@ class ExploresRevamp extends React.Component {
 				</Head>
 				<LoadingBar progress={0} height={3} color='#fff' onRef={ref => (this.LoadingBar = ref)} />
 
-				{process.env.UI_VERSION == '2.0'
+
+				{
+					this.platform === 'ios' || this.platform === 'android' ? null :
+					process.env.UI_VERSION == '2.0'
 					? (<NavDefault_v2 disableScrollListener />)
 					: (<NavDefault disableScrollListener />)
 				}
