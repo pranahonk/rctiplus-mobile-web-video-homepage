@@ -1,4 +1,5 @@
 import { homeStoryEvent } from '../../utils/appier';
+import { gaTrackerStory } from '../../utils/ga-360';
 
 /*
     zuck.js
@@ -89,24 +90,24 @@ module.exports = (window => {
 			item = typeof item !== "string"
 					? JSON.stringify(item)
 					: item;
-	
+
 			try {
 					item = JSON.parse(item);
 			} catch (e) {
 					return false;
 			}
-	
+
 			if (typeof item === "object" && item !== null) {
 					return true;
 			}
-	
+
 			return false;
 		}
 
 		const parsingMessage = (event) => {
 			// if (!isJson(event.data)) return;
 			// const data = JSON.parse(event.data);
-			
+
 			// if (data?.state) {
 			// 	const storyViewer = query('#zuck-modal .viewing')
 			// 	const currentViewingStory = zuck.data[storyViewer.getAttribute("data-story-id")]
@@ -151,7 +152,7 @@ module.exports = (window => {
 			// 			{
 			// 				const items = storyViewer.querySelectorAll('[data-index].active');
 			// 				const itemPointer = items[0];
-							
+
 			// 				setVendorVariable(
 			// 					itemPointer.getElementsByTagName('b')[0].style,
 			// 					'AnimationDuration',
@@ -441,7 +442,7 @@ module.exports = (window => {
                     <span class="time">${get(itemData, 'lastUpdatedAgo')}</span>
                   </span>
                 </a>
-                
+
                 <ul class="items"></ul>
               </div>`;
 				},
@@ -464,28 +465,28 @@ module.exports = (window => {
                       <div class="head">
 												<div class="left">
                           ${option('backButton') ? '<a class="back">&lsaquo;</a>' : ''}
-  
+
                           <span class="item-preview">
                             <img lazy="eager" class="profilePhoto" src="${get(storyData, 'photo')}" />
                           </span>
-  
+
                           <div class="info">
                             <strong class="name story-item-title" id="story-item-title">${storyData.items[currentStoryItem].title}</strong>
                             <span class="time">${get(storyData, 'timeAgo')}</span>
                           </div>
                         </div>
-                        
+
                         <div class="right">
 													<span class="time">${get(currentStoryItem, 'timeAgo')}</span>
                           <span class="loading"></span>
                           <a class="close" tabIndex="2">&#9587;</a>
                         </div>
                       </div>
-  
+
                       <div class="slides-pointers">
                         <div class="wrap"></div>
                       </div>
-  
+
                     ${option('paginationArrows')
 										? `<div class="slides-pagination">
 												<span class="previous">&lsaquo;</span>
@@ -503,23 +504,23 @@ module.exports = (window => {
                           <span class="item-preview">
                             <img lazy="eager" class="profilePhoto" src="${get(storyData, 'photo')}" />
                           </span>
-  
+
                           <div class="info">
                             <strong class="name story-item-title" id="story-item-title">${storyData.items[currentStoryItem].title}</strong>
                             <span class="time">${get(storyData, 'timeAgo')}</span>
                           </div>
                         </div>
-                        
+
                         <div class="right">
                           <span class="loading"></span>
                           <a class="close" tabIndex="2">&#9587;</a>
                         </div>
                       </div>
-  
+
                       <div class="slides-pointers">
                         <div class="wrap"></div>
                       </div>
-  
+
                     ${option('paginationArrows')
 										? `<div class="slides-pagination">
 												<span class="previous">&lsaquo;</span>
@@ -531,7 +532,7 @@ module.exports = (window => {
 				},
 
 				viewerItemPointer(index, currentIndex, item) {
-					return `<span 
+					return `<span
                       class="${currentIndex === index ? 'active' : ''} ${get(item, 'seen') === true ? 'seen' : ''}"
                       data-index="${index}" data-item-id="${get(item, 'id')}">
                         <b style="animation-duration:${get(item, 'length') === '' ? '3' : get(item, 'length')}s"></b>
@@ -539,7 +540,7 @@ module.exports = (window => {
 				},
 
 				viewerItemBody(index, currentIndex, item) {
-					return `<div 
+					return `<div
                       class="item${get(item, 'seen') === true ? ' seen' : ''}${currentIndex === index ? ' active' : ''}"
                       data-time="${get(item, 'time')}" data-type="${get(item, 'type')}" data-index="${index}" data-item-id="${get(item, 'id')}">
                       ${
@@ -555,7 +556,7 @@ module.exports = (window => {
 													?	`<div id=${get(item, 'preview')} ${get(item, 'type')}></div>`
 													: `<img loading="auto" class="media" src="${get(item, 'src')}" ${get(item, 'type')} alt="${get(item, 'title')}" />
                       `}
-  
+
                       ${
 												get(item, 'link')
 												? `<a id="${`link-${item.id}`}" class="tip link link-move" href="${get(item, 'link')}" rel="noopener" target="_parent">
@@ -685,7 +686,7 @@ module.exports = (window => {
 						if (oldStory) {
 							const uselessStoryId = oldStory.getAttribute('data-story-id');
 							const uselessStoryItems = zuck.data[uselessStoryId].items;
-							
+
 							each(uselessStoryItems, (i, item) => {
 								if (item.type == 'video' && item.videoType == 'mpd') {
 									if (item.mpdPlayer) {
@@ -804,7 +805,7 @@ module.exports = (window => {
 
 					pointerItems += option('template', 'viewerItemPointer')(i, currentItem, item);
 					htmlItems += option('template', 'viewerItemBody')(i, currentItem, item);
-					
+
 				});
 
 				slides.innerHTML = htmlItems;
@@ -945,7 +946,7 @@ module.exports = (window => {
 						titleElms[i].innerText = storyItems[currentItem].title;
 					}
 				}
-				
+
 				if (!isStoryAds) {
 					let linkElement = storyViewer.querySelector('.slides a[target="_parent"]');
 					if (linkElement) {
@@ -983,7 +984,7 @@ module.exports = (window => {
 			// Story Ads
 			const createStoryViewerAds = function (storyID, storyAdsItems) {
 				window.googletag = window.googletag || {cmd: []}
-				
+
 				// Refresh the pubads service everytime ads are going to be displayed
 				// Tell user currently viewing story items is loading
 				googletag.pubads().refresh()
@@ -999,7 +1000,7 @@ module.exports = (window => {
 							item['adsSlot'] = googletag
 								.defineSlot(item.src, ['fluid'], item.preview)
 								.addService(googletag.pubads())
-							
+
 							// Set targetting ads for each story ads items
 							// This process will be omitted when array is an empty array
 							taData.forEach(({ name, value }) => {
@@ -1048,7 +1049,7 @@ module.exports = (window => {
 
 				let touchStart = function (event) {
 					const storyViewer = query('#zuck-modal .viewing');
-					
+
 					if (event.target.nodeName === 'A') {
 						return;
 					}
@@ -1182,19 +1183,19 @@ module.exports = (window => {
 										else {
 											const totalItems = zuck.data[zuck.internalData['currentStory']].items.length - 1;
 											const currentItem = zuck.data[zuck.internalData['currentStory']]['currentItem'];
-											
+
 											if (parseInt(currentItem) < parseInt(totalItems)) {
 												translate(modalSlider, position.x, 300);
 											} else {
 												modal.close();
 											}
 										}
-										
+
 									}
 									else {
 										translate(modalSlider, position.x, 300);
 									}
-									
+
 								}
 							}
 
@@ -1259,7 +1260,7 @@ module.exports = (window => {
 										const msg = {
 											state: 'unmute'
 										}
-										
+
 										adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
 									} else {
 										navigateItem();
@@ -1313,6 +1314,7 @@ module.exports = (window => {
 
 						if (storyData.currentItem != undefined && storyData.items[storyData.currentItem]) {
 							const item = storyData.items[storyData.currentItem];
+              gaTrackerStory('video_interaction', 'video_click_content_list', item.title, item.id, item.title, item.type)
 							homeStoryEvent(item.id, item.title, item.type, 'mweb_homepage_story_clicked');
 						}
 						createStoryViewer(storyData, 'viewing', true);
@@ -1499,7 +1501,7 @@ module.exports = (window => {
 
 		const parseStory = function (story, returnCallback) {
 			const storyId = story.getAttribute('data-id');
-			
+
 			let seen = false;
 			if (zuck.internalData['seenItems'][storyId]) {
 				seen = true;
@@ -1667,7 +1669,7 @@ module.exports = (window => {
 								const msg = {
 									state: 'play'
 								};
-	
+
 								adsFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
 							}
 						} else if (adsItem.contentType == 'none') {
@@ -1713,11 +1715,11 @@ module.exports = (window => {
 				video.setVolume(1.0);
 				video.getVideoElement().removeAttribute('muted');
 				let isPlaying = video.time() > 0 && !video.isPaused() && !video.getVideoElement().ended && video.isReady();
-	
+
 				if (!isPlaying) {
 					video.play();
 				}
-	
+
 				if (video.isPaused()) {
 					video.setMute(true);
 					isPlaying = video.time() > 0 && !video.isPaused() && !video.getVideoElement().ended && video.isReady()
@@ -1730,11 +1732,11 @@ module.exports = (window => {
 				video.volume = 1.0;
 				video.removeAttribute('muted');
 				let isPlaying = video.currentTime > 0 && !video.paused && !video.ended && video.readyState > 2;
-	
+
 				if (!isPlaying) {
 					video.play();
 				}
-	
+
 				if (video.paused) {
 					video.muted = true;
 					isPlaying = video.currentTime > 0 && !video.paused && !video.ended && video.readyState > 2;
@@ -1920,7 +1922,7 @@ module.exports = (window => {
 			const currentItemElements = storyViewer.querySelectorAll(`[data-index="${currentItem}"]`);
 			const currentPointer = currentItemElements[0];
 			const currentItemElement = currentItemElements[1];
-			
+
 			const navigateItem = currentItem + directionNumber;
 			const nextItems = storyViewer.querySelectorAll(`[data-index="${navigateItem}"]`);
 			const nextPointer = nextItems[0];
@@ -1944,7 +1946,7 @@ module.exports = (window => {
 						}
 					}
 				}
-				
+
 
 				const navigateItemCallback = function () {
 					if (direction === 'previous') {
@@ -1973,7 +1975,7 @@ module.exports = (window => {
 						el.innerText = timeAgo(nextItem.getAttribute('data-time'));
 					});
 
-					
+
 					const titleElms = document.getElementsByClassName('story-item-title');
 					for (let i = 0; i < titleElms.length; i++) {
 						titleElms[i].innerText = zuck.data[currentStory].items[zuck.data[currentStory]['currentItem']].title;
@@ -1995,7 +1997,7 @@ module.exports = (window => {
 				// go to next/prev story
 				let currentStoryIndex = Number(currentStory);
 				if (endDuration && endDuration != true) {
-					
+
 					if (direction !== 'previous') {
 						if (currentStoryIndex + 1 < zuck.data.length && zuck.data[currentStoryIndex + 1]) {
 							let item = zuck.data[currentStoryIndex + 1].items[0];
@@ -2030,7 +2032,7 @@ module.exports = (window => {
 					}
 				}
 			}
-			
+
 			// refresh the state of the ads to prevent overlapping sounds between switching over ads story items
 			// dont forget to add loading state to tell user it's still loading when it is going to display story ads
 			googletag.pubads().refresh()

@@ -80,7 +80,6 @@ export const erese = key => {
 };
 
 export const removeCookie = key => {
-    
     if (window.location.host.split('.').length === 1) {
         cookie.remove(key, { path: '/' })
     }

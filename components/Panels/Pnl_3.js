@@ -8,6 +8,7 @@ import contentActions from '../../redux/actions/contentActions';
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../utils/appier';
 import { urlRegex } from '../../utils/regex';
 import { showSignInAlert } from '../../utils/helpers';
+import { gaTrackerLineUp, gaTrackerProgram } from '../../utils/ga-360';
 const jwtDecode = require('jwt-decode');
 class Pnl_3 extends React.Component {
 
@@ -88,21 +89,23 @@ class Pnl_3 extends React.Component {
 						break;
 				case 'program':
 						Router.push(`/programs/${program.link}/${program.content_title.replace(/ +/g, '-')}`);
-						break;  
+						break;
 				case 'popup':
 						window.open(url, '_parent');
-						break;  
+						break;
 				default:
 						Router.push(url);
-		}       
+		}
 	}
 	link(data) {
-		
+
 		switch (data.content_type) {
 			case 'special':
 				contentGeneralEvent(this.props.title, data.content_type, data.content_id, data.content_title, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A', this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_special_event_clicked');
-
-				// window.open(data.link, '_blank');
+        gaTrackerProgram('video_interaction','video_click_program_list', data.content_title,
+          'not_available', data.program_id, 'not_available', 'not_available', 'not_available',
+          'not_available', 'not_available', 'not_available', 'not_available', 'not_available', 'not_available', data.premium === 0 ? 'no' : 'yes')
+				window.open(data.link, '_blank');
 				let url = data.url ? data.url : data.link;
 				// console.log('token:', this.props.token);
 				if (data.mandatory_login && this.props.user.isAuth) {
@@ -145,6 +148,9 @@ class Pnl_3 extends React.Component {
 
 			case 'program':
 				homeProgramClicked(this.props.title, data.program_id, data.program_title ? data.program_title : 'N/A', data.genre ? data.genre : 'N/A',  this.props.imagePath + this.props.resolution + data.portrait_image, this.props.imagePath + this.props.resolution + data.landscape_image, 'mweb_homepage_program_clicked');
+        gaTrackerProgram('video_interaction','video_click_program_list', data.content_title,
+          'not_available', data.program_id, 'not_available', 'not_available', 'not_available',
+          'not_available', 'not_available', 'not_available', 'not_available', 'not_available', 'not_available', data.premium === 0 ? 'no' : 'yes')
 
 				if (data.program_id) {
 					Router.push(`/programs/${data.program_id}/${urlRegex(data.program_title)}?ref=homepage&homepage_title=${this.props.title}`);
@@ -189,7 +195,7 @@ class Pnl_3 extends React.Component {
 	}
 
 	render() {
-		
+
 		return (
 			<div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} className="homepage-content pnl_horizontal">
 				<h2 className="content-title">{this.props.title}</h2>
@@ -209,8 +215,8 @@ class Pnl_3 extends React.Component {
 									</div>
 								) : ''}
 									<div>
-										<Img 
-											alt={c.program_title || c.content_title} 
+										<Img
+											alt={c.program_title || c.content_title}
 											unloader={<img src="/static/placeholders/placeholder_potrait.png"/>}
 											loader={<img src="/static/placeholders/placeholder_potrait.png"/>}
 											src={[this.props.imagePath + this.props.resolution + c.portrait_image, '/static/placeholders/placeholder_potrait.png']} />
@@ -220,7 +226,7 @@ class Pnl_3 extends React.Component {
 						</div>
 					)}
 				</BottomScrollListener>
-				
+
 			</div>
 		);
 	}

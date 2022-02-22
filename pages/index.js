@@ -26,11 +26,13 @@ import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 import { SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG, STATIC } from '../config';
 import { setCookie, getCookie, getVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
+import { gaTrackerScreenView } from '../utils/ga-360';
 
 const Panel1 = dynamic(() => import("../components/Panels/Pnl_1"))
 const Panel2 = dynamic(() => import("../components/Panels/Pnl_2"))
 const Panel3 = dynamic(() => import("../components/Panels/Pnl_3"))
 const Panel4 = dynamic(() => import("../components/Panels/Pnl_4"))
+const Panel5 = dynamic(() => import("../components/Panels/Pnl_5"))
 const SquareImage = dynamic(() => import("../components/Panels/SquareImage"))
 
 class Index_v2 extends React.Component {
@@ -73,6 +75,7 @@ class Index_v2 extends React.Component {
 
     componentDidMount() {
         RPLUSAppVisit();
+        gaTrackerScreenView()
 
         const accessToken = getCookie('ACCESS_TOKEN');
         this.token = accessToken == undefined ? getVisitorToken() : accessToken;
@@ -171,7 +174,7 @@ class Index_v2 extends React.Component {
                     <div style={{marginTop: "25px"}}>
                         <Stories loadingBar={this.LoadingBar} homepage={true}/>
                     </div>
-                    
+
                     <StickyContainer>
                         <Sticky disableHardwareAcceleration>
                             { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
@@ -207,83 +210,42 @@ class Index_v2 extends React.Component {
                             } }
                         </Sticky>
                     </StickyContainer>
-                    <div style={{marginBottom: 45, paddingTop: 10}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
-                        {contents.map((content, i) => {
-                            switch (content.display_type) {
-                                case 'horizontal_landscape_large':
-                                    return (
-                                        <Panel1
-                                            token={this.token}
-                                            type={content.type}
-                                            loadingBar={this.LoadingBar}
-                                            key={content.id}
-                                            contentId={content.id}
-                                            title={content.title}
-                                            content={content.content}
-                                            imagePath={meta.image_path}
-                                            resolution={RESOLUTION_IMG}
-                                            displayType={content.display_type}/>
-                                    )
-                                    
-                                case 'horizontal_landscape':
-                                    return (
-                                        <Panel2
-                                            token={this.token}
-                                            loadingBar={this.LoadingBar}
-                                            key={content.id}
-                                            contentId={content.id}
-                                            title={content.title}
-                                            content={content.content}
-                                            imagePath={meta.image_path}
-                                            resolution={RESOLUTION_IMG}
-                                            displayType={content.display_type}/>
-                                    )
+                        <div style={{marginBottom: 45, paddingTop: 10}} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)}>
+                            {contents.map((content, i) => {
+                                if(content.content_type === "story"){
+                                    return <Panel5 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+                                }
+                                switch (content.display_type) {
+                                    case 'horizontal_landscape_large':
+                                        return <Panel1 token={this.token} type={content.type} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
-                                case 'horizontal':
-                                    return (
-                                        <Panel3
-                                            token={this.token}
-                                            loadingBar={this.LoadingBar}
-                                            key={content.id}
-                                            contentId={content.id}
-                                            title={content.title}
-                                            content={content.content}
-                                            imagePath={meta.image_path}
-                                            resolution={RESOLUTION_IMG}
-                                            displayType={content.display_type}/>
-                                    )
+                                    case 'horizontal_landscape':
+                                        return <Panel2 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
 
-                                case 'vertical':
-                                    return ( 
-                                        <Panel4
-                                            token={this.token}
-                                            loadingBar={this.LoadingBar}
-                                            key={content.id}
-                                            contentId={content.id}
-                                            title={content.title}
-                                            content={content.content}
-                                            imagePath={meta.image_path}
-                                            resolution={RESOLUTION_IMG}
-                                            displayType={content.display_type}/>
-                                    )
-                                
-                                case 'horizontal_square':
-                                    return (
-                                        <SquareImage
-                                            token={this.token}
-                                            loadingBar={this.LoadingBar}
-                                            key={content.id}
-                                            contentId={content.id}
-                                            title={content.title}
-                                            content={content.content}
-                                            imagePath={meta.image_path}
-                                            type={content.type}
-                                            resolution={RESOLUTION_IMG}
-                                            displayType={content.display_type}/>
-                                    );                         
-                            }
-                        })}
-                    </div>
+                                    case 'horizontal':
+                                        return <Panel3 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+
+                                    case 'vertical':
+                                        return <Panel4 token={this.token} loadingBar={this.LoadingBar} key={content.id} contentId={content.id} title={content.title} content={content.content} imagePath={meta.image_path} resolution={RESOLUTION_IMG} displayType={content.display_type}/>;
+
+                                    case 'horizontal_square':
+                                        return (
+                                            <SquareImage
+                                                token={this.token}
+                                                loadingBar={this.LoadingBar}
+                                                key={content.id}
+                                                contentId={content.id}
+                                                title={content.title}
+                                                content={content.content}
+                                                imagePath={meta.image_path}
+                                                type={content.type}
+                                                resolution={RESOLUTION_IMG}
+                                                displayType={content.display_type}/>
+                                        );
+                                }
+
+                            })}
+                        </div>
                 </div>
                 )}
         </Layout>
