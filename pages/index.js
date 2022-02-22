@@ -27,6 +27,7 @@ import { setCookie, getCookie, setVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import { client } from "../graphql/client"
+import { gaTrackerScreenView } from '../utils/ga-360';
 
 // NEW RPLUS LINEUP CONTENTS
 const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
@@ -83,6 +84,7 @@ class Index_v2 extends React.Component {
 
   componentDidMount() {
     RPLUSAppVisit();
+    gaTrackerScreenView();
 
     window.onbeforeunload = _ => {
       homeGeneralClicked('mweb_homepage_refresh');

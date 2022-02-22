@@ -17,7 +17,6 @@ export const getActiveCategory = () => {
             const response = await axios.get(`/v2/category`);
 
             if (response.data.status.code === 0) {
-                console.log(`ini aktif kategori`,response.data.data)
                 dispatch({
                     type: 'ACTIVE_CATEGORY',
                     data: response.data.data, 
@@ -42,7 +41,6 @@ export const getSubCategory = (category_id) => {
             const response = await axios.get(`/v2/category/${category_id}/sub-category`);
 
             if (response.data.status.code === 0) {
-                console.log(`hahah data sub categiry`, response.data)
                 dispatch({
                     type: 'SUB_CATEGORY',
                     data: response.data.data, 
@@ -91,7 +89,6 @@ export const getBannerCategoryActive = (category_id) => {
             const response = await axios.get(`/v2/banner/category/${category_id}?page=1&length=21`);
 
             if (response.data.status.code === 0) {
-                console.log(`ini banner haha`, response.data)
                 dispatch({
                     type: 'BANNER_CATEGORY_ACTIVE',
                     data: response.data.data, 
@@ -114,9 +111,7 @@ export const getStoriesCategory = (category_id, page = 1, length= 6) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             const response = await axios.get(`/v2/stories/category/${category_id}?page=${page}&length=${length}`);
-            console.log(response.data)
             if (response.data.status.code === 0) {
-                console.log(`ini stories category haha`, response.data)
                 dispatch({
                     type: 'STORIES_CATEGORY',
                     data: response.data.data, 
@@ -131,7 +126,6 @@ export const getStoriesCategory = (category_id, page = 1, length= 6) => {
         }
         catch (error) {
             reject(error);
-            console.log(err)
         }
     });
 }
@@ -150,14 +144,12 @@ export const getHomepageCategory = (page=1, length=6, category_id) => {
                     if (data[i].total_content > 0) {
                         promises.push(axios.get(`/v1/homepage/${data[i].id}/contents?platform=mweb&page=1&length=7`)
                         .catch((err) => {
-                            console.log('err', err);
                         }));
                         selectedData.push(data[i]);
                     }
                     else if (data[i].type === 'custom' && data[i].api) {
                         promises.push(axios.get(data[i].api)
                         .catch((err) => {
-                            console.log('err', err);
                         }));
                         selectedData.push(data[i]);
                     }
