@@ -22,6 +22,7 @@ import _debounce from "lodash/debounce";
 // import { debounceTime } from 'rxjs/operators';
 
 import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked } from '../../../utils/appier';
+import { gaTrackerSearch } from '../../../utils/ga-360';
 
 const NavbarSearch = ({...props}) => {
     const router = useRouter()
@@ -49,11 +50,11 @@ const NavbarSearch = ({...props}) => {
             console.log('testt tab')
             props.searchCategory(state.q, props.searches.active_tab, props.searches.search_page[props.searches.active_tab], state.length)
                 .then(response => {
-                    
+
                 })
                 .catch(error => {
                     console.log(error);
-                   
+
                 });
         }
     }
@@ -129,7 +130,7 @@ export default connect(state => state, {
 //         //         if (this.state.q) {
 //         //             searchKeywordEvent(this.state.q, 'mweb_search_keyword');
 //         //         }
-                
+
 //         //         this.props.searchAllCategory(this.state.q, 1, this.state.length)
 //         //             .then(responses => {
 //         //                 console.log(responses);
@@ -149,7 +150,7 @@ export default connect(state => state, {
 //         // if (e.target.value) {
 //         //     searchKeywordEvent(e.target.value, 'mweb_search_keyword');
 //         // }
-        
+
 //         // this.props.searchAllCategory(e.target.value, 1, this.state.length)
 //         //     .then(responses => {
 //         //         console.log(responses);
