@@ -9,6 +9,7 @@ import cookie from 'js-cookie';
 
 import { getCookie, removeCookie } from '../../../utils/cookie';
 import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent, newsGeneralEvent } from '../../../utils/appier';
+import { gaTracker, gaTrackerSearch } from '../../../utils/ga-360';
 import '../../../assets/scss/components/navbar-v2.scss';
 
 import { Navbar, NavbarBrand, Button, Row, Col } from 'reactstrap';
@@ -59,6 +60,7 @@ class NavbarDef_v2 extends Component {
         } else {
             Router.push('/explores/search');
         }
+        gaTrackerSearch('menu_navbar_tracking','click_go_to_search','search_bar')
     }
 
     signOut() {
@@ -107,33 +109,37 @@ class NavbarDef_v2 extends Component {
         return accessToken ? accessToken : visitorToken;
     }
 
+    sendTracker(pilar){
+      gaTracker('pillar_menu', 'click_pillar_menu', pilar, pilar)
+    }
+
     navMenuIcons() {
         const iconData = [
-            { 
-                href: "/", 
-                service: "video", 
+            {
+                href: "/",
+                service: "video",
                 isActive: true,
                 newPage: false
             },
-            { 
+            {
                 href: LINK_NEWS,
-                service: "news", 
+                service: "news",
                 isActive: false,
                 newPage: false
             },
-            { 
+            {
                 href: `${LINK_RADIO}/?token=${this.getToken()}`,
                 service: "audio",
                 isActive: false,
                 newPage: false
             },
-            { 
+            {
                 href: LINK_HOT,
                 service: "hot",
                 isActive: false,
                 newPage: false
             },
-            { 
+            {
                 href: LINK_GAMES,
                 service: "games",
                 isActive: false,
@@ -143,8 +149,8 @@ class NavbarDef_v2 extends Component {
         return iconData.map(({ href, service, isActive, newPage }, i) => {
             const activeSrcSuffix = isActive ? "_active" : ""
             return (
-                <a key={i} href={href} target={newPage ? "_blank" : "_self"}>
-                    <Image 
+                <a key={i} onClick={()=> this.sendTracker(service)} href={href} target={newPage ? "_blank" : "_self"}>
+                    <Image
                         src={`/icons-menu/${service}plus${activeSrcSuffix}.svg`}
                         alt={`${service}+`}
                         width={67}
