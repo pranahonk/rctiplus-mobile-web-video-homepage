@@ -79,7 +79,8 @@ class ExploresRevamp extends React.Component {
 			query: ctx.query,
 			interests: data,
 			genre_name: ctx.query.genre_name,
-			meta_content: resContent
+			meta_content: resContent,
+			token: accessToken
 		};
 	}
 
@@ -198,7 +199,7 @@ class ExploresRevamp extends React.Component {
 				}
 
 				<iframe
-					src='/trebel/content?platfom=android&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjEwNzg5MjMsInRva2VuIjoiZDU2ZDFkYzVjNDZhZTc1MCIsInBsIjoibXdlYiIsImRldmljZV9pZCI6IjEifQ.nJClc-hYrxvXX88bu_9nBH5HFwrSBgeHvvBlhKgTuWs'
+					src={`/trebel/content?platfom=android&token=${this.props.token ? this.props.token : ''}`}
 					style={{
 						border: 'none',
 						height: '100vh',
