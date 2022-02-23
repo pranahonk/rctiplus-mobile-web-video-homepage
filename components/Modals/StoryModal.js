@@ -3,6 +3,7 @@ import { connect } from "react-redux"
 
 import { RESOLUTION_IMG } from '../../config'
 import newsCountView from "../../redux/actions/newsCountView"
+import StoryModalHeading from "../misc/StoryModalHeading"
 
 import "../../assets/scss/components/stories.scss"
 
@@ -270,14 +271,21 @@ function storyModal(props) {
 
         <div className="story-head">
           <div>
-            <img
-              src={`${props.story.image_path}${RESOLUTION_IMG}${props.story.program_img}`}
-              alt="story-avatar"
-              width="50"
-              height="50" />
-            <label>
-              { props.story.story[activeIndex].title }
-            </label>
+            { !props.story.is_ads 
+              ? (
+                <>
+                  <img
+                    src={`${props.story.image_path}${RESOLUTION_IMG}${props.story.program_img}`}
+                    alt="story-avatar"
+                    width="50"
+                    height="50" />
+                  <label>
+                    { props.story.story[activeIndex].title }
+                  </label>
+                </>
+              ) 
+              : <div></div>
+            }
           </div>
           <button
             id="close-stories"
@@ -289,15 +297,22 @@ function storyModal(props) {
           id="stories-content"
           onClick={e => divideComponentOnClick(e)}
           className="stories-content" >
-          <div
-            id={storyModalPlayerID}
-            style={{ display: props.story.story[activeIndex].story_img ? "none" : ""}} />
-          <img
-            src={`${props.story.image_path}${RESOLUTION_IMG}${props.story.story[activeIndex].story_img}`}
-            alt="story-image"
-            width="100%"
-            height="auto"
-            style={{ display: props.story.story[activeIndex].story_img ? "" : "none" }} />
+          { !props.story.is_ads 
+            ? (
+              <>
+                <div
+                  id={storyModalPlayerID}
+                  style={{ display: props.story.story[activeIndex].story_img ? "none" : ""}} />
+                <img
+                  src={`${props.story.image_path}${RESOLUTION_IMG}${props.story.story[activeIndex].story_img}`}
+                  alt="story-image"
+                  width="100%"
+                  height="auto"
+                  style={{ display: props.story.story[activeIndex].story_img ? "" : "none" }} />
+              </>
+            ) 
+            : <div></div>
+          }
         </div>
 
         <div

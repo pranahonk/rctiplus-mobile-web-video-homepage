@@ -144,6 +144,19 @@ export const GET_HOME_STORIES = (category_id = 0, page = 1, page_size = 10) => {
             type
             external_link
           }
+          gpt {
+            div_gpt
+            id
+            path
+            size_height_1
+            size_height_2
+            size_width_1
+            size_width_2
+            cust_params {
+              name
+              value
+            }
+          }
         }
         meta {
           image_path

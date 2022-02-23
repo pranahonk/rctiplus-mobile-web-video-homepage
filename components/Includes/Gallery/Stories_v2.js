@@ -20,10 +20,24 @@ function homeStories (props) {
     useEffect(() => {
         client.query({ query: GET_HOME_STORIES(props.router.query.category_id) })
             .then(({ data }) => {
-                const stories = data.stories.data.map(story => ({
-                    ...story,
-                    image_path: data.stories.meta.image_path
-                }))
+                let stories = []
+                data.stories.data.forEach(story => {
+                    const gpt = story.gpt
+
+                    stories.push({
+                        ...story,
+                        image_path: data.stories.meta.image_path
+                    })
+
+                    // append gpt (creative ads) into existing story contents
+                    if (gpt.length > 0) {
+                        stories.push({
+                            program_id: `${story.program_id}_ads`, // ads identifier
+                            story: gpt,
+                            is_ads: true
+                        })
+                    }
+                })
 
                 setStories(stories)
                 setMeta(data.stories.meta)
@@ -71,6 +85,8 @@ function homeStories (props) {
                 id="home-stories"
                 className="stories-components">
                 { stories.map((story, i) => {
+                    if (story.is_ads) return null
+
                     return (
                         <div key={i} className="homestory storywrapper">
                             <div
