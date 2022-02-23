@@ -49,11 +49,11 @@ const NavbarSearch = ({...props}) => {
             console.log('testt tab')
             props.searchCategory(state.q, props.searches.active_tab, props.searches.search_page[props.searches.active_tab], state.length)
                 .then(response => {
-                    
+
                 })
                 .catch(error => {
                     console.log(error);
-                   
+
                 });
         }
     }
@@ -84,6 +84,7 @@ const NavbarSearch = ({...props}) => {
                 </div>
                 <div className="middle-top">
                     <Input
+                        id="input-search"
                         onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
                         placeholder="Search for a program, genre, etc."
                         onChange={(e) => _onChangeQuery(e)}
@@ -129,7 +130,7 @@ export default connect(state => state, {
 //         //         if (this.state.q) {
 //         //             searchKeywordEvent(this.state.q, 'mweb_search_keyword');
 //         //         }
-                
+
 //         //         this.props.searchAllCategory(this.state.q, 1, this.state.length)
 //         //             .then(responses => {
 //         //                 console.log(responses);
@@ -149,7 +150,7 @@ export default connect(state => state, {
 //         // if (e.target.value) {
 //         //     searchKeywordEvent(e.target.value, 'mweb_search_keyword');
 //         // }
-        
+
 //         // this.props.searchAllCategory(e.target.value, 1, this.state.length)
 //         //     .then(responses => {
 //         //         console.log(responses);
