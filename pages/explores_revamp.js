@@ -199,7 +199,7 @@ class ExploresRevamp extends React.Component {
 				}
 
 				<iframe
-					src={`/trebel/content?platfom=android&token=${this.props.token ? this.props.token : ''}`}
+					src={`/trebel/content?platfom=${this.platform ?? 'mweb'}&token=${this.props.token ? this.props.token : ''}`}
 					style={{
 						border: 'none',
 						height: '100vh',
