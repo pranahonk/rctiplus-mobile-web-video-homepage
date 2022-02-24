@@ -3,7 +3,6 @@ import { connect } from "react-redux"
 
 import { RESOLUTION_IMG } from '../../config'
 import newsCountView from "../../redux/actions/newsCountView"
-import StoryModalHeading from "../misc/StoryModalHeading"
 
 import "../../assets/scss/components/stories.scss"
 
@@ -12,6 +11,8 @@ function storyModal(props) {
   const modal = useRef(null)
   const [ activeIndex, setActiveIndex ] = useState(0)
   const [ player, setPlayer ] = useState(null)
+
+  const adsRef = useRef(null)
 
   const timesec = 5
   const storyModalPlayerID = "storymodal-player"
@@ -32,6 +33,11 @@ function storyModal(props) {
 
   useEffect(() => {
     if (props.story.story) setActiveProgressbar()
+
+    return () => {
+      window.googletag = window.googletag || { destroySlots: () => {} }
+      googletag.destroySlots()
+    }
   }, [
     props.story.program_id,
     activeIndex,
@@ -45,6 +51,7 @@ function storyModal(props) {
     document.getElementById("nav-footer").style.display = "none"
 
     mountJwplayer()
+    injectAdsComponent()
 
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
 
@@ -146,6 +153,33 @@ function storyModal(props) {
     })
   }
 
+  const injectAdsComponent = _ => {
+    if (!props.story.is_ads) return
+    const { div_gpt, path } = props.story.story[activeIndex]
+    if (!div_gpt) return
+
+    console.log(div_gpt, path)
+
+    if (adsRef.current.firstChild) adsRef.current.removeChild(adsRef.current.firstChild)
+
+    window.googletag = window.googletag || {cmd: []}
+    googletag.cmd.push(function(){
+      googletag
+        .defineSlot(path, [100, 100], div_gpt)
+        .addService(googletag.pubads())
+      googletag.pubads().enableSingleRequest()
+      googletag.pubads().collapseEmptyDivs()
+      googletag.pubads().addEventListener('slotRenderEnded', e => {
+        // on progress
+      })
+      googletag.enableServices()
+    })
+    
+    googletag.cmd.push(function(){
+      googletag.display(div_gpt)
+    })
+  }
+
   const pauseProgressBar = _ => {
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     progressBars[activeIndex].children[0].style.animationPlayState = "paused"
@@ -171,6 +205,10 @@ function storyModal(props) {
         })
       }
     }
+
+    // destroy all ads on every story change
+    window.googletag = window.googletag || { destroySlots: () => {} }
+    googletag.destroySlots()
 
     props.onSwipe(direction, seenStories)
 
@@ -302,7 +340,7 @@ function storyModal(props) {
               <>
                 <div
                   id={storyModalPlayerID}
-                  style={{ display: props.story.story[activeIndex].story_img ? "none" : ""}} />
+                  style={{ display: props.story.story[activeIndex].story_img ? "none" : ""}}></div>
                 <img
                   src={`${props.story.image_path}${RESOLUTION_IMG}${props.story.story[activeIndex].story_img}`}
                   alt="story-image"
@@ -311,7 +349,11 @@ function storyModal(props) {
                   style={{ display: props.story.story[activeIndex].story_img ? "" : "none" }} />
               </>
             ) 
-            : <div></div>
+            : (
+              <div 
+                id={props.story.story[activeIndex].div_gpt}
+                ref={adsRef}></div>
+            )
           }
         </div>
 
