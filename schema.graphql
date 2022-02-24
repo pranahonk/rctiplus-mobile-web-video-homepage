@@ -1,0 +1,587 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+  query: Query
+}
+
+union ContentTypeDetail = ContentTypeCatchUp | ContentTypeClip | ContentTypeEpisode | ContentTypeExtra | ContentTypeHOTCompetition | ContentTypeHOTVideo | ContentTypeLiveEvent | ContentTypeLiveTV | ContentTypeProgram | UnknownDetail
+
+union LineupTypeDetail = LineupTypeDefault | LineupTypeNewsRegrouping | LineupTypeNewsTagar | LineupTypeStory | UnknownDetail
+
+type BannerData {
+  deeplink: String
+  id: Int
+  landscape_image: String
+  permalink: String
+  popup_image: String
+  portrait_image: String
+  sorting: Int
+  square_image: String
+  summary: String
+  title: String
+  type: String
+  wording_button: String
+}
+
+"""
+
+Type untuk get data banner dan mengembalikan response data berupa list/array.
+"""
+type Banners {
+  data: [BannerData]
+  meta: Meta
+  status: Status
+}
+
+type CatchUp {
+  data: CatchUpData
+  meta: Meta
+  status: Status
+}
+
+type CatchUpData {
+  deeplink: String
+  id: Int
+  landscape_image: String
+  medium_landscape_image: String
+  permalink: String
+  portrait_image: String
+  square_image: String
+  summary: String
+  type: String
+}
+
+"""
+
+Type untuk get data category dan mengembalikan response data berupa list/array.
+"""
+type Categories {
+  data: [CategoryData]
+  meta: Meta
+  status: Status
+}
+
+type CategoryData {
+  banners: Banners
+  icon: String
+  id: Int
+  is_active: Int
+  name: String
+  sorting: Int
+  stories: Stories
+  sub_category: SubCategories
+  type: String
+}
+
+type Clip {
+  data: ClipData
+  meta: Meta
+  status: Status
+}
+
+type ClipData {
+  deeplink: String
+  id: Int
+  landscape_image: String
+  medium_landscape_image: String
+  permalink: String
+  portrait_image: String
+  square_image: String
+  summary: String
+  type: String
+}
+
+type ContentTypeCatchUp {
+  detail(page: Int, page_size: Int): CatchUp
+}
+
+type ContentTypeClip {
+  detail(page: Int, page_size: Int): Clip
+}
+
+type ContentTypeEpisode {
+  detail(page: Int, page_size: Int): Episode
+}
+
+type ContentTypeExtra {
+  detail(page: Int, page_size: Int): Extra
+}
+
+type ContentTypeHOTCompetition {
+  detail(page: Int, page_size: Int): HotCompetitionDetail
+}
+
+type ContentTypeHOTVideo {
+  detail(page: Int, page_size: Int): HotVideoDetail
+}
+
+type ContentTypeLiveEvent {
+  detail(page: Int, page_size: Int): LiveEvent
+}
+
+type ContentTypeLiveTV {
+  detail(page: Int, page_size: Int): LiveTV
+}
+
+type ContentTypeProgram {
+  detail(page: Int, page_size: Int): Program
+}
+
+type Episode {
+  data: EpisodeData
+  meta: Meta
+  status: Status
+}
+
+type EpisodeData {
+  deeplink: String
+  id: Int
+  landscape_image: String
+  medium_landscape_image: String
+  permalink: String
+  portrait_image: String
+  square_image: String
+  summary: String
+  type: String
+}
+
+type Extra {
+  data: ExtraData
+  meta: Meta
+  status: Status
+}
+
+type ExtraData {
+  deeplink: String
+  id: Int
+  landscape_image: String
+  medium_landscape_image: String
+  permalink: String
+  portrait_image: String
+  square_image: String
+  summary: String
+  type: String
+}
+
+"""
+
+Type untuk get data detail dari HOT competition (by HOT competition id). SERVICE BELUM ADA, MASIH DATA DUMMY.
+"""
+type HotCompetitionDetail {
+  data: HotCompetitionDetailData
+  meta: Meta
+  status: Status
+}
+
+type HotCompetitionDetailData {
+  adspreset_id: Int
+  challenge: Boolean
+  competition_category_id: Int
+  competition_classification_id: Int
+  competition_type: String
+  create_at: String
+  custom_rank_ready: Boolean
+  default_rank: Boolean
+  details: String
+  downloaded: Int
+  end_date: String
+  exclusive: Int
+  expired_sorting: Int
+  free_vote: Int
+  gallery: Int
+  genre_id: Int
+  hosted_by: String
+  id: Int
+  leaderboard: Int
+  leaderboard_notes: String
+  leaderboard_push_notif: Boolean
+  limit_leaderboard: Int
+  mandatory_challenge: Boolean
+  max_duration_upload: Int
+  max_file_upload: Int
+  meta_description: String
+  meta_keywords: String
+  meta_title: String
+  min_duration_upload: Int
+  now_sorting: Int
+  prev_competition_id: Int
+  recording: Int
+  shared: Int
+  song_button: Int
+  soon_sorting: Int
+  sorting: Int
+  start_date: String
+  status: String
+  subgenre_id: Int
+  task: String
+  terms_condition: String
+  thumbnail: String
+  title: String
+  update_at: String
+  video_button: Int
+  vote_status: String
+}
+
+"""
+
+Type untuk get data detail dari HOT video (by HOT video id). SERVICE BELUM ADA, MASIH DATA DUMMY.
+"""
+type HotVideoDetail {
+  data: HotVideoDetailData
+  meta: Meta
+  status: Status
+}
+
+type HotVideoDetailData {
+  category_id: Int
+  challenge_id: Int
+  comment_for_video_id: Int
+  competition_id: Int
+  contestant_id: Int
+  create_at: String
+  downloaded: Int
+  duration: Int
+  failed_message: String
+  format_group: String
+  gender: String
+  genre_video_id: Int
+  id: Int
+  is_comment: Boolean
+  judge_vote: Int
+  keterangan_kualitas_video: String
+  kualitas_video: String
+  notes_pinned: String
+  original_source: String
+  pinned: Int
+  platform: String
+  shared: Int
+  song_template_id: Int
+  sorting_pinned: Int
+  status: String
+  subgenre_video_id: Int
+  summary_video: String
+  thumbnail: String
+  tusd_filename: String
+  update_at: String
+  updated_by: String
+  upload_with: String
+  user_vote: Int
+  video_id: String
+  video_source: String
+  video_status: String
+  video_template_id: Int
+  video_title: String
+  views: Int
+  vote_per_video: Int
+}
+
+type LineupContentData {
+  content_id: Int
+  content_type: String
+  content_type_detail: ContentTypeDetail
+  id: Int
+  lineup_id: Int
+  service: String
+  sorting: Int
+}
+
+"""
+
+Type untuk get data lineup content by lineup id dan mengembalikan response data berupa list/array.
+"""
+type LineupContents {
+  data: [LineupContentData]
+  meta: Meta
+  status: Status
+}
+
+type LineupData {
+  content_type: String
+  custom_api: String
+  display_type: String
+  id: Int
+  lineup_type: String
+  """
+
+  LineupTypeDetail dapat dipilih untuk mengambil data berdasarkan value response dari LineupData. Untuk detailnya
+  dapat dilihat pada masing-masing type di bawah ini:
+  """
+  lineup_type_detail: LineupTypeDetail
+  service: String
+  sorting: Int
+  title: String
+}
+
+"""
+
+LineupTypeDefault mengembalikan data lineup content berdasarkan LineupData jika
+response **lineup_type=default**.
+"""
+type LineupTypeDefault {
+  detail(page: Int, page_size: Int): LineupContents
+}
+
+"""
+
+LineupTypeNewsRegrouping mengembalikan data news regrouping berdasarkan LineupData jika
+response **lineup_type=custom** dan **content_type=news_regrouping**.
+"""
+type LineupTypeNewsRegrouping {
+  """
+
+  Jenis type news regrouping nya (apakah auto/kurasi) ditentukan berdasarkan response dari Lineup.
+  """
+  detail(page: Int, page_size: Int): NewsReGroupings
+}
+
+"""
+
+LineupTypeNewsTagar mengembalikan data news tagar berdasarkan LineupData jika
+response **lineup_type=custom** dan **content_type=news_tagar**.
+"""
+type LineupTypeNewsTagar {
+  detail(page: Int, page_size: Int): NewsTagars
+}
+
+"""
+
+LineupTypeStory mengembalikan data lineup story berdasarkan LineupData jika
+response **lineup_type=story**.
+"""
+type LineupTypeStory {
+  detail(page: Int, page_size: Int): Stories
+}
+
+"""
+
+Type untuk get data lineup dan mengembalikan response data berupa list/array.
+"""
+type Lineups {
+  data: [LineupData]
+  meta: Meta
+  status: Status
+}
+
+type LiveEvent {
+  data: LiveEventData
+  meta: Meta
+  status: Status
+}
+
+type LiveEventData {
+  deeplink: String
+  id: Int
+  landscape_image: String
+  medium_landscape_image: String
+  permalink: String
+  portrait_image: String
+  square_image: String
+  summary: String
+  type: String
+}
+
+type LiveTV {
+  data: LiveTVData
+  meta: Meta
+  status: Status
+}
+
+type LiveTVData {
+  deeplink: String
+  id: Int
+  landscape_image: String
+  medium_landscape_image: String
+  permalink: String
+  portrait_image: String
+  square_image: String
+  summary: String
+  type: String
+}
+
+type Meta {
+  assets_url: String
+  image_path: String
+  pagination: Pagination
+  video_path: String
+}
+
+type NewsReGroupingData {
+  author: String
+  category: String
+  category_id: Int
+  content: String
+  count: Int
+  deeplink: String
+  id: Int
+  image: String
+  image_url: String
+  link: String
+  permalink: String
+  pubdate: String
+  source: String
+  title: String
+  total_like: Int
+}
+
+"""
+
+Type untuk get data news regrouping (section/lineup) dengan type kurasi atau type auto (auto regrouping) dan mengembalikan response data berupa list/array.
+"""
+type NewsReGroupings {
+  data: [NewsReGroupingData]
+  meta: Meta
+  status: Status
+}
+
+type NewsTagarData {
+  count: Int
+  created_at: String
+  sorting: Int
+  tag: String
+  type: String
+  updated_at: String
+}
+
+"""
+
+Type untuk get data news tagar/hashtag dan mengembalikan response data berupa list/array.
+"""
+type NewsTagars {
+  data: [NewsTagarData]
+  meta: Meta
+  status: Status
+}
+
+type Pagination {
+  current_page: Int
+  per_page: Int
+  total: Int
+  total_page: Int
+}
+
+type Program {
+  data: ProgramData
+  meta: Meta
+  status: Status
+}
+
+type ProgramData {
+  deeplink: String
+  id: Int
+  landscape_image: String
+  medium_landscape_image: String
+  permalink: String
+  portrait_image: String
+  square_image: String
+  summary: String
+  type: String
+}
+
+type Query {
+  banners(page: Int, page_size: Int): Banners
+  categories(page: Int, page_size: Int): Categories
+  """
+
+  Get data banner by category id.
+  """
+  category_banners(category_id: Int!, page: Int, page_size: Int): Banners
+  """
+
+  Get data story by category id.
+  """
+  category_stories(category_id: Int!, page: Int, page_size: Int): Stories
+  lineup_contents(lineup_id: Int!, page: Int, page_size: Int): LineupContents
+  """
+
+  Get data news regrouping by lineup id.
+  """
+  lineup_news_regroupings(lineup_id: Int!, page: Int, page_size: Int): NewsReGroupings
+  """
+
+  Get data story by lineup id.
+  """
+  lineup_stories(lineup_id: Int!, page: Int, page_size: Int): Stories
+  lineups(page: Int, page_size: Int): Lineups
+  news_tagars(page: Int, page_size: Int): NewsTagars
+  stories(page: Int, page_size: Int): Stories
+}
+
+type Status {
+  code: Int
+  message_client: String
+  message_server: String
+}
+
+"""
+
+Type untuk get data story dan mengembalikan response data berupa list/array.
+"""
+type Stories {
+  data: [StoryData]
+  meta: Meta
+  status: Status
+}
+
+type StoryData {
+  identifier: String
+  program_id: Int
+  program_img: String
+  story: [StoryDetail]
+  story_type: String
+}
+
+type StoryDetail {
+  bg_type: String
+  deeplink: String
+  id: Int
+  link_video: String
+  permalink: String
+  program_id: Int
+  program_img: String
+  release_date: String
+  story_img: String
+  story_type: String
+  title: String
+  type: String
+}
+
+type SubCategories {
+  data: [SubCategoryData]
+  meta: Meta
+  status: Status
+}
+
+type SubCategoryData {
+  icon: String
+  id: Int
+  is_active: Int
+  name: String
+  sorting: Int
+  type: String
+}
+
+"""
+
+Unknown abaikan saja, tidak perlu dipilih kedalam query. Type ini
+hanya sebagai handler di backend untuk menyamakan response
+apabila response datanya undefined/tidak sesuai/belum terdefinisi.
+"""
+type Unknown {
+  data: UnknownData
+  meta: Meta
+  status: Status
+}
+
+type UnknownData {
+  id: Int
+}
+
+"""
+
+UnknownDetail abaikan saja, tidak perlu dipilih kedalam query. Type ini
+hanya sebagai handler di backend untuk menyamakan response detail
+apabila response datanya undefined/tidak sesuai/belum terdefinisi.
+"""
+type UnknownDetail {
+  detail: Unknown
+}

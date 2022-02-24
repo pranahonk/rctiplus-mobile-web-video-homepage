@@ -1,0 +1,143 @@
+.hot-competitions{
+  position: relative;
+  width: 192px;
+  height: auto;
+  min-height: 152px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, 0.5);
+
+  &__button{
+    width: 100%;
+    height: 40px;
+    background: #0079FF;
+    border-radius: 0 0 8px 8px;
+    color: white;
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 1.25px;
+    border: 1px solid transparent;
+    position: absolute;
+    bottom: 0;
+  }
+}
+
+
+
+
+.lineup_panels {
+  padding: 10px 0;
+
+  .content-title{
+    font-stretch: normal;
+    font-style: normal;
+    letter-spacing: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 19px;
+    padding-left: 14px !important;
+    color: #FFFFFF;
+  }
+
+  .swiper-container,
+  .lineup-containers {
+    overflow: auto;
+    white-space: nowrap;
+    display: block;
+    padding: 0px 0px 12px 12px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .swiper-slide,
+    .lineup-contents {
+      margin: 0 4px;
+      position: relative;
+      text-align: center;
+      display: inline-block;
+      vertical-align: top;
+
+      .lineup-image {
+        border-radius: 7px 7px 0 0;
+        background: linear-gradient(135deg, #181818, #343434);
+
+        &:not(.with-schedule) {
+          border-radius: 7px;
+        }
+      }
+
+      .live-badge {
+        position: absolute;
+        width: 39px;
+        height: 23px;
+        border-radius: 7px;
+        background-color: #F63F54;
+        top: 12px;
+        left: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &::before {
+          content: "LIVE";
+          color: white;
+          font-size: 12px;
+        }
+      }
+
+      .desc-wrapper {
+        background: #1A1A1A;
+        padding: 0 10px 10px 20px;
+        border-radius: 0 0 10px 10px;
+        position: relative;
+      }
+
+      .dashline {
+        height: 46px;
+        position: absolute;
+        border-left: 2px solid #05B5F5;
+        top: 10px;
+        left: 10px;
+      }
+
+      .desc-title {
+        color: white;
+        text-align: left;
+        font-size: 14px;
+        padding: 10px 0 5px 0;
+        margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: bold;
+
+        &.mini {
+          width: 150px;
+        }
+      }
+
+      .desc-summary {
+        color: white;
+        width: 150px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        text-align: justify;
+        overflow: hidden;
+        white-space: normal;
+        font-size: 12px;
+      }
+
+      .desc-text {
+        color: white;
+        text-align: justify;
+        font-size: 12px;
+        margin: 0;
+      }
+    }
+  }
+}

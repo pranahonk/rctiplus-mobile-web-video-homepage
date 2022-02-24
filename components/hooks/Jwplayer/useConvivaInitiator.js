@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { convivaJwPlayer} from '../../../utils/conviva';
 
 export default function useConvivaInitiator(props) {
+  console.log(props)
   const [ initConviva, setInitConviva ] = useState(false)
 
   useEffect(_ => {
@@ -35,16 +36,18 @@ export default function useConvivaInitiator(props) {
       genre: genreTags,
       is_login: props.customData && props.customData.isLogin ? 'login' : 'not login',
       program_type: props.customData && props.customData.programType ? props.customData.programType : 'N/A',
+      conviva_params: props?.data?.conviva_params,
+      cluster_name: 'N/A'
     };
 
     const isLive = /^live/i.test(props.type)
     const convivaTracker = convivaJwPlayer(
       optionsConviva.assetName,
-      props.player, 
-      props.player.getDuration(), 
+      props.player,
+      props.player.getDuration(),
       props.data.url ? props.data.url : props.data.trailer_url,
-      customTags, 
-      'Anevia', 
+      customTags,
+      'Anevia',
       isLive
     )
     if (window.convivaVideoAnalytics) {
@@ -54,10 +57,10 @@ export default function useConvivaInitiator(props) {
   }
 
   const generateOptionConviva = (type) => {
-    const { 
-      assets_name = "N/A", 
-      id = "N/A", 
-      title = "N/A", 
+    const {
+      assets_name = "N/A",
+      id = "N/A",
+      title = "N/A",
       content_name = "N/A",
       program_id = "N/A",
       tv_id = "N/A",
@@ -70,7 +73,7 @@ export default function useConvivaInitiator(props) {
     const {
       program_name = "N/A"
     } = props.customData
-    
+
     switch(type) {
       case "live_tv":
         return {
@@ -102,7 +105,7 @@ export default function useConvivaInitiator(props) {
           tvId: tv_id,
           tvName: tv_name
         }
-      case "catch up tv": 
+      case "catch up tv":
         return {
           assetName: title,
           contentType: type,
@@ -112,7 +115,7 @@ export default function useConvivaInitiator(props) {
           tvId: defineTVNameId(channel)[0],
           tvName: defineTVNameId(channel)[1]
         }
-      default: 
+      default:
         return {
           assetName: content_name,
           contentType: content_type,
