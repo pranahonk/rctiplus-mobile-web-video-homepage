@@ -100,7 +100,7 @@ class Index extends React.Component {
       init: '',
       transform: 'rotate(0deg)',
       isOpen: false,
-      toggle: 0,
+      toggle: "",
       season: 1,
       episodeClearStore: false,
       titleProgram: '',
@@ -846,9 +846,6 @@ class Index extends React.Component {
         return
       }
     })
-
-    console.log(videoIndexing, "uhuy")
-
 
     if (this.state.videoIndexing.current !== videoIndexing.current) {
       this.setState({ videoIndexing })

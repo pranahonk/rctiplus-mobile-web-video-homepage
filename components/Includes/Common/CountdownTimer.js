@@ -8,16 +8,23 @@ function countdownTimer (props) {
   const [ hour, setHour ] = useState(Math.floor(props.time / (1000 * 3600)))
   const [ minutes, setMinutes ] = useState(Math.floor(((props.time / (1000 * 3600)) - hour) * 60 ))
   const [ seconds, setSeconds ] = useState(Math.floor(((((props.time / (1000 * 3600)) - hour) * 60) - minutes) * 60))
+
+  let interval = null
   
   useEffect(() => {
-    timer()
+    if (props.time) timer()
+
+    return () => clearInterval(interval)
   }, [])
+
+  if (!props.time) return null
 
   const timer = () => {
     let sec = seconds
     let min = minutes
     let hrs = hour
-    const interval = setInterval(() => {
+    
+    interval = setInterval(() => {
       if (sec === 0 && min > 0) {
         sec = 60
         min -= 1
@@ -38,6 +45,8 @@ function countdownTimer (props) {
   }
 
   const renderCountDownTimer = () => {
+    if ((hour / 24) > 1) return `${Math.floor(hour / 24)} day${Math.floor(hour / 24) > 1 ? "s" : ""}`
+
     return Array.from([ hour, minutes, seconds ])
       .map(num => {
         if (num < 10) return `0${num}`
@@ -47,7 +56,7 @@ function countdownTimer (props) {
 
   return (
     <div className="countdown">
-      <p>COMING SOON</p>
+      <p>{ props.name || "COMING SOON" }</p>
       <p>{renderCountDownTimer()}</p>
     </div>
   )

@@ -66,6 +66,8 @@ export const lineupContinueWatchingFragment = (queryParams) => {
       }
       status {
         code
+        message_client
+        message_server
       }
     }
   }
@@ -114,6 +116,7 @@ export const lineupTypeNewsTagarFragment = (queryParams) => {
         type
         sorting
         permalink
+        deeplink
       }
        meta {
           pagination {

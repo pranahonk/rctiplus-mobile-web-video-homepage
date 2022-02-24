@@ -14,22 +14,25 @@ const CountDownTimer = dynamic(() => import("../Includes/Common/CountdownTimer")
 import '../../assets/scss/components/panel.scss'
 
 function landscapeMiniLiveView (props) {
-  const { generateLink, onTouchStart, onTouchEnd, fetchLineupContent, loadMore, contents } = useVideoLineups(props)
+  const { generateLink, onTouchStart, onTouchEnd, setInitialContents, loadMore, contents } = useVideoLineups(props)
   const placeHolderImgUrl = "/static/placeholders/placeholder_landscape.png"
   const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
   useEffect(() => {
-    fetchLineupContent()
+    setInitialContents()
   }, [])
 
   const renderDescription = (contentDetail) => {
+    if (props.lineup.lineup_type === "custom") return null
+
     const isLive = (contentDetail.countdown === 0 || contentDetail.is_live)
-    const { year, month, date, day } = parseDateObject(contentDetail.start_ts * 1000)
+    const startTime = contentDetail.start_ts || contentDetail.live_at
+    const { year, month, date, day, time } = parseDateObject(startTime * 1000)
 
     let component = (
       <p className="desc-text">
         <strong>{day}</strong> 
-        {` • ${date} ${month} ${year} - ${contentDetail.start}`}
+        {` • ${date} ${month} ${year} - ${time} WIB`}
       </p>
     )
     let liveBadge = <span className="live-badge"></span>
@@ -50,38 +53,51 @@ function landscapeMiniLiveView (props) {
     )
   }
 
+  const renderContinueWatchProgress = (content) => {
+    if (props.lineup.lineup_type !== "custom") return null
+
+    const lastProgress = (content.last_duration / content.duration) * 100
+    return (
+      <div className="continue-watch-bar">
+        <div style={{ width: `${lastProgress}%` }}></div>
+      </div>
+    )
+  }
+
   if (contents.length === 0) return null
   
   return (
     <div
-      id="lineup-landscapeminilive"
       onTouchStart={e => onTouchStart(e)}
       onTouchEnd={e => onTouchEnd(e)}
       className="lineup_panels">
       <h2 className="content-title">
-        {props.title}
+        {props.lineup.title}
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
-          <div ref={scrollRef} className="lineup-containers">
+          <div
+            ref={scrollRef} 
+            className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
-                  onClick={() => generateLink(content)}
-                  key={`${i}-landscapeminilive-video`}
-                  id={`${i}-landscapeminilive-video`}
+                  id={`landscapeminilive-video-${i}`}
+                  onClick={() => generateLink({ ...content, rootImageUrl })}
+                  key={i}
                   className="lineup-contents">
                   <div>
                     <Img 
                       className="lineup-image"
-                      alt={props.title} 
+                      alt={props.lineup.title} 
                       unloader={<img src={placeHolderImgUrl} />}
                       loader={<img src={placeHolderImgUrl} />}
                       width={180}
                       height={101}
-                      src={[`${rootImageUrl}${content.content_type_detail.detail.data.landscape_image}`, placeHolderImgUrl]} />
+                      src={[`${rootImageUrl}${content.landscape_image}`, placeHolderImgUrl]} />
                   </div>
-                  { renderDescription(content.content_type_detail.detail.data) }
+                  { renderDescription(content) }
+                  { renderContinueWatchProgress(content) }
                 </div>
               )
             })}

@@ -184,11 +184,14 @@ class NavbarDef_v2 extends Component {
                         </div>
                     </div>
                     <div className="middle-top">
-                        <div className="search-input" onClick={this.goToExplore.bind(this, this.props.router.asPath)}>
+                        <div 
+                            id="search-input" 
+                            className="search-input" 
+                            onClick={this.goToExplore.bind(this, this.props.router.asPath)}>
                             <div className="search-input-placeholder">rctiplus.com</div> <SearchIcon style={{ fontSize: '1.5rem' }} />
                         </div>
                     </div>
-                    <div className="nav-menu-container">
+                    <div id="menu-allpillars" className="nav-menu-container">
                         {this.navMenuIcons()}
                     </div>
                 </Navbar>

@@ -10,45 +10,58 @@ import { RESOLUTION_IMG } from "../../config"
 import '../../assets/scss/components/panel.scss'
 
 function PortraitView (props) {
-  const { generateLink, onTouchStart, onTouchEnd, fetchLineupContent, loadMore, contents } = useVideoLineups(props)
+  const { generateLink, onTouchStart, onTouchEnd, setInitialContents, loadMore, contents } = useVideoLineups(props)
   const placeHolderImgUrl = "/static/placeholders/placeholder_potrait.png"
   const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
   useEffect(() => {
-    fetchLineupContent()
+    setInitialContents()
   }, [])
+
+  const renderContinueWatchProgress = (content) => {
+    if (props.lineup.lineup_type !== "custom") return null
+
+    const lastProgress = (content.last_duration / content.duration) * 100
+    return (
+      <div className="continue-watch-bar">
+        <div style={{ width: `${lastProgress}%` }}></div>
+      </div>
+    )
+  }
 
   if (contents.length === 0) return null
   
   return (
     <div
-      id="lineup-portrait"
       onTouchStart={e => onTouchStart(e)}
       onTouchEnd={e => onTouchEnd(e)}
       className="lineup_panels">
       <h2 className="content-title">
-        {props.title}
+        {props.lineup.title}
       </h2>
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
-          <div ref={scrollRef} className="lineup-containers">
+          <div
+            ref={scrollRef} 
+            className="lineup-containers">
             {contents.map((content, i) => {
               return (
                 <div
+                  id={`portrait-video-${i}`}
                   onClick={() => generateLink(content)}
-                  key={`${i}-portrait-video`}
-                  id={`${i}-portrait-video`}
+                  key={i}
                   className="lineup-contents">
                   <div>
                     <Img 
                       className="lineup-image"
-                      alt={props.title} 
+                      alt={props.lineup.title} 
                       unloader={<img src={placeHolderImgUrl} />}
                       loader={<img src={placeHolderImgUrl} />}
                       width={126}
                       height={189}
-                      src={[`${rootImageUrl}${content.content_type_detail.detail.data.portrait_image}`, placeHolderImgUrl]} />
+                      src={[`${rootImageUrl}${content.portrait_image}`, placeHolderImgUrl]} />
                   </div>
+                  { renderContinueWatchProgress(content) }
                 </div>
               )
             })}
