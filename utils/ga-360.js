@@ -1,4 +1,3 @@
-import React from 'react';
 import ax from 'axios';
 import { DEV_API } from '../config';
 import { checkToken, getCookie, getVisitorToken } from './cookie';
@@ -25,7 +24,6 @@ axios.get(`/v3/user`, {
   .catch((err) => {
     userId = '';
   });
-
 
 export const gaTracker = (event_category = 'string', event_action = 'string', event_label = 'string', pilar = 'video') => {
   if (typeof window !== 'undefined' && userId !== null) {
@@ -187,7 +185,6 @@ export const gaTrackerLineUp = (
   }
 };
 
-
 export const gaTrackerProgram = (
   event_category = 'string',
   event_action = 'string',
@@ -231,5 +228,29 @@ export const gaTrackerScreenView = () => {
   }
 };
 
+export const gaTrebelScreenView = () => {
+  if (typeof window !== 'undefined') {
+    window.dataLayer.push({
+      'client_id':  process.env.GA_360_USERID,
+      'page_type' : "trebel_page",
+      'pillar' : "music",
+      'date_time' : new Date().toISOString(),
+      'user_id' : userId,
+    });
+  }
+};
 
-
+export const gaTrackerNavbarTrack = (event_category = 'string', event_action = 'string', event_label = 'string') => {
+  if (typeof window !== 'undefined') {
+    window.dataLayer.push({
+      'event': 'general_event',
+      'event_category': event_category,
+      'event_action': event_action,
+      'event_label': event_label,
+      'user_id' : userId,
+      'client_id': process.env.GA_360_USERID,
+      'button_name' : event_label,
+      'pillar' : 'general',
+    });
+  }
+};

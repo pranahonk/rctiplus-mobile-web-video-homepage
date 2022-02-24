@@ -24,6 +24,10 @@ export default withRedux(initStore, { debug: false })(
       }
     }
 
+    state = {
+      history: []
+    }
+
     async componentDidMount() {
       const segments = this.props.router.asPath
       let params = {}
@@ -57,6 +61,9 @@ export default withRedux(initStore, { debug: false })(
 
       const visitorToken = getVisitorToken()
       if (!visitorToken) await setVisitorToken()
+
+      // lets add initial route to `history`
+      this.setState(prevState => ({ history: [...prevState.history, segments] }));
       register()
     }
 
