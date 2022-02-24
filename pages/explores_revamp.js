@@ -79,7 +79,8 @@ class ExploresRevamp extends React.Component {
 			query: ctx.query,
 			interests: data,
 			genre_name: ctx.query.genre_name,
-			meta_content: resContent
+			meta_content: resContent,
+			token: accessToken
 		};
 	}
 
@@ -197,36 +198,14 @@ class ExploresRevamp extends React.Component {
 					: (<NavDefault disableScrollListener />)
 				}
 
-				<div id="library-revamp">
-					<img src="static/img/homepage_revamp_trebel.png" width="100%" />
-					<div className='containerWrapper'>
-						<div className='contentWrapper'>
-							<div className='contentTextWrapper'>
-								<p className='contentText'>
-									Tanpa <br />
-									<span className='contentTextBold'>Biaya</span>
-								</p>
-								<p className='contentText'>
-									Tanpa <br />
-									<span className='contentTextBold'>Internet</span>
-								</p>
-								<p className='contentText'>
-									Tanpa <br />
-									<span className='contentTextBold'>Gangguan</span>
-								</p>
-							</div>
-							<p className='comingSoon'>
-								Segera hadir di
-								<b>&nbsp;RCTI+</b>
-							</p>
-						</div>
-						<div style={{ marginTop: 16, padding: '0 32px', display: 'none' }}>
-							<button onClick={_ => this.onClickSeeMore()}>
-								Lihat Lebih Lanjut
-							</button>
-						</div>
-					</div>
-				</div>
+				<iframe
+					src={`/trebel/content?platfom=android&token=${this.props.token ? this.props.token : ''}`}
+					style={{
+						border: 'none',
+						height: '100vh',
+						width: '100%'
+					}}
+				/>
 			</Layout>
 		);
 	}
