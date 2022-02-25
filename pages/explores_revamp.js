@@ -26,12 +26,16 @@ class ExploresRevamp extends React.Component {
 	constructor(props) {
 		super(props);
 		this.platform = null;
+		this.token = null;
 		
 		const segments = this.props.router.asPath.split(/\?/);
 		if (segments.length > 1) {
 			const q = queryString.parse(segments[1]);
 			if (q.platform) {
 				this.platform = q.platform;
+			}
+			if (q.token) {
+				this.token = q.token;
 			}
 		}
 	}
@@ -161,8 +165,13 @@ class ExploresRevamp extends React.Component {
 		window.open('https://home.trebel.io/id/home', "_blank").focus()
 	}
 
+
 	render() {
 		const [metadata, ogMetaData] = [this.getMetadata(), this.getMetaOg()];
+
+		const iFrameToken = this.token || this.props.token || ''
+		const iFrameURL = `https://www.rctiplus.com/trebel/content?platform=${this.platform ?? 'web'}&token=${iFrameToken}`
+
 		return (
 			<Layout title={metadata.title}>
 				<Head>
@@ -199,7 +208,7 @@ class ExploresRevamp extends React.Component {
 				}
 
 				<iframe
-					src={`/trebel/content?platform=${this.platform ?? 'mweb'}&token=${this.props.token ? this.props.token : ''}`}
+					src={iFrameURL}
 					style={{
 						border: 'none',
 						height: '100vh',
