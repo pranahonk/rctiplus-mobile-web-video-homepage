@@ -77,7 +77,7 @@ export default withRedux(initStore, { debug: false })(
       return (
         <ApolloProvider client={client}>
           <Provider store={store}>
-            <Component {...pageProps} />
+            <Component history={this.state.history} {...pageProps} />
           </Provider>
         </ApolloProvider>
       )
