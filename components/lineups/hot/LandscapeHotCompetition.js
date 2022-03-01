@@ -98,7 +98,7 @@ const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
                     onClick={() => _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}
                     key={`${i}-portrait-video`}
                     className="lineup-contents">
-                    <div className="hot-competitions">
+                    <div className="hot-competitions" id={`portrait-video-${i}`}>
                       <button className="hot-competitions__button">
                         JOIN
                       </button>
