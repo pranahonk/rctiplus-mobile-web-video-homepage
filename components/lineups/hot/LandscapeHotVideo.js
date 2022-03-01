@@ -104,7 +104,7 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
                   onClick={() => _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}
                   key={`${i}-portrait-video`}
                   className="lineup-contents">
-                  <div className="hot-videos" id={`Landscape-hot-${i}`}>
+                  <div className="hot-videos"  id={`portrait-video-${i}`}>
                     {
                       imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,220, assetUrl, 'thumbnail')
                     }
