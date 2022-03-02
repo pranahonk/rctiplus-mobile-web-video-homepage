@@ -95,6 +95,18 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
     }
   }
 
+  const setUpPadding = (data, index) => {
+    if((index + 1) === data.length){
+       return 12;
+    }
+    else if (!!window.navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)){
+      return 30;
+    }
+    else{
+      return 0;
+    }
+  };
+
   return (
     hastags?.data?.length < 1 ? (<div />) :
       hastags?.data?.length === 0 || hastags?.data === undefined ?(<Loader />) :
@@ -111,7 +123,7 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
                 {hastags?.data.map((item, index) => {
                   console.log((index + 1), hastags?.data.length)
                   return (
-                    <div onClick={()=> _goToDetail(item)}  key={index} id={`hastgas-${index}`} style={{marginRight: (index + 1) === hastags?.data.length ? 12 : 0}}>
+                    <div onClick={()=> _goToDetail(item)}  key={index} id={`hastgas-${index}`} style={{marginRight: setUpPadding(hastags?.data, index)}}>
                       <a onClick={() => sendAnalytics(item)}>
                         <div className="horizontal-tags">
                           <span className="horizontal-tags_text">#{item.tag}</span>
