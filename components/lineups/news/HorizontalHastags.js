@@ -98,6 +98,8 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   const setUpPadding = (data, index) => {
     const isIphone = /(iPhone)/i.test(navigator.userAgent);
 
+    alert(isIphone)
+
     if((index + 1) === data.length){
        if(isIphone){
          return 30;
