@@ -96,11 +96,14 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
   }
 
   const setUpPadding = (data, index) => {
+    const isIphone = /(iPhone)/i.test(navigator.userAgent);
+
     if((index + 1) === data.length){
-       return 12;
-    }
-    else if (!!window.navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)){
-      return 30;
+       if(isIphone){
+         return 30;
+       }
+
+      return 12;
     }
     else{
       return 0;
