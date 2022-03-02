@@ -114,7 +114,7 @@ class Signin extends React.Component {
 			password: this.state.password,
 			phone_code: this.state.isPhoneNumber ? this.state.phone_code : '',
 		};
-		this.props.login(data).then(response => {
+		this.props.login(data).then(async (response) => {
 			if(this.props?.authentication?.code === 8) {
 				return this.setState({
 							is_password_invalid: false,
@@ -123,7 +123,8 @@ class Signin extends React.Component {
 						});
 			}
 			if (this.props.authentication.data != null && this.props.authentication.data.status.code === 0) {
-				console.log(this.props.authentication)
+				await this.props.storeAccessToken(this.props.authentication.token)
+
 				const query = this.props.router.query;
 				if (query && Object.keys(query).length > 0 && query.referrer) {
 					window.location.href = this.constructReferrerUrl(this.props.authentication.token);
