@@ -100,13 +100,13 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
 
     if((index + 1) === data.length){
        if(isIphone){
-         return 30;
+         return 24;
        }
 
-      return 12;
+      return false;
     }
     else{
-      return 0;
+      return false;
     }
   };
 
@@ -126,9 +126,9 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
                 {hastags?.data.map((item, index) => {
                   console.log((index + 1), hastags?.data.length)
                   return (
-                    <div onClick={()=> _goToDetail(item)}  key={index} id={`hastgas-${index}`} style={{marginRight: setUpPadding(hastags?.data, index)}}>
+                    <div onClick={()=> _goToDetail(item)}  key={index} id={`hastgas-${index}`} style={{marginRight: (index + 1) === hastags?.data.length ? 12 : 0}}>
                       <a onClick={() => sendAnalytics(item)}>
-                        <div className="horizontal-tags">
+                        <div className="horizontal-tags" style={{marginRight: setUpPadding(hastags?.data, index)}}>
                           <span className="horizontal-tags_text">#{item.tag}</span>
                         </div>
                       </a>
