@@ -96,7 +96,7 @@ class ExploresRevamp extends React.Component {
 	}
 
 	componentDidMount() {
-    gaTrebelScreenView()
+    gaTrackerScreenView()
 		let selectedGenreName = 'For You';
 		let selectedGenre;
 		const interests = this.props.interests.data;
