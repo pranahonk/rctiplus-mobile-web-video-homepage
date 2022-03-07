@@ -10,7 +10,6 @@ and open the template in the editor.
 
 .sticky-ads{
     color:#fff;
-    margin: 10px auto;
 }
 
 .sticky-ads-off {
@@ -19,8 +18,8 @@ and open the template in the editor.
 
 .sticky-ads-on {
     position: fixed;
-    bottom: 55px;
-    z-index: 999999;
+    bottom: 60px;
+    z-index: 1029;
     left: 50%;
     transform: translateX(-50%);
 

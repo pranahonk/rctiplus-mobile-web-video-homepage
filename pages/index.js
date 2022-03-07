@@ -296,9 +296,9 @@ class Index_v2 extends React.Component {
                     closeStickyInstallFunction={this.closeStickyInstall}
                     showStickyInstall={this.state.show_sticky_install}/>
 
-                  <Carousel showStickyInstall={this.state.show_sticky_install} >
-                    <GridMenu />
-                  </Carousel>
+                  <Carousel showStickyInstall={this.state.show_sticky_install} />
+
+                  <GridMenu />
 
                   <Stories />
 
@@ -340,12 +340,10 @@ class Index_v2 extends React.Component {
                 </div>
 
                 <div
-                  style={{marginBottom: 45, paddingTop: 10}}
+                  style={{marginBottom: this.props.ads.ads_displayed ? 80 : 45, paddingTop: 10}}
                   onTouchStart={this.onTouchStart.bind(this)}
                   onTouchEnd={this.onTouchEnd.bind(this)}>
                   { this.renderLineup(this.state.lineups, this.state.meta) }
-                  {/*<AudioHorizontalDisc/>*/}
-                  {/*<AudioHorizontalList/>*/}
                 </div>
                 <ComingSoonModal
                   open={this.state.openComingSoonModal}
