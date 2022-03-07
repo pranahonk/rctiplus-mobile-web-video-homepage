@@ -111,7 +111,7 @@ class PlayerModal extends React.Component {
                             console.log('click');
                             self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
                         });
-                        
+
                         const grandChilds = childs[i].childNodes;
                         for (let j = 0; j < grandChilds.length; j++) {
                             if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
@@ -193,7 +193,7 @@ class PlayerModal extends React.Component {
                             vm.muted(false);
                             elementCreateWrapper.classList.add('jwplayer-mute');
                             elementCreateWrapper.classList.remove('jwplayer-full');
-                        } 
+                        }
                         else {
                             vm.muted(false);
                             elementCreateWrapper.classList.add('jwplayer-full');
@@ -239,11 +239,10 @@ class PlayerModal extends React.Component {
                     connection_type: 'N/A',
                     content_type: (videoData ? videoData.content_type : 'N/A'),
                     content_id: (videoData ? videoData.id : 'N/A').toString(),
-					program_name: (videoData ? videoData.program_title : 'N/A'),
+					          program_name: (videoData ? videoData.program_title : 'N/A'),
                     tv_id: 'N/A',
                     tv_name: 'N/A',
                     date_video: 'N/A',
-                    genre: (genre ? genre : 'N/A'),
                     page_title: 'N/A',
                     page_view: 'N/A',
                     program_id: (videoData ? videoData.program_id : 'N/A').toString(),
@@ -252,7 +251,9 @@ class PlayerModal extends React.Component {
                     viewer_id: getUserId().toString(),
                     application_name: 'RCTI+ MWEB',
                     section_page: 'N/A',
-                    genre: genreTags
+                    genre: genreTags,
+                    conviva_params: props?.data?.conviva_params,
+                    cluster_name: 'N/A'
                 };
                 // self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.props.videoUrl, assetName.toUpperCase(), {
 				// 	asset_name: assetName.toUpperCase(),
@@ -267,7 +268,7 @@ class PlayerModal extends React.Component {
 
                 self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.props.videoUrl, assetName.toUpperCase(), customTags);
                 self.convivaTracker.createSession();
-                
+
                 setTimeout(() => {
                     self.setSkipButtonCentered(); // set centered with delay
                 }, 2000);
@@ -316,7 +317,7 @@ class PlayerModal extends React.Component {
                             vm.muted(false);
                             elementCreateWrapper.classList.add('jwplayer-mute');
                             elementCreateWrapper.classList.remove('jwplayer-full');
-                        } 
+                        }
                         else {
                             vm.muted(true);
                             elementCreateWrapper.classList.add('jwplayer-full');
@@ -335,7 +336,7 @@ class PlayerModal extends React.Component {
                 }, 100);
             });
 
-            this.player.hlsQualitySelector({ displayCurrentQuality: true }); 
+            this.player.hlsQualitySelector({ displayCurrentQuality: true });
 
             this.player.on('error', () => {
                 this.setState({
@@ -422,7 +423,7 @@ class PlayerModal extends React.Component {
                     clearTimeout(this.disconnectHandler);
                     this.disconnectHandler = null;
                 }
-                
+
                 this.disconnectHandler = setTimeout(() => {
                     this.setState({
                         error: true,
@@ -499,7 +500,7 @@ class PlayerModal extends React.Component {
 						jwplayer().setMute(true);
 						elementJwplayer[0].classList.add('jwplayer-mute');
 						elementJwplayer[0].classList.remove('jwplayer-full');
-					} 
+					}
 					else {
 						jwplayer().setMute(false);
 						elementCreateWrapper.classList.add('jwplayer-full');
@@ -508,7 +509,7 @@ class PlayerModal extends React.Component {
 				});
 			}
         });
-        
+
         this.player.on('setupError', error => {
             console.log('SETUP ERROR');
             this.setState({
@@ -576,12 +577,12 @@ class PlayerModal extends React.Component {
             errorRef = (
                 <div className="wrapper-content" style={{ margin: 0 }}>
                     .
-                    <div style={{ 
+                    <div style={{
                         textAlign: 'center',
-                        position: 'fixed', 
-                        top: '50%', 
+                        position: 'fixed',
+                        top: '50%',
                         left: '50%',
-                        transform: 'translate(-50%, -50%)' 
+                        transform: 'translate(-50%, -50%)'
                         }}>
                         <Wrench/>
                         <h5 style={{ color: '#8f8f8f' }}>
@@ -623,13 +624,13 @@ class PlayerModal extends React.Component {
                         }}>
                         <PauseIcon/>
                     </div>
-                    <video 
+                    <video
                         autoPlay
                         playsInline
-                        style={{ 
+                        style={{
                             width: '100%',
                         }}
-                        ref={ node => this.videoNode = node } 
+                        ref={ node => this.videoNode = node }
                         className="video-js vjs-default-skin vjs-big-play-centered"
                         ></video>
                 </div>
