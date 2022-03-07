@@ -26,7 +26,7 @@ class ExploresRevamp extends React.Component {
 	constructor(props) {
 		super(props);
 		this.platform = null;
-		
+
 		const segments = this.props.router.asPath.split(/\?/);
 		if (segments.length > 1) {
 			const q = queryString.parse(segments[1]);
@@ -113,7 +113,7 @@ class ExploresRevamp extends React.Component {
 			selected_genre_name: selectedGenreName
 		})
 
-		let source = this.props.history.length > 0 ? window.location.origin + this.props.history[0] : ''
+		let source = this.props.history?.length > 0 ? window.location.origin + this.props.history[0] : ''
 
 		trebelPage(this.props.user.data, source)
 	}
