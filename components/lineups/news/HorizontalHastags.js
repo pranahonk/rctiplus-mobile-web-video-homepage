@@ -95,6 +95,21 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
     }
   }
 
+  const setUpPadding = (data, index) => {
+    const isIphone = /(iPhone)/i.test(navigator.userAgent);
+
+    if((index + 1) === data.length){
+       if(isIphone){
+         return 24;
+       }
+
+      return false;
+    }
+    else{
+      return false;
+    }
+  };
+
   return (
     hastags?.data?.length < 1 ? (<div />) :
       hastags?.data?.length === 0 || hastags?.data === undefined ?(<Loader />) :
@@ -109,10 +124,11 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
             {scrollRef => (
               <div ref={scrollRef} className="lineup-containers-news-multiple">
                 {hastags?.data.map((item, index) => {
+                  console.log((index + 1), hastags?.data.length)
                   return (
-                    <div onClick={()=> _goToDetail(item)}  key={index} id={`hastgas-${index}`}>
+                    <div onClick={()=> _goToDetail(item)}  key={index} id={`hastgas-${index}`} style={{marginRight: (index + 1) === hastags?.data.length ? 12 : 0}}>
                       <a onClick={() => sendAnalytics(item)}>
-                        <div className="horizontal-tags">
+                        <div className="horizontal-tags" style={{marginRight: setUpPadding(hastags?.data, index)}}>
                           <span className="horizontal-tags_text">#{item.tag}</span>
                         </div>
                       </a>
