@@ -19,7 +19,7 @@ import '../assets/scss/components/explore.scss';
 
 import { VISITOR_TOKEN, DEV_API, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
 import { getCookie } from '../utils/cookie';
-import { gaTrebelScreenView } from '../utils/ga-360';
+import { gaTrackerScreenView } from '../utils/ga-360';
 
 class ExploresRevamp extends React.Component {
 
@@ -96,7 +96,7 @@ class ExploresRevamp extends React.Component {
 	}
 
 	componentDidMount() {
-    gaTrebelScreenView()
+    gaTrackerScreenView()
 		let selectedGenreName = 'For You';
 		let selectedGenre;
 		const interests = this.props.interests.data;
