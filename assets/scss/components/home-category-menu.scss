@@ -12,7 +12,8 @@
     display: flex;
     justify-content: center;
     transform: translateY(-40px);
-    margin: -20px;
+    max-width: 100%;
+    margin: 0 auto -20px auto;
 
     .grid-h-category-container {
         height: 110px;
