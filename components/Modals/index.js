@@ -243,18 +243,17 @@ class PlayerModal extends React.Component {
                     tv_id: 'N/A',
                     tv_name: 'N/A',
                     date_video: 'N/A',
-                    page_title: 'N/A',
-                    page_view: 'N/A',
                     program_id: (videoData ? videoData.program_id : 'N/A').toString(),
-                    screen_mode: 'portrait',
-                    time_video: 'N/A',
                     viewer_id: getUserId().toString(),
                     application_name: 'RCTI+ MWEB',
                     section_page: 'N/A',
                     genre: genreTags,
-                    conviva_params: props?.data?.conviva_params,
                     cluster_name: 'N/A'
                 };
+
+                for (const convivaParam of videoData?.conviva_params) {
+                  customTags[convivaParam.key] = convivaParam.value;
+                }
                 // self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.props.videoUrl, assetName.toUpperCase(), {
 				// 	asset_name: assetName.toUpperCase(),
 				// 	application_name: 'RCTI+ MWEB',
