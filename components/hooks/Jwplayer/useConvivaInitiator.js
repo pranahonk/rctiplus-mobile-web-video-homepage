@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { convivaJwPlayer} from '../../../utils/conviva';
 
 export default function useConvivaInitiator(props) {
-  console.log(props)
+  // console.log(props?.data?.conviva_params)
   const [ initConviva, setInitConviva ] = useState(false)
 
   useEffect(_ => {
@@ -26,19 +26,18 @@ export default function useConvivaInitiator(props) {
       tv_id: optionsConviva.tvId,
       tv_name: optionsConviva.tvName,
       date_video: 'N/A',
-      page_title: 'N/A',
-      page_view: 'N/A',
       program_id: optionsConviva.programId,
-      screen_mode: 'portrait',
-      time_video: 'N/A',
       section_page: props.customData.sectionPage,
       application_name: process.env.MODE === 'DEVELOPMENT' ? 'RCTI+ MWEB RC' : 'RCTI+ MWEB',
       genre: genreTags,
       is_login: props.customData && props.customData.isLogin ? 'login' : 'not login',
       program_type: props.customData && props.customData.programType ? props.customData.programType : 'N/A',
-      conviva_params: props?.data?.conviva_params,
       cluster_name: 'N/A'
     };
+
+    for (const convivaParam of props?.data?.conviva_params) {
+      customTags[convivaParam.key] = convivaParam.value;
+    }
 
     const isLive = /^live/i.test(props.type)
     const convivaTracker = convivaJwPlayer(
