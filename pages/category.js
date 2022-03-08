@@ -63,15 +63,16 @@ function Category (props) {
                 let newLineups = data.lineups.data
                 
                 if (page > 1) {
-                    const mappedContents = new Map()
-                    lineups.concat(data.lineups.data).forEach(content => {
-                        if (content.lineup_type_detail.detail) {
-                            mappedContents.set(content.id, content)
-                        }
-                    })
-                    newLineups = [ ...mappedContents.values() ]
+                    newLineups = lineups.concat(newLineups)
                 }
-                setLineups(newLineups)
+
+                const mappedContents = new Map()
+                newLineups.forEach(content => {
+                    if (content.lineup_type_detail.detail) {
+                        mappedContents.set(content.id, content)
+                    }
+                })
+                setLineups([ ...mappedContents.values() ])
                 setMeta(data.lineups.meta)
             })
             .catch(_ => {})
