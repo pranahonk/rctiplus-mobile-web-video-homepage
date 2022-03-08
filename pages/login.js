@@ -69,6 +69,33 @@ class Signin extends React.Component {
 		this.LoadingBar.complete();
 	}
 
+	componentDidUpdate() {
+		if (this.props.authentication?.message === 'Success Store Token') {
+			const query = this.props.router.query;
+			this.props.resetAuthMessage()
+			if (query && Object.keys(query).length > 0 && query.referrer) {
+				window.location.href = this.constructReferrerUrl(this.props.authentication.token);
+			}
+			else {
+				const redirect = queryString.parse(location?.search)
+				if(redirect.redirectTo) {
+					Router.push(redirect.redirectTo)
+				} else {
+					const { refpage } = this.props.router.query
+					const routerObj = Boolean(refpage) 
+						? { pathname: refpage, query: { refpage: "login" } }
+						: { pathname: "/" }
+					
+					Router.push(routerObj)
+				}
+			}
+		} else if (this.props.authentication?.message === 'Failed Store Token') {
+			this.props.resetAuthMessage()
+
+			showAlert('Something went wrong, please try again later', 'Invalid', 'OK', '', () => {}, true, 'not-registered')
+		}
+	}
+
 	constructReferrerUrl(token) {
 		const query = this.props.router.query;
 		if (query && query.referrer) {
@@ -108,24 +135,6 @@ class Signin extends React.Component {
 
 	storeToken = async () => {
 		await this.props.storeAccessToken(this.props.authentication.token)
-		
-		const query = this.props.router.query;
-		if (query && Object.keys(query).length > 0 && query.referrer) {
-			window.location.href = this.constructReferrerUrl(this.props.authentication.token);
-		}
-		else {
-			const redirect = queryString.parse(location?.search)
-			if(redirect.redirectTo) {
-				Router.push(redirect.redirectTo)
-			} else {
-				const { refpage } = this.props.router.query
-				const routerObj = Boolean(refpage) 
-					? { pathname: refpage, query: { refpage: "login" } }
-					: { pathname: "/" }
-				
-				Router.push(routerObj)
-			}
-		}
 	}
 
 	handleSubmit(e) {

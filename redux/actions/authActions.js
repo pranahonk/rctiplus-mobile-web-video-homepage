@@ -1,5 +1,5 @@
 import ax from 'axios';
-import { AUTHENTICATE, DEAUTHENTICATE, WRONG_AUTHENTICATION, STORE_TOKEN } from '../types';
+import { AUTHENTICATE, DEAUTHENTICATE, WRONG_AUTHENTICATION, STORE_TOKEN, RESET_MESSAGE } from '../types';
 import { DEV_API, MONETIZATION_API } from '../../config';
 import { setCookie, removeCookie, getCookie, getVisitorToken, checkToken } from '../../utils/cookie';
 
@@ -108,9 +108,19 @@ const storeAccessToken = (token) => {
     }
 }
 
+const resetAuthMessage = () => {
+    return async(dispatch) => {
+        dispatch({
+            type: RESET_MESSAGE,
+            message: ''
+        })
+    }
+}
+
 export default {
     login,
     logout,
     setDeviceId,
-    storeAccessToken
+    storeAccessToken,
+    resetAuthMessage
 };
