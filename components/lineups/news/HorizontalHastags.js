@@ -124,7 +124,6 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
             {scrollRef => (
               <div ref={scrollRef} className="lineup-containers-news-multiple">
                 {hastags?.data.map((item, index) => {
-                  console.log((index + 1), hastags?.data.length)
                   return (
                     <div onClick={()=> _goToDetail(item)}  key={index} id={`hastgas-${index}`} style={{marginRight: (index + 1) === hastags?.data.length ? 12 : 0}}>
                       <a onClick={() => sendAnalytics(item)}>
