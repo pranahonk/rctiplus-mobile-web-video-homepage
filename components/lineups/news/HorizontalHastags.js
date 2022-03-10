@@ -112,7 +112,6 @@ const HorizontalHastags = ({title, indexTag, id, data, ...props}) => {
 
   return (
     hastags?.data?.length < 1 ? (<div />) :
-      hastags?.data?.length === 0 || hastags?.data === undefined ?(<Loader />) :
         <div
           onTouchStart={e => onTouchStart(e)}
           onTouchEnd={e => onTouchEnd(e)}
