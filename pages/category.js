@@ -30,6 +30,13 @@ const VideoSquareMiniView = dynamic(() => import("../components/lineups/SquareMi
 const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
 const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"))
 const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
+const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"));
+const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"));
+const LandscapeHotCompetition = dynamic(() => import("../components/lineups/hot/LandscapeHotCompetition"));
+const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/news/HorizontalMutipleLandscape"));
+const LandscapeHotVideo = dynamic(() => import("../components/lineups/hot/LandscapeHotVideo"));
+const AudioHorizontalDisc = dynamic(() => import("../components/lineups/audio_lineup/Disc"));
+const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"));
 
 function Category (props) {
     const { ads_displayed } = useSelector(state => state.ads)
@@ -164,6 +171,26 @@ function Category (props) {
                             showComingSoonModal={(open, content) => setComingSoonModalState(open, content)}
                             imagePath={meta.image_path} />
                     )
+                case 'tag':
+                  return (
+                    <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+                  )
+                case 'landscape_news':
+                  return (
+                    <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+                  )
+                case "square_list_news":
+                  return (
+                    <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+                  )
+                case "landscape_hot_competition":
+                  return(
+                    <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+                  )
+                case "portrait_hot":
+                  return(
+                    <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+                  )
             }
         })
     }
