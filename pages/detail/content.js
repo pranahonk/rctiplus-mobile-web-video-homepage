@@ -160,7 +160,7 @@ class Content extends React.Component {
                             console.log('click');
                             self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
                         });
-
+                        
                         const grandChilds = childs[i].childNodes;
                         for (let j = 0; j < grandChilds.length; j++) {
                             if (grandChilds[j].className == 'vjs-icon-placeholder' || grandChilds[j].className == 'vjs-icon-placeholder vjs-icon-hd' ) {
@@ -233,7 +233,7 @@ class Content extends React.Component {
                             vm.muted(false);
                             elementCreateWrapper.classList.add('jwplayer-mute');
                             elementCreateWrapper.classList.remove('jwplayer-full');
-                        }
+                        } 
                         else {
                             vm.muted(false);
                             elementCreateWrapper.classList.add('jwplayer-full');
@@ -241,7 +241,7 @@ class Content extends React.Component {
                         }
                     });
                 }
-
+                
                 self.historyAppierHandler = setInterval(() => {
                     self.setState({ end_duration: vm.currentTime() });
                     if (self.reference) {
@@ -251,42 +251,42 @@ class Content extends React.Component {
                                 case 'homepage_program':
                                     programContentPlayEvent(data.id, data.title, data.content_id, data.content_title, data.type, vm.currentTime(), content.data.duration, 'mweb_homepage_program_content_play');
                                     break;
-
+    
                                 case 'exclusive_program':
                                     break;
-
+    
                                 case 'mylist_program':
                                     accountMylistContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), self.props.content.meta.image_path + '593' + self.props.content.data.portrait_image, self.props.content.meta.image_path + '593' + self.props.content.data.landscape_image, vm.currentTime(), content.data.duration, 'mweb_account_mylist_content_play');
                                     break;
-
+    
                                 case 'library_program':
                                     libraryProgramContentPlayEvent(content.data.program_title, content.data.program_id, data.content_title, data.type, data.content_id, vm.currentTime(), content.data.duration, 'mweb_library_program_content_play');
                                     break;
-
+    
                                 case 'search_program':
                                     searchProgramContentPlayEvent(data.program_id, content.data.program_title, data.content_title, data.type, data.content_id, vm.currentTime(), content.data.duration, 'mweb_search_program_content_play');
                                     break;
-
+    
                                 case 'homepage':
                                     homepageContentPlayEvent(self.homepageTitle ? self.homepageTitle : 'N/A', data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), self.props.content.meta.image_path + '593' + self.props.content.data.portrait_image, self.props.content.meta.image_path + '593' + self.props.content.data.landscape_image, vm.currentTime(), content.data.duration, 'mweb_homepage_content_play');
                                     break;
-
+    
                                 case 'history':
                                     accounselftoryContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), self.props.content.meta.image_path + '593' + self.props.content.data.portrait_image, self.props.content.meta.image_path + '593' + self.props.content.data.landscape_image, vm.currentTime(), content.data.duration, 'mweb_account_history_content_play');
                                     break;
-
+    
                                 case 'continue_watching':
                                     accountContinueWatchingContentPlayEvent(data.type, data.content_id, data.content_title, content.data.program_title, genre.join(','), self.props.content.meta.image_path + '593' + self.props.content.data.portrait_image, self.props.content.meta.image_path + '593' + self.props.content.data.landscape_image, vm.currentTime(), content.data.duration, 'mweb_account_continue_watching_content_play');
                                     break;
                             }
                         }
-
+    
                     }
                 }, 2500);
                 self.historyHandler = setInterval(() => {
                     if (vm) {
                         console.log('POST HISTORY');
-
+    
                         self.props.postHistory(self.props.context_data.content_id, self.props.context_data.type, vm.currentTime())
                             .then(response => {
                                 // console.log(response);
@@ -295,7 +295,7 @@ class Content extends React.Component {
                                 console.log(error);
                             });
                     }
-
+                    
                 }, 10000);
 
                 const player = this;
@@ -337,21 +337,21 @@ class Content extends React.Component {
                     connection_type: 'N/A',
                     content_type: (videoUrlData ? videoUrlData.content_type : 'N/A'),
                     content_id: (videoUrlData ? videoUrlData.id : 'N/A').toString(),
-					          program_name: (videoUrlData ? videoUrlData.program_title : 'N/A'),
+					program_name: (videoUrlData ? videoUrlData.program_title : 'N/A'),
                     tv_id: 'N/A',
                     tv_name: 'N/A',
                     date_video: 'N/A',
+                    genre: (genre ? genre : 'N/A'),
+                    page_title: 'N/A',
+                    page_view: 'N/A',
                     program_id: (videoUrlData ? videoUrlData.program_id : 'N/A').toString(),
+                    screen_mode: 'portrait',
+                    time_video: 'N/A',
                     viewer_id: getUserId().toString(),
                     application_name: 'RCTI+ MWEB',
                     section_page: 'N/A',
-                    genre: genreTags,
-                    cluster_name: 'N/A'
+                    genre: genreTags
                 };
-
-                for (const convivaParam of videoUrlData?.conviva_params) {
-                  customTags[convivaParam.key] = convivaParam.value;
-                }
 
                 self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.state.player_url, assetName, customTags);
                 self.convivaTracker.createSession();
@@ -408,7 +408,7 @@ class Content extends React.Component {
                             vm.muted(false);
                             elementCreateWrapper.classList.add('jwplayer-mute');
                             elementCreateWrapper.classList.remove('jwplayer-full');
-                        }
+                        } 
                         else {
                             vm.muted(true);
                             elementCreateWrapper.classList.add('jwplayer-full');
@@ -445,12 +445,12 @@ class Content extends React.Component {
             this.player.hlsQualitySelector({
                 displayCurrentQuality: false
             });
-
+            
             this.player.seekButtons({
                 forward: 10,
                 back: 10
             });
-
+            
             this.player.on('useractive', () => {
                 if (!this.player.paused()) {
                     const seekButtons = document.getElementsByClassName('vjs-seek-button');
@@ -468,7 +468,7 @@ class Content extends React.Component {
                     for (let i = 0; i < seekButtons.length; i++) {
                         seekButtons[i].style.display = 'none';
                     }
-
+                    
                     this.setState({ user_active: false });
                 }
 
@@ -553,8 +553,8 @@ class Content extends React.Component {
 
                 this.setState({ playing: true });
             });
-
-
+            
+            
             this.player.ima({ adTagUrl: this.state.player_vmap });
             this.player.ima.initializeAdDisplayContainer();
             this.setState({ screen_width: window.outerWidth });
@@ -617,7 +617,7 @@ class Content extends React.Component {
 						jwplayer().setMute(true);
 						elementJwplayer[0].classList.add('jwplayer-mute');
 						elementJwplayer[0].classList.remove('jwplayer-full');
-					}
+					} 
 					else {
 						jwplayer().setMute(false);
 						elementCreateWrapper.classList.add('jwplayer-full');
@@ -781,7 +781,7 @@ class Content extends React.Component {
                         startDuration = response_2.data.data.last_duration;
                     }
 
-
+                    
                     this.setState({
                         player_url: content.data.url,
                         player_vmap: content.data[process.env.VMAP_KEY],
@@ -899,14 +899,14 @@ class Content extends React.Component {
                                 }}>
                                 <PauseIcon/>
                             </div>
-                            <video
+                            <video 
                                 preload="auto"
                                 autoPlay
                                 playsInline
-                                style={{
+                                style={{ 
                                     width: '100%'
                                 }}
-                                ref={ node => this.videoNode = node }
+                                ref={ node => this.videoNode = node } 
                                 className="video-js vjs-default-skin vjs-big-play-centered"></video>
                         </div>
                     </div>
