@@ -208,16 +208,17 @@ const Player = forwardRef((props, ref) => {
           tv_id: 'N/A',
           tv_name: 'N/A',
           date_video: 'N/A',
-          page_title: 'N/A',
-          page_view: 'N/A',
           program_id: (props.data.program_id ? props.data.program_id : 'N/A').toString(),
-          screen_mode: 'portrait',
-          time_video: 'N/A',
           viewer_id: getUserId().toString(),
           application_name: 'RCTI+ MWEB',
           section_page: 'N/A',
           genre: genreTags,
+          cluster_name: 'N/A'
       };
+
+      for (const convivaParam of props?.data?.conviva_params) {
+        customTags[convivaParam.key] = convivaParam.value;
+      }
 
       const convivaTracker = convivaVideoJs(assetName, player, player.duration(), props.data.url ? props.data.url : props.data.trailer_url, assetName, customTags);
       convivaTracker.createSession();
@@ -300,18 +301,16 @@ useEffect(() => {
       tv_id: 'N/A',
       tv_name: 'N/A',
       date_video: 'N/A',
-      page_title: 'N/A',
-      page_view: 'N/A',
       program_id: (props.data.program_id ? props.data.program_id : 'N/A').toString(),
-      screen_mode: 'portrait',
-      time_video: 'N/A',
       viewer_id: getUserId().toString(),
       application_name: 'RCTI+ MWEB',
       section_page: 'N/A',
       genre: genreTags,
-      conviva_params: props?.data?.conviva_params,
       cluster_name: 'N/A'
   };
+    for (const convivaParam of props?.data?.conviva_params) {
+      customTags[convivaParam.key] = convivaParam.value;
+    }
   const convivaTracker = convivaVideoJs(assetName, videoPlayer, videoPlayer.duration(), props.data.url ? props.data.url : props.data.trailer_url, assetName, customTags);
   convivaTracker.cleanUpSession()
   convivaTracker.createSession();
