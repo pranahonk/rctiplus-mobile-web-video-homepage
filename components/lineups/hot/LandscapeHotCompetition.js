@@ -80,7 +80,7 @@ const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
   };
 
   return (
-    hastags?.data?.length < 1 || hastags?.data?.length === undefined ? (<div />) :
+    hastags?.data === undefined || hastags?.data?.length === 0 ? (<div />) :
       <div
         id="lineup-portrait"
         onTouchStart={e => onTouchStart(e)}
