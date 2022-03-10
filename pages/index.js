@@ -283,7 +283,7 @@ class Index_v2 extends React.Component {
         <LoadingBar
           progress={0}
           height={3}
-          color={this.state.show_sticky_install ? '#000' : '#fff'}
+          color="#05B5F5"
           onRef={ref => (this.LoadingBar = ref)} />
 
           {this.state.isShimmer
