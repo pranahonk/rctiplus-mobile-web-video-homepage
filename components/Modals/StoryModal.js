@@ -139,11 +139,9 @@ function storyModal(props) {
     })
     setPlayer(jwplayer)
 
-    jwplayer.on("ready", _ => {
-      toggleLoading(false)
-    })
-
     jwplayer.on("play", _ => {
+      toggleLoading(false)
+
       const duration = jwplayer.getDuration()
       progressBars[activeIndex].classList.add("active")
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${duration}s`
@@ -151,6 +149,8 @@ function storyModal(props) {
     })
 
     jwplayer.on("error", _ => {
+      toggleLoading(false)
+
       progressBars[activeIndex].classList.add("active")
       progressBars[activeIndex].children[0].style.animation = "unset"
     })
