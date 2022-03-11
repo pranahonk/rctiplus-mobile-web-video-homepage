@@ -144,6 +144,7 @@ function storyModal(props) {
       
       progressBars[activeIndex].classList.add("active")
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
+      pauseProgressBar()
     })
 
     jwplayer.on("play", _ => {
