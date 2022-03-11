@@ -60,8 +60,14 @@ function Category (props) {
         client
             .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
             .then(({ data }) => {
+                let newLineups = data.lineups.data
+                
+                if (page > 1) {
+                    newLineups = lineups.concat(newLineups)
+                }
+
                 const mappedContents = new Map()
-                lineups.concat(data.lineups.data).forEach(content => {
+                newLineups.forEach(content => {
                     if (content.lineup_type_detail.detail) {
                         mappedContents.set(content.id, content)
                     }
@@ -188,14 +194,12 @@ function Category (props) {
                             <Header title={props.router.query.category_title} />
 
                             <div style={{marginTop: -3}}>
-                                <Carousel category >
-                                    <GridMenu />
-                                </Carousel>
+                                <Carousel category />
                             </div>
+                           
+                            <GridMenu />
 
-                            <div style={{marginTop: "25px"}}>
-                                <Stories />
-                            </div>
+                            <Stories />
 
                             <StickyContainer>
                                 <Sticky disableHardwareAcceleration>

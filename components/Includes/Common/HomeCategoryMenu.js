@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import Link from "next/link"
 import { withRouter } from 'next/router'
 
@@ -11,45 +11,45 @@ function categoryMenu (props) {
   const imgSize = 150
   const [ categories, setCategories ] = useState([])
   const [ meta, setMeta ] = useState({})
-  const [ categoryId, setCategoryId ] = useState(props.router.query.category_id)
 
   useEffect(() => {
-    const query = categoryId
-      ? GET_SUB_CATEGORY_LIST(categoryId)
+    const query = props.router.query.category_id
+      ? GET_SUB_CATEGORY_LIST(props.router.query.category_id)
       : GET_HOME_CATEGORY_LIST
 
     client
       .query({ query })
       .then(({ data }) => {
-        const contents = categoryId ? data.sub_categories : data.categories
+        const contents = props.router.query.category_id ? data.sub_categories : data.categories
         setCategories(contents.data)
         setMeta(contents.meta)
       })
       .catch(_ => {})
-  }, [ categoryId ])
 
-  useEffect(() => {
-    if (props.router.query.category_id !== categoryId) {
-      setCategoryId(props.router.query.category_id)
-    }
-  })
+  }, [ props.router.query.category_id ])
+
+  if (categories.length === 0) return null
 
   return (
-    <div className="h-category-container">
+    <div 
+      className="h-category-container">
       <div className="grid-h-category-container">
         {categories.map((category, index) => (
           <div
-            key={`${category.id}-home-category`}
-            className="menu-item-cat" id={`category-${index}`}>
+            key={index}
+            className="menu-item-cat" 
+            id={`category-${index}`}>
             <Link href={`/category?category_id=${category.id}&category_title=${category.name}`}>
-              <a style={{display: "flex",  flexDirection: "column", justifyContent: "center", alignItems: "center", maxWidth: "54px", minWidth: "54px"}}>
+              <a>
                 <div className="container-menu-icon-cat">
                   <img
                     alt={category.name}
                     className="menu-icon-cat"
                     src={`${meta.image_path}${imgSize}${category.icon}`}/>
                 </div>
-                <p className="menu-label-cat">{category.name}</p>
+                <p className="menu-label-cat">
+                  {category.name}
+                </p>
               </a>
             </Link>
           </div>
