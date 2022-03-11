@@ -147,6 +147,7 @@ class NavbarDef_v2 extends Component {
                             alt={`${service}+`}
                             width={67}
                             height={20}
+                            className={`img-menu-icon`}
                             />
                     </a>
                 </Link>
