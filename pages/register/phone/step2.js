@@ -95,9 +95,9 @@ class Step2 extends Component {
 							Router.push('/register/phone/step3');
 						}
 						catch (e) {
-							if (error.status == 200) {
-								this.setState({ submit_message: error.data.status.message_client, is_submitting: false }, () => {
-									if (error.data.status.code === 0) {
+							if (e.status == 200) {
+								this.setState({ submit_message: e.data.status.message_client, is_submitting: false }, () => {
+									if (e.data.status.code === 0) {
 										Router.push('/register/phone/step3');
 									}
 								});
