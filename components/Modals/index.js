@@ -239,21 +239,20 @@ class PlayerModal extends React.Component {
                     connection_type: 'N/A',
                     content_type: (videoData ? videoData.content_type : 'N/A'),
                     content_id: (videoData ? videoData.id : 'N/A').toString(),
-					          program_name: (videoData ? videoData.program_title : 'N/A'),
+                    program_name: (videoData ? videoData.program_title : 'N/A'),
                     tv_id: 'N/A',
                     tv_name: 'N/A',
                     date_video: 'N/A',
+                    genre: (genre ? genre : 'N/A'),
+                    page_title: 'N/A',
+                    page_view: 'N/A',
                     program_id: (videoData ? videoData.program_id : 'N/A').toString(),
+                    screen_mode: 'portrait',
+                    time_video: 'N/A',
                     viewer_id: getUserId().toString(),
                     application_name: 'RCTI+ MWEB',
                     section_page: 'N/A',
-                    genre: genreTags,
-                    cluster_name: 'N/A'
                 };
-
-                for (const convivaParam of videoData?.conviva_params) {
-                  customTags[convivaParam.key] = convivaParam.value;
-                }
                 // self.convivaTracker = convivaVideoJs(assetName, player, player.duration(), self.props.videoUrl, assetName.toUpperCase(), {
 				// 	asset_name: assetName.toUpperCase(),
 				// 	application_name: 'RCTI+ MWEB',
@@ -445,8 +444,8 @@ class PlayerModal extends React.Component {
     }
 
     initVOD() {
-        this.player = window.jwplayer(this.props.playerId);
-		this.player.setup({
+      this.player = window.jwplayer(this.props.playerId);
+		  this.player.setup({
 			autostart: true,
 			file: this.props.videoUrl,
 			primary: 'html5',
