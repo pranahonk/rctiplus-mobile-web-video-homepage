@@ -139,14 +139,12 @@ class NavbarDef_v2 extends Component {
             const activeSrcSuffix = isActive ? "_active" : ""
             return (
                 <Link href={href} key={i} passHref>
-                    <a href={href} target={newPage ? "_blank" : "_self"}>
-                        <Image
-                            src={`/icons-menu/${service}plus${activeSrcSuffix}.svg`}
-                            alt={`${service}+`}
-                            width={67}
-                            height={20}
-                            className={`img-menu-icon`}
-                            />
+                    <a href={href} target={newPage ? "_blank" : "_self"} className={`icon-lima-pilar${activeSrcSuffix}`}>
+                      <img src={`/icons-menu/${service}plus${activeSrcSuffix}.png`}
+                              alt={`${service}+`}
+                              width={40}
+                              height={13.33}
+                      />
                     </a>
                 </Link>
             )

@@ -31,6 +31,35 @@
         padding: 8px 16px !important;
         border-bottom-left-radius: 20px !important;
         border-bottom-right-radius: 20px !important;
+
+      .icon-lima-pilar{
+        display: flex;
+        position: relative;
+        margin: 0 2px;
+        border-radius: 20px;
+        font-size: 10px;
+        padding: 5px 16px !important;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #3a3a3a !important;
+        width: 20%;
+        height: 24px;
+
+        &_active{
+          display: flex;
+          position: relative;
+          margin: 0;
+          border-radius: 20px;
+          font-size: 10px;
+          padding: 5px 16px !important;
+          justify-content: center;
+          align-items: center;
+          border: 1px solid #A3E4FB !important;
+          background: linear-gradient(0deg, rgba(157, 221, 243, 0.2) 0%, rgba(41, 186, 236, 0.2) 104.73%);
+          width: 20%;
+          height: 24px;
+        }
+      }
     }
 
     .nav-signup-item .nav-item {
