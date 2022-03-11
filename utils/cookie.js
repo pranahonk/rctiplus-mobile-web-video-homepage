@@ -80,7 +80,7 @@ export const erese = key => {
 };
 
 export const removeCookie = key => {
-    const host = window.location.host
+    let host = window.location.host
     
     if (/localhost/ig.test(host)) {
         cookie.remove(key, { path: "/" });
