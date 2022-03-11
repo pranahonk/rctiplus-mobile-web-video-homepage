@@ -139,19 +139,20 @@ function storyModal(props) {
     })
     setPlayer(jwplayer)
 
-    jwplayer.on("play", _ => {
+    jwplayer.on("ready", _ => {
       toggleLoading(false)
-
-      const duration = jwplayer.getDuration()
+      
       progressBars[activeIndex].classList.add("active")
+      progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
+    })
+
+    jwplayer.on("play", _ => {
+      const duration = jwplayer.getDuration()
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${duration}s`
       runProgressBar()
     })
 
     jwplayer.on("error", _ => {
-      toggleLoading(false)
-
-      progressBars[activeIndex].classList.add("active")
       progressBars[activeIndex].children[0].style.animation = "unset"
     })
 
@@ -210,10 +211,10 @@ function storyModal(props) {
 
     if (!isForward && !isBackward) return
 
-    if (isBackward) targetIndex = activeIndex - 1
     if (isForward) targetIndex = activeIndex + 1
+    if (isBackward) targetIndex = activeIndex - 1
 
-    if (!isForward) {
+    if (isBackward) {
       progressBars[activeIndex].classList.remove("active")
       if (activeIndex - 1 >= 0 && props.story.story[activeIndex - 1].seen) {
         props.story.story[activeIndex - 1].seen = false
