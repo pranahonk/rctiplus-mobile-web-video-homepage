@@ -194,10 +194,14 @@
                     }
                 }
         
-                & > p:first-child {
+                & > p:first-child {    
                     font-size: 14px;
                     font-weight: bold;
                     margin: 10px 0;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
                 }
         
                 & > div {
