@@ -86,7 +86,7 @@ export const removeCookie = key => {
         cookie.remove(key, { path: "/" });
     }
     else {
-        let domainParts = host.split('.').shift()
+        let domainParts = host.split('.')
         domainParts.shift()
         const domain = `.${domainParts.join('.')}`
     
