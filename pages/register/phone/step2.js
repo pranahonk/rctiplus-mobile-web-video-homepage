@@ -92,13 +92,13 @@ class Step2 extends Component {
 								otp: this.state.otp,
 								device_id: '1'
 							})
-							Router.push('/register/phone/step3', "register/phone/step3", { shallow: true });
+							Router.push('/register/phone/step3', "/register/phone/step3", { shallow: true });
 						}
 						catch (e) {
 							if (e.status == 200) {
 								this.setState({ submit_message: e.data.status.message_client, is_submitting: false }, () => {
 									if (e.data.status.code === 0) {
-										Router.push('/register/phone/step3', "register/phone/step3", { shallow: true });
+										Router.push('/register/phone/step3', "/register/phone/step3", { shallow: true });
 									}
 								});
 							}
