@@ -69,6 +69,33 @@ class Signin extends React.Component {
 		this.LoadingBar.complete();
 	}
 
+	componentDidUpdate() {
+		if (this.props.authentication?.message === 'Success Store Token') {
+			const query = this.props.router.query;
+			this.props.resetAuthMessage()
+			if (query && Object.keys(query).length > 0 && query.referrer) {
+				window.location.href = this.constructReferrerUrl(this.props.authentication.token);
+			}
+			else {
+				const redirect = queryString.parse(location?.search)
+				if(redirect.redirectTo) {
+					Router.push(redirect.redirectTo)
+				} else {
+					const { refpage } = this.props.router.query
+					const routerObj = Boolean(refpage) 
+						? { pathname: refpage, query: { refpage: "login" } }
+						: { pathname: "/" }
+					
+					Router.push(routerObj)
+				}
+			}
+		} else if (this.props.authentication?.message === 'Failed Store Token') {
+			this.props.resetAuthMessage()
+
+			showAlert('Something went wrong, please try again later', 'Invalid', 'OK', '', () => {}, true, 'not-registered')
+		}
+	}
+
 	constructReferrerUrl(token) {
 		const query = this.props.router.query;
 		if (query && query.referrer) {
@@ -105,7 +132,10 @@ class Signin extends React.Component {
 			// console.log('EMAIL');
 		}
 }
-	
+
+	storeToken = async () => {
+		await this.props.storeAccessToken(this.props.authentication.token)
+	}
 
 	handleSubmit(e) {
 		e.preventDefault();
@@ -123,24 +153,7 @@ class Signin extends React.Component {
 						});
 			}
 			if (this.props.authentication.data != null && this.props.authentication.data.status.code === 0) {
-				console.log(this.props.authentication)
-				const query = this.props.router.query;
-				if (query && Object.keys(query).length > 0 && query.referrer) {
-					window.location.href = this.constructReferrerUrl(this.props.authentication.token);
-				}
-				else {
-					const redirect = queryString.parse(location?.search)
-					if(redirect.redirectTo) {
-						Router.push(redirect.redirectTo)
-					} else {
-						const { refpage } = this.props.router.query
-						const routerObj = Boolean(refpage) 
-							? { pathname: refpage, query: { refpage: "login" } }
-							: { pathname: "/" }
-						
-						Router.push(routerObj)
-					}
-				}
+				this.storeToken()
 			}
 			else {
 				switch (this.props.authentication.code) {
@@ -187,7 +200,6 @@ class Signin extends React.Component {
 }
 
 	render() {
-		const { state, props } = this;
 		return (
 			<Layout title={"Login Akun - RCTI+"}>
 				<Head>
@@ -226,7 +238,7 @@ class Signin extends React.Component {
 								<Label for="email">Email or Phone Number</Label>
 								<InputGroup>
 									<Input
-										className={'inpt-form ' + (!state.isPhoneNumber ? 'right-border-radius ' : 'none-border-right') }
+										className={'inpt-form ' + (!this.state.isPhoneNumber ? 'right-border-radius ' : 'none-border-right') }
 										type="text"
 										name="email"
 										id="email"
@@ -234,9 +246,9 @@ class Signin extends React.Component {
 										defaultValue={this.state.emailphone}
 										invalid={this.state.is_username_invalid}
 										onChange={this.onChangeUsername.bind(this)}/>
-										{ state.isPhoneNumber ? (
-											<InputGroupAddon onClick={ () => this.setState({ status: !state.status }) } addonType="append" id="action-country-code">
-											<InputGroupText className={'append-input right-border-radius ' + (state.is_username_invalid ? ' invalid-border-color' : '')}>
+										{ this.state.isPhoneNumber ? (
+											<InputGroupAddon onClick={ () => this.setState({ status: !this.state.status }) } addonType="append" id="action-country-code">
+											<InputGroupText className={'append-input right-border-radius ' + (this.state.is_username_invalid ? ' invalid-border-color' : '')}>
 												{this.state.codeCountry}<KeyboardArrowDownIcon/>
 											</InputGroupText>
 											</InputGroupAddon>
@@ -292,14 +304,14 @@ class Signin extends React.Component {
 					{this.state.status ? (
 					<CountryList
 						data={this.props.others.list_country}
-						modal={state.status}
-						toggle={() => this.setState({ status: !state.status })}
+						modal={this.state.status}
+						toggle={() => this.setState({ status: !this.state.status })}
 						getCountryCode={(e) => {
 								this.props.setPhoneCode(e.phone_code);
 								this.setState({ 
 									codeCountry: e.code, 
 									phone_code: e.phone_code,
-									emailphone: state.emailphone,
+									emailphone: this.state.emailphone,
 									});}
 							}
 						className="country-list-modal"/>) : ''}
