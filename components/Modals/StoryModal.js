@@ -39,24 +39,22 @@ function storyModal(props) {
   if (!props.story.story) return null
 
   const setActiveProgressbar = () => {
+
+    // function to listen between switching of story contents
     if (!progressBarWrapper.current) return
     if (activeIndex > props.story.story.length - 1) return
     document.getElementById("nav-footer").style.display = "none"
-
-    mountJwplayer()
-
+    
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
 
     if (props.story.story[activeIndex].seen) {
       progressBars[activeIndex].classList.add("active")
       progressBars[activeIndex].children[0].style.animation = `unset`
       setActiveIndex(activeIndex + 1)
-
       return
     }
 
-    progressBars[activeIndex].classList.add("active")
-    progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
+    mountJwplayer()
   }
 
   const handleAnimationEnd = _ => {
@@ -113,22 +111,41 @@ function storyModal(props) {
     setPlayer(null)
   }
 
+  const renderImageStory = _ => {
+    const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
+    progressBars[activeIndex].classList.add("active")
+    progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
+  }
+
   const mountJwplayer = () => {
     const linkVideo = props.story.story[activeIndex].link_video
+    const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
 
+    // close function immediately when it is not a video
+    // then activate the image story
     if (!linkVideo) {
       if (player) removeModalPlayer()
+
+      renderImageStory()
       return
     }
 
-    const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
+    // code below is used for render video story by jwplayer
+    toggleLoading(true)
+
     const jwplayer = window.jwplayer(storyModalPlayerID).setup({
       ...options,
       file: linkVideo
     })
-    progressBars[activeIndex].children[0].style.animation = "unset"
     setPlayer(jwplayer)
-    pauseProgressBar()
+
+    jwplayer.on("ready", _ => {
+      toggleLoading(false)
+      
+      progressBars[activeIndex].classList.add("active")
+      progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
+      pauseProgressBar()
+    })
 
     jwplayer.on("play", _ => {
       const duration = jwplayer.getDuration()
@@ -145,6 +162,14 @@ function storyModal(props) {
     })
   }
 
+  const toggleLoading = (isLoading) => {
+
+    // function to load content
+    const storiesContentEl = document.getElementById("stories-content")
+    if (isLoading) storiesContentEl.style.display = "none"
+    else storiesContentEl.style.removeProperty("display")
+  }
+
   const pauseProgressBar = _ => {
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     progressBars[activeIndex].children[0].style.animationPlayState = "paused"
@@ -156,21 +181,20 @@ function storyModal(props) {
   }
 
   const navigateStory = (progressBars, direction) => {
+    
+    // navigate to the next story
     progressBars[activeIndex].classList.remove("active")
     progressBars[activeIndex].children[0].style.animation = "unset"
 
     let seenStories = null
-    if (direction === "right") {
-      seenStories = {
-        ...props.story,
-       story: props.story.story.map((item, i) => {
-         let story = item
-         if (i < activeIndex) story = { ...item, seen: true }
-         return story
-        })
-      }
+    seenStories = {
+      ...props.story,
+      story: props.story.story.map((item, i) => {
+        let story = item
+        if (i < activeIndex) story = { ...item, seen: true }
+        return story
+      })
     }
-
     props.onSwipe(direction, seenStories)
 
     setTimeout(() => {
@@ -188,10 +212,10 @@ function storyModal(props) {
 
     if (!isForward && !isBackward) return
 
-    if (isBackward) targetIndex = activeIndex - 1
     if (isForward) targetIndex = activeIndex + 1
+    if (isBackward) targetIndex = activeIndex - 1
 
-    if (!isForward) {
+    if (isBackward) {
       progressBars[activeIndex].classList.remove("active")
       if (activeIndex - 1 >= 0 && props.story.story[activeIndex - 1].seen) {
         props.story.story[activeIndex - 1].seen = false
@@ -250,6 +274,11 @@ function storyModal(props) {
     )
   }
 
+  const storyImageSrc = props.story.story[activeIndex].story_img 
+    ? `${props.story.image_path}${RESOLUTION_IMG}${props.story.story[activeIndex].story_img}`
+    : "" 
+  const storyVideoUrl = props.story.story[activeIndex].link_video
+
   return (
     <div className="modalview-wrapper">
       <div
@@ -289,15 +318,20 @@ function storyModal(props) {
           id="stories-content"
           onClick={e => divideComponentOnClick(e)}
           className="stories-content" >
-          <div
-            id={storyModalPlayerID}
-            style={{ display: props.story.story[activeIndex].story_img ? "none" : ""}} />
           <img
-            src={`${props.story.image_path}${RESOLUTION_IMG}${props.story.story[activeIndex].story_img}`}
+            src={storyImageSrc}
             alt="story-image"
             width="100%"
             height="auto"
-            style={{ display: props.story.story[activeIndex].story_img ? "" : "none" }} />
+            style={{ display: storyImageSrc ? "" : "none" }}/>
+          <div 
+            id={storyModalPlayerID}
+            style={{ display: storyVideoUrl ? "" : "none" }}/>
+          <div 
+            className="content-no-link"
+            style={{ display: !storyVideoUrl && !storyImageSrc ? "" : "none" }}>
+            Sorry, there is no link provided to show the story :(  
+          </div>
         </div>
 
         <div

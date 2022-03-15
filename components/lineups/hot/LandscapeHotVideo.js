@@ -86,7 +86,7 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
 
 
   return (
-    hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<Loader />) :
+    hastags?.data === undefined || hastags?.data?.length === 0 ? (<div />) :
     <div
       id="lineup-portrait"
       onTouchStart={e => onTouchStart(e)}
@@ -104,7 +104,7 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
                   onClick={() => _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}
                   key={`${i}-portrait-video`}
                   className="lineup-contents">
-                  <div className="hot-videos">
+                  <div className="hot-videos"  id={`portrait-video-${i}`}>
                     {
                       imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,220, assetUrl, 'thumbnail')
                     }
@@ -116,13 +116,13 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
                           <img src="/static/HOT+ White-01.png" alt="Gambar HOT+"/>
                         </div>
                         <div className="row">
-                          <div className="hot-videos_card-profile__photo col-3">
+                          <div className="hot-videos_card-profile__photo col-3 pr-0">
                             {
                               imageHotProfile(item?.content_type_detail?.detail?.data?.id, item?.content_type_detail?.detail?.data?.contestant?.thumbnail, assetUrl, 20, 152, assetUrl, '')
                             }
                           </div>
                           <div className="hot-videos_card-profile__name col">
-                            {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.display_name || item?.content_type_detail?.detail?.data?.contestant?.nick_name || item?.content_type_detail?.detail?.data?.contestant?.email || item?.content_type_detail?.detail?.data?.contestant?.phone_number, '...', '17')}
+                            {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.display_name || item?.content_type_detail?.detail?.data?.contestant?.nick_name || item?.content_type_detail?.detail?.data?.contestant?.email || item?.content_type_detail?.detail?.data?.contestant?.phone_number, '...', '15')}
                           </div>
                         </div>
                         <div className="row">

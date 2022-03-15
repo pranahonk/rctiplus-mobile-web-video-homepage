@@ -41,8 +41,6 @@ class Step2 extends Component {
 	}
 
 	componentDidMount() {
-		console.log(this.otpInput.__clearvalues__());
-		console.log(this.props.registration);
 		this.setState({ username: this.props.registration.username }, () => {
 			let username = this.state.username;
 			if (this.props.registration.username_type === 'PHONE_NUMBER') {
@@ -77,38 +75,34 @@ class Step2 extends Component {
 			}
 
 			this.props.verifyOtp(username, this.state.otp)
-				.then(response => {
+				.then(async (response) => {
 					if (response.data.status.code != 0) {
 						this.otpInput.__clearvalues__();
 						this.setState({ otp: '', submit_message: 'Invalid verification code', is_submitting: false });
 					}
 					else {
-						this.props.register({
-							username: this.props.registration.username,
-							phone_code: this.props.registration.phone_code,
-							password: this.props.registration.password,
-							fullname: this.props.registration.fullname,
-							gender: this.props.registration.gender,
-							dob: this.props.registration.dob,
-							otp: this.state.otp,
-							device_id: '1'
-						})
-						.then(response => {
-							Router.push('/register/phone/step3');
-						})
-						.catch(error => {
-							if (error.status == 200) {
-								this.setState({ submit_message: error.data.status.message_client, is_submitting: false }, () => {
-									if (error.data.status.code === 0) {
-										Router.push('/register/phone/step3');
+						try {
+							await this.props.register({
+								username: this.props.registration.username,
+								phone_code: this.props.registration.phone_code,
+								password: this.props.registration.password,
+								fullname: this.props.registration.fullname,
+								gender: this.props.registration.gender,
+								dob: this.props.registration.dob,
+								otp: this.state.otp,
+								device_id: '1'
+							})
+							Router.push('/register/phone/step3', "/register/phone/step3", { shallow: true });
+						}
+						catch (e) {
+							if (e.status == 200) {
+								this.setState({ submit_message: e.data.status.message_client, is_submitting: false }, () => {
+									if (e.data.status.code === 0) {
+										Router.push('/register/phone/step3', "/register/phone/step3", { shallow: true });
 									}
 								});
-								
 							}
-							
-							console.log(error);
-						});
-						
+						}
 					}
 				})
 				.catch(error => {

@@ -80,7 +80,7 @@ const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
   };
 
   return (
-    hastags?.data?.length === 0 || hastags?.data?.length === undefined ? (<Loader />) :
+    hastags?.data === undefined || hastags?.data?.length === 0 ? (<div />) :
       <div
         id="lineup-portrait"
         onTouchStart={e => onTouchStart(e)}
@@ -98,7 +98,7 @@ const LandscapeHotCompetition = ({ title, indexTag, id, data }) => {
                     onClick={() => _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}
                     key={`${i}-portrait-video`}
                     className="lineup-contents">
-                    <div className="hot-competitions">
+                    <div className="hot-competitions"id={`Landscape-hot-${i}`}>
                       <button className="hot-competitions__button">
                         JOIN
                       </button>
