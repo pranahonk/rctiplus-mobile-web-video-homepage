@@ -329,6 +329,9 @@ class Index_v2 extends React.Component {
                             </div>
                           );
                         }
+                        else if (!this.props.ads.ads_displayed) {
+                          this.props.toggleAds(true)
+                        }
                         return (
                           <div {...rest} >
                             <StickyAds id='div-gpt-ad-1584677577539-0'/>
