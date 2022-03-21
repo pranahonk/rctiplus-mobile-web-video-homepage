@@ -7,6 +7,19 @@ require("dotenv").config({ path: './.env' });
 
 
 let nextConfig = {
+  async headers() {
+    return [
+      {
+        source: '/',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, max-age=0, must-revalidate',
+          },
+        ],
+      },
+    ]
+  },
 	// next-offline options:
   generateBuildId: async () => {
     // You can, for example, get the latest git commit hash here
