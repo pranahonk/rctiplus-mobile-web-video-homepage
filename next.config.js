@@ -14,7 +14,11 @@ let nextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'no-cache, no-store, max-age=0, must-revalidate',
+            value: 'no-store',
+          },
+          {
+            key: 'Clear-Site-Data',
+            value: "\"cache\", \"executionContexts\"",
           },
         ],
       },
