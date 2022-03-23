@@ -10,6 +10,7 @@ export const contentTypeProgramFragment = `
       title
       summary
       permalink
+      premium
     }
     status {
       code
@@ -29,6 +30,7 @@ export const contentTypeEpisodeFragment = `
       title
       summary
       permalink
+      premium
     }
     status {
       code
@@ -49,6 +51,7 @@ export const contentTypeExtraFragment = `
       title
       summary
       permalink
+      premium
     }
     status {
       code
@@ -69,6 +72,7 @@ export const contentTypeClipFragment = `
       title
       summary
       permalink
+      premium
     }
     status {
       code
