@@ -217,6 +217,7 @@ export const contentTypeHotVideo = `
         id
         views
         deeplink
+        video_title
         permalink
         contestant{
           nick_name
