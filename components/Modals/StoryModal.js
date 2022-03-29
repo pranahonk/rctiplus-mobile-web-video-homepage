@@ -115,6 +115,9 @@ function storyModal(props) {
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     progressBars[activeIndex].classList.add("active")
     progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
+
+    document.getElementById("loading-stories").style.display = "none"
+    document.getElementById("close-stories").style.removeProperty("display")
   }
 
   const mountJwplayer = () => {
@@ -131,23 +134,31 @@ function storyModal(props) {
     }
 
     // code below is used for render video story by jwplayer
-    toggleLoading(true)
-
+    // toggleLoading(true)
+    document.getElementById("stories-content").style.display = "none"
+    document.getElementById("loading-stories").style.removeProperty("display")
+    document.getElementById("close-stories").style.display = "none"
+    
     const jwplayer = window.jwplayer(storyModalPlayerID).setup({
       ...options,
       file: linkVideo
     })
     setPlayer(jwplayer)
-
+    
     jwplayer.on("ready", _ => {
-      toggleLoading(false)
+      document.getElementById("stories-content").style.removeProperty("display")
       
       progressBars[activeIndex].classList.add("active")
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
       pauseProgressBar()
+
+      if (jwplayer.getMute()) jwplayer.setMute(false)
     })
 
     jwplayer.on("play", _ => {
+      document.getElementById("loading-stories").style.display = "none"
+      document.getElementById("close-stories").style.removeProperty("display")
+
       const duration = jwplayer.getDuration()
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${duration}s`
       runProgressBar()
@@ -160,14 +171,6 @@ function storyModal(props) {
     jwplayer.on("buffer", _ => {
       pauseProgressBar()
     })
-  }
-
-  const toggleLoading = (isLoading) => {
-
-    // function to load content
-    const storiesContentEl = document.getElementById("stories-content")
-    if (isLoading) storiesContentEl.style.display = "none"
-    else storiesContentEl.style.removeProperty("display")
   }
 
   const pauseProgressBar = _ => {
@@ -312,6 +315,7 @@ function storyModal(props) {
             id="close-stories"
             className="close-stories"
             onClick={_ => closeModal()}>X</button>
+          <div id="loading-stories" style={{display: "none"}}></div>
         </div>
 
         <div
