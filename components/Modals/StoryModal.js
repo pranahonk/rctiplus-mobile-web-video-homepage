@@ -332,6 +332,7 @@ function storyModal(props) {
         <div
           id="stories-content"
           onClick={e => divideComponentOnClick(e)}
+          onContextMenu={e => e.preventDefault()}
           className="stories-content" >
           <img
             src={storyImageSrc}
