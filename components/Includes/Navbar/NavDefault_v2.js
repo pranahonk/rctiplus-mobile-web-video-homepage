@@ -139,13 +139,12 @@ class NavbarDef_v2 extends Component {
             const activeSrcSuffix = isActive ? "_active" : ""
             return (
                 <Link href={href} key={i} passHref>
-                    <a href={href} target={newPage ? "_blank" : "_self"}>
-                        <Image
-                            src={`/icons-menu/${service}plus${activeSrcSuffix}.svg`}
-                            alt={`${service}+`}
-                            width={67}
-                            height={20}
-                            />
+                    <a href={href} target={newPage ? "_blank" : "_self"} className={`icon-lima-pilar${activeSrcSuffix}`}>
+                      <img src={`/icons-menu/${service}plus${activeSrcSuffix}.png`}
+                              alt={`${service}+`}
+                              width={40}
+                              height={13.33}
+                      />
                     </a>
                 </Link>
             )
@@ -170,7 +169,7 @@ class NavbarDef_v2 extends Component {
                         <Col xs={4} className="center-content" >
                             <Button onClick={() => {
                                 homeGeneralClicked('mweb_homepage_install_button_clicked');
-                                window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank');
+                                window.open('https://onelink.to/apprctiplus', '_blank');
                             }} className="btn-next" style={{ borderRadius: 3 }} size="sm">Install</Button>
                         </Col>
                     </Row>
@@ -184,9 +183,9 @@ class NavbarDef_v2 extends Component {
                         </div>
                     </div>
                     <div className="middle-top">
-                        <div 
-                            id="search-input" 
-                            className="search-input" 
+                        <div
+                            id="search-input"
+                            className="search-input"
                             onClick={this.goToExplore.bind(this, this.props.router.asPath)}>
                             <div className="search-input-placeholder">rctiplus.com</div> <SearchIcon style={{ fontSize: '1.5rem' }} />
                         </div>

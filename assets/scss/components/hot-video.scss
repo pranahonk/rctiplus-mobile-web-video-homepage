@@ -13,7 +13,7 @@
 
   &_card{
     position: absolute;
-    z-index: 100;
+    z-index: 10;
     bottom: 10px;
     left: 9px;
 
@@ -67,20 +67,17 @@
   }
 }
 
-
-
 .lineup_panels {
   padding: 10px 0;
 
   .content-title{
-    font-stretch: normal;
-    font-style: normal;
-    letter-spacing: normal;
     font-weight: bold;
     font-size: 16px;
-    line-height: 19px;
     padding-left: 14px !important;
     color: #FFFFFF;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .swiper-container,
@@ -166,10 +163,10 @@
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
-        text-align: justify;
         overflow: hidden;
         white-space: normal;
         font-size: 12px;
+        text-align: left;
       }
 
       .desc-text {

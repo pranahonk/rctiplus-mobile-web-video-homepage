@@ -48,28 +48,31 @@ function homeStories (props) {
     const openStory = (story, index) => {
         setActiveStory(story)
         setStoryIndex(index)
+        if (index === 0) document.getElementById("nav-footer").style.removeProperty("display")
     }
 
     const onSwipe = (direction, seenStory) => {
-        if ((storyIndex - 1) < 0 && direction === "left") {
-            openStory({}, 0)
-            document.getElementById("nav-footer").style.removeProperty("display")
-        }
-        else if (direction === "left") {
-            openStory(stories[storyIndex - 1], storyIndex - 1)
+        const isMaxLeft = (storyIndex - 1) < 0
+        const isMaxRight = (storyIndex + 1) > (stories.length - 1)
+
+        if (direction === "left") {
+            if (isMaxLeft) openStory({}, 0)
+            else onNotMaxStoryContent(storyIndex - 1, seenStory)
         }
 
-        if ((storyIndex + 1) > (stories.length - 1) && direction === "right") {
-            openStory({}, 0)
-            document.getElementById("nav-footer").style.removeProperty("display")
+        if (direction === "right") {
+            if (isMaxRight) openStory({}, 0)
+            else onNotMaxStoryContent(storyIndex + 1, seenStory)
         }
-        else if (direction === "right") {
-            setStories(stories.map(story => {
-                if (story.program_id === seenStory.program_id) return seenStory
-                return story
-            }))
-            openStory(stories[storyIndex + 1], storyIndex + 1)
-        }
+    }
+
+    const onNotMaxStoryContent = (targetIndex, seenStory) => {
+        const updatedStories = stories.map(story => {
+            if (story.program_id === seenStory.program_id) return seenStory
+            return story
+        })
+        setStories(updatedStories)
+        openStory(updatedStories[targetIndex], targetIndex)
     }
 
     const onClose = _ => {

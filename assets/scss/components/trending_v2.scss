@@ -403,15 +403,14 @@
     overflow: hidden;
     position: relative;
     border-radius: 10px;
-    box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, 0.3);
 
     .lt_img_wrap {
       display: block;
       overflow: hidden;
       position: absolute;
-      inset: 0px;
+      inset: 0;
       box-sizing: border-box;
-      margin: 0px;
+      margin: 0;
       top: 0;
       left: 0;
       right: 0;
@@ -420,14 +419,14 @@
       img {
         visibility: visible;
         position: absolute;
-        inset: 0px;
+        inset: 0;
         box-sizing: border-box;
-        padding: 0px;
+        padding: 0;
         border: none;
         margin: auto;
         display: block;
-        width: 0px;
-        height: 0px;
+        width: 0;
+        height: 0;
         min-width: 100%;
         max-width: 100%;
         min-height: 100%;
@@ -452,6 +451,7 @@
       letter-spacing: normal;
       color: #ffffff;
       margin: 0;
+      width: 200px;
     }
     h2.isRead {
       color: #8f8f8f;

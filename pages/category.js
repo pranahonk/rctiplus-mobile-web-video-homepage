@@ -1,14 +1,14 @@
 import React, {useEffect, useRef, useState } from 'react'
 import { withRouter } from 'next/router'
-import { useSelector } from "react-redux"
+import { connect } from "react-redux"
 import BottomScrollListener from 'react-bottom-scroll-listener'
 import LoadingBar from 'react-top-loading-bar'
 import { StickyContainer, Sticky } from 'react-sticky'
 import dynamic from 'next/dynamic'
 
-import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
-import Layout from '../components/Layouts/Default_v2';
-import { gaTrackerScreenView } from '../utils/ga-360';
+import HomeLoader from '../components/Includes/Shimmer/HomeLoader'
+import Layout from '../components/Layouts/Default_v2'
+import { gaTrackerScreenView } from '../utils/ga-360'
 
 import Header from "../components/Includes/HomeCategory/DetailCategory/Header"
 import Carousel from '../components/Includes/Gallery/Carousel_v2'
@@ -17,7 +17,7 @@ import Stories from '../components/Includes/Gallery/Stories_v2'
 import StickyAds from '../components/Includes/Banner/StickyAds'
 import { client } from "../graphql/client"
 import { GET_LINEUPS } from "../graphql/queries/homepage"
-import { getCookie, getVisitorToken, setAccessToken } from "../utils/cookie"
+import adsActions from '../redux/actions/adsActions'
 
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
 const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
@@ -30,9 +30,15 @@ const VideoSquareMiniView = dynamic(() => import("../components/lineups/SquareMi
 const VideoSquareView = dynamic(() => import("../components/lineups/Square"))
 const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"))
 const PortraitShortView = dynamic(() => import("../components/lineups/PortraitShort"))
+const NewsHorizontalLandscape = dynamic(() => import("../components/lineups/news/HorizontalLandscape"))
+const HorizontalHastags = dynamic(() => import("../components/lineups/news/HorizontalHastags"))
+const LandscapeHotCompetition = dynamic(() => import("../components/lineups/hot/LandscapeHotCompetition"))
+const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/news/HorizontalMutipleLandscape"))
+const LandscapeHotVideo = dynamic(() => import("../components/lineups/hot/LandscapeHotVideo"))
+const AudioHorizontalDisc = dynamic(() => import("../components/lineups/audio_lineup/Disc"))
+const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"))
 
 function Category (props) {
-    const { ads_displayed } = useSelector(state => state.ads)
     const [ isShimmer, setIsShimmer ] = useState(false)
     const [ lineups, setLineups ] = useState([])
     const [ meta, setMeta ] = useState({})
@@ -60,8 +66,14 @@ function Category (props) {
         client
             .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
             .then(({ data }) => {
+                let newLineups = data.lineups.data
+                
+                if (page > 1) {
+                    newLineups = lineups.concat(newLineups)
+                }
+
                 const mappedContents = new Map()
-                lineups.concat(data.lineups.data).forEach(content => {
+                newLineups.forEach(content => {
                     if (content.lineup_type_detail.detail) {
                         mappedContents.set(content.id, content)
                     }
@@ -164,6 +176,26 @@ function Category (props) {
                             showComingSoonModal={(open, content) => setComingSoonModalState(open, content)}
                             imagePath={meta.image_path} />
                     )
+                case 'tag':
+                  return (
+                    <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+                  )
+                case 'landscape_news':
+                  return (
+                    <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+                  )
+                case "square_list_news":
+                  return (
+                    <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+                  )
+                case "landscape_hot_competition":
+                  return(
+                    <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+                  )
+                case "portrait_hot":
+                  return(
+                    <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+                  )
             }
         })
     }
@@ -188,21 +220,19 @@ function Category (props) {
                             <Header title={props.router.query.category_title} />
 
                             <div style={{marginTop: -3}}>
-                                <Carousel category >
-                                    <GridMenu />
-                                </Carousel>
+                                <Carousel category />
                             </div>
+                           
+                            <GridMenu />
 
-                            <div style={{marginTop: "25px"}}>
-                                <Stories />
-                            </div>
+                            <Stories />
 
                             <StickyContainer>
                                 <Sticky disableHardwareAcceleration>
                                     { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
                                         const topDistance = 40;
                                         if (distanceFromTop < topDistance) {
-                                            if (!ads_displayed) {
+                                            if (!props.ads.ads_displayed) {
                                                 return (
                                                     <div {...rest} >
                                                         <StickyAds/>
@@ -223,6 +253,9 @@ function Category (props) {
                                                     <StickyAds sticky/>
                                                 </div>
                                             );
+                                        }
+                                        else if (!props.ads.ads_displayed) {
+                                          props.toggleAds(true)
                                         }
                                         return (
                                             <div {...rest} >
@@ -250,4 +283,6 @@ function Category (props) {
     )
 }
 
-export default withRouter(Category)
+export default connect(state => state, {
+    ...adsActions,
+})(withRouter(Category))
