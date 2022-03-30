@@ -242,6 +242,22 @@
     animation: rotate 1s infinite;
 }
 
+#mute-toggler {
+    position: absolute;
+    font-size: 10px;
+    background: #00000080;
+    padding: 4px;
+    border-radius: 7px;
+    color: white;
+    border: 1px solid;
+    top: 100px;
+    left: 20px;
+
+    &::after {
+        content: "Click to unmute";
+    }
+}
+
 @keyframes rotate {
     0% { transform: rotate(0deg) }
     100% { transform: rotate(360deg) }

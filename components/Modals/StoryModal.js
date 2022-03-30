@@ -16,7 +16,7 @@ function storyModal(props) {
   const storyModalPlayerID = "storymodal-player"
   const options = {
     autostart: true,
-    mute: false,
+    mute: true,
     file: null,
     hlsjsdefault: true,
     aspectratio: '16:9',
@@ -124,6 +124,8 @@ function storyModal(props) {
     const linkVideo = props.story.story[activeIndex].link_video
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
 
+    document.getElementById("mute-toggler").style.display = "none"
+
     // close function immediately when it is not a video
     // then activate the image story
     if (!linkVideo) {
@@ -134,7 +136,6 @@ function storyModal(props) {
     }
 
     // code below is used for render video story by jwplayer
-    // toggleLoading(true)
     document.getElementById("stories-content").style.display = "none"
     document.getElementById("loading-stories").style.removeProperty("display")
     document.getElementById("close-stories").style.display = "none"
@@ -152,7 +153,9 @@ function storyModal(props) {
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
       pauseProgressBar()
 
-      if (jwplayer.getMute()) jwplayer.setMute(false)
+      if (jwplayer.getMute()) {
+        document.getElementById("mute-toggler").style.removeProperty("display")
+      }
     })
 
     jwplayer.on("play", _ => {
@@ -166,10 +169,16 @@ function storyModal(props) {
 
     jwplayer.on("error", _ => {
       progressBars[activeIndex].children[0].style.animation = "unset"
+
+      document.getElementById("mute-toggler").style.display = "none"
     })
 
     jwplayer.on("buffer", _ => {
       pauseProgressBar()
+    })
+
+    jwplayer.on("mute", e => {
+      if (!e.mute) document.getElementById("mute-toggler").style.display = "none"
     })
   }
 
@@ -299,6 +308,8 @@ function storyModal(props) {
             )
           })}
         </div>
+
+        <div id="mute-toggler" onClick={_ => player.setMute(false)}></div>
 
         <div className="story-head">
           <div>
