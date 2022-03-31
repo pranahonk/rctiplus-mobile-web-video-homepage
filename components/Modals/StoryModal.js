@@ -101,8 +101,19 @@ function storyModal(props) {
     }
   }
 
+  const seenStory = _ => {
+    return {
+      ...props.story,
+      story: props.story.story.map((item, i) => {
+        let story = item
+        if (i < activeIndex) story = { ...item, seen: true }
+        return story
+      })
+    }
+  }
+  
   const closeModal = () => {
-    props.onClose()
+    props.onClose(seenStory())
     setActiveIndex(0)
   }
 
@@ -171,11 +182,13 @@ function storyModal(props) {
   }
 
   const pauseProgressBar = _ => {
+    if (!progressBarWrapper.current) return
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     progressBars[activeIndex].children[0].style.animationPlayState = "paused"
   }
-
+  
   const runProgressBar = _ => {
+    if (!progressBarWrapper.current) return
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     progressBars[activeIndex].children[0].style.animationPlayState = "running"
   }
@@ -186,16 +199,7 @@ function storyModal(props) {
     progressBars[activeIndex].classList.remove("active")
     progressBars[activeIndex].children[0].style.animation = "unset"
 
-    let seenStories = null
-    seenStories = {
-      ...props.story,
-      story: props.story.story.map((item, i) => {
-        let story = item
-        if (i < activeIndex) story = { ...item, seen: true }
-        return story
-      })
-    }
-    props.onSwipe(direction, seenStories)
+    props.onSwipe(direction, seenStory())
 
     setTimeout(() => {
       progressBars[activeIndex].classList.add("active")

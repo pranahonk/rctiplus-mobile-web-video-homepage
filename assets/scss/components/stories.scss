@@ -72,6 +72,10 @@ and open the template in the editor.
         width: 114px;
         margin: 0 3px;
 
+        &.seen > div:first-child {
+            background: linear-gradient(135deg, #858585, #383838);
+        }
+
         & > div:first-child {
             background: linear-gradient(135deg, #00FFFD, #FF5BD8);
             border-radius: 50%;
