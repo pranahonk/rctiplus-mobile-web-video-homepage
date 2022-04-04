@@ -85,6 +85,7 @@ const NavbarSearch = ({...props}) => {
                 </div>
                 <div className="middle-top">
                     <Input
+                        id="input-search"
                         onClick={() => libraryGeneralEvent('mweb_library_search_form_clicked')}
                         placeholder="Search for a program, genre, etc."
                         onChange={(e) => _onChangeQuery(e)}

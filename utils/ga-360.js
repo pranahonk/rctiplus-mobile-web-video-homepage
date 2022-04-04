@@ -1,7 +1,8 @@
 import React from 'react';
-import { getCookie } from './cookie';
+import ax from 'axios';
+import { DEV_API } from '../config';
+import { checkToken, getCookie, getVisitorToken } from './cookie';
 
-const jwtDecode = require('jwt-decode');
 const TOKEN_KEY = 'ACCESS_TOKEN';
 
 export const getUserId = () => {
@@ -19,37 +20,6 @@ export const getUserId = () => {
   return userId;
 };
 
-
-
-
-export const gaTrackerNavbarTrack = (event_category = 'string', event_action = 'string', event_label = 'string') => {
-  if (typeof window !== 'undefined') {
-    window.dataLayer.push({
-      'event': 'general_event',
-      'event_category': event_category,
-      'event_action': event_action,
-      'event_label': event_label,
-      'user_id' : getUserId(),
-      'client_id': process.env.GA_360_USERID,
-      'button_name' : event_label,
-      'pillar' : 'general',
-
-    });
-  }
-};
-
-
-export const gaTrackerScreenView = () => {
-  if (typeof window !== 'undefined') {
-    window.dataLayer.push({
-      'client_id':  process.env.GA_360_USERID,
-      'page_type' : "trebel_page",
-      'pillar' : "music",
-      'date_time' : new Date().toISOString(),
-      'user_id' : getUserId(),
-    });
-  }
-};
 
 
 export const gaTracker = (event_category = 'string', event_action = 'string', event_label = 'string', pilar = 'video') => {
@@ -120,7 +90,7 @@ export const gaTrackerBanner = (
 
 
 export const gaTrackerCategory = (event_category = 'string', event_action = 'string', event_label = 'string', category_id, category_name) => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' ) {
     window.dataLayer.push({
       'event': 'general_event',
       'event_category': event_category,
@@ -141,7 +111,7 @@ export const gaTrackerStory = (
   event_action = 'string',
   event_label = 'string',
   content_id, content_name, content_type) => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' ) {
     window.dataLayer.push({
       'event': 'general_event',
       'event_category': event_category,
@@ -181,7 +151,7 @@ export const gaTrackerLineUp = (
   program_id, program_name, classification_id, classification, cluster_id,
   cluster_name, channel_owner_id, channel_owner, genre_level_1, genre_level_2,
   season_number, episode_number, is_premium) => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' ) {
     window.dataLayer.push({
       'event': 'general_event',
       'event_category': event_category,
@@ -220,7 +190,7 @@ export const gaTrackerProgram = (
   content_category, program_id, program_name, classification_id, classification, cluster_id,
   cluster_name, channel_owner_id, channel_owner, genre_level_1, genre_level_2,
   is_premium) => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' ) {
     window.dataLayer.push({
       'event': 'general_event',
       'event_category': event_category,
@@ -246,5 +216,29 @@ export const gaTrackerProgram = (
   }
 };
 
+export const gaTrackerScreenView = () => {
+  if (typeof window !== 'undefined' ) {
+    window.dataLayer.push({
+      'event': 'general_event',
+      'pillar': 'video',
+      'date_time': new Date().toISOString(),
+    });
+  }
+};
 
 
+export const gaTrackerNavbarTrack = (event_category = 'string', event_action = 'string', event_label = 'string') => {
+  if (typeof window !== 'undefined') {
+    window.dataLayer.push({
+      'event': 'general_event',
+      'event_category': event_category,
+      'event_action': event_action,
+      'event_label': event_label,
+      'user_id' : getUserId(),
+      'client_id': process.env.GA_360_USERID,
+      'button_name' : event_label,
+      'pillar' : 'general',
+
+    });
+  }
+};

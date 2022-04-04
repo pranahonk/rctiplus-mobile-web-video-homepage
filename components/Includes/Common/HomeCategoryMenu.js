@@ -1,53 +1,64 @@
-import React, {useEffect, useState} from 'react';
-// import Link from "next/link";
-import {useSelector, useDispatch} from "react-redux";
-import {getActiveCategory} from "../../../redux/actions/homeCategoryActions";
-import TextLength from "../../../utils/textLength";
+import React, {useEffect, useState} from 'react'
+import Link from "next/link"
+import { withRouter } from 'next/router'
+
+import { client } from "../../../graphql/client"
+import { GET_HOME_CATEGORY_LIST, GET_SUB_CATEGORY_LIST } from "../../../graphql/queries/homepage"
+
 import '../../../assets/scss/components/home-category-menu.scss';
 import { gaTrackerCategory } from '../../../utils/ga-360';
 
-const CategoryMenu = ({contents}) => {
-    const size = 150;
-    const dispatch = useDispatch();
-    const [listMenu, setListMenu] = useState([{}])
-    const {listMenuHomeCategory} = useSelector(state => state.homeCategory);
+function categoryMenu (props) {
+  const imgSize = 150
+  const [ categories, setCategories ] = useState([])
+  const [ meta, setMeta ] = useState({})
 
-    useEffect(() => {
-        if(contents) setListMenu(contents)
-        else dispatch(getActiveCategory());
-    }, []);
+  useEffect(() => {
+    const query = props.router.query.category_id
+      ? GET_SUB_CATEGORY_LIST(props.router.query.category_id)
+      : GET_HOME_CATEGORY_LIST
 
-    useEffect(() => {
-        if(contents) setListMenu(contents)
-        else setListMenu(listMenuHomeCategory)
-    }, [listMenuHomeCategory])
+    client
+      .query({ query })
+      .then(({ data }) => {
+        const contents = props.router.query.category_id ? data.sub_categories : data.categories
+        setCategories(contents.data)
+        setMeta(contents.meta)
+      })
+      .catch(_ => {})
 
-    return (
-        <div className="h-category-container">
-            <div style={listMenu?.data?.length <= 4 ? {display: "flex", justifyContent: "center", borderRadius: "20px"} : {width: "100%", maxWidth: "1200px"}} className="grid-h-category-container">
+  }, [ props.router.query.category_id ])
 
-                {listMenu?.data &&
-                listMenu.data.map((val, ind) => (
-                    <div key={ ind } className="menu-item-cat">
-                        {/* <Link href={`/category?category_id=${val.id}&category_title=${val.name}`}> */}
-                            <div onClick={() => {
-                              console.log(val)
-                              window.location.href=`/category?category_id=${val.id}&category_title=${val.name}`
-                              gaTrackerCategory('video_interaction', 'click_category_list', val.name, val.id, val.name)
-                            }}>
-                                <div style={{display: "flex",  flexDirection: "column", justifyContent: "center", alignItems: "center", maxWidth: "54px", minWidth: "54px"}}>
-                                    <div className="container-menu-icon-cat">
-                                        <img alt={val.name} className="menu-icon-cat" src={`${listMenu?.meta?.image_path}${size}${val.icon}`}/>
-                                    </div>
-                                    <p className="menu-label-cat">{TextLength(val.name, 10)}</p>
-                                </div>
-                            </div>
-                        {/* </Link> */}
-                    </div>
-                ))}
-            </div>
-        </div>
-    )
+  if (categories.length === 0) return null
+
+  return (
+    <div 
+      className="h-category-container">
+      <div className="grid-h-category-container">
+        {categories.map((category, index) => (
+          <div
+            key={index}
+            className="menu-item-cat" 
+            id={`category-${index}`}
+            onClick={_ => gaTrackerCategory('video_interaction', 'click_category_list', category.name, category.id, category.name)}>
+            <Link href={`/category?category_id=${category.id}&category_title=${category.name}`}>
+              <a>
+                <div className="container-menu-icon-cat">
+                  <img
+                    alt={category.name}
+                    className="menu-icon-cat"
+                    src={`${meta.image_path}${imgSize}${category.icon}`}/>
+                </div>
+                <p className="menu-label-cat">
+                  {category.name}
+                </p>
+              </a>
+            </Link>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }
 
-export default CategoryMenu
+export default withRouter(categoryMenu)
