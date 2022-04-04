@@ -10,7 +10,7 @@ const axios = ax.create({
 
 const axiosMonetization = ax.create({
     // baseURL: API + '/api',
-    baseURL: MONETIZATION_API + '/api'
+    baseURL: MONETIZATION_API + '/ugc-monetization/api'
 });
 
 axios.interceptors.request.use(async (request) => {
