@@ -118,7 +118,7 @@ class ExploresRevamp extends React.Component {
 			selected_genre_name: selectedGenreName
 		})
 
-		let source = this.props.history.length > 0 ? window.location.origin + this.props.history[0] : ''
+		let source = this.props.history?.length > 0 ? window.location.origin + this.props.history[0] : ''
 
 		trebelPage(this.props.user.data, source)
 	}

@@ -10,9 +10,6 @@ and open the template in the editor.
 
 .sticky-ads{
     color:#fff;
-    margin:2% auto;
-    width: 320px;
-    text-align: center;
 }
 
 .sticky-ads-off {
@@ -21,30 +18,29 @@ and open the template in the editor.
 
 .sticky-ads-on {
     position: fixed;
-    bottom: calc(1% + 45px);
-    z-index: 999999;
+    bottom: 60px;
+    z-index: 1029;
     left: 50%;
     transform: translateX(-50%);
 
+    $close-button-height: 12px;
+
     .ads-close-btn {
         position: absolute;
-        top: calc(1% - 10px);
-        left: calc(100% - 15px);
+        top: -#{$close-button-height};
+        right: 0;
         background-color: #060606;
-        border-radius: 100%;
+        border-radius: 3px;
         border: 1px solid white;
-        width: 25px;
-        height: 25px;
+        width: 30px;
+        height: $close-button-height;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding-bottom: 2px;
-        font-size: 15px;
-    }
+        font-size: 8px;
 
-    @media only screen and (max-width: 320px) {
-        .ads-close-btn {
-            left: calc(100% - 25px);
+        &::after {
+            content: "Close";
         }
     }
 }
