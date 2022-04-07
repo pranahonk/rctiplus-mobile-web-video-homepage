@@ -12,7 +12,7 @@ function storyModal(props) {
   const [ activeIndex, setActiveIndex ] = useState(0)
   const [ player, setPlayer ] = useState(null)
 
-  const timesec = 5
+  const timesec = 20
   const storyModalPlayerID = "storymodal-player"
   const options = {
     autostart: true,
@@ -42,14 +42,17 @@ function storyModal(props) {
     activeIndex,
   ])
 
-  // component did mount
   useEffect(() => {
-    window.addEventListener("message", (event) => {
+    window.addEventListener("message", event => {
       if (!event.data) return
-
+      if (!progressBarWrapper.current) return
+      const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
+  
       switch(event.data.state) {
-        case "CREATED":
-          console.log("ads created")
+        case "CREATED": {
+          console.log(event.data, "uhuy")
+          return
+        }
         default: return
       }
     })
@@ -74,7 +77,6 @@ function storyModal(props) {
     }
     
     mountJwplayer()
-    injectAdsComponent()
   }
 
   const handleAnimationEnd = _ => {
@@ -141,14 +143,10 @@ function storyModal(props) {
     const linkVideo = props.story.story[activeIndex].link_video
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
 
-    // close function immediately when it is not a video
-    // then activate the image story
-    if (!linkVideo) {
-      if (player) removeModalPlayer()
+    if (player) removeModalPlayer()
 
-      renderImageStory()
-      return
-    }
+    if (props.story.is_ads) return injectAdsComponent()
+    if (!linkVideo) return renderImageStory()
 
     // code below is used for render video story by jwplayer
     toggleLoading(true)
@@ -189,8 +187,6 @@ function storyModal(props) {
 
     const adsChildren = document.getElementById(div_gpt)
     if (adsChildren.children[0]) adsChildren.removeChild(adsChildren.children[0])
-
-    pauseProgressBar()
 
     window.googletag = window.googletag || {cmd: []}
     googletag.cmd.push(function(){

@@ -108,12 +108,14 @@ and open the template in the editor.
 
     .story-head {
         position: absolute;
-        top: 21px;
+        top: 0;
         left: 0;
         width: 100%;
-        padding: 0 5px;
+        padding: 21px 5px 0 5px;
+        height: 71px;
         display: flex;
         justify-content: space-between;
+        background: linear-gradient(180deg, #0000008f, transparent);
 
         & > div {
             display: flex;
@@ -154,8 +156,7 @@ and open the template in the editor.
         top: 0;
         width: 100%;
         padding: 9px 3px;
-        background: linear-gradient(180deg, #000000cc, transparent);
-        height: 90px;
+        z-index: 1;
 
         .progressbars {
             background: #2e2e2e;
