@@ -1,17 +1,5 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-/*
-    Created on : Jan 11, 2020, 12:26:21 PM
-    Author     : root
-*/
-
 #home-stories {
     padding: 0 0 12px 12px;
-    // position: absolute;
-    // top: 60px;
 }
 
 #lineup-stories {
@@ -242,6 +230,31 @@ and open the template in the editor.
             border-top: 10px solid #e11010;
             animation: rotate 1s infinite;
         }
+    }
+}
+
+#loading-stories {
+    border: 3px solid white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border-bottom-color: #ffffff5e;
+    animation: rotate 1s infinite;
+}
+
+#mute-toggler {
+    position: absolute;
+    font-size: 10px;
+    background: #00000080;
+    padding: 4px;
+    border-radius: 7px;
+    color: white;
+    border: 1px solid;
+    top: 100px;
+    left: 20px;
+
+    &::after {
+        content: "Click to unmute";
     }
 }
 
