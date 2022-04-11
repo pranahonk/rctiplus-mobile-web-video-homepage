@@ -47,7 +47,9 @@ function categoryMenu (props) {
                   <img
                     alt={category.name}
                     className="menu-icon-cat"
-                    src={`${meta.image_path}${imgSize}${category.icon}`}/>
+                    src={`${meta.image_path}${imgSize}${category.icon}`}
+                    width="40"
+                    height="auto"/>
                 </div>
                 <p className="menu-label-cat">
                   {category.name}
