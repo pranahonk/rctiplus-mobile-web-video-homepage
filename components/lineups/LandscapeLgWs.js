@@ -10,7 +10,7 @@ import { RESOLUTION_IMG } from "../../config"
 import { parseDateObject } from "../../utils/helpers"
 
 const CountDownTimer = dynamic(() => import("../Includes/Common/CountdownTimer"))
-
+const PremiumIcon = dynamic(() => import("../Includes/Common/PremiumIcon"))
 
 import '../../assets/scss/components/panel.scss'
 
@@ -87,17 +87,20 @@ function landscapeLgWs (props) {
                   onClick={() => generateLink({ ...content, rootImageUrl })}
                   key={i}
                   className="lineup-contents">
+                  
+                  <PremiumIcon premium={content.premium} />
+
                   <div>
                     <Img 
                       className="lineup-image"
                       alt={props.lineup.title} 
-                      unloader={<img src={placeHolderImgUrl} />}
-                      loader={<img src={placeHolderImgUrl} />}
+                      unloader={<img src={placeHolderImgUrl} width={336} height={189} />}
+                      loader={<img src={placeHolderImgUrl} width={336} height={189} />}
                       width={336}
                       height={189}
-                      src={[`${rootImageUrl}${content.landscape_image}`, placeHolderImgUrl]} />
+                      src={content.landscape_image ? `${rootImageUrl}${content.landscape_image}` : placeHolderImgUrl} />
                   </div>
-                  {renderDescription(content)}
+                  { renderDescription(content) }
                   { renderContinueWatchProgress(content) }
                 </div>
               )

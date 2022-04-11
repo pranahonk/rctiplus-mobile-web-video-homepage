@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Link from "next/link"
 import { withRouter } from 'next/router'
 
@@ -6,6 +6,7 @@ import { client } from "../../../graphql/client"
 import { GET_HOME_CATEGORY_LIST, GET_SUB_CATEGORY_LIST } from "../../../graphql/queries/homepage"
 
 import '../../../assets/scss/components/home-category-menu.scss';
+import { gaTrackerCategory } from '../../../utils/ga-360';
 
 function categoryMenu (props) {
   const imgSize = 150
@@ -38,7 +39,8 @@ function categoryMenu (props) {
           <div
             key={index}
             className="menu-item-cat" 
-            id={`category-${index}`}>
+            id={`category-${index}`}
+            onClick={_ => gaTrackerCategory('video_interaction', 'click_category_list', category.name, category.id, category.name)}>
             <Link href={`/category?category_id=${category.id}&category_title=${category.name}`}>
               <a>
                 <div className="container-menu-icon-cat">

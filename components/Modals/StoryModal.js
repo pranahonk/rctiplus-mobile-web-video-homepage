@@ -16,7 +16,7 @@ function storyModal(props) {
   const storyModalPlayerID = "storymodal-player"
   const options = {
     autostart: true,
-    mute: false,
+    mute: true,
     file: null,
     hlsjsdefault: true,
     aspectratio: '16:9',
@@ -101,8 +101,19 @@ function storyModal(props) {
     }
   }
 
+  const seenStory = _ => {
+    return {
+      ...props.story,
+      story: props.story.story.map((item, i) => {
+        let story = item
+        if (i < activeIndex) story = { ...item, seen: true }
+        return story
+      })
+    }
+  }
+  
   const closeModal = () => {
-    props.onClose()
+    props.onClose(seenStory())
     setActiveIndex(0)
   }
 
@@ -115,11 +126,16 @@ function storyModal(props) {
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     progressBars[activeIndex].classList.add("active")
     progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
+
+    document.getElementById("loading-stories").style.display = "none"
+    document.getElementById("close-stories").style.removeProperty("display")
   }
 
   const mountJwplayer = () => {
     const linkVideo = props.story.story[activeIndex].link_video
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
+
+    document.getElementById("mute-toggler").style.display = "none"
 
     // close function immediately when it is not a video
     // then activate the image story
@@ -131,23 +147,32 @@ function storyModal(props) {
     }
 
     // code below is used for render video story by jwplayer
-    toggleLoading(true)
-
+    document.getElementById("stories-content").style.display = "none"
+    document.getElementById("loading-stories").style.removeProperty("display")
+    document.getElementById("close-stories").style.display = "none"
+    
     const jwplayer = window.jwplayer(storyModalPlayerID).setup({
       ...options,
       file: linkVideo
     })
     setPlayer(jwplayer)
-
+    
     jwplayer.on("ready", _ => {
-      toggleLoading(false)
+      document.getElementById("stories-content").style.removeProperty("display")
       
       progressBars[activeIndex].classList.add("active")
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
       pauseProgressBar()
+
+      if (jwplayer.getMute()) {
+        document.getElementById("mute-toggler").style.removeProperty("display")
+      }
     })
 
     jwplayer.on("play", _ => {
+      document.getElementById("loading-stories").style.display = "none"
+      document.getElementById("close-stories").style.removeProperty("display")
+
       const duration = jwplayer.getDuration()
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${duration}s`
       runProgressBar()
@@ -155,27 +180,27 @@ function storyModal(props) {
 
     jwplayer.on("error", _ => {
       progressBars[activeIndex].children[0].style.animation = "unset"
+
+      document.getElementById("mute-toggler").style.display = "none"
     })
 
     jwplayer.on("buffer", _ => {
       pauseProgressBar()
     })
-  }
 
-  const toggleLoading = (isLoading) => {
-
-    // function to load content
-    const storiesContentEl = document.getElementById("stories-content")
-    if (isLoading) storiesContentEl.style.display = "none"
-    else storiesContentEl.style.removeProperty("display")
+    jwplayer.on("mute", e => {
+      if (!e.mute) document.getElementById("mute-toggler").style.display = "none"
+    })
   }
 
   const pauseProgressBar = _ => {
+    if (!progressBarWrapper.current) return
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     progressBars[activeIndex].children[0].style.animationPlayState = "paused"
   }
-
+  
   const runProgressBar = _ => {
+    if (!progressBarWrapper.current) return
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     progressBars[activeIndex].children[0].style.animationPlayState = "running"
   }
@@ -186,16 +211,7 @@ function storyModal(props) {
     progressBars[activeIndex].classList.remove("active")
     progressBars[activeIndex].children[0].style.animation = "unset"
 
-    let seenStories = null
-    seenStories = {
-      ...props.story,
-      story: props.story.story.map((item, i) => {
-        let story = item
-        if (i < activeIndex) story = { ...item, seen: true }
-        return story
-      })
-    }
-    props.onSwipe(direction, seenStories)
+    props.onSwipe(direction, seenStory())
 
     setTimeout(() => {
       progressBars[activeIndex].classList.add("active")
@@ -297,6 +313,8 @@ function storyModal(props) {
           })}
         </div>
 
+        <div id="mute-toggler" onClick={_ => player.setMute(false)}></div>
+
         <div className="story-head">
           <div>
             <img
@@ -312,11 +330,13 @@ function storyModal(props) {
             id="close-stories"
             className="close-stories"
             onClick={_ => closeModal()}>X</button>
+          <div id="loading-stories" style={{display: "none"}}></div>
         </div>
 
         <div
           id="stories-content"
           onClick={e => divideComponentOnClick(e)}
+          onContextMenu={e => e.preventDefault()}
           className="stories-content" >
           <img
             src={storyImageSrc}
