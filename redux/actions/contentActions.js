@@ -40,13 +40,13 @@ const getContents = (page = 1, length = 20, platform = 'mweb') => {
                         selectedData.push(data[i]);
                     }
                 }
-                
+
                 const results = await Promise.all(promises);
                 for (let i = 0; i < results.length; i++) {
                     if (!results[i]) {
                         continue;
                     }
-                    
+
                     let content = {}
                     if (results[i] && results[i].status === 200 && results[i].data && results[i].data.status.code === 0) {
                         content = {
@@ -120,21 +120,26 @@ const getContentShareLink = (id, type) => {
 };
 
 const getBanner = (page = 1, length = 21, infos = 'id,title,portrait_image,image_landscape,type,type_value,sorting,program_id,popup_img,link,summary,square_image,program_name') => {
-    return dispatch => new Promise(async (resolve, reject) => {
-        try {
-            const response = await axios.get(`/v1/banner?page=${page}&length=${length}&appierid=${getUidAppier()}`);
-            if (response.data.status.code === 0) {
-                dispatch({ type: 'BANNER', data: response.data.data, meta: response.data.meta });
-                resolve(response);
-            }
-            else {
-                reject(response);
-            }
-        }
-        catch (e) {
-            reject(e);
-        }
-    });
+  return dispatch => new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`/v1/banner?page=${page}&length=${length}&appierid=${getUidAppier()}`);
+      if (response.data.status.code === 0) {
+        dispatch({ type: 'BANNER', data: response.data.data, meta: response.data.meta });
+        resolve(response);
+      }
+      else {
+        reject(response);
+      }
+    }
+    catch (e) {
+      reject(e);
+    }
+  });
+};
+
+
+const setBanner = ({ data, meta }) => {
+    return dispatch => dispatch({ type: 'BANNER', data, meta })
 };
 
 const getEpisodeDetail = episodeId => {
@@ -144,8 +149,8 @@ const getEpisodeDetail = episodeId => {
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_EPISODE_DETAIL',
-                    data: response.data.data, 
-                    meta: response.data.meta, 
+                    data: response.data.data,
+                    meta: response.data.meta,
                     status: response.data.status
                 });
                 resolve(response);
@@ -184,8 +189,8 @@ const getExtraDetail = extraId => {
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_EXTRA_DETAIL',
-                    data: response.data.data, 
-                    meta: response.data.meta, 
+                    data: response.data.data,
+                    meta: response.data.meta,
                     status: response.data.status
                 });
                 resolve(response);
@@ -224,8 +229,8 @@ const getClipDetail = clipId => {
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_CLIP_ID',
-                    data: response.data.data, 
-                    meta: response.data.meta, 
+                    data: response.data.data,
+                    meta: response.data.meta,
                     status: response.data.status
                 });
                 resolve(response);
@@ -264,8 +269,8 @@ const getPhotoDetail = (photoId, infos = 'id,program_id,title,summary,release_da
             if (response.data.status.code === 0) {
                 dispatch({
                     type: 'GET_PHOTO_DETAIL',
-                    data: response.data.data, 
-                    meta: response.data.meta, 
+                    data: response.data.data,
+                    meta: response.data.meta,
                     status: response.data.status
                 });
                 resolve(response);
@@ -417,11 +422,11 @@ const selectSeason = season => {
 const setShowMoreAllowed = (allowed, type = 'EPISODES') => {
     switch (type) {
         case 'EPISODES':
-            return dispatch => dispatch({ 
+            return dispatch => dispatch({
                 type: 'SET_SHOW_MORE_ALLOWED',
-                allowed: allowed 
+                allowed: allowed
             });
-    
+
         case 'EXTRAS':
             return dispatch => dispatch({
                 type: 'SET_SHOW_MORE_EXTRA_ALLOWED',
@@ -442,10 +447,15 @@ const setShowMoreAllowed = (allowed, type = 'EPISODES') => {
     }
 }
 
+
+const setHomepageLineups = ({ data, meta }) => dispatch => {
+    dispatch({ type: 'HOMEPAGE_CONTENT', data, meta });
+}
+
 export default {
     getContents,
     getHomepageContents,
-    getBanner,
+    setBanner,
     getEpisodeDetail,
     getEpisodeUrl,
     getExtraDetail,
@@ -461,5 +471,7 @@ export default {
     getProgramClip,
     getContentShareLink,
     selectSeason,
-    setShowMoreAllowed
+    setShowMoreAllowed,
+    setHomepageLineups,
+    getBanner
 };

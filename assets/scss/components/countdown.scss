@@ -1,0 +1,23 @@
+.countdown {
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  padding: 5px 10px;
+  justify-content: space-between;
+  width: fit-content;
+  width: -moz-fit-content;
+
+  & > p {
+    margin: 0;
+    font-size: 12px;
+
+    &:first-child {
+      color: #6D7278;
+      margin-right: 10px;
+    }
+    &:nth-child(2) {
+      color: #FA262F;
+      font-weight: bold;
+    }
+  }
+}

@@ -17,7 +17,12 @@ export default (state = initialState, action) => {
         case USER:
             return Object.assign({}, state, { user: action.payload });
         case DEAUTHENTICATE:
-            return { token: null, isLogin: false };
+            return {
+                ...state, 
+                token: null, 
+                isLogin: false, 
+                data: null 
+            };
         case WRONG_AUTHENTICATION:
             return Object.assign({}, state, { message: action.message, code: action.code, isLogin: false });
         case 'SET_DEVICE_ID':
