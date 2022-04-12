@@ -80,13 +80,21 @@ export const erese = key => {
 };
 
 export const removeCookie = key => {
-    if (process.browser) {
+    let host = window.location.host
+    
+    if (/localhost/ig.test(host)) {
+        cookie.remove(key, { path: "/" });
+    }
+    else {
+        let domainParts = host.split('.')
+        domainParts.shift()
+        const domain = `.${domainParts.join('.')}`
+    
         cookie.remove(key, {
-            expires: 1
+            path: "/",
+            domain
         });
     }
-
-    cookie.remove(key);
 };
 
 export const getCookie = key => getCookieFromBrowser(key);
