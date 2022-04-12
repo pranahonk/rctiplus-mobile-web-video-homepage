@@ -23,6 +23,7 @@ export const LINK_RADIO = process.env.LINK_RADIO;
 export const LINK_GAMES = process.env.LINK_GAMES;
 export const LINK_HOT = process.env.LINK_HOT;
 export const LINK_NEWS = process.env.LINK_NEWS;
+export const LINK_HERA = process.env.LINK_NEWS;
 
 export const REDIRECT_WEB_DESKTOP = process.env.REDIRECT_WEB_DESKTOP;
 export const SHARE_BASE_URL = process.env.SHARE_BASE_URL;

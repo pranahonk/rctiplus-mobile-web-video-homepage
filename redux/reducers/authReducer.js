@@ -17,7 +17,12 @@ export default (state = initialState, action) => {
         case USER:
             return Object.assign({}, state, { user: action.payload });
         case DEAUTHENTICATE:
-            return { token: null, isLogin: false };
+            return {
+                ...state, 
+                token: null, 
+                isLogin: false, 
+                data: null 
+            };
         case STORE_TOKEN:
             return Object.assign({}, state, { message: action.message });
         case RESET_MESSAGE:

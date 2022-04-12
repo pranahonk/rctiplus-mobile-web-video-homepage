@@ -309,6 +309,8 @@ useEffect(() => {
       application_name: 'RCTI+ MWEB',
       section_page: 'N/A',
       genre: genreTags,
+      conviva_params: props?.data?.conviva_params,
+      cluster_name: 'N/A'
   };
   const convivaTracker = convivaVideoJs(assetName, videoPlayer, videoPlayer.duration(), props.data.url ? props.data.url : props.data.trailer_url, assetName, customTags);
   convivaTracker.cleanUpSession()

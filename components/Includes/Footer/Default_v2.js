@@ -9,28 +9,11 @@ import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent } from '
 
 import '../../../assets/scss/components/footer-v2.scss';
 
-import { Badge } from 'reactstrap';
 import { bottomMenuClick } from '../../../utils/firebaseTracking';
 import { gaTrackerNavbarTrack } from '../../../utils/ga-360';
-
-// import ImportantDevicesIcon from '@material-ui/icons/ImportantDevices';
-// import LiveEventIcon from '../Common/LiveEventIcon';
-// import HomeIcon from '@material-ui/icons/Home';
-// import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-// import ImportContactsTwoToneIcon from '@material-ui/icons/ImportContactsTwoTone';
-// import LiveStreamIcon from '../Common/LiveStream';
-
-// import { getCookie } from '../../../utils/cookie';
+import { getUserAccessToken } from "../../../utils/cookie" 
 
 const FooterNav_v2 = (props) => {
-
-    const isProfileComplete = () => {
-        if (props.user && props.user.data) {
-            const data = props.user.data
-			return data.nickname && data.display_name && data.email && data.phone_number && data.dob && data.gender && data.photo_url;
-        }
-        return true;
-	}
 
     useEffect(() =>{
         props.getUserData()
@@ -45,7 +28,7 @@ const FooterNav_v2 = (props) => {
     }, [])
 
         return (
-            <div className="nav-footer-v2">
+            <div id="nav-footer" className="nav-footer-v2">
                 <div className="footer-wrapper-list">
                     <div id="action-home" onClick={() => {
                         homeGeneralClicked('mweb_home_clicked');
@@ -71,8 +54,6 @@ const FooterNav_v2 = (props) => {
                                     </g>
                                 </svg>
                             </div>
-                            {/* <HomeIcon className="nav-footer-icon" /> */}
-                            {/* <br /> */}
                             <span className={props.router.asPath === "/" ? "footer-icon-active" : ""}>Home</span>
                         </a>
                     </div>
@@ -208,9 +189,9 @@ const FooterNav_v2 = (props) => {
                                     </g>
                                 </svg>
                             </div>
-                            {/* <AccountCircleOutlinedIcon className="nav-footer-icon" /> */}
-                            {!isProfileComplete() ? (<Badge className="ribbon" color="danger"> </Badge>) : null}
-                            {/* <br /> */}
+                             {
+                                getUserAccessToken() ? <div className='ribbon'></div> : null
+                             }
                             <span className={props.router.asPath === "/profile" ? "footer-icon-active" : ""}>Account</span>
                         </a>
                     </div>

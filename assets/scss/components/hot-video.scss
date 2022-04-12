@@ -1,0 +1,180 @@
+.hot-videos{
+  position: relative;
+  width: 175px;
+  height: auto;
+  border-radius: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, 0.5);
+
+  img{
+    object-fit: cover;
+  }
+
+  &_card{
+    position: absolute;
+    z-index: 10;
+    bottom: 10px;
+    left: 9px;
+
+    &-profile{
+      font-family: inherit;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 16px;
+      color: #FFFFFF;
+
+      &__image{
+        position: absolute;
+        top: -150px;
+        margin: 0 125px;
+      }
+
+      &__name{
+        display: flex;
+        align-items: center;
+      }
+
+      &__viewsCount{
+        display: flex;
+        align-items: center;
+      }
+
+      &__photo{
+        img{
+          border-radius: 100%;
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+
+  &__button{
+    width: 100%;
+    height: 40px;
+    background: #0079FF;
+    border-radius: 0 0 8px 8px;
+    color: white;
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 1.25px;
+    border: 1px solid transparent;
+  }
+}
+
+.lineup_panels {
+  padding: 10px 0;
+
+  .content-title{
+    font-weight: bold;
+    font-size: 16px;
+    padding-left: 14px !important;
+    color: #FFFFFF;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .swiper-container,
+  .lineup-containers {
+    overflow: auto;
+    white-space: nowrap;
+    display: block;
+    padding: 0px 0px 12px 12px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .swiper-slide,
+    .lineup-contents {
+      margin: 0 4px;
+      position: relative;
+      text-align: center;
+      display: inline-block;
+      vertical-align: top;
+
+      .lineup-image {
+        border-radius: 7px 7px 0 0;
+        background: linear-gradient(135deg, #181818, #343434);
+
+        &:not(.with-schedule) {
+          border-radius: 7px;
+        }
+      }
+
+      .live-badge {
+        position: absolute;
+        width: 39px;
+        height: 23px;
+        border-radius: 7px;
+        background-color: #F63F54;
+        top: 12px;
+        left: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &::before {
+          content: "LIVE";
+          color: white;
+          font-size: 12px;
+        }
+      }
+
+      .desc-wrapper {
+        background: #1A1A1A;
+        padding: 0 10px 10px 20px;
+        border-radius: 0 0 10px 10px;
+        position: relative;
+      }
+
+      .dashline {
+        height: 46px;
+        position: absolute;
+        border-left: 2px solid #05B5F5;
+        top: 10px;
+        left: 10px;
+      }
+
+      .desc-title {
+        color: white;
+        text-align: left;
+        font-size: 14px;
+        padding: 10px 0 5px 0;
+        margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: bold;
+
+        &.mini {
+          width: 150px;
+        }
+      }
+
+      .desc-summary {
+        color: white;
+        width: 150px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        white-space: normal;
+        font-size: 12px;
+        text-align: left;
+      }
+
+      .desc-text {
+        color: white;
+        text-align: justify;
+        font-size: 12px;
+        margin: 0;
+      }
+    }
+  }
+}

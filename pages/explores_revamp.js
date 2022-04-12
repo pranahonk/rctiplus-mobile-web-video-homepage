@@ -26,12 +26,16 @@ class ExploresRevamp extends React.Component {
 	constructor(props) {
 		super(props);
 		this.platform = null;
+		this.token = null;
 		
 		const segments = this.props.router.asPath.split(/\?/);
 		if (segments.length > 1) {
 			const q = queryString.parse(segments[1]);
 			if (q.platform) {
 				this.platform = q.platform;
+			}
+			if (q.token) {
+				this.token = q.token;
 			}
 		}
 	}
@@ -79,7 +83,8 @@ class ExploresRevamp extends React.Component {
 			query: ctx.query,
 			interests: data,
 			genre_name: ctx.query.genre_name,
-			meta_content: resContent
+			meta_content: resContent,
+			token: accessToken
 		};
 	}
 
@@ -113,7 +118,7 @@ class ExploresRevamp extends React.Component {
 			selected_genre_name: selectedGenreName
 		})
 
-		let source = this.props.history.length > 0 ? window.location.origin + this.props.history[0] : ''
+		let source = this.props.history?.length > 0 ? window.location.origin + this.props.history[0] : ''
 
 		trebelPage(this.props.user.data, source)
 	}
@@ -160,8 +165,13 @@ class ExploresRevamp extends React.Component {
 		window.open('https://home.trebel.io/id/home', "_blank").focus()
 	}
 
+
 	render() {
 		const [metadata, ogMetaData] = [this.getMetadata(), this.getMetaOg()];
+
+		const iFrameToken = this.token || this.props.token || ''
+		const iFrameURL = `${process.env.TREBEL_IFRAME_URL}?platform=mweb&token=${iFrameToken}`
+
 		return (
 			<Layout title={metadata.title}>
 				<Head>
@@ -197,36 +207,14 @@ class ExploresRevamp extends React.Component {
 					: (<NavDefault disableScrollListener />)
 				}
 
-				<div id="library-revamp">
-					<img src="static/img/homepage_revamp_trebel.png" width="100%" />
-					<div className='containerWrapper'>
-						<div className='contentWrapper'>
-							<div className='contentTextWrapper'>
-								<p className='contentText'>
-									Tanpa <br />
-									<span className='contentTextBold'>Biaya</span>
-								</p>
-								<p className='contentText'>
-									Tanpa <br />
-									<span className='contentTextBold'>Internet</span>
-								</p>
-								<p className='contentText'>
-									Tanpa <br />
-									<span className='contentTextBold'>Gangguan</span>
-								</p>
-							</div>
-							<p className='comingSoon'>
-								Segera hadir di
-								<b>&nbsp;RCTI+</b>
-							</p>
-						</div>
-						<div style={{ marginTop: 16, padding: '0 32px', display: 'none' }}>
-							<button onClick={_ => this.onClickSeeMore()}>
-								Lihat Lebih Lanjut
-							</button>
-						</div>
-					</div>
-				</div>
+				<iframe
+					src={iFrameURL}
+					style={{
+						border: 'none',
+						height: '100vh',
+						width: '100%'
+					}}
+				/>
 			</Layout>
 		);
 	}
