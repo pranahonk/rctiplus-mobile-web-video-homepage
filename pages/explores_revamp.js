@@ -170,7 +170,7 @@ class ExploresRevamp extends React.Component {
 		const [metadata, ogMetaData] = [this.getMetadata(), this.getMetaOg()];
 
 		const iFrameToken = this.token || this.props.token || ''
-		const iFrameURL = `https://www.rctiplus.com/trebel/content_test?platform=${this.platform ?? 'mweb'}&token=${iFrameToken}`
+		const iFrameURL = `${process.env.TREBEL_IFRAME_URL}?platform=mweb&token=${iFrameToken}`
 
 		return (
 			<Layout title={metadata.title}>
