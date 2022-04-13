@@ -14,7 +14,7 @@ export default function useConvivaInitiator(props) {
     if (Array.isArray(props.data.genre)) {
       genreTags = props.data.genre.map(({name}) => name).join(",")
     }
-    const optionsConviva = generateOptionConviva(props.type)
+    const optionsConviva = generateOptionConviva(props.type);
 
     const customTags = {
       app_version: process.env.APP_VERSION,
@@ -36,7 +36,7 @@ export default function useConvivaInitiator(props) {
       genre: genreTags,
       is_login: props.customData && props.customData.isLogin ? 'login' : 'not login',
       program_type: props.customData && props.customData.programType ? props.customData.programType : 'N/A',
-      cluster_name: 'N/A'
+      cluster_name: 'N/A',
     };
 
     for (const convivaParam of props?.data?.conviva_params) {
@@ -57,6 +57,7 @@ export default function useConvivaInitiator(props) {
       convivaTracker.cleanUpSession();
     }
     convivaTracker.createSession();
+    setInitConviva(false);
   }
 
   const generateOptionConviva = (type) => {
