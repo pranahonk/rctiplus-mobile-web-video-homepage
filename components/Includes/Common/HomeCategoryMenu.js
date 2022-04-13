@@ -31,15 +31,10 @@ function categoryMenu (props) {
   if (categories.length === 0) return null
 
   const checkLengthOfTheLabel = txt => {
-    if (!txt) return 
+    if (!txt) return "singleln"
 
-    if (txt.length > 8 && txt.length <= 16) {
-      return "singleln"
-    }
-    else if (txt.length > 16) {
-      return "multiln"
-    }
-    return
+    if (txt.length > 16) return "multiln"
+    return "singleln"
   }
 
   return (
