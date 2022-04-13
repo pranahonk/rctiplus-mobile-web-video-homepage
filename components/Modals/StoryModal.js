@@ -12,7 +12,7 @@ function storyModal(props) {
   const [ activeIndex, setActiveIndex ] = useState(0)
   const [ player, setPlayer ] = useState(null)
 
-  const timesec = 20
+  const timesec = 5
   const storyModalPlayerID = "storymodal-player"
   const options = {
     autostart: true,
@@ -47,10 +47,20 @@ function storyModal(props) {
       if (!event.data) return
       if (!progressBarWrapper.current) return
       const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
+      const currentIndex = event.data.index || 0
   
       switch(event.data.state) {
-        case "CREATED": {
-          console.log(event.data, "uhuy")
+        case "RUN": {
+          progressBars[currentIndex].classList.add("active")
+          progressBars[currentIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
+          return
+        }
+        case "PAUSE": {
+          progressBars[currentIndex].children[0].style.animationPlayState = "paused"
+          return
+        }
+        case "RERUN": {
+          progressBars[currentIndex].children[0].style.animationPlayState = "running"
           return
         }
         default: return
@@ -201,6 +211,7 @@ function storyModal(props) {
 
         iframeAds.style.width = "100vw"
         iframeAds.style.height = "100vh"
+        iframeAds.contentWindow.postMessage({ state: "CREATED", index: activeIndex }, "*")
       })
       googletag.enableServices()
     })
