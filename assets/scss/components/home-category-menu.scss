@@ -39,13 +39,20 @@
     font-size: 10px;
     font-weight: 600;
     margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
     width: 64px;
     text-align: center;
-    word-break: break-word;
+    overflow: hidden;
+
+    &.singleln {
+        text-overflow: ellipsis;
+    }
+
+    &.multiln {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        word-break: break-word;
+    }
 }
 
 .menu-item-cat {
