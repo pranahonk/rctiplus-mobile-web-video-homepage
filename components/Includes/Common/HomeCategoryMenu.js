@@ -30,6 +30,18 @@ function categoryMenu (props) {
 
   if (categories.length === 0) return null
 
+  const checkLengthOfTheLabel = txt => {
+    if (!txt) return 
+
+    if (txt.length > 8 && txt.length <= 16) {
+      return "singleln"
+    }
+    else if (txt.length > 16) {
+      return "multiln"
+    }
+    return
+  }
+
   return (
     <div 
       className="h-category-container">
@@ -49,7 +61,7 @@ function categoryMenu (props) {
                     width="40"
                     height="auto"/>
                 </div>
-                <p className="menu-label-cat">
+                <p className={`menu-label-cat ${checkLengthOfTheLabel(category.name)}`}>
                   {category.name}
                 </p>
               </a>
