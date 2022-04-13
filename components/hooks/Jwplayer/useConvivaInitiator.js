@@ -36,9 +36,12 @@ export default function useConvivaInitiator(props) {
       genre: genreTags,
       is_login: props.customData && props.customData.isLogin ? 'login' : 'not login',
       program_type: props.customData && props.customData.programType ? props.customData.programType : 'N/A',
-      conviva_params: props?.data?.conviva_params,
       cluster_name: 'N/A'
     };
+
+    for (const convivaParam of props?.data?.conviva_params) {
+      customTags[convivaParam.key] = convivaParam.value;
+    }
 
     const isLive = /^live/i.test(props.type)
     const convivaTracker = convivaJwPlayer(
