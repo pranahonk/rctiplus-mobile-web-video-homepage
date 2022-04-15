@@ -118,7 +118,7 @@ class Signin extends React.Component {
 			if(redirect.redirectTo) {
 				Router.push(redirect.redirectTo)
 			} else {
-				const { refpage } = this.props.router.query
+				const refpage = this.props.router.query.refpage
 				const routerObj = Boolean(refpage) 
 					? { pathname: refpage, query: { refpage: "login" } }
 					: { pathname: "/" }
