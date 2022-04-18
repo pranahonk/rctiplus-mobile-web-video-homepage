@@ -134,7 +134,12 @@ const JwPlayer = (props) => {
               adsOverlayElement.style.display = 'none';
     
               const adsOverlayBox = document.createElement('div');
-              adsOverlayBox.classList.add('adsStyling');
+              if (screen.orientation.type === "portrait-primary") {
+                adsOverlayBox.classList.add('adsStyling');
+              }
+              if (screen.orientation.type === "landscape-primary") {
+                adsOverlayBox.classList.add('adsStylingLandscape');
+              }
     
               const adsOverlayCloseButton = document.createElement('div');
               adsOverlayCloseButton.classList.add('close_button');
@@ -503,8 +508,14 @@ const JwPlayer = (props) => {
                       adsOverlayBoxLink.style.top = '0';
                       adsOverlayBoxLink.style.position = 'absolute';
 
-
-                      document.querySelector('.adsStyling')?.appendChild(adsOverlayBoxLink);
+                      
+                      if (screen.orientation.type === "portrait-primary") {
+                        document.querySelector('.adsStyling')?.appendChild(adsOverlayBoxLink);
+                      }
+                      if (screen.orientation.type === "landscape-primary") {
+                        document.querySelector('.adsStylingLandscape')?.appendChild(adsOverlayBoxLink);
+                      }
+                      
                       const elementAds = document.querySelector('.adsURLLink')
                       if (elementAds) {
                         elementAds.addEventListener('click', function(e) {
@@ -551,6 +562,11 @@ const JwPlayer = (props) => {
       }
     }
   }, [playerFullscreen]);
+
+  const getOrientation = () => {
+    var orientation = window.innerWidth > window.innerHeight ? "Landscape" : "Portrait";
+    return orientation;
+  }
 
   const getPlayer = (error1, error2) => {
     if (error1) {
