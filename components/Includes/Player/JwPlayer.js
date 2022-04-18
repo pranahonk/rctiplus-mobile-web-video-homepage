@@ -563,11 +563,6 @@ const JwPlayer = (props) => {
     }
   }, [playerFullscreen]);
 
-  const getOrientation = () => {
-    var orientation = window.innerWidth > window.innerHeight ? "Landscape" : "Portrait";
-    return orientation;
-  }
-
   const getPlayer = (error1, error2) => {
     if (error1) {
       return error(msgError01)
