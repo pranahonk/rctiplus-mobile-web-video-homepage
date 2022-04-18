@@ -11,20 +11,14 @@ import '../../../assets/scss/components/footer-v2.scss';
 
 import { bottomMenuClick } from '../../../utils/firebaseTracking';
 import { gaTrackerNavbarTrack } from '../../../utils/ga-360';
-import { getUserAccessToken } from "../../../utils/cookie" 
+import { getUserAccessToken, getVisitorToken } from "../../../utils/cookie" 
 
 const FooterNav_v2 = (props) => {
 
     useEffect(() =>{
         props.getUserData()
         .then(response => {})
-        .catch(error => {});
-        Router.events.on("routeChangeStart", () => {
-            // const convivaSessionId = getCookie('CONVIVA_SESSION_ID');
-            // if (convivaSessionId != null) {
-            //     Conviva.LivePass.cleanupSession(convivaSessionId);
-            // }
-        });
+        .catch(error => {})
     }, [])
 
         return (
@@ -131,7 +125,7 @@ const FooterNav_v2 = (props) => {
                         }
 
                         bottomMenuClick(props?.user?.data, { pillar: 'general', button_name: 'trebel' })
-                        Router.push('/explores_revamp', "/explores")
+                        Router.push(`${process.env.TREBEL_IFRAME_URL}?platform=mweb&token=${getUserAccessToken() || getVisitorToken()}`)
                     }}>
                         <a>
                             <div>
