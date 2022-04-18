@@ -19,12 +19,6 @@ axios.interceptors.request.use(async (request) => {
     return request;
 });
 
-axiosMonetization.interceptors.request.use(async (request) => {
-    await checkToken();
-    request.headers['Authorization'] = getVisitorToken();
-    return request;
-});
-
 const setDeviceId = deviceId => {
     return dispatch => dispatch({
         type: 'SET_DEVICE_ID',
@@ -91,7 +85,7 @@ const logout = (device_id, platform = 'mweb') => {
 const storeAccessToken = (token) => {
     return async (dispatch) => {
         try {
-            const response = await axiosMonetization.post(`/v1/account/check-token-auth`, { token })
+            const response = await axiosMonetization.post(`/v1/account/check-token-auth`, { token }, { headers: { 'Authorization': token } })
 
             if (response) {
                 dispatch({
