@@ -6,6 +6,7 @@ import { client } from "../../../graphql/client"
 import { GET_HOME_CATEGORY_LIST, GET_SUB_CATEGORY_LIST } from "../../../graphql/queries/homepage"
 
 import '../../../assets/scss/components/home-category-menu.scss';
+import { urlRegex } from '../../../utils/regex'
 
 function categoryMenu (props) {
   const imgSize = 150
@@ -46,7 +47,10 @@ function categoryMenu (props) {
             key={index}
             className="menu-item-cat" 
             id={`category-${index}`}>
-            <Link href={`/category?category_id=${category.id}&category_title=${category.name}`}>
+            <Link 
+              href={`/category?category_id=${category.id}&category_title=${category.name}`}
+              as={`/category/${category.id}/${urlRegex(category.name)}`}
+              >
               <a>
                 <div className="container-menu-icon-cat">
                   <img
