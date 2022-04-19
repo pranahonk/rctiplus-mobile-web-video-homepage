@@ -41,8 +41,9 @@ function categoryMenu (props) {
             className="menu-item-cat" 
             id={`category-${index}`}>
             <Link 
-              href={`/category?category_id=${category.id}&category_title=${category.name}`}
+              href={`/category?category_id=${category.id}&category_title=${urlRegex(category.name)}`}
               as={`/category/${category.id}/${urlRegex(category.name)}`}
+              shallow
               >
               <a>
                 <div className="container-menu-icon-cat">
