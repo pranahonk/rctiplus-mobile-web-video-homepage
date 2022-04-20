@@ -90,11 +90,11 @@ function landscapeMiniLiveView (props) {
                     <Img 
                       className="lineup-image"
                       alt={props.lineup.title} 
-                      unloader={<img src={placeHolderImgUrl} />}
-                      loader={<img src={placeHolderImgUrl} />}
+                      unloader={<img src={placeHolderImgUrl} width={180} height={101} />}
+                      loader={<img src={placeHolderImgUrl} width={180} height={101} />}
                       width={180}
                       height={101}
-                      src={[`${rootImageUrl}${content.landscape_image}`, placeHolderImgUrl]} />
+                      src={content.landscape_image ? `${rootImageUrl}${content.landscape_image}` : placeHolderImgUrl} />
                   </div>
                   { renderDescription(content) }
                   { renderContinueWatchProgress(content) }
