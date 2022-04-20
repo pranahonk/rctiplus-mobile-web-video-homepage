@@ -120,9 +120,8 @@ class Default_v2 extends React.Component {
                     {/* Google Tag Manager */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         window.dataLayer = window.dataLayer || [];
-                        let wDLurl = (document.URL.indexOf('/news/detail') > -1 || document.URL.indexOf('/trending/detail') > -1 || document.URL.indexOf('/trending/') > -1 || document.URL.indexOf('/news/') > -1) ? 'news' : 'video';
                         window.dataLayer.push({
-                            'pillar' : wDLurl
+                            'pillar' : "video"
                         });
                         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
