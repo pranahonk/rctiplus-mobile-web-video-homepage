@@ -14,6 +14,7 @@ export const GTM = process.env.GTM;
 export const GTM_AUTH = process.env.GTM_AUTH;
 
 export const DEV_API = process.env.DEV_API;
+export const MONETIZATION_API = process.env.MONETIZATION_API;
 
 export const API_V2 = process.env.API_V2 ? process.env.API_V2 : process.env.DEV_API;
 
