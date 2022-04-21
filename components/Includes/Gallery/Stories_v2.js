@@ -10,6 +10,7 @@ import { GET_HOME_STORIES } from "../../../graphql/queries/homepage"
 const StoryModal = dynamic(() => import("../../Modals/StoryModal"))
 
 import '../../../assets/scss/components/stories.scss'
+import Cookies from 'js-cookie'
 
 function homeStories (props) {
     const [ stories, setStories ] = useState([])
@@ -18,7 +19,8 @@ function homeStories (props) {
     const [ storyIndex, setStoryIndex ] = useState(0)
 
     useEffect(() => {
-        client.query({ query: GET_HOME_STORIES(props.router.query.category_id) })
+        if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
+            client.query({ query: GET_HOME_STORIES(props.router.query.category_id) })
             .then(({ data }) => {
                 const stories = data.stories.data.map((story, i) => ({
                     ...story,
@@ -30,6 +32,7 @@ function homeStories (props) {
                 setMeta(data.stories.meta)
             })
             .catch(_ => {})
+        }
     }, [])
 
     const openStory = (story, index) => {
