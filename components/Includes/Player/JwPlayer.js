@@ -9,6 +9,7 @@ import '../../../assets/scss/jwplayer.scss';
 import useCustomPlayerButton from "../../hooks/Jwplayer/useCustomPlayerButton"
 import useSetupBitrate from "../../hooks/Jwplayer/useSetupBitrate"
 import useConvivaInitiator from "../../hooks/Jwplayer/useConvivaInitiator"
+import { LeakRemoveTwoTone } from '@material-ui/icons';
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -33,6 +34,8 @@ const JwPlayer = (props) => {
   });
   const [adsStatus, setAdStatus] = useState('none');
   const [playerFullscreen, setPlayerFullscreen] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+
 
   // Custom Hooks
   const { setIsPlayerReady, setHideBtns } = useCustomPlayerButton({ ...props, player })
@@ -94,7 +97,6 @@ const JwPlayer = (props) => {
   // listen data update on player
   useEffect(() => {
     if (player !== null) {
-
       // Continue watching when changing between video contents
       if (props.customData && props.customData.isLogin && props.isResume && (currentContent.id)) {
         props.onResume(currentContent.id, currentContent.content_type, player.getPosition());
@@ -112,6 +114,20 @@ const JwPlayer = (props) => {
     }
   }, [props.data && props.data.url]);
 
+  // Ads Countdown
+  useEffect(() => {
+    if (player !== null) {
+      countdown > 0 && setTimeout(() => setCountdown(countdown - 1), 1000);
+      if (document.querySelector('.ads_countdown')) {
+        document.querySelector('.ads_countdown').style.display = 'block'
+        document.querySelector('.adsCountdownContainer').innerHTML = `<span>Ads in ${countdown}</span>`;
+        if(countdown == 0){
+          document.querySelector('.ads_countdown').style.display = 'none'
+        }
+      }      
+    }
+  }, [countdown]);
+
   // Costum Setup
   useEffect(() => {
     if (player !== null) {
@@ -122,6 +138,27 @@ const JwPlayer = (props) => {
         const playerContainer = player.getContainer()
         const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
+
+        setCountdown(5)
+
+        if (document.querySelector('.ads_countdown') == undefined) {
+          const adsCountdownOverlayElement = document.createElement('div');
+          adsCountdownOverlayElement.classList.add('ads_countdown');
+          adsCountdownOverlayElement.style.display = 'none';
+
+          const adsCountdownOverlayBox = document.createElement('div');
+          adsCountdownOverlayBox.classList.add('adsCountdownStyling');
+
+          const adsCountdownOverlayContainer = document.createElement('div');
+          adsCountdownOverlayContainer.classList.add('adsCountdownContainer');
+          adsCountdownOverlayContainer.id = 'adsCountdown';
+          adsCountdownOverlayContainer.innerHTML = `<span>Ads in ${countdown}</span>`;
+          adsCountdownOverlayContainer.style.fontSize = '10px';
+
+          playerContainer.appendChild(adsCountdownOverlayElement);
+          adsCountdownOverlayElement.appendChild(adsCountdownOverlayBox);
+          adsCountdownOverlayBox.appendChild(adsCountdownOverlayContainer);
+        }
 
         if (props.type.includes("live")) {
           const data = props.data
@@ -370,6 +407,8 @@ const JwPlayer = (props) => {
 
   // ads overlay
   useEffect(() => {
+    console.log('props.adsOverlayData')
+    console.log(props.adsOverlayData)
     if (player !== null) {
       // let windowWidth = document.documentElement.clientWidth;
       let slotName = props.data.gpt?.path != null && props.data.gpt?.path != undefined ? props.data.gpt?.path : props.type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT;
@@ -415,6 +454,7 @@ const JwPlayer = (props) => {
         if (document.querySelector('.ads_wrapper')) {
           if (document.querySelector('.adsContainer').style.display != 'none') {
             const adsIFrame = document.getElementById(slotDiv)?.children[0]?.children[0];
+            alert('iframe')
             if (adsIFrame) {
               setTimeout(() => {
                 if (document.querySelector('.fullscreen-player')) {

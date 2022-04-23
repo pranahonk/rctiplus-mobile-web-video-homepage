@@ -183,6 +183,33 @@
     }
 }
 
+.ads_countdown{
+  width:100%;
+  height:auto;
+  z-index: 999999;
+  display: none;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+
+  .adsCountdownStyling{
+    width: 62px;
+    height: 31px;
+    margin: 0 0 0 auto;
+    position: relative;
+    background-color: black;
+    opacity: 75%;
+
+    .adsCountdownContainer{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+  }
+}
+
 .jwplayer-action {
   background: #0000006e !important;
   animation: none;
