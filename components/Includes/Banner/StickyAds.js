@@ -1,34 +1,39 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from 'react'
+import { connect } from 'react-redux'
 
-import '../../../assets/scss/components/sticky_ads.scss';
+import { getUserAccessToken } from "../../../utils/cookie"
+import '../../../assets/scss/components/sticky_ads.scss'
 
-import adsActions from '../../../redux/actions/adsActions';
+import adsActions from '../../../redux/actions/adsActions'
 
 class StickyAds extends React.Component {
   fetchAds(custParams) {
     const slotName = process.env.MODE === "PRODUCTION" ? "/21865661642/PRO_MIDDLE_MOBILE" : "/21865661642/RC_MIDDLE_MOBILE"
     const gptID = process.env.MODE === "PRODUCTION" ? "div-gpt-ad-1584677487159-0" : "div-gpt-ad-1584677577539-0"
-
-    window.googletag = window.googletag || {cmd: []};
+    const targettingAdsData = custParams.concat({ 
+      name: "logged_in", 
+      value: String(Boolean(getUserAccessToken()))
+    })
+    
+    window.googletag = window.googletag || {cmd: []}
     googletag.cmd.push(function() {
-      googletag.defineSlot(slotName, [320, 50], gptID).addService(googletag.pubads());
-
-      custParams.forEach(({ name, value }) => {
+      googletag.defineSlot(slotName, [320, 50], gptID).addService(googletag.pubads())
+      
+      targettingAdsData.forEach(({ name, value }) => {
         googletag.pubads().setTargeting(name, value)
       })
 
-      googletag.pubads().enableSingleRequest();
-      googletag.pubads().collapseEmptyDivs();
+      googletag.pubads().enableSingleRequest()
+      googletag.pubads().collapseEmptyDivs()
 
       googletag.pubads().addEventListener('slotRenderEnded', function(event) {
         if (event.isEmpty) {
           document.getElementById('sticky-ads-container').style.display = 'none'
         }
-      });
-      googletag.enableServices();
-    });
-    googletag.cmd.push(function() { googletag.display(gptID); });
+      })
+      googletag.enableServices()
+    })
+    googletag.cmd.push(function() { googletag.display(gptID) })
   }
 
   componentDidMount() {
@@ -68,8 +73,8 @@ class StickyAds extends React.Component {
         </div>
 
       </div>
-    );
+    )
   }
 }
 
-export default connect(state => state, adsActions)(StickyAds);
+export default connect(state => state, adsActions)(StickyAds)
