@@ -62,11 +62,11 @@ function landscapeLgView (props) {
                     <Img 
                       className="lineup-image"
                       alt={props.lineup.title} 
-                      unloader={<img src={placeHolderImgUrl} />}
-                      loader={<img src={placeHolderImgUrl} />}
+                      unloader={<img src={placeHolderImgUrl} width={336} height={189} />}
+                      loader={<img src={placeHolderImgUrl} width={336} height={189} />}
                       width={336}
                       height={189}
-                      src={[`${rootImageUrl}${content.landscape_image}`, placeHolderImgUrl]} />
+                      src={content.landscape_image ? `${rootImageUrl}${content.landscape_image}` : placeHolderImgUrl} />
                   </div>
                   { renderContinueWatchProgress(content) }
                 </div>
