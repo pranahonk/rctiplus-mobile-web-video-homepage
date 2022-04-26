@@ -6,6 +6,7 @@ import { client } from "../../../graphql/client"
 import { GET_HOME_CATEGORY_LIST, GET_SUB_CATEGORY_LIST } from "../../../graphql/queries/homepage"
 
 import '../../../assets/scss/components/home-category-menu.scss';
+import Cookies from 'js-cookie'
 import { urlRegex } from '../../../utils/regex'
 
 function categoryMenu (props) {
@@ -14,18 +15,20 @@ function categoryMenu (props) {
   const [ meta, setMeta ] = useState({})
 
   useEffect(() => {
-    const query = props.router.query.category_id
-      ? GET_SUB_CATEGORY_LIST(props.router.query.category_id)
-      : GET_HOME_CATEGORY_LIST
-
-    client
-      .query({ query })
-      .then(({ data }) => {
-        const contents = props.router.query.category_id ? data.sub_categories : data.categories
-        setCategories(contents.data)
-        setMeta(contents.meta)
-      })
-      .catch(_ => {})
+    if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
+      const query = props.router.query.category_id
+        ? GET_SUB_CATEGORY_LIST(props.router.query.category_id)
+        : GET_HOME_CATEGORY_LIST
+  
+      client
+        .query({ query })
+        .then(({ data }) => {
+          const contents = props.router.query.category_id ? data.sub_categories : data.categories
+          setCategories(contents.data)
+          setMeta(contents.meta)
+        })
+        .catch(_ => {})
+    }
 
   }, [ props.router.query.category_id ])
 
