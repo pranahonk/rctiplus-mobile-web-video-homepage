@@ -256,7 +256,6 @@ const JwPlayer = (props) => {
 
       // ads event
       player.on('adImpression', (event) => {
-        console.log('adsQue '+adsQue)
         if(adsQue > 0){
           player.pause();
         }
