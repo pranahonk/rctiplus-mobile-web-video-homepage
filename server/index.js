@@ -53,6 +53,13 @@ const UIVersion = '2.0';
       return app.render(req, res, '/player');
     });
 
+    server.get('/category/:category_id/:category_title', (req, res) => {
+      return app.render(req, res, '/category', { 
+        category_id: req.params.category_id, 
+        category_title: req.params.category_title 
+      });
+    });
+
     server.get('/programs/:id/:title/photo/:content_id/:content_title', (req, res) => {
       return app.render(req, res, '/detail/photo', {
         id: req.params.id,
