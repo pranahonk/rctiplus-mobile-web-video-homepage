@@ -33,6 +33,7 @@ const JwPlayer = (props) => {
   });
   const [adsStatus, setAdStatus] = useState('none');
   const [playerFullscreen, setPlayerFullscreen] = useState(false);
+  const [adsQue, setAdsQue] = useState(0);
 
   // Custom Hooks
   const { setIsPlayerReady, setHideBtns } = useCustomPlayerButton({ ...props, player })
@@ -260,10 +261,28 @@ const JwPlayer = (props) => {
 
       // ads event
       player.on('adImpression', (event) => {
+        if(adsQue > 0){
+          player.pause();
+        }
+        if (document.querySelector('.jw-display')) {
+          document.querySelector('.jw-display').style.display = 'none'
+        }
         if (document.querySelector('.ads_wrapper')) {
           setAdStatus('none');
         }
+        setAdsQue(adsQue + 1)
       });
+
+      player.on('firstFrame', (event) => {
+        setAdsQue(adsQue + 1)
+      });
+
+      player.on("adComplete", _ => {
+        player.play();
+        if (document.querySelector('.jw-display')) {
+          document.querySelector('.jw-display').style.display = 'flex'
+        }
+      })
 
       player.on("adPlay", _ => {
         setHideBtns(true)
