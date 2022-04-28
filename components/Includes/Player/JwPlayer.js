@@ -262,6 +262,9 @@ const JwPlayer = (props) => {
         if (document.querySelector('.jw-display')) {
           document.querySelector('.jw-display').style.display = 'none'
         }
+        if (document.querySelector('.jw-controlbar')) {
+          document.querySelector('.jw-controlbar').style.display = 'none'
+        }
         if (document.querySelector('.ads_wrapper')) {
           setAdStatus('none');
         }
@@ -276,6 +279,9 @@ const JwPlayer = (props) => {
         player.play();
         if (document.querySelector('.jw-display')) {
           document.querySelector('.jw-display').style.display = 'flex'
+        }
+        if (document.querySelector('.jw-controlbar')) {
+          document.querySelector('.jw-controlbar').style.display = 'flex'
         }
       })
 
