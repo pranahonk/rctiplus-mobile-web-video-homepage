@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Link from "next/link"
 import { withRouter } from 'next/router'
 
@@ -31,6 +31,13 @@ function categoryMenu (props) {
 
   if (categories.length === 0) return null
 
+  const checkLengthOfTheLabel = txt => {
+    if (!txt) return "singleln"
+
+    if (txt.length > 16) return "multiln"
+    return "singleln"
+  }
+
   return (
     <div 
       className="h-category-container">
@@ -50,9 +57,11 @@ function categoryMenu (props) {
                   <img
                     alt={category.name}
                     className="menu-icon-cat"
-                    src={`${meta.image_path}${imgSize}${category.icon}`}/>
+                    src={`${meta.image_path}${imgSize}${category.icon}`}
+                    width="40"
+                    height="auto"/>
                 </div>
-                <p className="menu-label-cat">
+                <p className={`menu-label-cat ${checkLengthOfTheLabel(category.name)}`}>
                   {category.name}
                 </p>
               </a>
