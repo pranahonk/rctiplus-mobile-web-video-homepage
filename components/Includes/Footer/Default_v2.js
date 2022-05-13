@@ -10,7 +10,7 @@ import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent } from '
 import '../../../assets/scss/components/footer-v2.scss';
 
 import { bottomMenuClick } from '../../../utils/firebaseTracking';
-import { gaTrackerNavbarTrack } from '../../../utils/ga-360';
+import { gaTrackerNavbarTrack, gaTracker } from '../../../utils/ga-360';
 import { getUserAccessToken } from "../../../utils/cookie" 
 
 const FooterNav_v2 = (props) => {
@@ -32,6 +32,7 @@ const FooterNav_v2 = (props) => {
                 <div className="footer-wrapper-list">
                     <div id="action-home" onClick={() => {
                         homeGeneralClicked('mweb_home_clicked');
+                        gaTracker('menu_navbar_tracking','click_bottom_menu', 'Home')
                         switch (props.router.asPath) {
                             case '/radio':
                                 window.location.href = '/';
@@ -62,6 +63,7 @@ const FooterNav_v2 = (props) => {
                 <div className="footer-wrapper-list">
                     <div id="action-live-event" onClick={() => {
                         homeGeneralClicked('mweb_liveevent_clicked');
+                        gaTracker('menu_navbar_tracking','click_bottom_menu', 'LiveEvent')
                         Router.push('/live-event');
                     }}>
                         <a>
@@ -92,6 +94,7 @@ const FooterNav_v2 = (props) => {
                 <div className="footer-wrapper-list">
                     <div id="action-live-tv" onClick={() => {
                         homeGeneralClicked('mweb_livetv_clicked');
+                        gaTracker('menu_navbar_tracking','click_bottom_menu', 'LiveTV')
                         Router.push('/tv/rcti');
                     }}>
                         <a>
@@ -129,6 +132,7 @@ const FooterNav_v2 = (props) => {
                                 homeGeneralClicked('mweb_library_clicked');
                                 break;
                         }
+                        gaTracker('menu_navbar_tracking','click_bottom_menu', 'Library')
 
                         bottomMenuClick(props?.user?.data, { pillar: 'general', button_name: 'trebel' })
                         Router.push('/explores_revamp', "/explores")
@@ -163,6 +167,7 @@ const FooterNav_v2 = (props) => {
                         style={{ position: 'relative' }}
                         onClick={() => {
                             homeGeneralClicked('mweb_account_clicked');
+                            gaTracker('menu_navbar_tracking','click_bottom_menu', 'Account')
                             switch (props.router.asPath) {
                                 case '/radio':
                                     window.location.href = '/profile';
