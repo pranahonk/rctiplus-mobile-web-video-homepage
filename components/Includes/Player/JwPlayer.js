@@ -302,6 +302,15 @@ const JwPlayer = (props) => {
             setAdStatus('prestart');
           }
         }
+
+        player.play();
+        if (document.querySelector('.jw-display')) {
+          document.querySelector('.jw-display').style.display = 'flex'
+        }
+        if (document.querySelector('.jw-controlbar')) {
+          document.querySelector('.jw-controlbar').style.display = 'flex'
+        }
+        
       });
 
       player.on('adComplete', (event) => {
