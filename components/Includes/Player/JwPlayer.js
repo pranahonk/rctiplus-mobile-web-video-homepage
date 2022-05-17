@@ -291,6 +291,12 @@ const JwPlayer = (props) => {
       
       player.on('adSkipped', (event) => {
         setHideBtns(false)
+        
+        if (document.querySelector('.ads_wrapper')) {
+          if (adsStatus === 'none') {
+            setAdStatus('prestart');
+          }
+        }
 
         player.play();
         if (document.querySelector('.jw-display')) {
@@ -300,11 +306,6 @@ const JwPlayer = (props) => {
           document.querySelector('.jw-controlbar').style.display = 'flex'
         }
         
-        if (document.querySelector('.ads_wrapper')) {
-          if (adsStatus === 'none') {
-            setAdStatus('prestart');
-          }
-        }
       });
       
       player.on('adComplete', (event) => {
