@@ -21,6 +21,7 @@ import adsActions from '../redux/actions/adsActions'
 import { setVisitorToken } from '../utils/cookie'
 import Cookies from 'js-cookie'
 import { titleStringUrlRegex, urlRegex } from '../utils/regex'
+import { async } from 'regenerator-runtime'
 
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
 const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
@@ -74,7 +75,7 @@ function Category (props) {
         router.push(href, as, { shallow: true });
     },[])
 
-    const getCategoryLineups = (page = 1, pageSize = 5) => {
+    const getCategoryLineups = async (page = 1, pageSize = 5) => {
         await setVisitorToken()
         if (page === 1 ) setIsShimmer(true)
         if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
@@ -102,10 +103,10 @@ function Category (props) {
                     setLineups([ ...mappedContents.values() ])
                     setMeta(data.lineups.meta)
                 })
-                .catch(_ => {})
-                .finally(_ => {
-                    if (page === 1) setIsShimmer(false)
-                })
+            })
+            .catch(_ => {})
+            .finally(_ => {
+                if (page === 1) setIsShimmer(false)
             })
         }
     }
