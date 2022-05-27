@@ -12,6 +12,7 @@ import { client } from "../../../graphql/client"
 import { GET_BANNERS } from "../../../graphql/queries/homepage"
 
 import '../../../assets/scss/plugins/carousel/carousel.scss'
+import Cookies from 'js-cookie'
 
 function carouselBanner(props) {
   const placeholderImg = "/static/placeholders/placeholder_landscape.png"
@@ -23,13 +24,15 @@ function carouselBanner(props) {
   }, [])
 
   const getBanners = _ => {
-    const categoryId = props.router.query.category_id || 0
-    client.query({ query: GET_BANNERS(1, categoryId) })
-      .then(({ data }) => {
-        setBanners(data.banners.data)
-        setMeta(data.banners.meta)
-      })
-      .catch(_ => {})
+    if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
+      const categoryId = props.router.query.category_id || 0
+      client.query({ query: GET_BANNERS(1, categoryId) })
+        .then(({ data }) => {
+          setBanners(data.banners.data)
+          setMeta(data.banners.meta)
+        })
+        .catch(_ => {})
+    }
   }
 
   const goToProgram = (banner) => {

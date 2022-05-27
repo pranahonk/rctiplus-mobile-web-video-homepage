@@ -11,6 +11,7 @@ import { GET_HOME_STORIES } from "../../../graphql/queries/homepage"
 const StoryModal = dynamic(() => import("../../Modals/StoryModal"))
 
 import '../../../assets/scss/components/stories.scss'
+import Cookies from 'js-cookie'
 
 function homeStories (props) {
     const [ show, setShow ] = useState(false)
@@ -39,18 +40,20 @@ function homeStories (props) {
       },[show]);
 
       const getHomeStories = (page) => {
-        client.query({ query: GET_HOME_STORIES(props.router.query.category_id, page, 10) })
-        .then(({ data }) => {
-          const storiesData = data.stories.data.map((story, i) => ({
-              ...story,
-              image_path: data.stories.meta.image_path,
-              sequence: i
-          }))
-          setStories((list) => ([...list,  ...storiesData]))
-          setMeta(data.stories.meta)
-          setShow(false);
-
-        }).catch(_ => {})
+        if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
+            client.query({ query: GET_HOME_STORIES(props.router.query.category_id, page, 10) })
+            .then(({ data }) => {
+              const storiesData = data.stories.data.map((story, i) => ({
+                  ...story,
+                  image_path: data.stories.meta.image_path,
+                  sequence: i
+              }))
+              setStories((list) => ([...list,  ...storiesData]))
+              setMeta(data.stories.meta)
+              setShow(false);
+    
+            }).catch(_ => {})
+        }
       }
         
     const openStory = (story, index) => {

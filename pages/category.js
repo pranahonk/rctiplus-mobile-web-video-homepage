@@ -18,6 +18,8 @@ import StickyAds from '../components/Includes/Banner/StickyAds'
 import { client } from "../graphql/client"
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import adsActions from '../redux/actions/adsActions'
+import { setVisitorToken } from '../utils/cookie'
+import Cookies from 'js-cookie'
 import { titleStringUrlRegex, urlRegex } from '../utils/regex'
 
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
@@ -72,7 +74,9 @@ function Category (props) {
         router.push(href, as, { shallow: true });
     },[])
 
-    const getCategoryLineups = (page = 1, pageSize = 5) => {
+    const getCategoryLineups = async (page = 1, pageSize = 5) => {
+        await setVisitorToken()
+        if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
         if (page === 1) setIsShimmer(true)
         client
             .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
@@ -88,14 +92,22 @@ function Category (props) {
                     if (content.lineup_type_detail.detail) {
                         mappedContents.set(content.id, content)
                     }
+    
+                    const mappedContents = new Map()
+                    newLineups.forEach(content => {
+                        if (content.lineup_type_detail.detail) {
+                            mappedContents.set(content.id, content)
+                        }
+                    })
+                    setLineups([ ...mappedContents.values() ])
+                    setMeta(data.lineups.meta)
                 })
-                setLineups([ ...mappedContents.values() ])
-                setMeta(data.lineups.meta)
             })
             .catch(_ => {})
             .finally(_ => {
                 if (page === 1) setIsShimmer(false)
             })
+        }
     }
 
     const setComingSoonModalState = (open, content) => {
