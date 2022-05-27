@@ -48,7 +48,7 @@ class StickyAds extends React.Component {
 
   render() {
     const gptID = process.env.MODE === "PRODUCTION" ? "div-gpt-ad-1584677487159-0" : "div-gpt-ad-1584677577539-0";
-    const getElement = document.getElementById(document.getElementById("div-gpt-ad-1584677577539-0")?.childNodes[0]?.id)?.childNodes?.length;
+    const getElement = document.getElementById(document.getElementById(gptID)?.childNodes[0]?.id)?.childNodes?.length;
 
 
     return (
