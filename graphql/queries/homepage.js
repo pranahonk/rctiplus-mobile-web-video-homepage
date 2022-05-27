@@ -225,27 +225,33 @@ export const GET_CONTINUE_WATCHING = (page = 1, page_size = 5, lineup_id = 0) =>
   `
 }
 
-export const GET_HOME_CATEGORY_LIST = gql`
-  query {
-    categories {
-      data {
-        icon
-        id
-        is_active
-        name
-        type
-      }
-      meta {
-        image_path
-      }
-    }
-  }
-`
-
-export const GET_SUB_CATEGORY_LIST = (categoryId = 0) => {
+export const GET_HOME_CATEGORY_LIST = (page = 1, page_size = 10) => {
   return gql`
     query {
-      sub_categories(category_id: ${categoryId}) {
+      categories(page: ${page}, page_size: ${page_size}) {
+        data {
+          icon
+          id
+          is_active
+          name
+          type
+        }
+        meta {
+          pagination {
+            current_page
+            total_page
+          }
+          image_path
+        }
+      }
+    }
+  `
+}
+
+export const GET_SUB_CATEGORY_LIST = (categoryId = 0, page = 1, page_size = 10) => {
+  return gql`
+    query {
+      sub_categories(category_id: ${categoryId}, page: ${page}, page_size: ${page_size}) {
         data {
           icon
           id
