@@ -10,15 +10,15 @@ class StickyAds extends React.Component {
   fetchAds(custParams) {
     const slotName = process.env.MODE === "PRODUCTION" ? "/21865661642/PRO_MIDDLE_MOBILE" : "/21865661642/RC_MIDDLE_MOBILE"
     const gptID = process.env.MODE === "PRODUCTION" ? "div-gpt-ad-1584677487159-0" : "div-gpt-ad-1584677577539-0"
-    const targettingAdsData = custParams.concat({ 
-      name: "logged_in", 
+    const targettingAdsData = custParams.concat({
+      name: "logged_in",
       value: String(Boolean(getUserAccessToken()))
     })
-    
+
     window.googletag = window.googletag || {cmd: []}
     googletag.cmd.push(function() {
       googletag.defineSlot(slotName, [320, 50], gptID).addService(googletag.pubads())
-      
+
       targettingAdsData.forEach(({ name, value }) => {
         googletag.pubads().setTargeting(name, value)
       })
@@ -47,12 +47,17 @@ class StickyAds extends React.Component {
   }
 
   render() {
-    const gptID = process.env.MODE === "PRODUCTION" ? "div-gpt-ad-1584677487159-0" : "div-gpt-ad-1584677577539-0"
+    const gptID = process.env.MODE === "PRODUCTION" ? "div-gpt-ad-1584677487159-0" : "div-gpt-ad-1584677577539-0";
+    const getElement = document.getElementById(document.getElementById("div-gpt-ad-1584677577539-0")?.childNodes[0]?.id)?.childNodes?.length;
+
+    console.log(getElement)
+
 
     return (
       <div id="sticky-ads-container" className={`sticky-ads ${(this.props.sticky ? 'sticky-ads-on' : '')}`}>
         {this.props.sticky
         ? (
+          getElement > 0 ??
           <div
             className="ads-close-btn"
             onClick={() => this.props.toggleAds(false)}></div>
@@ -65,7 +70,7 @@ class StickyAds extends React.Component {
             <center>
             <div id={gptID} style={{
               width: 320,
-              height: 50
+              height: 50,
             }}>
             </div>
             </center>
