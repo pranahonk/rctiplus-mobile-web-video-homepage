@@ -57,10 +57,10 @@ class StickyAds extends React.Component {
       <div id="sticky-ads-container" className={`sticky-ads ${(this.props.sticky ? 'sticky-ads-on' : '')}`}>
         {this.props.sticky
         ? (
-          getElement > 0 ??
+          getElement > 0 ?
           <div
             className="ads-close-btn"
-            onClick={() => this.props.toggleAds(false)}></div>
+            onClick={() => this.props.toggleAds(false)}></div> : ""
         )
         : null}
         <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
