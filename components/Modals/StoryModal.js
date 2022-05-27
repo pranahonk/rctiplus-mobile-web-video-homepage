@@ -15,7 +15,7 @@ function storyModal(props) {
   const timesec = 5
   const storyModalPlayerID = "storymodal-player"
   const options = {
-    autostart: true,
+    autostart: 'viewable',
     mute: true,
     file: null,
     hlsjsdefault: true,
