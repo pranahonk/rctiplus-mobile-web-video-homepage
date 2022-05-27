@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState } from 'react'
-import { withRouter } from 'next/router'
+import router, { Router, useRouter, withRouter } from 'next/router'
 import { connect } from "react-redux"
 import BottomScrollListener from 'react-bottom-scroll-listener'
 import LoadingBar from 'react-top-loading-bar'
@@ -20,6 +20,7 @@ import { GET_LINEUPS } from "../graphql/queries/homepage"
 import adsActions from '../redux/actions/adsActions'
 import { setVisitorToken } from '../utils/cookie'
 import Cookies from 'js-cookie'
+import { titleStringUrlRegex, urlRegex } from '../utils/regex'
 
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
 const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
@@ -46,7 +47,7 @@ function Category (props) {
     const [ meta, setMeta ] = useState({})
     const [ openComingSoonModal, setOpenComingSoonModal ] = useState(false)
     const [ contentComingSoonModal, setContentComingSoonModal ] = useState({})
-
+    const router = useRouter();
     const loadingBar = useRef(null)
 
     const bottomScrollFetch = () => {
@@ -63,17 +64,33 @@ function Category (props) {
         gaTrackerScreenView()
     }, [ props.router.query.category_id ])
 
+    useEffect(() => {
+        const { category_id, category_title} = props.router.query
+        let href, as
+        
+        href = `/category?category_id=${category_id}&category_title=${(category_title)}`;
+        as = `/category/${category_id}/${titleStringUrlRegex(category_title).toLowerCase()}`;
+        
+        router.push(href, as, { shallow: true });
+    },[])
+
     const getCategoryLineups = async (page = 1, pageSize = 5) => {
         await setVisitorToken()
-        if (page === 1 ) setIsShimmer(true)
         if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
-            client
-                .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
-                .then(({ data }) => {
-                    let newLineups = data.lineups.data
-                    
-                    if (page > 1) {
-                        newLineups = lineups.concat(newLineups)
+        if (page === 1) setIsShimmer(true)
+        client
+            .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
+            .then(({ data }) => {
+                let newLineups = data.lineups.data
+                
+                if (page > 1) {
+                    newLineups = lineups.concat(newLineups)
+                }
+
+                const mappedContents = new Map()
+                newLineups.forEach(content => {
+                    if (content.lineup_type_detail.detail) {
+                        mappedContents.set(content.id, content)
                     }
     
                     const mappedContents = new Map()
@@ -85,17 +102,18 @@ function Category (props) {
                     setLineups([ ...mappedContents.values() ])
                     setMeta(data.lineups.meta)
                 })
-                .catch(_ => {})
-                .finally(_ => {
-                    if (page === 1) setIsShimmer(false)
-                })
+            })
+            .catch(_ => {})
+            .finally(_ => {
+                if (page === 1) setIsShimmer(false)
+            })
         }
     }
 
     const setComingSoonModalState = (open, content) => {
         setOpenComingSoonModal(open)
         setContentComingSoonModal(content)
-    }
+    }    
 
     const renderLineups = () => {
         return lineups.map((lineup, index) => {
@@ -222,7 +240,7 @@ function Category (props) {
                 : (
                     <>
                         <div style={{marginTop: "56px"}}>
-                            <Header title={props.router.query.category_title} />
+                            <Header title={ props.router.query.category_title.replace(/[^a-z0-9A-Z]/g, ' ')} />
 
                             <div style={{marginTop: -3}}>
                                 <Carousel category />
