@@ -27,9 +27,8 @@ class StickyAds extends React.Component {
       googletag.pubads().collapseEmptyDivs()
 
       googletag.pubads().addEventListener('slotRenderEnded', function(event) {
-        alert(event?.slot?.getHtml());
-        if (event.isEmpty) {
-          document.getElementById('sticky-ads-container').style.display = 'none'
+        if (event.isEmpty && event?.slot?.getHtml()?.length > 0) {
+          document.getElementById('sticky-ads-container').style.display = 'none';
         }
       })
       googletag.enableServices()
