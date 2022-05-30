@@ -1,10 +1,8 @@
-import React, {useState, useEffect} from "react";
-import Img from "react-image";
-import { connect } from "react-redux";
-import useVideoLineups from "../../hooks/lineups/useVideoLineups";
-import {client }  from "../../../graphql/client";
-import "../../../assets/scss/components/audio-list.scss";
-import { RESOLUTION_IMG } from "../../../config";
+import React, { useEffect, useState } from 'react';
+import Img from 'react-image';
+import useVideoLineups from '../../hooks/lineups/useVideoLineups';
+import { client } from '../../../graphql/client';
+import '../../../assets/scss/components/audio-list.scss';
 import { GET_AUDIO_LIST } from '../../../graphql/queries/audio-list';
 
 function AudioList (props) {
@@ -49,7 +47,7 @@ function AudioList (props) {
                 ))}
             </div>
         </div>
-        
+
     )
 }
 
