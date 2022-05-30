@@ -43,7 +43,7 @@ const JwPlayer = (props) => {
   // Supporting Variables
   const idPlayer = 'jwplayer-rctiplus';
   const options = {
-    autostart: true,
+    autostart: 'viewable',
     mute: false,
     floating: false,
     file: props.data && props.data.url,
