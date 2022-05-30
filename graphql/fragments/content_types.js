@@ -250,3 +250,34 @@ export const contentTypeHotVideo = `
     }
   }
 `
+
+
+export const contentTypeAudioPodcast = `
+  ... on ContentTypeAudioPodcast {
+      detail(page: 1, page_size: 1){
+        data{
+          author
+          categoryPodcasts_id
+          image_banner
+          image_name
+
+        }
+        meta{
+          assets_url
+          image_path
+          pagination{
+            current_page
+            per_page
+            total
+            total_page
+          }
+          video_path
+        }
+         status{
+            code
+            message_client
+            message_server
+        }
+      }
+  }
+`
