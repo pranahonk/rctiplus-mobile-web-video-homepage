@@ -99,7 +99,7 @@ function Category (props) {
                 .catch(_ => {})
                 .finally(_ => {
                     if (page === 1) setIsShimmer(false)
-                })
+            })
         }
     }
 
