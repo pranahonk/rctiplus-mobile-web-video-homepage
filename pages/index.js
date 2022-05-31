@@ -144,6 +144,7 @@ class Index_v2 extends React.Component {
 
   renderLineup(lineups, meta) {
     return lineups.map((lineup, index) => {
+      console.log(lineup)
       switch(lineup.display_type) {
         case "portrait_short" :
           return (
