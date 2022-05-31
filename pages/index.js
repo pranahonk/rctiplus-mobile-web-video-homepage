@@ -144,7 +144,7 @@ class Index_v2 extends React.Component {
 
   renderLineup(lineups, meta) {
     return lineups.map((lineup, index) => {
-      console.log(lineup.display_type)
+      console.log(lineup)
       switch(lineup.display_type) {
         case "portrait_short" :
           return (
@@ -248,7 +248,9 @@ class Index_v2 extends React.Component {
             <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
           )
         case "square_list_audio":
-          return false;
+          return(
+            <AudioHorizontalList key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+          );
       }
     })
   }
@@ -345,7 +347,7 @@ class Index_v2 extends React.Component {
                   </StickyContainer>
                 </div>
                 <AudioHorizontalDisc />
-                <AudioHorizontalList />
+
 
                 <div
                   style={{marginBottom: this.props.ads.ads_displayed ? 80 : 45, paddingTop: 10}}

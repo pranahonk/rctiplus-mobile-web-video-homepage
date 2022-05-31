@@ -5,12 +5,11 @@ import { client } from '../../../graphql/client';
 import '../../../assets/scss/components/audio-list.scss';
 import { GET_AUDIO_LIST } from '../../../graphql/queries/audio-list';
 
-function AudioList (props) {
-    // const [ contents, setContents ] = useState(props.content);
-    const { generateLink, onTouchStart, onTouchEnd } = useVideoLineups(props);
+function AudioList ({title, indexTag, id, data}) {
+   console.log(title, indexTag, id, data);
 
     const [show, setShow] = useState(null);
-    const [data, setData] = useState([]);
+    const [podcast, setPodcast] = useState([]);
     const [meta, setMeta] = useState([]);
     const [loadingMore, setLoadingMore] = useState(false);
     const [assetUrl, setAssetUrl] = useState(null);
@@ -21,7 +20,7 @@ function AudioList (props) {
     useEffect(() => {
         client.query({query: GET_AUDIO_LIST(1, 100, 1, 20)})
             .then((response) => {
-                setData(response.data.mock_audios.data);
+                setPodcast(response.data.mock_audios.data);
                 setMeta(response.data.mock_audios.meta);
                 setAssetUrl('');
             })
@@ -30,7 +29,7 @@ function AudioList (props) {
         <div onTouchStart={e => onTouchStart(e)} onTouchEnd={e => onTouchEnd(e)} className="pnl-audio-list">
             <h2 className="content-title">Sports Podcast</h2>
             <div className="swipe-wrapper">
-                {data.map((content, index) => (
+                {podcast.map((content, index) => (
                     <div className="background-horizontal" key={index}>
                         <Img className="podcast-img" alt={content.title} unloader={<img src={placeHolderImgUrl} />} loader={<img src={placeHolderImgUrl} />} src={[`${assetUrl}${content.image_name}`, placeHolderImgUrl]}/>
                         <div className="desc-menu-wrapper">
