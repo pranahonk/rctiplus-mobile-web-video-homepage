@@ -574,7 +574,7 @@ class LiveEvent extends React.Component {
 		const playerId = 'live-event-player';
 		this.player = window.jwplayer(playerId);
 		this.player.setup({
-			autostart: true,
+			autostart: 'viewable',
 			floating: false,
 			file: url,
 			primary: 'html5',
