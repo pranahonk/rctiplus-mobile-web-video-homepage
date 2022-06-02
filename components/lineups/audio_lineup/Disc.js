@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
-import Img from "react-image";
-import { connect } from "react-redux";
-import useVideoLineups from "../../hooks/lineups/useVideoLineups";
-import {client }  from "../../../graphql/client";
-import "../../../assets/scss/components/audio-disc.scss";
-import { RESOLUTION_IMG } from "../../../config";
+import React, { useEffect, useState } from 'react';
+import Img from 'react-image';
+import useVideoLineups from '../../hooks/lineups/useVideoLineups';
+import { client } from '../../../graphql/client';
+import '../../../assets/scss/components/audio-disc.scss';
 import { GET_AUDIO_DISC } from '../../../graphql/queries/audio-disc';
 
 function AudioDisc (props) {
