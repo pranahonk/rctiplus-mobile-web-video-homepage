@@ -43,15 +43,15 @@ function homeStories (props) {
         if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
             client.query({ query: GET_HOME_STORIES(props.router.query.category_id, page, 10) })
             .then(({ data }) => {
-                const storiesData = data.stories.data.map((story, i) => ({
-                    ...story,
-                    image_path: data.stories.meta.image_path,
-                    sequence: i
-                }))
-                setStories((list) => ([...list,  ...storiesData]))
-                setMeta(data.stories.meta)
-                setShow(false);
-
+              const storiesData = data.stories.data.map((story, i) => ({
+                  ...story,
+                  image_path: data.stories.meta.image_path,
+                  sequence: i
+              }))
+              setStories((list) => ([...list,  ...storiesData]))
+              setMeta(data.stories.meta)
+              setShow(false);
+    
             }).catch(_ => {})
         }
       }
