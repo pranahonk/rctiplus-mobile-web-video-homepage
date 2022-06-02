@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
-import { client } from '../../../graphql/client';
 import '../../../assets/scss/components/audio-list.scss';
-import { GET_AUDIO_LIST } from '../../../graphql/queries/audio-list';
 
 function AudioList ({title, indexTag, id, data}) {
 
@@ -20,13 +18,6 @@ function AudioList ({title, indexTag, id, data}) {
       setMeta(data?.lineup_type_detail?.detail?.meta);
       setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
       setPodcast(data?.lineup_type_detail?.detail?.data);
-
-        // client.query({query: GET_AUDIO_LIST(1, 100, 1, 20)})
-        //     .then((response) => {
-        //         setPodcast(response.data.mock_audios.data);
-        //         setMeta(response.data.mock_audios.meta);
-        //         setAssetUrl('');
-        //     })
     }, [])
 
 

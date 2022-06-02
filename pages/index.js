@@ -21,6 +21,7 @@ import StickyAds from '../components/Includes/Banner/StickyAds';
 import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
+import jsonAudio from './audioResponse.json'
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 import { setCookie, getCookie, setVisitorToken } from '../utils/cookie';
@@ -248,7 +249,7 @@ class Index_v2 extends React.Component {
           )
         case "square_list_audio":
           return(
-            <AudioHorizontalList key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+            <AudioHorizontalList key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={jsonAudio} />
           );
       }
     })
