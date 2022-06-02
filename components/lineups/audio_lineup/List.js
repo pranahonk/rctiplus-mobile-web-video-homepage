@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
-import useVideoLineups from '../../hooks/lineups/useVideoLineups';
 import { client } from '../../../graphql/client';
 import '../../../assets/scss/components/audio-list.scss';
 import { GET_AUDIO_LIST } from '../../../graphql/queries/audio-list';
