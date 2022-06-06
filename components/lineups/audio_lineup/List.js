@@ -77,7 +77,7 @@ function AudioList ({title, indexTag, id, data}) {
                                   </div>
                                 </div>
                               </div>
-                              <div className='col-3'>
+                              <div className='col-3 mx-auto'>
                                 <img src="audio-icons/play-button.svg"/>
                               </div>
                             </div>
