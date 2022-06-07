@@ -17,7 +17,6 @@ function AudioList ({title, indexTag, id, data}) {
     // const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
     useEffect(() => {
-      console.log(data?.lineup_type_detail?.detail)
       setMeta(data?.lineup_type_detail?.detail?.meta);
       setAssetUrl("https://static.roov.id/upload/200");
       setPodcast(data?.lineup_type_detail?.detail?.data);
@@ -33,10 +32,6 @@ function AudioList ({title, indexTag, id, data}) {
     }, [podcast]);
 
     let indexId = 0;
-
-
-
-
 
 
     return (

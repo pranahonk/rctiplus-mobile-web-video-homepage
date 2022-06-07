@@ -256,10 +256,25 @@ export const contentTypeAudioPodcast = `
   ... on ContentTypeAudioPodcast {
       detail(page: 1, page_size: 1){
         data{
-          author
-          categoryPodcasts_id
-          image_banner
-          image_name
+            author
+            categoryPodcasts_id
+            create_date
+            created_by
+            deeplink
+            description
+            id
+            image_banner
+            image_name
+            moderation_status
+            modified_by
+            permalink
+            radios_id
+            sort
+            sort_all
+            sso_id
+            status
+            title
+            total_plays
 
         }
         meta{

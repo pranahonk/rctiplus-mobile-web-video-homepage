@@ -21,7 +21,7 @@ import StickyAds from '../components/Includes/Banner/StickyAds';
 import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
-//import jsonAudio from './audioResponse.json'
+import jsonAudio from '../components/lineups/audio_lineup/list.json';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 import { setCookie, getCookie, setVisitorToken } from '../utils/cookie';
@@ -145,6 +145,7 @@ class Index_v2 extends React.Component {
 
   renderLineup(lineups, meta) {
     return lineups.map((lineup, index) => {
+      console.log(lineup)
       switch(lineup.display_type) {
         case "portrait_short" :
           return (
@@ -251,6 +252,10 @@ class Index_v2 extends React.Component {
           return(
             <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
           );
+        case "portrait_disc":
+          return(
+            <AudioHorizontalDisc  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+          );
       }
     })
   }
@@ -346,8 +351,6 @@ class Index_v2 extends React.Component {
                     </Sticky>
                   </StickyContainer>
                 </div>
-                <AudioHorizontalDisc />
-
 
                 <div
                   style={{marginBottom: this.props.ads.ads_displayed ? 80 : 45, paddingTop: 10}}
