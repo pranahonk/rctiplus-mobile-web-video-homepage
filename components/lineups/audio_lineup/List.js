@@ -18,7 +18,10 @@ function AudioList ({title, indexTag, id, data}) {
 
     useEffect(() => {
       setMeta(data?.lineup_type_detail?.detail?.meta);
-      setAssetUrl("https://static.roov.id/upload/200");
+      setAssetUrl("https://static.roov.id/upload/200/" +
+        "" +
+        "" +
+        "");
       setPodcast(data?.lineup_type_detail?.detail?.data);
     }, [])
 
@@ -54,8 +57,8 @@ function AudioList ({title, indexTag, id, data}) {
                                 <Img className="podcast-img"
                                      alt={content?.content_type_detail?.detail?.data.name}
                                      unloader={<img src={`${assetUrl}${content?.content_type_detail?.detail?.data.image_banner}`} />}
-                                     loader={<img src={[`${assetUrl}${content?.content_type_detail?.detail?.data.image_banner}`, placeHolderImgUrl]} />}
-                                     src={[`${assetUrl}${content?.content_type_detail?.detail?.data.image_banner}`, placeHolderImgUrl]}
+                                     loader={<img src={[`${assetUrl}${content?.content_type_detail?.detail?.data.image_banner}`]} />}
+                                     src={[`${assetUrl}${content?.content_type_detail?.detail?.data.image_banner}`]}
                                      width="100%"
                                      height="100%"
                                 />

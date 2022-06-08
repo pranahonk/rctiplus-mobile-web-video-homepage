@@ -324,6 +324,8 @@ export const contentTypeAudioRadio = `
             image_banner
             image_name
             image_banner_radio_partner
+            permalink
+            deeplink
             image_name
             is_deleted
             latitude
