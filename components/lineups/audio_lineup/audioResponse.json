@@ -62,18 +62,18 @@
                 "updated_by": 1,
                 "updated_date": 1636294219,
                 "website": "",
-                "whatsapp": ""
+                "whatsapp": "",
+                "permalink": "https://dev-radioplus.mncplus.com/radio/1223/overview",
+                "deeplink": "android-app://dev-radioplus.mncplus.com/radio/1223/overview"
               },
               "meta": {
                 "assets_url": "",
                 "image_path": "",
                 "pagination": {
-                  "current_page": 0,
-                  "per_page": 0,
                   "total": 0,
-                  "total_page": 0
-                },
-                "video_path": ""
+                  "total_page": 0,
+                  "per_page": 0
+                }
               },
               "status": {
                 "code": 0,
@@ -136,92 +136,18 @@
                 "updated_by": 0,
                 "updated_date": 0,
                 "website": "",
-                "whatsapp": ""
+                "whatsapp": "",
+                "permalink": "https://dev-radioplus.mncplus.com/radio/1217/overview",
+                "deeplink": "android-app://dev-radioplus.mncplus.com/radio/1217/overview"
               },
               "meta": {
                 "assets_url": "",
                 "image_path": "",
                 "pagination": {
-                  "current_page": 0,
-                  "per_page": 0,
                   "total": 0,
-                  "total_page": 0
-                },
-                "video_path": ""
-              },
-              "status": {
-                "code": 0,
-                "message_client": "Success",
-                "message_server": "Success"
-              }
-            }
-          }
-        },
-        {
-          "content_type_detail": {
-            "detail": {
-              "data": {
-                "address": "",
-                "audio_category": "",
-                "audio_content_type": "",
-                "audio_url": "https://onlineradiobox.com/json/id/suarapasuruan/play?platform=web",
-                "categoryradios_id": 0,
-                "city": "Pasuruan",
-                "content_duration": 0,
-                "created_by": 1,
-                "created_date": 1623848891,
-                "current_song_file_name": "",
-                "date_time": 0,
-                "drive_google_url": "",
-                "duration_spent": 0,
-                "email": "email@email.com",
-                "episode": "",
-                "facebook": "",
-                "frequency": "107,0 FM",
-                "genre_level_1": "",
-                "genre_level_2": "",
-                "id": 1216,
-                "image_banner": "images/radios/banner-suara-pasuruan---107,0-fm.jpg",
-                "image_name": "images/radios/suara-pasuruan---107,0-fm.jpg",
-                "image_banner_radio_partner": "",
-                "is_deleted": 0,
-                "latitude": "",
-                "longitude": "",
-                "name": "Suara Pasuruan - 107,0 FM",
-                "phone": "",
-                "pilar": "",
-                "program_id": 0,
-                "progress": "",
-                "published_date": 0,
-                "radio_country": "",
-                "radio_region": "",
-                "rss": "",
-                "season": "",
-                "share_type": "",
-                "slug": "",
-                "sort_banner": 0,
-                "sort_music": 0,
-                "sort_network": 351,
-                "sso_id": 334904,
-                "status": "1",
-                "statusradios": "rAggregator",
-                "tab_name": "",
-                "twitter": "",
-                "updated_by": 0,
-                "updated_date": 0,
-                "website": "",
-                "whatsapp": ""
-              },
-              "meta": {
-                "assets_url": "",
-                "image_path": "",
-                "pagination": {
-                  "current_page": 0,
-                  "per_page": 0,
-                  "total": 0,
-                  "total_page": 0
-                },
-                "video_path": ""
+                  "total_page": 0,
+                  "per_page": 0
+                }
               },
               "status": {
                 "code": 0,
@@ -284,18 +210,92 @@
                 "updated_by": 0,
                 "updated_date": 0,
                 "website": "",
-                "whatsapp": ""
+                "whatsapp": "",
+                "permalink": "https://dev-radioplus.mncplus.com/radio/1214/overview",
+                "deeplink": "android-app://dev-radioplus.mncplus.com/radio/1214/overview"
               },
               "meta": {
                 "assets_url": "",
                 "image_path": "",
                 "pagination": {
-                  "current_page": 0,
-                  "per_page": 0,
                   "total": 0,
-                  "total_page": 0
-                },
-                "video_path": ""
+                  "total_page": 0,
+                  "per_page": 0
+                }
+              },
+              "status": {
+                "code": 0,
+                "message_client": "Success",
+                "message_server": "Success"
+              }
+            }
+          }
+        },
+        {
+          "content_type_detail": {
+            "detail": {
+              "data": {
+                "address": "",
+                "audio_category": "",
+                "audio_content_type": "",
+                "audio_url": "https://onlineradiobox.com/json/id/suarapasuruan/play?platform=web",
+                "categoryradios_id": 0,
+                "city": "Pasuruan",
+                "content_duration": 0,
+                "created_by": 1,
+                "created_date": 1623848891,
+                "current_song_file_name": "",
+                "date_time": 0,
+                "drive_google_url": "",
+                "duration_spent": 0,
+                "email": "email@email.com",
+                "episode": "",
+                "facebook": "",
+                "frequency": "107,0 FM",
+                "genre_level_1": "",
+                "genre_level_2": "",
+                "id": 1216,
+                "image_banner": "images/radios/banner-suara-pasuruan---107,0-fm.jpg",
+                "image_name": "images/radios/suara-pasuruan---107,0-fm.jpg",
+                "image_banner_radio_partner": "",
+                "is_deleted": 0,
+                "latitude": "",
+                "longitude": "",
+                "name": "Suara Pasuruan - 107,0 FM",
+                "phone": "",
+                "pilar": "",
+                "program_id": 0,
+                "progress": "",
+                "published_date": 0,
+                "radio_country": "",
+                "radio_region": "",
+                "rss": "",
+                "season": "",
+                "share_type": "",
+                "slug": "",
+                "sort_banner": 0,
+                "sort_music": 0,
+                "sort_network": 351,
+                "sso_id": 334904,
+                "status": "1",
+                "statusradios": "rAggregator",
+                "tab_name": "",
+                "twitter": "",
+                "updated_by": 0,
+                "updated_date": 0,
+                "website": "",
+                "whatsapp": "",
+                "permalink": "https://dev-radioplus.mncplus.com/radio/1216/overview",
+                "deeplink": "android-app://dev-radioplus.mncplus.com/radio/1216/overview"
+              },
+              "meta": {
+                "assets_url": "",
+                "image_path": "",
+                "pagination": {
+                  "total": 0,
+                  "total_page": 0,
+                  "per_page": 0
+                }
               },
               "status": {
                 "code": 0,
@@ -358,18 +358,18 @@
                 "updated_by": 0,
                 "updated_date": 0,
                 "website": "",
-                "whatsapp": ""
+                "whatsapp": "",
+                "permalink": "https://dev-radioplus.mncplus.com/radio/1213/overview",
+                "deeplink": "android-app://dev-radioplus.mncplus.com/radio/1213/overview"
               },
               "meta": {
                 "assets_url": "",
                 "image_path": "",
                 "pagination": {
-                  "current_page": 0,
-                  "per_page": 0,
                   "total": 0,
-                  "total_page": 0
-                },
-                "video_path": ""
+                  "total_page": 0,
+                  "per_page": 0
+                }
               },
               "status": {
                 "code": 0,
@@ -432,18 +432,18 @@
                 "updated_by": 0,
                 "updated_date": 0,
                 "website": "",
-                "whatsapp": ""
+                "whatsapp": "",
+                "permalink": "https://dev-radioplus.mncplus.com/radio/1212/overview",
+                "deeplink": "android-app://dev-radioplus.mncplus.com/radio/1212/overview"
               },
               "meta": {
                 "assets_url": "",
                 "image_path": "",
                 "pagination": {
-                  "current_page": 0,
-                  "per_page": 0,
                   "total": 0,
-                  "total_page": 0
-                },
-                "video_path": ""
+                  "total_page": 0,
+                  "per_page": 0
+                }
               },
               "status": {
                 "code": 0,
