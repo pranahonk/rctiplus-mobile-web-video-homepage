@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import Router, { withRouter } from 'next/router';
 import Link from 'next/link';
 import { connect } from 'react-redux';
+
 import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import { Picker } from 'emoji-mart';
@@ -263,6 +264,12 @@ class LiveEvent extends React.Component {
           })
         }
       })
+		
+		setTimeout(() => {
+			var span = document.getElementsByClassName("tooltiptext")[0]
+			if(!span) return
+			span.parentNode.removeChild(span);  
+		}, 2000);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -973,6 +980,7 @@ class LiveEvent extends React.Component {
 		return output
 	}
 
+	
 	render() {
 		this.getCurrentViewingVideoIndex()
 
@@ -1193,66 +1201,65 @@ class LiveEvent extends React.Component {
 										</div>
 									</div>
 								</div>
-							</div>
-							<div className="chat-messages" id="chat-messages">
-								{this.state.chats.map((chat, i) => (
-									<Row key={i} className="chat-line">
-										<Col xs={2}>
-											<Img
-												loader={<PersonOutlineIcon className="chat-avatar" />}
-												unloader={<PersonOutlineIcon className="chat-avatar" />}
-												className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
-										</Col>
-										<Col className="chat-message" xs={10}>
-											{/* {chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span> */}
-											<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />{' '}
-												<span className="username">
-													{chat.u}
-												</span> 
-												<span className="message">
-													{chat.m}
-												</span>
-										</Col>
-									</Row>
-								))}
-							</div>
-							<div className="chat-input-box">
-								<div className="chat-box">
-									<Row>
-										<Col xs={1}>
-											<Button className="emoji-button">
-												{this.state.emoji_picker_open ? (<KeyboardIcon onClick={this.toggleEmoji.bind(this)} />) : (<SentimenVerySatifiedIcon onClick={this.toggleEmoji.bind(this)} />)}
-											</Button>
-										</Col>
-										<Col xs={9}>
-											<Input
-												onKeyDown={this.handleChatEnter.bind(this)}
-												onChange={this.onChangeChatInput.bind(this)}
-												onClick={this.checkLogin.bind(this)}
-												value={this.state.chat}
-												type="textarea"
-												id="chat-input"
-												placeholder="Start Chatting"
-												className="chat-input"
-												maxLength={250}
-												rows={1} />
-										</Col>
-										<Col xs={1}>
-											<Button className="send-button" onClick={this.sendChat.bind(this)}>
-												<SendIcon />
-											</Button>
-										</Col>
-									</Row>
+								<div className="chat-messages" id="chat-messages">
+									{this.state.chats.map((chat, i) => (
+										<Row key={i} className="chat-line">
+											<Col xs={2}>
+												<Img
+													loader={<PersonOutlineIcon className="chat-avatar" />}
+													unloader={<PersonOutlineIcon className="chat-avatar" />}
+													className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
+											</Col>
+											<Col className="chat-message" xs={10}>
+												{/* {chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span> */}
+												<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />{' '}
+													<span className="username">
+														{chat.u}
+													</span> 
+													<span className="message">
+														{chat.m}
+													</span>
+											</Col>
+										</Row>
+									))}
 								</div>
-								<Picker
-									onSelect={emoji => {
-										this.onSelectEmoji();
-									}}
-									showPreview={false}
-									darkMode
-									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
+								<div className="chat-input-box">
+									<div className="chat-box">
+										<Row>
+											<Col xs={1}>
+												<Button className="emoji-button">
+													{this.state.emoji_picker_open ? (<KeyboardIcon onClick={this.toggleEmoji.bind(this)} />) : (<SentimenVerySatifiedIcon onClick={this.toggleEmoji.bind(this)} />)}
+												</Button>
+											</Col>
+											<Col xs={9}>
+												<Input
+													onKeyDown={this.handleChatEnter.bind(this)}
+													onChange={this.onChangeChatInput.bind(this)}
+													onClick={this.checkLogin.bind(this)}
+													value={this.state.chat}
+													type="textarea"
+													id="chat-input"
+													placeholder="Start Chatting"
+													className="chat-input"
+													maxLength={250}
+													rows={1} />
+											</Col>
+											<Col xs={1}>
+												<Button className="send-button" onClick={this.sendChat.bind(this)}>
+													<SendIcon />
+												</Button>
+											</Col>
+										</Row>
+									</div>
+									<Picker
+										onSelect={emoji => {
+											this.onSelectEmoji();
+										}}
+										showPreview={false}
+										darkMode
+										style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
+								</div>
 							</div>
-						</div>
 					</div>)}
 				</div>
 			</Layout>

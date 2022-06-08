@@ -1,0 +1,284 @@
+{
+  "id": 231,
+  "content_type": "live_music",
+  "service": "audio",
+  "title": "lineup audio portrait_disc live music",
+  "display_type": "portrait_disc",
+  "sorting": 3,
+  "lineup_type": "default",
+  "lineup_type_detail": {
+    "detail": {
+      "data": [{
+        "content_type_detail": {
+          "detail": {
+            "data": {
+              "id": 500,
+              "sort": 43,
+              "sort_all": 43,
+              "categoryPodcasts_id": 6,
+              "radios_id": 2,
+              "title": "Kampung Rempong (Season 4)",
+              "description": "",
+              "image_name": "images/ceritasuara/kampung-rempong-(season-4).png",
+              "image_banner": "images/ceritasuara/banner-kampung-rempong-(season-4).png",
+              "status": "1",
+              "author": null,
+              "is_deleted": false,
+              "created_by": 1,
+              "create_date": 1599322855,
+              "modified_by": 1,
+              "modified_date": 1602068096,
+              "sso_id": 404737,
+              "moderation_status": "0",
+              "total_plays": 360,
+              "permalink": "https://dev-radioplus.mncplus.com/podcast/500/overview",
+              "deeplink": "android-app://dev-radioplus.mncplus.com/podcast/500/overview"
+            },
+            "meta": {
+              "assets_url": "",
+              "image_path": "",
+              "pagination": {
+                "current_page": 0,
+                "per_page": 0,
+                "total": 0,
+                "total_page": 0
+              },
+              "video_path": ""
+            },
+            "status": {
+              "code": 9988,
+              "message_client": "Error data loader data not found!",
+              "message_server": "Error data loader data not found!"
+            }
+          }
+        }
+      },
+        {
+          "content_type_detail": {
+            "detail": {
+              "data": {
+                "id ": 501,
+                "sort": null,
+                "sort_all": null,
+                "categoryPodcasts_id": 7,
+                "radios_id": null,
+                "title": "cover song - Siti Nurhaliza Bukan Cinta Biasa",
+                "description": "cover song terbaru",
+                "image_name": "podcasts/podcast-202009071225_1599456358.jpg",
+                "image_banner": "podcasts/podcast-202009071225_1599456358.jpg",
+                "status": "1",
+                "author": null,
+                "is_deleted": false,
+                "created_by": null,
+                "create_date": 1599481558,
+                "modified_by": 1,
+                "modified_date": 1599488215,
+                "sso_id": 391003,
+                "moderation_status": "2",
+                "total_plays": 1,
+                "permalink": "https://dev-radioplus.mncplus.com/podcast/501/overview",
+                "deeplink": "android-app://dev-radioplus.mncplus.com/podcast/501/overview"
+              },
+              "meta": {
+                "assets_url": "",
+                "image_path": "",
+                "pagination": {
+                  "current_page": 0,
+                  "per_page": 0,
+                  "total": 0,
+                  "total_page": 0
+                },
+                "video_path": ""
+              },
+              "status": {
+                "code": 9988,
+                "message_client": "Error data loader data not found!",
+                "message_server": "Error data loader data not found!"
+              }
+            }
+          }
+        },
+        {
+          "content_type_detail": {
+            "detail": {
+              "data": {
+                "id": 502,
+                "sort": null,
+                "sort_all": 163,
+                "categoryPodcasts_id": 1,
+                "radios_id": null,
+                "title": "Podcast BWT ",
+                "description": "Menerima aduan masyarakat 48",
+                "image_name": "podcasts/podcast-202009072030_1599485482.jpg",
+                "image_banner": "podcasts/podcast-202009072030_1599485482.jpg",
+                "status": "1",
+                "author": null,
+                "is_deleted": false,
+                "created_by": null,
+                "create_date": 1599510682,
+                "modified_by": 1,
+                "modified_date": 1599574805,
+                "sso_id": 401596,
+                "moderation_status": "0",
+                "total_plays": 4,
+                "permalink": "https://dev-radioplus.mncplus.com/podcast/502/overview",
+                "deeplink": "android-app://dev-radioplus.mncplus.com/podcast/502/overview"
+              },
+              "meta": {
+                "assets_url": "",
+                "image_path": "",
+                "pagination": {
+                  "current_page": 0,
+                  "per_page": 0,
+                  "total": 0,
+                  "total_page": 0
+                },
+                "video_path": ""
+              },
+              "status": {
+                "code": 9988,
+                "message_client": "Error data loader data not found!",
+                "message_server": "Error data loader data not found!"
+              }
+            }
+          }
+        },
+        {
+          "content_type_detail": {
+            "detail": {
+              "data": {
+                "id": 502,
+                "sort": null,
+                "sort_all": 163,
+                "categoryPodcasts_id": 1,
+                "radios_id": null,
+                "title": "Podcast BWT ",
+                "description": "Menerima aduan masyarakat 48",
+                "image_name": "podcasts/podcast-202009072030_1599485482.jpg",
+                "image_banner": "podcasts/podcast-202009072030_1599485482.jpg",
+                "status": "1",
+                "author": null,
+                "is_deleted": false,
+                "created_by": null,
+                "create_date": 1599510682,
+                "modified_by": 1,
+                "modified_date": 1599574805,
+                "sso_id": 401596,
+                "moderation_status": "0",
+                "total_plays": 4,
+                "permalink": "https://dev-radioplus.mncplus.com/podcast/502/overview",
+                "deeplink": "android-app://dev-radioplus.mncplus.com/podcast/502/overview"
+              },
+              "meta": {
+                "assets_url": "",
+                "image_path": "",
+                "pagination": {
+                  "current_page": 0,
+                  "per_page": 0,
+                  "total": 0,
+                  "total_page": 0
+                },
+                "video_path": ""
+              },
+              "status": {
+                "code": 9988,
+                "message_client": "Error data loader data not found!",
+                "message_server": "Error data loader data not found!"
+              }
+            }
+          }
+        },
+        {
+          "content_type_detail": {
+            "detail": {
+              "data": {
+                "id": 502,
+                "sort": null,
+                "sort_all": 163,
+                "categoryPodcasts_id": 1,
+                "radios_id": null,
+                "title": "Podcast BWT ",
+                "description": "Menerima aduan masyarakat 48",
+                "image_name": "podcasts/podcast-202009072030_1599485482.jpg",
+                "image_banner": "podcasts/podcast-202009072030_1599485482.jpg",
+                "status": "1",
+                "author": null,
+                "is_deleted": false,
+                "created_by": null,
+                "create_date": 1599510682,
+                "modified_by": 1,
+                "modified_date": 1599574805,
+                "sso_id": 401596,
+                "moderation_status": "0",
+                "total_plays": 4,
+                "permalink": "https://dev-radioplus.mncplus.com/podcast/502/overview",
+                "deeplink": "android-app://dev-radioplus.mncplus.com/podcast/502/overview"
+              },
+              "meta": {
+                "assets_url": "",
+                "image_path": "",
+                "pagination": {
+                  "current_page": 0,
+                  "per_page": 0,
+                  "total": 0,
+                  "total_page": 0
+                },
+                "video_path": ""
+              },
+              "status": {
+                "code": 9988,
+                "message_client": "Error data loader data not found!",
+                "message_server": "Error data loader data not found!"
+              }
+            }
+          }
+        },
+        {
+          "content_type_detail": {
+            "detail": {
+              "data": {
+                "id": 502,
+                "sort": null,
+                "sort_all": 163,
+                "categoryPodcasts_id": 1,
+                "radios_id": null,
+                "title": "Podcast BWT ",
+                "description": "Menerima aduan masyarakat 48",
+                "image_name": "podcasts/podcast-202009072030_1599485482.jpg",
+                "image_banner": "podcasts/podcast-202009072030_1599485482.jpg",
+                "status": "1",
+                "author": null,
+                "is_deleted": false,
+                "created_by": null,
+                "create_date": 1599510682,
+                "modified_by": 1,
+                "modified_date": 1599574805,
+                "sso_id": 401596,
+                "moderation_status": "0",
+                "total_plays": 4,
+                "permalink": "https://dev-radioplus.mncplus.com/podcast/502/overview",
+                "deeplink": "android-app://dev-radioplus.mncplus.com/podcast/502/overview"
+              },
+              "meta": {
+                "assets_url": "",
+                "image_path": "",
+                "pagination": {
+                  "current_page": 0,
+                  "per_page": 0,
+                  "total": 0,
+                  "total_page": 0
+                },
+                "video_path": ""
+              },
+              "status": {
+                "code": 9988,
+                "message_client": "Error data loader data not found!",
+                "message_server": "Error data loader data not found!"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
