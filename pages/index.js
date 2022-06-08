@@ -49,6 +49,7 @@ const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/n
 const LandscapeHotVideo = dynamic(() => import("../components/lineups/hot/LandscapeHotVideo"));
 const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"));
 const AudioHorizontalDisc = dynamic(() => import("../components/lineups/audio_lineup/Disc"));
+// const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"));
 const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"));
 
 class Index_v2 extends React.Component {
@@ -255,7 +256,11 @@ class Index_v2 extends React.Component {
           );
         case "portrait_disc":
           return(
-            <AudioHorizontalDisc  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={jsonAudio} />
+            <VideoSquareMiniView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={jsonAudioList}
+              imagePath="https://static.roov.id/upload/200/" />
           );
       }
     })

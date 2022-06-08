@@ -18,10 +18,7 @@ function AudioList ({title, indexTag, id, data}) {
 
     useEffect(() => {
       setMeta(data?.lineup_type_detail?.detail?.meta);
-      setAssetUrl("https://static.roov.id/upload/200/" +
-        "" +
-        "" +
-        "");
+      setAssetUrl("https://static.roov.id/upload/200/");
       setPodcast(data?.lineup_type_detail?.detail?.data);
     }, [])
 
@@ -68,8 +65,8 @@ function AudioList ({title, indexTag, id, data}) {
                                   <span className="podcast-title" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.city, '...', 50)}}></span>
                                   <span className="podcaster-name" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.name, '...', 40)}}></span>
                                   <div className="buttons-wrapper">
-                                    <img src="audio-icons/share-icon.svg"  />
-                                    <img src="audio-icons/bookmark-icon.svg"/>
+                                    <img src="audio-icons/share-icon.svg" />
+                                    <img src="audio-icons/bookmark-icon.svg" className="mx-3" />
                                     <img src="audio-icons/download-icon.svg" onClick={() => alertDownload(null, 'extra', null, null, null)}/>
                                     (
                                   </div>
