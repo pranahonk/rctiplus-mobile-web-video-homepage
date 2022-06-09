@@ -252,7 +252,7 @@ class Index_v2 extends React.Component {
           )
         case "square_list_audio":
           return(
-            <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={jsonAudioList} />
+            <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={jsonAudio} />
           );
         case "portrait_disc":
           return(
