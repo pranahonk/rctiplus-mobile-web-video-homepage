@@ -252,14 +252,14 @@ class Index_v2 extends React.Component {
           )
         case "square_list_audio":
           return(
-            <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+            <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={jsonAudio} />
           );
         case "portrait_disc":
           return(
             <VideoSquareMiniView
               key={lineup.id}
               loadingBar={this.LoadingBar}
-              lineup={lineup}
+              lineup={jsonAudioList}
               imagePath="https://static.roov.id/upload/200/" />
           );
       }
