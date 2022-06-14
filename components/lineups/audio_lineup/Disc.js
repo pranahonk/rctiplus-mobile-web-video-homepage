@@ -20,10 +20,6 @@ function AudioDisc ({title, indexTag, id, data}) {
       setDisc(data?.lineup_type_detail?.detail?.data);
     }, [])
 
-    useEffect(()=>{
-      console.log(disc)
-    }, [disc])
-
     const _goToDetail = (article) => {
       return window.location.href = article?.permalink;
     };
