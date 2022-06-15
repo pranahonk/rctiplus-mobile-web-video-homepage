@@ -221,6 +221,7 @@ class Tv extends React.Component {
         reloadDuration: 0
       },
       catchUpIndexing: {},
+			is_interactive: false,
 			interactive_modal: false,
 		};
 
@@ -246,8 +247,14 @@ class Tv extends React.Component {
 		// }
 	}
 
-	componentDidUpdate() {
-
+	componentDidUpdate(prevProps, prevState) {
+		if(prevState.selected_index !== this.state.selected_index){
+			setTimeout(() => {
+				var span = document.getElementsByClassName("tooltiptext")[0]
+				if(!span) return
+				span.parentNode.removeChild(span);  
+			}, 4000);
+		}
 	}
 
 	componentDidMount() {
@@ -286,7 +293,7 @@ class Tv extends React.Component {
 				var span = document.getElementsByClassName("tooltiptext")[0]
 				if(!span) return
 				span.parentNode.removeChild(span);  
-			}, 2000);
+			}, 4000);
 	}
 
 	setHeightChatBox() {
@@ -457,7 +464,8 @@ class Tv extends React.Component {
 					selected_index: index,
 					channel_code: channelData.content_title_code,
 					epg,
-					catchup
+					catchup,
+					is_interactive: epg.some((item) => item.is_interactive !== "false"),
 				})
 			})
 			.catch(error => {
@@ -1190,6 +1198,7 @@ class Tv extends React.Component {
 										{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
 									</div>
 								</Col>
+								{this.state.is_interactive && (
 								<Col xs={5} style={{textAlign:'end', marginLeft: '-10px'}}>
 									<div className='tooltip-custom'>
 										<span className="tooltiptext">Ikuti sekarang!</span>
@@ -1208,8 +1217,9 @@ class Tv extends React.Component {
 												</Row>
 											</Button>
 										</div>
-									</div>
-								</Col>
+										</div>
+									</Col>
+								)}
 							</Row>
 						{/* <div className="box-chat" style={{ height: 300 }}> */}
 						<div className="box-chat">
