@@ -244,8 +244,14 @@ class Tv extends React.Component {
 		// }
 	}
 
-	componentDidUpdate() {
-
+	componentDidUpdate(prevProps, prevState) {
+		if(prevState.selected_index !== this.state.selected_index){
+			setTimeout(() => {
+				var span = document.getElementsByClassName("tooltiptext")[0]
+				if(!span) return
+				span.parentNode.removeChild(span);  
+			}, 4000);
+		}
 	}
 
 	componentDidMount() {
@@ -284,7 +290,7 @@ class Tv extends React.Component {
 				var span = document.getElementsByClassName("tooltiptext")[0]
 				if(!span) return
 				span.parentNode.removeChild(span);  
-			}, 2000);
+			}, 4000);
 	}
 
 	setHeightChatBox() {
@@ -455,7 +461,8 @@ class Tv extends React.Component {
 					selected_index: index,
 					channel_code: channelData.content_title_code,
 					epg,
-					catchup
+					catchup,
+					is_interactive: epg.some((item) => item.is_interactive !== "false"),
 				})
 			})
 			.catch(error => {
@@ -1093,7 +1100,6 @@ class Tv extends React.Component {
 						<TabContent activeTab={this.state.selected_tab}>
 							<TabPane tabId={'live'}>
 								{this.state.epg.map((e, i) => {
-									if(e?.is_interactive !== 'false') this.setState({ is_interactive: true })
 									if (this.isLiveProgram(e)) {
 										return (<Row key={i} className={'program-item selected'}>
 											<Col xs={9}>
