@@ -1174,7 +1174,7 @@ class LiveEvent extends React.Component {
 											<div className='tooltip-custom'>
 												<span className="tooltiptext">Ikuti sekarang!</span>
 												<div className='interactive'>
-														<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
+														<Button id="btn-expand" onClick={() => this.setState({interactive_modal: true})} color="link">
 															<Row className='justify-content-center'>
 																<img 
 																	src='/static/player_icons/quiz_icon.svg	'
