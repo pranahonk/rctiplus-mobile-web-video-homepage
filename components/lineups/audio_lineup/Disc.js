@@ -7,7 +7,6 @@ const ActionSheet = dynamic(() => import('../../Modals/ActionSheet'), { ssr: fal
 
 function AudioDisc ({title, indexTag, id, data}) {
     // const { generateLink, onTouchStart, onTouchEnd } = useVideoLineups(props)
-    console.log(data)
 
     const [show, setShow] = useState(null);
     const [meta, setMeta] = useState([]);
@@ -17,11 +16,13 @@ function AudioDisc ({title, indexTag, id, data}) {
 
     const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
     // const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
+    //console.log(data?.lineup_type_detail?.detail)
 
     useEffect(() => {
       setMeta(data?.lineup_type_detail?.detail?.meta);
-      setAssetUrl("https://static.roov.id/upload/200/");
-      //setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
+      // setAssetUrl("https://static.roov.id/upload/200/");
+
+      setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
       setDisc(data?.lineup_type_detail?.detail?.data);
     }, [])
 
@@ -41,9 +42,9 @@ function AudioDisc ({title, indexTag, id, data}) {
                       <div className="background-disc">
                         <Img className="disc-img"
                              alt={content?.content_type_detail?.detail?.data?.title}
-                             unloader={<img src={[`${assetUrl}${content?.content_type_detail?.detail?.data?.image_banner}`]} />}
-                             loader={<img src={[`${assetUrl}${content?.content_type_detail?.detail?.data?.image_banner}`]} />}
-                             src={[`${assetUrl}${content?.content_type_detail?.detail?.data?.image_banner}`]}/>
+                             unloader={<img src={[`${content?.content_type_detail?.detail?.meta?.assets_url}/200/${content?.content_type_detail?.detail?.data?.image_banner}`]} />}
+                             loader={<img src={[`${content?.content_type_detail?.detail?.meta?.assets_url}/200/${content?.content_type_detail?.detail?.data?.image_banner}`]} />}
+                             src={[`${content?.content_type_detail?.detail?.meta?.assets_url}/200/${content?.content_type_detail?.detail?.data?.image_banner}`]}/>
                         <div className="disc-hole-background"></div>
                         <div className="disc-hole"></div>
                       </div>
