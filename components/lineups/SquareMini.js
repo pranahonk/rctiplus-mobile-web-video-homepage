@@ -17,6 +17,9 @@ function squareMiniView (props) {
   const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
   const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
+  console.log(contents.length)
+  console.log(props.lineup.title)
+
   useEffect(() => {
     setInitialContents()
   }, [])

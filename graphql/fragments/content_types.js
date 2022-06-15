@@ -14,6 +14,8 @@ export const contentTypeProgramFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }`
@@ -34,6 +36,8 @@ export const contentTypeEpisodeFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -55,6 +59,8 @@ export const contentTypeExtraFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -76,6 +82,8 @@ export const contentTypeClipFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -96,6 +104,8 @@ export const contentTypeCatchupFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -116,6 +126,8 @@ export const contentTypeLiveEventFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -136,6 +148,8 @@ export const contentTypeLiveEPGFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -159,6 +173,8 @@ export const contentTypeSpecialFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -179,6 +195,8 @@ export const contentTypeSeasonFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }

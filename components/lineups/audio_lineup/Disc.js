@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import '../../../assets/scss/components/audio-disc.scss';
 import dynamic from 'next/dynamic';
+
 const ActionSheet = dynamic(() => import('../../Modals/ActionSheet'), { ssr: false });
 
 function AudioDisc ({title, indexTag, id, data}) {
-    // const { generateLink, onTouchStart, onTouchEnd } = useVideoLineups(props);
+    // const { generateLink, onTouchStart, onTouchEnd } = useVideoLineups(props)
 
     const [show, setShow] = useState(null);
     const [meta, setMeta] = useState([]);
@@ -19,6 +20,7 @@ function AudioDisc ({title, indexTag, id, data}) {
     useEffect(() => {
       setMeta(data?.lineup_type_detail?.detail?.meta);
       setAssetUrl("https://static.roov.id/upload/200/");
+      //setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
       setDisc(data?.lineup_type_detail?.detail?.data);
     }, [])
 
