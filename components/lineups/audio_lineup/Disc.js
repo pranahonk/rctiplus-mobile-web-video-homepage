@@ -7,6 +7,7 @@ const ActionSheet = dynamic(() => import('../../Modals/ActionSheet'), { ssr: fal
 
 function AudioDisc ({title, indexTag, id, data}) {
     // const { generateLink, onTouchStart, onTouchEnd } = useVideoLineups(props)
+    console.log(data)
 
     const [show, setShow] = useState(null);
     const [meta, setMeta] = useState([]);
