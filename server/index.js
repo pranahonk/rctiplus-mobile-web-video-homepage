@@ -328,6 +328,6 @@ const UIVersion = '2.0';
       /* eslint-enable no-console */
     });
   } catch (error) {
-    console.error('recon', error);
+    console.error(error);
   }
 })();
