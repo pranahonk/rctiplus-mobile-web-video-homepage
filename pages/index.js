@@ -3,8 +3,8 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
-import { StickyContainer, Sticky } from 'react-sticky';
-import dynamic from "next/dynamic"
+import { Sticky, StickyContainer } from 'react-sticky';
+import dynamic from 'next/dynamic';
 
 import contentActions from '../redux/actions/contentActions';
 import pageActions from '../redux/actions/pageActions';
@@ -21,14 +21,12 @@ import StickyAds from '../components/Includes/Banner/StickyAds';
 import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
-import jsonAudio from '../components/lineups/audio_lineup/list.json';
-import jsonAudioList from '../components/lineups/audio_lineup/audioResponse.json';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
-import { setCookie, getCookie, setVisitorToken } from '../utils/cookie';
+import { GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, SITE_NAME, SITEMAP } from '../config';
+import { getCookie, setCookie, setVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
-import { GET_LINEUPS } from "../graphql/queries/homepage"
-import { client } from "../graphql/client"
+import { GET_LINEUPS } from '../graphql/queries/homepage';
+import { client } from '../graphql/client';
 import { gaTrackerScreenView } from '../utils/ga-360';
 
 // NEW RPLUS LINEUP CONTENTS
@@ -49,7 +47,6 @@ const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/n
 const LandscapeHotVideo = dynamic(() => import("../components/lineups/hot/LandscapeHotVideo"));
 const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"));
 const AudioHorizontalDisc = dynamic(() => import("../components/lineups/audio_lineup/Disc"));
-// const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"));
 const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"));
 
 class Index_v2 extends React.Component {
@@ -147,7 +144,6 @@ class Index_v2 extends React.Component {
 
   renderLineup(lineups, meta) {
     return lineups.map((lineup, index) => {
-      console.log(lineup)
       switch(lineup.display_type) {
         case "portrait_short" :
           return (
@@ -256,11 +252,12 @@ class Index_v2 extends React.Component {
           );
         case "portrait_disc":
           return(
-            <VideoSquareMiniView
+            <AudioHorizontalDisc
               key={lineup.id}
-              loadingBar={this.LoadingBar}
-              lineup={lineup}
-              imagePath="https://static.roov.id/upload/200/" />
+              data={lineup}
+              indexTag={index}
+              id={lineup.id}
+            />
           );
       }
     })
