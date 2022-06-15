@@ -1158,38 +1158,40 @@ class LiveEvent extends React.Component {
 					 (<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
 						{height: `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
 							: null}>
-							{selected_event?.data?.chat !== "inactive" && (
 								<Row>
 									<Col xs={7}>
+									{selected_event?.data?.chat !== "inactive" && (
 										<div className="btn-chat">
 											<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
 												<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
 											</Button>
 											{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
 										</div>
+									)}
 									</Col>
 									<Col xs={5} style={{textAlign: 'end', marginLeft: '-10px'}}>
-										<div className='tooltip-custom'>
-											<span className="tooltiptext">Ikuti sekarang!</span>
-											<div className='interactive'>
-													<Button id="btn-expand" onClick={() => this.setState({interactive_modal: true})} color="link">
-														<Row className='justify-content-center'>
-															<img 
-																src='/static/player_icons/quiz_icon.svg	'
-																width={40}
-																height={40}
-																alt="desc"
-																className='ml-n3 mt-n3'
-																/>
-																<p className='ml-2 mt-n1'>Interactive</p>
-																<FiberManualRecordIcon className="indicator-dot-red mt-n1" />
-														</Row>
-													</Button>
+										{selected_event?.data?.is_interactive !== "false" && (
+											<div className='tooltip-custom'>
+												<span className="tooltiptext">Ikuti sekarang!</span>
+												<div className='interactive'>
+														<Button id="btn-expand" onClick={() => this.setState({interactive_modal: true})} color="link">
+															<Row className='justify-content-center'>
+																<img 
+																	src='/static/player_icons/quiz_icon.svg	'
+																	width={40}
+																	height={40}
+																	alt="desc"
+																	className='ml-n3 mt-n3'
+																	/>
+																	<p className='ml-2 mt-n1'>Interactive</p>
+																	<FiberManualRecordIcon className="indicator-dot-red mt-n1" />
+															</Row>
+														</Button>
+												</div>
 											</div>
-										</div>
+										)}
 									</Col>
 								</Row>
-							)}
 
 							<div className="box-chat" id="chat-input">
 								<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
