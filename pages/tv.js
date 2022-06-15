@@ -219,6 +219,7 @@ class Tv extends React.Component {
         reloadDuration: 0
       },
       catchUpIndexing: {},
+			is_interactive: false
 		};
 
 		this.player = null;
@@ -1092,6 +1093,7 @@ class Tv extends React.Component {
 						<TabContent activeTab={this.state.selected_tab}>
 							<TabPane tabId={'live'}>
 								{this.state.epg.map((e, i) => {
+									if(e?.is_interactive !== 'false') this.setState({ is_interactive: true })
 									if (this.isLiveProgram(e)) {
 										return (<Row key={i} className={'program-item selected'}>
 											<Col xs={9}>
@@ -1178,26 +1180,28 @@ class Tv extends React.Component {
 										{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
 									</div>
 								</Col>
-								<Col xs={5} style={{textAlign:'end', marginLeft: '-10px'}}>
-									<div className='tooltip-custom'>
-										<span className="tooltiptext">Ikuti sekarang!</span>
-										<div className='interactive'>
-											<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
-												<Row className='justify-content-center'>
-													<img 
-														src='/static/player_icons/quiz_icon.svg	'
-														width={40}
-														height={40}
-														alt="desc"
-														className='ml-n3 mt-n3'
-														/>
-														<p className='ml-2 mt-n1'>Interactive</p>
-														<FiberManualRecordIcon className="indicator-dot-red mt-n1" />
-												</Row>
-											</Button>
+								{this.state.is_interactive && (
+									<Col xs={5} style={{textAlign:'end', marginLeft: '-10px'}}>
+										<div className='tooltip-custom'>
+											<span className="tooltiptext">Ikuti sekarang!</span>
+											<div className='interactive'>
+												<Button id="btn-expand" onClick={() => this.setState({interactive_modal: true})} color="link">
+													<Row className='justify-content-center'>
+														<img 
+															src='/static/player_icons/quiz_icon.svg	'
+															width={40}
+															height={40}
+															alt="desc"
+															className='ml-n3 mt-n3'
+															/>
+															<p className='ml-2 mt-n1'>Interactive</p>
+															<FiberManualRecordIcon className="indicator-dot-red mt-n1" />
+													</Row>
+												</Button>
+											</div>
 										</div>
-									</div>
-								</Col>
+									</Col>
+								)}
 							</Row>
 						{/* <div className="box-chat" style={{ height: 300 }}> */}
 						<div className="box-chat">
