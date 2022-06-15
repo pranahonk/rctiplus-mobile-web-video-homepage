@@ -21,6 +21,8 @@ import StickyAds from '../components/Includes/Banner/StickyAds';
 import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
+import jsonAudio from '../components/lineups/audio_lineup/list.json';
+import jsonAudioList from '../components/lineups/audio_lineup/audioResponse.json';
 
 import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
 import { setCookie, getCookie, setVisitorToken } from '../utils/cookie';
@@ -47,6 +49,7 @@ const HorizontalMutipleLandscape = dynamic(() => import("../components/lineups/n
 const LandscapeHotVideo = dynamic(() => import("../components/lineups/hot/LandscapeHotVideo"));
 const ComingSoonModal = dynamic(() => import("../components/Modals/ComingSoonModal"));
 const AudioHorizontalDisc = dynamic(() => import("../components/lineups/audio_lineup/Disc"));
+// const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"));
 const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"));
 
 class Index_v2 extends React.Component {
@@ -144,6 +147,7 @@ class Index_v2 extends React.Component {
 
   renderLineup(lineups, meta) {
     return lineups.map((lineup, index) => {
+      console.log(lineup)
       switch(lineup.display_type) {
         case "portrait_short" :
           return (
@@ -246,6 +250,18 @@ class Index_v2 extends React.Component {
           return(
             <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
           )
+        case "square_list_audio":
+          return(
+            <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+          );
+        case "portrait_disc":
+          return(
+            <VideoSquareMiniView
+              key={lineup.id}
+              loadingBar={this.LoadingBar}
+              lineup={lineup}
+              imagePath="https://static.roov.id/upload/200/" />
+          );
       }
     })
   }
