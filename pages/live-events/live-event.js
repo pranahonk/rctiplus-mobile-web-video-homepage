@@ -1252,7 +1252,6 @@ class LiveEvent extends React.Component {
 									darkMode
 									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
 							</div>
-						</div>
 					</div>)}
 				</div>
 			</Layout>

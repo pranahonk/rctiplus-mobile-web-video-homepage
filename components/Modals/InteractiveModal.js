@@ -18,7 +18,7 @@ const InteractiveModal = (props) => {
             />
             <p style={{fontSize: '16px', fontWeight: 'bold'}}>Nikmati keseruannya di aplikasi RCTI+</p>
             <p style={{fontSize: '11px'}}>Fitur Interactive hanya terdapat di aplikasi Android dan aplikasi iOS</p>         
-            <Button block color='primary' className='mt-3' onClick={() => {
+            <Button block className='mt-3 btn-primary-interactive' onClick={() => {
               homeGeneralClicked('mweb_homepage_install_button_clicked');
               window.open('https://onelink.to/apprctiplus', '_blank');
             }}>Install Aplikasi RCTI+</Button> 
