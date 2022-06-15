@@ -23,7 +23,6 @@ import ActionSheet from '../components/Modals/ActionSheet';
 import Wrench from '../components/Includes/Common/Wrench';
 import MuteChat from '../components/Includes/Common/MuteChat';
 import Toast from '../components/Includes/Common/Toast';
-import JsonLDVideo from '../components/Seo/JsonLDVideo';
 
 import { formatDate, formatDateWord, formatDateTimeID, getFormattedDateBefore, formatMonthEngToID } from '../utils/dateHelpers';
 import { showAlert, showSignInAlert } from '../utils/helpers';
@@ -970,7 +969,6 @@ class Tv extends React.Component {
 		return (
 			<Layout className="live-tv-layout" title={this._metaTags().title}>
 				<Head>
-					<JsonLDVideo content={contentData} />
 					<meta name="description" content={this._metaTags().description} />
 					<meta name="keywords" content={this._metaTags().keywords} />
 					<meta property="og:title" content={this._metaTags().title} />
