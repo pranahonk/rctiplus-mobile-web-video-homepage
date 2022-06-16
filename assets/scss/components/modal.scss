@@ -1,5 +1,5 @@
 .modal-dialog {
-    margin: 0rem;
+    margin: auto;
 
     .modal-body-edited {
         padding: 0rem !important;
@@ -217,4 +217,9 @@
             }
         }
     }
+}
+.btn-primary-interactive {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
 }

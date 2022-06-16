@@ -17,6 +17,9 @@ function squareMiniView (props) {
   const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
   const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
+  console.log(contents.length)
+  console.log(props.lineup.title)
+
   useEffect(() => {
     setInitialContents()
   }, [])
@@ -32,6 +35,15 @@ function squareMiniView (props) {
     )
   }
 
+  const getImageLink = (content) => {
+    switch (props.lineup.display_type) {
+      case "square_list_audio":
+        return `${props.imagePath}${content.image_banner}`;
+      default:
+        return `${rootImageUrl}${content.square_image}`;
+    }
+  }
+
   if (contents.length === 0) return null
 
   return (
@@ -45,7 +57,7 @@ function squareMiniView (props) {
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
           <div
-            ref={scrollRef} 
+            ref={scrollRef}
             className="lineup-containers">
             {contents.map((content, i) => {
               return (
@@ -58,14 +70,14 @@ function squareMiniView (props) {
                   <PremiumIcon premium={content.premium} />
 
                   <div>
-                    <Img 
+                    <Img
                       className="lineup-image"
-                      alt={props.lineup.title} 
-                      unloader={<img src={placeHolderImgUrl} width={100} height={100} />}
-                      loader={<img src={placeHolderImgUrl} width={100} height={100} />}
+                      alt={props.lineup.title}
+                      unloader={<img src={content ? getImageLink(content) : placeHolderImgUrl} width={100} height={100} />}
+                      loader={<img src={content ? getImageLink(content) : placeHolderImgUrl} width={100} height={100} />}
                       width={100}
                       height={100}
-                      src={content.square_image ? `${rootImageUrl}${content.square_image}` : placeHolderImgUrl} />
+                      src={content ? getImageLink(content) : placeHolderImgUrl} />
                   </div>
                   { renderContinueWatchProgress(content) }
                 </div>

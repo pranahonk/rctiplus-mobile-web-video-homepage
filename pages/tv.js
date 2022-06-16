@@ -53,6 +53,8 @@ import queryString from 'query-string';
 import { getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../utils/cookie';
 
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
+const InteractiveModal = dynamic(() => import('../components/Modals/InteractiveModal'));
+
 const innerHeight = require('ios-inner-height');
 
 const axios = ax.create({
@@ -181,7 +183,7 @@ class Tv extends React.Component {
 			dates_before: getFormattedDateBefore(7),
 			selected_date: formatDateWord(now),
 			selected_dateID: formatDateTimeID(now),
-			selected_dateID2: formatDateTimeID(this.props.date_seo.data.end_date),
+			selected_dateID2: formatDateTimeID(this.props.date_seo?.data?.end_date),
 			select_modal: false,
 			player_url: '',
 			player_vmap: '',
@@ -219,6 +221,8 @@ class Tv extends React.Component {
         reloadDuration: 0
       },
       catchUpIndexing: {},
+			is_interactive: false,
+			interactive_modal: false,
 		};
 
 		this.player = null;
@@ -243,8 +247,14 @@ class Tv extends React.Component {
 		// }
 	}
 
-	componentDidUpdate() {
-
+	componentDidUpdate(prevProps, prevState) {
+		if(prevState.selected_index !== this.state.selected_index){
+			setTimeout(() => {
+				var span = document.getElementsByClassName("tooltiptext")[0]
+				if(!span) return
+				span.parentNode.removeChild(span);  
+			}, 4000);
+		}
 	}
 
 	componentDidMount() {
@@ -279,6 +289,11 @@ class Tv extends React.Component {
 				})
 			})
 			.finally(_ => this.props.unsetPageLoader())
+			setTimeout(() => {
+				var span = document.getElementsByClassName("tooltiptext")[0]
+				if(!span) return
+				span.parentNode.removeChild(span);  
+			}, 4000);
 	}
 
 	setHeightChatBox() {
@@ -383,13 +398,13 @@ class Tv extends React.Component {
 		this.props.setPageLoader()
 
 		const channelData = this.state.live_events[index]
-		const liveEventId = channelData.id || channelData.content_id
+		const liveEventId = channelData?.id || channelData?.content_id
 		const selectedDate = this.props.params_date
 			? formatDateWord(new Date(this.props.params_date))
 			: formatDateWord(new Date())
 
 		this.props.setCatchupDate(selectedDate)
-		this.props.setChannelCode(channelData.channel_code);
+		this.props.setChannelCode(channelData?.channel_code);
 
 		setTimeout(() => {
 			if (this.state.chat_open) {
@@ -406,11 +421,11 @@ class Tv extends React.Component {
 			this.props.getLiveEventUrl(liveEventId),
 			this.props.getEPG( // Service to get LIVE TV
 				formatDate(this.currentDate),
-				channelData.channel_code
+				channelData?.channel_code
 			),
 			this.props.getEPG( // Service to get CATCH UP TV
 				formatDate(new Date(selectedDate)),
-				channelData.channel_code
+				channelData?.channel_code
 			)
 		])
 			.then(res => {
@@ -428,7 +443,7 @@ class Tv extends React.Component {
 
 				if (first != true) {
 					let programLive = this.getCurrentLiveEpg();
-					liveTvChannelClicked(liveEventId, channelData.name, programLive ? programLive.title : 'N/A', 'mweb_livetv_channel_clicked');
+					liveTvChannelClicked(liveEventId, channelData?.name, programLive ? programLive.title : 'N/A', 'mweb_livetv_channel_clicked');
 				}
 
 				if (first === true && this.props.context_data.epg_id) {
@@ -449,7 +464,8 @@ class Tv extends React.Component {
 					selected_index: index,
 					channel_code: channelData.content_title_code,
 					epg,
-					catchup
+					catchup,
+					is_interactive: epg.some((item) => item.is_interactive !== "false"),
 				})
 			})
 			.catch(error => {
@@ -505,6 +521,10 @@ class Tv extends React.Component {
 
 	toggleSelectModal() {
 		this.setState({ select_modal: !this.state.select_modal });
+	}
+
+	toggleInteractiveModal() {
+		this.setState({ interactive_modal: !this.state.interactive_modal });
 	}
 
 	toggleActionSheet(caption = '', url = '', hashtags = [], tabStatus = '') {
@@ -883,7 +903,7 @@ class Tv extends React.Component {
 		const { props, state } = this
 		const contentData = {
 			asPath: props.router.asPath,
-			title: props.data_seo.data.title,
+			title: props.data_seo?.data?.title,
 			description: this._dscriptionLD(props.context_data?.channel).description,
 			thumbnailUrl: this._metaTags().pathimage,
 			sameAs: this._dscriptionLD(props.context_data?.channel).same,
@@ -1018,6 +1038,11 @@ class Tv extends React.Component {
 					data={this.state.dates_before}
 					toggle={this.toggleSelectModal.bind(this)} />
 
+				<InteractiveModal
+					open={this.state.interactive_modal}
+					toggle={this.toggleInteractiveModal.bind(this)}
+				/>
+
 				<ActionSheet
 					tabStatus= {this.state.tabStatus}
 					caption={this.state.caption}
@@ -1093,6 +1118,16 @@ class Tv extends React.Component {
 												<div className="title"><h3 className="heading-rplus"> {e.title} <FiberManualRecordIcon /> </h3></div>
 												<div className="subtitle">{e.s} - {e.e}</div>
 											</Col>
+											{e?.is_interactive !== 'false' && (
+												<Col className="right-side mx-n3 mr-n5">
+													<img 
+														src='/static/player_icons/quiz_icon.svg	'
+														width={30}
+														height={30}
+														alt="interactive"
+														/>
+												</Col>
+											)}
 											<Col className="right-side">
 												<ShareIcon onClick={this.toggleActionSheet.bind(this, 'Live TV - ' + this.props.chats.channel_code.toUpperCase() + ': ' + e.title, BASE_URL + this.props.router.asPath, ['rctiplus', this.props.chats.channel_code],'livetv')} className="share-btn" />
 											</Col>
@@ -1104,6 +1139,16 @@ class Tv extends React.Component {
 											<div className="title"><h3 className="heading-rplus"> {e.title} </h3></div>
 											<div className="subtitle">{e.s} - {e.e}</div>
 										</Col>
+										{e?.is_interactive !== 'false' && (
+											<Col className="right-side">
+												<img 
+													src='/static/player_icons/quiz_icon.svg	'
+													width={30}
+													height={30}
+													alt="interactive"
+													/>
+											</Col>
+										)}
 									</Row>);
 								})}
 							</TabPane>
@@ -1143,12 +1188,39 @@ class Tv extends React.Component {
 					<div ref={ this.chatBoxRef } className={'live-chat-wrap ' + (this.state.chat_open ? 'live-chat-wrap-open' : '')} style={this.state.chat_open ?
 						{ height: this.setHeightChatBox() }
 						: null}>
-						<div className="btn-chat">
-							<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
-								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
-							</Button>
-							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
-						</div>
+							<Row>
+								<Col xs={7}>
+									<div className="btn-chat">
+										<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
+											<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
+										</Button>
+									
+										{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
+									</div>
+								</Col>
+								{this.state.is_interactive && (
+								<Col xs={5} style={{textAlign:'end', marginLeft: '-10px'}}>
+									<div className='tooltip-custom'>
+										<span className="tooltiptext">Ikuti sekarang!</span>
+										<div className='interactive'>
+											<Button id="btn-expand" onClick={() => this.setState({ interactive_modal: true })} color="link">
+												<Row className='justify-content-center'>
+													<img 
+														src='/static/player_icons/quiz_icon.svg	'
+														width={40}
+														height={40}
+														alt="desc"
+														className='ml-n3 mt-n3'
+														/>
+														<p className='ml-2 mt-n1'>Interactive</p>
+														<FiberManualRecordIcon className="indicator-dot-red mt-n1" />
+												</Row>
+											</Button>
+										</div>
+										</div>
+									</Col>
+								)}
+							</Row>
 						{/* <div className="box-chat" style={{ height: 300 }}> */}
 						<div className="box-chat">
 							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>

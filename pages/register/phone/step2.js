@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
+import actions from '../../../redux/actions';
 import registerActions from '../../../redux/actions/registerActions';
 import notificationActions from '../../../redux/actions/notificationActions';
 import { showConfirmAlert } from '../../../utils/helpers';
@@ -67,6 +68,12 @@ class Step2 extends Component {
 		});
 	}
 
+	storeToken = async () => {
+		await this.props.storeAccessToken(this.props.registration?.data?.access_token)
+
+		Router.push('/register/phone/step3', "/register/phone/step3", { shallow: true });
+	}
+
 	submitOtp() {
 		this.setState({ is_submitting: true }, () => {
 			let username = this.state.username;
@@ -92,7 +99,7 @@ class Step2 extends Component {
 								otp: this.state.otp,
 								device_id: '1'
 							})
-							Router.push('/register/phone/step3', "/register/phone/step3", { shallow: true });
+							this.storeToken()
 						}
 						catch (e) {
 							if (e.status == 200) {
@@ -247,6 +254,7 @@ class Step2 extends Component {
 }
 
 export default connect(state => state, {
+	...actions,
 	...registerActions,
 	...notificationActions
 })(Step2);
