@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import '../../../assets/scss/components/audio-disc.scss';
 import dynamic from 'next/dynamic';
+import { getTruncate } from '../../../utils/helpers';
 
 const ActionSheet = dynamic(() => import('../../Modals/ActionSheet'), { ssr: false });
 
@@ -50,10 +51,10 @@ function AudioDisc ({title, indexTag, id, data}) {
                         <div className="disc-hole"></div>
                       </div>
                       <div className="listener-wrapper">
-                        <img src="audio-icons/listener-icon.svg"/>
-                        <span className="total-listener">{content?.content_type_detail?.detail?.data?.total_plays}</span>
+                        {/*<img src="audio-icons/listener-icon.svg"/>*/}
+                        {/*<span className="total-listener">{content?.content_type_detail?.detail?.data?.total_plays}</span>*/}
                       </div>
-                      <span className="playlist-name">Jazz</span>
+                      <span className="playlist-name">{getTruncate(content?.content_type_detail?.detail?.data?.name, '...', 10)}</span>
                     </div>
                   )
                 })}
