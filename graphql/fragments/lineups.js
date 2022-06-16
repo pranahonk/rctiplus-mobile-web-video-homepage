@@ -104,6 +104,11 @@ export const lineupDefaultFragment = (queryParams) => {
         total_page
       }
       image_path
+     }
+      status{
+        code
+        message_client
+        message_server
       }
     }
   }
