@@ -53,9 +53,7 @@ const Trailer = dynamic(() => import('../components/Includes/program-detail/prog
 
 class Index extends React.Component {
   static async getInitialProps(ctx) {
-    // console.log('on server')
     const programId = ctx.query.id;
-    console.log('ini program id', programId);
     const accessToken = getCookie('ACCESS_TOKEN');
     const res = await fetch(`${DEV_API}/api/v1/program/${programId}/detail`, {
         method: 'GET',
@@ -127,7 +125,10 @@ class Index extends React.Component {
     this.premium = 0;
   }
   componentDidMount() {
-    this.premium = this.props?.server?.[this.type]?.data?.premium;
+    if (!this.props.seo_content_detail) {
+      Router.replace('/');
+    }
+    this.premium = this.props?.server?.[this.type]?.data?.premium
     this.reference = queryString.parse(location.search).ref;
     this.props.dispatch(userActions.getUserData());
     this.props.dispatch(dataShareSeo(this.props.server && this.props.server[this.type] , 'tracking-program'));
