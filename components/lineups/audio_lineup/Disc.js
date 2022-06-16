@@ -6,22 +6,19 @@ import dynamic from 'next/dynamic';
 const ActionSheet = dynamic(() => import('../../Modals/ActionSheet'), { ssr: false });
 
 function AudioDisc ({title, indexTag, id, data}) {
+  console.log(data?.lineup_type_detail?.detail)
     // const { generateLink, onTouchStart, onTouchEnd } = useVideoLineups(props)
 
-    const [show, setShow] = useState(null);
+    const [show, setShow] = useState(true);
     const [meta, setMeta] = useState([]);
     const [disc, setDisc] = useState([]);
     const [loadingMore, setLoadingMore] = useState(false);
     const [assetUrl, setAssetUrl] = useState(null);
 
     const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
-    // const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
-    //console.log(data?.lineup_type_detail?.detail)
 
     useEffect(() => {
       setMeta(data?.lineup_type_detail?.detail?.meta);
-      // setAssetUrl("https://static.roov.id/upload/200/");
-
       setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
       setDisc(data?.lineup_type_detail?.detail?.data);
     }, [])
@@ -33,10 +30,14 @@ function AudioDisc ({title, indexTag, id, data}) {
 
 
     return (
+      disc === undefined || disc.length < 1 || !show ?   (<div />) :
         <div className="pnl-audio-disc">
             <h2 className="content-title">{title}</h2>
             <div className="swipe-wrapper">
                 {disc.map((content, index) => {
+                  if(content?.content_type_detail?.detail?.status?.code !== 0){
+                    setShow(false)
+                  }
                   return (
                     <div className="background-vertical" key={index}  onClick={()=> _goToDetail(content?.content_type_detail?.detail?.data)}>
                       <div className="background-disc">
