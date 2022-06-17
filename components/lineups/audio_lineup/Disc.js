@@ -7,7 +7,6 @@ import { getTruncate } from '../../../utils/helpers';
 const ActionSheet = dynamic(() => import('../../Modals/ActionSheet'), { ssr: false });
 
 function AudioDisc ({title, indexTag, id, data}) {
-  console.log(data?.lineup_type_detail?.detail)
     // const { generateLink, onTouchStart, onTouchEnd } = useVideoLineups(props)
 
     const [show, setShow] = useState(true);
