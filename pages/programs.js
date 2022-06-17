@@ -62,7 +62,7 @@ class Index extends React.Component {
         },
     });
     const error_code = res.statusCode > 200 ? res.statusCode : false;
-    
+
     if (error_code) {
         return { server: false, seo_content: false, seo_content_detail: false };
     }
@@ -86,9 +86,9 @@ class Index extends React.Component {
   //     return { server: false, seo_content: false, seo_content_detail: false };
   // }
 
-    return { 
+    return {
       server: {['program-detail']: data},
-      seo_content: data, 
+      seo_content: data,
       seo_content_detail: data_2,
     };
   }
@@ -242,17 +242,17 @@ class Index extends React.Component {
   onRouterChanged() {
     const { query } = this.props.router
     let programTypeDetail = this.props.data[`program-${query.content_type}`]
-    
+
     if (!programTypeDetail) return
 
     const { seasonSelected } = this.props.data
-    
+
     if (!programTypeDetail[`season-${seasonSelected}`]) return
     if (query.content_type === "episode") programTypeDetail = programTypeDetail[`season-${seasonSelected}`]
 
     const { data, meta } = programTypeDetail
     const { activeContentId } = this.state
-    
+
     if (!data || !meta || !query.content_id) return
 
     // When currently playing video is not on the list of queue, target to the first content instead
@@ -262,7 +262,7 @@ class Index extends React.Component {
       const { href, hrefAlias } = this.routingQueryGenerator({ ...data[0], content_type: query.content_type })
       this.props.router.push(`/programs?${href}`, `/programs/${hrefAlias}`)
     }
-    
+
     // Set max video queue length once it has the value from request call
     if (this.state.videoIndexing.maxQueue !== meta.pagination.total) {
       if (this.state.videoIndexing.maxQueue === data.length) return
@@ -271,7 +271,7 @@ class Index extends React.Component {
         videoIndexing: { ...this.state.videoIndexing, maxQueue: meta.pagination.total }
       })
     }
-    
+
     // Fetch video url everytime it has been pushed to new url
     if (+query.content_id !== activeContentId) {
       this.setState({ activeContentId: +query.content_id })
@@ -307,7 +307,7 @@ class Index extends React.Component {
           {(this.props?.data?.paid_video?.data?.is_paid && this.props?.server['program-detail'].data?.premium === 1) || this.props?.server['program-detail'].data?.premium === 0 ? (<Link
               href={`/programs/${mainData.id}/${urlRegex(mainData.title)}/episode/${detailData.id}/${urlRegex(detailData.title)}${this.reference ? '?ref=' + this.reference : ''}`}
               shallow>
-              <a onClick={ () => { 
+              <a onClick={ () => {
                 this.props.dispatch(fetchPlayerUrl(detailData.id,'data-player','episode'))
                   const dataPlayer = {
                     program_id: this.props && this.props.server && this.props.server['program-detail'] && this.props.server['program-detail'].data && this.props.server['program-detail'].data.id,
@@ -401,6 +401,8 @@ class Index extends React.Component {
         this.props.dispatch(fetchEpisode(programId, 'program-episode', this.props.router.query.content_id));
         this.props.dispatch(fetchSeasonEpisode(programId,'program-episode'));
         this.props.dispatch(seasonSelected(1));
+      }else if(this.props.server[this.type].data.category === 'series'){
+        this.props.dispatch(fetchEpisode(programId, 'program-episode', this.props.router.query.content_id));
       }
       if (this.isTabs(this.props.server[this.type].data).length > 0) {
         switch (this.isTabs(this.props.server[this.type].data)[0]) {
@@ -562,14 +564,14 @@ class Index extends React.Component {
         </TabPane>
       );
     }
-    
+
     const { query } = this.props.router
     const programDetail = this.props.server['program-detail']
-    
+
     if (!programEpisode) return null
     if (((programEpisode.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
 
-    
+
     const pagination = {
       ...programEpisode.meta.pagination,
       nextPage: programEpisode.meta.pagination.current_page + 1,
@@ -665,8 +667,8 @@ class Index extends React.Component {
     const { query } = this.props.router
     const programDetail = this.props.server['program-detail']
 
-    if (((programClip.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
-    
+    if (programClip == null || ((programClip.data.length === 0) && programDetail.data.id !== +query.id) && !bookmark) return null
+
     const pagination = {
       ...programClip.meta.pagination,
       nextPage: programClip.meta.pagination.current_page + 1,
@@ -713,7 +715,7 @@ class Index extends React.Component {
     const programDetail = this.props.server['program-detail']
 
     if ((programPhoto.data.length === 0) && programDetail.data.id !== +query.id) return null
-    
+
     const pagination = {
       ...programPhoto.meta.pagination,
       nextPage: programPhoto.meta.pagination.current_page + 1,
@@ -796,7 +798,7 @@ class Index extends React.Component {
 
     return {
       href: targetHref.join("&"), // actual target url
-      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser 
+      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser
     }
   }
 
@@ -813,7 +815,7 @@ class Index extends React.Component {
     const direction = action === "forward" ? "next" : "prev"
     const targetVideoContent = { ...data[videoIndexing[direction]], content_type }
     const { href, hrefAlias } = this.routingQueryGenerator(targetVideoContent)
-    
+
     // When current video is the last content on the pagination list, request the next page if any
     if ((data.length - 1) === videoIndexing.next) {
       this.handleShowMore({
@@ -865,18 +867,18 @@ class Index extends React.Component {
     }
 
     const dataPlayer = this.props.data['data-player'];
-    
+
     return (
       <div className="program-detail-player-wrapper">
         <JwPlayer
-          data={dataPlayer && dataPlayer.data } 
-          isFullscreen={ dataPlayer && dataPlayer.isFullscreen } 
-          ref={this.ref} 
-          onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
-          isResume={true} 
+          data={dataPlayer && dataPlayer.data }
+          isFullscreen={ dataPlayer && dataPlayer.isFullscreen }
+          ref={this.ref}
+          onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }}
+          isResume={true}
           geoblockStatus={ dataPlayer && dataPlayer.status && dataPlayer.status.code === 12 ? true : false }
           customData= {{
-            isLogin: this.props.auth.isAuth, 
+            isLogin: this.props.auth.isAuth,
             programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
             sectionPage: 'VOD',
           }}
@@ -891,13 +893,13 @@ class Index extends React.Component {
       const data = this.props.server && this.props.server[this.type];
       return (
         <div className="program-detail-player-wrapper trailer">
-            <JwPlayer 
-              data={ data.data } 
+            <JwPlayer
+              data={ data.data }
               ref={this.ref} isFullscreen={ true }
-              isResume={true} 
+              isResume={true}
               geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
               customData= {{
-                isLogin: this.props.auth.isAuth, 
+                isLogin: this.props.auth.isAuth,
                 programType: data.program_type_name,
                 sectionPage: 'VOD',
                 }}
@@ -966,7 +968,7 @@ class Index extends React.Component {
             overflowY: 'scroll'
           } : {height: 'auto'} }>
 
-            {props.seo_content_detail && 
+            {props.seo_content_detail &&
               <div className="title-player">{content?.episode ? <span>{`E${(content?.episode < 10 ? '0'+content?.episode : ''+content?.episode).slice(0)}:S${(content?.season < 10 ? '0'+content?.season : ''+content?.season).slice(0)} - ${content?.title}`}</span> : <span>{content?.title}</span> }</div>
             }
 
@@ -982,19 +984,19 @@ class Index extends React.Component {
                 onBookmarkDelete={(id, type) => { this.props.dispatch(deleteBookmark(id,type, 'bookmark')); }}
                 dataTracking={{ref: this.reference, idContent: this.props.router.query.id, title: this.props.server['program-detail']}}
                 />
-              <ButtonPrimary 
-                className="button-20" 
-                icon={ <ShareIcon/> } 
-                text="Share" 
+              <ButtonPrimary
+                className="button-20"
+                icon={ <ShareIcon/> }
+                text="Share"
                 onclick={this.toggleActionSheet.bind(this, 'program', 'program_share', props.data.programDetail.data)}/>
               { this.props.router.query.content_id ? (
                   <>
-                    <ButtonPrimary 
-                      className="button-20" 
-                      icon={ <GetApp/> } 
-                      text="Download" 
+                    <ButtonPrimary
+                      className="button-20"
+                      icon={ <GetApp/> }
+                      text="Download"
                       onclick={() => alertDownload()} />
-                    <ButtonPrimary 
+                    <ButtonPrimary
                       className="button-20"
                       onclick={()=> this.setState({transform: this.state.transform === 'rotate(0deg)' ? 'rotate(180deg)' : 'rotate(0deg)', isOpen: this.state.transform === 'rotate(0deg)' ? true : false}, () => {
                         if(this.state.isOpen) {
@@ -1006,7 +1008,7 @@ class Index extends React.Component {
                   </>
                 ) : ''
               }
-              {!(props.router.query.content_id) && (props?.data?.paid_video?.data?.is_paid) ? 
+              {!(props.router.query.content_id) && (props?.data?.paid_video?.data?.is_paid) ?
               (
                 <span style={{ width: '100% !important', textAlign: 'right', display: 'inline-block' }}>
                   <div style={{fontSize: 10}}>Expired in <strong>{ props?.data?.paid_video?.data?.order_detail?.expired_in }</strong></div>
@@ -1055,7 +1057,7 @@ class Index extends React.Component {
               </div>
 
               {this.renderVisionPlusComponent()}
-              
+
               {this.panelRelated(
                 this.props.data &&
                 this.props.data['program-related']
