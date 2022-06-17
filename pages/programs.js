@@ -125,7 +125,7 @@ class Index extends React.Component {
     this.premium = 0;
   }
   componentDidMount() {
-    if (!this.props.seo_content_detail) {
+    if (!this.props.seo_content) {
       Router.replace('/');
     }
     this.premium = this.props?.server?.[this.type]?.data?.premium
