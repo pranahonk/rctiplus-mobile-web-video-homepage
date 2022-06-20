@@ -17,9 +17,6 @@ function squareMiniView (props) {
   const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
   const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
-  console.log(contents.length)
-  console.log(props.lineup.title)
-
   useEffect(() => {
     setInitialContents()
   }, [])
@@ -39,6 +36,11 @@ function squareMiniView (props) {
     switch (props.lineup.display_type) {
       case "square_list_audio":
         return `${props.imagePath}${content.image_banner}`;
+      case "square_mini":
+        if(content?.content_type === "live_music"){
+          return `${content?.content_type_detail?.detail?.meta?.assets_url}/200/${content.image_banner}`;
+        }
+
       default:
         return `${rootImageUrl}${content.square_image}`;
     }
