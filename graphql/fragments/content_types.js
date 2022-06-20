@@ -17,6 +17,13 @@ export const contentTypeProgramFragment = `
       message_client
       message_server
     }
+    meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+    }
   }
 }`
 
@@ -38,6 +45,13 @@ export const contentTypeEpisodeFragment = `
       code
       message_client
       message_server
+    }
+    meta {
+       image_path
+       pagination {
+         current_page
+         total_page
+       }
     }
   }
 }
@@ -62,6 +76,13 @@ export const contentTypeExtraFragment = `
       message_client
       message_server
     }
+      meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+      }
   }
 }
 `
@@ -85,6 +106,13 @@ export const contentTypeClipFragment = `
       message_client
       message_server
     }
+      meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+      }
   }
 }
 `
@@ -176,6 +204,13 @@ export const contentTypeSpecialFragment = `
       message_client
       message_server
     }
+      meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+      }
   }
 }
 `
@@ -198,6 +233,13 @@ export const contentTypeSeasonFragment = `
       message_client
       message_server
     }
+      meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+      }
   }
 }
 `
