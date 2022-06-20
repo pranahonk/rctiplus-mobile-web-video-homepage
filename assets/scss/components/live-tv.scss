@@ -100,6 +100,50 @@ $default-player-space: 180px;
     }
 }
 
+.interactive  {
+    background-image: linear-gradient(135deg, #483593, #305A8B);
+    height: 30px;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding-bottom: -15px;
+    margin-right: 5px;
+    text-align: center;
+}
+
+.tooltip-custom {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-custom .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #0079FF;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 8px;
+    font-size: 12px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -60px;
+    visibility: visible;
+}
+
+.tooltip-custom .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #0079FF transparent transparent transparent;
+    visibility: visible;
+}
+
 .live-chat-wrap {
     position: fixed;
     bottom: 60px;
@@ -204,6 +248,7 @@ $default-player-space: 180px;
         font-size: 14px;
     }
 
+
     .btn-link:hover {
         text-decoration: none;
     }
@@ -211,6 +256,12 @@ $default-player-space: 180px;
     .indicator-dot {
         font-size: 0.7rem;
         color: #7ed321;
+        margin-left: 5px;
+    }
+
+    .indicator-dot-red {
+        font-size: 0.7rem;
+        color: #FA262F;
         margin-left: 5px;
     }
 
