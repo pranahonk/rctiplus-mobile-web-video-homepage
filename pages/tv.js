@@ -53,6 +53,8 @@ import queryString from 'query-string';
 import { getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../utils/cookie';
 
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
+const InteractiveModal = dynamic(() => import('../components/Modals/InteractiveModal'));
+
 const innerHeight = require('ios-inner-height');
 
 const axios = ax.create({
@@ -219,7 +221,8 @@ class Tv extends React.Component {
         reloadDuration: 0
       },
       catchUpIndexing: {},
-			is_interactive: false
+			is_interactive: false,
+			interactive_modal: false,
 		};
 
 		this.player = null;
@@ -518,6 +521,10 @@ class Tv extends React.Component {
 
 	toggleSelectModal() {
 		this.setState({ select_modal: !this.state.select_modal });
+	}
+
+	toggleInteractiveModal() {
+		this.setState({ interactive_modal: !this.state.interactive_modal });
 	}
 
 	toggleActionSheet(caption = '', url = '', hashtags = [], tabStatus = '') {
@@ -1031,6 +1038,11 @@ class Tv extends React.Component {
 					data={this.state.dates_before}
 					toggle={this.toggleSelectModal.bind(this)} />
 
+				<InteractiveModal
+					open={this.state.interactive_modal}
+					toggle={this.toggleInteractiveModal.bind(this)}
+				/>
+
 				<ActionSheet
 					tabStatus= {this.state.tabStatus}
 					caption={this.state.caption}
@@ -1191,7 +1203,7 @@ class Tv extends React.Component {
 										<div className='tooltip-custom'>
 											<span className="tooltiptext">Ikuti sekarang!</span>
 											<div className='interactive'>
-												<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
+												<Button id="btn-expand" onClick={() => this.setState({ interactive_modal: true })} color="link">
 													<Row className='justify-content-center'>
 														<img 
 															src='/static/player_icons/quiz_icon.svg	'
