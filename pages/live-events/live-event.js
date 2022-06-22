@@ -79,6 +79,7 @@ import cookies from 'next-cookies'
 // import 'videojs-seek-buttons';
 // import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
 const JwPlayer = dynamic(() => import('../../components/Includes/Player/JwPlayer'));
+const InteractiveModal = dynamic(() => import('../../components/Modals/InteractiveModal'));
 const innerHeight = require('ios-inner-height');
 
 const axios = ax.create({
@@ -197,7 +198,8 @@ class LiveEvent extends React.Component {
         refreshDuration: 0,
         reloadDuration: 0
       },
-			videoIndexing: {}
+			videoIndexing: {},
+			interactive_modal : false
 		};
 
 		const segments = this.props.router.asPath.split(/\?/);
@@ -268,6 +270,16 @@ class LiveEvent extends React.Component {
 			if(!span) return
 			span.parentNode.removeChild(span);  
 		}, 2000);
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if(prevState.selected_tab !== this.state.selected_tab) {
+			setTimeout(() => {
+				var span = document.getElementsByClassName("tooltiptext")[0]
+				if(!span) return
+				span.parentNode.removeChild(span);  
+			}, 4000);
+		}
 	}
 	getLiveEvent() {
 		this.props.setPageLoader();
@@ -601,6 +613,10 @@ class LiveEvent extends React.Component {
 			url: url,
 			hashtags: hashtags
 		});
+	}
+
+	toggleInteractiveModal() {
+		this.setState({ interactive_modal: !this.state.interactive_modal });
 	}
 
 	resendChat(index) {
@@ -1028,6 +1044,10 @@ class LiveEvent extends React.Component {
 								}, 500);
 							});
 					}} /> */}
+				<InteractiveModal
+					open={this.state.interactive_modal}
+					toggle={this.toggleInteractiveModal.bind(this)}
+				/>
 				<ActionSheet
 					tabStatus= {this.state.tabStatus}
 					caption={this.state.caption}
@@ -1102,6 +1122,7 @@ class LiveEvent extends React.Component {
 											<Col xs={6} key={i} onClick={() => Router.push(`/live-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`, undefined, { shallow: true })}>
 												<Thumbnail
 												label="Live"
+												isInteractive={le.is_interactive}
 												timer={getCountdown(le.release_date_quiz, le.current_date)[0]}
 												timerCurrent={ le.current_date }
 												statusPlay={getCountdown(le.release_date_quiz, le.current_date)[1]}
@@ -1122,6 +1143,7 @@ class LiveEvent extends React.Component {
 												label="Live"
 												backgroundColor="#fa262f"
 												statusLabel="0"
+												isInteractive='false'
 												statusTimer="0"
 												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.content_title}/>
 											</Col>
@@ -1152,7 +1174,7 @@ class LiveEvent extends React.Component {
 											<div className='tooltip-custom'>
 												<span className="tooltiptext">Ikuti sekarang!</span>
 												<div className='interactive'>
-														<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
+														<Button id="btn-expand" onClick={() => this.setState({interactive_modal: true})} color="link">
 															<Row className='justify-content-center'>
 																<img 
 																	src='/static/player_icons/quiz_icon.svg	'
