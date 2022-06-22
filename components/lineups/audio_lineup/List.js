@@ -57,7 +57,7 @@ function AudioList ({title, indexTag, id, data}) {
             path={window.location.href}
             url={shareUrl}
             open={actionSheet}
-            hashtags={["test", "anyinggg"]}
+            hashtags={["test", ""]}
             toggle={()=> toggleActionSheet(this, null, '', '', ['rcti'])}
           />
           <div className="swipe-wrapper">
@@ -71,7 +71,7 @@ function AudioList ({title, indexTag, id, data}) {
                           setShow(false)
                       }
                       return(
-                        <div key={index2} id={`multiple-${indexId}`}>
+                        <div key={index2} id={`potrait-disc-${index2}`}>
                           <div className='background-horizontal'>
                             <div className='row mx-0'>
                               <div className='col-4 my-auto'>
