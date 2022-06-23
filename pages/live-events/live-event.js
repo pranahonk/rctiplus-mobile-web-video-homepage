@@ -78,6 +78,7 @@ import cookies from 'next-cookies'
 // import 'videojs-seek-buttons';
 // import 'videojs-seek-buttons/dist/videojs-seek-buttons.css';
 const JwPlayer = dynamic(() => import('../../components/Includes/Player/JwPlayer'));
+const InnoPlayer = dynamic(() => import('../../components/Includes/Player/InnoPlayer'));
 const innerHeight = require('ios-inner-height');
 
 const axios = ax.create({
@@ -1031,7 +1032,21 @@ class LiveEvent extends React.Component {
 					<div ref={ this.playerContainerRef }  className="rplus-player-container">
 					<NavBack navPlayer={true} stylePos="absolute"/>
 
-						<JwPlayer
+							{/* <InnoPlayer
+							data={ selected_event_url && selected_event_url.data }
+							type={ this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' }
+							customData={{
+								program_name: this.props.selected_event && this.props.selected_event.data && this.props.selected_event.data.name,
+								isLogin: this.props.user.isAuth,
+								sectionPage: this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' ,
+								}}
+							geoblockStatus={ this.state.statusError === 2 ? true : false }
+              adsOverlayData={ state.adsOverlayDuration }
+							actionBtn={(e) => this.handleActionBtn(e)}
+							videoIndexing={state.videoIndexing}
+							/> */}
+
+							<JwPlayer
 							data={ selected_event_url && selected_event_url.data }
 							type={ this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' }
 							customData={{

@@ -34,6 +34,7 @@ import VisionPlusProgram from "../components/Includes/program-detail/visionplus_
 
 // const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
+const InnoPlayer = dynamic(() => import('../components/Includes/Player/InnoPlayer'));
 const HeadMeta = dynamic(() => import('../components/Seo/HeadMeta'));
 const MainLoader = dynamic(() => import('../components/Includes/Shimmer/detailProgramLoader').then((mod) => mod.MainLoader));
 const TabListLoader = dynamic(() => import('../components/Includes/Shimmer/detailProgramLoader').then((mod) => mod.TabListLoader));
@@ -867,7 +868,7 @@ class Index extends React.Component {
     
     return (
       <div className="program-detail-player-wrapper">
-        <JwPlayer
+        <InnoPlayer
           data={dataPlayer && dataPlayer.data } 
           isFullscreen={ dataPlayer && dataPlayer.isFullscreen } 
           ref={this.ref} 
@@ -881,7 +882,7 @@ class Index extends React.Component {
           }}
           actionBtn={(e) => this.handleActionBtn(e)}
           videoIndexing={this.state.videoIndexing}
-        />
+          />
       </div>
     )
   }
@@ -890,7 +891,7 @@ class Index extends React.Component {
       const data = this.props.server && this.props.server[this.type];
       return (
         <div className="program-detail-player-wrapper trailer">
-            <JwPlayer 
+              <InnoPlayer 
               data={ data.data } 
               ref={this.ref} isFullscreen={ true }
               isResume={true} 

@@ -6,9 +6,9 @@ import { convivaJwPlayer} from '../../../utils/conviva';
 import Wrench from '../Common/Wrench';
 import '../../../assets/scss/jwplayer.scss';
 
-import useCustomPlayerButton from "../../hooks/Jwplayer/useCustomPlayerButton"
-import useSetupBitrate from "../../hooks/Jwplayer/useSetupBitrate"
-import useConvivaInitiator from "../../hooks/Jwplayer/useConvivaInitiator"
+import useCustomPlayerButton from "../../hooks/Innoplayer/useCustomPlayerButton"
+import useSetupBitrate from "../../hooks/Innoplayer/useSetupBitrate"
+import useConvivaInitiator from "../../hooks/Innoplayer/useConvivaInitiator"
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -40,23 +40,27 @@ const JwPlayer = (props) => {
   const { setInitConviva } = useConvivaInitiator({ ...props, player })
 
   // Supporting Variables
-  const idPlayer = 'jwplayer-rctiplus';
+  const idPlayer = 'innoplayer-rctiplus';
   const options = {
+    id: idPlayer,
+    key: "bc67d9c0037202635cd1bdbe6e8446cce1221d04f2a8f982effff19830771003",
     autostart: true,
-    mute: false,
+    autoplay: true,
+    mute: true,
     floating: false,
     file: props.data && props.data.url,
+    // file: "https://bitmovin-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
     primary: 'html5',
     width: '100%',
     hlsjsdefault: true,
     aspectratio: '16:9',
-    displaytitle: true,
-    stretching: 'uniform',
+    displayTitle: true,
+    stretch: 'stretch',
     height: 180,
+    controls: true,
     advertising: {
       client: process.env.ADVERTISING_CLIENT,
       tag: props.data && props.data.vmap_ima,
-
     },
     skin: {
       name: 'rplus_player',
@@ -68,27 +72,28 @@ const JwPlayer = (props) => {
   
   // player initial setup
   useEffect(() => {
-    const jwplayer = window.jwplayer(idPlayer);
+    const innoPlayer = inno;
+
     if (props.geoblockStatus) {
       setStatus({
         isPlayer: false,
         isError01: true,
       });
     }
-    setPlayer(jwplayer);
+    setPlayer(innoPlayer);
     if (props.data && props.data.url) {
       setCurrentContent(props.data)
-      jwplayer.setup(options);
+      inno.setup(options);
     }
 
     // shall trigger only when content is not changed on player but immediately destroyed
-    jwplayer.on("remove", _ => {
+    inno.on("remove", _ => {
       if (!props.isResume || !props.data.id) return
-      props.onResume(props.data.id, props.data.content_type, jwplayer.getPosition());
+      props.onResume(props.data.id, props.data.content_type, inno.getPosition());
     })
 
     return () => {
-      jwplayer.remove();
+      inno.remove();
     };
   }, []);
 
@@ -118,15 +123,9 @@ const JwPlayer = (props) => {
     if (player !== null) {
       player.on('ready', (event) => {
         setPlayerFullscreen(props.isFullscreen);
-        setIsPlayerReady(true)
+        // setIsPlayerReady(true)
 
-        console.log('props.data.vmap_ima')
-        console.log(props.data.vmap_ima)
-
-        const playerContainer = player.getContainer()
-        console.log('jwplayerrr')
-        console.log(playerContainer)
-        const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
+        const playerContainer = ConvertStringToHTML(player.getContainer())
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
 
         if (props.type.includes("live")) {
@@ -222,11 +221,8 @@ const JwPlayer = (props) => {
       })
 
       player.on('play', () => {
-        setBitrateLevels(player.getQualityLevels())
+        // setBitrateLevels(player.getQualityLevels())
         setInitConviva(true)
-
-        console.log('jwwwwqweqweqwe')
-        console.log(player.getQualityLevels())
 
         convivaJwPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
@@ -570,14 +566,14 @@ const JwPlayer = (props) => {
     }
     return (
       <>
-        <div id="jwplayer-rctiplus" />
+        <div id="innoplayer-rctiplus" />
       </>
     )
   }
   
   const error = (msg = msgError02, icon = (<Wrench />)) => {
     return (
-      <div id="jwplayer-rctiplus" style={{
+      <div id="innoplayer-rctiplus" style={{
         textAlign: 'center',
         padding: 30,
         minHeight: 180,
@@ -653,6 +649,12 @@ JwPlayer.defaultProps = {
   isResume: false,
   geoblockStatus: false,
   statusError: 0,
+};
+
+let ConvertStringToHTML = function (str) {
+  let parser = new DOMParser();
+  let doc = parser.parseFromString(str, 'text/html');
+  return doc.body;
 };
 
 const foward10 = `
