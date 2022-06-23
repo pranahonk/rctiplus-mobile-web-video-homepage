@@ -14,6 +14,15 @@ export const contentTypeProgramFragment = `
     }
     status {
       code
+      message_client
+      message_server
+    }
+    meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
     }
   }
 }`
@@ -34,6 +43,15 @@ export const contentTypeEpisodeFragment = `
     }
     status {
       code
+      message_client
+      message_server
+    }
+    meta {
+       image_path
+       pagination {
+         current_page
+         total_page
+       }
     }
   }
 }
@@ -55,7 +73,16 @@ export const contentTypeExtraFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
+      meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+      }
   }
 }
 `
@@ -76,7 +103,16 @@ export const contentTypeClipFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
+      meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+      }
   }
 }
 `
@@ -96,6 +132,8 @@ export const contentTypeCatchupFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -116,6 +154,8 @@ export const contentTypeLiveEventFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -136,6 +176,8 @@ export const contentTypeLiveEPGFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -159,7 +201,16 @@ export const contentTypeSpecialFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
+      meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+      }
   }
 }
 `
@@ -179,7 +230,16 @@ export const contentTypeSeasonFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
+      meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+      }
   }
 }
 `
@@ -248,5 +308,129 @@ export const contentTypeHotVideo = `
           message_server
       }
     }
+  }
+`
+
+
+export const contentTypeAudioPodcast = `
+  ... on ContentTypeAudioPodcast {
+      detail(page: 1, page_size: 1){
+        data{
+            author
+            categoryPodcasts_id
+            create_date
+            created_by
+            deeplink
+            description
+            id
+            image_banner
+            image_name
+            moderation_status
+            modified_by
+            permalink
+            radios_id
+            sort
+            sort_all
+            sso_id
+            status
+            title
+            total_plays
+
+        }
+        meta{
+          assets_url
+          image_path
+          pagination{
+            current_page
+            per_page
+            total
+            total_page
+          }
+          video_path
+        }
+         status{
+            code
+            message_client
+            message_server
+        }
+      }
+  }
+`
+
+export const contentTypeAudioRadio = `
+  ... on ContentTypeAudioRadio {
+      detail(page: 1, page_size: 1){
+        data{
+            address
+            audio_category
+            audio_content_type
+            audio_url
+            categoryradios_id
+            city
+            content_duration
+            created_by
+            created_date
+            current_song_file_name
+            date_time
+            drive_google_url
+            duration_spent
+            email
+            episode
+            facebook
+            frequency
+            genre_level_1
+            genre_level_2
+            id
+            image_banner
+            image_name
+            image_banner_radio_partner
+            permalink
+            deeplink
+            image_name
+            is_deleted
+            latitude
+            longitude
+            name
+            phone
+            pilar
+            program_id
+            progress
+            published_date
+            radio_country
+            radio_region
+            rss
+            season
+            share_type
+            slug
+            sort_banner
+            sort_music
+            sort_network
+            sso_id
+            status
+            statusradios
+            tab_name
+            twitter
+            updated_by
+            updated_date
+            website
+            whatsapp
+        }
+        meta{
+          assets_url
+          image_path
+          pagination{
+            current_page
+            per_page
+            total
+            total_page
+          }
+          video_path
+        }
+         status{
+            code
+            message_client
+            message_server
+        }
+      }
   }
 `
