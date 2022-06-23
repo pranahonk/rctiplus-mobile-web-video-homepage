@@ -59,7 +59,7 @@ const JwPlayer = (props) => {
     height: 180,
     controls: true,
     advertising: {
-      client: process.env.ADVERTISING_CLIENT,
+      client: process.env.ADVERTISING_CLIENT_INNOPLAYER,
       tag: props.data && props.data.vmap_ima,
     },
     skin: {
