@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { isIOS } from 'react-device-detect';
 
-import { convivaJwPlayer} from '../../../utils/conviva';
+import { convivaInnoPlayer} from '../../../utils/conviva';
 import Wrench from '../Common/Wrench';
 import '../../../assets/scss/jwplayer.scss';
 
@@ -49,7 +49,6 @@ const JwPlayer = (props) => {
     mute: true,
     floating: false,
     file: props.data && props.data.url,
-    // file: "https://bitmovin-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
     primary: 'html5',
     width: '100%',
     hlsjsdefault: true,
@@ -60,7 +59,14 @@ const JwPlayer = (props) => {
     controls: true,
     advertising: {
       client: process.env.ADVERTISING_CLIENT_INNOPLAYER,
-      tag: props.data && props.data.vmap_ima,
+      tag: props.data.vmap_ima,
+    },
+    position: {
+      topControlLeft: [],
+      topControlRight: [
+        'm_setting',
+        'm_volume'
+      ]
     },
     skin: {
       name: 'rplus_player',
@@ -124,6 +130,7 @@ const JwPlayer = (props) => {
       player.on('ready', (event) => {
         setPlayerFullscreen(props.isFullscreen);
         // setIsPlayerReady(true)
+
 
         const playerContainer = ConvertStringToHTML(player.getContainer())
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
@@ -224,7 +231,7 @@ const JwPlayer = (props) => {
         // setBitrateLevels(player.getQualityLevels())
         setInitConviva(true)
 
-        convivaJwPlayer().playing();
+        convivaInnoPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
           if (document.querySelector('.ads_wrapper').style.display == 'none') {
             if (adsStatus === 'prestart') {
@@ -237,18 +244,18 @@ const JwPlayer = (props) => {
       })
       
       player.on('pause', () =>{
-        convivaJwPlayer().pause();
+        convivaInnoPlayer().pause();
       });
 
       player.on('buffer', (event) =>{
-        convivaJwPlayer().buffer();
+        convivaInnoPlayer().buffer();
       });
 
       player.on('adError', (event) => {
       });
 
       player.on('complete', (event) => {
-        const convivaTracker = convivaJwPlayer();
+        const convivaTracker = convivaInnoPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
@@ -307,7 +314,7 @@ const JwPlayer = (props) => {
     const containerElement = document.getElementsByClassName('rplus-jw-container');
     if (player !== null) {
       player.on('error', (event) => {
-        const convivaTracker = convivaJwPlayer();
+        const convivaTracker = convivaInnoPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
@@ -327,7 +334,7 @@ const JwPlayer = (props) => {
         player.remove();
       });
       player.on('setupError', (event) => {
-        const convivaTracker = convivaJwPlayer();
+        const convivaTracker = convivaInnoPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
@@ -353,7 +360,7 @@ const JwPlayer = (props) => {
   useEffect(() => {
     return () => {
       if (window.convivaVideoAnalytics) {
-        const convivaTracker = convivaJwPlayer();
+        const convivaTracker = convivaInnoPlayer();
         convivaTracker.cleanUpSession();
       }
     };

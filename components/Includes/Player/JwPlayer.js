@@ -120,12 +120,7 @@ const JwPlayer = (props) => {
         setPlayerFullscreen(props.isFullscreen);
         setIsPlayerReady(true)
 
-        console.log('props.data.vmap_ima')
-        console.log(props.data.vmap_ima)
-
         const playerContainer = player.getContainer()
-        console.log('jwplayerrr')
-        console.log(playerContainer)
         const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
 
@@ -224,9 +219,6 @@ const JwPlayer = (props) => {
       player.on('play', () => {
         setBitrateLevels(player.getQualityLevels())
         setInitConviva(true)
-
-        console.log('jwwwwqweqweqwe')
-        console.log(player.getQualityLevels())
 
         convivaJwPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
