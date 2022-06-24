@@ -37,6 +37,9 @@ export default withRedux(initStore, { debug: false })(
           params = {...queryString.parse(row)}
         })
       }
+      
+      var isPrerender = navigator.userAgent.toLowerCase().indexOf('prerender') !== -1;
+
       let condition = (
         screen.width < 500 || (
           navigator.userAgent.match(/Android/i) ||
@@ -55,8 +58,11 @@ export default withRedux(initStore, { debug: false })(
           params.platform === 'ios'
         )
       )
-      if(!condition) {
-        window.location.href = process.env.REDIRECT_WEB_DESKTOP + window.location.pathname + window.location.search
+
+      if(!isPrerender){
+        if(!condition) {
+          window.location.href = process.env.REDIRECT_WEB_DESKTOP + window.location.pathname + window.location.search
+        }
       }
 
       const visitorToken = getVisitorToken()

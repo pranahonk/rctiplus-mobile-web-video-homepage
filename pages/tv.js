@@ -465,7 +465,7 @@ class Tv extends React.Component {
 					channel_code: channelData.content_title_code,
 					epg,
 					catchup,
-					is_interactive: epg.some((item) => item.is_interactive !== "false"),
+					is_interactive: epg.find((item) => item.is_interactive !== "false" && this.isLiveProgram(item)),
 				})
 			})
 			.catch(error => {
@@ -1199,24 +1199,24 @@ class Tv extends React.Component {
 									</div>
 								</Col>
 								{this.state.is_interactive && (
-									<Col xs={5} style={{textAlign:'end', marginLeft: '-10px'}}>
-										<div className='tooltip-custom'>
-											<span className="tooltiptext">Ikuti sekarang!</span>
-											<div className='interactive'>
-												<Button id="btn-expand" onClick={() => this.setState({interactive_modal: true})} color="link">
-													<Row className='justify-content-center'>
-														<img 
-															src='/static/player_icons/quiz_icon.svg	'
-															width={40}
-															height={40}
-															alt="desc"
-															className='ml-n3 mt-n3'
-															/>
-															<p className='ml-2 mt-n1'>Interactive</p>
-															<FiberManualRecordIcon className="indicator-dot-red mt-n1" />
-													</Row>
-												</Button>
-											</div>
+								<Col xs={5} style={{textAlign:'end', marginLeft: '-10px'}}>
+									<div className='tooltip-custom'>
+										<span className="tooltiptext">Ikuti sekarang!</span>
+										<div className='interactive'>
+											<Button id="btn-expand" onClick={() => this.setState({ interactive_modal: true })} color="link">
+												<Row className='justify-content-center'>
+													<img 
+														src='/static/player_icons/quiz_icon.svg	'
+														width={40}
+														height={40}
+														alt="desc"
+														className='ml-n3 mt-n3'
+														/>
+														<p className='ml-2 mt-n1'>Interactive</p>
+														<FiberManualRecordIcon className="indicator-dot-red mt-n1" />
+												</Row>
+											</Button>
+										</div>
 										</div>
 									</Col>
 								)}
