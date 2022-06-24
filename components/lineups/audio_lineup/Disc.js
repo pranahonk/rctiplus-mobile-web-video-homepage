@@ -7,6 +7,7 @@ import { getTruncate } from '../../../utils/helpers';
 const ActionSheet = dynamic(() => import('../../Modals/ActionSheet'), { ssr: false });
 
 function AudioDisc ({title, indexTag, id, data}) {
+    // console.log(data)
     // const { generateLink, onTouchStart, onTouchEnd } = useVideoLineups(props)
 
     const [show, setShow] = useState(true);
@@ -27,7 +28,14 @@ function AudioDisc ({title, indexTag, id, data}) {
       return window.location.href = article?.permalink;
     };
 
-
+    const getImage = (url, staticPath) => {
+      if (url){
+        return  `${staticPath}/200/${url}`
+      }
+      else{
+        return "http://www.roov.id/image/logo.png"
+      }
+    }
 
     return (
       disc === undefined || disc.length < 1 || !show ?   (<div />) :
@@ -43,9 +51,9 @@ function AudioDisc ({title, indexTag, id, data}) {
                       <div className="background-disc">
                         <Img className="disc-img"
                              alt={content?.content_type_detail?.detail?.data?.title}
-                             unloader={<img src={[`${content?.content_type_detail?.detail?.meta?.assets_url}/200/${content?.content_type_detail?.detail?.data?.image_banner}`]} />}
-                             loader={<img src={[`${content?.content_type_detail?.detail?.meta?.assets_url}/200/${content?.content_type_detail?.detail?.data?.image_banner}`]} />}
-                             src={[`${content?.content_type_detail?.detail?.meta?.assets_url}/200/${content?.content_type_detail?.detail?.data?.image_banner}`]}/>
+                             unloader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.image_banner, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
+                             loader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.image_banner, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
+                             src={[`${getImage(content?.content_type_detail?.detail?.data?.image_banner, content?.content_type_detail?.detail?.meta?.assets_url)}`]}/>
                         <div className="disc-hole-background"></div>
                         <div className="disc-hole"></div>
                       </div>
