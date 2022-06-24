@@ -34,6 +34,10 @@ function AudioList ({title, indexTag, id, data}) {
 
     }, [podcast]);
 
+     useEffect(() => {
+        console.log(multiplePodcast)
+      }, [multiplePodcast]);
+
     let indexId = 0;
 
     const _goToDetail = (content) => {
@@ -45,12 +49,21 @@ function AudioList ({title, indexTag, id, data}) {
       setShareURL(url)
     }
 
+    const getImage = (url, staticPath) => {
+      if (url){
+        return  `${staticPath}/200/${url}`
+      }
+      else{
+        return "http://www.roov.id/image/logo.png"
+      }
+    }
+
 
     return (
       multiplePodcast === undefined || multiplePodcast.length < 1 || !show ?   (<div />) :
         <div className="pnl-audio-list">
           <h2 className="content-title">
-            {multiplePodcast?.length < 1 ? null : title}
+            {multiplePodcast?.length === 0 ? null : title}
           </h2>
           <ActionSheet
             caption={"saksian roov di rcti+"}
@@ -70,6 +83,7 @@ function AudioList ({title, indexTag, id, data}) {
                       if(content?.content_type_detail?.detail?.status?.code !== 0){
                           setShow(false)
                       }
+
                       return(
                         <div key={index2} id={`potrait-disc-${index2}`}>
                           <div className='background-horizontal'>
@@ -77,9 +91,9 @@ function AudioList ({title, indexTag, id, data}) {
                               <div className='col-4 my-auto'>
                                 <Img className="podcast-img"
                                      alt={content?.content_type_detail?.detail?.data.name}
-                                     unloader={<img src={`${content?.content_type_detail?.detail?.meta?.assets_url}/${content?.content_type_detail?.detail?.data?.image_banner}`} />}
-                                     loader={<img src={[`${content?.content_type_detail?.detail?.meta?.assets_url}/${content?.content_type_detail?.detail?.data?.image_banner}`]} />}
-                                     src={[`${content?.content_type_detail?.detail?.meta?.assets_url}/${content?.content_type_detail?.detail?.data?.image_banner}`]}
+                                     unloader={<img src={`${getImage(content?.content_type_detail?.detail?.data?.image_banner, content?.content_type_detail?.detail?.meta?.assets_url)}`} />}
+                                     loader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.image_banner, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
+                                     src={[`${getImage(content?.content_type_detail?.detail?.data?.image_banner, content?.content_type_detail?.detail?.meta?.assets_url)}`]}
                                      width="76"
                                      height="76"
                                 />
