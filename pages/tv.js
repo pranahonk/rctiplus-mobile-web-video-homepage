@@ -465,7 +465,7 @@ class Tv extends React.Component {
 					channel_code: channelData.content_title_code,
 					epg,
 					catchup,
-					is_interactive: epg.some((item) => item.is_interactive !== "false"),
+					is_interactive: epg.find((item) => item.is_interactive !== "false" && this.isLiveProgram(item)),
 				})
 			})
 			.catch(error => {
