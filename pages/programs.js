@@ -34,7 +34,6 @@ import VisionPlusProgram from "../components/Includes/program-detail/visionplus_
 
 // const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
-const InnoPlayer = dynamic(() => import('../components/Includes/Player/InnoPlayer'));
 const HeadMeta = dynamic(() => import('../components/Seo/HeadMeta'));
 const MainLoader = dynamic(() => import('../components/Includes/Shimmer/detailProgramLoader').then((mod) => mod.MainLoader));
 const TabListLoader = dynamic(() => import('../components/Includes/Shimmer/detailProgramLoader').then((mod) => mod.TabListLoader));
@@ -51,6 +50,7 @@ const ActionSheet = dynamic(() => import('../components/Modals/ActionSheet'), { 
 const ActionMenu = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.ActionMenu), { ssr: false });
 const RatedModal = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.RatedModal), { ssr: false });
 const Trailer = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.Trailer), { ssr: false });
+const InnoPlayer = dynamic(() => import('../components/Includes/Player/InnoPlayer'));
 
 class Index extends React.Component {
   static async getInitialProps(ctx) {
@@ -869,6 +869,21 @@ class Index extends React.Component {
     
     return (
       <div className="program-detail-player-wrapper">
+        {/* <JwPlayer
+          data={dataPlayer && dataPlayer.data } 
+          isFullscreen={ dataPlayer && dataPlayer.isFullscreen } 
+          ref={this.ref} 
+          onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
+          isResume={true} 
+          geoblockStatus={ dataPlayer && dataPlayer.status && dataPlayer.status.code === 12 ? true : false }
+          customData= {{
+            isLogin: this.props.auth.isAuth, 
+            programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
+            sectionPage: 'VOD',
+          }}
+          actionBtn={(e) => this.handleActionBtn(e)}
+          videoIndexing={this.state.videoIndexing}
+          /> */}
         <InnoPlayer
           data={dataPlayer && dataPlayer.data } 
           isFullscreen={ dataPlayer && dataPlayer.isFullscreen } 
@@ -892,17 +907,28 @@ class Index extends React.Component {
       const data = this.props.server && this.props.server[this.type];
       return (
         <div className="program-detail-player-wrapper trailer">
-              <InnoPlayer 
-              data={ data.data } 
-              ref={this.ref} isFullscreen={ true }
-              isResume={true} 
-              geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
-              customData= {{
-                isLogin: this.props.auth.isAuth, 
-                programType: data.program_type_name,
-                sectionPage: 'VOD',
-                }}
-              />
+          {/* <JwPlayer 
+            data={ data.data } 
+            ref={this.ref} isFullscreen={ true }
+            isResume={true} 
+            geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
+            customData= {{
+              isLogin: this.props.auth.isAuth, 
+              programType: data.program_type_name,
+              sectionPage: 'VOD',
+              }}
+            /> */}
+          <InnoPlayer 
+            data={ data.data } 
+            ref={this.ref} isFullscreen={ true }
+            isResume={true} 
+            geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
+            customData= {{
+              isLogin: this.props.auth.isAuth, 
+              programType: data.program_type_name,
+              sectionPage: 'VOD',
+              }}
+            />
         </div>
       );
     }
