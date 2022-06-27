@@ -987,12 +987,13 @@ class Tv extends React.Component {
 		}
 
 		return (
-			<Layout className="live-tv-layout" title={this._metaTags().title}>
-				<Head>
-					<meta name="description" content={this._metaTags().description} />
-					<meta name="keywords" content={this._metaTags().keywords} />
-					<meta property="og:title" content={this._metaTags().title} />
-					<meta property="og:description" content={this._metaTags().description} />
+			<Layout className="live-tv-layout" title={props.data_seo?.data?.title ?? this._metaTags().title}>
+			<Head>
+					<meta name="description" content={props.data_seo?.data?.description ?? this._metaTags().description} />
+					<meta name="keywords" content={props.data_seo?.data?.keywords ?? this._metaTags().keywords} />
+					<meta property="og:title" content={props.data_seo?.data?.title ?? this._metaTags().title} />
+					<meta property="og:description" content={props.data_seo?.data?.description ?? this._metaTags().description} />
+					<meta property="og:keywords" content={props.data_seo?.data?.keywords ?? this._metaTags().keywords} />
 					<meta property="og:image" itemProp="image" content={this._metaTags().pathimage} />
 					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
 					<meta property="og:type" content="video.tv_show" />
@@ -1007,8 +1008,9 @@ class Tv extends React.Component {
 					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
 					<meta name="twitter:image" content={this._metaTags().pathimage} />
 					<meta name="twitter:image:alt" content={this._metaTags().twitter_img_alt} />
-					<meta name="twitter:title" content={this._metaTags().title} />
-					<meta name="twitter:description" content={this._metaTags().description} />
+					<meta name="twitter:title" content={props.data_seo?.data?.title ?? this._metaTags().title} />
+					<meta name="twitter:description" content={props.data_seo?.data?.description ??this._metaTags().description} />
+					<meta name="twitter:keywords" content={props.data_seo?.data?.keywords ??this._metaTags().keywords} />
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 
