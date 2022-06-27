@@ -465,7 +465,7 @@ class Tv extends React.Component {
 					channel_code: channelData.content_title_code,
 					epg,
 					catchup,
-					is_interactive: epg.some((item) => item.is_interactive !== "false"),
+					is_interactive: epg.find((item) => item.is_interactive !== "false" && this.isLiveProgram(item)),
 				})
 			})
 			.catch(error => {
@@ -1203,7 +1203,7 @@ class Tv extends React.Component {
 										<div className='tooltip-custom'>
 											<span className="tooltiptext">Ikuti sekarang!</span>
 											<div className='interactive'>
-												<Button id="btn-expand" onClick={() => this.setState({ interactive_modal: true })} color="link">
+												<Button id="btn-expand" onClick={() => this.setState({interactive_modal: true})} color="link">
 													<Row className='justify-content-center'>
 														<img 
 															src='/static/player_icons/quiz_icon.svg	'
