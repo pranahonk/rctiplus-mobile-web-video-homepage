@@ -14,6 +14,15 @@ export const contentTypeProgramFragment = `
     }
     status {
       code
+      message_client
+      message_server
+    }
+    meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
     }
   }
 }`
@@ -34,6 +43,15 @@ export const contentTypeEpisodeFragment = `
     }
     status {
       code
+      message_client
+      message_server
+    }
+    meta {
+       image_path
+       pagination {
+         current_page
+         total_page
+       }
     }
   }
 }
@@ -55,7 +73,16 @@ export const contentTypeExtraFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
+      meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+      }
   }
 }
 `
@@ -76,7 +103,16 @@ export const contentTypeClipFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
+      meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+      }
   }
 }
 `
@@ -96,6 +132,8 @@ export const contentTypeCatchupFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -116,6 +154,8 @@ export const contentTypeLiveEventFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -136,6 +176,8 @@ export const contentTypeLiveEPGFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
   }
 }
@@ -159,7 +201,16 @@ export const contentTypeSpecialFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
+      meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+      }
   }
 }
 `
@@ -179,7 +230,16 @@ export const contentTypeSeasonFragment = `
     }
     status {
       code
+      message_client
+      message_server
     }
+      meta {
+        image_path
+        pagination {
+          current_page
+          total_page
+        }
+      }
   }
 }
 `
@@ -248,5 +308,97 @@ export const contentTypeHotVideo = `
           message_server
       }
     }
+  }
+`
+
+
+export const contentTypeAudioPodcast = `
+  ... on ContentTypeAudioPodcast {
+      detail(page: 1, page_size: 1){
+        data{
+            author
+            categoryPodcasts_id
+            create_date
+            created_by
+            deeplink
+            description
+            id
+            image_banner
+            image_name
+            moderation_status
+            modified_by
+            permalink
+            radios_id
+            sort
+            sort_all
+            sso_id
+            status
+            title
+            total_plays
+
+        }
+        meta{
+          assets_url
+          image_path
+          pagination{
+            current_page
+            per_page
+            total
+            total_page
+          }
+          video_path
+        }
+         status{
+            code
+            message_client
+            message_server
+        }
+      }
+  }
+`
+
+export const contentTypeAudioRadio = `
+  ... on ContentTypeAudioRadio {
+      detail(page: 1, page_size: 1){
+        data{
+            audio_category
+            deeplink
+            episode
+            expired_at
+            expired_in
+            frequency
+            genre_level_1
+            genre_level_2
+            id
+            label
+            landscape_image
+            permalink
+            portrait_image
+            premium
+            product_id
+            program_id
+            season
+            square_image
+            summary
+            title
+            type
+        }
+        meta{
+          assets_url
+          image_path
+          pagination{
+            current_page
+            per_page
+            total
+            total_page
+          }
+          video_path
+        }
+         status{
+            code
+            message_client
+            message_server
+        }
+      }
   }
 `
