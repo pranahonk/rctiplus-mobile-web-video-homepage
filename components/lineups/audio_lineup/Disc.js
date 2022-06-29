@@ -1,69 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import Img from 'react-image';
-import '../../../assets/scss/components/audio-disc.scss';
-import dynamic from 'next/dynamic';
-import { getTruncate } from '../../../utils/helpers';
+import React, { useEffect, useState } from "react";
+import Img from "react-image";
+import { connect } from "react-redux";
+import useVideoLineups from "../../hooks/lineups/useVideoLineups";
+import {client }  from "../../../graphql/client";
+import "../../../assets/scss/components/audio-disc.scss";
+import { RESOLUTION_IMG } from "../../../config";
+import { GET_AUDIO_DISC } from '../../../graphql/queries/audio-disc';
 
-const ActionSheet = dynamic(() => import('../../Modals/ActionSheet'), { ssr: false });
+function AudioDisc (props) {
+    // const [ contents, setContents ] = useState(props.content)
+    const { generateLink, onTouchStart, onTouchEnd } = useVideoLineups(props);
 
-function AudioDisc ({title, indexTag, id, data}) {
-    // const { generateLink, onTouchStart, onTouchEnd } = useVideoLineups(props)
-
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(null);
+    const [data, setData] = useState([]);
     const [meta, setMeta] = useState([]);
-    const [disc, setDisc] = useState([]);
     const [loadingMore, setLoadingMore] = useState(false);
     const [assetUrl, setAssetUrl] = useState(null);
 
     const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
+    // const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
     useEffect(() => {
-      setMeta(data?.lineup_type_detail?.detail?.meta);
-      setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
-      setDisc(data?.lineup_type_detail?.detail?.data);
+        client.query({query: GET_AUDIO_DISC(1, 100, 1, 20)})
+            .then((response) => {
+                setData(response.data.mock_audios.data);
+                console.log(response.data.mock_audios.data)
+                setMeta(response.data.mock_audios.meta);
+                setAssetUrl('');
+            })
     }, [])
 
-    const _goToDetail = (article) => {
-      return window.location.href = article?.permalink;
-    };
-
-    const getImage = (url, staticPath) => {
-      if (url){
-        return  `${staticPath}/200/${url}`
-      }
-      else{
-        return "http://www.roov.id/image/logo.png"
-      }
-    }
-
     return (
-      disc === undefined || disc.length < 1 || !show ?   (<div />) :
-        <div className="pnl-audio-disc">
-            <h2 className="content-title">{title}</h2>
+        <div onTouchStart={e => onTouchStart(e)} onTouchEnd={e => onTouchEnd(e)} className="pnl-audio-disc">
+            <h2 className="content-title">Euro 2020 Music Playlist</h2>
             <div className="swipe-wrapper">
-                {disc.map((content, index) => {
-                  if(content?.content_type_detail?.detail?.status?.code !== 0){
-                    setShow(false)
-                  }
-                  return (
-                    <div className="background-vertical" id={`square-list-audio-${index}`} key={index}  onClick={()=> _goToDetail(content?.content_type_detail?.detail?.data)}>
-                      <div className="background-disc">
-                        <Img className="disc-img"
-                             alt={content?.content_type_detail?.detail?.data?.title}
-                             unloader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.image_banner, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
-                             loader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.image_banner, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
-                             src={[`${getImage(content?.content_type_detail?.detail?.data?.image_banner, content?.content_type_detail?.detail?.meta?.assets_url)}`]}/>
-                        <div className="disc-hole-background"></div>
-                        <div className="disc-hole"></div>
-                      </div>
-                      <div className="listener-wrapper">
-                        {/*<img src="audio-icons/listener-icon.svg"/>*/}
-                        {/*<span className="total-listener">{content?.content_type_detail?.detail?.data?.total_plays}</span>*/}
-                      </div>
-                      <span className="playlist-name">{getTruncate(content?.content_type_detail?.detail?.data?.name, '...', 10)}</span>
+                {data.map((content, index) => (
+                    <div className="background-vertical" key={index}>
+                        <div className="background-disc">
+                            <Img className="disc-img" alt={content?.title} unloader={<img src={placeHolderImgUrl} />} loader={<img src={placeHolderImgUrl} />} src={[`${assetUrl}${content?.image_name}`, placeHolderImgUrl]}/>
+                            <div className="disc-hole-background"></div>
+                            <div className="disc-hole"></div>
+                        </div>
+                        <div className="listener-wrapper">
+                            <img src="audio-icons/listener-icon.svg"/>
+                            <span className="total-listener">{content.total_plays}</span>
+                        </div>
+                        <span className="playlist-name">Jazz</span>
                     </div>
-                  )
-                })}
+                ))}
             </div>
         </div>
     )

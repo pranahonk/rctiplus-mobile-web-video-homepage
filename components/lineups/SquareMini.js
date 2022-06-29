@@ -32,20 +32,6 @@ function squareMiniView (props) {
     )
   }
 
-  const getImageLink = (content) => {
-    switch (props.lineup.display_type) {
-      case "square_list_audio":
-        return `${props.imagePath}${content.image_banner}`;
-      case "square_mini":
-        if(content?.content_type === "live_music"){
-          return `${content?.content_type_detail?.detail?.meta?.assets_url}/200/${content.image_banner}`;
-        }
-
-      default:
-        return `${rootImageUrl}${content.square_image}`;
-    }
-  }
-
   if (contents.length === 0) return null
 
   return (
@@ -59,7 +45,7 @@ function squareMiniView (props) {
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
           <div
-            ref={scrollRef}
+            ref={scrollRef} 
             className="lineup-containers">
             {contents.map((content, i) => {
               return (
@@ -72,14 +58,14 @@ function squareMiniView (props) {
                   <PremiumIcon premium={content.premium} />
 
                   <div>
-                    <Img
+                    <Img 
                       className="lineup-image"
-                      alt={props.lineup.title}
-                      unloader={<img src={content ? getImageLink(content) : placeHolderImgUrl} width={100} height={100} />}
-                      loader={<img src={content ? getImageLink(content) : placeHolderImgUrl} width={100} height={100} />}
+                      alt={props.lineup.title} 
+                      unloader={<img src={placeHolderImgUrl} width={100} height={100} />}
+                      loader={<img src={placeHolderImgUrl} width={100} height={100} />}
                       width={100}
                       height={100}
-                      src={content ? getImageLink(content) : placeHolderImgUrl} />
+                      src={content.square_image ? `${rootImageUrl}${content.square_image}` : placeHolderImgUrl} />
                   </div>
                   { renderContinueWatchProgress(content) }
                 </div>
