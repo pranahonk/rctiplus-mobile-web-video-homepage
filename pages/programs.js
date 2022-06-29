@@ -23,7 +23,7 @@ import { postContinueWatching } from '../redux/actions/historyActions';
 import Layout from '../components/Layouts/Default_v2';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Collapse } from 'reactstrap';
 import '../assets/scss/components/program-detail.scss';
-import { RESOLUTION_IMG, VISITOR_TOKEN, DEV_API } from '../config';
+import { RESOLUTION_IMG, VISITOR_TOKEN, DEV_API, API_TIMEOUT } from '../config';
 import fetch from 'isomorphic-unfetch';
 import { getCookie, getVisitorToken } from '../utils/cookie';
 import { fetcFromServer } from '../redux/actions/program-detail/programDetail';
@@ -52,46 +52,6 @@ const RatedModal = dynamic(() => import('../components/Includes/program-detail/p
 const Trailer = dynamic(() => import('../components/Includes/program-detail/programDetail').then((mod)=> mod.Trailer), { ssr: false });
 
 class Index extends React.Component {
-  static async getInitialProps(ctx) {
-    const programId = ctx.query.id;
-    const accessToken = getCookie('ACCESS_TOKEN');
-    const res = await fetch(`${DEV_API}/api/v1/program/${programId}/detail`, {
-        method: 'GET',
-        headers: {
-            'Authorization': accessToken ? accessToken : VISITOR_TOKEN,
-        },
-    });
-    const error_code = res.statusCode > 200 ? res.statusCode : false;
-
-    if (error_code) {
-        return { server: false, seo_content: false, seo_content_detail: false };
-    }
-    const data = await res.json();
-    if (data.status.code === 1) {
-        return { server: false, seo_content: false, seo_content_detail: false };
-    }
-    let data_2 = null;
-    if (ctx.query.content_id) {
-      const res_2 = await fetch(`${DEV_API}/api/v1/${ctx.query.content_type}/${ctx.query.content_id}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': accessToken ? accessToken : VISITOR_TOKEN,
-        },
-      });
-      const error_code_2 = res_2.statusCode > 200 ? res_2.statusCode : false;
-      data_2 = await res_2.json();
-    }
-
-  //   if (error_code_2 || data_2.status.code !== 0) {
-  //     return { server: false, seo_content: false, seo_content_detail: false };
-  // }
-
-    return {
-      server: {['program-detail']: data},
-      seo_content: data,
-      seo_content_detail: data_2,
-    };
-  }
   constructor(props) {
     super(props);
     this.state = {
@@ -147,7 +107,6 @@ class Index extends React.Component {
     }
 
     if (this.props.server && this.props.server[this.type].data) {
-      console.log(this.props);
       if (this.isTabs(this.props.server[this.type].data).length > 0) {
         if (this.props.router.query.content_type === 'extras' || this.props.router.query.content_type === 'extra') {
           this.setState({toggle: 'Extra'});
@@ -765,7 +724,6 @@ class Index extends React.Component {
   }
 
   handleShowMore(pagination, activeTab) {
-    console.log('lagi get show more');
 
     if (pagination.nextPage > pagination.total_page && pagination.total_page > 0) {return;}
     if (activeTab !== this.state.toggle) {return;}
@@ -959,8 +917,8 @@ class Index extends React.Component {
 
     return (
       <Layout>
-        <HeadMeta data={props.seo_content}
-                  dataPlayer={(props.data && props.data['description-player']) || props.seo_content_detail} ogType={'article'}/>
+        <HeadMeta seoData={props.seo} data={props.seo_content}
+                  dataPlayer={(props.data && props.data['description-player']) || props.seo_content_detail} ogType={'video.movie'}/>
         <div className="program-detail-container animated fadeInDown go">
           <div ref={this.refMainContent} style={{minHeight: '10px'}}>
             { this.switchPanel() }
@@ -1115,3 +1073,77 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(withRouter(Index));
+
+export async function getServerSideProps(ctx) {
+  const programId = ctx.query.id;
+  const accessToken = getCookie('ACCESS_TOKEN');
+  const res = await fetch(`${DEV_API}/api/v1/program/${programId}/detail`, {
+    method: 'GET',
+    headers: {
+      'Authorization': accessToken ? accessToken : VISITOR_TOKEN,
+    },
+  });
+  
+  // getseo
+  let seoData = null;
+  const contentType = ctx.query?.content_type === "episode" ? "episode" : "program"
+  const id = ctx.query?.content_type === "episode" ? ctx.query.content_id : programId
+  
+  const response_seo = await fetch(`${DEV_API}/api/v1/seo/content/${contentType}/${id}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': accessToken ? accessToken : VISITOR_TOKEN,
+    },
+    timeout: API_TIMEOUT
+  }).catch(err=> console.log('Error: ' + err));
+  if (response_seo && response_seo.status == 200) {
+    seoData = await response_seo.json();
+  }else{
+    seoData ={
+      data:{
+        title:'Live Streaming RCTI Hari Ini - TV Online Indonesia',
+        description:'Nonton tv online bersama Indonesia',
+        keywords:'live streaming rcti, rcti live, tv online',
+        image:'/files/fta_rcti/SEO Assets/streaming_rcti.jpg'
+      },
+      meta: {
+        image_path: 'https://static.rctiplus.id/media/',
+        video_path: 'https://static.rctiplus.id'
+      }
+    }
+  }
+
+  const error_code = res.statusCode > 200 ? res.statusCode : false;
+  
+  if (error_code) {
+      return { props: {server: false, seo_content: false, seo_content_detail: false} };
+  }
+  const data = await res.json();
+  if (data.status.code === 1) {
+      return { props : {server: false, seo_content: false, seo_content_detail: false } };
+  }
+  let data_2 = null;
+  if(ctx.query.content_id) {
+    const res_2 = await fetch(`${DEV_API}/api/v1/${ctx.query.content_type}/${ctx.query.content_id}`, {
+      method: 'GET',
+      headers: {
+          'Authorization': accessToken ? accessToken : VISITOR_TOKEN,
+      }
+    });
+    const error_code_2 = res_2.statusCode > 200 ? res_2.statusCode : false;
+    data_2 = await res_2.json();
+  }
+
+//   if (error_code_2 || data_2.status.code !== 0) {
+//     return { server: false, seo_content: false, seo_content_detail: false };
+// }
+
+  return { 
+    props: {
+      server: {'program-detail': data},
+      seo: seoData,
+      seo_content: data, 
+      seo_content_detail: data_2,  
+    }
+  };
+}
