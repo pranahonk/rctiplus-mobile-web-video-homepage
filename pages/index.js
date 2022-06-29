@@ -253,6 +253,7 @@ class Index_v2 extends React.Component {
         case "portrait_disc":
           return(
             <AudioHorizontalDisc
+              title={lineup.title}
               key={lineup.id}
               data={lineup}
               indexTag={index}

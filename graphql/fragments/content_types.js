@@ -361,59 +361,27 @@ export const contentTypeAudioRadio = `
   ... on ContentTypeAudioRadio {
       detail(page: 1, page_size: 1){
         data{
-            address
             audio_category
-            audio_content_type
-            audio_url
-            categoryradios_id
-            city
-            content_duration
-            created_by
-            created_date
-            current_song_file_name
-            date_time
-            drive_google_url
-            duration_spent
-            email
+            deeplink
             episode
-            facebook
+            expired_at
+            expired_in
             frequency
             genre_level_1
             genre_level_2
             id
-            image_banner
-            image_name
-            image_banner_radio_partner
+            label
+            landscape_image
             permalink
-            deeplink
-            image_name
-            is_deleted
-            latitude
-            longitude
-            name
-            phone
-            pilar
+            portrait_image
+            premium
+            product_id
             program_id
-            progress
-            published_date
-            radio_country
-            radio_region
-            rss
             season
-            share_type
-            slug
-            sort_banner
-            sort_music
-            sort_network
-            sso_id
-            status
-            statusradios
-            tab_name
-            twitter
-            updated_by
-            updated_date
-            website
-            whatsapp
+            square_image
+            summary
+            title
+            type
         }
         meta{
           assets_url
