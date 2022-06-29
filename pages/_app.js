@@ -18,9 +18,7 @@ export default withRedux(initStore, { debug: false })(
   class MyApp extends App {
     static async getInitialProps({ Component, ctx }) {
       return {
-        pageProps: {
-          ...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {})
-        }
+          initialProps: {...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {})},
       }
     }
 
@@ -72,12 +70,11 @@ export default withRedux(initStore, { debug: false })(
     }
 
     render() {
-      const { Component, pageProps, store } = this.props
-
+      const { Component, pageProps, store, initialProps } = this.props
       return (
         <ApolloProvider client={client}>
           <Provider store={store}>
-            <Component history={this.state.history} {...pageProps} />
+            <Component history={this.state.history} {...pageProps} {...initialProps} />
           </Provider>
         </ApolloProvider>
       )
