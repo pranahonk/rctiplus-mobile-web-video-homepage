@@ -50,9 +50,9 @@ function AudioDisc ({title, indexTag, id, data}) {
                       <div className="background-disc">
                         <Img className="disc-img"
                              alt={content?.content_type_detail?.detail?.data?.title}
-                             unloader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.image_banner, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
-                             loader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.image_banner, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
-                             src={[`${getImage(content?.content_type_detail?.detail?.data?.image_banner, content?.content_type_detail?.detail?.meta?.assets_url)}`]}/>
+                             unloader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
+                             loader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
+                             src={[`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`]}/>
                         <div className="disc-hole-background"></div>
                         <div className="disc-hole"></div>
                       </div>
@@ -60,7 +60,7 @@ function AudioDisc ({title, indexTag, id, data}) {
                         {/*<img src="audio-icons/listener-icon.svg"/>*/}
                         {/*<span className="total-listener">{content?.content_type_detail?.detail?.data?.total_plays}</span>*/}
                       </div>
-                      <span className="playlist-name">{getTruncate(content?.content_type_detail?.detail?.data?.name, '...', 10)}</span>
+                      <span className="playlist-name">{getTruncate(content?.content_type_detail?.detail?.data?.title, '...', 10)}</span>
                     </div>
                   )
                 })}
