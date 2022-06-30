@@ -46,7 +46,7 @@ function AudioList ({title, indexTag, id, data}) {
         setLoadingMore(true);
 
         if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-          getPaginationAudioRadio(meta?.pagination?.current_page + 1, 5, id);
+          getPaginationPotraitDisc(meta?.pagination?.current_page + 1, 5, id);
         }
         else{
           setLoadingMore(false);
@@ -55,7 +55,7 @@ function AudioList ({title, indexTag, id, data}) {
       }
     }, [show]);
 
-  const getPaginationAudioRadio = (page, page_size, id) =>{
+  const getPaginationPotraitDisc = async (page, page_size, id) =>{
     client.query({query: GET_AUDIO_LIST_PAGINATION(page, page_size, id)})
       .then((res)=>{
         setMeta(res?.data?.lineup_contents?.meta);
