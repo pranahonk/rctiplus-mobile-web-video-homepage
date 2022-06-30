@@ -42,7 +42,6 @@ function AudioDisc ({title, indexTag, id, data}) {
             <h2 className="content-title">{title}</h2>
             <div className="swipe-wrapper">
                 {disc.map((content, index) => {
-                  console.log(content)
                   if(content?.content_type_detail?.detail?.status?.code !== 0){
                     setShow(false)
                   }
