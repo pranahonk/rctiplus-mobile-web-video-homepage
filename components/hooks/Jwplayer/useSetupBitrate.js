@@ -8,7 +8,7 @@ export default function useCustomPlayerButton (props) {
   }, [ props.player, bitrateLevels ])
   
   const setUpBitrate = () => {
-    props.player.setCurrentQuality(bitrateLevels.length - 1)
+    props.player.setCurrentQuality(0)
   }
 
   return [ setBitrateLevels ]

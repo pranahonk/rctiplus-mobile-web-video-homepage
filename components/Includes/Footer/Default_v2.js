@@ -9,41 +9,20 @@ import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent } from '
 
 import '../../../assets/scss/components/footer-v2.scss';
 
-import { Badge } from 'reactstrap';
-
-// import ImportantDevicesIcon from '@material-ui/icons/ImportantDevices';
-// import LiveEventIcon from '../Common/LiveEventIcon';
-// import HomeIcon from '@material-ui/icons/Home';
-// import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-// import ImportContactsTwoToneIcon from '@material-ui/icons/ImportContactsTwoTone';
-// import LiveStreamIcon from '../Common/LiveStream';
-
-// import { getCookie } from '../../../utils/cookie';
+import { bottomMenuClick } from '../../../utils/firebaseTracking';
+import { gaTrackerNavbarTrack } from '../../../utils/ga-360';
+import { getUserAccessToken, getVisitorToken } from "../../../utils/cookie" 
 
 const FooterNav_v2 = (props) => {
-
-    const isProfileComplete = () => {
-        if (props.user && props.user.data) {
-            const data = props.user.data
-			return data.nickname && data.display_name && data.email && data.phone_number && data.dob && data.gender && data.photo_url;
-        }
-        return true;
-	}
 
     useEffect(() =>{
         props.getUserData()
         .then(response => {})
-        .catch(error => {});
-        Router.events.on("routeChangeStart", () => {
-            // const convivaSessionId = getCookie('CONVIVA_SESSION_ID');
-            // if (convivaSessionId != null) {
-            //     Conviva.LivePass.cleanupSession(convivaSessionId);
-            // }
-        });
+        .catch(error => {})
     }, [])
 
         return (
-            <div className="nav-footer-v2">
+            <div id="nav-footer" className="nav-footer-v2">
                 <div className="footer-wrapper-list">
                     <div id="action-home" onClick={() => {
                         homeGeneralClicked('mweb_home_clicked');
@@ -69,8 +48,6 @@ const FooterNav_v2 = (props) => {
                                     </g>
                                 </svg>
                             </div>
-                            {/* <HomeIcon className="nav-footer-icon" /> */}
-                            {/* <br /> */}
                             <span className={props.router.asPath === "/" ? "footer-icon-active" : ""}>Home</span>
                         </a>
                     </div>
@@ -142,30 +119,34 @@ const FooterNav_v2 = (props) => {
                                 break;
 
                             default:
+                                gaTrackerNavbarTrack('menu_navbar_tracking','click_bottom_menu', 'trebel');
                                 homeGeneralClicked('mweb_library_clicked');
                                 break;
                         }
 
-                        Router.push('/explores_revamp', "/explores")
+                        bottomMenuClick(props?.user?.data, { pillar: 'general', button_name: 'trebel' })
+                        Router.push(`${process.env.TREBEL_IFRAME_URL}?platform=mweb&token=${getUserAccessToken() || getVisitorToken()}`)
                     }}>
                         <a>
                             <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" viewBox="0 0 31 31">
-                                    <g fill="none" fillRule="evenodd">
-                                        <g fill={props.router.asPath === "/explores" ? "#FFF" : "#8F8F8F"} fillRule="nonzero">
-                                            <g>
-                                                <g>
-                                                    <path d="M23.09 0H15.68c-1.1 0-1.996.895-1.996 1.995v8.553c0 1.1.895 1.995 1.996 1.995h7.412c1.1 0 1.995-.895 1.995-1.995V1.995c0-1.1-.895-1.995-1.995-1.995zm-1.708 6.908l-2.85 2.565c-.548.492-1.428.106-1.428-.636V3.706c0-.739.88-1.128 1.428-.636l2.85 2.565c.378.341.378.932 0 1.273z" transform="translate(-247 -613) translate(247 613) translate(4 3)"/>
-                                                    <path d="M20.525 14.824h-4.846c-2.36 0-4.276-1.916-4.276-4.276V1.995c0-.718.182-1.402.502-1.995H3.42C1.539 0 0 1.54 0 3.42v16.535c0 1.117 1.527 2.85 3.42 2.85h3.422v1.574c0 .744.887 1.128 1.425.639l1.996-1.779 1.995 1.779c.518.48 1.425.124 1.425-.639v-1.573h5.702c.627 0 1.14-.514 1.14-1.14v-6.842zM6.842 20.525H3.42c-.627 0-1.14-.513-1.14-1.14 0-.627.513-1.14 1.14-1.14h3.42v2.28zm11.402 0h-4.56v-2.28h4.56v2.28z" transform="translate(-247 -613) translate(247 613) translate(4 3)"/>
-                                                </g>
-                                            </g>
-                                        </g>
+                                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M28.9894 9.63589C28.9894 8.83637 28.922 8.04009 28.7311 7.2617C28.3882 5.84384 27.5798 4.76074 26.37 3.96528C25.7477 3.55902 25.0627 3.30957 24.3348 3.17794C23.7757 3.08013 23.2099 3.02634 22.6424 3.01706C22.6001 3.013 22.5538 3.00406 22.5067 3H9.48192C9.31699 3.013 9.15206 3.02113 8.98713 3.02925C8.17871 3.07556 7.37518 3.16007 6.61307 3.46476C5.16606 4.03597 4.1204 5.03456 3.51105 6.47355C3.2998 6.96025 3.19337 7.4762 3.11781 8.00109C3.05444 8.42442 3.02031 8.85181 3.00812 9.2792C3.00812 9.31332 3 9.34664 3 9.38076V22.6225L3.02519 23.0799C3.08043 23.9648 3.19418 24.8407 3.56711 25.6532C4.2699 27.1897 5.45042 28.2005 7.07131 28.6872C7.52386 28.8269 7.99834 28.8903 8.47202 28.9326C9.07325 28.9919 9.67367 29 10.2749 29H22.2248C22.7919 29 23.359 28.9618 23.9261 28.8903C24.819 28.7757 25.6567 28.5133 26.4147 28.0144C27.312 27.4331 28.0195 26.6018 28.45 25.6231C28.6531 25.1657 28.7676 24.6798 28.8521 24.1882C28.9748 23.4561 29 22.7151 29 21.9749C28.9959 17.8611 29 13.7481 28.9959 9.63427L28.9894 9.63589Z" fill={props.router.asPath === "/explores" ? "#FFF" : "#8F8F8F"} />
+                                    <g clipPath="url(#clip0_40_3263)">
+                                        <path d="M17.3616 10V20.5443C17.3616 20.5443 17.3616 21.3054 18.0578 21.3054H19.1039V23.9977H17.2666C17.2666 23.9977 14.1631 24.1865 14.1631 20.8942C14.1631 17.5995 14.1804 10 14.1804 10H17.3616Z" fill="black" />
+                                        <path d="M10.5 13.1568H11.4511V16.2812H10.5V13.1568Z" fill="black" />
+                                        <path d="M13.2861 13.1568H12.3373V16.2812H13.2861V13.1568Z" fill="black" />
+                                        <path d="M18.249 16.5117V13.0514L21.1833 14.7821L18.249 16.5117Z" fill="black" />
                                     </g>
+                                    <defs>
+                                        <clipPath id="clip0_40_3263">
+                                            <rect width="10.6833" height="14" fill="white" transform="translate(10.5 10)" />
+                                        </clipPath>
+                                    </defs>
                                 </svg>
                             </div>
                             {/* <ImportContactsTwoToneIcon className="nav-footer-icon"/>
-                            <br /> */}
-                            <span className={props.router.asPath === "/explores" ? "footer-icon-active" : ""}>Library</span>
+                                <br /> */}
+                            <span className={props.router.asPath === "/explores" ? "footer-icon-active" : ""}>TREBEL</span>
                         </a>
                     </div>
                 </div>
@@ -180,7 +161,7 @@ const FooterNav_v2 = (props) => {
                                 case '/radio':
                                     window.location.href = '/profile';
                                     break
-    
+
                                 default:
                                     Router.push('/profile');
                                     break;
@@ -202,9 +183,9 @@ const FooterNav_v2 = (props) => {
                                     </g>
                                 </svg>
                             </div>
-                            {/* <AccountCircleOutlinedIcon className="nav-footer-icon" /> */}
-                            {!isProfileComplete() ? (<Badge className="ribbon" color="danger"> </Badge>) : null}
-                            {/* <br /> */}
+                             {
+                                getUserAccessToken() ? <div className='ribbon'></div> : null
+                             }
                             <span className={props.router.asPath === "/profile" ? "footer-icon-active" : ""}>Account</span>
                         </a>
                     </div>

@@ -7,6 +7,23 @@ require("dotenv").config({ path: './.env' });
 
 
 let nextConfig = {
+  async headers() {
+    return [
+      {
+        source: '/',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store',
+          },
+          {
+            key: 'Clear-Site-Data',
+            value: "\"cache\", \"executionContexts\"",
+          },
+        ],
+      },
+    ]
+  },
 	// next-offline options:
   generateBuildId: async () => {
     // You can, for example, get the latest git commit hash here
@@ -72,7 +89,7 @@ let nextConfig = {
 		}, {});
 
 		config.module.rules.push({
-			test: /\.(eot|woff|woff2|ttf|svg|png|jpg|gif)$/,
+			test: /\.(eot|woff|woff2|otf|ttf|svg|png|jpg|gif)$/,
 			use: {
 				loader: 'url-loader',
 				options: {

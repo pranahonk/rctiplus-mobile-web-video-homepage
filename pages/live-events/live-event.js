@@ -4,21 +4,18 @@ import dynamic from 'next/dynamic';
 import Router, { withRouter } from 'next/router';
 import Link from 'next/link';
 import { connect } from 'react-redux';
+
 import Img from 'react-image';
-import BottomScrollListener from 'react-bottom-scroll-listener';
 import { Picker } from 'emoji-mart';
 import TimeAgo from 'react-timeago';
-import fetch from 'isomorphic-unfetch';
 import queryString from 'query-string';
-import { Offline } from 'react-detect-offline';
-import { isIOS } from 'react-device-detect';
 import MuteChat from '../../components/Includes/Common/MuteChat';
 
 
 import initialize from '../../utils/initialize';
 import { getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
-import { contentGeneralEvent, liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked } from '../../utils/appier';
+import { liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked } from '../../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../utils/firebaseTracking';
 
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
@@ -31,7 +28,6 @@ import Thumbnail from '../../components/Includes/Common/Thumbnail';
 import CountdownTimer from '../../components/Includes/Common/CountdownTimer';
 import ActionSheet from '../../components/Modals/ActionSheet';
 import LiveIcon from '../../components/Includes/Common/LiveIcon';
-import SignalIcon from '../../components/Includes/Common/SignalIcon';
 import StreamVideoIcon from '../../components/Includes/Common/StreamVideoIcon';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 import ErrorPlayer from '../../components/Includes/Player/ErrorPlayer';
@@ -46,28 +42,24 @@ import SentimenVerySatifiedIcon from '@material-ui/icons/SentimentVerySatisfied'
 import SendIcon from '@material-ui/icons/Send';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import ShareIcon from '@material-ui/icons/Share';
 import PauseIcon from '../../components/Includes/Common/PauseIcon';
-import Wrench from '../../components/Includes/Common/Wrench';
 import MissedIcon from '../../components/Includes/Common/Missed';
 
-import { DEV_API, VISITOR_TOKEN, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, STATIC, RESOLUTION_IMG } from '../../config';
+import { DEV_API, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, RESOLUTION_IMG } from '../../config';
 
 import '../../assets/scss/components/live-event-v2.scss';
 import '../../assets/scss/components/live-event.scss';
 import '../../assets/scss/videojs.scss';
 import 'emoji-mart/css/emoji-mart.css';
 
-import { getUserId, getUidAppier } from '../../utils/appier';
 import { getCountdown } from '../../utils/helpers';
-import { convivaVideoJs } from '../../utils/conviva';
 import { triggerQualityButtonClick } from '../../utils/player';
 
 import ax from 'axios';
-import cookies from 'next-cookies'
+
 const JwPlayer = dynamic(() => import('../../components/Includes/Player/JwPlayer'));
-const innerHeight = require('ios-inner-height');
+const InteractiveModal = dynamic(() => import('../../components/Modals/InteractiveModal'));
 
 const axios = ax.create({
   // baseURL: API + '/api',
@@ -150,7 +142,8 @@ class LiveEvent extends React.Component {
         refreshDuration: 0,
         reloadDuration: 0
       },
-			videoIndexing: {}
+			videoIndexing: {},
+			interactive_modal : false
 		};
 
 		const segments = this.props.router.asPath.split(/\?/);
@@ -252,7 +245,22 @@ class LiveEvent extends React.Component {
 				this.props.unsetPageLoader()
 				this.props.setSeamlessLoad(false)
 			})
-	}
+			setTimeout(() => {
+				var span = document.getElementsByClassName("tooltiptext")[0]
+				if(!span) return
+				span.parentNode.removeChild(span);  
+			}, 2000);
+		}
+	
+		componentDidUpdate(prevProps, prevState) {
+			if(prevState.selected_tab !== this.state.selected_tab) {
+				setTimeout(() => {
+					var span = document.getElementsByClassName("tooltiptext")[0]
+					if(!span) return
+					span.parentNode.removeChild(span);  
+				}, 4000);
+			}
+		}
 
 	isLive() {
 		if (this.state.selected_event && this.state.selected_event.data) {
@@ -545,6 +553,10 @@ class LiveEvent extends React.Component {
 			url: url,
 			hashtags: hashtags
 		});
+	}
+
+	toggleInteractiveModal() {
+		this.setState({ interactive_modal: !this.state.interactive_modal });
 	}
 
 	resendChat(index) {
@@ -908,6 +920,7 @@ class LiveEvent extends React.Component {
 		return output
 	}
 
+	
 	render() {
 		this.getCurrentViewingVideoIndex()
 
@@ -972,6 +985,10 @@ class LiveEvent extends React.Component {
 								}, 500);
 							});
 					}} /> */}
+				<InteractiveModal
+					open={this.state.interactive_modal}
+					toggle={this.toggleInteractiveModal.bind(this)}
+				/>
 				<ActionSheet
 					tabStatus= {this.state.tabStatus}
 					caption={this.state.caption}
@@ -1046,6 +1063,7 @@ class LiveEvent extends React.Component {
 											<Col xs={6} key={i} onClick={() => Router.push(`/live-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`, undefined, { shallow: true })}>
 												<Thumbnail
 												label="Live"
+												isInteractive={le.is_interactive}
 												timer={getCountdown(le.release_date_quiz, le.current_date)[0]}
 												timerCurrent={ le.current_date }
 												statusPlay={getCountdown(le.release_date_quiz, le.current_date)[1]}
@@ -1066,6 +1084,7 @@ class LiveEvent extends React.Component {
 												label="Live"
 												backgroundColor="#fa262f"
 												statusLabel="0"
+												isInteractive='false'
 												statusTimer="0"
 												src={this.state.meta + this.state.resolution + le.landscape_image} alt={le.content_title}/>
 											</Col>
@@ -1080,83 +1099,110 @@ class LiveEvent extends React.Component {
 					 (<div className={'live-event-chat-wrap ' + (this.state.chat_open ? 'live-event-chat-wrap-open' : '')} style={this.state.chat_open ?
 						{height: `calc(100% - ${this.playerContainerRef.current.clientHeight + this.titleRef.current.clientHeight}px)`}
 							: null}>
-							{selected_event?.data?.chat !== "inactive" && (
-						<div className="btn-chat">
-							<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
-								<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
-							</Button>
-							{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
-						</div>)}
+								<Row>
+									<Col xs={7}>
+									{selected_event?.data?.chat !== "inactive" && (
+										<div className="btn-chat">
+											<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
+												<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
+											</Button>
+											{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
+										</div>
+									)}
+									</Col>
+									<Col xs={5} style={{textAlign: 'end', marginLeft: '-10px'}}>
+										{selected_event?.data?.is_interactive !== "false" && (
+											<div className='tooltip-custom'>
+												<span className="tooltiptext">Ikuti sekarang!</span>
+												<div className='interactive'>
+														<Button id="btn-expand" onClick={() => this.setState({interactive_modal: true})} color="link">
+															<Row className='justify-content-center'>
+																<img 
+																	src='/static/player_icons/quiz_icon.svg	'
+																	width={40}
+																	height={40}
+																	alt="desc"
+																	className='ml-n3 mt-n3'
+																	/>
+																	<p className='ml-2 mt-n1'>Interactive</p>
+																	<FiberManualRecordIcon className="indicator-dot-red mt-n1" />
+															</Row>
+														</Button>
+												</div>
+											</div>
+										)}
+									</Col>
+								</Row>
 
-						<div className="box-chat" id="chat-input">
-							<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
-								<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
-									<div>
-										<MuteChat className="icon-block__chat" />
-										<p>Sorry, you cannot send the message</p>
-										<span>{this.state.block_user.message}</span>
+							<div className="box-chat" id="chat-input">
+								<div className="wrap-live-chat__block" style={this.state.block_user.status ? { display: 'flex' } : { display: 'none' }}>
+									<div className="block_chat" style={this.state.chat_open ? { display: 'block' } : { display: 'none' }}>
+										<div>
+											<MuteChat className="icon-block__chat" />
+											<p>Sorry, you cannot send the message</p>
+											<span>{this.state.block_user.message}</span>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div className="chat-messages" id="chat-messages">
-								{this.state.chats.map((chat, i) => (
-									<Row key={i} className="chat-line">
-										<Col xs={2}>
-											<Img
-												loader={<PersonOutlineIcon className="chat-avatar" />}
-												unloader={<PersonOutlineIcon className="chat-avatar" />}
-												className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
-										</Col>
-										<Col className="chat-message" xs={10}>
-											{/* {chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span> */}
-											<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />{' '}
-												<span className="username">
-													{chat.u}
-												</span> 
-												<span className="message">
-													{chat.m}
-												</span>
-										</Col>
-									</Row>
-								))}
-							</div>
-							<div className="chat-input-box">
-								<div className="chat-box">
-									<Row>
-										<Col xs={1}>
-											<Button className="emoji-button">
-												{this.state.emoji_picker_open ? (<KeyboardIcon onClick={this.toggleEmoji.bind(this)} />) : (<SentimenVerySatifiedIcon onClick={this.toggleEmoji.bind(this)} />)}
-											</Button>
-										</Col>
-										<Col xs={9}>
-											<Input
-												onKeyDown={this.handleChatEnter.bind(this)}
-												onChange={this.onChangeChatInput.bind(this)}
-												onClick={this.checkLogin.bind(this)}
-												value={this.state.chat}
-												type="textarea"
-												id="chat-input"
-												placeholder="Start Chatting"
-												className="chat-input"
-												maxLength={250}
-												rows={1} />
-										</Col>
-										<Col xs={1}>
-											<Button className="send-button" onClick={this.sendChat.bind(this)}>
-												<SendIcon />
-											</Button>
-										</Col>
-									</Row>
+								<div className="chat-messages" id="chat-messages">
+									{this.state.chats.map((chat, i) => (
+										<Row key={i} className="chat-line">
+											<Col xs={2}>
+												<Img
+													loader={<PersonOutlineIcon className="chat-avatar" />}
+													unloader={<PersonOutlineIcon className="chat-avatar" />}
+													className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
+											</Col>
+											<Col className="chat-message" xs={10}>
+												{/* {chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span> */}
+												<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />{' '}
+													<span className="username">
+														{chat.u}
+													</span> 
+													<span className="message">
+														{chat.m}
+													</span>
+											</Col>
+										</Row>
+									))}
 								</div>
-								<Picker
-									onSelect={emoji => {
-										this.onSelectEmoji();
-									}}
-									showPreview={false}
-									darkMode
-									style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
+								<div className="chat-input-box">
+									<div className="chat-box">
+										<Row>
+											<Col xs={1}>
+												<Button className="emoji-button">
+													{this.state.emoji_picker_open ? (<KeyboardIcon onClick={this.toggleEmoji.bind(this)} />) : (<SentimenVerySatifiedIcon onClick={this.toggleEmoji.bind(this)} />)}
+												</Button>
+											</Col>
+											<Col xs={9}>
+												<Input
+													onKeyDown={this.handleChatEnter.bind(this)}
+													onChange={this.onChangeChatInput.bind(this)}
+													onClick={this.checkLogin.bind(this)}
+													value={this.state.chat}
+													type="textarea"
+													id="chat-input"
+													placeholder="Start Chatting"
+													className="chat-input"
+													maxLength={250}
+													rows={1} />
+											</Col>
+											<Col xs={1}>
+												<Button className="send-button" onClick={this.sendChat.bind(this)}>
+													<SendIcon />
+												</Button>
+											</Col>
+										</Row>
+									</div>
+									<Picker
+										onSelect={emoji => {
+											this.onSelectEmoji();
+										}}
+										showPreview={false}
+										darkMode
+										style={{ display: this.state.emoji_picker_open ? 'block' : 'none' }} />
+								</div>
 							</div>
-						</div>
 					</div>)}
 				</div>
 			</Layout>

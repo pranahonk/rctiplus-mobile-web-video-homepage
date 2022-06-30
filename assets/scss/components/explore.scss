@@ -1,3 +1,5 @@
+@import url('https://fonts.cdnfonts.com/css/gotham');
+
 .container-box-e {
   margin-top: 50px;
   padding-top: 5%;
@@ -101,22 +103,86 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 100vw;
+  background-color: #FFF200;
   height: 100vh;
+  padding-bottom: 60px;
 
-  button {
-    background: #fa262f;
-    border: none;
-    color: white;
-    box-shadow: 0 0 0.5rem #00000063;
-    border-radius: 0.5rem;
-    width: 15rem;
-    padding: 0.2rem;
-    margin: 0.5rem;
+  .containerWrapper {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 32px 0;
+    width: 100vw;
 
-    &:hover {
-      background: #ce1620;
+    .contentWrapper {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: space-evenly;
+
+      .contentTextWrapper {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        margin-bottom: 28px;
+        width: 100%;
+        
+        .contentText {
+          color: #0F0F0F;
+          font-family: 'Gotham', sans-serif;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 18px;
+          text-align: center;
+          margin-bottom: 0;
+          margin-block-end: 0;
+        }
+        
+        .contentTextBold {
+          color: #0F0F0F;
+          font-family: 'Gotham Black', sans-serif;
+          font-size: 18px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 18px;
+          text-align: center;
+          margin-bottom: 0;
+          margin-block-end: 0;
+        }
+      }
+  
+      .comingSoon {
+        color: #0F0F0F;
+        font-family: 'Gotham', sans-serif;
+        font-size: 28px;
+        font-style: normal;
+        font-weight: 400;
+        letter-spacing: -0.04em;
+        line-height: 34px;
+        padding: 0 16px;
+        text-align: center;        
+      }
     }
+  }
+  
+  button {
+    background: #0F0F0F;
+    border: none;
+    border-radius: 9999px;
+    font-family: 'Gotham Black', sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0.44px;
+    line-height: 24px;
+    color: #FFF200;
+    outline: none;
+    padding: 12px 16px;
+    text-align: center;        
+    text-transform: uppercase;
+    width: 100%;
   }
 }

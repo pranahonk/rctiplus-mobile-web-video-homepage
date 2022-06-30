@@ -1,7 +1,7 @@
 const initialState = {
     homepage_content: [],
-    banner: null,
-    meta: null,
+    banner: [],
+    meta: {},
     data: null,
     status: null,
     selected_season: 1,
@@ -39,9 +39,9 @@ export default (state = initialState, action) => {
                 status: action.status
             });
         case 'SELECT_SEASON':
-            return Object.assign({}, state, { 
+            return Object.assign({}, state, {
                 selected_season: action.season,
-                current_page: 1 
+                current_page: 1
             });
         case 'GET_PROGRAM_EPISODES':
             let episodes = state.episodes;

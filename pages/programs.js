@@ -53,9 +53,7 @@ const Trailer = dynamic(() => import('../components/Includes/program-detail/prog
 
 class Index extends React.Component {
   static async getInitialProps(ctx) {
-    // console.log('on server')
     const programId = ctx.query.id;
-    console.log(`ini program id`, programId)
     const accessToken = getCookie('ACCESS_TOKEN');
     const res = await fetch(`${DEV_API}/api/v1/program/${programId}/detail`, {
         method: 'GET',
@@ -100,7 +98,7 @@ class Index extends React.Component {
       init: '',
       transform: 'rotate(0deg)',
       isOpen: false,
-      toggle: 0,
+      toggle: "",
       season: 1,
       episodeClearStore: false,
       titleProgram: '',
@@ -127,6 +125,9 @@ class Index extends React.Component {
     this.premium = 0;
   }
   componentDidMount() {
+    if (!this.props.seo_content) {
+      Router.replace('/');
+    }
     this.premium = this.props?.server?.[this.type]?.data?.premium
     this.reference = queryString.parse(location.search).ref;
     this.props.dispatch(userActions.getUserData());
@@ -847,9 +848,6 @@ class Index extends React.Component {
       }
     })
 
-    console.log(videoIndexing, "uhuy")
-
-
     if (this.state.videoIndexing.current !== videoIndexing.current) {
       this.setState({ videoIndexing })
     }
@@ -955,7 +953,6 @@ class Index extends React.Component {
 
     // set active video index to be used when user click next / back player button
     this.getCurrentViewingVideoIndex()
-   
     return (
       <Layout>
         <HeadMeta data={props.seo_content}
