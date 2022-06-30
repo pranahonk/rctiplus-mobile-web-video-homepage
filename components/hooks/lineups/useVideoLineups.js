@@ -112,6 +112,8 @@ export default function useVideoLineups(props) {
   }
 
   const generateLink = (content) => {
+    console.log(props.lineup.lineup_type);
+    console.log(content)
     let url = (Boolean(content.permalink) === /^http:|^https:/.test(content.permalink))
       ? `${location.origin}${content.permalink.split("rctiplus.com")[1]}`
       : "/"
@@ -122,9 +124,9 @@ export default function useVideoLineups(props) {
         else Router.push(url)
         break;
       case "default":
-        if(content?.content_type === "live_music"){
-          Router.push(content?.permalink)
-        }
+        // console.log("masuk sini")
+        // console.log(content?.content_type)
+        Router.push(content?.permalink)
         break;
       default:
         if (content.content_type.includes("live")) {
