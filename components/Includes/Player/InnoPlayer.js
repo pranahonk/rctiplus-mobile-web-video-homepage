@@ -131,6 +131,10 @@ const JwPlayer = (props) => {
         setPlayerFullscreen(props.isFullscreen);
         // setIsPlayerReady(true)
 
+        console.log('pppp')
+        console.log(props.data.url)
+        console.log(props.data.vmap_ima)
+
 
         const playerContainer = ConvertStringToHTML(player.getContainer())
         const isForward = playerContainer.querySelector('.jw-rplus-forward');
