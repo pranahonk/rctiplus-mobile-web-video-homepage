@@ -36,17 +36,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
+          .podcast-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            object-fit: contain;
+          }
             .desc-menu-wrapper {
                 display: flex;
                 flex-direction: column;
                 margin: 0 12px;
                 max-width: 161px;
-                .podcast-img {
-                  width: 72px;
-                  height: 72px;
-                  border-radius: 8px;
-                  object-fit: contain;
-                }
                 .podcast-title {
                     font-family: Open Sans;
                     font-style: normal;
