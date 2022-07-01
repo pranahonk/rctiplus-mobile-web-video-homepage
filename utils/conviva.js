@@ -88,6 +88,7 @@ export const convivaJwPlayer = (assetName = null, player = null, duration = null
                 convivaVideoAnalytics.setCallback(function () {
                     if (convivaVideoAnalytics != null) {
                         if (player) {
+                            alert('sdf')
                             convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.PLAY_HEAD_TIME, duration * 1000);
                             convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.BUFFER_LENGTH, player.getBuffer());
                         }
@@ -175,8 +176,7 @@ export const convivaInnoPlayer = (assetName = null, player = null, duration = nu
                     if (convivaVideoAnalytics != null) {
                         if (player) {
                             convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.PLAY_HEAD_TIME, duration * 1000);
-                            // convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.BUFFER_LENGTH, player.getBuffer());
-                            convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.BUFFER_LENGTH, 0);
+                            convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.BUFFER_LENGTH, player.getBuffer());
                         }
                     }
                 });

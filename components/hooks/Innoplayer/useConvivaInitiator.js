@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { convivaJwPlayer} from '../../../utils/conviva';
+import { convivaInnoPlayer} from '../../../utils/conviva';
 
 export default function useConvivaInitiator(props) {
   const [ initConviva, setInitConviva ] = useState(false)
@@ -40,7 +40,7 @@ export default function useConvivaInitiator(props) {
     };
 
     const isLive = /^live/i.test(props.type)
-    const convivaTracker = convivaJwPlayer(
+    const convivaTracker = convivaInnoPlayer(
       optionsConviva.assetName,
       props.player,
       props.player.getDuration(),
