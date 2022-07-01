@@ -59,6 +59,7 @@ import { triggerQualityButtonClick } from '../../utils/player';
 import ax from 'axios';
 
 const JwPlayer = dynamic(() => import('../../components/Includes/Player/JwPlayer'));
+const InnoPlayer = dynamic(() => import('../../components/Includes/Player/InnoPlayer'));
 const InteractiveModal = dynamic(() => import('../../components/Modals/InteractiveModal'));
 
 const axios = ax.create({
@@ -204,8 +205,8 @@ class LiveEvent extends React.Component {
 					live_events: liveEvent.data.data,
 					missed_event: missedEvent.data.data,
 					meta: liveEvent.data.meta.image_path,
-					selected_event: liveEventDetail,
-					selected_event_url: liveEventUrl
+					selected_event: liveEventDetail.data,
+					selected_event_url: liveEventUrl.data
 				}
 
 				const failedToFetchUrlAndDetail = (liveEventDetail.status > 200 ? liveEventDetail.status : false) || (liveEventUrl.status > 200 ? liveEventUrl.status : false)
@@ -1000,8 +1001,22 @@ class LiveEvent extends React.Component {
 					<div ref={ this.playerContainerRef }  className="rplus-player-container">
 					<NavBack navPlayer={true} stylePos="absolute"/>
 
-						<JwPlayer
-							data={ selected_event_url.data && selected_event_url.data.data }
+							{/* <InnoPlayer
+							data={ selected_event_url && selected_event_url.data }
+							type={ this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' }
+							customData={{
+								program_name: this.props.selected_event && this.props.selected_event.data && this.props.selected_event.data.name,
+								isLogin: this.props.user.isAuth,
+								sectionPage: this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' ,
+								}}
+							geoblockStatus={ this.state.statusError === 2 ? true : false }
+              adsOverlayData={ state.adsOverlayDuration }
+							actionBtn={(e) => this.handleActionBtn(e)}
+							videoIndexing={state.videoIndexing}
+							/> */}
+
+							<JwPlayer
+							data={ selected_event_url?.data }
 							type={ this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' }
 							customData={{
 								program_name: selected_event && selected_event.data && selected_event.data.name,
