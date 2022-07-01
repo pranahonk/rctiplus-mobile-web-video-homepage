@@ -205,8 +205,8 @@ class LiveEvent extends React.Component {
 					live_events: liveEvent.data.data,
 					missed_event: missedEvent.data.data,
 					meta: liveEvent.data.meta.image_path,
-					selected_event: liveEventDetail,
-					selected_event_url: liveEventUrl
+					selected_event: liveEventDetail.data,
+					selected_event_url: liveEventUrl.data
 				}
 
 				const failedToFetchUrlAndDetail = (liveEventDetail.status > 200 ? liveEventDetail.status : false) || (liveEventUrl.status > 200 ? liveEventUrl.status : false)
@@ -1016,7 +1016,7 @@ class LiveEvent extends React.Component {
 							/> */}
 
 							<JwPlayer
-							data={ selected_event_url && selected_event_url.data }
+							data={ selected_event_url?.data }
 							type={ this.props.router.asPath.match('/missed-event/') ? 'missed event' : 'live event' }
 							customData={{
 								program_name: selected_event && selected_event.data && selected_event.data.name,
