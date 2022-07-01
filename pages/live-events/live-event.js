@@ -59,7 +59,7 @@ import { triggerQualityButtonClick } from '../../utils/player';
 import ax from 'axios';
 
 const JwPlayer = dynamic(() => import('../../components/Includes/Player/JwPlayer'));
-const InnoPlayer = dynamic(() => import('../../components/Includes/Player/InnoPlayer'));
+// const InnoPlayer = dynamic(() => import('../../components/Includes/Player/InnoPlayer'));
 const InteractiveModal = dynamic(() => import('../../components/Modals/InteractiveModal'));
 
 const axios = ax.create({
@@ -195,63 +195,63 @@ class LiveEvent extends React.Component {
 			this.props.getMissedEvent(),
 			this.props.getLiveEventUrl(this.props.router.query.id),
 			this.props.getLiveEventDetail(this.props.router.query.id),
-			axios.get('/v1/get-ads-duration'),
-			this.props.getUserData(),
 		])
-			.then(res => {
-				const [ liveEvent, missedEvent, liveEventUrl, liveEventDetail, adsDuration, userData ] = res
+		.then(res => {
+			const [ liveEvent, missedEvent, liveEventUrl, liveEventDetail ] = res
 
-				let stateToChange = {
-					live_events: liveEvent.data.data,
-					missed_event: missedEvent.data.data,
-					meta: liveEvent.data.meta.image_path,
-					selected_event: liveEventDetail.data,
-					selected_event_url: liveEventUrl.data
+			let stateToChange = {
+				live_events: liveEvent.data.data,
+				missed_event: missedEvent.data.data,
+				meta: liveEvent.data.meta.image_path,
+				selected_event: liveEventDetail.data,
+				selected_event_url: liveEventUrl.data
+			}
+
+			const failedToFetchUrlAndDetail = (liveEventDetail.status > 200 ? liveEventDetail.status : false) || (liveEventUrl.status > 200 ? liveEventUrl.status : false)
+			if (failedToFetchUrlAndDetail) {
+				stateToChange = {
+					...stateToChange,
+					selected_event: {},
+					selected_event_url: {}
 				}
+			}
 
-				const failedToFetchUrlAndDetail = (liveEventDetail.status > 200 ? liveEventDetail.status : false) || (liveEventUrl.status > 200 ? liveEventUrl.status : false)
-				if (failedToFetchUrlAndDetail) {
-					stateToChange = {
-						...stateToChange,
-						selected_event: {},
-						selected_event_url: {}
+			if (stateToChange.selected_event) this.isLive()
+
+			this.setState(stateToChange, () => {
+				if (location.search.includes("refpage=login")) this.toggleChat()
+			})
+		})
+		.finally(_ => {
+			this.props.unsetPageLoader()
+			this.props.setSeamlessLoad(false)
+		})
+
+		this.props.getUserData()
+			.then(response => {
+				if (response.status === 200 && response.data.status.code === 0) {
+					this.setState({ user_data: response.data.data });
+				}
+			})
+
+		axios.get('/v1/get-ads-duration')
+		.then(response => {
+			if (response.data.data) {
+				const [ refresh, reload ] = response.data.data
+				this.setState({
+					adsOverlayDuration: {
+						refreshDuration: refresh.duration,
+						reloadDuration: reload ? reload.duration : refresh.duration
 					}
-				}
-
-				if (adsDuration.data.data) {
-					const [ refresh, reload ] = adsDuration.data.data
-					stateToChange = {
-						...stateToChange,
-						adsOverlayDuration: {
-							refreshDuration: refresh.duration,
-							reloadDuration: reload ? reload.duration : refresh.duration
-						}
-					}
-				}
-
-				if (userData.status === 200 && userData.data.status.code === 0) {
-					stateToChange = {
-						...stateToChange,
-						user_data: userData.data.data
-					}
-				}
-
-				if (stateToChange.selected_event) this.isLive()
-
-				this.setState(stateToChange, () => {
-					if (location.search.includes("refpage=login")) this.toggleChat()
 				})
-			})
-			.finally(_ => {
-				this.props.unsetPageLoader()
-				this.props.setSeamlessLoad(false)
-			})
-			setTimeout(() => {
-				var span = document.getElementsByClassName("tooltiptext")[0]
-				if(!span) return
-				span.parentNode.removeChild(span);  
-			}, 2000);
-		}
+			}
+		})
+		setTimeout(() => {
+			var span = document.getElementsByClassName("tooltiptext")[0]
+			if(!span) return
+			span.parentNode.removeChild(span);  
+		}, 2000);
+	}
 	
 		componentDidUpdate(prevProps, prevState) {
 			if(prevState.selected_tab !== this.state.selected_tab) {
