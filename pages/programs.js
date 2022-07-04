@@ -33,6 +33,7 @@ import userActions from '../redux/actions/userActions';
 import VisionPlusProgram from '../components/Includes/program-detail/visionplus_program';
 
 // const Player = dynamic(() => import('../components/Includes/Player/Player'));
+const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
 const InnoPlayer = dynamic(() => import('../components/Includes/Player/InnoPlayer'));
 const HeadMeta = dynamic(() => import('../components/Seo/HeadMeta'));
 const MainLoader = dynamic(() => import('../components/Includes/Shimmer/detailProgramLoader').then((mod) => mod.MainLoader));
@@ -827,44 +828,89 @@ class Index extends React.Component {
     const dataPlayer = this.props.data['data-player'];
     console.log('recon', this.props.data);
 
-    return (
-      <div className="program-detail-player-wrapper">
-        <InnoPlayer
-          data={dataPlayer && dataPlayer.data } 
-          isFullscreen={ dataPlayer && dataPlayer.isFullscreen } 
-          ref={this.ref} 
-          onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
-          isResume={true} 
-          geoblockStatus={ dataPlayer && dataPlayer.status && dataPlayer.status.code === 12 ? true : false }
-          customData= {{
-            isLogin: this.props.auth.isAuth,
-            programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
-            sectionPage: 'VOD',
-          }}
-          actionBtn={(e) => this.handleActionBtn(e)}
-          videoIndexing={this.state.videoIndexing}
-          />
-      </div>
-    );
+    if(this.props.router.query.content_type == 'clip'){
+      return (
+        <div className="program-detail-player-wrapper">
+          <InnoPlayer
+            data={dataPlayer && dataPlayer.data } 
+            isFullscreen={ dataPlayer && dataPlayer.isFullscreen } 
+            ref={this.ref} 
+            onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
+            isResume={true} 
+            geoblockStatus={ dataPlayer && dataPlayer.status && dataPlayer.status.code === 12 ? true : false }
+            customData= {{
+              isLogin: this.props.auth.isAuth,
+              programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
+              sectionPage: 'VOD',
+            }}
+            actionBtn={(e) => this.handleActionBtn(e)}
+            videoIndexing={this.state.videoIndexing}
+            />
+        </div>
+      );
+    }else{
+      return (
+        <div className="program-detail-player-wrapper">
+          <JwPlayer
+            data={dataPlayer && dataPlayer.data } 
+            isFullscreen={ dataPlayer && dataPlayer.isFullscreen } 
+            ref={this.ref} 
+            onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
+            isResume={true} 
+            geoblockStatus={ dataPlayer && dataPlayer.status && dataPlayer.status.code === 12 ? true : false }
+            customData= {{
+              isLogin: this.props.auth.isAuth,
+              programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
+              sectionPage: 'VOD',
+            }}
+            actionBtn={(e) => this.handleActionBtn(e)}
+            videoIndexing={this.state.videoIndexing}
+            />
+        </div>
+      );
+    }
+    
+
+    
   }
   trailer() {
     if (this.props.server && this.props.server[this.type] && this.props.server[this.type]) {
       const data = this.props.server && this.props.server[this.type];
-      return (
-        <div className="program-detail-player-wrapper trailer">
-          <InnoPlayer 
-            data={ data.data } 
-            ref={this.ref} isFullscreen={ true }
-            isResume={true} 
-            geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
-            customData= {{
-              isLogin: this.props.auth.isAuth, 
-              programType: data.program_type_name,
-              sectionPage: 'VOD',
-              }}
-            />
-        </div>
-      );
+
+      if(this.props.router.query.content_type == 'clip'){
+        return (
+          <div className="program-detail-player-wrapper trailer">
+            <InnoPlayer 
+              data={ data.data } 
+              ref={this.ref} isFullscreen={ true }
+              isResume={true} 
+              geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
+              customData= {{
+                isLogin: this.props.auth.isAuth, 
+                programType: data.program_type_name,
+                sectionPage: 'VOD',
+                }}
+              />
+          </div>
+        );
+      }else{
+        return (
+          <div className="program-detail-player-wrapper trailer">
+            <JwPlayer 
+              data={ data.data } 
+              ref={this.ref} isFullscreen={ true }
+              isResume={true} 
+              geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
+              customData= {{
+                isLogin: this.props.auth.isAuth, 
+                programType: data.program_type_name,
+                sectionPage: 'VOD',
+                }}
+              />
+          </div>
+        );
+      }
+      
     }
     return (
       <div className="program-detail-player-wrapper animated fadeInDown go">
