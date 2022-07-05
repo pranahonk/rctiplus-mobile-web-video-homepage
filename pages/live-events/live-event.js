@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
-import Router, { withRouter } from 'next/router';
+import Router, { useRouter, withRouter } from 'next/router';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 
@@ -15,7 +15,7 @@ import MuteChat from '../../components/Includes/Common/MuteChat';
 import initialize from '../../utils/initialize';
 import { getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
-import { liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked } from '../../utils/appier';
+import { liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked, getUidAppier } from '../../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../utils/firebaseTracking';
 
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
@@ -46,7 +46,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import PauseIcon from '../../components/Includes/Common/PauseIcon';
 import MissedIcon from '../../components/Includes/Common/Missed';
 
-import { DEV_API, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, RESOLUTION_IMG } from '../../config';
+import { DEV_API, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, RESOLUTION_IMG, VISITOR_TOKEN } from '../../config';
 
 import '../../assets/scss/components/live-event-v2.scss';
 import '../../assets/scss/components/live-event.scss';
@@ -187,45 +187,9 @@ class LiveEvent extends React.Component {
 				selected_tab: 'missed-event',
 			});
 		}
-
-		this.props.setPageLoader()
-		this.props.setSeamlessLoad(true)
-		Promise.all([
-			this.props.getLiveEvent('non on air'),
-			this.props.getMissedEvent(),
-			this.props.getLiveEventUrl(this.props.router.query.id),
-			this.props.getLiveEventDetail(this.props.router.query.id),
-		])
-		.then(res => {
-			const [ liveEvent, missedEvent, liveEventUrl, liveEventDetail ] = res
-
-			let stateToChange = {
-				live_events: liveEvent.data.data,
-				missed_event: missedEvent.data.data,
-				meta: liveEvent.data.meta.image_path,
-				selected_event: liveEventDetail.data,
-				selected_event_url: liveEventUrl.data
-			}
-
-			const failedToFetchUrlAndDetail = (liveEventDetail.status > 200 ? liveEventDetail.status : false) || (liveEventUrl.status > 200 ? liveEventUrl.status : false)
-			if (failedToFetchUrlAndDetail) {
-				stateToChange = {
-					...stateToChange,
-					selected_event: {},
-					selected_event_url: {}
-				}
-			}
-
-			if (stateToChange.selected_event) this.isLive()
-
-			this.setState(stateToChange, () => {
-				if (location.search.includes("refpage=login")) this.toggleChat()
-			})
-		})
-		.finally(_ => {
-			this.props.unsetPageLoader()
-			this.props.setSeamlessLoad(false)
-		})
+		this.getMissedEvent();
+		this.getLiveEvent();
+		this.getAllEvent();
 
 		this.props.getUserData()
 			.then(response => {
@@ -252,16 +216,97 @@ class LiveEvent extends React.Component {
 			span.parentNode.removeChild(span);  
 		}, 2000);
 	}
-	
-		componentDidUpdate(prevProps, prevState) {
-			if(prevState.selected_tab !== this.state.selected_tab) {
-				setTimeout(() => {
-					var span = document.getElementsByClassName("tooltiptext")[0]
-					if(!span) return
-					span.parentNode.removeChild(span);  
-				}, 4000);
-			}
+
+	async getAllEvent(){
+		let res = null;
+		const { id } = this.props.router.query
+
+		if (this.props.router.asPath.match('/missed-event/')) {
+			res = await Promise.all([
+				axios.get(`${DEV_API}/api/v1/missed-event/${id}`),
+				axios.get(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${getUidAppier()}`)
+			]);
 		}
+		else {
+			res = await Promise.all([
+				axios.get(`${DEV_API}/api/v1/live-event/${id}`),
+				axios.get(`${DEV_API}/api/v1/live-event/${id}/url?appierid=${getUidAppier()}`)
+			]);
+		}
+
+		const error_code = res[0].status > 200 ? res[0].status : false;
+		const error_code_2 = res[1].status > 200 ? res[1].status : false;
+		if (error_code || error_code_2) {
+			this.setState({
+				selected_event: {},
+				selected_event_url: {},
+			})
+		}
+
+		const data = await Promise.all([
+			res[0],
+			res[1],
+		]);
+
+		this.setState({
+			selected_event: data[0]?.data,
+			selected_event_url: data[1]?.data,
+			statusError: data[1]?.data ? data[1]?.data?.status : false,
+			status: data[1]?.data?.status?.code === 12 ? 2 : 0
+		})
+	}
+
+	getLiveEvent() {
+		this.props.setPageLoader();
+		this.props.setSeamlessLoad(true);
+		this.props.getLiveEvent('non on air')
+		.then(response => {
+			this.setState({
+				live_events: response.data.data ,
+				meta: response.data.meta.image_path,
+			}, () => {
+				// this.initVOD();
+				// this.initPlayer();
+				this.props.setSeamlessLoad(false);
+				this.props.unsetPageLoader();
+
+				if (location.search.includes("refpage=login")) this.toggleChat()
+			});
+		})
+		.catch(error => {
+			// this.initPlayer();
+			this.props.setSeamlessLoad(false);
+			this.props.unsetPageLoader();
+		});
+	}
+	
+	getMissedEvent() {
+		this.props.setSeamlessLoad(true);
+    this.props.setPageLoader();
+    this.props.getMissedEvent()
+    .then(({data: lists}) => {
+			this.props.setSeamlessLoad(false);
+			this.props.unsetPageLoader();
+      this.setState({
+				missed_event: lists.data,
+				meta: lists.meta.image_path,
+      });
+    })
+    .catch((error) => {
+			this.props.setSeamlessLoad(false);
+			this.props.unsetPageLoader();
+    });
+  }
+
+	componentDidUpdate(prevProps, prevState) {
+		if(prevState.selected_tab !== this.state.selected_tab) {
+			setTimeout(() => {
+				var span = document.getElementsByClassName("tooltiptext")[0]
+				if(!span) return
+				span.parentNode.removeChild(span);  
+			}, 4000);
+		}
+	}
 
 	isLive() {
 		if (this.state.selected_event && this.state.selected_event.data) {
@@ -334,7 +379,7 @@ class LiveEvent extends React.Component {
 		this.props.setPageLoader();
 		this.setState({ chats: [] }, () => {
 			const chatBox = document.getElementById('chat-messages');
-			chatBox.scrollTop = chatBox.scrollHeight;
+			chatBox.scrollTop = chatBox?.scrollHeight;
 			this.props.unsetPageLoader();
 			if (true) {
 				let firstLoadChat = true;
