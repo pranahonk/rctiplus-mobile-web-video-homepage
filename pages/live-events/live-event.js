@@ -177,7 +177,7 @@ class LiveEvent extends React.Component {
 			this.player.dispose();
 		}
 	}
-	componentDidMount() {
+	async componentDidMount() {
 		if(this.props.router.asPath.match('/live-event/') && this.state.selected_event?.data?.chat !== "inactive") this.loadChatMessages(this.props.router.query.id);
 		initGA();
 		this.getAvailable();
@@ -187,9 +187,10 @@ class LiveEvent extends React.Component {
 				selected_tab: 'missed-event',
 			});
 		}
+		await this.getAllEvent();
+
 		this.getMissedEvent();
 		this.getLiveEvent();
-		this.getAllEvent();
 
 		this.props.getUserData()
 			.then(response => {
