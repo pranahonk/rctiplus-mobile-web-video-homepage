@@ -177,6 +177,7 @@ class LiveEvent extends React.Component {
 			this.player.dispose();
 		}
 	}
+
 	async componentDidMount() {
 		if(this.props.router.asPath.match('/live-event/') && this.state.selected_event?.data?.chat !== "inactive") this.loadChatMessages(this.props.router.query.id);
 		initGA();
@@ -187,11 +188,56 @@ class LiveEvent extends React.Component {
 				selected_tab: 'missed-event',
 			});
 		}
-		await this.getAllEvent();
+
+		try {
+			let res = null;
+			const { id } = this.props.router.query
+	
+			if (this.props.router.asPath.match('/missed-event/')) {
+				res = await Promise.all([
+					axios.get(`${DEV_API}/api/v1/missed-event/${id}`),
+					axios.get(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${getUidAppier()}`)
+				]);
+			}
+			else {
+				res = await Promise.all([
+					axios.get(`${DEV_API}/api/v1/live-event/${id}`),
+					axios.get(`${DEV_API}/api/v1/live-event/${id}/url?appierid=${getUidAppier()}`)
+				]);
+			}
+
+			const error_code = res[0]?.status > 200 ? res[0]?.status : false;
+			const error_code_2 = res[1]?.status > 200 ? res[1]?.status : false;
+			if (error_code || error_code_2) {
+				this.setState({
+					selected_event: {},
+					selected_event_url: {},
+				})
+			}
+	
+			const data = await Promise.all([
+				res[0],
+				res[1],
+			]);
+	
+			this.setState({
+				selected_event: data[0]?.data,
+				selected_event_url: data[1]?.data,
+				statusError: data[1]?.data ? data[1]?.data?.status : false,
+				status: data[1]?.data?.status?.code === 12 ? 2 : 0
+			})
+			
+		} catch (error) {
+			console.error('error',error)
+			this.setState({
+				selected_event: {},
+				selected_event_url: {},
+			})
+		}
 
 		this.getMissedEvent();
 		this.getLiveEvent();
-
+		
 		this.props.getUserData()
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {
@@ -216,45 +262,6 @@ class LiveEvent extends React.Component {
 			if(!span) return
 			span.parentNode.removeChild(span);  
 		}, 2000);
-	}
-
-	async getAllEvent(){
-		let res = null;
-		const { id } = this.props.router.query
-
-		if (this.props.router.asPath.match('/missed-event/')) {
-			res = await Promise.all([
-				axios.get(`${DEV_API}/api/v1/missed-event/${id}`),
-				axios.get(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${getUidAppier()}`)
-			]);
-		}
-		else {
-			res = await Promise.all([
-				axios.get(`${DEV_API}/api/v1/live-event/${id}`),
-				axios.get(`${DEV_API}/api/v1/live-event/${id}/url?appierid=${getUidAppier()}`)
-			]);
-		}
-
-		const error_code = res[0].status > 200 ? res[0].status : false;
-		const error_code_2 = res[1].status > 200 ? res[1].status : false;
-		if (error_code || error_code_2) {
-			this.setState({
-				selected_event: {},
-				selected_event_url: {},
-			})
-		}
-
-		const data = await Promise.all([
-			res[0],
-			res[1],
-		]);
-
-		this.setState({
-			selected_event: data[0]?.data,
-			selected_event_url: data[1]?.data,
-			statusError: data[1]?.data ? data[1]?.data?.status : false,
-			status: data[1]?.data?.status?.code === 12 ? 2 : 0
-		})
 	}
 
 	getLiveEvent() {
@@ -824,7 +831,8 @@ class LiveEvent extends React.Component {
 				image: '',
 			}
 		}
-		const { data, meta } = this.state.selected_event;
+		const data = this.state.selected_event?.data;
+		const meta = this.state.selected_event?.meta;
 		return {
 			title: this.props.router.asPath.includes('/missed-event') ? `Nonton Tayangan Ulang Streaming ${this.props.router.query.title.replace(/-/gi, ' ') || ''}`: 'Nonton Live Streaming ' + (this.props.router.query.title.replace(/-/gi, ' ') || ''),
 			description: this.props.router.asPath.includes('/missed-event') ? `Tonton siaran ulang ${(this.props.router.query.title.replace(/-/gi, ' ') || '')} gratis dan tanpa buffering di RCTI+` : `Tonton siaran langsung ${(this.props.router.query.title.replace(/-/gi, ' ') || '')} gratis dan tanpa buffering di RCTI+` ,
