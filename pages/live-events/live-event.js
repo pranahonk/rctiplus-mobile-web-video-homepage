@@ -178,7 +178,7 @@ class LiveEvent extends React.Component {
 		}
 	}
 
-	async componentDidMount() {
+	componentDidMount() {
 		if(this.props.router.asPath.match('/live-event/') && this.state.selected_event?.data?.chat !== "inactive") this.loadChatMessages(this.props.router.query.id);
 		initGA();
 		this.getAvailable();
@@ -189,55 +189,43 @@ class LiveEvent extends React.Component {
 			});
 		}
 
-		try {
-			let res = null;
-			const { id } = this.props.router.query
-	
-			if (this.props.router.asPath.match('/missed-event/')) {
-				res = await Promise.all([
-					axios.get(`${DEV_API}/api/v1/missed-event/${id}`),
-					axios.get(`${DEV_API}/api/v2/missed-event/${id}/url?appierid=${getUidAppier()}`)
-				]);
-			}
-			else {
-				res = await Promise.all([
-					axios.get(`${DEV_API}/api/v1/live-event/${id}`),
-					axios.get(`${DEV_API}/api/v1/live-event/${id}/url?appierid=${getUidAppier()}`)
-				]);
+		this.props.setPageLoader()
+		this.props.setSeamlessLoad(true)
+		Promise.all([
+			this.props.getLiveEvent('non on air'),
+			this.props.getMissedEvent(),
+			this.props.getAllEvent(this.props.router.query.id, this.props.router.asPath.match('/live-event/'))
+		])
+		.then(res => {
+			const [ liveEvent, missedEvent, allEvent ] = res
+			let stateToChange = {
+				live_events: liveEvent.data.data,
+				missed_event: missedEvent.data.data,
+				meta: liveEvent.data.meta.image_path,
+				selected_event: allEvent?.[0]?.data,
+				selected_event_url: allEvent?.[1]?.data
 			}
 
-			const error_code = res[0]?.status > 200 ? res[0]?.status : false;
-			const error_code_2 = res[1]?.status > 200 ? res[1]?.status : false;
-			if (error_code || error_code_2) {
-				this.setState({
+			const failedToFetchUrlAndDetail = (allEvent?.[0]?.status > 200 ? allEvent?.[0]?.status : false) || (allEvent?.[1]?.status > 200 ? allEvent?.[1]?.status : false)
+			if (failedToFetchUrlAndDetail) {
+				stateToChange = {
+					...stateToChange,
 					selected_event: {},
-					selected_event_url: {},
-				})
+					selected_event_url: {}
+				}
 			}
-	
-			const data = await Promise.all([
-				res[0],
-				res[1],
-			]);
-	
-			this.setState({
-				selected_event: data[0]?.data,
-				selected_event_url: data[1]?.data,
-				statusError: data[1]?.data ? data[1]?.data?.status : false,
-				status: data[1]?.data?.status?.code === 12 ? 2 : 0
-			})
-			
-		} catch (error) {
-			console.error('error',error)
-			this.setState({
-				selected_event: {},
-				selected_event_url: {},
-			})
-		}
 
-		this.getMissedEvent();
-		this.getLiveEvent();
-		
+			if (stateToChange.selected_event) this.isLive()
+
+			this.setState(stateToChange, () => {
+				if (location.search.includes("refpage=login")) this.toggleChat()
+			})
+		})
+		.finally(_ => {
+			this.props.unsetPageLoader()
+			this.props.setSeamlessLoad(false)
+		})
+
 		this.props.getUserData()
 			.then(response => {
 				if (response.status === 200 && response.data.status.code === 0) {
@@ -263,48 +251,47 @@ class LiveEvent extends React.Component {
 			span.parentNode.removeChild(span);  
 		}, 2000);
 	}
+	// getLiveEvent() {
+	// 	this.props.setPageLoader();
+	// 	this.props.setSeamlessLoad(true);
+	// 	this.props.getLiveEvent('non on air')
+	// 	.then(response => {
+	// 		this.setState({
+	// 			live_events: response.data.data ,
+	// 			meta: response.data.meta.image_path,
+	// 		}, () => {
+	// 			// this.initVOD();
+	// 			// this.initPlayer();
+	// 			this.props.setSeamlessLoad(false);
+	// 			this.props.unsetPageLoader();
 
-	getLiveEvent() {
-		this.props.setPageLoader();
-		this.props.setSeamlessLoad(true);
-		this.props.getLiveEvent('non on air')
-		.then(response => {
-			this.setState({
-				live_events: response.data.data ,
-				meta: response.data.meta.image_path,
-			}, () => {
-				// this.initVOD();
-				// this.initPlayer();
-				this.props.setSeamlessLoad(false);
-				this.props.unsetPageLoader();
-
-				if (location.search.includes("refpage=login")) this.toggleChat()
-			});
-		})
-		.catch(error => {
-			// this.initPlayer();
-			this.props.setSeamlessLoad(false);
-			this.props.unsetPageLoader();
-		});
-	}
+	// 			if (location.search.includes("refpage=login")) this.toggleChat()
+	// 		});
+	// 	})
+	// 	.catch(error => {
+	// 		// this.initPlayer();
+	// 		this.props.setSeamlessLoad(false);
+	// 		this.props.unsetPageLoader();
+	// 	});
+	// }
 	
-	getMissedEvent() {
-		this.props.setSeamlessLoad(true);
-    this.props.setPageLoader();
-    this.props.getMissedEvent()
-    .then(({data: lists}) => {
-			this.props.setSeamlessLoad(false);
-			this.props.unsetPageLoader();
-      this.setState({
-				missed_event: lists.data,
-				meta: lists.meta.image_path,
-      });
-    })
-    .catch((error) => {
-			this.props.setSeamlessLoad(false);
-			this.props.unsetPageLoader();
-    });
-  }
+	// getMissedEvent() {
+	// 	this.props.setSeamlessLoad(true);
+  //   this.props.setPageLoader();
+  //   this.props.getMissedEvent()
+  //   .then(({data: lists}) => {
+	// 		this.props.setSeamlessLoad(false);
+	// 		this.props.unsetPageLoader();
+  //     this.setState({
+	// 			missed_event: lists.data,
+	// 			meta: lists.meta.image_path,
+  //     });
+  //   })
+  //   .catch((error) => {
+	// 		this.props.setSeamlessLoad(false);
+	// 		this.props.unsetPageLoader();
+  //   });
+  // }
 
 	componentDidUpdate(prevProps, prevState) {
 		if(prevState.selected_tab !== this.state.selected_tab) {
