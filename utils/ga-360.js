@@ -1,7 +1,7 @@
 import React from 'react';
-import ax from 'axios';
-import { DEV_API } from '../config';
-import { checkToken, getCookie, getVisitorToken } from './cookie';
+import { getCookie } from './cookie';
+
+const jwtDecode = require('jwt-decode');
 
 const TOKEN_KEY = 'ACCESS_TOKEN';
 

@@ -80,7 +80,9 @@ function categoryMenu (props) {
                   shallow
                   >
                   <a>
-                    <div className="container-menu-icon-cat" onClick={()=> gaTrackerCategory("video_interaction", "click_category_list", category.name, category.id)}>
+                    <div className="container-menu-icon-cat" onClick={()=>{
+                      gaTrackerCategory("video_interaction", "click_category_list", category.name, category.id)
+                    }}>
                       <img
                         alt={category.name}
                         className="menu-icon-cat"
