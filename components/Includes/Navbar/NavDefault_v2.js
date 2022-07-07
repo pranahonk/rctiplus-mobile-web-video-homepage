@@ -18,6 +18,7 @@ import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import {LINK_RADIO, LINK_GAMES, LINK_HOT, LINK_NEWS} from '../../../config';
+import { gaTrackerNavbarTrack, gaTrackerSearch } from '../../../utils/ga-360';
 
 
 class NavbarDef_v2 extends Component {
@@ -186,7 +187,10 @@ class NavbarDef_v2 extends Component {
                         <div
                             id="search-input"
                             className="search-input"
-                            onClick={this.goToExplore.bind(this, this.props.router.asPath)}>
+                            onClick={()=>{
+                              this.goToExplore.bind(this, this.props.router.asPath)
+                              gaTrackerSearch("menu_navbar_tracking", "click_go_to_search", "search_bar")
+                            }}>
                             <div className="search-input-placeholder">rctiplus.com</div> <SearchIcon style={{ fontSize: '1.5rem' }} />
                         </div>
                     </div>
