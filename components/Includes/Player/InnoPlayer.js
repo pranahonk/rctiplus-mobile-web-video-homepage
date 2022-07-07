@@ -227,7 +227,7 @@ const JwPlayer = (props) => {
       })
 
       player.on('play', () => {
-        setBitrateLevels(player.getQualityLevels())
+        // setBitrateLevels(player.getQualityLevels())
         setInitConviva(true)
 
         convivaInnoPlayer().playing();
