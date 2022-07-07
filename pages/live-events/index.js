@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 
 import Layout from '../../components/Layouts/Default_v2';
-import NavBack from '../../components/Includes/Navbar/NavBack';
 import Thumbnail from '../../components/Includes/Common/Thumbnail';
 import LiveIcon from '../../components/Includes/Common/LiveIcon';
 
@@ -12,11 +11,12 @@ import LiveIcon from '../../components/Includes/Common/LiveIcon';
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
 import { getCountdown } from '../../utils/helpers';
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../../config';
+import { GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG, SITE_NAME, SITEMAP } from '../../config';
 import NavDefault_v2 from '../../components/Includes/Navbar/NavDefault_v2';
 
-import { Container, Row, Col } from 'reactstrap';
+import { Col, Container, Row } from 'reactstrap';
 import '../../assets/scss/components/live-event.scss';
+import { gaVideoInteraction } from '../../utils/ga-360';
 
 class Index extends React.Component {
   constructor(props) {
@@ -69,7 +69,15 @@ class Index extends React.Component {
     });
   }
   getLink(data, params = 'live-event') {
-    Router.push(`/${params}/${data.content_id}/${data.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`);
+    gaVideoInteraction(data?.content_id, data?.content_title,
+      'not_available', data?.content_type,
+      "not_available", "not_available",
+      data?.id, data?.assets_name, "not_available",
+      "not_available", "not_available",
+      data?.channel_code, "not_available", "not_available",
+      "not_available", "not_available", "not_available",
+      "no");
+     Router.push(`/${params}/${data.content_id}/${data.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`);
   }
 
   render() {
