@@ -6,6 +6,7 @@ const express = require('express');
 const { join } = require('path');
 const chalk = require('chalk');
 const next = require('next');
+const prerender = require('prerender-node');
 // const device = require('express-device');
 // #endregion
 
@@ -24,6 +25,8 @@ const UIVersion = '2.0';
     await app.prepare();
 
     const server = express();
+
+    if(process.env.NODE_ENV === 'production') server.use(prerender.set('prerenderToken', process.env.PRERENDER_TOKEN));
     // server.use(device.capture());
     // https://codeforgeek.com/how-to-detect-device-type-in-nodejs/
     // example of custom request handlers:
@@ -51,6 +54,13 @@ const UIVersion = '2.0';
     // });
     server.get('/player', (req, res) => {
       return app.render(req, res, '/player');
+    });
+
+    server.get('/category/:category_id/:category_title', (req, res) => {
+      return app.render(req, res, '/category', { 
+        category_id: req.params.category_id, 
+        category_title: req.params.category_title 
+      });
     });
 
     server.get('/programs/:id/:title/photo/:content_id/:content_title', (req, res) => {

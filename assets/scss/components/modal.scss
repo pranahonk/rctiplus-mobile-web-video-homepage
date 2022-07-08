@@ -1,5 +1,5 @@
 .modal-dialog {
-    margin: 0rem;
+    margin: auto;
 
     .modal-body-edited {
         padding: 0rem !important;
@@ -13,7 +13,7 @@
 
 .modal-body {
     padding: 0rem;
-    padding-top: 45%;
+    // padding-top: 45%;
 }
 
 .modal-content {
@@ -217,4 +217,9 @@
             }
         }
     }
+}
+.btn-primary-interactive {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
 }

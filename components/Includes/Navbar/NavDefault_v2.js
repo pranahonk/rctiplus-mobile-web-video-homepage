@@ -142,8 +142,8 @@ class NavbarDef_v2 extends Component {
                     <a href={href} target={newPage ? "_blank" : "_self"} className={`icon-lima-pilar${activeSrcSuffix}`}>
                       <img src={`/icons-menu/${service}plus${activeSrcSuffix}.png`}
                               alt={`${service}+`}
-                              width={40}
-                              height={13.33}
+                              width="auto"
+                              height="12"
                       />
                     </a>
                 </Link>
