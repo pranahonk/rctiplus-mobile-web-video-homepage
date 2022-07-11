@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
-import Router, { withRouter } from 'next/router';
+import Router, { useRouter, withRouter } from 'next/router';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 
@@ -15,7 +15,7 @@ import MuteChat from '../../components/Includes/Common/MuteChat';
 import initialize from '../../utils/initialize';
 import { getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../../utils/cookie';
 import { showSignInAlert } from '../../utils/helpers';
-import { liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked } from '../../utils/appier';
+import { liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked, getUidAppier } from '../../utils/appier';
 import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../utils/firebaseTracking';
 
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
@@ -46,7 +46,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import PauseIcon from '../../components/Includes/Common/PauseIcon';
 import MissedIcon from '../../components/Includes/Common/Missed';
 
-import { DEV_API, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, RESOLUTION_IMG } from '../../config';
+import { DEV_API, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, RESOLUTION_IMG, VISITOR_TOKEN } from '../../config';
 
 import '../../assets/scss/components/live-event-v2.scss';
 import '../../assets/scss/components/live-event.scss';
@@ -177,6 +177,7 @@ class LiveEvent extends React.Component {
 			this.player.dispose();
 		}
 	}
+
 	componentDidMount() {
 		if(this.props.router.asPath.match('/live-event/') && this.state.selected_event?.data?.chat !== "inactive") this.loadChatMessages(this.props.router.query.id);
 		initGA();
@@ -193,21 +194,19 @@ class LiveEvent extends React.Component {
 		Promise.all([
 			this.props.getLiveEvent('non on air'),
 			this.props.getMissedEvent(),
-			this.props.getLiveEventUrl(this.props.router.query.id),
-			this.props.getLiveEventDetail(this.props.router.query.id),
+			this.props.getAllEvent(this.props.router.query.id, this.props.router.asPath.match('/live-event/'))
 		])
 		.then(res => {
-			const [ liveEvent, missedEvent, liveEventUrl, liveEventDetail ] = res
-
+			const [ liveEvent, missedEvent, allEvent ] = res
 			let stateToChange = {
 				live_events: liveEvent.data.data,
 				missed_event: missedEvent.data.data,
 				meta: liveEvent.data.meta.image_path,
-				selected_event: liveEventDetail.data,
-				selected_event_url: liveEventUrl.data
+				selected_event: allEvent?.[0]?.data,
+				selected_event_url: allEvent?.[1]?.data
 			}
 
-			const failedToFetchUrlAndDetail = (liveEventDetail.status > 200 ? liveEventDetail.status : false) || (liveEventUrl.status > 200 ? liveEventUrl.status : false)
+			const failedToFetchUrlAndDetail = (allEvent?.[0]?.status > 200 ? allEvent?.[0]?.status : false) || (allEvent?.[1]?.status > 200 ? allEvent?.[1]?.status : false)
 			if (failedToFetchUrlAndDetail) {
 				stateToChange = {
 					...stateToChange,
@@ -252,16 +251,57 @@ class LiveEvent extends React.Component {
 			span.parentNode.removeChild(span);  
 		}, 2000);
 	}
+	// getLiveEvent() {
+	// 	this.props.setPageLoader();
+	// 	this.props.setSeamlessLoad(true);
+	// 	this.props.getLiveEvent('non on air')
+	// 	.then(response => {
+	// 		this.setState({
+	// 			live_events: response.data.data ,
+	// 			meta: response.data.meta.image_path,
+	// 		}, () => {
+	// 			// this.initVOD();
+	// 			// this.initPlayer();
+	// 			this.props.setSeamlessLoad(false);
+	// 			this.props.unsetPageLoader();
+
+	// 			if (location.search.includes("refpage=login")) this.toggleChat()
+	// 		});
+	// 	})
+	// 	.catch(error => {
+	// 		// this.initPlayer();
+	// 		this.props.setSeamlessLoad(false);
+	// 		this.props.unsetPageLoader();
+	// 	});
+	// }
 	
-		componentDidUpdate(prevProps, prevState) {
-			if(prevState.selected_tab !== this.state.selected_tab) {
-				setTimeout(() => {
-					var span = document.getElementsByClassName("tooltiptext")[0]
-					if(!span) return
-					span.parentNode.removeChild(span);  
-				}, 4000);
-			}
+	// getMissedEvent() {
+	// 	this.props.setSeamlessLoad(true);
+  //   this.props.setPageLoader();
+  //   this.props.getMissedEvent()
+  //   .then(({data: lists}) => {
+	// 		this.props.setSeamlessLoad(false);
+	// 		this.props.unsetPageLoader();
+  //     this.setState({
+	// 			missed_event: lists.data,
+	// 			meta: lists.meta.image_path,
+  //     });
+  //   })
+  //   .catch((error) => {
+	// 		this.props.setSeamlessLoad(false);
+	// 		this.props.unsetPageLoader();
+  //   });
+  // }
+
+	componentDidUpdate(prevProps, prevState) {
+		if(prevState.selected_tab !== this.state.selected_tab) {
+			setTimeout(() => {
+				var span = document.getElementsByClassName("tooltiptext")[0]
+				if(!span) return
+				span.parentNode.removeChild(span);  
+			}, 4000);
 		}
+	}
 
 	isLive() {
 		if (this.state.selected_event && this.state.selected_event.data) {
@@ -334,7 +374,7 @@ class LiveEvent extends React.Component {
 		this.props.setPageLoader();
 		this.setState({ chats: [] }, () => {
 			const chatBox = document.getElementById('chat-messages');
-			chatBox.scrollTop = chatBox.scrollHeight;
+			chatBox.scrollTop = chatBox?.scrollHeight;
 			this.props.unsetPageLoader();
 			if (true) {
 				let firstLoadChat = true;
@@ -778,7 +818,8 @@ class LiveEvent extends React.Component {
 				image: '',
 			}
 		}
-		const { data, meta } = this.state.selected_event;
+		const data = this.state.selected_event?.data;
+		const meta = this.state.selected_event?.meta;
 		return {
 			title: this.props.router.asPath.includes('/missed-event') ? `Nonton Tayangan Ulang Streaming ${this.props.router.query.title.replace(/-/gi, ' ') || ''}`: 'Nonton Live Streaming ' + (this.props.router.query.title.replace(/-/gi, ' ') || ''),
 			description: this.props.router.asPath.includes('/missed-event') ? `Tonton siaran ulang ${(this.props.router.query.title.replace(/-/gi, ' ') || '')} gratis dan tanpa buffering di RCTI+` : `Tonton siaran langsung ${(this.props.router.query.title.replace(/-/gi, ' ') || '')} gratis dan tanpa buffering di RCTI+` ,
