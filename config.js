@@ -73,6 +73,8 @@ export const VISITOR_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjAsI
 export const NEWS_TOKEN = '';
 export const IS_SHOWN = true;
 
+export const WS_SECRET_KEY = process.env.WS_SECRET_KEY;
+
 
 // SEO CONSTANTS
 
