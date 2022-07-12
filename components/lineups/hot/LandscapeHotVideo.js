@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import {client} from '../../../graphql/client';
+import { client } from '../../../graphql/client';
 
 
 // Import Swiper React components
@@ -11,8 +11,8 @@ import 'swiper/swiper.scss';
 import '../../../assets/scss/components/hot-video.scss';
 
 //import helper
-import { getTruncate, imageHot, imageHotProfile } from '../../../utils/helpers';
-import {GET_HOT_VIDEO_PAGINATIONS_UPDATE} from '../../../graphql/queries/hot-video';
+import { getTruncate, imageHot } from '../../../utils/helpers';
+import { GET_HOT_VIDEO_PAGINATIONS_UPDATE } from '../../../graphql/queries/hot-video';
 import Views from '@material-ui/icons/RemoveRedEyeSharp';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 
