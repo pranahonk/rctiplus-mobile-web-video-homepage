@@ -528,11 +528,12 @@ class Tv extends React.Component {
 
 		ws.onclose = close => {
 			console.log('ws on disconnected')
-			this.setState({ws_status: false})
+			this.setState({ccu_human:null, ws_status: false})
 		}
 
 		ws.onerror = error => {
 			console.log('ws on error', error)
+			this.setState({ccu_human:null, ws_status: false})
 		}
 	}
 
