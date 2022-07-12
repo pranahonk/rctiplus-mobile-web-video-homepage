@@ -39,7 +39,7 @@ class StickyAds extends React.Component {
       })
       googletag.enableServices()
     })
-    googletag.cmd.push(function() { googletag.display(gptID) })
+    googletag.cmd.push(function() { googletag.display(this.state.adsId) })
   }
 
   componentDidMount() {
