@@ -41,7 +41,7 @@ import PauseIcon from '../components/Includes/Common/PauseIcon';
 
 import ax from 'axios';
 
-import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, API_TIMEOUT } from '../config';
+import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, API_TIMEOUT, WS_SECRET_KEY } from '../config';
 
 import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
@@ -223,6 +223,9 @@ class Tv extends React.Component {
       catchUpIndexing: {},
 			is_interactive: false,
 			interactive_modal: false,
+			socket: null,
+			ccu_human: null,
+			ws_status: false,
 		};
 
 		this.player = null;
@@ -237,9 +240,14 @@ class Tv extends React.Component {
 		if (this.player) {
 			this.player.dispose();
 		}
-		console.log(this.convivaTracker);
+
 		if (this.convivaTracker) {
 			this.convivaTracker.cleanUpSession();
+		}
+
+		if(this.state.socket) {
+			this.setState({ccu_human: null});
+			this.state.socket?.close();
 		}
 		// if (window.convivaVideoAnalytics) {
 		// 	const convivaTracker = convivaJwPlayer();
@@ -249,11 +257,19 @@ class Tv extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if(prevState.selected_index !== this.state.selected_index){
+			if(this.state.selected_live_event_url.counter_enabled === 'false') this.setState({ccu_human: null}), this.state.socket?.close();	
+
 			setTimeout(() => {
 				var span = document.getElementsByClassName("tooltiptext")[0]
 				if(!span) return
 				span.parentNode.removeChild(span);  
 			}, 4000);
+		}
+
+		if(prevState.ws_status !== this.state.ws_status){
+			if(!this.state.ws_status){
+				this.getViewers(this.state.data_player)
+			}
 		}
 	}
 
@@ -261,6 +277,15 @@ class Tv extends React.Component {
 		initGA();
 
 		this.props.setPageLoader();
+		this.fetchingData()
+		setTimeout(() => {
+			var span = document.getElementsByClassName("tooltiptext")[0]
+			if(!span) return
+			span.parentNode.removeChild(span);  
+		}, 4000);
+	}
+
+	fetchingData(){
 		Promise.all([
 			this.props.getLiveEvent('on air'),
 			axios.get('/v1/get-ads-duration')
@@ -279,6 +304,7 @@ class Tv extends React.Component {
 					}
 				}, _ => {
 					liveEventData.forEach((liveevent, i) => {
+						// console.log('recon', liveevent.channel_code, this.state.channel_code)
 						if (liveevent.channel_code === this.state.channel_code) {
 							this.selectChannel(i, true);
 							return
@@ -289,11 +315,6 @@ class Tv extends React.Component {
 				})
 			})
 			.finally(_ => this.props.unsetPageLoader())
-			setTimeout(() => {
-				var span = document.getElementsByClassName("tooltiptext")[0]
-				if(!span) return
-				span.parentNode.removeChild(span);  
-			}, 4000);
 	}
 
 	setHeightChatBox() {
@@ -334,7 +355,6 @@ class Tv extends React.Component {
 							querySnapshot.docChanges()
 								.map(change => {
 									let chats = this.state.chats;
-									console.log(chats);
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
@@ -387,7 +407,6 @@ class Tv extends React.Component {
 					},
 				});
 
-				console.log('state:', this.state.block_user);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -450,6 +469,8 @@ class Tv extends React.Component {
 					this.selectCatchup(this.props.context_data.epg_id, 'url');
 				}
 
+				this.getViewers(liveEventUrl.data.data)
+
 				this.props.setCatchupData(catchup)
 				this.setState({
 					data_player: liveEventUrl.data.data,
@@ -477,6 +498,43 @@ class Tv extends React.Component {
 				});
 			})
 			.finally(_ => this.props.unsetPageLoader())
+	}
+
+	getViewers(data) {
+		if(data.counter_enabled === "false") return
+
+		const subscribeViewers = {
+			channel: `ccu/live/${this.props.router.query.channel}`,
+			action: "subscribe",
+			secret: WS_SECRET_KEY
+		};
+
+		const ws = new WebSocket(data.counter_url);	
+    this.setState({socket: ws})
+
+		ws.onopen = () => {
+			console.log('ws on open')
+
+      ws.send(JSON.stringify(subscribeViewers));
+			this.setState({ws_status: true})
+    };
+
+    ws.onmessage = msg => {
+			console.log('ws on message')
+
+      let msgdata = JSON.parse(msg.data.replaceAll("'", '"'));
+			this.setState({ccu_human: msgdata?.data?.ccu_human})
+    };
+
+		ws.onclose = close => {
+			console.log('ws on disconnected')
+			this.setState({ccu_human:null, ws_status: false})
+		}
+
+		ws.onerror = error => {
+			console.log('ws on error', error)
+			this.setState({ccu_human:null, ws_status: false})
+		}
 	}
 
 	selectCatchup(id, ref = false) {
@@ -737,7 +795,6 @@ class Tv extends React.Component {
 		}
 	}
 	callbackAds(e) {
-		console.log(e)
 		this.setState({
 			ads_data: null,
 		}, () => {
@@ -749,7 +806,6 @@ class Tv extends React.Component {
 		});
 	}
 	callbackCount(end, current) {
-		console.log(this.state.isAds)
 		if(this.state.isAds) {
 			let distance = getCountdown(end, current)[0] || 100000;
 			const countdown = setInterval(() => {
@@ -987,12 +1043,13 @@ class Tv extends React.Component {
 		}
 
 		return (
-			<Layout className="live-tv-layout" title={this._metaTags().title}>
-				<Head>
-					<meta name="description" content={this._metaTags().description} />
-					<meta name="keywords" content={this._metaTags().keywords} />
-					<meta property="og:title" content={this._metaTags().title} />
-					<meta property="og:description" content={this._metaTags().description} />
+			<Layout className="live-tv-layout" title={props.data_seo?.data?.title ?? this._metaTags().title}>
+			<Head>
+					<meta name="description" content={props.data_seo?.data?.description ?? this._metaTags().description} />
+					<meta name="keywords" content={props.data_seo?.data?.keywords ?? this._metaTags().keywords} />
+					<meta property="og:title" content={props.data_seo?.data?.title ?? this._metaTags().title} />
+					<meta property="og:description" content={props.data_seo?.data?.description ?? this._metaTags().description} />
+					<meta property="og:keywords" content={props.data_seo?.data?.keywords ?? this._metaTags().keywords} />
 					<meta property="og:image" itemProp="image" content={this._metaTags().pathimage} />
 					<meta property="og:url" content={REDIRECT_WEB_DESKTOP + this.props.router.asPath} />
 					<meta property="og:type" content="video.tv_show" />
@@ -1007,8 +1064,9 @@ class Tv extends React.Component {
 					<meta name="twitter:site" content={GRAPH_SITEMAP.twitterSite} />
 					<meta name="twitter:image" content={this._metaTags().pathimage} />
 					<meta name="twitter:image:alt" content={this._metaTags().twitter_img_alt} />
-					<meta name="twitter:title" content={this._metaTags().title} />
-					<meta name="twitter:description" content={this._metaTags().description} />
+					<meta name="twitter:title" content={props.data_seo?.data?.title ?? this._metaTags().title} />
+					<meta name="twitter:description" content={props.data_seo?.data?.description ??this._metaTags().description} />
+					<meta name="twitter:keywords" content={props.data_seo?.data?.keywords ??this._metaTags().keywords} />
 					<meta name="twitter:url" content={REDIRECT_WEB_DESKTOP} />
 					<meta name="twitter:domain" content={REDIRECT_WEB_DESKTOP} />
 
@@ -1069,6 +1127,8 @@ class Tv extends React.Component {
 							/>
 					</div>
 					<div ref= {this.tvTabRef} className="tv-wrap">
+						<p className='pl-3  mt-1 text-sm' style={{marginBottom: '-1px'}}>{this.state.epg?.[0]?.title}</p>
+						<p className='pl-3' style={{fontSize: 12}}>{this.state.ccu_human}</p>
 						<Row>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=rcti" as="/tv/rcti">
@@ -1199,24 +1259,24 @@ class Tv extends React.Component {
 									</div>
 								</Col>
 								{this.state.is_interactive && (
-									<Col xs={5} style={{textAlign:'end', marginLeft: '-10px'}}>
-										<div className='tooltip-custom'>
-											<span className="tooltiptext">Ikuti sekarang!</span>
-											<div className='interactive'>
-												<Button id="btn-expand" onClick={() => this.setState({interactive_modal: true})} color="link">
-													<Row className='justify-content-center'>
-														<img 
-															src='/static/player_icons/quiz_icon.svg	'
-															width={40}
-															height={40}
-															alt="desc"
-															className='ml-n3 mt-n3'
-															/>
-															<p className='ml-2 mt-n1'>Interactive</p>
-															<FiberManualRecordIcon className="indicator-dot-red mt-n1" />
-													</Row>
-												</Button>
-											</div>
+								<Col xs={5} style={{textAlign:'end', marginLeft: '-10px'}}>
+									<div className='tooltip-custom'>
+										<span className="tooltiptext">Ikuti sekarang!</span>
+										<div className='interactive'>
+											<Button id="btn-expand" onClick={() => this.setState({ interactive_modal: true })} color="link">
+												<Row className='justify-content-center'>
+													<img 
+														src='/static/player_icons/quiz_icon.svg	'
+														width={40}
+														height={40}
+														alt="desc"
+														className='ml-n3 mt-n3'
+														/>
+														<p className='ml-2 mt-n1'>Interactive</p>
+														<FiberManualRecordIcon className="indicator-dot-red mt-n1" />
+												</Row>
+											</Button>
+										</div>
 										</div>
 									</Col>
 								)}
