@@ -92,7 +92,7 @@ export default function comingSoonModal(props) {
                       height={20}
                       alt="desc"
                       />
-                    <p className='ml-2 text-white' style={{fontSize: '12px', marginTop: '15px'}}>INTERACTIVE</p>
+                    <p className='ml-2 text-white' style={{fontSize: '12px'}}>INTERACTIVE</p>
                   </div>
                 </span>
               </div>
