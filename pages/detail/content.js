@@ -566,7 +566,7 @@ class Content extends React.Component {
         const playerId = 'app-jwplayer';
         this.player = window.jwplayer(playerId);
         this.player.setup({
-            autostart: true,
+            autostart: 'viewable',
             mute: true, //optional, but recommended
             floating: false,
             file: this.state.player_url,
