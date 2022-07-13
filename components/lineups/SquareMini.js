@@ -38,10 +38,10 @@ function squareMiniView (props) {
         return `${props.imagePath}${content.image_banner}`;
       case "square_mini":
         if(content?.content_type === "live_music"){
-          return `${content?.content_type_detail?.detail?.meta?.assets_url}/200/${content.portrait_image}`;
+          return `https://static.roov.id/upload/200/${content.portrait_image}`;
         }
         else if(content?.content_type === "live_radio"){
-          return `${content?.content_type_detail?.detail?.meta?.assets_url}/200/${content.portrait_image}`;
+          return `https://static.roov.id/upload/200/${content.portrait_image}`;
         }
         else{
           return `${rootImageUrl}${content.square_image}`;
@@ -68,6 +68,7 @@ function squareMiniView (props) {
             ref={scrollRef}
             className="lineup-containers">
             {contents.map((content, i) => {
+              console.log(content)
               return (
                 <div
                   id={`squaremini-video-${i}`}

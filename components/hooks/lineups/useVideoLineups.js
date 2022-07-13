@@ -1,6 +1,6 @@
 
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Router from 'next/router';
 
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../../utils/appier'
@@ -8,6 +8,7 @@ import { GET_LINEUP_CONTENT_VIDEO, GET_CONTINUE_WATCHING } from "../../../graphq
 import { client } from "../../../graphql/client"
 import { getUserAccessToken } from "../../../utils/cookie"
 import { showSignInAlert } from "../../../utils/helpers"
+import { GET_AUDIO_LIST_PAGINATION } from '../../../graphql/queries/audio-list';
 
 export default function useVideoLineups(props) {
   const [ contents, setContents ] = useState([])
@@ -35,6 +36,8 @@ export default function useVideoLineups(props) {
     switch (props.lineup.lineup_type) {
       case "custom":
         return getContinueWatching()
+      case "default":
+        return getContinueAudio()
       default:
         return getLineupContents()
     }
@@ -43,6 +46,9 @@ export default function useVideoLineups(props) {
   const setInitialContents = () => {
     const { data, meta } = props.lineup.lineup_type_detail.detail;
     const mappedContents = new Map();
+
+    console.log(meta?.pagination?.current_page);
+    console.log(meta?.pagination?.total_page);
 
 
     switch (props.lineup.lineup_type) {
@@ -65,6 +71,33 @@ export default function useVideoLineups(props) {
     setContents([ ...mappedContents.values() ])
     setEndPage(meta?.pagination?.current_page === meta?.pagination?.total_page)
     setNextPage(meta?.pagination?.current_page + 1)
+  }
+
+
+  const getContinueAudio = () => {
+    props.loadingBar.continuousStart()
+
+    client.query({ query: GET_AUDIO_LIST_PAGINATION(nextPage, 5, props.lineup.id)})
+      .then(({ data }) => {
+        const { pagination } = data.lineup_contents?.meta
+        const mappedContents = []
+
+        for (const el of data.lineup_contents?.data) {
+          // console.log(el)
+          mappedContents.push(el?.content_type_detail?.detail?.data)
+        }
+
+
+        // contents.forEach(content => {
+        //     mappedContents.set(content.id, content?.content_type_detail?.detail?.data)
+        //   })
+
+        setContents((list) => ([...list, ...mappedContents]))
+        setEndPage(pagination.current_page >= pagination.total_page)
+        setNextPage(pagination.current_page + 1)
+      })
+      .catch(_ => setEndPage(true))
+      .finally(_ => props.loadingBar.complete())
   }
 
   const getContinueWatching = () => {
@@ -112,8 +145,6 @@ export default function useVideoLineups(props) {
   }
 
   const generateLink = (content) => {
-    console.log(props.lineup.lineup_type);
-    console.log(content)
     let url = (Boolean(content.permalink) === /^http:|^https:/.test(content.permalink))
       ? `${location.origin}${content.permalink.split("rctiplus.com")[1]}`
       : "/"
@@ -124,8 +155,6 @@ export default function useVideoLineups(props) {
         else Router.push(url)
         break;
       case "default":
-        // console.log("masuk sini")
-        // console.log(content?.content_type)
         Router.push(content?.permalink)
         break;
       default:

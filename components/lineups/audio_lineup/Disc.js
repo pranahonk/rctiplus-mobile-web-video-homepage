@@ -20,7 +20,6 @@ function AudioDisc ({title, indexTag, id, data}) {
     const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
 
     useEffect(() => {
-      console.log(data)
       setMeta(data?.lineup_type_detail?.detail?.meta);
       setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
       setDisc(data?.lineup_type_detail?.detail?.data);

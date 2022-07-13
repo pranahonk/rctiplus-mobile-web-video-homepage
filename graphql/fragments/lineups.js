@@ -10,7 +10,8 @@ import {
   contentTypeSpecialFragment,
   contentTypeHotCompetitions,
   contentTypeHotVideo,
-  contentTypeAudioPodcast, contentTypeAudioRadio,
+  contentTypeAudioPodcast,
+  contentTypeAudioRadio,
 }
   from './content_types';
 
