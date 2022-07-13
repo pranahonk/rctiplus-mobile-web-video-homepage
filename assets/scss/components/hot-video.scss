@@ -34,7 +34,8 @@
         color: #8F8F8F;
         text-align: left;
         position: relative;
-        bottom: 10px;
+        bottom: 0;
+        line-height: 10px;
       }
 
       &__title{
@@ -51,6 +52,7 @@
         -webkit-box-orient: vertical;
         font-weight: 600;
         color: #FFFFFF;
+        margin-bottom: 5px;
       }
 
       &__viewsCountWrapper{
@@ -58,14 +60,9 @@
         align-items: center;
         color: white;
 
-        &_viewsIcon{
-          top: -8px;
-        }
-
         &_viewsCount{
           color: white;
           text-align: left;
-          top: -8px;
         }
       }
 
