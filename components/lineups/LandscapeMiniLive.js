@@ -42,26 +42,8 @@ function landscapeMiniLiveView (props) {
       liveBadge = null
     }
 
-    let interactive = null
-    if(contentDetail.is_interactive) {
-      interactive = (
-        <span className='interactive'>
-          <div className='row align-items-center'>
-            <img 
-              src='/static/player_icons/quiz_icon.svg	'
-              width={20}
-              height={20}
-              alt="desc"
-              />
-            <p className='ml-2 text-white' style={{fontSize: '12px'}}>INTERACTIVE</p>
-          </div>
-        </span>
-      )
-    }
-
     return(
       <>
-        {interactive}
         { liveBadge }
         <div>
           <p className="desc-title mini">{ contentDetail.title }</p>
