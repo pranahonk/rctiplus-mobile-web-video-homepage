@@ -112,8 +112,6 @@ export default function useVideoLineups(props) {
   }
 
   const generateLink = (content) => {
-    console.log(props.lineup.lineup_type);
-    console.log(content)
     let url = (Boolean(content.permalink) === /^http:|^https:/.test(content.permalink))
       ? `${location.origin}${content.permalink.split("rctiplus.com")[1]}`
       : "/"
@@ -123,11 +121,7 @@ export default function useVideoLineups(props) {
         if (props.lineup.content_type === "continue_watching") Router.push(`${url}?ref=continue_watching`)
         else Router.push(url)
         break;
-      case "default":
-        // console.log("masuk sini")
-        // console.log(content?.content_type)
-        Router.push(content?.permalink)
-        break;
+      
       default:
         if (content.content_type.includes("live")) {
           const started = content.countdown === 0
