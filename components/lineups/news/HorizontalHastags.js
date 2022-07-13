@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { client } from '../../../graphql/client';
 
 
 // Import Swiper React components
-
 // Import Swiper styles
 import 'swiper/swiper.scss';
 
