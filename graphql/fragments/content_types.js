@@ -113,6 +113,7 @@ export const contentTypeLiveEventFragment = `
       landscape_image
       event_type
       permalink
+      is_interactive
     }
     status {
       code
@@ -133,6 +134,7 @@ export const contentTypeLiveEPGFragment = `
       landscape_image
       start_ts
       permalink
+      is_interactive
     }
     status {
       code
