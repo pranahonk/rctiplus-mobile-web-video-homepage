@@ -269,6 +269,36 @@ const getLiveEventUrl = liveEventId => {
     });
 };
 
+const getAllEvent = (liveEventId, type) => {
+    return dispatch => new Promise(async (resolve, reject) => {
+        try {
+            const url = type ? 'live-event' : 'missed-event';
+            const version = type ? 'v1' : 'v2';
+            const response = await axios.get(`/v1/${url}/${liveEventId}`);
+            const responseUrl = await axios.get(`/${version}/${url}/${liveEventId}/url?appierid=${getUidAppier()}`);
+            
+            const error_code = response.status > 200 ? response.status : false;
+            const error_code_url = responseUrl.status > 200 ? responseUrl.status : false;
+
+            if (!error_code || !error_code_url) {
+                dispatch({
+                    type: 'GET_LIVE_EVENT_URL',
+                    data: response.data.data,
+                    meta: response.data.meta,
+                    status: response.data.status
+                });
+                resolve([response, responseUrl]);
+            }
+            else {
+                reject([response, responseUrl]);
+            }
+        }
+        catch (error) { 
+            reject(error);
+        }
+    });
+};
+
 const getLiveQuiz = (infos = 'content_id,content_type,portrait_image,landscape_image,content_title,url,channel_code,is_drm,chat,release_date,start_date,sorting,terms', page = 1, length = 10) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
@@ -397,6 +427,7 @@ export default {
     postChatSocket,
     getChatSocket,
     getMissedEvent,
+    getAllEvent,
     getVmapResponse,
     getAdsChat,
 };

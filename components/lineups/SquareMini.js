@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react'
-import Img from 'react-image'
-import { connect } from 'react-redux'
-import BottomScrollListener from 'react-bottom-scroll-listener'
-import dynamic from 'next/dynamic'
+import React, { useEffect } from 'react';
+import Img from 'react-image';
+import { connect } from 'react-redux';
+import BottomScrollListener from 'react-bottom-scroll-listener';
+import dynamic from 'next/dynamic';
 
-import contentActions from '../../redux/actions/contentActions'
-import useVideoLineups from "../hooks/lineups/useVideoLineups"
-import { RESOLUTION_IMG } from "../../config"
+import contentActions from '../../redux/actions/contentActions';
+import useVideoLineups from '../hooks/lineups/useVideoLineups';
+import { RESOLUTION_IMG } from '../../config';
 
-import '../../assets/scss/components/panel.scss'
+import '../../assets/scss/components/panel.scss';
 
 const PremiumIcon = dynamic(() => import("../Includes/Common/PremiumIcon"))
 
