@@ -43,6 +43,9 @@ function squareMiniView (props) {
         else if(content?.content_type === "live_radio"){
           return `${content?.content_type_detail?.detail?.meta?.assets_url}/200/${content.portrait_image}`;
         }
+        else{
+          return `${rootImageUrl}${content.square_image}`;
+        }
         return false;
       default:
         return `${rootImageUrl}${content.square_image}`;
@@ -65,7 +68,6 @@ function squareMiniView (props) {
             ref={scrollRef}
             className="lineup-containers">
             {contents.map((content, i) => {
-              console.log(content?.content_type_detail?.detail?.meta?.assets_url)
               return (
                 <div
                   id={`squaremini-video-${i}`}
