@@ -826,7 +826,6 @@ class Index extends React.Component {
     }
 
     const dataPlayer = this.props.data['data-player'];
-    console.log('recon', this.props.data);
 
     if(this.props.router.query.content_type == 'clip'){
       return (

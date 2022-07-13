@@ -528,11 +528,12 @@ class Tv extends React.Component {
 
 		ws.onclose = close => {
 			console.log('ws on disconnected')
-			this.setState({ws_status: false})
+			this.setState({ccu_human:null, ws_status: false, socket: null})
 		}
 
 		ws.onerror = error => {
 			console.log('ws on error', error)
+			this.setState({ccu_human:null, ws_status: false, socket: null})
 		}
 	}
 
@@ -1126,7 +1127,7 @@ class Tv extends React.Component {
 							/>
 					</div>
 					<div ref= {this.tvTabRef} className="tv-wrap">
-						<p className='pl-3  mt-1 text-sm' style={{marginBottom: '-1px'}}>{this.state.epg?.[0]?.title}</p>
+						<p className='pl-3  mt-1 text-sm' style={{fontSize: 14, marginBottom: '-1px'}}>{this.state.epg?.[0]?.title}</p>
 						<p className='pl-3' style={{fontSize: 12}}>{this.state.ccu_human}</p>
 						<Row>
 							<Col xs={3} className="text-center">
