@@ -68,7 +68,6 @@ function squareMiniView (props) {
             ref={scrollRef}
             className="lineup-containers">
             {contents.map((content, i) => {
-              console.log(content)
               return (
                 <div
                   id={`squaremini-video-${i}`}
