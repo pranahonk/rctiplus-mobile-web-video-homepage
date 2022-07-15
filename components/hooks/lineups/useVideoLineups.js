@@ -1,6 +1,6 @@
 
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Router from 'next/router';
 
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../../utils/appier'
@@ -8,6 +8,7 @@ import { GET_LINEUP_CONTENT_VIDEO, GET_CONTINUE_WATCHING } from "../../../graphq
 import { client } from "../../../graphql/client"
 import { getUserAccessToken } from "../../../utils/cookie"
 import { showSignInAlert } from "../../../utils/helpers"
+import { GET_AUDIO_LIST_PAGINATION } from '../../../graphql/queries/audio-list';
 
 export default function useVideoLineups(props) {
   const [ contents, setContents ] = useState([])
@@ -67,6 +68,7 @@ export default function useVideoLineups(props) {
     setNextPage(meta?.pagination?.current_page + 1)
   }
 
+
   const getContinueWatching = () => {
     props.loadingBar.continuousStart()
 
@@ -122,8 +124,6 @@ export default function useVideoLineups(props) {
         else Router.push(url)
         break;
       case "default":
-        // console.log("masuk sini")
-        // console.log(content?.content_type)
         Router.push(content?.permalink)
         break;
       default:
