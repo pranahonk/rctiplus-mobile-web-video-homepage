@@ -17,7 +17,7 @@ const pubAdsRefreshInterval = {
 
 let refreshCounter = 0;
 
-const JwPlayer = (props) => {
+const InnoPlayer = (props) => {
   const [player, setPlayer] = useState(null);
   const [ currentContent, setCurrentContent ] = useState({})
   const [status, setStatus] = useState({
@@ -33,6 +33,7 @@ const JwPlayer = (props) => {
   });
   const [adsStatus, setAdStatus] = useState('none');
   const [playerFullscreen, setPlayerFullscreen] = useState(false);
+  const [adsQue, setAdsQue] = useState(0);
 
   // Custom Hooks
   const { setIsPlayerReady, setHideBtns } = useCustomPlayerButton({ ...props, player })
@@ -44,22 +45,21 @@ const JwPlayer = (props) => {
   const options = {
     id: idPlayer,
     key: "bc67d9c0037202635cd1bdbe6e8446cce1221d04f2a8f982effff19830771003",
-    autostart: true,
     autoplay: true,
     mute: true,
-    floating: false,
+    floating: true,
     file: props.data && props.data.url,
-    primary: 'html5',
     width: '100%',
-    hlsjsdefault: true,
     aspectratio: '16:9',
     displayTitle: true,
     stretch: 'stretch',
     height: 180,
     controls: true,
+    chromecast: true,
+    displayTitle: false,
     advertising: {
       client: process.env.ADVERTISING_CLIENT_INNOPLAYER,
-      tag: props.data.vmap_ima,
+      tag: props.data && props.data.vmap_ima,
     },
     position: {
       topControlLeft: [],
@@ -114,9 +114,11 @@ const JwPlayer = (props) => {
       
       player.setup(options);
       setIsPlayerReady(false)
+
       setCurrentContent(props.data)
 
       // shall trigger when there are content change on player before being destroyed
+      player.remove()
       player.on("remove", _ => {
         if (!props.isResume || !props.data.id) return
         props.onResume(props.data.id, props.data.content_type, player.getPosition());
@@ -188,25 +190,25 @@ const JwPlayer = (props) => {
         if (isIOS) {
           const elementCreateMute = document.createElement('btn');
           const elementMuteIcon = document.createElement('span');
-          elementCreateMute.classList.add('jwplayer-vol-off');
+          elementCreateMute.classList.add('innoplayer-vol-off');
           elementCreateMute.innerText = 'Tap to unmute ';
 
           player.setMute(true);
-          if(document.getElementsByClassName('jwplayer-vol-off').length === 0) {
+          if(document.getElementsByClassName('innoplayer-vol-off').length === 0) {
             playerContainer.appendChild(elementCreateMute);
             elementCreateMute.appendChild(elementMuteIcon);
           }
-          const elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
+          const elementJwplayer = document.getElementsByClassName('innoplayer-vol-off');
           elementCreateMute.addEventListener('click', () => {
             if (elementCreateMute === null) {
               player.setMute(true);
-              elementJwplayer[0].classList.add('jwplayer-mute');
-              elementJwplayer[0].classList.remove('jwplayer-full');
+              elementJwplayer[0].classList.add('innoplayer-mute');
+              elementJwplayer[0].classList.remove('innoplayer-full');
             }
             else {
               player.setMute(false);
-              elementCreateMute.classList.add('jwplayer-full');
-              elementCreateMute.classList.remove('jwplayer-mute');
+              elementCreateMute.classList.add('innoplayer-full');
+              elementCreateMute.classList.remove('innoplayer-mute');
             }
           });
         }
@@ -229,6 +231,7 @@ const JwPlayer = (props) => {
       player.on('play', () => {
         // setBitrateLevels(player.getQualityLevels())
         setInitConviva(true)
+        player.setMute(false);
 
         convivaInnoPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
@@ -266,6 +269,8 @@ const JwPlayer = (props) => {
 
       // ads event
       player.on('adImpression', (event) => {
+        player.pause();
+        player.setMute(false);
         if (document.querySelector('.ads_wrapper')) {
           setAdStatus('none');
         }
@@ -286,12 +291,21 @@ const JwPlayer = (props) => {
       });
       
       player.on('adComplete', (event) => {
+        player.play();
         setHideBtns(false)
         
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
             setAdStatus('prestart');
           }
+        }
+
+        player.play();
+        if (document.querySelector('.jw-display')) {
+          document.querySelector('.jw-display').style.display = 'flex'
+        }
+        if (document.querySelector('.jw-controlbar')) {
+          document.querySelector('.jw-controlbar').style.display = 'flex'
         }
       });
 
@@ -622,9 +636,9 @@ const JwPlayer = (props) => {
   );
 };
 
-export default JwPlayer;
+export default InnoPlayer;
 
-JwPlayer.propTypes = {
+InnoPlayer.propTypes = {
   data: PropTypes.object,
   isLive: PropTypes.bool,
   isFullscreen: PropTypes.bool,
@@ -635,7 +649,7 @@ JwPlayer.propTypes = {
   statusError: PropTypes.number,
 };
 
-JwPlayer.defaultProps = {
+InnoPlayer.defaultProps = {
   data: {
     content_type: 'N/A',
     content_id: 'N/A',

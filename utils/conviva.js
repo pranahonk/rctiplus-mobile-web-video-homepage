@@ -162,7 +162,7 @@ export const convivaInnoPlayer = (assetName = null, player = null, duration = nu
                 contentInfo[Conviva.Constants.IS_LIVE] = isLive ? Conviva.Constants.StreamType.LIVE : Conviva.Constants.StreamType.VOD;
                 contentInfo[Conviva.Constants.VIEWER_ID] = getUserId().toString();
                 const playerInfo = {};
-                playerInfo[Conviva.Constants.FRAMEWORK_NAME] = "JWPlayer";
+                playerInfo[Conviva.Constants.FRAMEWORK_NAME] = "InnoPlayer";
                 playerInfo[Conviva.Constants.FRAMEWORK_VERSION] = "8.7.6";
                 playerInfo[Conviva.Constants.DEFAULT_RESOURCE] = "ALIBABA";
                 const deviceMetadata = {};
@@ -175,8 +175,8 @@ export const convivaInnoPlayer = (assetName = null, player = null, duration = nu
                     if (convivaVideoAnalytics != null) {
                         if (player) {
                             convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.PLAY_HEAD_TIME, duration * 1000);
-                            // convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.BUFFER_LENGTH, player.getBuffer());
-                            convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.BUFFER_LENGTH, 0);
+                            convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.BUFFER_LENGTH, player.getBuffer());
+                            // convivaVideoAnalytics.reportPlaybackMetric(Conviva.Constants.Playback.BUFFER_LENGTH, 0);
                         }
                     }
                 });
