@@ -121,7 +121,9 @@ export default function useVideoLineups(props) {
         if (props.lineup.content_type === "continue_watching") Router.push(`${url}?ref=continue_watching`)
         else Router.push(url)
         break;
-      
+      case "default":
+        Router.push(content?.permalink)
+        break;
       default:
         if (content.content_type.includes("live")) {
           const started = content.countdown === 0
@@ -133,7 +135,6 @@ export default function useVideoLineups(props) {
               : "../static/placeholders/placeholder_landscape.png"
 
             props.showComingSoonModal(true, {
-              is_interactive: content.is_interactive,
               countdown: content.countdown,
               start: content.start_ts || content.live_at,
               title: content.title,
