@@ -1127,7 +1127,7 @@ class Tv extends React.Component {
 					<div ref= {this.tvTabRef} className="tv-wrap">
 						<p className='pl-3  mt-1 text-sm' style={{fontSize: 14, marginBottom: '-1px'}}>{this.state.epg?.[0]?.title}</p>
 						<p className='pl-3' style={{fontSize: 12}}>{this.state.ccu_human}</p>
-						<Row>
+						<Row className='mt-2'>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=rcti" as="/tv/rcti">
 									<Button size="sm" color="link" className={this.state.selected_index === 0 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 0)}><h1 className="heading-rplus">RCTI</h1></Button>
