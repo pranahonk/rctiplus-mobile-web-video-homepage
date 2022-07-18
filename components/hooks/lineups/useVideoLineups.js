@@ -121,11 +121,11 @@ export default function useVideoLineups(props) {
         if (props.lineup.content_type === "continue_watching") Router.push(`${url}?ref=continue_watching`)
         else Router.push(url)
         break;
-      case "default":
-        Router.push(content?.permalink)
-        break;
       default:
         if (content.content_type.includes("live")) {
+          if (content.content_type.includes("radio")){
+            Router.push(content?.permalink)
+          }
           const started = content.countdown === 0
 
           if (started) Router.push(url)
