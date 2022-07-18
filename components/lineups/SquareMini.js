@@ -32,6 +32,26 @@ function squareMiniView (props) {
     )
   }
 
+  const getImageLink = (content) => {
+    switch (props.lineup.display_type) {
+      case "square_list_audio":
+        return `${props.imagePath}${content.image_banner}`;
+      case "square_mini":
+        if(content?.content_type === "live_music"){
+          return `https://static.roov.id/upload/200/${content.portrait_image}`;
+        }
+        else if(content?.content_type === "live_radio"){
+          return `https://static.roov.id/upload/200/${content.portrait_image}`;
+        }
+        else{
+          return `${rootImageUrl}${content.square_image}`;
+        }
+        return false;
+      default:
+        return `${rootImageUrl}${content.square_image}`;
+    }
+  }
+
   if (contents.length === 0) return null
 
   return (

@@ -55,8 +55,6 @@ export default function comingSoonModal(props) {
 
   if (!open) return null
 
-  console.log('recon', props.is_interactive, props.content)
-
   return (
     <div 
       id="modal-comingsoon" 
