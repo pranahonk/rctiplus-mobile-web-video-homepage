@@ -65,7 +65,7 @@ function squareMiniView (props) {
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
           <div
-            ref={scrollRef} 
+            ref={scrollRef}
             className="lineup-containers">
             {contents.map((content, i) => {
               return (
@@ -78,14 +78,14 @@ function squareMiniView (props) {
                   <PremiumIcon premium={content.premium} />
 
                   <div>
-                    <Img 
+                    <Img
                       className="lineup-image"
-                      alt={props.lineup.title} 
+                      alt={props.lineup.title}
                       unloader={<img src={placeHolderImgUrl} width={100} height={100} />}
                       loader={<img src={placeHolderImgUrl} width={100} height={100} />}
                       width={100}
                       height={100}
-                      src={content.square_image ? `${rootImageUrl}${content.square_image}` : placeHolderImgUrl} />
+                      src={content ? getImageLink(content) : placeHolderImgUrl} />
                   </div>
                   { renderContinueWatchProgress(content) }
                 </div>
