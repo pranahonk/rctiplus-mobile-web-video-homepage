@@ -123,8 +123,8 @@ export default function useVideoLineups(props) {
         break;
       default:
         if (content.content_type.includes("live")) {
-          if (content.content_type.includes("radio")){
-            Router.push(content?.permalink)
+          if (content.content_type.includes("radio")|| content.content_type.includes("music")){
+            Router.push( content?.permalink )
           }
           const started = content.countdown === 0
 
