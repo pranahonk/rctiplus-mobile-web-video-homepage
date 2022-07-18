@@ -503,37 +503,41 @@ class Tv extends React.Component {
 	getViewers(data) {
 		if(data.counter_enabled === "false") return
 
-		const subscribeViewers = {
-			channel: `ccu/live/${this.props.router.query.channel}`,
-			action: "subscribe",
-			secret: WS_SECRET_KEY
-		};
-
-		const ws = new WebSocket(data.counter_url);	
-    this.setState({socket: ws})
-
-		ws.onopen = () => {
-			console.log('ws on open')
-
-      ws.send(JSON.stringify(subscribeViewers));
-			this.setState({ws_status: true})
-    };
-
-    ws.onmessage = msg => {
-			console.log('ws on message')
-
-      let msgdata = JSON.parse(msg.data.replaceAll("'", '"'));
-			this.setState({ccu_human: msgdata?.data?.ccu_human})
-    };
-
-		ws.onclose = close => {
-			console.log('ws on disconnected')
-			this.setState({ccu_human:null, ws_status: false, socket: null})
-		}
-
-		ws.onerror = error => {
-			console.log('ws on error', error)
-			this.setState({ccu_human:null, ws_status: false, socket: null})
+		try {
+			const subscribeViewers = {
+				channel: `ccu/live/${this.props.router.query.channel}`,
+				action: "subscribe",
+				secret: WS_SECRET_KEY
+			};
+			const ws = new WebSocket(data.counter_url);	
+			this.setState({socket: ws})
+	
+			ws.onopen = () => {
+				console.log('ws on open')
+	
+				ws.send(JSON.stringify(subscribeViewers));
+				this.setState({ws_status: true})
+			};
+	
+			ws.onmessage = msg => {
+				console.log('ws on message')
+	
+				let msgdata = JSON.parse(msg.data.replaceAll("'", '"'));
+				this.setState({ccu_human: msgdata?.data?.ccu_human})
+			};
+	
+			ws.onclose = close => {
+				console.log('ws on disconnected')
+				this.setState({ccu_human:null, ws_status: false, socket: null})
+			}
+	
+			ws.onerror = error => {
+				console.log('ws on error', error)
+				this.setState({ccu_human:null, ws_status: false, socket: null})
+			}
+			
+		} catch (error) {
+			console.error('ws error', error)
 		}
 	}
 
