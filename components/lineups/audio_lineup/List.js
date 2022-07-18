@@ -108,7 +108,7 @@ function AudioList ({title, indexTag, id, data}) {
               <div ref={scrollRef} className="swipe-wrapper">
                 {multiplePodcast.map((list, index) => {
                   return (
-                    <div key={index} id={`potrait-disc-${index}`}>
+                    <div key={index} id={`square-list-${index}`}>
                       {
                         list.map((content, index2) =>{
                           indexId++;
