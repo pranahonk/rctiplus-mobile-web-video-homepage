@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { convivaJwPlayer} from '../../../utils/conviva';
 
 export default function useConvivaInitiator(props) {
-  // console.log(props)
   const [ initConviva, setInitConviva ] = useState(false)
 
   useEffect(_ => {
