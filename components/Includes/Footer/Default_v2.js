@@ -11,7 +11,7 @@ import '../../../assets/scss/components/footer-v2.scss';
 
 import { bottomMenuClick } from '../../../utils/firebaseTracking';
 
-import { gaTrackerNavbarTrack, gaTracker } from '../../../utils/ga-360';
+import { gaTrackerNavbarTrack, gaTracker, gaTrackerSearch} from '../../../utils/ga-360';
 import { getUserAccessToken, getVisitorToken } from "../../../utils/cookie";
 
 const FooterNav_v2 = (props) => {
@@ -27,7 +27,7 @@ const FooterNav_v2 = (props) => {
                 <div className="footer-wrapper-list">
                     <div id="action-home" onClick={() => {
                         homeGeneralClicked('mweb_home_clicked');
-                        gaTracker('menu_navbar_tracking','click_bottom_menu', 'Home')
+                        gaTrackerSearch("menu_navbar_tracking", "click_bottom_menu", "home");
                         switch (props.router.asPath) {
                             case '/radio':
                                 window.location.href = '/';
@@ -58,7 +58,7 @@ const FooterNav_v2 = (props) => {
                 <div className="footer-wrapper-list">
                     <div id="action-live-event" onClick={() => {
                         homeGeneralClicked('mweb_liveevent_clicked');
-                        gaTracker('menu_navbar_tracking','click_bottom_menu', 'LiveEvent')
+                        gaTrackerSearch("menu_navbar_tracking", "click_bottom_menu", "live");
                         Router.push('/live-event');
                     }}>
                         <a>
@@ -89,7 +89,7 @@ const FooterNav_v2 = (props) => {
                 <div className="footer-wrapper-list">
                     <div id="action-live-tv" onClick={() => {
                         homeGeneralClicked('mweb_livetv_clicked');
-                        gaTracker('menu_navbar_tracking','click_bottom_menu', 'LiveTV')
+                        gaTrackerSearch("menu_navbar_tracking", "click_bottom_menu", "live tv");
                         Router.push('/tv/rcti');
                     }}>
                         <a>
@@ -113,6 +113,7 @@ const FooterNav_v2 = (props) => {
 
                 <div className="footer-wrapper-list">
                     <div id="action-library" onClick={() => {
+                        gaTrackerSearch("menu_navbar_tracking", "click_bottom_menu", "trebel");
                         switch (props.router.asPath) {
                             case '/exclusive':
                                 exclusiveGeneralEvent('mweb_exclusive_library_clicked');
@@ -162,7 +163,7 @@ const FooterNav_v2 = (props) => {
                         style={{ position: 'relative' }}
                         onClick={() => {
                             homeGeneralClicked('mweb_account_clicked');
-                            gaTracker('menu_navbar_tracking','click_bottom_menu', 'Account')
+                            gaTrackerSearch("menu_navbar_tracking", "click_bottom_menu", "account");
                             switch (props.router.asPath) {
                                 case '/radio':
                                     window.location.href = '/profile';
