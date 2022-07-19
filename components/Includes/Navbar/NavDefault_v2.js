@@ -10,7 +10,6 @@ import cookie from 'js-cookie';
 
 import { getCookie, removeCookie } from '../../../utils/cookie';
 import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent, newsGeneralEvent } from '../../../utils/appier';
-import { gaTracker, gaTrackerSearch } from '../../../utils/ga-360';
 import '../../../assets/scss/components/navbar-v2.scss';
 
 import { Navbar, NavbarBrand, Button, Row, Col } from 'reactstrap';
@@ -19,7 +18,7 @@ import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import {LINK_RADIO, LINK_GAMES, LINK_HOT, LINK_NEWS} from '../../../config';
-import { gaTrackerNavbarTrack, gaTrackerSearch } from '../../../utils/ga-360';
+import { gaTrackerNavbarTrack, gaTracker, gaTrackerSearch } from '../../../utils/ga-360';
 
 
 class NavbarDef_v2 extends Component {
