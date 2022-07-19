@@ -272,3 +272,18 @@ export const gaVideoInteraction = (content_id, content_name, content_type, conte
     });
   }
 }
+
+export const gaVideoInteractive= (event_category, event_action, event_label) => {
+  if (typeof window !== 'undefined') {
+    window.dataLayer.push({
+      "user_id" :getUserId(),
+      "client_id" : process.env.GA_360_USERID,
+      "pillar" : "video",
+      "date_time" :  new Date().toISOString(),
+      'event_category': event_category,
+      'event_action': event_action,
+      'event_label': event_label,
+    });
+  }
+}
+
