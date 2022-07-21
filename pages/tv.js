@@ -41,7 +41,7 @@ import PauseIcon from '../components/Includes/Common/PauseIcon';
 
 import ax from 'axios';
 
-import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, API_TIMEOUT } from '../config';
+import { DEV_API, BASE_URL, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, API_TIMEOUT, WS_SECRET_KEY } from '../config';
 
 import '../assets/scss/components/live-tv.scss';
 import 'emoji-mart/css/emoji-mart.css';
@@ -224,6 +224,9 @@ class Tv extends React.Component {
       catchUpIndexing: {},
 			is_interactive: false,
 			interactive_modal: false,
+			socket: null,
+			ccu_human: null,
+			ws_status: false,
 		};
 
 		this.player = null;
@@ -238,9 +241,14 @@ class Tv extends React.Component {
 		if (this.player) {
 			this.player.dispose();
 		}
-		console.log(this.convivaTracker);
+
 		if (this.convivaTracker) {
 			this.convivaTracker.cleanUpSession();
+		}
+
+		if(this.state.socket) {
+			this.setState({ccu_human: null});
+			this.state.socket?.close();
 		}
 		// if (window.convivaVideoAnalytics) {
 		// 	const convivaTracker = convivaJwPlayer();
@@ -250,11 +258,19 @@ class Tv extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if(prevState.selected_index !== this.state.selected_index){
+			if(this.state.selected_live_event_url.counter_enabled === 'false') this.setState({ccu_human: null}), this.state.socket?.close();	
+
 			setTimeout(() => {
 				var span = document.getElementsByClassName("tooltiptext")[0]
 				if(!span) return
 				span.parentNode.removeChild(span);
 			}, 4000);
+		}
+
+		if(prevState.ws_status !== this.state.ws_status){
+			if(!this.state.ws_status){
+				this.getViewers(this.state.data_player)
+			}
 		}
 	}
 
@@ -262,6 +278,15 @@ class Tv extends React.Component {
 		initGA();
 
 		this.props.setPageLoader();
+		this.fetchingData()
+		setTimeout(() => {
+			var span = document.getElementsByClassName("tooltiptext")[0]
+			if(!span) return
+			span.parentNode.removeChild(span);  
+		}, 4000);
+	}
+
+	fetchingData(){
 		Promise.all([
 			this.props.getLiveEvent('on air'),
 			axios.get('/v1/get-ads-duration')
@@ -280,6 +305,7 @@ class Tv extends React.Component {
 					}
 				}, _ => {
 					liveEventData.forEach((liveevent, i) => {
+						// console.log('recon', liveevent.channel_code, this.state.channel_code)
 						if (liveevent.channel_code === this.state.channel_code) {
 							this.selectChannel(i, true);
 							return
@@ -290,11 +316,6 @@ class Tv extends React.Component {
 				})
 			})
 			.finally(_ => this.props.unsetPageLoader())
-			setTimeout(() => {
-				var span = document.getElementsByClassName("tooltiptext")[0]
-				if(!span) return
-				span.parentNode.removeChild(span);
-			}, 4000);
 	}
 
 	setHeightChatBox() {
@@ -335,7 +356,6 @@ class Tv extends React.Component {
 							querySnapshot.docChanges()
 								.map(change => {
 									let chats = this.state.chats;
-									console.log(chats);
 									if (change.type === 'added') {
 										if (!this.state.sending_chat) {
 											if (chats.length > 0) {
@@ -388,7 +408,6 @@ class Tv extends React.Component {
 					},
 				});
 
-				console.log('state:', this.state.block_user);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -451,6 +470,8 @@ class Tv extends React.Component {
 					this.selectCatchup(this.props.context_data.epg_id, 'url');
 				}
 
+				this.getViewers(liveEventUrl.data.data)
+
 				this.props.setCatchupData(catchup)
 				this.setState({
 					data_player: liveEventUrl.data.data,
@@ -478,6 +499,47 @@ class Tv extends React.Component {
 				});
 			})
 			.finally(_ => this.props.unsetPageLoader())
+	}
+
+	getViewers(data) {
+		if(data.counter_enabled === "false") return
+
+		try {
+			const subscribeViewers = {
+				channel: `ccu/live/${this.props.router.query.channel}`,
+				action: "subscribe",
+				secret: WS_SECRET_KEY
+			};
+			const ws = new WebSocket(data.counter_url);	
+			this.setState({socket: ws})
+	
+			ws.onopen = () => {
+				console.log('ws on open')
+	
+				ws.send(JSON.stringify(subscribeViewers));
+				this.setState({ws_status: true})
+			};
+	
+			ws.onmessage = msg => {
+				console.log('ws on message')
+	
+				let msgdata = JSON.parse(msg.data.replaceAll("'", '"'));
+				this.setState({ccu_human: msgdata?.data?.ccu_human})
+			};
+	
+			ws.onclose = close => {
+				console.log('ws on disconnected')
+				this.setState({ccu_human:null, ws_status: false, socket: null})
+			}
+	
+			ws.onerror = error => {
+				console.log('ws on error', error)
+				this.setState({ccu_human:null, ws_status: false, socket: null})
+			}
+			
+		} catch (error) {
+			console.error('ws error', error)
+		}
 	}
 
 	selectCatchup(id, ref = false) {
@@ -738,7 +800,6 @@ class Tv extends React.Component {
 		}
 	}
 	callbackAds(e) {
-		console.log(e)
 		this.setState({
 			ads_data: null,
 		}, () => {
@@ -750,7 +811,6 @@ class Tv extends React.Component {
 		});
 	}
 	callbackCount(end, current) {
-		console.log(this.state.isAds)
 		if(this.state.isAds) {
 			let distance = getCountdown(end, current)[0] || 100000;
 			const countdown = setInterval(() => {
@@ -1070,7 +1130,9 @@ class Tv extends React.Component {
 							/>
 					</div>
 					<div ref= {this.tvTabRef} className="tv-wrap">
-						<Row>
+						<p className='pl-3  mt-1 text-sm' style={{fontSize: 14, marginBottom: '-1px'}}>{this.state.epg?.[0]?.title}</p>
+						<p className='pl-3' style={{fontSize: 12}}>{this.state.ccu_human}</p>
+						<Row className='mt-2'>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=rcti" as="/tv/rcti">
 									<Button size="sm" color="link" className={this.state.selected_index === 0 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 0)}><h1 className="heading-rplus">RCTI</h1></Button>
