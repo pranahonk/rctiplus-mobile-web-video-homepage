@@ -246,6 +246,20 @@ class Index_v2 extends React.Component {
           return(
             <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
           )
+        case "square_list_audio":
+          return(
+            <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+          );
+        case "portrait_disc":
+          return(
+            <AudioHorizontalDisc
+              title={lineup.title}
+              key={lineup.id}
+              data={lineup}
+              indexTag={index}
+              id={lineup.id}
+            />
+          );
       }
     })
   }

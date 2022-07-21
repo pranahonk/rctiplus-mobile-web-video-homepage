@@ -51,6 +51,7 @@ import { stickyAdsShowing, stickyAdsClicked, initGA } from '../utils/firebaseTra
 import queryString from 'query-string';
 
 import { getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../utils/cookie';
+import { gaVideoInteraction } from '../utils/ga-360';
 
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
 const InteractiveModal = dynamic(() => import('../components/Modals/InteractiveModal'));
@@ -262,7 +263,7 @@ class Tv extends React.Component {
 			setTimeout(() => {
 				var span = document.getElementsByClassName("tooltiptext")[0]
 				if(!span) return
-				span.parentNode.removeChild(span);  
+				span.parentNode.removeChild(span);
 			}, 4000);
 		}
 
@@ -1182,7 +1183,7 @@ class Tv extends React.Component {
 											</Col>
 											{e?.is_interactive !== 'false' && (
 												<Col className="right-side mx-n3 mr-n5">
-													<img 
+													<img
 														src='/static/player_icons/quiz_icon.svg	'
 														width={30}
 														height={30}
@@ -1203,7 +1204,7 @@ class Tv extends React.Component {
 										</Col>
 										{e?.is_interactive !== 'false' && (
 											<Col className="right-side">
-												<img 
+												<img
 													src='/static/player_icons/quiz_icon.svg	'
 													width={30}
 													height={30}
@@ -1256,7 +1257,7 @@ class Tv extends React.Component {
 										<Button id="btn-expand" onClick={this.toggleChat.bind(this)} color="link">
 											<ExpandLessIcon className="expand-icon" /> Live Chat <FiberManualRecordIcon className="indicator-dot" />
 										</Button>
-									
+
 										{this.state.ads_data ? (<Toast callbackCount={this.callbackCount.bind(this)} count={this.callbackAds.bind(this)} data={this.state.ads_data.data} isAds={this.getStatusAds.bind(this)}/>) : (<div/>)}
 									</div>
 								</Col>
@@ -1265,9 +1266,18 @@ class Tv extends React.Component {
 										<div className='tooltip-custom'>
 											<span className="tooltiptext">Ikuti sekarang!</span>
 											<div className='interactive'>
-												<Button id="btn-expand" onClick={() => this.setState({interactive_modal: true})} color="link">
+												<Button id="btn-expand" onClick={() =>{
+                          gaVideoInteraction(this.state.selected_live_event?.content_id,
+                          this.state.selected_live_event?.content_title, this.state.selected_live_event?.content_type, this.state.selected_live_event?.content_type,"not_available",
+                          "not_available", "not_available", "not_available",
+                          "not_available", "not_available", this.state.selected_live_event?.content_id,
+                            this.state.selected_live_event?.content_title, "not_available", "not_available",
+                          "not_available", "not_available", "not_available",
+                          "no")
+                          this.setState({interactive_modal: true})
+                        }} color="link">
 													<Row className='justify-content-center'>
-														<img 
+														<img
 															src='/static/player_icons/quiz_icon.svg	'
 															width={40}
 															height={40}
@@ -1304,7 +1314,8 @@ class Tv extends React.Component {
 												className="chat-avatar" src={[chat.i, '/static/icons/person-outline.png']} />
 										</Col>
 										<Col className="chat-message" xs={10}>
-											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}><RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
+											{chat.sent != undefined && chat.failed != undefined ? (chat.sent == true && chat.failed == true ? (<span onClick={() => this.resendChat(i)}>
+                        <RefreshIcon className="message" /> <small style={{ marginRight: 10, fontSize: 8, color: 'red' }}>failed</small></span>) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)) : (<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />)} <span className="username">{chat.u}</span> <span className="message">{chat.m}</span>
 										</Col>
 									</Row>
 								))}
