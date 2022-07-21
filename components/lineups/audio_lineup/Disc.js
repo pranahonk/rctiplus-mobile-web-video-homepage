@@ -77,7 +77,7 @@ function AudioDisc ({title, indexTag, id, data}) {
                   setShow(false)
                 }
                 return (
-                  <div className="background-vertical" id={`square-list-audio-${index}`} key={index}  onClick={()=> _goToDetail(content?.content_type_detail?.detail?.data)}>
+                  <div className="background-vertical" id={`potrait-disc-${index}`} key={index}  onClick={()=> _goToDetail(content?.content_type_detail?.detail?.data)}>
                     <div className="background-disc">
                       <Img className="disc-img"
                            alt={content?.content_type_detail?.detail?.data?.title}
