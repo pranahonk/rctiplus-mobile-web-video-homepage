@@ -137,7 +137,7 @@ function AudioList ({title, indexTag, id, data}) {
                                       <div className="buttons-wrapper">
                                         <img src="audio-icons/share-icon.svg"  className="mr-3" onClick={()=> toggleActionSheet(this, null, content?.content_type_detail?.detail?.data?.permalink, '', ['rcti'])} />
                                         {/*<img src="audio-icons/bookmark-icon.svg" className="mx-3" />*/}
-                                        <img src="audio-icons/download-icon.svg" onClick={() => alertDownload(null, 'extra', null, null, null)}/>
+                                        {/*<img src="audio-icons/download-icon.svg" onClick={() => alertDownload(null, 'extra', null, null, null)}/>*/}
                                         (
                                       </div>
                                     </div>
