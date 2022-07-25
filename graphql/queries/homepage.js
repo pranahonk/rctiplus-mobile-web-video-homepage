@@ -18,6 +18,8 @@ import {
   contentTypeProgramFragment,
   contentTypeSeasonFragment,
   contentTypeSpecialFragment,
+  contentTypeAudioRadio,
+  contentTypeAudioPodcast
 } from "../fragments/content_types"
 
 function getQueryParams(args) {
@@ -69,7 +71,7 @@ export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
           lineup_type_detail {
             ${lineupContinueWatchingFragment(getQueryParams({ page: 1, page_size }))}
             ${lineupTypeStoryFragment(getQueryParams({ page: 1, page_size }))}
-            ${lineupDefaultFragment(getQueryParams({ page: 1, page_size}))}
+            ${lineupDefaultFragment(getQueryParams({ page: 1, page_size: 6}))}
             ${lineupTypeNewsRegroupingFragment(getQueryParams({ page: 1, page_size: 30 }))}
             ${lineupTypeNewsTagarFragment(getQueryParams({ page: 1, page_size: 6 }))}
           }
@@ -181,6 +183,8 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 5, lineup_id = 0)
             ${contentTypeLiveEPGFragment}
             ${contentTypeSpecialFragment}
             ${contentTypeSeasonFragment}
+            ${contentTypeAudioPodcast}
+            ${contentTypeAudioRadio}
           }
         }
         meta {
