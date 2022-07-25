@@ -1,22 +1,17 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import queryString from 'query-string';
 import { connect } from 'react-redux';
-import {getTruncate} from '../../../utils/helpers';
+import { getTruncate, imageNews } from '../../../utils/helpers';
 import { formatDateWordID } from '../../../utils/dateHelpers';
-import { urlRegex } from '../../../utils/regex';
-import { imageNews } from '../../../utils/helpers';
-import isEmpty from 'lodash/isEmpty';
 import dynamic from 'next/dynamic';
-import {client }  from "../../../graphql/client"
+import { client } from '../../../graphql/client';
 
 
 // Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
 import 'swiper/swiper.scss';
-import { GET_REGROUPING, GET_REGROUPING_LINEUPS } from '../../../graphql/queries/regrouping';
+import { GET_REGROUPING_LINEUPS } from '../../../graphql/queries/regrouping';
 
 //import scss
 import '../../../assets/scss/components/horizontal-landscape.scss';
