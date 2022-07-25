@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import '../../../assets/scss/components/audio-list.scss';
 import { getTruncate } from '../../../utils/helpers';
-import { alertDownload } from '../../Includes/program-detail/programDetail';
 import Router from 'next/router';
 import ActionSheet from '../../Modals/ActionSheet';
 
