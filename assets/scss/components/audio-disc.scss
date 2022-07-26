@@ -3,7 +3,6 @@
     .content-title {
         font-stretch: normal;
         font-style: normal;
-        line-height: normal;
         letter-spacing: normal;
         font-weight: bold;
         font-size: 16px;
@@ -48,6 +47,7 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    object-fit: cover;
                 }
                 .disc-hole-background {
                     position: absolute;
@@ -86,8 +86,9 @@
                 font-weight: 600;
                 font-size: 12px;
                 line-height: 16px;
+                margin-top: 16px;
                 color: #E3E3E3;
             }
         }
-    }   
+    }
 }
