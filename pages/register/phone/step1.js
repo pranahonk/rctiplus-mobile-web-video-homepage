@@ -109,7 +109,7 @@ class Step1 extends Component {
 		this.setState({ fullname: e.target.value });
 		this.props.setFullname(e.target.value);
 	}
-
+	
 	handleChangeToken(token) {
 		if(this.state.token) return;
 

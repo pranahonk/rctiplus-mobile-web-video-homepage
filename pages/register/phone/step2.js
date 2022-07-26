@@ -21,6 +21,8 @@ import ReactCodeInput from 'react-verification-code-input';
 import '../../../assets/scss/components/otp_steps.scss';
 
 import Countdown, { zeroPad } from 'react-countdown-now';
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { RE_CAPTCHA_SITE_KEY } from '../../../config';
 
 class Step2 extends Component {
 
@@ -49,7 +51,7 @@ class Step2 extends Component {
 			if (this.props.registration.username_type === 'PHONE_NUMBER') {
 				username = this.props.registration.phone_code + username;
 			}
-			this.props.getOtp(username, 'registration', null, token, false)
+			this.props.getOtp(username, 'registration', null, token)
 				.then(response => {
 					if (response.status === 200) {
 						this.setState({ 
@@ -58,7 +60,10 @@ class Step2 extends Component {
 						});
 					}
 				})
-				.catch(error => console.log(error));
+				.catch(error => {
+					console.log(error)
+					Router.back()
+				});
 		});
 	}
 
@@ -68,6 +73,13 @@ class Step2 extends Component {
 				this.submitOtp();
 			}
 		});
+	}
+
+	handleChangeToken(token) {
+		if(this.state.token) return;
+
+		this.setState({ token });
+		this.props.setToken(token);
 	}
 
 	storeToken = async () => {
@@ -152,13 +164,14 @@ class Step2 extends Component {
 
 	showAlert() {
 		let username = this.state.username;
+		let token = this.state.token;
 		if (this.props.registration.username_type === 'PHONE_NUMBER') {
 			username = this.props.registration.phone_code + username;
 		}
 
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
 			// code = 1 (please try again later (after 1 minute))
-			this.props.getOtp(username, 'registration', null, null, true)
+			this.props.getOtp(username, 'registration', null, token)
 				.then(response => {
 					let newState = {};
 					if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
@@ -236,6 +249,11 @@ class Step2 extends Component {
 				<div className="wrapper-content" style={{ width: '100%', marginTop: 50 }}>
 					<div className="login-box" style={{ width: '100%' }}>
 						<p style={{ fontSize: 14 }} className="text-default-rcti" dangerouslySetInnerHTML={{__html: text}}></p>
+						<GoogleReCaptchaProvider
+						language="id"
+						reCaptchaKey={RE_CAPTCHA_SITE_KEY}
+						
+					>
 						<Form onSubmit={this.submitOtp.bind(this)}>{/*<span style={{ color: 'white' }}>{username}</span>*/}
 							<FormGroup>
 								<ReactCodeInput
@@ -246,9 +264,14 @@ class Step2 extends Component {
 									fieldWidth={40}
 									className="otp-input" />
 							</FormGroup>
-							
+							<FormGroup>
+								<GoogleReCaptcha
+									onVerify={this.handleChangeToken.bind(this)}
+								/>
+							</FormGroup>
 							{actionElement}
 						</Form>
+					</GoogleReCaptchaProvider>
 					</div>
 				</div>
 			</Layout>
