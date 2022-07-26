@@ -146,7 +146,7 @@ const FooterNav_v2 = (props) => {
                             </div>
                             {/* <ImportContactsTwoToneIcon className="nav-footer-icon"/>
                                 <br /> */}
-                            <span className={props.router.asPath === "/explores" ? "footer-icon-active" : ""}>TREBEL</span>
+                            <span className={props.router.asPath === "/explores" ? "footer-icon-active" : ""}>Music+</span>
                         </a>
                     </div>
                 </div>
