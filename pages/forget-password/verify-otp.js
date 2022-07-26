@@ -30,16 +30,17 @@ class VerifyOtp extends React.Component {
             current_time: Date.now(),
             submit_message: '',
             is_submitting: false,
-            req_otp_status: 0
+            req_otp_status: 0,
+            token: null
         };
 
         this.otpInput = null;
     }
 
     componentDidMount() {
-        console.log(this.props)
-        this.setState({ username: this.props.registration.username }, () => {
-            this.props.getOtp(this.state.username, 'forget-password', this.props.registration.phone_code)
+        const {username, token, phone_code} = this.props.registration
+        this.setState({ username, token }, () => {
+            this.props.getOtp(this.state.username, 'forget-password', phone_code, token, false)
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
@@ -92,8 +93,9 @@ class VerifyOtp extends React.Component {
 
     showAlert() {
         let username = this.state.username;
+        const { phone_code } = this.props.registration
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
-            this.props.getOtp(username, 'forget-password', this.props.registration.phone_code)
+            this.props.getOtp(username, 'forget-password', phone_code, null, true)
                 .then(response => {
                     let newState = {};
                     if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
@@ -203,10 +205,11 @@ class VerifyOtp extends React.Component {
                     <Form onSubmit={this.submitOtp.bind(this)}>
                         <FormGroup>
                             <ReactCodeInput
-                                fields={4}
+                                fields={6}
                                 onChange={this.onChangeOtp.bind(this)}
                                 values={this.state.otp.toString().split('')}
                                 ref={node => this.otpInput = node}
+                                fieldWidth={40}
                                 className="otp-input-c" />
                         </FormGroup>
                         {actionElement}

@@ -14,6 +14,7 @@ const initialState = {
     phone_invalid: false,
     active_tab: '2',
     phone_code: '',
+    token: null
 };
 
 export default (state = initialState, action) => {
@@ -46,6 +47,8 @@ export default (state = initialState, action) => {
             return Object.assign({}, state, { phone_invalid: action.invalid });
         case 'SET_ACTIVE_TAB':
             return Object.assign({}, state, { active_tab: action.tab });
+        case 'TOKEN':
+            return Object.assign({}, state, { token: action.token });
         default:
             return state;
     }

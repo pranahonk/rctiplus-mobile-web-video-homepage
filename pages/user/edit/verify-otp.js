@@ -208,7 +208,8 @@ class VerifyOtp extends React.Component {
                     <Form onSubmit={this.submitOtp.bind(this)}>
                         <FormGroup>
                             <ReactCodeInput
-                                fields={4}
+                                fields={6}
+                                fieldWidth={40}
                                 onChange={this.onChangeOtp.bind(this)}
                                 className="otp-input-c" />
                         </FormGroup>

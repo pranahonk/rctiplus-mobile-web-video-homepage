@@ -39,8 +39,9 @@ class VerifyOtp extends React.Component {
 
     componentDidMount() {
         // console.log(this.props.user)
-        this.setState({ username: this.props.registration.username }, () => {
-            this.props.getOtp(this.state.username, 'change-password', !this.state.username.includes('@') ? this.props.user.data.phone_code : null)
+        const { username, token} = this.props.registration
+        this.setState({ username, token }, () => {
+            this.props.getOtp(this.state.username, 'change-password', !this.state.username.includes('@') ? this.props.user.data.phone_code : null, token, false)
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
@@ -105,7 +106,7 @@ class VerifyOtp extends React.Component {
     showAlert() {
         let username = this.state.username;
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
-            this.props.getOtp(username, 'change-password', !username.includes('@') ? this.props.user.data.phone_code : null)
+            this.props.getOtp(username, 'change-password', !username.includes('@') ? this.props.user.data.phone_code : null, null, true)
                 .then(response => {
                     let newState = {};
                     if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
@@ -208,7 +209,8 @@ class VerifyOtp extends React.Component {
                     <Form onSubmit={this.submitOtp.bind(this)}>
                         <FormGroup>
                             <ReactCodeInput
-                                fields={4}
+                                fields={6}
+                                fieldWidth={40}
                                 onChange={this.onChangeOtp.bind(this)}
                                 className="otp-input-c" />
                         </FormGroup>

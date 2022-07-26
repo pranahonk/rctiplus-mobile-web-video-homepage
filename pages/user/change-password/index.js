@@ -13,6 +13,8 @@ import NavBack from '../../../components/Includes/Navbar/NavBack';
 import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback } from 'reactstrap';
 
 import '../../../assets/scss/components/change-password.scss';
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { RE_CAPTCHA_SITE_KEY } from '../../../config';
 
 class ChangePassword extends React.Component {
 
@@ -30,6 +32,7 @@ class ChangePassword extends React.Component {
             view_raw_re: false,
             view_raw_cu: false,
             user: this.props.user,
+            token: null,
         };
     }
 
@@ -72,6 +75,13 @@ class ChangePassword extends React.Component {
                 this.setState({ current_password_invalid: true });
             });
     }
+
+    handleChangeToken(token) {
+		if(this.state.token) return;
+
+		this.setState({ token });
+		this.props.setToken(token);
+	}
 
     togglePassword(type = '') {
         if (type == 're') {
@@ -117,6 +127,10 @@ class ChangePassword extends React.Component {
             <Layout title="Change Password">
                 <NavBack title="Change Password"/>
                 <div className="container-box-c">
+                <GoogleReCaptchaProvider
+                        language="id"
+                        reCaptchaKey={RE_CAPTCHA_SITE_KEY}
+				>
                     <Form onSubmit={this.handleSubmit.bind(this)}>
                     <FormGroup>
                             <Label className="label-c" for="password">Current Password</Label>
@@ -166,9 +180,15 @@ class ChangePassword extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
+                            <GoogleReCaptcha
+                                onVerify={this.handleChangeToken.bind(this)}
+                            />
+                        </FormGroup>
+                        <FormGroup>
                             <Button disabled={this.state.password == '' || this.state.confirm_password == '' || (this.state.password != this.state.confirm_password) || this.state.password_match_invalid || this.state.at_least_eight_invalid} className="btn-next block-btn">Save</Button>
                         </FormGroup>
                     </Form>
+                </GoogleReCaptchaProvider>
                 </div>
             </Layout>
         );
