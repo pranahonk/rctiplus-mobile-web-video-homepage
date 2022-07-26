@@ -90,14 +90,24 @@ const setOtp = otp => {
     });
 };
 
-const getOtp = (username, type = 'registration', phone_code = null) => {
-    console.log(phone_code)
+const setToken = token => {
+    return dispatch => dispatch({
+        type: 'TOKEN',
+        token
+    });
+};
+
+const getOtp = (username, type = 'registration', phone_code = null, token = null, resend) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`/v3/otp`, { 
+            let params = {
                 username: phone_code ? phone_code + username : username,
-                type: type
-            });
+                type,
+                resend
+            }
+            if (token) params.captcha_response = token
+
+            const response = await axios.post(`/v3/otp`, params);
 
             if (response.data.status.code === 0) {
                 dispatch({ type: 'GET_OTP' });
@@ -302,4 +312,5 @@ export default {
     setPhoneInvalid,
     setActiveTab,
     setPhoneCode,
+    setToken,
 };

@@ -23,6 +23,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../../../assets/scss/components/form-field.scss';
 
 import { accountGeneralEvent } from '../../../utils/appier';
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { RE_CAPTCHA_SITE_KEY } from '../../../config';
 
 const CountryList = dynamic(() => import('../../../components/Modals/CountryList'));
 
@@ -37,6 +39,7 @@ class FormField extends React.Component {
             status: false,
 			codeCountry: 'ID',
 			phone_code: '62',
+            token: null,
         };
 
         this.subject = new Subject();
@@ -118,6 +121,14 @@ class FormField extends React.Component {
             console.log(error);
         });
     }
+
+    handleChangeToken(token) {
+		if(this.state.token) return;
+
+		this.setState({ token });
+		this.props.setToken(token);
+	}
+
 
     onSubmit(e) {
         e.preventDefault();
@@ -339,12 +350,22 @@ class FormField extends React.Component {
             <Layout title={this.props.others.label}>
                 <NavBack title="Edit Profile" />
                 <div className="container-box-ff">
+                <GoogleReCaptchaProvider
+                        language="id"
+                        reCaptchaKey={RE_CAPTCHA_SITE_KEY}
+				>
                     <Form onSubmit={this.onSubmit.bind(this)}>
                         {formField}                        
                         <FormGroup>
                             {saveButton}
                         </FormGroup>
+                        <FormGroup>
+                            <GoogleReCaptcha
+                                onVerify={this.handleChangeToken.bind(this)}
+                            />
+                        </FormGroup>
                     </Form>
+                </GoogleReCaptchaProvider>
                     {this.state.status ? (
 					<CountryList
 						data={this.props.others.list_country}
