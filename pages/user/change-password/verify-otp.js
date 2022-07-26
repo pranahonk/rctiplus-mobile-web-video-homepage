@@ -41,7 +41,7 @@ class VerifyOtp extends React.Component {
         // console.log(this.props.user)
         const { username, token} = this.props.registration
         this.setState({ username, token }, () => {
-            this.props.getOtp(this.state.username, 'change-password', !this.state.username.includes('@') ? this.props.user.data.phone_code : null, token, false)
+            this.props.getOtp(this.state.username, 'change-password', !this.state.username.includes('@') ? this.props.user.data.phone_code : null, token)
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
@@ -105,8 +105,9 @@ class VerifyOtp extends React.Component {
 
     showAlert() {
         let username = this.state.username;
+        let token = this.state.token;
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
-            this.props.getOtp(username, 'change-password', !username.includes('@') ? this.props.user.data.phone_code : null, null, true)
+            this.props.getOtp(username, 'change-password', !username.includes('@') ? this.props.user.data.phone_code : null, token)
                 .then(response => {
                     let newState = {};
                     if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {

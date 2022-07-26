@@ -97,15 +97,14 @@ const setToken = token => {
     });
 };
 
-const getOtp = (username, type = 'registration', phone_code = null, token = null, resend) => {
+const getOtp = (username, type = 'registration', phone_code = null, token = null) => {
     return dispatch => new Promise(async (resolve, reject) => {
         try {
             let params = {
                 username: phone_code ? phone_code + username : username,
                 type,
-                resend
+                token
             }
-            if (token) params.captcha_response = token
 
             const response = await axios.post(`/v3/otp`, params);
 

@@ -48,7 +48,7 @@ class Step2 extends Component {
 			if (this.props.registration.username_type === 'PHONE_NUMBER') {
 				username = this.props.registration.phone_code + username;
 			}
-			this.props.getOtp(username, 'registration', null, token, false)
+			this.props.getOtp(username, 'registration', null, token)
 				.then(response => {
 					if (response.status === 200) {
 						this.setState({ 
@@ -145,13 +145,14 @@ class Step2 extends Component {
 
 	showAlert() {
 		let username = this.state.username;
+		let token = this.state.token;
 		if (this.props.registration.username_type === 'PHONE_NUMBER') {
 			username = this.props.registration.phone_code + username;
 		}
 
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
 			// code = 1 (please try again later (after 1 minute))
-			this.props.getOtp(username, 'registration', null, null, true)
+			this.props.getOtp(username, 'registration', null, token)
 				.then(response => {
 					let newState = {};
 					if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {

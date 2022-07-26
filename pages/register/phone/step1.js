@@ -109,8 +109,9 @@ class Step1 extends Component {
 		this.setState({ fullname: e.target.value });
 		this.props.setFullname(e.target.value);
 	}
-
+	callback
 	handleChangeToken(token) {
+		console.log('recon', token)
 		if(this.state.token) return;
 
 		this.setState({ token });
