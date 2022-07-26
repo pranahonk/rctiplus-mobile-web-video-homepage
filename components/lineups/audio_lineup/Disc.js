@@ -17,10 +17,8 @@ function AudioDisc ({title, indexTag, id, data}) {
     const [loadingMore, setLoadingMore] = useState(false);
     const [assetUrl, setAssetUrl] = useState(null);
 
-    const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
-
     useEffect(() => {
-      if(data?.lineup_type_detail?.detail?.data[0]?.content_type_detail?.detail){
+      if(data?.lineup_type_detail?.detail?.status?.code !== "0"){
         setMeta(data?.lineup_type_detail?.detail?.meta);
         setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
         setDisc(data?.lineup_type_detail?.detail?.data);
