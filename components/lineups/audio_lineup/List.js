@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import '../../../assets/scss/components/audio-list.scss';
 import { getTruncate } from '../../../utils/helpers';
-import { alertDownload } from '../../Includes/program-detail/programDetail';
 import Router from 'next/router';
 import ActionSheet from '../../Modals/ActionSheet';
 
@@ -22,9 +21,6 @@ function AudioList ({title, indexTag, id, data}) {
     const [assetUrl, setAssetUrl] = useState(null);
     const [shareUrl, setShareURL] = useState(null);
     const [loadingMore, setLoadingMore] = useState(false);
-
-    const placeHolderImgUrl = "https://dev-radioplus.mncplus.com/image/no-image.png"
-    // const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
     useEffect(() => {
       if(data?.lineup_type_detail?.detail?.data?.content_type_detail?.detail?.data){

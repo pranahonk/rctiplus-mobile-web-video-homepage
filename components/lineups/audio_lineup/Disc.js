@@ -18,10 +18,11 @@ function AudioDisc ({title, indexTag, id, data}) {
     const [assetUrl, setAssetUrl] = useState(null);
 
     useEffect(() => {
+      const filteredData =  data?.lineup_type_detail?.detail?.data.filter((x) => x?.content_type_detail?.detail?.status?.code === 0);
       if(data?.lineup_type_detail?.detail?.status?.code !== "0"){
         setMeta(data?.lineup_type_detail?.detail?.meta);
         setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
-        setDisc(data?.lineup_type_detail?.detail?.data);
+        setDisc(filteredData);
       }
     }, [])
 
