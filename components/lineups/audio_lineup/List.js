@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import '../../../assets/scss/components/audio-list.scss';
 import { getTruncate } from '../../../utils/helpers';
-import { alertDownload } from '../../Includes/program-detail/programDetail';
 import Router from 'next/router';
 import ActionSheet from '../../Modals/ActionSheet';
 
@@ -23,13 +22,13 @@ function AudioList ({title, indexTag, id, data}) {
     const [shareUrl, setShareURL] = useState(null);
     const [loadingMore, setLoadingMore] = useState(false);
 
-    const placeHolderImgUrl = "https://dev-radioplus.mncplus.com/image/no-image.png"
-    // const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
-
     useEffect(() => {
-      setMeta(data?.lineup_type_detail?.detail?.meta);
-      setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
-      setPodcast(data?.lineup_type_detail?.detail?.data);
+      if(data?.lineup_type_detail?.detail?.data?.content_type_detail?.detail?.data){
+        setMeta(data?.lineup_type_detail?.detail?.meta);
+        setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
+        setPodcast(data?.lineup_type_detail?.detail?.data);
+      }
+
     }, [])
 
     useEffect(()=>{
@@ -107,6 +106,7 @@ function AudioList ({title, indexTag, id, data}) {
             {scrollRef => (
               <div ref={scrollRef} className="swipe-wrapper">
                 {multiplePodcast.map((list, index) => {
+                  console.log(list)
                   return (
                     <div key={index} id={`square-list-${index}`}>
                       {

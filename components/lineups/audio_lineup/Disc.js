@@ -17,13 +17,13 @@ function AudioDisc ({title, indexTag, id, data}) {
     const [loadingMore, setLoadingMore] = useState(false);
     const [assetUrl, setAssetUrl] = useState(null);
 
-    const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
-
     useEffect(() => {
-      console.log(data)
-      setMeta(data?.lineup_type_detail?.detail?.meta);
-      setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
-      setDisc(data?.lineup_type_detail?.detail?.data);
+      const filteredData =  data?.lineup_type_detail?.detail?.data.filter((x) => x?.content_type_detail?.detail?.status?.code === 0);
+      if(data?.lineup_type_detail?.detail?.status?.code !== "0"){
+        setMeta(data?.lineup_type_detail?.detail?.meta);
+        setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
+        setDisc(filteredData);
+      }
     }, [])
 
     useEffect(() => {
@@ -67,7 +67,7 @@ function AudioDisc ({title, indexTag, id, data}) {
     }
 
     return (
-      disc === undefined || disc.length < 1 ?   (<div />) :
+      disc === undefined || disc.length  < 1 ?   (<div />) :
         <div className="pnl-audio-disc">
             <h2 className="content-title">{title}</h2>
           <BottomScrollListener offset={5000} onBottom={()=> setShow(true)}>
