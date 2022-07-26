@@ -11,7 +11,7 @@ import { GET_AUDIO_LIST_PAGINATION } from '../../../graphql/queries/audio-list';
 function AudioDisc ({title, indexTag, id, data}) {
     // const { generateLink, onTouchStart, onTouchEnd } = useVideoLineups(props)
 
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(false);
     const [meta, setMeta] = useState(null);
     const [disc, setDisc] = useState([]);
     const [loadingMore, setLoadingMore] = useState(false);
