@@ -18,7 +18,7 @@ import NavBack from '../../../components/Includes/Navbar/NavBack';
 import { Form, FormGroup } from 'reactstrap';
 
 import '../../../assets/scss/components/verify-otp-password.scss';
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { RE_CAPTCHA_SITE_KEY } from '../../../config';
 
 
