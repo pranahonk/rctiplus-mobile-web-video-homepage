@@ -103,7 +103,7 @@ const getOtp = (username, type = 'registration', phone_code = null, token = null
             let params = {
                 username: phone_code ? phone_code + username : username,
                 type,
-                token
+                captcha_response: token
             }
 
             const response = await axios.post(`/v3/otp`, params);

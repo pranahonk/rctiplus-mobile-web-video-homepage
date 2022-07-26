@@ -18,6 +18,8 @@ import NavBack from '../../../components/Includes/Navbar/NavBack';
 import { Form, FormGroup } from 'reactstrap';
 
 import '../../../assets/scss/components/verify-otp-password.scss';
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { RE_CAPTCHA_SITE_KEY } from '../../../config';
 
 
 class VerifyOtp extends React.Component {
@@ -155,6 +157,14 @@ class VerifyOtp extends React.Component {
 		return attempts;
 	}
 
+
+	handleChangeToken(token) {
+		if(this.state.token) return;
+
+		this.setState({ token });
+		this.props.setToken(token);
+	}
+
     render() {
         let text = 'Please enter verification code, <br>sent via email:';
 		let username = this.state.username || '';
@@ -208,16 +218,27 @@ class VerifyOtp extends React.Component {
                 <NavBack title="Verify OTP"/>
                 <div className="container-box-c">
                     <p style={{ fontSize: 14 }} className="text-default-rcti" dangerouslySetInnerHTML={{__html: text}}></p>
-                    <Form onSubmit={this.submitOtp.bind(this)}>
+                    <GoogleReCaptchaProvider
+						language="id"
+						reCaptchaKey={RE_CAPTCHA_SITE_KEY}
+						
+					>
+                        <Form onSubmit={this.submitOtp.bind(this)}>
+                            <FormGroup>
+                                <ReactCodeInput
+                                    fields={6}
+                                    fieldWidth={40}
+                                    onChange={this.onChangeOtp.bind(this)}
+                                    className="otp-input-c" />
+                            </FormGroup>
+                            {actionElement}
+                        </Form>
                         <FormGroup>
-                            <ReactCodeInput
-                                fields={6}
-                                fieldWidth={40}
-                                onChange={this.onChangeOtp.bind(this)}
-                                className="otp-input-c" />
-                        </FormGroup>
-                        {actionElement}
-                    </Form>
+                            <GoogleReCaptcha
+                                onVerify={this.handleChangeToken.bind(this)}
+                            />
+						</FormGroup>
+                    </GoogleReCaptchaProvider>
                 </div>
             </Layout>
         );

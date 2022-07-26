@@ -18,6 +18,8 @@ import NavBack from '../../../components/Includes/Navbar/NavBack';
 import { Form, FormGroup } from 'reactstrap';
 
 import '../../../assets/scss/components/verify-otp-password.scss';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { RE_CAPTCHA_SITE_KEY } from '../../../config';
 
 
 class VerifyOtp extends React.Component {
@@ -33,7 +35,8 @@ class VerifyOtp extends React.Component {
             current_time: Date.now(),
             submit_message: '',
             is_submitting: false,
-            req_otp_status: 0
+            req_otp_status: 0,
+            token: null,
         };
     }
 
@@ -102,6 +105,13 @@ class VerifyOtp extends React.Component {
             }
         });
     }
+    
+    handleChangeToken(token) {
+		if(this.state.token) return;
+
+		this.setState({ token });
+		this.props.setToken(token);
+	}
 
     showAlert() {
         let username = this.state.username;
@@ -207,6 +217,11 @@ class VerifyOtp extends React.Component {
                 <NavBack title="Verify OTP"/>
                 <div className="container-box-c">
                     <p style={{ fontSize: 14 }} className="text-default-rcti" dangerouslySetInnerHTML={{__html: text}}></p>
+                    <GoogleReCaptchaProvider
+						language="id"
+						reCaptchaKey={RE_CAPTCHA_SITE_KEY}
+						
+					>
                     <Form onSubmit={this.submitOtp.bind(this)}>
                         <FormGroup>
                             <ReactCodeInput
@@ -217,6 +232,12 @@ class VerifyOtp extends React.Component {
                         </FormGroup>
                         {actionElement}
                     </Form>
+                    <FormGroup>
+                        <GoogleReCaptcha
+                            onVerify={this.handleChangeToken.bind(this)}
+                        />
+                    </FormGroup>
+                    </GoogleReCaptchaProvider>
                 </div>
             </Layout>
         );
