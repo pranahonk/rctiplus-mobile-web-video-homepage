@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Img from 'react-image';
-import {Button, Row} from 'reactstrap'
+import { Row } from 'reactstrap';
 import CountdownTimer from '../Common/CountdownTimer';
 
 import '../../../assets/scss/components/thumbnail.scss';
@@ -19,7 +19,7 @@ class Thumbnail extends React.Component {
         {this.props?.isInteractive !== 'false' && (
           <div className='thumb-label-interactive interactive'>
               <Row className='justify-content-center px-2'>
-                <img 
+                <img
                   src='/static/player_icons/quiz_icon.svg	'
                   width={20}
                   height={20}

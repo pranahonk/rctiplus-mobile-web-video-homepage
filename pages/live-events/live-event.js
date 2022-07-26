@@ -57,6 +57,7 @@ import { getCountdown } from '../../utils/helpers';
 import { triggerQualityButtonClick } from '../../utils/player';
 
 import ax from 'axios';
+import { gaVideoInteraction } from '../../utils/ga-360';
 
 const JwPlayer = dynamic(() => import('../../components/Includes/Player/JwPlayer'));
 // const InnoPlayer = dynamic(() => import('../../components/Includes/Player/InnoPlayer'));
@@ -248,7 +249,7 @@ class LiveEvent extends React.Component {
 		setTimeout(() => {
 			var span = document.getElementsByClassName("tooltiptext")[0]
 			if(!span) return
-			span.parentNode.removeChild(span);  
+			span.parentNode.removeChild(span);
 		}, 2000);
 	}
 	// getLiveEvent() {
@@ -274,7 +275,7 @@ class LiveEvent extends React.Component {
 	// 		this.props.unsetPageLoader();
 	// 	});
 	// }
-	
+
 	// getMissedEvent() {
 	// 	this.props.setSeamlessLoad(true);
   //   this.props.setPageLoader();
@@ -298,7 +299,7 @@ class LiveEvent extends React.Component {
 			setTimeout(() => {
 				var span = document.getElementsByClassName("tooltiptext")[0]
 				if(!span) return
-				span.parentNode.removeChild(span);  
+				span.parentNode.removeChild(span);
 			}, 4000);
 		}
 	}
@@ -517,18 +518,18 @@ class LiveEvent extends React.Component {
                 for (let i = 0; i < childs.length; i++) {
                     if (childs[i].className == 'vjs-menu-button vjs-menu-button-popup vjs-button') {
                         childs[i].addEventListener('touchstart', function() {
-                            
+
                             self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
                         });
                         const qualityItems = document.querySelectorAll('li[role=menuitemradio]');
                         for (let j = 0; j < qualityItems.length; j++) {
                             qualityItems[j].addEventListener('touchstart', function() {
-                                
+
                                 self.setState({ quality_selector_shown: false });
                             });
                         }
                         childs[i].addEventListener('click', function() {
-                            
+
                             self.setState({ quality_selector_shown: !self.state.quality_selector_shown });
                         });
 
@@ -903,10 +904,10 @@ class LiveEvent extends React.Component {
 			targetHref.push(`${key}=${query[key]}`)
       targetHrefAlias.push(query[key])
     }
-		
+
     return {
       href: targetHref.join("&"), // actual target url
-      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser 
+      hrefAlias: targetHrefAlias.join("/") // url when displayed on browser
     }
   }
 
@@ -936,19 +937,19 @@ class LiveEvent extends React.Component {
 		const queuingContents = isLiveEvent ? live_events : missed_event
 
 		if (queuingContents.length === 0) return
-		
+
 		const currentEventId = +this.props.router.query.id
 		const indexes = {
 			...this.state.videoIndexing,
 			maxQueue: queuingContents.length
 		}
 		const videoIndexing = this.generateIndexing(queuingContents, indexes, currentEventId)
-		
+
     if (this.state.videoIndexing.current !== videoIndexing.current) {
 			this.setState({ videoIndexing })
     }
   }
-	
+
 	generateIndexing(queueingContents, indexes, targetId) {
 		let output = indexes
 		queueingContents.forEach((content, i) => {
@@ -962,7 +963,7 @@ class LiveEvent extends React.Component {
 		return output
 	}
 
-	
+
 	render() {
 		this.getCurrentViewingVideoIndex()
 
@@ -1116,7 +1117,19 @@ class LiveEvent extends React.Component {
 								<TabPane tabId={'live-event'}>
 									<Row style={{marginLeft: '0 !important'}}>
 										{this.state.live_events.length > 0 ? this.state.live_events.map((le, i) => (
-											<Col xs={6} key={i} onClick={() => Router.push(`/live-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`, undefined, { shallow: true })}>
+											<Col xs={6} key={i}
+                           onClick={() => {
+                             gaVideoInteraction(le?.content_id, le?.content_title,
+                               'not_available', le?.content_type,
+                               "not_available", "not_available",
+                               le?.id, le?.assets_name, "not_available",
+                               "not_available", "not_available",
+                               le?.channel_code, "not_available", "not_available",
+                               "not_available", "not_available", "not_available",
+                               "no");
+                             Router.push(`/live-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`, undefined, { shallow: true })
+                           }
+                      }>
 												<Thumbnail
 												label="Live"
 												isInteractive={le.is_interactive}
@@ -1171,9 +1184,11 @@ class LiveEvent extends React.Component {
 											<div className='tooltip-custom'>
 												<span className="tooltiptext">Ikuti sekarang!</span>
 												<div className='interactive'>
-														<Button id="btn-expand" onClick={() => this.setState({interactive_modal: true})} color="link">
+														<Button id="btn-expand" onClick={() =>{
+                              this.setState({interactive_modal: true})
+                            }} color="link">
 															<Row className='justify-content-center'>
-																<img 
+																<img
 																	src='/static/player_icons/quiz_icon.svg	'
 																	width={40}
 																	height={40}
@@ -1214,7 +1229,7 @@ class LiveEvent extends React.Component {
 												<TimeAgo className="timeago" minPeriod={60} date={Date.now() - (Date.now() - chat.ts)} />{' '}
 													<span className="username">
 														{chat.u}
-													</span> 
+													</span>
 													<span className="message">
 														{chat.m}
 													</span>

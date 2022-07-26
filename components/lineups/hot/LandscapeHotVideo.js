@@ -81,66 +81,66 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
   },[show]);
 
   const _goToDetail = (article) => {
-    return window.location.href = article
+      return window.location.href = article
   };
 
 
   return (
     hastags?.data === undefined || hastags?.data?.length === 0 ? (<div />) :
-      <div
-        id="lineup-portrait"
-        onTouchStart={e => onTouchStart(e)}
-        onTouchEnd={e => onTouchEnd(e)}
-        className="lineup_panels">
-        <h2 className="content-title">
-          {title}
-        </h2>
-        <BottomScrollListener offset={40} onBottom={()=> setShow(true)}>
-          {scrollRef => (
-            <div ref={scrollRef} className="lineup-containers-hot">
-              {hastags?.data.map((item, i) => {
-                return (
-                  <div
-                    onClick={() => _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}
-                    key={`${i}-portrait-video`}
-                    className="lineup-contents">
-                    <div className="hot-videos"  id={`portrait-video-${i}`}>
-                      {
-                        imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,220, assetUrl, 'thumbnail')
-                      }
-                    </div>
-                    <div>
-                      <div className="hot-videos_card">
-                        <div className="hot-videos_card-profile">
-                          <div className="hot-videos_card-profile__image">
-                            <img src="/static/HOT+ White-01.png" alt="Gambar HOT+"/>
-                          </div>
+    <div
+      id="lineup-portrait"
+      onTouchStart={e => onTouchStart(e)}
+      onTouchEnd={e => onTouchEnd(e)}
+      className="lineup_panels">
+      <h2 className="content-title">
+        {title}
+      </h2>
+      <BottomScrollListener offset={40} onBottom={()=> setShow(true)}>
+        {scrollRef => (
+          <div ref={scrollRef} className="lineup-containers-hot">
+            {hastags?.data.map((item, i) => {
+              return (
+                <div
+                  onClick={() => _goToDetail(item?.content_type_detail?.detail?.data?.permalink)}
+                  key={`${i}-portrait-video`}
+                  className="lineup-contents">
+                  <div className="hot-videos"  id={`portrait-video-${i}`}>
+                    {
+                      imageHot(item?.content_type_detail?.detail?.data?.title, item?.content_type_detail?.detail?.data?.thumbnail,item?.content_type_detail?.detail?.data?.thumbnail, 175,220, assetUrl, 'thumbnail')
+                    }
+                  </div>
+                  <div>
+                    <div className="hot-videos_card">
+                      <div className="hot-videos_card-profile">
+                        <div className="hot-videos_card-profile__image">
+                          <img src="/static/HOT+ White-01.png" alt="Gambar HOT+"/>
                         </div>
-                        <div className="hot-videos_card-profile">
-                          <p className="hot-videos_card-profile__title">
-                            {item?.content_type_detail?.detail?.data?.video_title}
-                          </p>
-                          <div className="hot-videos_card-profile__name">
-                            {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.display_name || item?.content_type_detail?.detail?.data?.contestant?.nick_name || item?.content_type_detail?.detail?.data?.contestant?.email || item?.content_type_detail?.detail?.data?.contestant?.phone_number, '...', '17')}
+                      </div>
+                      <div className="hot-videos_card-profile">
+                        <p className="hot-videos_card-profile__title">
+                          {item?.content_type_detail?.detail?.data?.video_title}
+                        </p>
+                        <div className="hot-videos_card-profile__name">
+                          {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.display_name || item?.content_type_detail?.detail?.data?.contestant?.nick_name || item?.content_type_detail?.detail?.data?.contestant?.email || item?.content_type_detail?.detail?.data?.contestant?.phone_number, '...', '17')}
+                        </div>
+                        <div className="hot-videos_card-profile__viewsCountWrapper row">
+                          <div className="hot-videos_card-profile__viewsCountWrapper_viewsIcon col-3">
+                            <Views style={{fontSize: '1.5rem', color: 'white'}}/>
                           </div>
-                          <div className="hot-videos_card-profile__viewsCountWrapper row">
-                            <div className="hot-videos_card-profile__viewsCountWrapper_viewsIcon col-3">
-                              <Views style={{fontSize: '1.5rem', color: 'white'}}/>
-                            </div>
-                            <div className="hot-videos_card-profile__viewsCountWrapper_viewsCount col pl-0">
-                              {item?.content_type_detail?.detail?.data?.views}
-                            </div>
+                          <div className="hot-videos_card-profile__viewsCountWrapper_viewsCount col pl-0">
+                            {item?.content_type_detail?.detail?.data?.views}
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </ BottomScrollListener>
-      </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </ BottomScrollListener>
+    </div>
   );
 };
 
