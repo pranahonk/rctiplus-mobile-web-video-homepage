@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import registerActions from '../../../redux/actions/registerActions';
 import DatePicker from 'react-mobile-datepicker';
 
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 //load default layout
 import Layout from '../../../components/Layouts/Default';
 
@@ -17,6 +18,7 @@ import ArrowDropdownIcon from '@material-ui/icons/ArrowDropDown';
 
 import '../../../assets/scss/components/signup.scss';
 import { showConfirmAlert } from '../../../utils/helpers';
+import { RE_CAPTCHA_SITE_KEY } from '../../../config';
 
 class Step1 extends Component {
 
@@ -34,7 +36,8 @@ class Step1 extends Component {
 			gender_invalid: false,
 			gender_invalid_message: '',
 			datepicker_open: false,
-			genderpicker_open: false
+			genderpicker_open: false,
+			token: null
 		};
 
 		const monthMap = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -105,6 +108,13 @@ class Step1 extends Component {
 	handleFullnameChange(e) {
 		this.setState({ fullname: e.target.value });
 		this.props.setFullname(e.target.value);
+	}
+	
+	handleChangeToken(token) {
+		if(this.state.token) return;
+
+		this.setState({ token });
+		this.props.setToken(token);
 	}
 
 	handleCancelGender() {
@@ -218,6 +228,11 @@ class Step1 extends Component {
 
 				<div className="wrapper-content" style={{ marginTop: 50 }}>
 					<div className="login-box">
+					<GoogleReCaptchaProvider
+						language="id"
+						reCaptchaKey={RE_CAPTCHA_SITE_KEY}
+						
+					>
 						<Form onSubmit={this.next.bind(this)}>
 							<FormGroup>
 								<Label>Full Name</Label>
@@ -290,10 +305,16 @@ class Step1 extends Component {
 									<FormFeedback>{this.state.gender_invalid_message}</FormFeedback>
 								</InputGroup>
 							</FormGroup>
+							<FormGroup>
+								<GoogleReCaptcha
+									onVerify={this.handleChangeToken.bind(this)}
+								/>
+							</FormGroup>
 							<FormGroup className="btn-next-position">
-								<Button id="button-next" disabled={Boolean(this.state.fullname && this.state.fullname.length < 4)} className="btn-next block-btn">NEXT</Button>
+								<Button id="button-next" disabled={Boolean(this.state.fullname.length < 4)} className="btn-next block-btn">NEXT</Button>
 							</FormGroup>
 						</Form>
+						</GoogleReCaptchaProvider>
 					</div>
 				</div>
 			</Layout>

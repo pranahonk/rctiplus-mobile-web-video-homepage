@@ -15,6 +15,8 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 import { Button, Form, FormGroup } from 'reactstrap';
 
 import '../../assets/scss/components/verify-otp-password.scss';
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { RE_CAPTCHA_SITE_KEY } from '../../config';
 
 
 class VerifyOtp extends React.Component {
@@ -30,16 +32,17 @@ class VerifyOtp extends React.Component {
             current_time: Date.now(),
             submit_message: '',
             is_submitting: false,
-            req_otp_status: 0
+            req_otp_status: 0,
+            token: null
         };
 
         this.otpInput = null;
     }
 
     componentDidMount() {
-        console.log(this.props)
-        this.setState({ username: this.props.registration.username }, () => {
-            this.props.getOtp(this.state.username, 'forget-password', this.props.registration.phone_code)
+        const {username, token, phone_code} = this.props.registration
+        this.setState({ username, token }, () => {
+            this.props.getOtp(this.state.username, 'forget-password', phone_code, token)
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
@@ -92,8 +95,10 @@ class VerifyOtp extends React.Component {
 
     showAlert() {
         let username = this.state.username;
+        let token = this.state.token;
+        const { phone_code } = this.props.registration
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
-            this.props.getOtp(username, 'forget-password', this.props.registration.phone_code)
+            this.props.getOtp(username, 'forget-password', phone_code, token)
                 .then(response => {
                     let newState = {};
                     if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
@@ -147,6 +152,13 @@ class VerifyOtp extends React.Component {
 		return attempts;
 	}
 
+    handleChangeToken(token) {
+		if(this.state.token) return;
+
+		this.setState({ token });
+		this.props.setToken(token);
+	}
+    
     render() {
         let text = 'Please enter verification code, <br>sent via email:';
 		let username = this.state.username || '';
@@ -200,17 +212,29 @@ class VerifyOtp extends React.Component {
                 <NavBack title="Verify OTP"/>
                 <div className="container-box-c">
                     <p style={{ fontSize: 14 }} className="text-default-rcti" dangerouslySetInnerHTML={{__html: text}}></p>
+                    <GoogleReCaptchaProvider
+						language="id"
+						reCaptchaKey={RE_CAPTCHA_SITE_KEY}
+						
+					>
                     <Form onSubmit={this.submitOtp.bind(this)}>
                         <FormGroup>
                             <ReactCodeInput
-                                fields={4}
+                                fields={6}
                                 onChange={this.onChangeOtp.bind(this)}
                                 values={this.state.otp.toString().split('')}
                                 ref={node => this.otpInput = node}
+                                fieldWidth={40}
                                 className="otp-input-c" />
                         </FormGroup>
                         {actionElement}
                     </Form>
+                    <FormGroup>
+                        <GoogleReCaptcha
+                            onVerify={this.handleChangeToken.bind(this)}
+                        />
+                    </FormGroup>
+                    </GoogleReCaptchaProvider>
                 </div>
             </Layout>
         );
