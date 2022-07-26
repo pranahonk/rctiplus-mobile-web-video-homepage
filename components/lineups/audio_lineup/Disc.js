@@ -11,7 +11,7 @@ import { GET_AUDIO_LIST_PAGINATION } from '../../../graphql/queries/audio-list';
 function AudioDisc ({title, indexTag, id, data}) {
     // const { generateLink, onTouchStart, onTouchEnd } = useVideoLineups(props)
 
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(true);
     const [meta, setMeta] = useState(null);
     const [disc, setDisc] = useState([]);
     const [loadingMore, setLoadingMore] = useState(false);
@@ -20,9 +20,11 @@ function AudioDisc ({title, indexTag, id, data}) {
     const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
 
     useEffect(() => {
-      setMeta(data?.lineup_type_detail?.detail?.meta);
-      setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
-      setDisc(data?.lineup_type_detail?.detail?.data);
+      if(data?.lineup_type_detail?.detail?.data[0]?.content_type_detail?.detail){
+        setMeta(data?.lineup_type_detail?.detail?.meta);
+        setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
+        setDisc(data?.lineup_type_detail?.detail?.data);
+      }
     }, [])
 
     useEffect(() => {
@@ -66,7 +68,7 @@ function AudioDisc ({title, indexTag, id, data}) {
     }
 
     return (
-      disc === undefined || disc.length < 1 ?   (<div />) :
+      disc === undefined || disc.length  < 1 ?   (<div />) :
         <div className="pnl-audio-disc">
             <h2 className="content-title">{title}</h2>
           <BottomScrollListener offset={5000} onBottom={()=> setShow(true)}>
