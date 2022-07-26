@@ -1216,7 +1216,7 @@ class Tv extends React.Component {
                         }} color="link">
 													<Row className='justify-content-center'>
 														<img
-															src='/static/player_icons/quiz_icon.svg	'
+															src='/static/player_icons/quiz_icon.svg'
 															width={40}
 															height={40}
 															alt="desc"
