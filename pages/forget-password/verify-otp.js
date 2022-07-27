@@ -41,7 +41,7 @@ class VerifyOtp extends React.Component {
 
     componentDidMount() {
         const {username, token, phone_code} = this.props.registration
-        
+
         if(!token) Router.back()    
         this.setState({ username, token }, () => {
             this.props.getOtp(this.state.username, 'forget-password', phone_code, token)
@@ -49,7 +49,8 @@ class VerifyOtp extends React.Component {
                     if (response.status === 200) {
                         this.setState({ 
                             alert_message: response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client),
-							req_otp_status: response.data.status.code 
+							req_otp_status: response.data.status.code,
+                            token: null
                         });
                     }
                 })
