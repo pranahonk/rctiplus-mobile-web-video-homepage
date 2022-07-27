@@ -68,7 +68,7 @@ class VerifyOtp extends React.Component {
     }
 
     onChangeOtp(otp) {
-        this.setState({ otp: otp, is_submitting: otp && otp.length >= 4 }, () => {
+        this.setState({ otp: otp, is_submitting: otp && otp.length >= 6 }, () => {
             this.props.setOtp(this.state.otp);
             if (this.state.is_submitting) {
                 this.props.verifyOtp(this.state.username, this.state.otp, this.props.registration.phone_code)
