@@ -18,7 +18,7 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback, InputGroupAddon, InputGroupText } from 'reactstrap';
 
 import '../../assets/scss/components/forget-password.scss';
-import { GoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { RE_CAPTCHA_SITE_KEY } from '../../config';
 
 const CountryList = dynamic(() => import('../../components/Modals/CountryList'));

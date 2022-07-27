@@ -46,7 +46,7 @@ class VerifyOtp extends React.Component {
 
         if(!token) Router.back()    
         this.setState({ username, token }, () => {
-            this.props.getOtp(this.state.username, 'edit-profile', this.props.registration.phone_code, token)
+            this.props.getOtp(this.state.username, 'edit-profile', null, token)
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
