@@ -43,6 +43,8 @@ class VerifyOtp extends React.Component {
     componentDidMount() {
         // console.log(this.props.user)
         const { username, token} = this.props.registration
+        
+        if(!token) Router.back()    
         this.setState({ username, token }, () => {
             this.props.getOtp(this.state.username, 'change-password', !this.state.username.includes('@') ? this.props.user.data.phone_code : null, token)
                 .then(response => {
@@ -53,7 +55,10 @@ class VerifyOtp extends React.Component {
                         });
                     }
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                    Router.back()    
+                    console.log(error)
+                });
         });
     }
 

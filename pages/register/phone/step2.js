@@ -50,6 +50,7 @@ class Step2 extends Component {
 			if (this.props.registration.username_type === 'PHONE_NUMBER') {
 				username = this.props.registration.phone_code + username;
 			}
+			if(!token) Router.back()    
 			this.props.getOtp(username, 'registration', null, token)
 				.then(response => {
 					if (response.status === 200) {
