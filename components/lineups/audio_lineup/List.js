@@ -23,12 +23,9 @@ function AudioList ({title, indexTag, id, data}) {
     const [loadingMore, setLoadingMore] = useState(false);
 
     useEffect(() => {
-      if(data?.lineup_type_detail?.detail?.data?.content_type_detail?.detail?.data){
-        setMeta(data?.lineup_type_detail?.detail?.meta);
-        setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
-        setPodcast(data?.lineup_type_detail?.detail?.data);
-      }
-
+      setMeta(data?.lineup_type_detail?.detail?.meta);
+      setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
+      setPodcast(data?.lineup_type_detail?.detail?.data);
     }, [])
 
     useEffect(()=>{
