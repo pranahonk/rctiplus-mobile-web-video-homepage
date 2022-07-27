@@ -86,7 +86,7 @@ class VerifyOtp extends React.Component {
             this.props.setOtp(this.state.otp);
             if (this.state.is_submitting) {
                 console.log(this.props)
-                this.props.verifyOtp(this.state.username, this.state.otp, this.props.registration.phone_code)
+                this.props.verifyOtp(this.state.username, this.state.otp)
                     .then(response => {
                         if (response.status === 200) {
                             switch (response.data.status.code) {
