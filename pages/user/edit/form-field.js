@@ -187,8 +187,8 @@ class FormField extends React.Component {
         // console.log(this.props)
         this.setState({ codeCountry: (this.props.user && this.props.user.data && this.props.user.data?.country_code === '') ||
                                     (this.props.user && this.props.user.data && this.props.user.data?.country_code === null) ? this.state.codeCountry : this.props?.user?.data?.country_code,
-                        phone_code: (this.props.user && this.props.user.data && this.props.user.data.phone_code === '') ||
-                                    (this.props.user && this.props.user.data && this.props.user.data.phone_code === null) ? this.state.phone_code : this.props.user.data.phone_code});
+                        phone_code: (this.props.user && this.props.user.data && this.props.user.data?.phone_code === '') ||
+                                    (this.props.user && this.props.user.data && this.props.user.data?.phone_code === null) ? this.state.phone_code : this.props.user.data?.phone_code});
         console.log(this.props.user && this.props.user.data)
         this.ref = queryString.parse(location.search).ref
         this.props.getListCountry();
