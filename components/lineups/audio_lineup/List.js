@@ -103,7 +103,6 @@ function AudioList ({title, indexTag, id, data}) {
             {scrollRef => (
               <div ref={scrollRef} className="swipe-wrapper">
                 {multiplePodcast.map((list, index) => {
-                  console.log(list)
                   return (
                     <div key={index} id={`square-list-${index}`}>
                       {
