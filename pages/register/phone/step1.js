@@ -111,9 +111,6 @@ class Step1 extends Component {
 	}
 	
 	handleChangeToken(token) {
-		if(this.state.token) return;
-
-		this.setState({ token });
 		this.props.setToken(token);
 	}
 

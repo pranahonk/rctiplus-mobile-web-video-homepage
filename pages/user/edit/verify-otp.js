@@ -53,6 +53,7 @@ class VerifyOtp extends React.Component {
 							req_otp_status: response.data.status.code,
                             token: null, 
                         });
+                        this.props.setToken(null);
                     }
                 })
                 .catch(error => {
@@ -120,9 +121,9 @@ class VerifyOtp extends React.Component {
 
     showAlert() {
         let username = this.state.username;
-        let token = this.state.token;
+        const {token} = this.props.registration;
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
-            this.props.getOtp(username, 'edit-profile', this.props.registration.phone_code, token)
+            this.props.getOtp(username, 'edit-profile', this.isPhoneCode(this.props.registration.phone_code), token)
                 .then(response => {
                     let newState = {};
                     if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
@@ -170,11 +171,8 @@ class VerifyOtp extends React.Component {
 	}
 
 
-	handleChangeToken(token) {
-		if(this.state.token) return;
-
-		this.setState({ token });
-		this.props.setToken(token);
+    handleChangeToken(token) {
+        this.props.setToken(token);
 	}
 
     render() {

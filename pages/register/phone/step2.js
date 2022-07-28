@@ -59,6 +59,7 @@ class Step2 extends Component {
 							req_otp_status: response.data.status.code,
 							token: null
 						});
+						this.props.setToken(null);
 					}
 				})
 				.catch(error => {
@@ -77,9 +78,6 @@ class Step2 extends Component {
 	}
 
 	handleChangeToken(token) {
-		if(this.state.token) return;
-
-		this.setState({ token });
 		this.props.setToken(token);
 	}
 
@@ -159,7 +157,7 @@ class Step2 extends Component {
 
 	showAlert() {
 		let username = this.state.username;
-		let token = this.state.token;
+		const {token} = this.props.registration;
 		if (this.props.registration.username_type === 'PHONE_NUMBER') {
 			username = this.props.registration.phone_code + username;
 		}

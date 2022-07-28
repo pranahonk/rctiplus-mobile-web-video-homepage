@@ -77,10 +77,7 @@ class ChangePassword extends React.Component {
     }
 
     handleChangeToken(token) {
-		if(this.state.token) return;
-
-		this.setState({ token });
-		this.props.setToken(token);
+        this.props.setToken(token);
 	}
 
     togglePassword(type = '') {
