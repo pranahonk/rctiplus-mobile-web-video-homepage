@@ -1,6 +1,6 @@
 
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Router from 'next/router';
 
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../../utils/appier'
@@ -8,6 +8,7 @@ import { GET_LINEUP_CONTENT_VIDEO, GET_CONTINUE_WATCHING } from "../../../graphq
 import { client } from "../../../graphql/client"
 import { getUserAccessToken } from "../../../utils/cookie"
 import { showSignInAlert } from "../../../utils/helpers"
+import { GET_AUDIO_LIST_PAGINATION } from '../../../graphql/queries/audio-list';
 
 export default function useVideoLineups(props) {
   const [ contents, setContents ] = useState([])
@@ -67,6 +68,7 @@ export default function useVideoLineups(props) {
     setNextPage(meta?.pagination?.current_page + 1)
   }
 
+
   const getContinueWatching = () => {
     props.loadingBar.continuousStart()
 
@@ -121,11 +123,11 @@ export default function useVideoLineups(props) {
         if (props.lineup.content_type === "continue_watching") Router.push(`${url}?ref=continue_watching`)
         else Router.push(url)
         break;
+      case "default":
+        Router.push(content?.permalink)
+        break;
       default:
         if (content.content_type.includes("live")) {
-          if (content.content_type.includes("radio")|| content.content_type.includes("music")){
-            Router.push( content?.permalink )
-          }
           const started = content.countdown === 0
 
           if (started) Router.push(url)

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import '../../../assets/scss/components/audio-list.scss';
-import { getTruncate } from '../../../utils/helpers';
-import { alertDownload } from '../../Includes/program-detail/programDetail';
+import { getTruncate, truncateString } from '../../../utils/helpers';
 import Router from 'next/router';
 import ActionSheet from '../../Modals/ActionSheet';
 
@@ -22,9 +21,6 @@ function AudioList ({title, indexTag, id, data}) {
     const [assetUrl, setAssetUrl] = useState(null);
     const [shareUrl, setShareURL] = useState(null);
     const [loadingMore, setLoadingMore] = useState(false);
-
-    const placeHolderImgUrl = "https://dev-radioplus.mncplus.com/image/no-image.png"
-    // const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
 
     useEffect(() => {
       setMeta(data?.lineup_type_detail?.detail?.meta);
@@ -132,7 +128,7 @@ function AudioList ({title, indexTag, id, data}) {
                                   </div>
                                   <div className='col-5 px-0'>
                                     <div className="desc-menu-wrapper">
-                                      <span className="podcast-title" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.title, '...', 50)}}></span>
+                                      <span className="podcast-title" dangerouslySetInnerHTML={{ __html: truncateString(content?.content_type_detail?.detail?.data?.title, 16)}}></span>
                                       <span className="podcaster-name" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.frequency, '...', 40)}}></span>
                                       <div className="buttons-wrapper">
                                         <img src="audio-icons/share-icon.svg"  className="mr-3" onClick={()=> toggleActionSheet(this, null, content?.content_type_detail?.detail?.data?.permalink, '', ['rcti'])} />
