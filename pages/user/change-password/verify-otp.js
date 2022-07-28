@@ -53,6 +53,7 @@ class VerifyOtp extends React.Component {
 							req_otp_status: response.data.status.code,
                             token: null,
                         });
+                        this.props.setToken(null);
                     }
                 })
                 .catch(error => {
@@ -119,15 +120,12 @@ class VerifyOtp extends React.Component {
     }
     
     handleChangeToken(token) {
-		if(this.state.token) return;
-
-		this.setState({ token });
-		this.props.setToken(token);
+        this.props.setToken(token);
 	}
 
     showAlert() {
         let username = this.state.username;
-        let token = this.state.token;
+        const {token} = this.props.registration;
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
             this.props.getOtp(username, 'change-password', !username.includes('@') ? this.props.user.data.phone_code : null, token)
                 .then(response => {

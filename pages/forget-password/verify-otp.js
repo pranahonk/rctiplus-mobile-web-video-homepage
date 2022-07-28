@@ -49,8 +49,9 @@ class VerifyOtp extends React.Component {
                         this.setState({ 
                             alert_message: response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client),
 							req_otp_status: response.data.status.code,
-                            token: null
+                            token: null,
                         });
+                        this.props.setToken(null);
                     }
                 })
                 .catch(error => {
@@ -106,8 +107,7 @@ class VerifyOtp extends React.Component {
 
     showAlert() {
         let username = this.state.username;
-        let token = this.state.token;
-        const { phone_code } = this.props.registration
+        const { phone_code, token } = this.props.registration
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
             this.props.getOtp(username, 'forget-password', phone_code, token)
                 .then(response => {
@@ -164,16 +164,12 @@ class VerifyOtp extends React.Component {
 	}
 
     handleChangeToken(token) {
-		if(this.state.token) return;
-
-		this.setState({ token });
-		this.props.setToken(token);
+        this.props.setToken(token);
 	}
     
     render() {
         let text = 'Please enter verification code, <br>sent via email:';
 		let username = this.state.username || '';
-
 		let actionElement = null;
 		if (this.state.is_submitting) {
 			actionElement = <p className="text-default-rcti" style={{ textAlign: 'center', color: '#6dd400' }}>verifying...</p>;
