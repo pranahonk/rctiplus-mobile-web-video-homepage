@@ -49,12 +49,12 @@ export default function useVideoLineups(props) {
         contents.concat(data)
           .forEach(content => mappedContents.set(content.id, content))
         break
-    
+
       case "default":
         contents.concat(data).forEach(content => {
           if (content.content_type_detail.detail && content.content_type_detail.detail.status.code === 0) {
             mappedContents.set(
-              content.content_type_detail.detail.data.id, 
+              content.content_type_detail.detail.data.id,
               { ...content, ...content.content_type_detail.detail.data }
             )
           }
@@ -96,7 +96,7 @@ export default function useVideoLineups(props) {
         contents.concat(data.lineup_contents.data).forEach(content => {
           if (content.content_type_detail.detail && content.content_type_detail.detail.status.code === 0) {
             mappedContents.set(
-              content.content_type_detail.detail.data.id, 
+              content.content_type_detail.detail.data.id,
               { ...content, ...content.content_type_detail.detail.data }
             )
           }
@@ -129,10 +129,10 @@ export default function useVideoLineups(props) {
 
           if (started) Router.push(url)
           else if (props.showComingSoonModal) {
-            const image = content.landscape_image 
-              ? `${content.rootImageUrl}${content.landscape_image}` 
+            const image = content.landscape_image
+              ? `${content.rootImageUrl}${content.landscape_image}`
               : "../static/placeholders/placeholder_landscape.png"
-      
+
             props.showComingSoonModal(true, {
               is_interactive: content.is_interactive,
               countdown: content.countdown,

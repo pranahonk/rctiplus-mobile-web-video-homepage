@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import '../../../assets/scss/components/audio-list.scss';
-import { getTruncate } from '../../../utils/helpers';
+import { getTruncate, truncateString } from '../../../utils/helpers';
 import Router from 'next/router';
 import ActionSheet from '../../Modals/ActionSheet';
 
@@ -23,12 +23,9 @@ function AudioList ({title, indexTag, id, data}) {
     const [loadingMore, setLoadingMore] = useState(false);
 
     useEffect(() => {
-      if(data?.lineup_type_detail?.detail?.data?.content_type_detail?.detail?.data){
-        setMeta(data?.lineup_type_detail?.detail?.meta);
-        setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
-        setPodcast(data?.lineup_type_detail?.detail?.data);
-      }
-
+      setMeta(data?.lineup_type_detail?.detail?.meta);
+      setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
+      setPodcast(data?.lineup_type_detail?.detail?.data);
     }, [])
 
     useEffect(()=>{
@@ -106,7 +103,6 @@ function AudioList ({title, indexTag, id, data}) {
             {scrollRef => (
               <div ref={scrollRef} className="swipe-wrapper">
                 {multiplePodcast.map((list, index) => {
-                  console.log(list)
                   return (
                     <div key={index} id={`square-list-${index}`}>
                       {
@@ -132,7 +128,7 @@ function AudioList ({title, indexTag, id, data}) {
                                   </div>
                                   <div className='col-5 px-0'>
                                     <div className="desc-menu-wrapper">
-                                      <span className="podcast-title" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.title, '...', 50)}}></span>
+                                      <span className="podcast-title" dangerouslySetInnerHTML={{ __html: truncateString(content?.content_type_detail?.detail?.data?.title, 16)}}></span>
                                       <span className="podcaster-name" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.frequency, '...', 40)}}></span>
                                       <div className="buttons-wrapper">
                                         <img src="audio-icons/share-icon.svg"  className="mr-3" onClick={()=> toggleActionSheet(this, null, content?.content_type_detail?.detail?.data?.permalink, '', ['rcti'])} />
