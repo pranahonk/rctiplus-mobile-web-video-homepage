@@ -7,7 +7,7 @@ const InteractiveModal = (props) => {
 
   const closeButton = (x) => {
     x.toggle(false)
-    gaVideoInteractive("video_interaction", "video_click_go_to_close", "redirect_to_visionplus")
+    gaVideoInteractive("video_interaction", x.source === "live-event" ? "video_click_go_to_close" : "videotv_click_go_to_close+", "redirect_to_visionplus")
   }
 
   return (
