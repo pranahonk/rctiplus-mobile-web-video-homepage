@@ -41,17 +41,23 @@ class VerifyOtp extends React.Component {
 
     componentDidMount() {
         const {username, token, phone_code} = this.props.registration
+
+        if(!token) Router.back()    
         this.setState({ username, token }, () => {
             this.props.getOtp(this.state.username, 'forget-password', phone_code, token)
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
                             alert_message: response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client),
-							req_otp_status: response.data.status.code 
+							req_otp_status: response.data.status.code,
+                            token: null
                         });
                     }
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                    Router.back()    
+                    console.log(error)
+                });
         });
     }
 
@@ -61,11 +67,17 @@ class VerifyOtp extends React.Component {
         Router.push('/forget-password/change-password');
     }
 
+    isPhoneCode(code){
+        if(!code) return null
+        if(this.state.username.substring(0, 2)?.toString() === code?.toString()) return null
+        return code
+    }
+
     onChangeOtp(otp) {
-        this.setState({ otp: otp, is_submitting: otp && otp.length >= 4 }, () => {
+        this.setState({ otp: otp, is_submitting: otp && otp.length >= 6 }, () => {
             this.props.setOtp(this.state.otp);
             if (this.state.is_submitting) {
-                this.props.verifyOtp(this.state.username, this.state.otp, this.props.registration.phone_code)
+                this.props.verifyOtp(this.state.username, this.state.otp, this.isPhoneCode(this.props.registration.phone_code))
                     .then(response => {
                         if (response.status === 200) {
                             switch (response.data.status.code) {

@@ -72,8 +72,6 @@ export default function comingSoonModal(props) {
             onTouchEnd={e => closeComingSoonModal(e)}>
             <div></div>
           </div>
-          {/* <div className="img-comingsoon">
-          </div> */}
             <img
               className="img-comingsoon"
               src={ props.content.image } 
