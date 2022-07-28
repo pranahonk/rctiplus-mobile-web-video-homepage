@@ -42,11 +42,10 @@ class VerifyOtp extends React.Component {
 
     componentDidMount() {
         // console.log(this.props)
-        const {username, token} = this.props.registration
-
-        if(!token) Router.back()    
+        const {username, token, phone_code} = this.props.registration
+        
         this.setState({ username, token }, () => {
-            this.props.getOtp(this.state.username, 'edit-profile', null, token)
+            this.props.getOtp(this.state.username, 'edit-profile', this.isPhoneCode(phone_code), token)
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
@@ -83,14 +82,12 @@ class VerifyOtp extends React.Component {
 
     isPhoneCode(code){
         if(!code) return null
-        if(this.state.username.substring(0, 2)?.toString() === code?.toString()) return null
+        if(this.state.username.substring(0, this.props.user?.phone_code?.toString().length ?? this.props.registration?.phone_code?.toString().length ?? 2)?.toString() === code?.toString()) return null
 
         return code
     }
-    
 
     onChangeOtp(otp) {
-        this.isPhoneCode(this.props.registration.phone_code)
         this.setState({ otp: otp, is_submitting: otp && otp.length >= 6 }, () => {
             this.props.setOtp(this.state.otp);
             if (this.state.is_submitting) {

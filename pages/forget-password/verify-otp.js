@@ -42,7 +42,6 @@ class VerifyOtp extends React.Component {
     componentDidMount() {
         const {username, token, phone_code} = this.props.registration
 
-        if(!token) Router.back()    
         this.setState({ username, token }, () => {
             this.props.getOtp(this.state.username, 'forget-password', phone_code, token)
                 .then(response => {

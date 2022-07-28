@@ -43,8 +43,7 @@ class VerifyOtp extends React.Component {
     componentDidMount() {
         // console.log(this.props.user)
         const { username, token} = this.props.registration
-
-        if(!token) Router.back()    
+   
         this.setState({ username, token }, () => {
             this.props.getOtp(this.state.username, 'change-password', !this.state.username.includes('@') ? this.props.user.data.phone_code : null, token)
                 .then(response => {
@@ -84,7 +83,8 @@ class VerifyOtp extends React.Component {
 
     isPhoneCode(code){
         if(!code) return null
-        if(this.state.username.substring(0, 2)?.toString() === code?.toString()) return null
+        if(this.state.username.substring(0, this.props.user?.phone_code?.toString().length ?? this.props.registration?.phone_code?.toString().length ?? 2)?.toString() === code?.toString()) return null
+
         return code
     }
 
