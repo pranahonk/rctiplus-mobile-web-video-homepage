@@ -524,8 +524,8 @@ class Tv extends React.Component {
 		this.setState({ select_modal: !this.state.select_modal });
 	}
 
-	toggleInteractiveModal() {
-		this.setState({ interactive_modal: !this.state.interactive_modal });
+	toggleInteractiveModal(e) {
+		this.setState({ interactive_modal: e });
 	}
 
 	toggleActionSheet(caption = '', url = '', hashtags = [], tabStatus = '') {
@@ -1041,7 +1041,8 @@ class Tv extends React.Component {
 
 				<InteractiveModal
 					open={this.state.interactive_modal}
-					toggle={this.toggleInteractiveModal.bind(this)}
+					toggle={(e)=> this.toggleInteractiveModal(e)}
+          source="live-tv"
 				/>
 
 				<ActionSheet
