@@ -54,7 +54,6 @@ class FormField extends React.Component {
     }
 
     onChange(e) {
-        this.props.setToken(null);
         this.props.hideNotification()
         if (this.props.others.label === 'Full Name' && e.target.value.length > 25) {
             this.props.showNotification('full name: max length is 25', false);
@@ -124,6 +123,7 @@ class FormField extends React.Component {
     }
 
     handleChangeToken(token) {
+        if(this.props.registration.token) return
 		this.props.setToken(token);
 	}
 
