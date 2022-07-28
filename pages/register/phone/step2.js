@@ -78,6 +78,8 @@ class Step2 extends Component {
 	}
 
 	handleChangeToken(token) {
+		if(this.props.registration.token) return
+		
 		this.props.setToken(token);
 	}
 
