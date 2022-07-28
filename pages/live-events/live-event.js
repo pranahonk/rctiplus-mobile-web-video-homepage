@@ -597,9 +597,10 @@ class LiveEvent extends React.Component {
 		});
 	}
 
-	toggleInteractiveModal() {
-		this.setState({ interactive_modal: !this.state.interactive_modal });
-	}
+  toggleInteractiveModal(e) {
+    this.setState({ interactive_modal: e });
+  }
+
 
 	resendChat(index) {
 		// let chats = this.state.chats;
@@ -1030,7 +1031,8 @@ class LiveEvent extends React.Component {
 					}} /> */}
 				<InteractiveModal
 					open={this.state.interactive_modal}
-					toggle={this.toggleInteractiveModal.bind(this)}
+          toggle={(e)=> this.toggleInteractiveModal(e)}
+          source="live-event"
 				/>
 				<ActionSheet
 					tabStatus= {this.state.tabStatus}
