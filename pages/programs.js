@@ -867,7 +867,6 @@ class Index extends React.Component {
     }
 
     const dataPlayer = this.props.data['data-player'];
-
     return (
       <div className="program-detail-player-wrapper">
         <JwPlayer
