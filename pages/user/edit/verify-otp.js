@@ -131,6 +131,7 @@ class VerifyOtp extends React.Component {
 							current_time: Date.now(),
 							countdown_key: this.state.countdown_key + 1
 						};
+                        this.props.setToken(null);
 					}
 
 					newState['alert_message'] = response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client);
