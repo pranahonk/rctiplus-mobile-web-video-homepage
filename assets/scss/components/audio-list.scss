@@ -34,8 +34,11 @@
             border-radius: 16px;
             background: #171717;
             display: flex;
-            justify-content: center;
+            justify-content: left;
             align-items: center;
+          .podcast-wrapper{
+            padding: 0 12px 0 8px;
+          }
           .podcast-img {
             width: auto;
             max-width: 100%;
