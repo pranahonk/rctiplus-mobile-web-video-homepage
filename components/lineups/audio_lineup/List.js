@@ -128,10 +128,10 @@ function AudioList ({title, indexTag, id, data}) {
                                   </div>
                                   <div className='col-5 px-0'>
                                     <div className="desc-menu-wrapper">
-                                      <span className="podcast-title" dangerouslySetInnerHTML={{ __html: truncateString(content?.content_type_detail?.detail?.data?.title, 16)}}></span>
+                                      <span className="podcast-title" dangerouslySetInnerHTML={{ __html: truncateString(content?.content_type_detail?.detail?.data?.title, 10)}}></span>
                                       <span className="podcaster-name" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.frequency, '...', 40)}}></span>
                                       <div className="buttons-wrapper">
-                                        <img src="audio-icons/share-icon.svg"  className="mr-3" onClick={()=> toggleActionSheet(this, null, content?.content_type_detail?.detail?.data?.permalink, '', ['rcti'])} />
+                                        <img src="audio-icons/share-icon.svg"  width="16.67" height="13.33" className="mr-3" onClick={()=> toggleActionSheet(this, null, content?.content_type_detail?.detail?.data?.permalink, '', ['rcti'])} />
                                         {/*<img src="audio-icons/bookmark-icon.svg" className="mx-3" />*/}
                                         {/*<img src="audio-icons/download-icon.svg" onClick={() => alertDownload(null, 'extra', null, null, null)}/>*/}
                                         (
@@ -139,7 +139,7 @@ function AudioList ({title, indexTag, id, data}) {
                                     </div>
                                   </div>
                                   <div className='col-3' style={{margin: 'auto 0'}}>
-                                    <img src="audio-icons/play-button.svg" onClick={()=> _goToDetail(content)}/>
+                                    <img src="audio-icons/play-button.svg" width="33" height="33" onClick={()=> _goToDetail(content)}/>
                                   </div>
                                 </div>
                               </div>
