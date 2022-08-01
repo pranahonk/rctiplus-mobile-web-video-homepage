@@ -181,6 +181,12 @@ export const getCountdown = (release, current) => {
   return [result, true];
 }
 
+
+export const truncateString = (string = '', maxLength = 50) =>
+  string.length > maxLength
+    ? `${string.substring(0, maxLength)}…`
+    : string
+
 export const getTruncate = (text = '', clamp = '...', length = 100) => {
   // text = `is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was po`
   if (text.length <= length) return text;
@@ -303,3 +309,5 @@ export function parseDateObject(dateObject) {
     time: new Date(dateObject).toLocaleTimeString("en-GB").split(":").slice(0, 2).join(":")
   }
 }
+
+
