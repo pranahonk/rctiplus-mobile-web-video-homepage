@@ -70,6 +70,9 @@ export const API_TIMEOUT = process.env.API_TIMEOUT;
 export const CONVIVA_TRACKING_KEY = process.env.CONVIVA_TRACKING_KEY;
 export const CONVIVA_TRACKING_HOST = process.env.CONVIVA_TRACKING_HOST;
 
+export const RE_CAPTCHA_SITE_KEY = process.env.RE_CAPTCHA_SITE_KEY;
+export const RE_CAPTCHA_SECRET_KEY = process.env.RE_CAPTCHA_SECRET_KEY;
+
 export const VISITOR_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjAsInRva2VuIjoiNWRhNmE2ODY2ZTg5N2Q0MSIsInBsIjoibXdlYiIsImRldmljZV9pZCI6IjY5NDIwIn0.rOdLG9s4KFcKcQT8n58RaD8MgnAclnS13z4GOcJaJ5I';
 export const NEWS_TOKEN = '';
 export const IS_SHOWN = true;

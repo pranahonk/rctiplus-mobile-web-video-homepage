@@ -18,6 +18,8 @@ import NavBack from '../../components/Includes/Navbar/NavBack';
 import { Button, Form, FormGroup, Label, Input, InputGroup, FormFeedback, InputGroupAddon, InputGroupText } from 'reactstrap';
 
 import '../../assets/scss/components/forget-password.scss';
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { RE_CAPTCHA_SITE_KEY } from '../../config';
 
 const CountryList = dynamic(() => import('../../components/Modals/CountryList'));
 
@@ -34,6 +36,7 @@ class ForgetPassword extends React.Component {
 			phone_code: '62',
             isPhoneNumber: false,
             changeCode: 0,
+            token: null,
         };
 
         this.subject = new Subject();
@@ -73,6 +76,11 @@ class ForgetPassword extends React.Component {
             }
         });
     }
+
+    handleChangeToken(token) {
+        if(this.props.registration.token) return
+        this.props.setToken(token);
+	}
 
     submitUsername(e) {
         e.preventDefault();
@@ -157,6 +165,11 @@ class ForgetPassword extends React.Component {
             <Layout title="Lupa Password - RCTI+">
                 <NavBack title="Forget Password"/>
                 <div className="container-box-cp">
+                <GoogleReCaptchaProvider
+						language="id"
+						reCaptchaKey={RE_CAPTCHA_SITE_KEY}
+						
+					>
                     <Form onSubmit={this.submitUsername.bind(this)}>
                         <FormGroup>
                             <Label for="username">Email or Phone Number</Label>
@@ -178,9 +191,15 @@ class ForgetPassword extends React.Component {
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
+                            <GoogleReCaptcha
+                                onVerify={this.handleChangeToken.bind(this)}
+                            />
+                        </FormGroup>
+                        <FormGroup>
                             <Button id="button-next" disabled={this.state.username == '' || this.state.username_invalid} className="btn-next block-btn">Next</Button>
                         </FormGroup>
                     </Form>
+                </GoogleReCaptchaProvider>
                 </div>
                 {this.state.status ? (
 					<CountryList

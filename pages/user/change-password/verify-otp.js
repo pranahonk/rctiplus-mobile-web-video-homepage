@@ -18,6 +18,8 @@ import NavBack from '../../../components/Includes/Navbar/NavBack';
 import { Form, FormGroup } from 'reactstrap';
 
 import '../../../assets/scss/components/verify-otp-password.scss';
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { RE_CAPTCHA_SITE_KEY } from '../../../config';
 
 
 class VerifyOtp extends React.Component {
@@ -33,23 +35,31 @@ class VerifyOtp extends React.Component {
             current_time: Date.now(),
             submit_message: '',
             is_submitting: false,
-            req_otp_status: 0
+            req_otp_status: 0,
+            token: null,
         };
     }
 
     componentDidMount() {
         // console.log(this.props.user)
-        this.setState({ username: this.props.registration.username }, () => {
-            this.props.getOtp(this.state.username, 'change-password', !this.state.username.includes('@') ? this.props.user.data.phone_code : null)
+        const { username, token, phone_code} = this.props.registration
+   
+        this.setState({ username, token }, () => {
+            this.props.getOtp(this.state.username, 'change-password', !this.state.username.includes('@') ? this.isPhoneCode(phone_code) : null, token)
                 .then(response => {
                     if (response.status === 200) {
                         this.setState({ 
                             alert_message: response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client),
-							req_otp_status: response.data.status.code  
+							req_otp_status: response.data.status.code,
+                            token: null,
                         });
+                        this.props.setToken(null);
                     }
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                    Router.back()    
+                    console.log(error)
+                });
         });
     }
 
@@ -72,11 +82,18 @@ class VerifyOtp extends React.Component {
         
     }
 
+    isPhoneCode(code){
+        if(!code) return null
+        if(this.state.username.substring(0, this.props.user?.phone_code?.toString().length ?? this.props.registration?.phone_code?.toString().length ?? 2)?.toString() === code?.toString()) return null
+
+        return code
+    }
+
     onChangeOtp(otp) {
-        this.setState({ otp: otp, is_submitting: otp && otp.length >= 4 }, () => {
+        this.setState({ otp: otp, is_submitting: otp && otp.length >= 6 }, () => {
             this.props.setOtp(this.state.otp);
             if (this.state.is_submitting) {
-                this.props.verifyOtp(this.state.username, this.state.otp, !this.state.username.includes('@') ? this.props.user.data.phone_code : null)
+                this.props.verifyOtp(this.state.username, this.state.otp, this.isPhoneCode(this.props.registration.phone_code))
                     .then(response => {
                         if (response.status === 200) {
                             switch (response.data.status.code) {
@@ -101,11 +118,17 @@ class VerifyOtp extends React.Component {
             }
         });
     }
+    
+    handleChangeToken(token) {
+        if(this.props.registration.token) return
+        this.props.setToken(token);
+	}
 
     showAlert() {
         let username = this.state.username;
+        const {token, phone_code} = this.props.registration;
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
-            this.props.getOtp(username, 'change-password', !username.includes('@') ? this.props.user.data.phone_code : null)
+            this.props.getOtp(username, 'change-password', !username.includes('@') ?  this.isPhoneCode(phone_code) : null, token)
                 .then(response => {
                     let newState = {};
                     if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
@@ -114,7 +137,8 @@ class VerifyOtp extends React.Component {
 							countdown_key: this.state.countdown_key + 1
 						};
 					}
-
+                    
+                    this.props.setToken(null);
 					newState['alert_message'] = response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client);
 					this.setState(newState);
                 })
@@ -142,7 +166,7 @@ class VerifyOtp extends React.Component {
 			}
 
 			if (message.indexOf('You have 0') != -1) {
-				attempts = 'You have reached maximum attempts. please, try again later after 1 hours';
+				attempts = 'You have reached maximum attempts. please, try again later after 23 hour(s) and 59 minute(s)';
 				this.setState({ req_otp_status: 1 });
 			}
 		}
@@ -205,15 +229,27 @@ class VerifyOtp extends React.Component {
                 <NavBack title="Verify OTP"/>
                 <div className="container-box-c">
                     <p style={{ fontSize: 14 }} className="text-default-rcti" dangerouslySetInnerHTML={{__html: text}}></p>
+                    <GoogleReCaptchaProvider
+						language="id"
+						reCaptchaKey={RE_CAPTCHA_SITE_KEY}
+						
+					>
                     <Form onSubmit={this.submitOtp.bind(this)}>
                         <FormGroup>
                             <ReactCodeInput
-                                fields={4}
+                                fields={6}
+                                fieldWidth={40}
                                 onChange={this.onChangeOtp.bind(this)}
                                 className="otp-input-c" />
                         </FormGroup>
                         {actionElement}
                     </Form>
+                    <FormGroup>
+                        <GoogleReCaptcha
+                            onVerify={this.handleChangeToken.bind(this)}
+                        />
+                    </FormGroup>
+                    </GoogleReCaptchaProvider>
                 </div>
             </Layout>
         );
