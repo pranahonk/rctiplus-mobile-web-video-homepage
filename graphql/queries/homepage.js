@@ -1,14 +1,15 @@
-import { gql } from "@apollo/client"
+import { gql } from '@apollo/client';
 
 import {
   lineupContinueWatchingFragment,
-  lineupTypeStoryFragment,
   lineupDefaultFragment,
+  lineupTypeNewsRegroupingFragment,
   lineupTypeNewsTagarFragment,
-  lineupTypeNewsRegroupingFragment
-} from "../fragments/lineups"
+  lineupTypeStoryFragment,
+} from '../fragments/lineups';
 
 import {
+  contentTypeAudioRadio,
   contentTypeCatchupFragment,
   contentTypeClipFragment,
   contentTypeEpisodeFragment,
@@ -18,9 +19,7 @@ import {
   contentTypeProgramFragment,
   contentTypeSeasonFragment,
   contentTypeSpecialFragment,
-  contentTypeAudioRadio,
-  contentTypeAudioPodcast
-} from "../fragments/content_types"
+} from '../fragments/content_types';
 
 function getQueryParams(args) {
   let output = []
@@ -192,7 +191,6 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 5, lineup_id = 0)
             ${contentTypeLiveEPGFragment}
             ${contentTypeSpecialFragment}
             ${contentTypeSeasonFragment}
-            ${contentTypeAudioPodcast}
             ${contentTypeAudioRadio}
           }
         }
