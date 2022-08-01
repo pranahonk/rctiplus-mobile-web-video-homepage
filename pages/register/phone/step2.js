@@ -154,7 +154,7 @@ class Step2 extends Component {
 			}
 
 			if (message.indexOf('You have 0') != -1) {
-				attempts = 'You have reached maximum attempts. please, try again later after 1 hours';
+				attempts = 'You have reached maximum attempts. please, try again later after 23 hour(s) and 59 minute(s)';
 				this.setState({ req_otp_status: 1 });
 			}
 		}
