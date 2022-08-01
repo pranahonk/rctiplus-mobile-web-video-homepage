@@ -115,7 +115,7 @@ function AudioList ({title, indexTag, id, data}) {
                           return(
                             <div key={index2}>
                               <div className='background-horizontal'>
-                                <div className='row mx-0'>
+                                <div className='row mx-0 w-100'>
                                   <div className='col-4 my-auto'>
                                     <Img className="podcast-img"
                                          alt={content?.content_type_detail?.detail?.data.name}
