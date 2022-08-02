@@ -92,7 +92,7 @@ function AudioDisc ({title, indexTag, id, data}) {
                         {/*<img src="audio-icons/listener-icon.svg"/>*/}
                         {/*<span className="total-listener">{content?.content_type_detail?.detail?.data?.total_plays}</span>*/}
                       </div>
-                      <span className="playlist-name">{truncateString(content?.content_type_detail?.detail?.data?.title, '...', 10)}</span>
+                      <span className="playlist-name">{truncateString(content?.content_type_detail?.detail?.data?.title,  20)}</span>
                     </div>
                   )
                 })}
