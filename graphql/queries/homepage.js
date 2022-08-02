@@ -136,6 +136,15 @@ export const GET_HOME_STORIES = (category_id = 0, page = 1, page_size = 10) => {
           program_img
           program_id
           title
+          gpt {
+            id
+            div_gpt
+            path
+            cust_params {
+              name
+              value
+            }
+          }
           story {
             id
             permalink
