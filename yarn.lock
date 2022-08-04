@@ -10388,6 +10388,13 @@ react-google-publisher-tag@^2.0.6:
     lodash "^4.17.11"
     react-measure "^2.2.4"
 
+react-google-recaptcha-v3@^1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/react-google-recaptcha-v3/-/react-google-recaptcha-v3-1.10.0.tgz#1ec46825fe9b857d7f4ef08ee89fea05e629a9f9"
+  integrity sha512-JBoqU107X8klQmS8tQSbQh1IMsT1fH3kVoArIqnia0rtn0rPNG9Ld+9rD/dHJMculIczSZpGvIJTXXwtsolMcg==
+  dependencies:
+    hoist-non-react-statics "^3.3.2"
+
 react-gtm@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/react-gtm/-/react-gtm-0.0.2.tgz#94790f714a0a467caeca09ecc808bfe88326c50c"
