@@ -16,7 +16,6 @@ function storyModal(props) {
   const modal = useRef(null)
   const [ activeIndex, setActiveIndex ] = useState(0)
   const [ player, setPlayer ] = useState(null)
-  const [ slot, setSlot ] = useState(5)
 
   const timesec = 5
   const storyModalPlayerID = "storymodal-player"
@@ -80,22 +79,11 @@ function storyModal(props) {
         return
       }
 
-
       mountGpt()
-
     }
 
     
   }
-
-  var clearAllSlots = function() {
-    setActiveIndex(activeIndex + 1)
-
-    googletag.cmd.push(function() {
-      // googletag.pubads().clear();
-      // googletag.pubads().refresh();
-    });
-  };
 
   const handleAnimationEnd = _ => {
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
@@ -197,6 +185,9 @@ function storyModal(props) {
       var countSlotRequested = 0
       var countImpressionViewable = 0
 
+      const videoContentId = document.getElementById(props.story.story[activeIndex].div_gpt)
+
+
       googletag.pubads().addEventListener('slotRenderEnded', function(event) {
         if(countSlotRendeEnded == 0){
           if (event.isEmpty) {
@@ -208,7 +199,7 @@ function storyModal(props) {
 
       googletag.pubads().addEventListener('impressionViewable', function(event) {
         if(countImpressionViewable == 0){
-          // document.querySelector('#video-wrapper').style.display = none
+          
         }
         countImpressionViewable = countImpressionViewable + 1
       });
@@ -246,14 +237,31 @@ function storyModal(props) {
                   countWindow = countWindow + 1
                 }
               }
+              switch(event.data.state) {
+                case "AD_VIDEO_PAUSE": {
+                  pauseProgressBar()
+                }
+              }
+              switch(event.data.state) {
+                case "AD_VIDEO_PLAY": {
+                  runProgressBar()
+                }
+              }
+              switch(event.data.state) {
+                case "AD_CTA_CLICK": {
+                  const videoIframe = document.querySelector('#'+props.story.story[activeIndex].div_gpt).querySelector('iframe')
+                  if(!!videoIframe) {
+                    const videoGptDocument = videoIframe.contentDocument || videoIframe.contentWindow.document;
+                    const videoGpt = videoGptDocument.getElementById("google-native-video-media");
+                    videoGpt.pause()
+                  }
+                  pauseProgressBar()
+                }
+              }
           });
           countSlotResponseReceived = countSlotResponseReceived + 1
-
         }
-        
-
       });
-
 
       googletag.pubads().enableSingleRequest();
       googletag.enableServices();
@@ -350,9 +358,6 @@ function storyModal(props) {
     setTimeout(() => {
       progressBars[activeIndex].classList.add("active")
     }, 100);
-
-
-
   }
 
   const divideComponentOnClick = (e) => {
