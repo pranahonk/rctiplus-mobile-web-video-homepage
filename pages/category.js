@@ -16,7 +16,7 @@ import GridMenu from '../components/Includes/Common/HomeCategoryMenu'
 import Stories from '../components/Includes/Gallery/Stories_v2'
 import StickyAds from '../components/Includes/Banner/StickyAds'
 import { client } from "../graphql/client"
-import { GET_LINEUPS } from "../graphql/queries/homepage"
+import { GET_CATEGORIES, GET_LINEUPS } from '../graphql/queries/homepage';
 import adsActions from '../redux/actions/adsActions'
 import { setVisitorToken } from '../utils/cookie'
 import Cookies from 'js-cookie'
@@ -100,6 +100,8 @@ function Category (props) {
                 .finally(_ => {
                     if (page === 1) setIsShimmer(false)
             })
+          client
+            .query({ query: GET_CATEGORIES(props.router.query.category_id) })
         }
     }
 
