@@ -1,26 +1,26 @@
-import React, {useEffect, useRef, useState } from 'react'
-import router, { Router, useRouter, withRouter } from 'next/router'
-import { connect } from "react-redux"
-import BottomScrollListener from 'react-bottom-scroll-listener'
-import LoadingBar from 'react-top-loading-bar'
-import { StickyContainer, Sticky } from 'react-sticky'
-import dynamic from 'next/dynamic'
+import React, { useEffect, useRef, useState } from 'react';
+import { useRouter, withRouter } from 'next/router';
+import { connect } from 'react-redux';
+import BottomScrollListener from 'react-bottom-scroll-listener';
+import LoadingBar from 'react-top-loading-bar';
+import { Sticky, StickyContainer } from 'react-sticky';
+import dynamic from 'next/dynamic';
 
-import HomeLoader from '../components/Includes/Shimmer/HomeLoader'
-import Layout from '../components/Layouts/Default_v2'
-import { gaTrackerScreenView } from '../utils/ga-360'
+import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
+import Layout from '../components/Layouts/Default_v2';
+import { gaTrackerScreenView } from '../utils/ga-360';
 
-import Header from "../components/Includes/HomeCategory/DetailCategory/Header"
-import Carousel from '../components/Includes/Gallery/Carousel_v2'
-import GridMenu from '../components/Includes/Common/HomeCategoryMenu'
-import Stories from '../components/Includes/Gallery/Stories_v2'
-import StickyAds from '../components/Includes/Banner/StickyAds'
-import { client } from "../graphql/client"
+import Header from '../components/Includes/HomeCategory/DetailCategory/Header';
+import Carousel from '../components/Includes/Gallery/Carousel_v2';
+import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
+import Stories from '../components/Includes/Gallery/Stories_v2';
+import StickyAds from '../components/Includes/Banner/StickyAds';
+import { client } from '../graphql/client';
 import { GET_LINEUPS } from '../graphql/queries/homepage';
-import adsActions from '../redux/actions/adsActions'
-import { setVisitorToken } from '../utils/cookie'
-import Cookies from 'js-cookie'
-import { titleStringUrlRegex, urlRegex } from '../utils/regex'
+import adsActions from '../redux/actions/adsActions';
+import { setVisitorToken } from '../utils/cookie';
+import Cookies from 'js-cookie';
+import { titleStringUrlRegex } from '../utils/regex';
 
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
 const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
