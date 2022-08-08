@@ -16,7 +16,7 @@ import GridMenu from '../components/Includes/Common/HomeCategoryMenu'
 import Stories from '../components/Includes/Gallery/Stories_v2'
 import StickyAds from '../components/Includes/Banner/StickyAds'
 import { client } from "../graphql/client"
-import { GET_CATEGORIES, GET_LINEUPS } from '../graphql/queries/homepage';
+import { GET_LINEUPS } from '../graphql/queries/homepage';
 import adsActions from '../redux/actions/adsActions'
 import { setVisitorToken } from '../utils/cookie'
 import Cookies from 'js-cookie'
@@ -45,6 +45,7 @@ function Category (props) {
     const [ isShimmer, setIsShimmer ] = useState(false)
     const [ lineups, setLineups ] = useState([])
     const [ gpt, setGpt ] = useState([])
+    const [ listMicrosites, setListMiscrosites ] = useState([])
     const [ meta, setMeta ] = useState({})
     const [ openComingSoonModal, setOpenComingSoonModal ] = useState(false)
     const [ contentComingSoonModal, setContentComingSoonModal ] = useState({})
@@ -84,7 +85,8 @@ function Category (props) {
                 .then(({ data }) => {
                     let newLineups = data.lineups.data
                     setGpt(data.gpt.data)
-                    console.log(data.gpt.data)
+                    setListMiscrosites(data?.categories?.data)
+
 
                     if (page > 1) {
                         newLineups = lineups.concat(newLineups)
@@ -264,11 +266,22 @@ function Category (props) {
                                 <Sticky disableHardwareAcceleration>
                                     { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
                                         const topDistance = 40;
+
+                                        const isMicrosite = listMicrosites.some((x)=> x.id === parseInt(props.router.query.category_id));
+
+                                        const gpt_path = isMicrosite ? gpt.path : null;
+                                        const gpt_id = isMicrosite ? gpt.div_gpt : null;
+
+                                        if(process.browser){
+                                          alert(`ini microsite: ${isMicrosite}`);
+                                        }
+
+
                                         if (distanceFromTop < topDistance) {
                                             if (!props.ads.ads_displayed) {
                                                 return (
                                                     <div {...rest} >
-                                                        <StickyAds path={gpt.path} id={gpt.div_gpt} />
+                                                        <StickyAds path={gpt_path} id={gpt_id} />
                                                     </div>
                                                 );
                                             }
@@ -284,7 +297,7 @@ function Category (props) {
                                             }
                                             return (
                                                 <div {...rest} >
-                                                    <StickyAds path={gpt.path} id={gpt.div_gpt} sticky/>
+                                                    <StickyAds path={gpt_path} id={gpt_id} sticky/>
                                                 </div>
                                             );
                                         }
@@ -293,7 +306,7 @@ function Category (props) {
                                         }
                                         return (
                                             <div {...rest} >
-                                                <StickyAds path={gpt.path} id={gpt.div_gpt} />
+                                                <StickyAds path={gpt_path} id={gpt_id} />
                                             </div>
                                         );
                                     } }
