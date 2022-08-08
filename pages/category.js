@@ -273,7 +273,6 @@ function Category (props) {
                                                 );
                                             }
                                             const adsContents = document.getElementById(gpt.div_gpt).childNodes;
-                                            console.log(adsContents);
 
                                             if (adsContents.length > 0) {
                                                 if (adsContents[0].tagName == 'SCRIPT') {
