@@ -272,10 +272,6 @@ function Category (props) {
                                         const gpt_path = isMicrosite ? gpt.path : null;
                                         const gpt_id = isMicrosite ? gpt.div_gpt : null;
 
-                                        if(process.browser){
-                                          alert(`ini microsite: ${isMicrosite}`);
-                                        }
-
 
                                         if (distanceFromTop < topDistance) {
                                             if (!props.ads.ads_displayed) {
