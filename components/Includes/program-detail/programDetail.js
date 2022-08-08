@@ -23,24 +23,24 @@ import smoothscroll from 'smoothscroll-polyfill';
 import { isIOS } from 'react-device-detect';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 
-import {
-  programRateEvent, programShareEvent, programContentShareEvent,
+import { 
+  programRateEvent, programShareEvent, programContentShareEvent, 
   programAddMyListEvent, programContentAddMyListEvent, programContentDownloadEvent,
-  programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent,
-  programSeasonListEvent, programTabEvent, programContentEvent,
-  accountMylistContentClicked, accountMylistRemoveMylistClicked,
-  accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked,
-  libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked,
-  libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked,
-  libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent,
-  libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked,
+  programShowMoreEvent, programRelatedEvent, programSeasonCloseEvent, 
+  programSeasonListEvent, programTabEvent, programContentEvent, 
+  accountMylistContentClicked, accountMylistRemoveMylistClicked, 
+  accountMylistShareClicked, accountMylistDownloadClicked, libraryProgramRateClicked, 
+  libraryProgramShareClicked, libraryProgramTrailerClicked, libraryProgramAddMylistClicked, 
+  libraryProgramContentDownloadClicked, libraryProgramContentAddMylistClicked, 
+  libraryProgramContentShareClicked, libraryProgramContentClicked, libraryProgramTabClicked, libraryGeneralEvent, 
+  libraryProgramSeasonListClicked, libraryProgramSeasonCloseClicked, searchProgramRateClicked, searchProgramShareClicked, 
   searchProgramTrailerClicked, searchProgramAddMyListClicked, searchProgramContentDownloadClicked, searchProgramContentAddMyListClicked,
-  searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked,
+  searchProgramContentShareClicked, searchProgramContentClicked, searchProgramTabClicked, searchProgramSeasonListClicked, 
   searchProgramSeasonCloseClicked, searchProgramRelatedScrollHorizontalEvent, searchProgramShowmoreClicked, programTrailerEvent, ProgramContentClick } from '../../../utils/appier';
 
 const setActiveContentHighlight = (isContentActive) => {
   if (!isContentActive) return null
-
+  
   const maskStyle = {
     width: "100%",
     position: "absolute",
@@ -58,7 +58,7 @@ const setActiveContentHighlight = (isContentActive) => {
     textAlign: "center",
     color: "white",
   }
-
+  
   return (
     <>
       <div style={maskStyle}></div>
@@ -101,7 +101,7 @@ export const PanelEpisode = forwardRef((props, ref) => {
                       href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=episode&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
                       as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/episode/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}>
                       <a onClick={() => link(item.title, item.id, 'episode', item.summary, item)} ref={linkRef}>
-
+      
                         {setActiveContentHighlight(+props.isActive === +item.id)}
 
                         <Img
@@ -165,7 +165,7 @@ export const PanelExtra = (props) => {
                     href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=extra&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
                     as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/extra/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}>
                       <a onClick={() => link(item.title, item.id, 'extra', item.summary, item)} ref={linkExtraRef}>
-
+                        
                         {setActiveContentHighlight(+props.isActive === +item.id)}
 
                         <Img
@@ -229,9 +229,9 @@ export const PanelClip = (props) => {
                     href={`/programs?id=${props.query.id}&title=${urlRegex(props.query.title)}&content_type=clip&content_id=${item.id}&content_title=${urlRegex(item.title)}`}
                     as={`/programs/${props.query.id}/${urlRegex(props.query.title)}/clip/${item.id}/${urlRegex(item.title)}${props.dataTracking.ref ? '?ref='+props.dataTracking.ref : ''}`}>
                     <a onClick={() => link(item.title, item.id, 'clip', item.summary, item)} ref={linkClipRef}>
-
+                      
                       {setActiveContentHighlight(+props.isActive === +item.id)}
-
+                      
                       <Img alt={item.title}
                         title={item.title}
                         className="background__program-detail" src={[props.data.meta.image_path + RESOLUTION_IMG + item.landscape_image, getPathImage(...pathImg,item.landscape_image, false)]}
@@ -273,9 +273,9 @@ export const PanelPhoto = (props) => {
           <div className="panel-content tab__photo">
           { props.data.data.map((item,i) => {
           return (
-            <div key={i} className="thumb-img__content tab__photo-item" onClick={ () => {
-
-              Router.push(`/programs/${props.query.id}/${urlRegex(props.query.title)}/photo/${item.id}/${urlRegex(item.title)}`)
+            <div key={i} className="thumb-img__content tab__photo-item" onClick={ () => { 
+              
+              Router.push(`/programs/${props.query.id}/${urlRegex(props.query.title)}/photo/${item.id}/${urlRegex(item.title)}`) 
               onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, 'photo', item)
               } }>
               <Img alt={item.title}
@@ -425,7 +425,7 @@ export const ActionMenu = (props) => {
       }
     }
     return (
-      <ButtonPrimary status={[isLogin, alertSignIn]}  className="button-20" icon={ <ThumbUpIcon /> } text="Rated" onclick={() => {
+      <ButtonPrimary status={[isLogin, alertSignIn]}  className="button-20" icon={ <ThumbUpIcon /> } text="Rated" onclick={() => { 
         onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, 'program_rate')
         // console.log('RATE2')
         return props.onRate();
@@ -463,7 +463,7 @@ export const alertDownload = (data = null, type = null, Programid, programTitle,
   showAlert('To be able to watch this episode offline, please download RCTI+ application on ' + (isIOS ? 'App Store' : 'Playstore'),
              '',
              'Open ' + (isIOS ? 'App Store' : 'Playstore'),
-             'Cancel', () => { window.open('https://onelink.to/apprctiplus', '_blank'); });
+             'Cancel', () => { window.open((isIOS ? 'https://apps.apple.com/us/app/rcti/id1472168599' : 'https://play.google.com/store/apps/details?id=com.fta.rctitv'), '_blank'); });
 };
 export const alertSignIn = () => {
   showSignInAlert(`Please <b>Sign In</b><br/>
@@ -492,7 +492,7 @@ const bookmark = (data, item, type, props, typeTracking = null) => {
       status={[props.isLogin, alertSignIn]}
       text={type === 'program' ? 'My List' : ''}
       className={ type === 'program' ? 'button-20' : '' }
-      onclick={() => {
+      onclick={() => { 
         props.onBookmarkDelete(item.id, type);
         }}/>);
     }
@@ -502,7 +502,7 @@ const bookmark = (data, item, type, props, typeTracking = null) => {
       status={[props.isLogin, alertSignIn]}
       text={type === 'program' ? 'My List' : ''}
       className={ type === 'program' ? 'button-20' : '' }
-      onclick={() => {
+      onclick={() => { 
         onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, typeTracking, item, type)
         props.onBookmarkAdd(item.id, type);
         }}/>);
@@ -513,7 +513,7 @@ const bookmark = (data, item, type, props, typeTracking = null) => {
   status={[props.isLogin, alertSignIn]}
   text={type === 'program' ? 'My List' : ''}
   className={ type === 'program' ? 'button-20' : '' }
-  onclick={() => {
+  onclick={() => { 
     onTrackingClick(props.dataTracking.ref, props.dataTracking.idContent, props.dataTracking.title, typeTracking, item, type)
     props.onBookmarkAdd(item.id, type);
     }}/>);
@@ -660,7 +660,7 @@ export const onTrackingClick = (ref, id, title, typeClick = 'program', item = nu
       case 'homepage':
         programContentShareEvent(id, title.data.title, item.title, content_type, item.id, 'mweb_homepage_program_content_share_clicked');
         break;
-
+    
       case 'mylist':
           accountMylistShareClicked(id, title.data.title, item.title, content_type, item.id, 'mweb_account_mylist_share_clicked');
           break;

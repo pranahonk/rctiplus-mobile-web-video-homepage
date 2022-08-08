@@ -13,6 +13,7 @@ import { GET_BANNERS } from "../../../graphql/queries/homepage"
 
 import '../../../assets/scss/plugins/carousel/carousel.scss'
 import Cookies from 'js-cookie'
+import { gaTrackerBanner } from '../../../utils/ga-360';
 
 function carouselBanner(props) {
   const placeholderImg = "/static/placeholders/placeholder_landscape.png"
@@ -37,6 +38,8 @@ function carouselBanner(props) {
 
   const goToProgram = (banner) => {
     sendTracker(homeBannerEvent, "homeBanner", banner)
+    gaTrackerBanner("video_interaction", "click_banner_list", "header_banner", "not_available", "not_available", "not_available")
+
     let url = banner.permalink
 
     switch (banner.type) {

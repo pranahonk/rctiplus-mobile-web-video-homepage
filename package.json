@@ -100,7 +100,7 @@
     "next-offline": "^4.0.2",
     "next-redux-wrapper": "^3.0.0-alpha.3",
     "nextjs-sitemap-generator": "^0.4.1",
-    "node-sass": "^7.0.1",
+    "node-sass": "^6.0.1",
     "normalize.css": "^7.0.0",
     "popper.js": "^1.14.6",
     "prerender-node": "^3.5.0",

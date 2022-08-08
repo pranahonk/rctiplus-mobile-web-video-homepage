@@ -10,8 +10,9 @@ import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent } from '
 import '../../../assets/scss/components/footer-v2.scss';
 
 import { bottomMenuClick } from '../../../utils/firebaseTracking';
-import { gaTrackerNavbarTrack } from '../../../utils/ga-360';
-import { getUserAccessToken, getVisitorToken } from "../../../utils/cookie" 
+
+import { gaTrackerNavbarTrack, gaTracker, gaTrackerSearch} from '../../../utils/ga-360';
+import { getUserAccessToken, getVisitorToken } from "../../../utils/cookie";
 
 const FooterNav_v2 = (props) => {
 
@@ -26,6 +27,7 @@ const FooterNav_v2 = (props) => {
                 <div className="footer-wrapper-list">
                     <div id="action-home" onClick={() => {
                         homeGeneralClicked('mweb_home_clicked');
+                        gaTrackerSearch("menu_navbar_tracking", "click_bottom_menu", "home");
                         switch (props.router.asPath) {
                             case '/radio':
                                 window.location.href = '/';
@@ -56,6 +58,7 @@ const FooterNav_v2 = (props) => {
                 <div className="footer-wrapper-list">
                     <div id="action-live-event" onClick={() => {
                         homeGeneralClicked('mweb_liveevent_clicked');
+                        gaTrackerSearch("menu_navbar_tracking", "click_bottom_menu", "live");
                         Router.push('/live-event');
                     }}>
                         <a>
@@ -86,6 +89,7 @@ const FooterNav_v2 = (props) => {
                 <div className="footer-wrapper-list">
                     <div id="action-live-tv" onClick={() => {
                         homeGeneralClicked('mweb_livetv_clicked');
+                        gaTrackerSearch("menu_navbar_tracking", "click_bottom_menu", "live tv");
                         Router.push('/tv/rcti');
                     }}>
                         <a>
@@ -109,6 +113,7 @@ const FooterNav_v2 = (props) => {
 
                 <div className="footer-wrapper-list">
                     <div id="action-library" onClick={() => {
+                        gaTrackerSearch("menu_navbar_tracking", "click_bottom_menu", "trebel");
                         switch (props.router.asPath) {
                             case '/exclusive':
                                 exclusiveGeneralEvent('mweb_exclusive_library_clicked');
@@ -123,6 +128,7 @@ const FooterNav_v2 = (props) => {
                                 homeGeneralClicked('mweb_library_clicked');
                                 break;
                         }
+                        gaTracker('menu_navbar_tracking','click_bottom_menu', 'Library')
 
                         bottomMenuClick(props?.user?.data, { pillar: 'general', button_name: 'trebel' })
                         Router.push(`${process.env.TREBEL_IFRAME_URL}?platform=mweb&token=${getUserAccessToken() || getVisitorToken()}`)
@@ -146,7 +152,7 @@ const FooterNav_v2 = (props) => {
                             </div>
                             {/* <ImportContactsTwoToneIcon className="nav-footer-icon"/>
                                 <br /> */}
-                            <span className={props.router.asPath === "/explores" ? "footer-icon-active" : ""}>TREBEL</span>
+                            <span className={props.router.asPath === "/explores" ? "footer-icon-active" : ""}>Music+</span>
                         </a>
                     </div>
                 </div>
@@ -157,6 +163,7 @@ const FooterNav_v2 = (props) => {
                         style={{ position: 'relative' }}
                         onClick={() => {
                             homeGeneralClicked('mweb_account_clicked');
+                            gaTrackerSearch("menu_navbar_tracking", "click_bottom_menu", "account");
                             switch (props.router.asPath) {
                                 case '/radio':
                                     window.location.href = '/profile';
