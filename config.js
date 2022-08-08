@@ -64,6 +64,9 @@ export const GPT_ID_SEARCH = process.env.GPT_ID_SEARCH
 
 export const GPT_ID_DETAIL = process.env.GPT_ID_DETAIL
 
+export const GPT_MOBILE_STICKY_BANNER_HC = process.env.GPT_MOBILE_STICKY_BANNER_HC
+export const GPT_MOBILE_STICKY_BANNER_HC_DIV = process.env.GPT_MOBILE_STICKY_BANNER_HC_DIV
+
 export const REDIRECT_SSR = process.env.REDIRECT_SSR;
 export const API_TIMEOUT = process.env.API_TIMEOUT;
 
