@@ -44,6 +44,7 @@ const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_li
 function Category (props) {
     const [ isShimmer, setIsShimmer ] = useState(false)
     const [ lineups, setLineups ] = useState([])
+    const [ gpt, setGpt ] = useState([])
     const [ meta, setMeta ] = useState({})
     const [ openComingSoonModal, setOpenComingSoonModal ] = useState(false)
     const [ contentComingSoonModal, setContentComingSoonModal ] = useState({})
@@ -82,6 +83,8 @@ function Category (props) {
                 .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
                 .then(({ data }) => {
                     let newLineups = data.lineups.data
+                    setGpt(data.gpt.data)
+                    console.log(data.gpt.data)
 
                     if (page > 1) {
                         newLineups = lineups.concat(newLineups)
@@ -100,8 +103,6 @@ function Category (props) {
                 .finally(_ => {
                     if (page === 1) setIsShimmer(false)
             })
-          client
-            .query({ query: GET_CATEGORIES(props.router.query.category_id) })
         }
     }
 
@@ -267,14 +268,16 @@ function Category (props) {
                                             if (!props.ads.ads_displayed) {
                                                 return (
                                                     <div {...rest} >
-                                                        <StickyAds/>
+                                                        <StickyAds path={gpt.path} id={gpt.div_gpt} />
                                                     </div>
                                                 );
                                             }
-                                            const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
+                                            const adsContents = document.getElementById(gpt.div_gpt).childNodes;
+                                            console.log(adsContents);
+
                                             if (adsContents.length > 0) {
                                                 if (adsContents[0].tagName == 'SCRIPT') {
-                                                    const stickyAds = document.getElementById('sticky-ads-container');
+                                                    const stickyAds = gpt.div_gpt.childNodes;
                                                     if (stickyAds) {
                                                         stickyAds.style.display = 'none'
                                                     }
@@ -282,7 +285,7 @@ function Category (props) {
                                             }
                                             return (
                                                 <div {...rest} >
-                                                    <StickyAds sticky/>
+                                                    <StickyAds path={gpt.path} id={gpt.div_gpt} sticky/>
                                                 </div>
                                             );
                                         }
@@ -291,7 +294,7 @@ function Category (props) {
                                         }
                                         return (
                                             <div {...rest} >
-                                                <StickyAds id='div-gpt-ad-1584677577539-0'/>
+                                                <StickyAds path={gpt.path} id={gpt.div_gpt} />
                                             </div>
                                         );
                                     } }

@@ -1,10 +1,10 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React from 'react';
+import { connect } from 'react-redux';
 
-import { getUserAccessToken } from "../../../utils/cookie"
-import '../../../assets/scss/components/sticky_ads.scss'
+import { getUserAccessToken } from "../../../utils/cookie";
+import '../../../assets/scss/components/sticky_ads.scss';
 
-import adsActions from '../../../redux/actions/adsActions'
+import adsActions from '../../../redux/actions/adsActions';
 
 class StickyAds extends React.Component {
   constructor(props) {
@@ -16,15 +16,15 @@ class StickyAds extends React.Component {
   }
 
   fetchAds(custParams) {
-    const targettingAdsData = custParams.concat({ 
-      name: "logged_in", 
+    const targettingAdsData = custParams.concat({
+      name: "logged_in",
       value: String(Boolean(getUserAccessToken()))
     })
-    
+
     window.googletag = window.googletag || {cmd: []}
     googletag.cmd.push(function() {
       googletag.defineSlot(this.state.adsPath, [320, 50], this.state.adsId).addService(googletag.pubads())
-      
+
       targettingAdsData.forEach(({ name, value }) => {
         googletag.pubads().setTargeting(name, value)
       })

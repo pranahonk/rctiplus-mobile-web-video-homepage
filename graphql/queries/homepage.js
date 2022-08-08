@@ -82,6 +82,23 @@ export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
 
   return gql`
     query {
+      gpt (category_id: ${category_id}) {
+      data {
+        id
+        path
+        div_gpt
+        size_width_1
+        size_width_2
+        size_height_1
+        size_height_2
+        cust_params{
+          value
+          name
+        }
+        size_height_2
+        size_width_2
+      }
+    }
       lineups(${queryParams}) {
         data {
           id
