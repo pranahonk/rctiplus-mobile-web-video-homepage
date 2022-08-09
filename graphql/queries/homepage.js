@@ -59,15 +59,6 @@ export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
 
   return gql`
     query {
-       categories {
-           data {
-               id
-               name
-               is_microsite
-               sorting
-               type
-           }
-       }
       gpt (category_id: ${category_id}) {
       data {
         id
