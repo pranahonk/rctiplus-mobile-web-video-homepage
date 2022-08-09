@@ -45,7 +45,6 @@ function Category (props) {
     const [ isShimmer, setIsShimmer ] = useState(false)
     const [ lineups, setLineups ] = useState([])
     const [ gpt, setGpt ] = useState([])
-    const [ listMicrosites, setListMiscrosites ] = useState([])
     const [ meta, setMeta ] = useState({})
     const [ openComingSoonModal, setOpenComingSoonModal ] = useState(false)
     const [ contentComingSoonModal, setContentComingSoonModal ] = useState({})
@@ -78,14 +77,12 @@ function Category (props) {
 
     const getCategoryLineups = async (page = 1, pageSize = 5) => {
         await setVisitorToken()
-        if (page === 1 ) setIsShimmer(true)
         if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
+        if (page === 1) setIsShimmer(true)
             client
                 .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
                 .then(({ data }) => {
                     let newLineups = data.lineups.data
-                    setGpt(data.gpt.data)
-                    setListMiscrosites(data?.categories?.data)
 
 
                     if (page > 1) {
@@ -100,6 +97,7 @@ function Category (props) {
                     })
                     setLineups([ ...mappedContents.values() ])
                     setMeta(data.lineups.meta)
+                    setGpt(data.gpt.data)
                 })
                 .catch(_ => {})
                 .finally(_ => {
@@ -113,7 +111,6 @@ function Category (props) {
         setContentComingSoonModal(content)
     }
 
-  const isMicrosite = () => listMicrosites.some((x)=> x.id === parseInt(props.router.query.category_id));
 
     const renderLineups = () => {
         return lineups.map((lineup, index) => {
@@ -201,27 +198,57 @@ function Category (props) {
                     )
                 case 'tag':
                   return (
-                    <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+                    <HorizontalHastags
+                      key={lineup.id}
+                      title={lineup.title}
+                      indexTag={index}
+                      data={lineup}
+                      id={lineup.id} />
                   )
                 case 'landscape_news':
                   return (
-                    <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+                    <NewsHorizontalLandscape
+                      key={lineup.id}
+                      title={lineup.title}
+                      indexTag={index}
+                      data={lineup}
+                      id={lineup.id} />
                   )
                 case "square_list_news":
                   return (
-                    <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+                    <HorizontalMutipleLandscape
+                      key={lineup.id}
+                      title={lineup.title}
+                      indexTag={index}
+                      data={lineup}
+                      id={lineup.id} />
                   )
                 case "landscape_hot_competition":
                   return(
-                    <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+                    <LandscapeHotCompetition
+                      key={lineup.id}
+                      title={lineup.title}
+                      indexTag={index}
+                      id={lineup.id}
+                      data={lineup} />
                   )
                 case "portrait_hot":
                   return(
-                    <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+                    <LandscapeHotVideo
+                      key={lineup.id}
+                      title={lineup.title}
+                      indexTag={index}
+                      id={lineup.id}
+                      data={lineup} />
                   )
                 case "square_list_audio":
                   return(
-                    <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+                    <AudioHorizontalList
+                      key={lineup.id}
+                      title={lineup.title}
+                      indexTag={index}
+                      id={lineup.id}
+                      data={lineup} />
                   );
                 case "portrait_disc":
                   return(
@@ -264,31 +291,22 @@ function Category (props) {
 
                             <Stories />
 
-
                             <StickyContainer>
                                 <Sticky disableHardwareAcceleration>
                                     { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
                                         const topDistance = 40;
 
-                                        const gpt_path = isMicrosite ? gpt.path : null;
-                                        const gpt_id = isMicrosite ? gpt.div_gpt : null;
-
-                                        console.log(gpt_path)
-                                        console.log(gpt_id)
-
-
-
                                         if (distanceFromTop < topDistance) {
                                             if (!props.ads.ads_displayed) {
                                                 return (
                                                     <div {...rest} >
-                                                      <StickyAds path={"/21865661642/RC_MOBILE_STICKY-BANNER-HC"} id={"div-gpt-ad-1656661014753-0"} />
+                                                      <StickyAds path={gpt.path} id={gpt.div_gpt} />
                                                     </div>
                                                 );
                                             }
 
-                                            const adsDefaultContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0')?.childNodes;
-                                            const adsContents = gpt_id ? document.getElementById(gpt.div_gpt).childNodes : adsDefaultContents;
+
+                                            const adsContents = document.getElementById(gpt.div_gpt).childNodes;
 
                                             if (adsContents.length > 0) {
                                                 if (adsContents[0].tagName == 'SCRIPT') {
@@ -300,7 +318,7 @@ function Category (props) {
                                             }
                                             return (
                                                 <div {...rest} >
-                                                    <StickyAds path={"/21865661642/RC_MOBILE_STICKY-BANNER-HC"} id={"div-gpt-ad-1656661014753-0"} sticky/>
+                                                  <StickyAds path={gpt.path} id={gpt.div_gpt} sticky/>
                                                 </div>
                                             );
                                         }
@@ -309,7 +327,7 @@ function Category (props) {
                                         }
                                         return (
                                             <div {...rest} >
-                                                <StickyAds path={"/21865661642/RC_MOBILE_STICKY-BANNER-HC"} id={"div-gpt-ad-1656661014753-0"} />
+                                              <StickyAds path={gpt.path} id={gpt.div_gpt} />
                                             </div>
                                         );
                                     } }
