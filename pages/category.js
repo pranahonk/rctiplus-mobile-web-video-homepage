@@ -282,7 +282,9 @@ function Category (props) {
                                                     </div>
                                                 );
                                             }
-                                            const adsContents = document.getElementById(gpt.div_gpt).childNodes;
+
+                                            const adsDefaultContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
+                                            const adsContents = gpt_id ? document.getElementById(gpt_id).childNodes : adsDefaultContents;
 
                                             if (adsContents.length > 0) {
                                                 if (adsContents[0].tagName == 'SCRIPT') {
