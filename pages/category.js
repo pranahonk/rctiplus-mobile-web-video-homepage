@@ -1,26 +1,26 @@
-import React, {useEffect, useRef, useState } from 'react'
-import router, { Router, useRouter, withRouter } from 'next/router'
-import { connect } from "react-redux"
-import BottomScrollListener from 'react-bottom-scroll-listener'
-import LoadingBar from 'react-top-loading-bar'
-import { StickyContainer, Sticky } from 'react-sticky'
-import dynamic from 'next/dynamic'
+import React, { useEffect, useRef, useState } from 'react';
+import { useRouter, withRouter } from 'next/router';
+import { connect } from 'react-redux';
+import BottomScrollListener from 'react-bottom-scroll-listener';
+import LoadingBar from 'react-top-loading-bar';
+import { Sticky, StickyContainer } from 'react-sticky';
+import dynamic from 'next/dynamic';
 
-import HomeLoader from '../components/Includes/Shimmer/HomeLoader'
-import Layout from '../components/Layouts/Default_v2'
-import { gaTrackerScreenView } from '../utils/ga-360'
+import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
+import Layout from '../components/Layouts/Default_v2';
+import { gaTrackerScreenView } from '../utils/ga-360';
 
-import Header from "../components/Includes/HomeCategory/DetailCategory/Header"
-import Carousel from '../components/Includes/Gallery/Carousel_v2'
-import GridMenu from '../components/Includes/Common/HomeCategoryMenu'
-import Stories from '../components/Includes/Gallery/Stories_v2'
-import StickyAds from '../components/Includes/Banner/StickyAds'
-import { client } from "../graphql/client"
+import Header from '../components/Includes/HomeCategory/DetailCategory/Header';
+import Carousel from '../components/Includes/Gallery/Carousel_v2';
+import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
+import Stories from '../components/Includes/Gallery/Stories_v2';
+import StickyAds from '../components/Includes/Banner/StickyAds';
+import { client } from '../graphql/client';
 import { GET_LINEUPS } from '../graphql/queries/homepage';
-import adsActions from '../redux/actions/adsActions'
-import { setVisitorToken } from '../utils/cookie'
-import Cookies from 'js-cookie'
-import { titleStringUrlRegex, urlRegex } from '../utils/regex'
+import adsActions from '../redux/actions/adsActions';
+import { setVisitorToken } from '../utils/cookie';
+import Cookies from 'js-cookie';
+import { titleStringUrlRegex } from '../utils/regex';
 
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
 const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
@@ -112,6 +112,8 @@ function Category (props) {
         setOpenComingSoonModal(open)
         setContentComingSoonModal(content)
     }
+
+    const isMicrosite = () => listMicrosites.some((x)=> x.id === parseInt(props.router.query.category_id));
 
     const renderLineups = () => {
         return lineups.map((lineup, index) => {
@@ -267,21 +269,23 @@ function Category (props) {
                                     { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
                                         const topDistance = 40;
 
-                                        const isMicrosite = listMicrosites.some((x)=> x.id === parseInt(props.router.query.category_id));
 
                                         const gpt_path = isMicrosite ? gpt.path : null;
                                         const gpt_id = isMicrosite ? gpt.div_gpt : null;
+
 
 
                                         if (distanceFromTop < topDistance) {
                                             if (!props.ads.ads_displayed) {
                                                 return (
                                                     <div {...rest} >
-                                                        <StickyAds path={gpt_path} id={gpt_id} />
+                                                      <StickyAds path={"/21865661642/RC_MOBILE_STICKY-BANNER-HC"} id={"div-gpt-ad-1656661014753-0"} />
                                                     </div>
                                                 );
                                             }
-                                            const adsContents = document.getElementById(gpt.div_gpt).childNodes;
+
+                                            const adsDefaultContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0')?.childNodes;
+                                            const adsContents = gpt_id ? document.getElementById(gpt.div_gpt).childNodes : adsDefaultContents;
 
                                             if (adsContents.length > 0) {
                                                 if (adsContents[0].tagName == 'SCRIPT') {
@@ -293,7 +297,7 @@ function Category (props) {
                                             }
                                             return (
                                                 <div {...rest} >
-                                                    <StickyAds path={gpt_path} id={gpt_id} sticky/>
+                                                  <StickyAds path={"/21865661642/RC_MOBILE_STICKY-BANNER-HC"} id={"div-gpt-ad-1656661014753-0"} sticky/>
                                                 </div>
                                             );
                                         }
@@ -302,7 +306,7 @@ function Category (props) {
                                         }
                                         return (
                                             <div {...rest} >
-                                                <StickyAds path={gpt_path} id={gpt_id} />
+                                              <StickyAds path={"/21865661642/RC_MOBILE_STICKY-BANNER-HC"} id={"div-gpt-ad-1656661014753-0"} />
                                             </div>
                                         );
                                     } }
