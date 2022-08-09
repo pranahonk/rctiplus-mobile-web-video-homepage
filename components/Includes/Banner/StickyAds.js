@@ -63,7 +63,6 @@ class StickyAds extends React.Component {
   }
 
   render() {
-    const gptID = process.env.MODE === "PRODUCTION" ? "div-gpt-ad-1584677487159-0" : "div-gpt-ad-1584677577539-0"
 
     return (
       <div id="sticky-ads-container" className={`sticky-ads ${(this.props.sticky ? 'sticky-ads-on' : '')}`}>
@@ -79,7 +78,7 @@ class StickyAds extends React.Component {
         <div>
           <div className="sticky-ads-content">
             <center>
-              <div id={gptID} style={{
+              <div id={this.setGptId()} style={{
                 width: 320,
                 height: 50
               }}>

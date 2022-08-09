@@ -113,6 +113,8 @@ function Category (props) {
         setContentComingSoonModal(content)
     }
 
+    const isMicrosite = () => listMicrosites.some((x)=> x.id === parseInt(props.router.query.category_id));
+
     const renderLineups = () => {
         return lineups.map((lineup, index) => {
             switch(lineup.display_type) {
@@ -267,7 +269,6 @@ function Category (props) {
                                     { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
                                         const topDistance = 40;
 
-                                        const isMicrosite = listMicrosites.some((x)=> x.id === parseInt(props.router.query.category_id));
 
                                         const gpt_path = isMicrosite ? gpt.path : null;
                                         const gpt_id = isMicrosite ? gpt.div_gpt : null;
@@ -278,13 +279,13 @@ function Category (props) {
                                             if (!props.ads.ads_displayed) {
                                                 return (
                                                     <div {...rest} >
-                                                        <StickyAds path={gpt_path} id={gpt_id} />
+                                                      <StickyAds path={"/21865661642/RC_MOBILE_STICKY-BANNER-HC"} id={"div-gpt-ad-1656661014753-0"} />
                                                     </div>
                                                 );
                                             }
 
-                                            const adsDefaultContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
-                                            const adsContents = gpt_id ? document.getElementById(gpt_id).childNodes : adsDefaultContents;
+                                            const adsDefaultContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0')?.childNodes;
+                                            const adsContents = gpt_id ? document.getElementById(gpt.div_gpt).childNodes : adsDefaultContents;
 
                                             if (adsContents.length > 0) {
                                                 if (adsContents[0].tagName == 'SCRIPT') {
@@ -296,7 +297,7 @@ function Category (props) {
                                             }
                                             return (
                                                 <div {...rest} >
-                                                    <StickyAds path={gpt_path} id={gpt_id} sticky/>
+                                                  <StickyAds path={"/21865661642/RC_MOBILE_STICKY-BANNER-HC"} id={"div-gpt-ad-1656661014753-0"} sticky/>
                                                 </div>
                                             );
                                         }
@@ -305,7 +306,7 @@ function Category (props) {
                                         }
                                         return (
                                             <div {...rest} >
-                                                <StickyAds path={gpt_path} id={gpt_id} />
+                                              <StickyAds path={"/21865661642/RC_MOBILE_STICKY-BANNER-HC"} id={"div-gpt-ad-1656661014753-0"} />
                                             </div>
                                         );
                                     } }
