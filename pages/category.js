@@ -300,7 +300,11 @@ function Category (props) {
                                             if (!props.ads.ads_displayed) {
                                                 return (
                                                     <div {...rest} >
-                                                      <StickyAds path={gpt.path} id={gpt.div_gpt} />
+                                                      <StickyAds
+                                                        path={gpt.path}
+                                                        id={gpt.div_gpt}
+                                                        targettingAdsData={this.state.gpt.cust_params}
+                                                      />
                                                     </div>
                                                 );
                                             }
@@ -318,7 +322,11 @@ function Category (props) {
                                             }
                                             return (
                                                 <div {...rest} >
-                                                  <StickyAds path={gpt.path} id={gpt.div_gpt} sticky/>
+                                                  <StickyAds
+                                                    path={gpt.path}
+                                                    id={gpt.div_gpt}
+                                                    targettingAdsData={this.state.gpt.cust_params}
+                                                    sticky/>
                                                 </div>
                                             );
                                         }
@@ -327,7 +335,11 @@ function Category (props) {
                                         }
                                         return (
                                             <div {...rest} >
-                                              <StickyAds path={gpt.path} id={gpt.div_gpt} />
+                                              <StickyAds
+                                                path={gpt.path}
+                                                id={gpt.div_gpt}
+                                                targettingAdsData={this.state.gpt.cust_params}
+                                              />
                                             </div>
                                         );
                                     } }
