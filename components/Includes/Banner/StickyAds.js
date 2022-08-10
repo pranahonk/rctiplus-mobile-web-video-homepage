@@ -26,10 +26,7 @@ class StickyAds extends React.Component {
     const slotName = this.setPathID();
     const gptID = this.setGptId();
 
-    const targettingAdsData = custParams.concat({
-      name: "logged_in",
-      value: String(Boolean(getUserAccessToken()))
-    })
+    const targettingAdsData = [...this.props.targettingAdsData];
 
     window.googletag = window.googletag || {cmd: []}
     googletag.cmd.push(function() {
