@@ -114,6 +114,7 @@ class Index_v2 extends React.Component {
             mappedContents.set(content.id, content)
           }
         })
+        console.log(data)
         this.setState({
           lineups: [ ...mappedContents.values() ],
           meta: data.lineups.meta,
@@ -357,7 +358,10 @@ class Index_v2 extends React.Component {
                           if (!this.props.ads.ads_displayed) {
                             return (
                               <div {...rest} >
-                                <StickyAds path={this.state.gpt.path} id={this.state.gpt.div_gpt} />
+                                <StickyAds
+                                  path={this.state.gpt.path}
+                                  id={this.state.gpt.div_gpt}
+                                  targettingAdsData={this.state.gpt.cust_params}/>
                               </div>
                             );
                           }
@@ -372,7 +376,10 @@ class Index_v2 extends React.Component {
                           }
                           return (
                             <div {...rest} >
-                              <StickyAds path={this.state.gpt.path} id={this.state.gpt.div_gpt} /> sticky/>
+                              <StickyAds
+                                path={this.state.gpt.path}
+                                id={this.state.gpt.div_gpt} sticky
+                                targettingAdsData={this.state.gpt.cust_params} />
                             </div>
                           );
                         }
@@ -381,7 +388,10 @@ class Index_v2 extends React.Component {
                         }
                         return (
                           <div {...rest} >
-                            <StickyAds path={this.state.gpt.path} id={this.state.gpt.div_gpt} />
+                            <StickyAds
+                              path={this.state.gpt.path}
+                              id={this.state.gpt.div_gpt}
+                              targettingAdsData={this.state.gpt.cust_params} />
                           </div>
                         );
                       }}
