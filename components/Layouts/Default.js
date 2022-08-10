@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { withRouter } from 'next/router';
 
-//load scss style 
+//load scss style
 //import '../../assets/scss/custom.scss';
 //import '../../assets/scss/global.scss';
 import 'sweetalert2/src/sweetalert2.scss';
@@ -102,7 +102,7 @@ class Default extends React.Component {
                         });
                     ` }}></script>
                     {/* <script data-ad-client="ca-pub-7595624984434758" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> */}
-                    
+
 
                     <script src="/static/js/fontawesome.js" crossOrigin="anonymous"></script>
 
@@ -128,21 +128,21 @@ class Default extends React.Component {
                         // googletag.enableServices();
                         });
                     ` }}></script>
-                    
+
                     {/* Comscore */}
                     <script dangerouslySetInnerHTML={{ __html: `
                         var _comscore=_comscore||[];_comscore.push({c1:"2",c2:"9013027"}),function(){var c=document.createElement("script"),e=document.getElementsByTagName("script")[0];c.async=!0,c.src=("https:"==document.location.protocol?"https://sb":"http://b")+".scorecardresearch.com/beacon.js",e.parentNode.insertBefore(c,e)}();
                     ` }}></script>
                     <noscript><img alt="Share" src="https://b.scorecardresearch.com/p?c1=2&amp;c2=9013027&amp;cv=2.0&amp;cj=1" /></noscript>
                     {/* End Comscore */}
-                    
+
                 </Head>
-                <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+                <script async type="text/javascript" src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
                 {/* <!-- Google Tag Manager (noscript) --> */}
                 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5F9P7H3"
                 height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe></noscript>
                 {/* <!-- End Google Tag Manager (noscript) --> */}
-                
+
                 {/* <!-- DO NOT touch the following DIV --> */}
                 <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
                     !function(q,g,r,a,p,h,js) {
@@ -154,7 +154,7 @@ class Default extends React.Component {
                         p=g.createElement(r);p.async=!0;p.src=a;h=g.getElementsByTagName(r)[0];
                         h.parentNode.insertBefore(p,h);
                     } (window,document,'script','//cdn.qgr.ph/qgraph.c63c2960bf562e9ec2de.js');
-                ` }}></script>  
+                ` }}></script>
 
                 {this.props.pages.loading ? (
                     <div className={'default-loader ' + (this.props.pages.fade ? 'loader-fade' : '')}>
@@ -166,7 +166,7 @@ class Default extends React.Component {
 
                 <div style={{ overflowX: 'hidden', marginTop: -5 }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
                 {process.env.UI_VERSION == '2.0' ? (this.props.hideFooter || this.props.pages.hide_footer ? null : <Footer_v2 />) : (<Footer />)}
-                
+
             </div>
         )
     }

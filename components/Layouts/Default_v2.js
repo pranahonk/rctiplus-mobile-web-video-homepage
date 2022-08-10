@@ -159,8 +159,6 @@ class Default_v2 extends React.Component {
 
 
                     <script src="/static/js/fontawesome.min.js" crossOrigin="anonymous" defer></script>
-
-                    {/* <script src="/static/js/jwplayer.js"></script> */}
                     <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>
                     {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
                     <script src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
@@ -223,7 +221,7 @@ class Default_v2 extends React.Component {
                     `}}>
                     </script> */}
                 </Head>
-                <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+                <script async type="text/javascript" src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
                 {/* <!-- DO NOT touch the following DIV --> */}

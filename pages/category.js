@@ -303,7 +303,7 @@ function Category (props) {
                                                       <StickyAds
                                                         path={gpt.path}
                                                         id={gpt.div_gpt}
-                                                        targettingAdsData={this.state.gpt.cust_params}
+                                                        targettingAdsData={gpt.cust_params}
                                                       />
                                                     </div>
                                                 );
@@ -325,7 +325,7 @@ function Category (props) {
                                                   <StickyAds
                                                     path={gpt.path}
                                                     id={gpt.div_gpt}
-                                                    targettingAdsData={this.state.gpt.cust_params}
+                                                    targettingAdsData={gpt.cust_params}
                                                     sticky/>
                                                 </div>
                                             );
@@ -338,7 +338,7 @@ function Category (props) {
                                               <StickyAds
                                                 path={gpt.path}
                                                 id={gpt.div_gpt}
-                                                targettingAdsData={this.state.gpt.cust_params}
+                                                targettingAdsData={gpt.cust_params}
                                               />
                                             </div>
                                         );
