@@ -26,7 +26,17 @@ class StickyAds extends React.Component {
     const slotName = this.setPathID();
     const gptID = this.setGptId();
 
-    const targettingAdsData = [...this.props.targettingAdsData];
+    let targettingAdsData;
+    if(this.props.targettingAdsData?.length === 1){
+      targettingAdsData = [...this.props.targettingAdsData];
+    }
+    else if (this.props.targettingAdsData?.length > 1){
+      targettingAdsData =  [...this.props.targettingAdsData];
+      targettingAdsData.shift();
+    }
+    else{
+      targettingAdsData = this.props.targettingAdsData;
+    }
 
     window.googletag = window.googletag || {cmd: []}
     googletag.cmd.push(function() {
