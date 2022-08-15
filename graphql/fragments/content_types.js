@@ -317,7 +317,6 @@ export const contentTypeAudioPodcast = `
   ... on ContentTypeAudioPodcast {
       detail(page: 1, page_size: 6){
         data{
-            author
             categoryPodcasts_id
             create_date
             created_by

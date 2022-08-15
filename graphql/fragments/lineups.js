@@ -95,7 +95,6 @@ export const lineupDefaultFragment = (queryParams) => {
           ${contentTypeSeasonFragment}
           ${contentTypeHotCompetitions}
           ${contentTypeHotVideo}
-          ${contentTypeAudioPodcast}
           ${contentTypeAudioRadio}
         }
       }
