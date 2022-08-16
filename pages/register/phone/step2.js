@@ -51,11 +51,11 @@ class Step2 extends Component {
 			if (this.props.registration.username_type === 'PHONE_NUMBER') {
 				username = this.props.registration.phone_code + username;
 			}
-			
+
 			this.props.getOtp(username, 'registration', null, token)
 				.then(response => {
 					if (response.status === 200) {
-						this.setState({ 
+						this.setState({
 							alert_message: response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client),
 							req_otp_status: response.data.status.code,
 							token: null
@@ -80,10 +80,10 @@ class Step2 extends Component {
 
 	handleChangeToken(token) {
 		if(this.props.registration.token) return
-		
+
 		this.props.setToken(token);
 	}
-	
+
 	storeToken = async () => {
 		await this.props.storeAccessToken(this.props.registration?.data?.access_token)
 
@@ -132,7 +132,7 @@ class Step2 extends Component {
 					console.log(error);
 				});
 		});
-		
+
 	}
 
 	generateAlertMessage(message) {
@@ -145,7 +145,7 @@ class Step2 extends Component {
 			else {
 				attempts = message.substring(index);
 			}
-			
+
 			if (this.props.registration.username_type === 'PHONE_NUMBER') {
 				attempts = 'Carefully check your sms for verification code. ' + attempts;
 			}
@@ -212,7 +212,7 @@ class Step2 extends Component {
 			actionElement = (
 				<div>
 					<p className="text-default-rcti" style={{ textAlign: 'center' }}>{this.state.submit_message}</p>
-	
+
 					<FormGroup>
 						<label className="lbl_rsndcode">
 							<Countdown
@@ -222,7 +222,7 @@ class Step2 extends Component {
 									if (completed) {
 										return (<p className="text-default-rcti" style={{ textAlign: 'center' }}>did not receive any code<br/><span onClick={this.showAlert.bind(this)} className="el-red">send me code</span></p>);
 									}
-	
+
 									return (<span>Resend code <span className="time-resendcode">{zeroPad(minutes)}:<span>{zeroPad(seconds)}</span></span></span>);
 								}}></Countdown>
 						</label>
@@ -230,7 +230,7 @@ class Step2 extends Component {
 				</div>
 			);
 		}
-		
+
 
 		if (this.props.registration.username_type === 'PHONE_NUMBER') {
 			text = 'Please enter verification code, <br>sent via SMS:';
@@ -255,7 +255,7 @@ class Step2 extends Component {
 						<GoogleReCaptchaProvider
 						language="id"
 						reCaptchaKey={RE_CAPTCHA_SITE_KEY}
-						
+
 					>
 						<Form onSubmit={this.submitOtp.bind(this)}>{/*<span style={{ color: 'white' }}>{username}</span>*/}
 							<FormGroup>

@@ -55,8 +55,6 @@ export default function comingSoonModal(props) {
 
   if (!open) return null
 
-  console.log('recon', props.is_interactive, props.content)
-
   return (
     <div
       id="modal-comingsoon"
@@ -74,29 +72,27 @@ export default function comingSoonModal(props) {
             onTouchEnd={e => closeComingSoonModal(e)}>
             <div></div>
           </div>
-          {/* <div className="img-comingsoon">
-          </div> */}
             <img
               className="img-comingsoon"
               src={ props.content.image }
               alt="modal coming soon"
               width="328"
               height="185" />
-              {props.content.is_interactive && (
-                <div className="row justify-content-center">
-                    <span className='interactive'>
-                      <div className='row align-items-center'>
-                        <img
-                          src='/static/player_icons/quiz_icon.svg	'
-                          width={20}
-                          height={20}
-                          alt="desc"
-                        />
-                        <p className='ml-2 text-white' style={{fontSize: '12px'}}>INTERACTIVE</p>
-                      </div>
-                    </span>
-                </div>
-              )}
+            {props.content.is_interactive && (
+              <div className="row justify-content-center">
+                <span className='interactive'>
+                  <div className='row align-items-center'>
+                    <img
+                      src='/static/player_icons/quiz_icon.svg	'
+                      width={20}
+                      height={20}
+                      alt="desc"
+                      />
+                    <p className='ml-2 text-white' style={{fontSize: '12px'}}>INTERACTIVE</p>
+                  </div>
+                </span>
+              </div>
+            )}
 
           <div className="desc-comingsoon">
             <p>{ props.content.title }</p>
