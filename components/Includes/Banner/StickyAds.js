@@ -33,19 +33,10 @@ class StickyAds extends React.Component {
       targettingAdsData.shift();
     }
 
-    console.log(targettingAdsData[targettingAdsData.length - 1].name);
-
 
     window.googletag = window.googletag || {cmd: []}
     googletag.cmd.push(function() {
       googletag.defineSlot(slotName, [320, 50], gptID).addService(googletag.pubads());
-
-      // targettingAdsData.forEach(({ name, value }) => {
-      //   googletag.pubads().setTargeting(name, value)
-      // })
-
-      // console.log(targettingAdsData[targettingAdsData.length - 1].name)
-      // console.log(targettingAdsData[targettingAdsData.length - 1].value)
 
       googletag.pubads().setTargeting(targettingAdsData[targettingAdsData.length - 1].name, targettingAdsData[targettingAdsData.length - 1].value)
       googletag.pubads().enableSingleRequest()
@@ -63,16 +54,17 @@ class StickyAds extends React.Component {
 
   componentDidMount() {
     if(this.props.path){
-      this.fetchAds([])
-      // this.props.fetchTargetingAds()
-      //   .then((res) =>this.fetchAds([]))
-      //   .catch((_) => this.fetchAds([]))
+      this.props.fetchTargetingAds()
+        .then((res) =>this.fetchAds([]))
+        .catch((_) => this.fetchAds([]))
     }
 
   }
 
   componentWillUnmount() {
-    if (googletag.destroySlots) googletag.destroySlots()
+    if (googletag.destroySlots){
+      googletag.pubads().clearTargeting(), googletag.destroySlots()
+    }
   }
 
   render() {
