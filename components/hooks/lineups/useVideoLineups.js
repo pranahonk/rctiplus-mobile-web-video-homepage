@@ -39,9 +39,8 @@ export default function useVideoLineups(props) {
   }
 
   const setInitialContents = () => {
-    const { data, meta } = props.lineup.lineup_type_detail.detail;
-    const mappedContents = new Map();
-
+    const { data, meta } = props.lineup.lineup_type_detail.detail
+    const mappedContents = new Map()
 
     switch (props.lineup.lineup_type) {
       case "custom":
@@ -61,10 +60,9 @@ export default function useVideoLineups(props) {
         break
     }
     setContents([ ...mappedContents.values() ])
-    setEndPage(meta?.pagination?.current_page === meta?.pagination?.total_page)
-    setNextPage(meta?.pagination?.current_page + 1)
+    setEndPage(meta.pagination.current_page === meta.pagination.total_page)
+    setNextPage(meta.pagination.current_page + 1)
   }
-
 
   const getContinueWatching = () => {
     props.loadingBar.continuousStart()

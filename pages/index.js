@@ -3,8 +3,8 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
-import { StickyContainer, Sticky } from 'react-sticky';
-import dynamic from "next/dynamic"
+import { Sticky, StickyContainer } from 'react-sticky';
+import dynamic from 'next/dynamic';
 
 import contentActions from '../redux/actions/contentActions';
 import pageActions from '../redux/actions/pageActions';
@@ -22,11 +22,11 @@ import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
-import { setCookie, getCookie, setVisitorToken } from '../utils/cookie';
+import { GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, SITE_NAME, SITEMAP } from '../config';
+import { getCookie, setCookie, setVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
-import { GET_LINEUPS } from "../graphql/queries/homepage"
-import { client } from "../graphql/client"
+import { GET_LINEUPS } from '../graphql/queries/homepage';
+import { client } from '../graphql/client';
 import { gaTrackerScreenView } from '../utils/ga-360';
 
 // NEW RPLUS LINEUP CONTENTS
@@ -349,6 +349,13 @@ class Index_v2 extends React.Component {
                   <GridMenu />
 
                   <Stories />
+
+
+                  {/* <StoryAds sticky id='div-gpt-ad-1596100147181-0' path='/21865661642/RC_DESKTOP_INSERTION-STORIES_0'/> */}
+                  {/* <StoryAds sticky id='div-gpt-ad-1596100730972-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES'/> */}
+                  {/* <StoryAds sticky id='div-gpt-ad-1596100733667-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES-2'/>
+                  <StoryAds sticky id='div-gpt-ad-1596100737011-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES-3'/> */}
+
 
                   <StickyContainer>
                     <Sticky disableHardwareAcceleration>

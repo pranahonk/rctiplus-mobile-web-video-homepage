@@ -62,6 +62,7 @@ function landscapeLgWs (props) {
     const { year, month, date, day, time } = parseDateObject(startTime * 1000)
     return(
       <>
+        {interactive}
         {liveLabel}
         <div>
           <p className="desc-title large">{`${day}, ${date} ${month} ${year} - ${time} WIB`}</p>

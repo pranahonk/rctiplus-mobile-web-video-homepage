@@ -77,8 +77,8 @@ function Category (props) {
 
     const getCategoryLineups = async (page = 1, pageSize = 5) => {
         await setVisitorToken()
+        if (page === 1 ) setIsShimmer(true)
         if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
-        if (page === 1) setIsShimmer(true)
             client
                 .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
                 .then(({ data }) => {

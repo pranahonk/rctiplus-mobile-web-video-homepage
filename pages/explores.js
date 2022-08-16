@@ -7,28 +7,33 @@ import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import fetch from 'isomorphic-unfetch';
-import queryString from 'query-string';
-import { urlRegex } from '../utils/regex'
+import { urlRegex } from '../utils/regex';
 
 import pageActions from '../redux/actions/pageActions';
 import userActions from '../redux/actions/userActions';
 import searchActions from '../redux/actions/searchActions';
 
 import Layout from '../components/Layouts/Default_v2';
-import NavSearch from '../components/Includes/Navbar/NavSearch';
 import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
-import SearchResults from './search/result';
 
-import { Row, Col } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 
 import '../assets/scss/components/explore.scss';
 
-import { VISITOR_TOKEN, DEV_API, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
+import {
+  DEV_API,
+  GRAPH_SITEMAP,
+  REDIRECT_WEB_DESKTOP,
+  RESOLUTION_IMG,
+  SITE_NAME,
+  SITEMAP,
+  VISITOR_TOKEN,
+} from '../config';
 import { getCookie } from '../utils/cookie';
 import { libraryGeneralEvent, libraryProgramClicked } from '../utils/appier';
 
 class Explores extends React.Component {
-	
+
 	static async getInitialProps(ctx) {
 		const accessToken = getCookie('ACCESS_TOKEN');
 		const status = 'active';
@@ -61,7 +66,7 @@ class Explores extends React.Component {
 				// resContent = null
 				resContent = resContent && resContent.status.code === 0 ? resContent : null
         const error_code = res.statusCode > 200 ? res.statusCode : false;
-        
+
         if (error_code) {
             return { initial: false };
         }
@@ -101,7 +106,7 @@ class Explores extends React.Component {
 		this.props.setPageLoader();
 	}
 
-	componentDidMount() { 
+	componentDidMount() {
 		if(this.props.genre_name) {
 			const parentElement = document.getElementById('parent-swiper')
 			const childElement = document.getElementById(this.props.genre_name)
@@ -117,7 +122,7 @@ class Explores extends React.Component {
 					if (response.status === 200 && response.data.status.code === 0) {
 						let recommendations = this.state.recommendations;
 						recommendations[`genre-${this.state.selected_genre_id}`] = response.data.data;
-						
+
 						let pages = {};
 						pages[`genre-${this.state.selected_genre_id}`] = 1;
 
@@ -139,14 +144,14 @@ class Explores extends React.Component {
 				});
 		}
 
-		
+
 	}
 
 	selectGenre(genre, category = 'program', first = false) {
 		if (first == false) {
 			libraryGeneralEvent('mweb_library_category_clicked');
 		}
-		
+
 		let recommendations = this.state.recommendations;
 		if (!recommendations[`genre-${genre.id}`]) {
 			this.props.setPageLoader();
@@ -158,7 +163,7 @@ class Explores extends React.Component {
 					.then(response => {
 						if (response.status === 200 && response.data.status.code === 0) {
 							recommendations[`genre-${genre.id}`] = response.data.data;
-							
+
 							let pages = this.state.page;
 							pages[`genre-${genre.id}`] = page;
 
@@ -170,7 +175,7 @@ class Explores extends React.Component {
 								selected_genre_id: genre.id,
 								selected_genre_name: genre.name,
 								page: pages,
-								show_more_allowed: showMoreAllowed	
+								show_more_allowed: showMoreAllowed
 							});
 						}
 						this.props.unsetPageLoader();
@@ -186,7 +191,7 @@ class Explores extends React.Component {
 					.then(response => {
 						if (response.status === 200 && response.data.status.code === 0) {
 							recommendations[`genre-${genre.id}`] = response.data.data;
-							
+
 							let pages = {};
 							pages[`genre-${genre.id}`] = page;
 
@@ -229,7 +234,7 @@ class Explores extends React.Component {
 					.then(response => {
 						if (response.status === 200 && response.data.status.code === 0) {
 							recommendations[`genre-${this.state.selected_genre_id}`].push.apply(recommendations[`genre-${this.state.selected_genre_id}`], response.data.data);
-							
+
 							let pages = this.state.page;
 							pages[`genre-${this.state.selected_genre_id}`] = page;
 
@@ -253,7 +258,7 @@ class Explores extends React.Component {
 					.then(response => {
 						if (response.status === 200 && response.data.status.code === 0) {
 							recommendations[`genre-${this.state.selected_genre_id}`].push.apply(recommendations[`genre-${this.state.selected_genre_id}`], response.data.data);
-							
+
 							let pages = this.state.page;
 							pages[`genre-${this.state.selected_genre_id}`] = page;
 
@@ -263,7 +268,7 @@ class Explores extends React.Component {
 							this.setState({
 								recommendations: recommendations,
 								page: pages,
-								show_more_allowed: showMoreAllowed	
+								show_more_allowed: showMoreAllowed
 							});
 						}
 						this.LoadingBar.complete();
@@ -273,7 +278,7 @@ class Explores extends React.Component {
 					});
 			}
 		}
-		
+
 	}
 
 	link(data) {
@@ -286,7 +291,7 @@ class Explores extends React.Component {
 
 		switch (data.type) {
 			case 'program':
-				
+
 				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}?ref=library`);
 				break;
 			default:
@@ -307,7 +312,7 @@ class Explores extends React.Component {
 				twitter_img_alt: `${name} Di RCTIPlus`
 			}
 		}
-		
+
 		return SITEMAP['explore_for_you'];
 	}
 	getMetaOg() {
@@ -372,8 +377,8 @@ class Explores extends React.Component {
 							<div className="interest-swiper-container" id="parent-swiper">
 								<Link href={`/explores`} scroll={false}>
 									<div className="swiper-slide" onClick={() => this.selectGenre({ id: -1, name: 'For You' })}>
-										<Img 
-											alt={'For You'} 
+										<Img
+											alt={'For You'}
 											className="content-image"
 											unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 											loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
@@ -384,8 +389,8 @@ class Explores extends React.Component {
 								{this.state.interests.map((interest, i) => (
 									<Link href={`/explores/${interest.id}/${urlRegex(interest.name)}`} scroll={false} key={i}>
 										<div className="swiper-slide" id={interest.name} onClick={() => this.selectGenre(interest)}>
-											<Img 
-												alt={`Genre ${interest.name}`} 
+											<Img
+												alt={`Genre ${interest.name}`}
 												className="content-image"
 												unloader={<img src="/static/placeholders/placeholder_landscape.png"/>}
 												loader={<img src="/static/placeholders/placeholder_landscape.png"/>}
@@ -395,7 +400,7 @@ class Explores extends React.Component {
 										</div>
 									</Link>
 								))}
-								
+
 							</div>
 							<div className="content-search">
 								<div className="header-list">
@@ -419,8 +424,8 @@ class Explores extends React.Component {
 												) : ''
 											}
 											{/* <div className="new-label" style="">label</div> */}
-												<Img 
-													alt={r.title} 
+												<Img
+													alt={r.title}
 													className="content-image"
 													unloader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
 													loader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}

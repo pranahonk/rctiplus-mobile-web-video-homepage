@@ -61,6 +61,7 @@ function landscapeMiniLiveView (props) {
 
     return(
       <>
+        {interactive}
         { liveBadge }
         <div>
           <p className="desc-title mini">{ contentDetail.title }</p>

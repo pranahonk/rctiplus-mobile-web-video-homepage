@@ -8,7 +8,6 @@ import { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import newsv2Actions from '../redux/actions/newsv2Actions';
 import adsActions from '../redux/actions/adsActions.js';
-import {getNewsChannels} from "../utils/cookie";
 
 class Dfp extends React.Component {
 

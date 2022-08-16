@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import Img from 'react-image';
@@ -16,7 +16,7 @@ import Layout from '../components/Layouts/Default_v2';
 // import NavDefault from '../components/Includes/Navbar/NavDefault_v2';
 import Bar from '../components/Includes/Common/Bar';
 
-import { ListGroup, ListGroupItem, Button, Badge } from 'reactstrap';
+import { Badge, Button, ListGroup, ListGroupItem } from 'reactstrap';
 import LoadingBar from 'react-top-loading-bar';
 
 import HistoryIcon from '@material-ui/icons/History';
@@ -29,7 +29,7 @@ import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
+import { GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG, SITE_NAME } from '../config';
 
 import '../assets/scss/components/profile.scss';
 
@@ -70,11 +70,11 @@ class Profile extends React.Component {
 				if (response.status === 200 && response.data.status.code === 0) {
 					console.log(response.data.data);
 					const data = response.data.data;
-					this.setState({ 
-						profile_picture_url: response.data.data.photo_url, 
+					this.setState({
+						profile_picture_url: response.data.data.photo_url,
 						user_data: data,
 						display_name: data.display_name ? data.display_name : data.email ? data.email : data.phone_number ? data.phone_number : '',
-						logged_in: true 
+						logged_in: true
 					}, () => this.loadMore());
 				}
 				else {
@@ -117,7 +117,7 @@ class Profile extends React.Component {
 	showOpenPlaystoreAlert() {
         showAlert('To be able to see and watching your downloaded file, please download RCTI+ application on Playstore', '', 'Open Playstore', 'Cancel', () => { window.open('https://play.google.com/store/apps/details?id=com.fta.rctitv', '_blank'); }, false, 'popup-action-openstore', 'popup-action-cancel');
 	}
-	
+
 	link(cw) {
 		Router.push(`/programs/${cw.program_id}/${cw.program_title.replace(' ', '-').toLowerCase()}/${cw.content_type}/${cw.content_id}/${cw.content_title.replace(' ', '-').toLowerCase()}?ref=continue_watching`);
 	}
@@ -139,21 +139,21 @@ class Profile extends React.Component {
 					accountGeneralEvent('mweb_account_edit_profile_clicked');
 					Router.push('/edit-profile');
 				}}>
-					<div style={{ 
-						display: 'inline-block', 
-						position: 'relative', 
-						width: 30, 
+					<div style={{
+						display: 'inline-block',
+						position: 'relative',
+						width: 30,
 						height: 30,
 						marginRight: 10
 					}}>
-						<Img 
+						<Img
 							alt={this.state.display_name}
 							unloader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>}
-							loader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>} 
-							className="rounded-profile-picture MuiSvgIcon-root" 
+							loader={<img className="rounded-profile-picture MuiSvgIcon-root" src="/static/placeholders/placeholder_landscape.png"/>}
+							className="rounded-profile-picture MuiSvgIcon-root"
 							src={[this.state.profile_picture_url, '/static/placeholders/placeholder_landscape.png']} />
 							{!this.isProfileComplete() ? (<Badge className="ribbon" color="danger"> </Badge>) : null}
-					</div> {this.state.display_name} 
+					</div> {this.state.display_name}
 				</div>
 			);
 		}
@@ -247,10 +247,10 @@ class Profile extends React.Component {
 						<div className="cw-container">
 							{this.state.ordered_watches.map((cw, i) => (
 								<div key={i} className="cw-item" onClick={() => this.link(cw)}>
-									<Img 
-										alt={cw.title} 
-										className="list-item-thumbnail" 
-										src={[this.state.meta.image_path + RESOLUTION_IMG + cw.landscape_image, '/static/placeholders/placeholder_landscape.png']} 
+									<Img
+										alt={cw.title}
+										className="list-item-thumbnail"
+										src={[this.state.meta.image_path + RESOLUTION_IMG + cw.landscape_image, '/static/placeholders/placeholder_landscape.png']}
 										loader={<img className="list-item-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
 										unloader={<img className="list-item-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}/>
 									<Bar percentage={(cw.last_duration / cw.duration) * 100} />

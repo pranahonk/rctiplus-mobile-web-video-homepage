@@ -1,8 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
-import Router, { useRouter, withRouter } from 'next/router';
-import Link from 'next/link';
+import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 
 import Img from 'react-image';
@@ -13,10 +12,10 @@ import MuteChat from '../../components/Includes/Common/MuteChat';
 
 
 import initialize from '../../utils/initialize';
-import { getCookie, getVisitorToken, checkToken, getUserAccessToken } from '../../utils/cookie';
-import { showSignInAlert } from '../../utils/helpers';
-import { liveEventTabClicked, liveShareEvent, appierAdsShow, appierAdsClicked, getUidAppier } from '../../utils/appier';
-import { stickyAdsShowing, stickyAdsClicked, initGA } from '../../utils/firebaseTracking';
+import { checkToken, getCookie, getUserAccessToken, getVisitorToken } from '../../utils/cookie';
+import { getCountdown, showSignInAlert } from '../../utils/helpers';
+import { appierAdsClicked, appierAdsShow, liveEventTabClicked, liveShareEvent } from '../../utils/appier';
+import { initGA, stickyAdsClicked, stickyAdsShowing } from '../../utils/firebaseTracking';
 
 import liveAndChatActions from '../../redux/actions/liveAndChatActions';
 import pageActions from '../../redux/actions/pageActions';
@@ -34,7 +33,7 @@ import ErrorPlayer from '../../components/Includes/Player/ErrorPlayer';
 import Toast from '../../components/Includes/Common/Toast';
 import JsonLDVideo from '../../components/Seo/JsonLDVideo';
 
-import { Row, Col, Button, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import { Button, Col, Input, Nav, NavItem, NavLink, Row, TabContent, TabPane } from 'reactstrap';
 
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
@@ -46,15 +45,12 @@ import ShareIcon from '@material-ui/icons/Share';
 import PauseIcon from '../../components/Includes/Common/PauseIcon';
 import MissedIcon from '../../components/Includes/Common/Missed';
 
-import { DEV_API, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, BASE_URL, RESOLUTION_IMG, VISITOR_TOKEN } from '../../config';
+import { BASE_URL, DEV_API, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG, SITE_NAME } from '../../config';
 
 import '../../assets/scss/components/live-event-v2.scss';
 import '../../assets/scss/components/live-event.scss';
 import '../../assets/scss/videojs.scss';
 import 'emoji-mart/css/emoji-mart.css';
-
-import { getCountdown } from '../../utils/helpers';
-import { triggerQualityButtonClick } from '../../utils/player';
 
 import ax from 'axios';
 import { gaVideoInteraction } from '../../utils/ga-360';

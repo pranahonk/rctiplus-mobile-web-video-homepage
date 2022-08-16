@@ -11,18 +11,28 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import countryList from '../redux/actions/othersActions';
 import registerActions from '../redux/actions/registerActions';
 import queryString from 'query-string';
+import q from 'query-string';
 
 import { showAlert } from '../utils/helpers';
-import q from 'query-string';
 
 import Layout from '../components/Layouts/Default_v2';
 import NavBack from '../components/Includes/Navbar/NavBack';
 
 import '../assets/scss/components/signin.scss';
 
-import { Button, Form, FormGroup, Label, Input, FormFeedback, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
+import {
+  Button,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Label,
+} from 'reactstrap';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
+import { GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, SITE_NAME } from '../config';
 
 const CountryList = dynamic(() => import('../components/Modals/CountryList'));
 
@@ -119,10 +129,10 @@ class Signin extends React.Component {
 				Router.push(redirect.redirectTo)
 			} else {
 				const refpage = this.props.router.query.refpage
-				const routerObj = Boolean(refpage) 
+				const routerObj = Boolean(refpage)
 					? { pathname: refpage, query: { refpage: "login" } }
 					: { pathname: "/" }
-				
+
 				Router.push(routerObj)
 			}
 		}
@@ -299,8 +309,8 @@ class Signin extends React.Component {
 						toggle={() => this.setState({ status: !this.state.status })}
 						getCountryCode={(e) => {
 								this.props.setPhoneCode(e.phone_code);
-								this.setState({ 
-									codeCountry: e.code, 
+								this.setState({
+									codeCountry: e.code,
 									phone_code: e.phone_code,
 									emailphone: this.state.emailphone,
 									});}
@@ -313,7 +323,7 @@ class Signin extends React.Component {
 }
 
 export default connect(state => state, {
-	...actions, 
+	...actions,
 	...countryList,
 	...registerActions,
 })(withRouter(Signin));

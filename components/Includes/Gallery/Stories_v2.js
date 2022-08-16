@@ -8,6 +8,7 @@ import { RESOLUTION_IMG } from '../../../config'
 import { client } from "../../../graphql/client"
 import { GET_HOME_STORIES } from "../../../graphql/queries/homepage"
 
+
 const StoryModal = dynamic(() => import("../../Modals/StoryModal"))
 
 import '../../../assets/scss/components/stories.scss'
@@ -23,6 +24,7 @@ function homeStories (props) {
     useEffect(() => {
         getHomeStories(1)
     }, [])
+    
 
     useEffect(() => {
         if (stories.length > 0 && show) {
@@ -43,15 +45,40 @@ function homeStories (props) {
         if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
             client.query({ query: GET_HOME_STORIES(props.router.query.category_id, page, 10) })
             .then(({ data }) => {
-              const storiesData = data.stories.data.map((story, i) => ({
-                  ...story,
-                  image_path: data.stories.meta.image_path,
-                  sequence: i
-              }))
-              setStories((list) => ([...list,  ...storiesData]))
-              setMeta(data.stories.meta)
-              setShow(false);
-    
+                var storiesAllData = []
+                // const storiesData = data.stories.data.map((story, i) => ({
+                //     ...story,
+                //     image_path: 
+                //     data.stories.meta.image_path,
+                //     sequence: i
+                // }))
+
+                var sequence = 0
+                
+                data.stories.data.map((story, i) => {
+                    storiesAllData.push({
+                        ...story,
+                        image_path: data.stories.meta.image_path,
+                        sequence: sequence
+                    })
+                    sequence = sequence + 1
+                    if(story.gpt.length != 0){
+                        storiesAllData.push({
+                            __typename: 'StoryGPT',
+                            story: story.gpt,
+                            sequence: sequence,
+                            program_id: 666 + sequence
+                        })
+                        sequence = sequence + 1
+
+                    }
+                })
+
+                // setStories((list) => ([...list,  ...storiesData]))
+                setStories((list) => ([...list,  ...storiesAllData]))
+                setMeta(data.stories.meta)
+                setShow(false);
+
             }).catch(_ => {})
         }
       }
@@ -145,30 +172,39 @@ function homeStories (props) {
                   ref={scrollRef} 
                   className="stories-components">
                   { stories.map((story, i) => {
-                      return (
-                          <div 
-                              key={i} 
-                              className={`homestory storywrapper ${story.allSeen ? "seen" : ""}`}>
-                              <div
-                                  id={`home-story-${i}`}
-                                  onClick={_ => openStory(story, i)}>
-                                  <img
-                                      width="97"
-                                      height="97"
-                                      src={`${meta.image_path}${RESOLUTION_IMG}${story.program_img}`}
-                                      alt={`story ${story.identifier}`} />
-                              </div>
-                              <label>{ story.title }</label>
-                          </div>
-                      )
+                        if(story.__typename == 'StoryData'){
+                            return (
+                                <div 
+                                    key={i} 
+                                    className={`homestory storywrapper ${story.allSeen ? "seen" : ""}`}>
+                                    <div
+                                        id={`home-story-${i}`}
+                                        onClick={_ => openStory(story, i)}>
+                                        <img
+                                            width="97"
+                                            height="97"
+                                            src={`${meta.image_path}${RESOLUTION_IMG}${story.program_img}`}
+                                            alt={`story ${story.identifier}`} />
+                                    </div>
+                                    <label>{ story.title }</label>
+                                </div>
+                            )
+                        }else{
+                            return null
+                        }
+                      
                   }) }
               </div>
             )}
           </ BottomScrollListener>
 
+
             <StoryModal
                 story={activeStory}
-                onSwipe={(dir, story) => onSwipe(dir, story)}
+                onSwipe={(dir, story) => {
+                    onSwipe(dir, story)
+                    }
+                }
                 onClose={story => onClose(story)} />
         </div>
     )
