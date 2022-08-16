@@ -10,7 +10,7 @@ import Layout from '../../components/Layouts/Default_v2';
 import Nav from '../../components/Includes/Navbar/NavDefault';
 
 //load reactstrap
-import { Button, ListGroup, ListGroupItem } from 'reactstrap';
+import { ListGroup, ListGroupItem } from 'reactstrap';
 
 class Profile extends React.Component {
   static getInitialProps(ctx) {
