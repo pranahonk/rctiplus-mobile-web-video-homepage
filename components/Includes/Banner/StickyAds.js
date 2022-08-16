@@ -1,10 +1,8 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React from 'react';
+import { connect } from 'react-redux';
+import '../../../assets/scss/components/sticky_ads.scss';
 
-import { getUserAccessToken } from "../../../utils/cookie"
-import '../../../assets/scss/components/sticky_ads.scss'
-
-import adsActions from '../../../redux/actions/adsActions'
+import adsActions from '../../../redux/actions/adsActions';
 
 class StickyAds extends React.Component {
   constructor(props) {
@@ -26,19 +24,21 @@ class StickyAds extends React.Component {
     const slotName = this.setPathID();
     const gptID = this.setGptId();
 
-    const targettingAdsData = custParams.concat({
-      name: "logged_in",
-      value: String(Boolean(getUserAccessToken()))
-    })
+    let targettingAdsData = [];
+    if(this.props.targettingAdsData?.length === 1){
+      targettingAdsData = [...this.props.targettingAdsData];
+    }
+    else if(this.props.targettingAdsData?.length > 1){
+      targettingAdsData =  [...this.props.targettingAdsData];
+      targettingAdsData.shift();
+    }
+
 
     window.googletag = window.googletag || {cmd: []}
     googletag.cmd.push(function() {
-      googletag.defineSlot(slotName, [320, 50], gptID).addService(googletag.pubads())
+      googletag.defineSlot(slotName, [320, 50], gptID).addService(googletag.pubads());
 
-      targettingAdsData.forEach(({ name, value }) => {
-        googletag.pubads().setTargeting(name, value)
-      })
-
+      googletag.pubads().setTargeting(targettingAdsData[targettingAdsData.length - 1].name, targettingAdsData[targettingAdsData.length - 1].value)
       googletag.pubads().enableSingleRequest()
       googletag.pubads().collapseEmptyDivs()
 
@@ -53,41 +53,46 @@ class StickyAds extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchTargetingAds()
-      .then((res) => this.fetchAds(res))
-      .catch((_) => this.fetchAds([]))
+    if(this.props.path){
+      this.props.fetchTargetingAds()
+        .then((res) =>this.fetchAds([]))
+        .catch((_) => this.fetchAds([]))
+    }
+
   }
 
   componentWillUnmount() {
-    if (googletag.destroySlots) googletag.destroySlots()
+    if (googletag.destroySlots){
+      googletag.pubads().clearTargeting(), googletag.destroySlots()
+    }
   }
 
   render() {
-
     return (
-      <div id="sticky-ads-container" className={`sticky-ads ${(this.props.sticky ? 'sticky-ads-on' : '')}`}>
-        {this.props.sticky
-          ? (
-            <div
-              className="ads-close-btn"
-              onClick={() => this.props.toggleAds(false)}></div>
-          )
-          : null}
-        <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+        this.props.path ?
+          <div id="sticky-ads-container" className={`sticky-ads ${(this.props.sticky ? 'sticky-ads-on' : '')}`}>
+            {this.props.sticky
+              ? (
+                <div
+                  className="ads-close-btn"
+                  onClick={() => this.props.toggleAds(false)}></div>
+              )
+              : null}
+            <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 
-        <div>
-          <div className="sticky-ads-content">
-            <center>
-              <div id={this.setGptId()} style={{
-                width: 320,
-                height: 50
-              }}>
+            <div>
+              <div className="sticky-ads-content">
+                <center>
+                  <div id={this.setGptId()} style={{
+                    width: 320,
+                    height: 50
+                  }}>
+                  </div>
+                </center>
               </div>
-            </center>
-          </div>
-        </div>
+            </div>
 
-      </div>
+          </div> : <div/>
     )
   }
 }
