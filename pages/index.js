@@ -124,7 +124,7 @@ class Index_v2 extends React.Component {
       })
       .finally(_ => {
         if (page === 1) this.setState({ isShimmer: false })
-        this.LoadingBar.complete();
+        this.LoadingBar?.complete();
       })
   }
 
