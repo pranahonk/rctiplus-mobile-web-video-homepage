@@ -20,23 +20,23 @@ class StickyAds extends React.Component {
   }
 
 
-  fetchAds(custParams) {
+  fetchAds(targetingAds) {
     const slotName = this.setPathID();
     const gptID = this.setGptId();
 
     let targettingAdsData = [];
-    if(this.props.targettingAdsData?.length === 1){
+    if(this.props.targettingAdsData?.length > 0){
       targettingAdsData = [...this.props.targettingAdsData];
-    }
-    else if(this.props.targettingAdsData?.length > 1){
-      targettingAdsData =  [...this.props.targettingAdsData];
-      targettingAdsData.shift();
     }
 
 
     window.googletag = window.googletag || {cmd: []}
     googletag.cmd.push(function() {
       googletag.defineSlot(slotName, [320, 50], gptID).addService(googletag.pubads());
+
+      targetingAds.forEach(({ name, value }) => {
+        googletag.pubads().setTargeting(name, value)
+      })
 
       googletag.pubads().setTargeting(targettingAdsData[targettingAdsData.length - 1].name, targettingAdsData[targettingAdsData.length - 1].value)
       googletag.pubads().enableSingleRequest()
@@ -55,7 +55,7 @@ class StickyAds extends React.Component {
   componentDidMount() {
     if(this.props.path){
       this.props.fetchTargetingAds()
-        .then((res) =>this.fetchAds([]))
+        .then((res) =>this.fetchAds(res))
         .catch((_) => this.fetchAds([]))
     }
 
