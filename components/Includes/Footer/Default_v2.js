@@ -10,7 +10,7 @@ import { accountGeneralEvent, exclusiveGeneralEvent, homeGeneralClicked } from '
 import '../../../assets/scss/components/footer-v2.scss';
 
 import { bottomMenuClick } from '../../../utils/firebaseTracking';
-import { gaTrackerNavbarTrack } from '../../../utils/ga-360';
+import { gaTrackerNavbarTrack, gaTrackerSearch } from '../../../utils/ga-360';
 import { getUserAccessToken, getVisitorToken } from '../../../utils/cookie';
 
 const FooterNav_v2 = (props) => {
