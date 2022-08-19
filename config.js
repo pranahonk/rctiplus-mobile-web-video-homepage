@@ -14,7 +14,7 @@ export const GTM_AUTH = process.env.GTM_AUTH;
 export const DEV_API = process.env.DEV_API;
 export const MONETIZATION_API = process.env.MONETIZATION_API;
 
-export const API_V2 = process.env.API_V2 ? process.env.DEV_API : process.env.API_V2;
+export const API_V2 = process.env.API_V2 ? process.env.API_V2 : process.env.DEV_API;
 
 export const CHAT_API = process.env.CHAT_API;
 export const LINK_RADIO = process.env.LINK_RADIO;
