@@ -131,9 +131,7 @@ const FooterNav_v2 = (props) => {
                             <div>
                               <img src='https://je-es.rctiplus.com/assets/image/elements/svg/music-plus-deactive.svg' alt='trebel' />
                             </div>
-                            {/* <ImportContactsTwoToneIcon className="nav-footer-icon"/>
-                                <br /> */}
-                            <span className={props.router.asPath === "/explores" ? "footer-icon-active" : ""}>Music</span>
+                            <span className={props.router.asPath === "/explores" ? "footer-icon-active" : ""}>Music+</span>
                         </a>
                     </div>
                 </div>
