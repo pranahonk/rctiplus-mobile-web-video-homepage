@@ -107,7 +107,7 @@ class EditProfile extends React.Component {
                         profile_photo_src: data.photo_url ? data.photo_url : this.state.profile_photo_src,
                         interest_data: data.interest,
                         interests: interests.join(','),
-                        codeCountry: data.country_code,
+                        codeCountry: data?.country_code,
                     }, () => {
                         this.props.setUserProfile(this.state.nickname, this.state.fullname, this.state.birthdate, this.state.gender, this.state.phone_number, this.state.email, this.state.otp, this.state.location);
                     });

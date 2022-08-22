@@ -3,8 +3,8 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
-import { StickyContainer, Sticky } from 'react-sticky';
-import dynamic from "next/dynamic"
+import { Sticky, StickyContainer } from 'react-sticky';
+import dynamic from 'next/dynamic';
 
 import contentActions from '../redux/actions/contentActions';
 import pageActions from '../redux/actions/pageActions';
@@ -22,11 +22,11 @@ import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
 import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
 import JsonLDWebsite from '../components/Seo/JsonLDWebsite';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../config';
-import { setCookie, getCookie, setVisitorToken } from '../utils/cookie';
+import { GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, SITE_NAME, SITEMAP } from '../config';
+import { getCookie, setCookie, setVisitorToken } from '../utils/cookie';
 import { RPLUSAppVisit } from '../utils/internalTracking';
-import { GET_LINEUPS } from "../graphql/queries/homepage"
-import { client } from "../graphql/client"
+import { GET_LINEUPS } from '../graphql/queries/homepage';
+import { client } from '../graphql/client';
 import { gaTrackerScreenView } from '../utils/ga-360';
 
 // NEW RPLUS LINEUP CONTENTS
@@ -119,7 +119,7 @@ class Index_v2 extends React.Component {
       })
       .finally(_ => {
         if (page === 1) this.setState({ isShimmer: false })
-        this.LoadingBar.complete();
+        this.LoadingBar?.complete();
       })
   }
 
@@ -246,6 +246,20 @@ class Index_v2 extends React.Component {
           return(
             <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
           )
+        case "square_list_audio":
+          return(
+            <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+          );
+        case "portrait_disc":
+          return(
+            <AudioHorizontalDisc
+              title={lineup.title}
+              key={lineup.id}
+              data={lineup}
+              indexTag={index}
+              id={lineup.id}
+            />
+          );
       }
     })
   }

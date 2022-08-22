@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState } from 'react'
-import { withRouter } from 'next/router'
+import router, { Router, useRouter, withRouter } from 'next/router'
 import { connect } from "react-redux"
 import BottomScrollListener from 'react-bottom-scroll-listener'
 import LoadingBar from 'react-top-loading-bar'
@@ -18,6 +18,9 @@ import StickyAds from '../components/Includes/Banner/StickyAds'
 import { client } from "../graphql/client"
 import { GET_LINEUPS } from "../graphql/queries/homepage"
 import adsActions from '../redux/actions/adsActions'
+import { setVisitorToken } from '../utils/cookie'
+import Cookies from 'js-cookie'
+import { titleStringUrlRegex, urlRegex } from '../utils/regex'
 
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
 const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
@@ -44,7 +47,7 @@ function Category (props) {
     const [ meta, setMeta ] = useState({})
     const [ openComingSoonModal, setOpenComingSoonModal ] = useState(false)
     const [ contentComingSoonModal, setContentComingSoonModal ] = useState({})
-
+    const router = useRouter();
     const loadingBar = useRef(null)
 
     const bottomScrollFetch = () => {
@@ -61,30 +64,43 @@ function Category (props) {
         gaTrackerScreenView()
     }, [ props.router.query.category_id ])
 
-    const getCategoryLineups = (page = 1, pageSize = 5) => {
-        if (page === 1) setIsShimmer(true)
-        client
-            .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
-            .then(({ data }) => {
-                let newLineups = data.lineups.data
-                
-                if (page > 1) {
-                    newLineups = lineups.concat(newLineups)
-                }
+    useEffect(() => {
+        const { category_id, category_title} = props.router.query
+        let href, as
 
-                const mappedContents = new Map()
-                newLineups.forEach(content => {
-                    if (content.lineup_type_detail.detail) {
-                        mappedContents.set(content.id, content)
+        href = `/category?category_id=${category_id}&category_title=${(category_title)}`;
+        as = `/category/${category_id}/${titleStringUrlRegex(category_title).toLowerCase()}`;
+
+        router.push(href, as, { shallow: true });
+    },[])
+
+    const getCategoryLineups = async (page = 1, pageSize = 5) => {
+        await setVisitorToken()
+        if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
+        if (page === 1) setIsShimmer(true)
+            client
+                .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
+                .then(({ data }) => {
+                    let newLineups = data.lineups.data
+
+                    if (page > 1) {
+                        newLineups = lineups.concat(newLineups)
                     }
+
+                    const mappedContents = new Map()
+                    newLineups.forEach(content => {
+                        if (content.lineup_type_detail.detail) {
+                            mappedContents.set(content.id, content)
+                        }
+                    })
+                    setLineups([ ...mappedContents.values() ])
+                    setMeta(data.lineups.meta)
                 })
-                setLineups([ ...mappedContents.values() ])
-                setMeta(data.lineups.meta)
+                .catch(_ => {})
+                .finally(_ => {
+                    if (page === 1) setIsShimmer(false)
             })
-            .catch(_ => {})
-            .finally(_ => {
-                if (page === 1) setIsShimmer(false)
-            })
+        }
     }
 
     const setComingSoonModalState = (open, content) => {
@@ -196,6 +212,20 @@ function Category (props) {
                   return(
                     <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
                   )
+                case "square_list_audio":
+                  return(
+                    <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+                  );
+                case "portrait_disc":
+                  return(
+                    <AudioHorizontalDisc
+                      title={lineup.title}
+                      key={lineup.id}
+                      data={lineup}
+                      indexTag={index}
+                      id={lineup.id}
+                    />
+                  );
             }
         })
     }
@@ -217,12 +247,12 @@ function Category (props) {
                 : (
                     <>
                         <div style={{marginTop: "56px"}}>
-                            <Header title={props.router.query.category_title} />
+                            <Header title={ props.router.query.category_title.replace(/[^a-z0-9A-Z]/g, ' ')} />
 
                             <div style={{marginTop: -3}}>
                                 <Carousel category />
                             </div>
-                           
+
                             <GridMenu />
 
                             <Stories />

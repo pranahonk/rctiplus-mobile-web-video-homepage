@@ -2,12 +2,15 @@ import React, { useEffect } from 'react';
 import Img from 'react-image';
 import { connect } from 'react-redux';
 import BottomScrollListener from 'react-bottom-scroll-listener';
+import dynamic from 'next/dynamic';
 
-import contentActions from '../../redux/actions/contentActions'
-import useVideoLineups from "../hooks/lineups/useVideoLineups"
-import { RESOLUTION_IMG } from "../../config"
+import contentActions from '../../redux/actions/contentActions';
+import useVideoLineups from '../hooks/lineups/useVideoLineups';
+import { RESOLUTION_IMG } from '../../config';
 
-import '../../assets/scss/components/panel.scss'
+import '../../assets/scss/components/panel.scss';
+
+const PremiumIcon = dynamic(() => import("../Includes/Common/PremiumIcon"))
 
 function squareMiniView (props) {
   const { generateLink, onTouchStart, onTouchEnd, setInitialContents, loadMore, contents } = useVideoLineups(props)
@@ -29,6 +32,26 @@ function squareMiniView (props) {
     )
   }
 
+  const getImageLink = (content) => {
+    switch (props.lineup.display_type) {
+      case "square_list_audio":
+        return `${props.imagePath}${content.image_banner}`;
+      case "square_mini":
+        if(content?.content_type === "live_music"){
+          return `https://static.roov.id/upload/200/${content.portrait_image}`;
+        }
+        else if(content?.content_type === "live_radio"){
+          return `https://static.roov.id/upload/200/${content.portrait_image}`;
+        }
+        else{
+          return `${rootImageUrl}${content.square_image}`;
+        }
+        return false;
+      default:
+        return `${rootImageUrl}${content.square_image}`;
+    }
+  }
+
   if (contents.length === 0) return null
 
   return (
@@ -42,7 +65,7 @@ function squareMiniView (props) {
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
           <div
-            ref={scrollRef} 
+            ref={scrollRef}
             className="lineup-containers">
             {contents.map((content, i) => {
               return (
@@ -51,15 +74,18 @@ function squareMiniView (props) {
                   onClick={() => generateLink(content)}
                   key={i}
                   className="lineup-contents">
+
+                  <PremiumIcon premium={content.premium} />
+
                   <div>
-                    <Img 
+                    <Img
                       className="lineup-image"
-                      alt={props.lineup.title} 
-                      unloader={<img src={placeHolderImgUrl} />}
-                      loader={<img src={placeHolderImgUrl} />}
+                      alt={props.lineup.title}
+                      unloader={<img src={content ? getImageLink(content) : placeHolderImgUrl} width={100} height={100} />}
+                      loader={<img src={content ? getImageLink(content) : placeHolderImgUrl} width={100} height={100} />}
                       width={100}
                       height={100}
-                      src={[`${rootImageUrl}${content.square_image}`, placeHolderImgUrl]} />
+                      src={content ? getImageLink(content) : placeHolderImgUrl} />
                   </div>
                   { renderContinueWatchProgress(content) }
                 </div>

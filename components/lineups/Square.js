@@ -1,13 +1,16 @@
-import React, { useEffect } from 'react';
-import Img from 'react-image';
-import { connect } from 'react-redux';
-import BottomScrollListener from 'react-bottom-scroll-listener';
+import React, { useEffect } from 'react'
+import Img from 'react-image'
+import { connect } from 'react-redux'
+import BottomScrollListener from 'react-bottom-scroll-listener'
+import dynamic from 'next/dynamic'
 
 import contentActions from '../../redux/actions/contentActions'
 import useVideoLineups from "../hooks/lineups/useVideoLineups"
 import { RESOLUTION_IMG } from "../../config"
 
 import '../../assets/scss/components/panel.scss'
+
+const PremiumIcon = dynamic(() => import("../Includes/Common/PremiumIcon"))
 
 function squareView (props) {
   const { generateLink, onTouchStart, onTouchEnd, setInitialContents, loadMore, contents } = useVideoLineups(props)
@@ -51,15 +54,18 @@ function squareView (props) {
                   onClick={() => generateLink(content)}
                   key={i}
                   className="lineup-contents">
+
+                  <PremiumIcon premium={content.premium} />
+
                   <div>
                     <Img 
                       className="lineup-image"
                       alt={props.lineup.title} 
-                      unloader={<img src={placeHolderImgUrl} />}
-                      loader={<img src={placeHolderImgUrl} />}
+                      unloader={<img src={placeHolderImgUrl} width={210} height={210} />}
+                      loader={<img src={placeHolderImgUrl} width={210} height={210} />}
                       width={210}
                       height={210}
-                      src={[`${rootImageUrl}${content.square_image}`, placeHolderImgUrl]} />
+                      src={content.square_image ? `${rootImageUrl}${content.square_image}` : placeHolderImgUrl} />
                   </div>
                   { renderContinueWatchProgress(content) }
                 </div>
@@ -69,7 +75,7 @@ function squareView (props) {
         )}
       </ BottomScrollListener>
     </div>
-  );
+  )
 }
 
 export default connect(state => state, contentActions)(squareView)

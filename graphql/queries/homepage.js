@@ -1,14 +1,15 @@
-import { gql } from "@apollo/client"
+import { gql } from '@apollo/client';
 
 import {
   lineupContinueWatchingFragment,
-  lineupTypeStoryFragment,
   lineupDefaultFragment,
+  lineupTypeNewsRegroupingFragment,
   lineupTypeNewsTagarFragment,
-  lineupTypeNewsRegroupingFragment
-} from "../fragments/lineups"
+  lineupTypeStoryFragment,
+} from '../fragments/lineups';
 
 import {
+  contentTypeAudioRadio,
   contentTypeCatchupFragment,
   contentTypeClipFragment,
   contentTypeEpisodeFragment,
@@ -18,7 +19,7 @@ import {
   contentTypeProgramFragment,
   contentTypeSeasonFragment,
   contentTypeSpecialFragment,
-} from "../fragments/content_types"
+} from '../fragments/content_types';
 
 function getQueryParams(args) {
   let output = []
@@ -69,7 +70,7 @@ export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
           lineup_type_detail {
             ${lineupContinueWatchingFragment(getQueryParams({ page: 1, page_size }))}
             ${lineupTypeStoryFragment(getQueryParams({ page: 1, page_size }))}
-            ${lineupDefaultFragment(getQueryParams({ page: 1, page_size}))}
+            ${lineupDefaultFragment(getQueryParams({ page: 1, page_size: 6}))}
             ${lineupTypeNewsRegroupingFragment(getQueryParams({ page: 1, page_size: 30 }))}
             ${lineupTypeNewsTagarFragment(getQueryParams({ page: 1, page_size: 6 }))}
           }
@@ -181,6 +182,7 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 5, lineup_id = 0)
             ${contentTypeLiveEPGFragment}
             ${contentTypeSpecialFragment}
             ${contentTypeSeasonFragment}
+            ${contentTypeAudioRadio}
           }
         }
         meta {
@@ -225,27 +227,33 @@ export const GET_CONTINUE_WATCHING = (page = 1, page_size = 5, lineup_id = 0) =>
   `
 }
 
-export const GET_HOME_CATEGORY_LIST = gql`
-  query {
-    categories {
-      data {
-        icon
-        id
-        is_active
-        name
-        type
-      }
-      meta {
-        image_path
-      }
-    }
-  }
-`
-
-export const GET_SUB_CATEGORY_LIST = (categoryId = 0) => {
+export const GET_HOME_CATEGORY_LIST = (page = 1, page_size = 10) => {
   return gql`
     query {
-      sub_categories(category_id: ${categoryId}) {
+      categories(page: ${page}, page_size: ${page_size}) {
+        data {
+          icon
+          id
+          is_active
+          name
+          type
+        }
+        meta {
+          pagination {
+            current_page
+            total_page
+          }
+          image_path
+        }
+      }
+    }
+  `
+}
+
+export const GET_SUB_CATEGORY_LIST = (categoryId = 0, page = 1, page_size = 10) => {
+  return gql`
+    query {
+      sub_categories(category_id: ${categoryId}, page: ${page}, page_size: ${page_size}) {
         data {
           icon
           id
