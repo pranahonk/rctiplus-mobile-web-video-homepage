@@ -1159,7 +1159,7 @@ class LiveEvent extends React.Component {
                           le?.channel_code, "not_available", "not_available",
                           "not_available", "not_available", "not_available",
                           "no");
-                        // Router.push(`/missed-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`)
+                         Router.push(`/missed-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`)
                       }}>
 												<Thumbnail
 												label="Live"
