@@ -33,6 +33,7 @@ const JwPlayer = (props) => {
   });
   const [adsStatus, setAdStatus] = useState('none');
   const [playerFullscreen, setPlayerFullscreen] = useState(false);
+  const [adsQue, setAdsQue] = useState(0);
 
   // Custom Hooks
   const { setIsPlayerReady, setHideBtns } = useCustomPlayerButton({ ...props, player })
@@ -42,7 +43,7 @@ const JwPlayer = (props) => {
   // Supporting Variables
   const idPlayer = 'jwplayer-rctiplus';
   const options = {
-    autostart: true,
+    autostart: 'viewable',
     mute: false,
     floating: false,
     file: props.data && props.data.url,
@@ -56,6 +57,7 @@ const JwPlayer = (props) => {
     advertising: {
       client: process.env.ADVERTISING_CLIENT,
       tag: props.data && props.data.vmap_ima,
+
     },
     skin: {
       name: 'rplus_player',
@@ -64,7 +66,7 @@ const JwPlayer = (props) => {
       hide: true,
     },
   };
-  
+
   // player initial setup
   useEffect(() => {
     const jwplayer = window.jwplayer(idPlayer);
@@ -99,7 +101,7 @@ const JwPlayer = (props) => {
       if (props.customData && props.customData.isLogin && props.isResume && (currentContent.id)) {
         props.onResume(currentContent.id, currentContent.content_type, player.getPosition());
       }
-      
+
       player.setup(options);
       setIsPlayerReady(false)
       setCurrentContent(props.data)
@@ -132,29 +134,34 @@ const JwPlayer = (props) => {
               const adsOverlayElement = document.createElement('div');
               adsOverlayElement.classList.add('ads_wrapper');
               adsOverlayElement.style.display = 'none';
-    
+
               const adsOverlayBox = document.createElement('div');
-              adsOverlayBox.classList.add('adsStyling');
-    
+              if (screen.orientation.type === "portrait-primary") {
+                adsOverlayBox.classList.add('adsStyling');
+              }
+              if (screen.orientation.type === "landscape-primary") {
+                adsOverlayBox.classList.add('adsStylingLandscape');
+              }
+
               const adsOverlayCloseButton = document.createElement('div');
               adsOverlayCloseButton.classList.add('close_button');
               adsOverlayCloseButton.innerHTML = closeIcon;
-    
+
               const adsOverlayContainer = document.createElement('div');
               const divGPTString = (data && data.gpt && data.gpt.div_gpt != null) && (data && data.gpt && data.gpt.div_gpt != undefined) ? data.gpt.div_gpt : type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
               adsOverlayContainer.classList.add('adsContainer');
               adsOverlayContainer.id = divGPTString;
               adsOverlayContainer.innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${divGPTString}'); });</script>`;
-    
+
               playerContainer.appendChild(adsOverlayElement);
               adsOverlayElement.appendChild(adsOverlayBox);
               adsOverlayBox.appendChild(adsOverlayCloseButton);
               adsOverlayBox.appendChild(adsOverlayContainer);
-    
+
               adsOverlayCloseButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-    
+
                 pubAdsRefreshInterval.timeStart = 0;
                 setAdStatus('close');
               });
@@ -217,7 +224,7 @@ const JwPlayer = (props) => {
 
       player.on('play', () => {
         setBitrateLevels(player.getQualityLevels())
-        setInitConviva(true)
+        setInitConviva(true);
 
         convivaJwPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
@@ -230,7 +237,7 @@ const JwPlayer = (props) => {
           }
         }
       })
-      
+
       player.on('pause', () =>{
         convivaJwPlayer().pause();
       });
@@ -255,28 +262,61 @@ const JwPlayer = (props) => {
 
       // ads event
       player.on('adImpression', (event) => {
+        if(adsQue > 0){
+          player.pause();
+        }
+        if (document.querySelector('.jw-display')) {
+          document.querySelector('.jw-display').style.display = 'none'
+        }
+        if (document.querySelector('.jw-controlbar')) {
+          document.querySelector('.jw-controlbar').style.display = 'none'
+        }
         if (document.querySelector('.ads_wrapper')) {
           setAdStatus('none');
         }
+        setAdsQue(adsQue + 1)
       });
+
+      player.on('firstFrame', (event) => {
+        setAdsQue(adsQue + 1)
+      });
+
+      player.on("adComplete", _ => {
+        player.play();
+        if (document.querySelector('.jw-display')) {
+          document.querySelector('.jw-display').style.display = 'flex'
+        }
+        if (document.querySelector('.jw-controlbar')) {
+          document.querySelector('.jw-controlbar').style.display = 'flex'
+        }
+      })
 
       player.on("adPlay", _ => {
         setHideBtns(true)
       })
-      
+
       player.on('adSkipped', (event) => {
         setHideBtns(false)
-        
+
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
             setAdStatus('prestart');
           }
         }
+
+        player.play();
+        if (document.querySelector('.jw-display')) {
+          document.querySelector('.jw-display').style.display = 'flex'
+        }
+        if (document.querySelector('.jw-controlbar')) {
+          document.querySelector('.jw-controlbar').style.display = 'flex'
+        }
+        
       });
-      
+
       player.on('adComplete', (event) => {
         setHideBtns(false)
-        
+
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
             setAdStatus('prestart');
@@ -504,7 +544,13 @@ const JwPlayer = (props) => {
                       adsOverlayBoxLink.style.position = 'absolute';
 
 
-                      document.querySelector('.adsStyling')?.appendChild(adsOverlayBoxLink);
+                      if (screen.orientation.type === "portrait-primary") {
+                        document.querySelector('.adsStyling')?.appendChild(adsOverlayBoxLink);
+                      }
+                      if (screen.orientation.type === "landscape-primary") {
+                        document.querySelector('.adsStylingLandscape')?.appendChild(adsOverlayBoxLink);
+                      }
+
                       const elementAds = document.querySelector('.adsURLLink')
                       if (elementAds) {
                         elementAds.addEventListener('click', function(e) {
@@ -565,7 +611,7 @@ const JwPlayer = (props) => {
       </>
     )
   }
-  
+
   const error = (msg = msgError02, icon = (<Wrench />)) => {
     return (
       <div id="jwplayer-rctiplus" style={{
@@ -584,7 +630,7 @@ const JwPlayer = (props) => {
       </div>
     );
   };
-  
+
   const msgError01 = () => {
     return(
       <div>

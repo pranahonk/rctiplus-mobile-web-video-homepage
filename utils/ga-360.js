@@ -1,7 +1,7 @@
 import React from 'react';
-import ax from 'axios';
-import { DEV_API } from '../config';
-import { checkToken, getCookie, getVisitorToken } from './cookie';
+import { getCookie } from './cookie';
+
+const jwtDecode = require('jwt-decode');
 
 const TOKEN_KEY = 'ACCESS_TOKEN';
 
@@ -242,3 +242,48 @@ export const gaTrackerNavbarTrack = (event_category = 'string', event_action = '
     });
   }
 };
+
+
+export const gaVideoInteraction = (content_id, content_name, content_type, content_category, classification_id, classification, program_id, program_name, cluster_id, cluster_name, channel_owner_id, channel_owner, genre_level_1, genre_level_2, content_duration, episode_number, season_number, is_premium) => {
+  if (typeof window !== 'undefined') {
+    window.dataLayer.push({
+      "user_id" :getUserId(),
+      "client_id" : process.env.GA_360_USERID,
+      "content_id" : content_id,
+      "content_name" : content_name,
+      "content_type" : content_type,
+      "content_category" :content_category,
+      "program_id" : program_id,
+      "program_name" :program_name,
+      "classification_id" :classification_id,
+      "classification" : classification,
+      "cluster_id" : cluster_id,
+      "cluster_name" : cluster_name,
+      "channel_owner_id" : channel_owner_id,
+      "channel_owner" : channel_owner,
+      "genre_level_1" : genre_level_1,
+      "genre_level_2" : genre_level_2,
+      "content_duration" : content_duration,
+      "pillar" : "video",
+      "episode_number" : episode_number,
+      "season_number" : season_number,
+      "is_premium" :is_premium,
+      "date_time" :  new Date().toISOString(),
+    });
+  }
+}
+
+export const gaVideoInteractive= (event_category, event_action, event_label) => {
+  if (typeof window !== 'undefined') {
+    window.dataLayer.push({
+      "user_id" :getUserId(),
+      "client_id" : process.env.GA_360_USERID,
+      "pillar" : "video",
+      "date_time" :  new Date().toISOString(),
+      'event_category': event_category,
+      'event_action': event_action,
+      'event_label': event_label,
+    });
+  }
+}
+

@@ -53,11 +53,29 @@ export const GET_BANNERS = (page = 1, category_id = 0) => {
   `
 }
 
+
 export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
   const queryParams = getQueryParams({ page, page_size, category_id })
 
   return gql`
     query {
+      gpt (category_id: ${category_id}) {
+      data {
+        id
+        path
+        div_gpt
+        size_width_1
+        size_width_2
+        size_height_1
+        size_height_2
+        cust_params{
+          value
+          name
+        }
+        size_height_2
+        size_width_2
+      }
+    }
       lineups(${queryParams}) {
         data {
           id
@@ -136,6 +154,19 @@ export const GET_HOME_STORIES = (category_id = 0, page = 1, page_size = 10) => {
           program_img
           program_id
           title
+          gpt {
+            id
+            div_gpt
+            path
+            size_height_1
+            size_height_2
+            size_width_1
+            size_width_2
+            cust_params{
+              name
+              value
+            }
+          }
           story {
             id
             permalink

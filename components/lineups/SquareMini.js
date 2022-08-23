@@ -81,8 +81,8 @@ function squareMiniView (props) {
                     <Img
                       className="lineup-image"
                       alt={props.lineup.title}
-                      unloader={<img src={content ? getImageLink(content) : placeHolderImgUrl} width={100} height={100} />}
-                      loader={<img src={content ? getImageLink(content) : placeHolderImgUrl} width={100} height={100} />}
+                      unloader={<img src={placeHolderImgUrl} width={100} height={100} />}
+                      loader={<img src={placeHolderImgUrl} width={100} height={100} />}
                       width={100}
                       height={100}
                       src={content ? getImageLink(content) : placeHolderImgUrl} />

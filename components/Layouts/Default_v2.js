@@ -11,20 +11,14 @@ import chatsActions from '../../redux/actions/chats';
 
 import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
+import { getUidAppier } from '../../utils/appier';
 
-import {
-  APPIER_ID,
-  AUTHOR,
-  GRAPH_SITEMAP,
-  GTM,
-  GTM_AUTH,
-  MAIN_DESCRIPTION,
-  SHARE_BASE_URL,
-  VIEWPORT,
-} from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GRAPH_SITEMAP, SHARE_BASE_URL, GTM_AUTH, MODE, APPIER_ID } from '../../config';
 import { Spinner } from 'reactstrap';
+const PaidVideo = dynamic(() => import('../Includes/program-detail/PaidVideo'), { ssr: false });
+
 import queryString from 'query-string';
-import { isAndroid, isIOS } from 'react-device-detect';
+import { isIOS, isAndroid } from "react-device-detect";
 
 import '../../node_modules/video.js/dist/video-js.min.css';
 import '../../node_modules/videojs-contrib-ads/dist/videojs.ads.css';
@@ -33,8 +27,6 @@ import '../../assets/scss/videojs.scss';
 
 import '../../assets/scss/apps/homepage/default.scss';
 import '../../assets/scss/responsive.scss';
-
-const PaidVideo = dynamic(() => import('../Includes/program-detail/PaidVideo'), { ssr: false });
 
 class Default_v2 extends React.Component {
 
@@ -159,8 +151,6 @@ class Default_v2 extends React.Component {
 
 
                     <script src="/static/js/fontawesome.min.js" crossOrigin="anonymous" defer></script>
-
-                    {/* <script src="/static/js/jwplayer.js"></script> */}
                     <script dangerouslySetInnerHTML={{ __html: `jwplayer.key = "Mh/98M9sROX0uXhFlJwXZYeCxbJD5E1+e2goFcRZ07cI/FTu";` }}></script>
                     {/* <script type="text/javascript" src="/statics/js/jwplayer-cstm-btn.min.js" async></script> */}
                     <script src="https://cdn.qgraph.io/dist/aiqua-wp.js" ></script>
@@ -208,7 +198,7 @@ class Default_v2 extends React.Component {
 
                     {/* <script src="/static/js/firebase.js"></script> */}
                     {/* <script async dangerouslySetInnerHTML={{ __html: `
-                        var firebaseConfig = {
+                        var firebaseConfig = { 
                                 apiKey: "${FIREBASE_apiKey}",
                                 authDomain: "${FIREBASE_authDomain}",
                                 databaseURL: "${FIREBASE_databaseURL}",
@@ -223,7 +213,7 @@ class Default_v2 extends React.Component {
                     `}}>
                     </script> */}
                 </Head>
-                <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+                <script async type="text/javascript" src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
                 {/* <!-- DO NOT touch the following DIV --> */}
@@ -274,7 +264,7 @@ class Default_v2 extends React.Component {
 
                 <div style={{ overflowX: 'hidden', height: '100%', marginTop: 0, paddingBottom: (this.platform && (this.platform == 'android' || this.platform == 'ios')) ? '0 !important' : '' }} id="wr" className="wrapper has-text-centered">{this.props.children}</div>
                 {/* {console.log((!(this.platform && (this.platform == 'android' || this.platform == 'ios')) && this.props?.Program?.paid_video?.data?.is_paid === 0 && this.props.router.pathname === '/programs') || this.props?.Program['tracking-program']?.data?.premium === 1) } */}
-                {
+                {   
                     (!(this.platform && (this.platform == 'android' || this.platform == 'ios')) && this.props?.Program?.paid_video?.data?.is_paid === 0 && this.props.router.pathname === '/programs') || this.props?.Program['tracking-program']?.data?.premium === 1
                     ? (<PaidVideo />) : ''
                 }

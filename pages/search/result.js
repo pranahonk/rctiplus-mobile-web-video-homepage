@@ -1,18 +1,17 @@
 import React from 'react';
 import Router from 'next/router';
-import Link from 'next/link';
 import { connect } from 'react-redux';
 import Img from 'react-image';
 import classnames from 'classnames';
 
 import searchActions from '../../redux/actions/searchActions';
 
-import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
+import { Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from 'reactstrap';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 
 import '../../assets/scss/components/search-results.scss';
 
-import { searchTabClicked, searchProgramClicked, searchScrollVerticalEvent } from '../../utils/appier';
+import { searchProgramClicked, searchScrollVerticalEvent, searchTabClicked } from '../../utils/appier';
 
 class Result extends React.Component {
 
@@ -55,7 +54,7 @@ class Result extends React.Component {
     link(data, type) {
         searchProgramClicked(data.title, data.id, type, 'mweb_search_program_clicked');
 		switch (type) {
-			case 'program':                
+			case 'program':
 				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}?ref=search`);
 				break;
 			default:
@@ -82,10 +81,10 @@ class Result extends React.Component {
                                     <p className="title">Search Result</p>
                                 </div>
                                 <div className="content-list">
-                                    
+
                                     <Row>
 
-                                        {!this.props.searches.search_status ? '' : !this.props.searches.search_results[i] || this.props.searches.search_results[i].status !== 200 || this.props.searches.search_results[i].data.status.code !== 0 || this.props.searches.search_results[i].data.data.length <= 0 ? (<div style={{ 
+                                        {!this.props.searches.search_status ? '' : !this.props.searches.search_results[i] || this.props.searches.search_results[i].status !== 200 || this.props.searches.search_results[i].data.status.code !== 0 || this.props.searches.search_results[i].data.data.length <= 0 ? (<div style={{
                                             textAlign: 'center',
                                             margin: 30
                                             }}>
@@ -95,7 +94,7 @@ class Result extends React.Component {
                                                 <span style={{ fontSize: 12 }}>Cheer up, we still have other exciting programs!</span><br/>
                                             </h5>
                                         </div>) : (<div></div>)}
-                                        
+
                                         {this.props.searches.search_results[i] && this.props.searches.search_results[i].status === 200 && this.props.searches.search_results[i].data.status.code === 0 && this.props.searches.search_results[i].data.data.map((c, i) => (
                                             <Col xs={4} key={i} onClick={this.link.bind(this, c, t)}>
                                                 { c.premium ? (
@@ -111,8 +110,8 @@ class Result extends React.Component {
                                                         <div className="new-label" style={c.label === undefined || c.label === '' ? { display: 'none' } : { display: 'block' }}>{ c.label }</div>
                                                     ) : ''
 											    }
-                                                <Img 
-                                                    alt={c.title} 
+                                                <Img
+                                                    alt={c.title}
                                                     className="content-image"
                                                     unloader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
                                                     loader={<img className="content-image" src="/static/placeholders/placeholder_potrait.png"/>}
@@ -124,7 +123,7 @@ class Result extends React.Component {
                             </div>
                         </TabPane>
                     ))}
-                    
+
                 </TabContent>
             </div>
         );

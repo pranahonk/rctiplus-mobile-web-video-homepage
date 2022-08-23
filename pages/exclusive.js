@@ -20,27 +20,32 @@ import Layout from '../components/Layouts/Default_v2';
 
 import NavDefault from '../components/Includes/Navbar/NavDefault';
 import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
-
-import PlayerModal from '../components/Modals';
 import ActionSheet from '../components/Modals/ActionSheet';
 
-import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
+import { Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from 'reactstrap';
 
 import ShareIcon from '@material-ui/icons/Share';
-import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 
 import '../assets/scss/components/exclusive.scss';
 import { urlRegex } from '../utils/regex';
 
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
+import { GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG, SITE_NAME, SITEMAP } from '../config';
 
-import { exclusiveGeneralEvent, exclusiveTabEvent, exclusiveContentEvent, exclusiveShareEvent, exclusiveProfileProgramEvent, exclusiveTitleProgramEvent, exclusivePhotoSlideNextEvent, exclusivePhotoSlidePreviousEvent } from '../utils/appier';
+import {
+  exclusiveContentEvent,
+  exclusiveGeneralEvent,
+  exclusivePhotoSlideNextEvent,
+  exclusivePhotoSlidePreviousEvent,
+  exclusiveProfileProgramEvent,
+  exclusiveShareEvent,
+  exclusiveTabEvent,
+} from '../utils/appier';
 
 class Exclusive extends React.Component {
 
 	static getInitialProps(ctx) {
 		initialize(ctx);
-		
+
 		return { category: ctx.query.category };
 	}
 
@@ -81,9 +86,9 @@ class Exclusive extends React.Component {
 		this.props.getExclusiveCategory()
 			.then(response => {
 				const dictFeeds = {};
-				
+
 				let selectedCategory = this.props.category ? this.props.category : 'All';
-				// replace hyphens with spaces and capitalize the first letter of each word 
+				// replace hyphens with spaces and capitalize the first letter of each word
 				selectedCategory = selectedCategory.replace(/\w\S*/g, function(txt){
 					txt = txt.replace(/-+/g, ' ');
 					return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
@@ -203,7 +208,7 @@ class Exclusive extends React.Component {
 	toggleTab(tab, tabName = 'All') {
 		if (this.state.active_tab !== tab) {
 			exclusiveTabEvent(tabName, 'mweb_exclusive_tab_clicked');
-			this.setState({ 
+			this.setState({
 				active_tab: tab,
 				active_tab_name: tabName
 			}, () => {
@@ -246,15 +251,15 @@ class Exclusive extends React.Component {
 					case 'episode':
 						data = await this.props.getEpisodeUrl(program.id);
 						break;
-	
+
 					case 'extra':
 						data = await this.props.getExtraUrl(program.id);
 						break;
-	
+
 					case 'clip':
 						data = await this.props.getClipUrl(program.id);
 						break;
-	
+
 					case 'photo':
 						data = await this.props.getPhotoUrl(program.id);
 						break;
@@ -265,19 +270,19 @@ class Exclusive extends React.Component {
 				if (e.data && e.data.status) {
 					status = e.data.status;
 				}
-			}			
+			}
 
 			let vmap = '';
-			
+
 			if (data && data.status === 200 && data.data.status.code === 0) {
 				video_url = data.data.data.url;
 				vmap = data.data.data[process.env.VMAP_KEY];
 			}
 
-			this.setState({ 
+			this.setState({
 				modal: !this.state.modal,
 				trailer_url: video_url,
-				vmap: vmap, 
+				vmap: vmap,
 				selected_program: program ,
 				status: status,
 				data: data
@@ -403,7 +408,7 @@ class Exclusive extends React.Component {
 
 						{this.state.categories.map((c, i) => (
 							<NavItem key={i} className="exclusive-item">
-								<Link href={`/exclusive?category=${c.name.toLowerCase()}`} as={`/exclusive/${c.name.toLowerCase()}?ref=exclusive`}> 
+								<Link href={`/exclusive?category=${c.name.toLowerCase()}`} as={`/exclusive/${c.name.toLowerCase()}?ref=exclusive`}>
 									<NavLink
 										onClick={this.toggleTab.bind(this, i + 1, c.name)}
 										className={classnames({ active: this.state.active_tab == i + 1 })}>{c.name}</NavLink>
@@ -422,12 +427,12 @@ class Exclusive extends React.Component {
 													<Col className="col-edit">
 														<Row className="feed-row">
 															<Col xs="2">
-																<Img 
+																<Img
 																	onClick={this.goToDetail.bind(this, feed, 'profile')}
 																	alt={feed.program_title}
 																	unloader={<img className="program-rounded-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
-																	loader={<img className="program-rounded-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>} 
-																	className="program-rounded-thumbnail" 
+																	loader={<img className="program-rounded-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
+																	className="program-rounded-thumbnail"
 																	src={[this.state.meta.image_path + this.state.resolution + feed.program_icon, '/static/placeholders/placeholder_landscape.png']} />
 															</Col>
 															<Col xs="7">
@@ -484,30 +489,30 @@ class Exclusive extends React.Component {
 																swipeScrollTolerance={1}
 																swipeable={true}>
 																{feed.images.map((img, i) => (
-																	<Img 
-																		key={i} 
+																	<Img
+																		key={i}
 																		data-index={i}
-																		alt={`${this.getImageFileName(img)} - ${feed.title}`} 
-																		className="program-carousel-image" 
+																		alt={`${this.getImageFileName(img)} - ${feed.title}`}
+																		className="program-carousel-image"
 																		unloader={<img className="program-carousel-image" src="/static/placeholders/placeholder_landscape.png"/>}
-																		loader={<img className="program-carousel-image" src="/static/placeholders/placeholder_landscape.png"/>} 
+																		loader={<img className="program-carousel-image" src="/static/placeholders/placeholder_landscape.png"/>}
 																		src={[this.state.meta.image_path + this.state.resolution + img, '/static/placeholders/placeholder_potrait.png']} />
 																))}
 															</Carousel>)
 															:
 															(
 																<div onClick={this.goToDetail.bind(this, feed, "thumbnail")}>
-																	<Img 
-																		alt={feed.title} 
-																		className="program-thumbnail" 
+																	<Img
+																		alt={feed.title}
+																		className="program-thumbnail"
 																		unloader={<img className="program-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
-																		loader={<img className="program-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>} 
+																		loader={<img className="program-thumbnail" src="/static/placeholders/placeholder_landscape.png"/>}
 																		src={[this.state.meta.image_path + this.state.resolution + feed.landscape_image, '/static/placeholders/placeholder_landscape.png']} />
 																	{/* <PlayCircleOutlineIcon className="play-btn-icon" /> */}
 																</div>
 															)
 														}
-														
+
 														<span className="program-title program-title-bottom">{feed.summary}</span>
 													</Col>
 												</Row>

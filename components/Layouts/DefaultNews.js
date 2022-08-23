@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { withRouter } from 'next/router';
 import { connect } from 'react-redux';
+import dynamic from 'next/dynamic';
 
 import actions from '../../redux/actions';
 import pageActions from '../../redux/actions/pageActions';
@@ -10,11 +11,12 @@ import chatsActions from '../../redux/actions/chats';
 
 import Footer from '../../components/Includes/Footer/Default';
 import Footer_v2 from '../../components/Includes/Footer/Default_v2';
+import { getUidAppier } from '../../utils/appier';
 
-import { AUTHOR, GTM, GTM_AUTH, SHARE_BASE_URL, VIEWPORT } from '../../config';
+import { AUTHOR, VIEWPORT, MAIN_DESCRIPTION, OPEN_GRAPH, GTM, GTM_AUTH, SHARE_BASE_URL, MODE, APPIER_ID } from '../../config';
 
 import queryString from 'query-string';
-import { isAndroid, isIOS } from 'react-device-detect';
+import { isIOS, isAndroid } from "react-device-detect";
 
 
 import '../../assets/scss/apps/homepage/default.scss';

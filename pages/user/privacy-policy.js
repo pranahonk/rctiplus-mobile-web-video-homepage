@@ -2,14 +2,14 @@ import React from 'react';
 import Head from 'next/head';
 import { connect } from 'react-redux';
 import initialize from '../../utils/initialize';
-import Router, { withRouter } from 'next/router';
+import { withRouter } from 'next/router';
 import queryString from 'query-string';
 
 import Layout from '../../components/Layouts/Default_v2';
 import NavBack from '../../components/Includes/Navbar/NavBack';
 
 import '../../assets/scss/components/privacy-policy.scss';
-import { SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP } from '../../config';
+import { GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, SITE_NAME, SITEMAP } from '../../config';
 
 import miscActions from '../../redux/actions/miscActions';
 import pageActions from '../../redux/actions/pageActions';
@@ -39,7 +39,7 @@ class PrivacyPolicy extends React.Component {
                 this.header = q.header;
             }
 		}
-		
+
 		console.log(this.platform);
 	}
 
@@ -50,7 +50,7 @@ class PrivacyPolicy extends React.Component {
 				nextWrapper.style.height = '100%';
 			}
 		}
-		
+
 		this.props.setPageLoader();
 		this.props.getPrivacyPolicy()
 			.then(response => {

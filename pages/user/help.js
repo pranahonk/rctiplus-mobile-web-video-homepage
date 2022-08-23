@@ -1,7 +1,5 @@
-import React from 'react'
+import React from 'react';
 import { connect } from 'react-redux';
-import Head from 'next/head';
-import Lazyload from 'react-lazyload';
 import contentActions from '../../redux/actions/contentActions';
 import initialize from '../../utils/initialize';
 

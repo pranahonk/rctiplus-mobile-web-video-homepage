@@ -31,7 +31,7 @@ function landscapeMiniLiveView (props) {
 
     let component = (
       <p className="desc-text">
-        <strong>{day}</strong> 
+        <strong>{day}</strong>
         {` • ${date} ${month} ${year} - ${time} WIB`}
       </p>
     )
@@ -42,8 +42,26 @@ function landscapeMiniLiveView (props) {
       liveBadge = null
     }
 
+    let interactive = null
+    if(contentDetail.is_interactive) {
+      interactive = (
+        <span className='interactive'>
+          <div className='row align-items-center'>
+            <img
+              src='/static/player_icons/quiz_icon.svg	'
+              width={20}
+              height={20}
+              alt="desc"
+            />
+            <p className='ml-2 text-white' style={{fontSize: '12px'}}>INTERACTIVE</p>
+          </div>
+        </span>
+      )
+    }
+
     return(
       <>
+        {interactive}
         { liveBadge }
         <div>
           <p className="desc-title mini">{ contentDetail.title }</p>
@@ -65,7 +83,7 @@ function landscapeMiniLiveView (props) {
   }
 
   if (contents.length === 0) return null
-  
+
   return (
     <div
       onTouchStart={e => onTouchStart(e)}
@@ -77,7 +95,7 @@ function landscapeMiniLiveView (props) {
       <BottomScrollListener offset={40} onBottom={() => loadMore()}>
         {scrollRef => (
           <div
-            ref={scrollRef} 
+            ref={scrollRef}
             className="lineup-containers">
             {contents.map((content, i) => {
               return (
@@ -87,9 +105,9 @@ function landscapeMiniLiveView (props) {
                   key={i}
                   className="lineup-contents">
                   <div>
-                    <Img 
+                    <Img
                       className="lineup-image"
-                      alt={props.lineup.title} 
+                      alt={props.lineup.title}
                       unloader={<img src={placeHolderImgUrl} width={180} height={101} />}
                       loader={<img src={placeHolderImgUrl} width={180} height={101} />}
                       width={180}

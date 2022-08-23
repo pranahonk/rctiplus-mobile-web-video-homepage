@@ -15,13 +15,13 @@ const PremiumIcon = dynamic(() => import("../Includes/Common/PremiumIcon"))
 import '../../assets/scss/components/panel.scss'
 
 function landscapeLgWs (props) {
-  const { 
-    generateLink, 
-    onTouchStart, 
-    onTouchEnd, 
-    setInitialContents, 
-    loadMore, 
-    contents 
+  const {
+    generateLink,
+    onTouchStart,
+    onTouchEnd,
+    setInitialContents,
+    loadMore,
+    contents
   } = useVideoLineups(props)
   const placeHolderImgUrl = "/static/placeholders/placeholder_landscape.png"
   const rootImageUrl = `${props.imagePath}${RESOLUTION_IMG}`
@@ -41,10 +41,28 @@ function landscapeLgWs (props) {
       playingNow = <p className='playing-now'>Playing Now</p>
     }
 
+    let interactive = null
+    if(content.is_interactive) {
+      interactive = (
+        <span className='interactive'>
+          <div className='row align-items-center'>
+            <img
+              src='/static/player_icons/quiz_icon.svg	'
+              width={20}
+              height={20}
+              alt="desc"
+            />
+            <p className='ml-2 text-white' style={{fontSize: '12px'}}>INTERACTIVE</p>
+          </div>
+        </span>
+      )
+    }
+
     const startTime = content.start_ts || content.live_at
     const { year, month, date, day, time } = parseDateObject(startTime * 1000)
     return(
       <>
+        {interactive}
         {liveLabel}
         <div>
           <p className="desc-title large">{`${day}, ${date} ${month} ${year} - ${time} WIB`}</p>
@@ -66,7 +84,7 @@ function landscapeLgWs (props) {
   }
 
   if (contents.length === 0) return null
-  
+
   return (
     <div
       onTouchStart={e => onTouchStart(e)}
@@ -87,13 +105,13 @@ function landscapeLgWs (props) {
                   onClick={() => generateLink({ ...content, rootImageUrl })}
                   key={i}
                   className="lineup-contents">
-                  
+
                   <PremiumIcon premium={content.premium} />
 
                   <div>
-                    <Img 
+                    <Img
                       className="lineup-image"
-                      alt={props.lineup.title} 
+                      alt={props.lineup.title}
                       unloader={<img src={placeHolderImgUrl} width={336} height={189} />}
                       loader={<img src={placeHolderImgUrl} width={336} height={189} />}
                       width={336}
