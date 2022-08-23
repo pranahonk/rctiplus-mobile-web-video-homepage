@@ -1150,7 +1150,17 @@ class LiveEvent extends React.Component {
 								<TabPane tabId={'missed-event'}>
 									<Row style={{marginLeft: '0 !important'}}>
 									{this.state.missed_event.length > 0 ? this.state.missed_event.map((le, i) => (
-											<Col xs={6} key={i} onClick={() => Router.push(`/missed-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`)}>
+											<Col xs={6} key={i} onClick={() => {
+                        gaVideoInteraction(le?.content_id, le?.content_title,
+                          'not_available', le?.content_type,
+                          "not_available", "not_available",
+                          le?.id, le?.assets_name, "not_available",
+                          "not_available", "not_available",
+                          le?.channel_code, "not_available", "not_available",
+                          "not_available", "not_available", "not_available",
+                          "no");
+                        // Router.push(`/missed-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`)
+                      }}>
 												<Thumbnail
 												label="Live"
 												backgroundColor="#fa262f"

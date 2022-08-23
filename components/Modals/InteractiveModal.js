@@ -7,7 +7,7 @@ const InteractiveModal = (props) => {
 
   const closeButton = (x) => {
     x.toggle(false)
-    gaVideoInteractive("video_interaction", x.source === "live-event" ? "video_click_go_to_close" : "videotv_click_go_to_close+", "redirect_to_visionplus")
+    gaVideoInteractive("video_interaction", x.source === "live-event" ? "video_click_go_to_close" : "videotv_click_go_to_close+", "redirect_to_visionplus", "click_go_to_close")
   }
 
   return (
@@ -23,7 +23,7 @@ const InteractiveModal = (props) => {
             <p style={{fontSize: '16px', fontWeight: 'bold'}}>Nikmati keseruannya di aplikasi RCTI+</p>
             <p style={{fontSize: '11px'}}>Fitur Interactive hanya terdapat di aplikasi Android dan aplikasi iOS</p>
             <Button block className='mt-3 btn-primary-interactive' onClick={() => {
-              gaVideoInteractive("video_interaction",  props.source === "live-event" ? "video_click_go_to_aplikasir" : "videotv_click_go_to_aplikasir+", "redirect_to_visionplus")
+              gaVideoInteractive("video_interaction",  props.source === "live-event" ? "video_click_go_to_aplikasir" : "videotv_click_go_to_aplikasir+", "redirect_to_visionplus", "click_go_to_AplikasiVision+")
               homeGeneralClicked('mweb_homepage_install_button_clicked');
               window.open('https://onelink.to/apprctiplus', '_blank');
             }}>Install Aplikasi RCTI+</Button>
