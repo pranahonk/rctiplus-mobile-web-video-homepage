@@ -16,6 +16,7 @@ function storyModal(props) {
   const modal = useRef(null)
   const [ activeIndex, setActiveIndex ] = useState(0)
   const [ player, setPlayer ] = useState(null)
+  const [ slot, setSlot ] = useState(5)
 
   const timesec = 5
   const storyModalPlayerID = "storymodal-player"
