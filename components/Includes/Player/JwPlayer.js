@@ -88,9 +88,9 @@ const JwPlayer = (props) => {
       props.onResume(props.data.id, props.data.content_type, jwplayer.getPosition());
     })
 
-    return () => {
-      jwplayer.remove();
-    };
+    // return () => {
+    //   jwplayer.remove();
+    // };
   }, []);
 
   // listen data update on player

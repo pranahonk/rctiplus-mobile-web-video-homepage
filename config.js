@@ -1,5 +1,3 @@
-import { isIOS, isAndroid } from "react-device-detect";
-
 export const BASE_URL = process.env.BASE_URL;
 export const MODE = process.env.MODE
 export const APPIER_ID = process.env.APPIER_ID
@@ -63,6 +61,9 @@ export const GPT_ID_LIST = process.env.GPT_ID_LIST
 export const GPT_ID_SEARCH = process.env.GPT_ID_SEARCH
 
 export const GPT_ID_DETAIL = process.env.GPT_ID_DETAIL
+
+export const GPT_MOBILE_STICKY_BANNER_HC = process.env.GPT_MOBILE_STICKY_BANNER_HC
+export const GPT_MOBILE_STICKY_BANNER_HC_DIV = process.env.GPT_MOBILE_STICKY_BANNER_HC_DIV
 
 export const REDIRECT_SSR = process.env.REDIRECT_SSR;
 export const API_TIMEOUT = process.env.API_TIMEOUT;
@@ -357,12 +358,6 @@ export const SITEMAP = {
         title: `Berita Travel, Pariwisata, Kuliner Kekinian Hari Ini - ${SITE_NAME_NEWS}`,
         description: `Kumpulan berita travel, wisata, liburan, promosi, pesawat, hotel, dan kuliner terbaru hari ini dari berbagai sumber terpercaya`,
         keywords: `berita travel, berita wisata, berita pariwisata, destinasi wisata, tempat liburan, promosi, pesawat, hotel, wisata kuliner`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
-    },
-    trending_gaya_hidup: {
-        title: `Informasi Gaya Hidup, Lifestyle, dan Fashion Terkini - ${SITE_NAME_NEWS}`,
-        description: `Kumpulan berita dan artikel gaya hidup, lifestyle, dan fashional dari artis serta publik figure nasional dan internasional terkini di Indonesia`,
-        keywords: `berita lifestyle, berita gaya hidup, lifestyle`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
     trending_olahraga: {

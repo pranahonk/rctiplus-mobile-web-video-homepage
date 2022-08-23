@@ -57,6 +57,7 @@ class Index_v2 extends React.Component {
 
   state = {
     lineups: [],
+    gpt: {},
     meta: {},
     length: 5,
     show_sticky_install: false,
@@ -87,6 +88,7 @@ class Index_v2 extends React.Component {
     RPLUSAppVisit();
     gaTrackerScreenView();
 
+
     window.onbeforeunload = _ => {
       homeGeneralClicked('mweb_homepage_refresh');
     };
@@ -113,14 +115,16 @@ class Index_v2 extends React.Component {
             mappedContents.set(content.id, content)
           }
         })
+        console.log(data)
         this.setState({
           lineups: [ ...mappedContents.values() ],
-          meta: data.lineups.meta
+          meta: data.lineups.meta,
+          gpt: data.gpt.data
         })
       })
       .finally(_ => {
         if (page === 1) this.setState({ isShimmer: false })
-        this.LoadingBar.complete();
+        this.LoadingBar?.complete();
       })
   }
 
@@ -229,27 +233,57 @@ class Index_v2 extends React.Component {
           )
         case 'tag':
           return (
-            <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+            <HorizontalHastags
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              data={lineup}
+              id={lineup.id} />
           )
         case 'landscape_news':
           return (
-            <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+            <NewsHorizontalLandscape
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              data={lineup}
+              id={lineup.id} />
           )
         case "square_list_news":
           return (
-            <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+            <HorizontalMutipleLandscape
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              data={lineup}
+              id={lineup.id} />
           )
         case "landscape_hot_competition":
           return(
-            <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+            <LandscapeHotCompetition
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              id={lineup.id}
+              data={lineup} />
           )
         case "portrait_hot":
           return(
-            <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+            <LandscapeHotVideo
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              id={lineup.id}
+              data={lineup} />
           )
         case "square_list_audio":
           return(
-            <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+            <AudioHorizontalList
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              id={lineup.id}
+              data={lineup} />
           );
         case "portrait_disc":
           return(
@@ -332,11 +366,14 @@ class Index_v2 extends React.Component {
                           if (!this.props.ads.ads_displayed) {
                             return (
                               <div {...rest} >
-                                <StickyAds/>
+                                <StickyAds
+                                  path={this.state.gpt.path}
+                                  id={this.state.gpt.div_gpt}
+                                  targettingAdsData={this.state.gpt.cust_params}/>
                               </div>
                             );
                           }
-                          const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
+                          const adsContents = document.getElementById(this.state.gpt.div_gpt).childNodes;
                           if (adsContents.length > 0) {
                             if (adsContents[0].tagName == 'SCRIPT') {
                               const stickyAds = document.getElementById('sticky-ads-container');
@@ -347,7 +384,10 @@ class Index_v2 extends React.Component {
                           }
                           return (
                             <div {...rest} >
-                              <StickyAds sticky/>
+                              <StickyAds
+                                path={this.state.gpt.path}
+                                id={this.state.gpt.div_gpt} sticky
+                                targettingAdsData={this.state.gpt.cust_params} />
                             </div>
                           );
                         }
@@ -356,7 +396,10 @@ class Index_v2 extends React.Component {
                         }
                         return (
                           <div {...rest} >
-                            <StickyAds id='div-gpt-ad-1584677577539-0'/>
+                            <StickyAds
+                              path={this.state.gpt.path}
+                              id={this.state.gpt.div_gpt}
+                              targettingAdsData={this.state.gpt.cust_params} />
                           </div>
                         );
                       }}

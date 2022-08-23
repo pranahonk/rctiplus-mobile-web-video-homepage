@@ -83,7 +83,7 @@ function storyModal(props) {
       mountGpt()
     }
 
-    
+
   }
 
   const handleAnimationEnd = _ => {
@@ -141,7 +141,7 @@ function storyModal(props) {
       })
     }
   }
-  
+
   const closeModal = () => {
     props.onClose(seenStory())
     setActiveIndex(0)
@@ -200,7 +200,7 @@ function storyModal(props) {
 
       googletag.pubads().addEventListener('impressionViewable', function(event) {
         if(countImpressionViewable == 0){
-          
+
         }
         countImpressionViewable = countImpressionViewable + 1
       });
@@ -208,13 +208,13 @@ function storyModal(props) {
       googletag.pubads().addEventListener('slotRequested', function(event) {
         if(countSlotRequested == 0){
           document.getElementById("stories-content").style.removeProperty("display")
-        
+
           progressBars[activeIndex].classList.add("active")
           progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
           pauseProgressBar()
         }
         countSlotRequested = countSlotRequested + 1
-        
+
       });
 
       // This listener will be called when an ad response has been received for
@@ -226,7 +226,7 @@ function storyModal(props) {
           document.getElementById("loading-stories").style.display = "none"
           document.getElementById("close-stories").style.removeProperty("display")
 
-          window.addEventListener("message", (event) => {   
+          window.addEventListener("message", (event) => {
             if (!event.data) return
               switch(event.data.state) {
                 case "adContentLoaded": {
@@ -273,7 +273,7 @@ function storyModal(props) {
       googletag.display(props.story.story[activeIndex].div_gpt);
     });
   }
-  
+
 
   const mountJwplayer = () => {
     const linkVideo = props.story.story[activeIndex].link_video
@@ -294,16 +294,16 @@ function storyModal(props) {
     document.getElementById("stories-content").style.display = "none"
     document.getElementById("loading-stories").style.removeProperty("display")
     document.getElementById("close-stories").style.display = "none"
-    
+
     const jwplayer = window.jwplayer(storyModalPlayerID).setup({
       ...options,
       file: linkVideo
     })
     setPlayer(jwplayer)
-    
+
     jwplayer.on("ready", _ => {
       document.getElementById("stories-content").style.removeProperty("display")
-      
+
       progressBars[activeIndex].classList.add("active")
       progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
       pauseProgressBar()
@@ -342,7 +342,7 @@ function storyModal(props) {
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
     progressBars[activeIndex].children[0].style.animationPlayState = "paused"
   }
-  
+
   const runProgressBar = _ => {
     if (!progressBarWrapper.current) return
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
@@ -435,11 +435,11 @@ function storyModal(props) {
 
 
 
-  const storyImageSrc = props.story.story[activeIndex].story_img 
+  const storyImageSrc = props.story.story[activeIndex].story_img
   ? `${props.story.image_path}${RESOLUTION_IMG}${props.story.story[activeIndex].story_img}`
-  : "" 
+  : ""
   const storyVideoUrl = props.story.story[activeIndex].link_video
-  
+
 
   return (
     <div className="modalview-wrapper">
@@ -489,9 +489,9 @@ function storyModal(props) {
                 className="close-stories"
                 onClick={_ => closeModal()}>X</button>
             </>
-            
+
           }
-          
+
           <div id="loading-stories" style={{display: "none"}}></div>
         </div>
 
@@ -506,23 +506,23 @@ function storyModal(props) {
             width="100%"
             height="auto"
             style={{ display: storyImageSrc ? "" : "none" }}/>
-          <div 
+          <div
             id={storyModalPlayerID}
             style={{ display: storyVideoUrl ? "" : "none" }}/>
           {
             props.story.__typename == 'StoryGPT' ?
-            <StoryAds 
-              id={props.story.story[activeIndex].div_gpt} 
+            <StoryAds
+              id={props.story.story[activeIndex].div_gpt}
               path={props.story.story[activeIndex].path}
-              target={props.story.story[activeIndex].cust_params}
+              targettingAdsData={props.story.story[activeIndex].cust_params}
             />
             :
             null
           }
-          <div 
+          <div
             className="content-no-link"
             style={{ display: !storyVideoUrl && !storyImageSrc ? "" : "none" }}>
-            Sorry, there is no link provided to show the story :(  
+            Sorry, there is no link provided to show the story :(
           </div>
         </div>
 
