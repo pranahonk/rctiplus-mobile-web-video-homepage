@@ -955,7 +955,6 @@ class Index extends React.Component {
 
     // set active video index to be used when user click next / back player button
     this.getCurrentViewingVideoIndex();
-
     return (
       <Layout>
         <HeadMeta seoData={props.seo} data={props.seo_content}

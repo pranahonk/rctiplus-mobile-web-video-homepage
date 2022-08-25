@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import '../../../assets/scss/components/audio-disc.scss';
-import { getTruncate } from '../../../utils/helpers';
+import { truncateString } from '../../../utils/helpers';
 
 //import bottom screen listener
 import BottomScrollListener from 'react-bottom-scroll-listener';
@@ -17,13 +17,13 @@ function AudioDisc ({title, indexTag, id, data}) {
     const [loadingMore, setLoadingMore] = useState(false);
     const [assetUrl, setAssetUrl] = useState(null);
 
-    const placeHolderImgUrl = "/static/placeholders/placeholder_square.png"
-
     useEffect(() => {
-      console.log(data)
-      setMeta(data?.lineup_type_detail?.detail?.meta);
-      setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
-      setDisc(data?.lineup_type_detail?.detail?.data);
+      const filteredData =  data?.lineup_type_detail?.detail?.data.filter((x) => x?.content_type_detail?.detail?.status?.code === 0);
+      if(data?.lineup_type_detail?.detail?.status?.code !== "0"){
+        setMeta(data?.lineup_type_detail?.detail?.meta);
+        setAssetUrl(data?.lineup_type_detail?.detail?.meta?.image_path);
+        setDisc(filteredData);
+      }
     }, [])
 
     useEffect(() => {
@@ -67,7 +67,7 @@ function AudioDisc ({title, indexTag, id, data}) {
     }
 
     return (
-      disc === undefined || disc.length < 1 ?   (<div />) :
+      disc === undefined || disc.length  < 1 ?   (<div />) :
         <div className="pnl-audio-disc">
             <h2 className="content-title">{title}</h2>
           <BottomScrollListener offset={5000} onBottom={()=> setShow(true)}>
@@ -78,7 +78,7 @@ function AudioDisc ({title, indexTag, id, data}) {
                     setShow(false)
                   }
                   return (
-                    <div className="background-vertical" id={`square-list-audio-${index}`} key={index}  onClick={()=> _goToDetail(content?.content_type_detail?.detail?.data)}>
+                    <div className="background-vertical" id={`potrait-disc-${index}`} key={index}  onClick={()=> _goToDetail(content?.content_type_detail?.detail?.data)}>
                       <div className="background-disc">
                         <Img className="disc-img"
                              alt={content?.content_type_detail?.detail?.data?.title}
@@ -92,7 +92,7 @@ function AudioDisc ({title, indexTag, id, data}) {
                         {/*<img src="audio-icons/listener-icon.svg"/>*/}
                         {/*<span className="total-listener">{content?.content_type_detail?.detail?.data?.total_plays}</span>*/}
                       </div>
-                      <span className="playlist-name">{getTruncate(content?.content_type_detail?.detail?.data?.title, '...', 10)}</span>
+                      <span className="playlist-name">{truncateString(content?.content_type_detail?.detail?.data?.title,  20)}</span>
                     </div>
                   )
                 })}

@@ -503,37 +503,41 @@ class Tv extends React.Component {
 	getViewers(data) {
 		if(data.counter_enabled === "false") return
 
-		const subscribeViewers = {
-			channel: `ccu/live/${this.props.router.query.channel}`,
-			action: "subscribe",
-			secret: WS_SECRET_KEY
-		};
-
-		const ws = new WebSocket(data.counter_url);	
-    this.setState({socket: ws})
-
-		ws.onopen = () => {
-			console.log('ws on open')
-
-      ws.send(JSON.stringify(subscribeViewers));
-			this.setState({ws_status: true})
-    };
-
-    ws.onmessage = msg => {
-			console.log('ws on message')
-
-      let msgdata = JSON.parse(msg.data.replaceAll("'", '"'));
-			this.setState({ccu_human: msgdata?.data?.ccu_human})
-    };
-
-		ws.onclose = close => {
-			console.log('ws on disconnected')
-			this.setState({ccu_human:null, ws_status: false, socket: null})
-		}
-
-		ws.onerror = error => {
-			console.log('ws on error', error)
-			this.setState({ccu_human:null, ws_status: false, socket: null})
+		try {
+			const subscribeViewers = {
+				channel: `ccu/live/${this.props.router.query.channel}`,
+				action: "subscribe",
+				secret: WS_SECRET_KEY
+			};
+			const ws = new WebSocket(data.counter_url);	
+			this.setState({socket: ws})
+	
+			ws.onopen = () => {
+				console.log('ws on open')
+	
+				ws.send(JSON.stringify(subscribeViewers));
+				this.setState({ws_status: true})
+			};
+	
+			ws.onmessage = msg => {
+				console.log('ws on message')
+	
+				let msgdata = JSON.parse(msg.data.replaceAll("'", '"'));
+				this.setState({ccu_human: msgdata?.data?.ccu_human})
+			};
+	
+			ws.onclose = close => {
+				console.log('ws on disconnected')
+				this.setState({ccu_human:null, ws_status: false, socket: null})
+			}
+	
+			ws.onerror = error => {
+				console.log('ws on error', error)
+				this.setState({ccu_human:null, ws_status: false, socket: null})
+			}
+			
+		} catch (error) {
+			console.error('ws error', error)
 		}
 	}
 
@@ -1129,7 +1133,7 @@ class Tv extends React.Component {
 					<div ref= {this.tvTabRef} className="tv-wrap">
 						<p className='pl-3  mt-1 text-sm' style={{fontSize: 14, marginBottom: '-1px'}}>{this.state.epg?.[0]?.title}</p>
 						<p className='pl-3' style={{fontSize: 12}}>{this.state.ccu_human}</p>
-						<Row>
+						<Row className='mt-2'>
 							<Col xs={3} className="text-center">
 								<Link href="/tv?channel=rcti" as="/tv/rcti">
 									<Button size="sm" color="link" className={this.state.selected_index === 0 ? 'selected' : ''} onClick={this.selectChannel.bind(this, 0)}><h1 className="heading-rplus">RCTI</h1></Button>

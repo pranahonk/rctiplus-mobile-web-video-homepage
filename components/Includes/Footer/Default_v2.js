@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 
 import userActions from '../../../redux/actions/userActions';
 import chatsActions from '../../../redux/actions/chats';
 
-import { homeGeneralClicked, exclusiveGeneralEvent, accountGeneralEvent } from '../../../utils/appier';
+import { accountGeneralEvent, exclusiveGeneralEvent, homeGeneralClicked } from '../../../utils/appier';
 
 import '../../../assets/scss/components/footer-v2.scss';
 
 import { bottomMenuClick } from '../../../utils/firebaseTracking';
 import { gaTrackerNavbarTrack } from '../../../utils/ga-360';
-import { getUserAccessToken, getVisitorToken } from "../../../utils/cookie" 
+import { getUserAccessToken, getVisitorToken } from '../../../utils/cookie';
 
 const FooterNav_v2 = (props) => {
 

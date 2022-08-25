@@ -41,9 +41,8 @@ export default function useVideoLineups(props) {
   }
 
   const setInitialContents = () => {
-    const { data, meta } = props.lineup.lineup_type_detail.detail;
-    const mappedContents = new Map();
-
+    const { data, meta } = props.lineup.lineup_type_detail.detail
+    const mappedContents = new Map()
 
     switch (props.lineup.lineup_type) {
       case "custom":
@@ -63,8 +62,8 @@ export default function useVideoLineups(props) {
         break
     }
     setContents([ ...mappedContents.values() ])
-    setEndPage(meta?.pagination?.current_page === meta?.pagination?.total_page)
-    setNextPage(meta?.pagination?.current_page + 1)
+    setEndPage(meta.pagination.current_page === meta.pagination.total_page)
+    setNextPage(meta.pagination.current_page + 1)
   }
 
   const getContinueWatching = () => {
@@ -121,11 +120,11 @@ export default function useVideoLineups(props) {
         if (props.lineup.content_type === "continue_watching") Router.push(`${url}?ref=continue_watching`)
         else Router.push(url)
         break;
-      case "default":
-        Router.push(content?.permalink)
-        break;
       default:
         if (content.content_type.includes("live")) {
+          if (content.content_type.includes("radio")|| content.content_type.includes("music")){
+            Router.push( content?.permalink )
+          }
           const started = content.countdown === 0
 
           if (started) Router.push(url)
@@ -135,6 +134,7 @@ export default function useVideoLineups(props) {
               : "../static/placeholders/placeholder_landscape.png"
 
             props.showComingSoonModal(true, {
+              is_interactive: content.is_interactive,
               countdown: content.countdown,
               start: content.start_ts || content.live_at,
               title: content.title,

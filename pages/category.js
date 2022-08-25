@@ -1,26 +1,26 @@
-import React, {useEffect, useRef, useState } from 'react'
-import router, { Router, useRouter, withRouter } from 'next/router'
-import { connect } from "react-redux"
-import BottomScrollListener from 'react-bottom-scroll-listener'
-import LoadingBar from 'react-top-loading-bar'
-import { StickyContainer, Sticky } from 'react-sticky'
-import dynamic from 'next/dynamic'
+import React, { useEffect, useRef, useState } from 'react';
+import { useRouter, withRouter } from 'next/router';
+import { connect } from 'react-redux';
+import BottomScrollListener from 'react-bottom-scroll-listener';
+import LoadingBar from 'react-top-loading-bar';
+import { Sticky, StickyContainer } from 'react-sticky';
+import dynamic from 'next/dynamic';
 
-import HomeLoader from '../components/Includes/Shimmer/HomeLoader'
-import Layout from '../components/Layouts/Default_v2'
-import { gaTrackerScreenView } from '../utils/ga-360'
+import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
+import Layout from '../components/Layouts/Default_v2';
+import { gaTrackerScreenView } from '../utils/ga-360';
 
-import Header from "../components/Includes/HomeCategory/DetailCategory/Header"
-import Carousel from '../components/Includes/Gallery/Carousel_v2'
-import GridMenu from '../components/Includes/Common/HomeCategoryMenu'
-import Stories from '../components/Includes/Gallery/Stories_v2'
-import StickyAds from '../components/Includes/Banner/StickyAds'
-import { client } from "../graphql/client"
-import { GET_LINEUPS } from "../graphql/queries/homepage"
-import adsActions from '../redux/actions/adsActions'
-import { setVisitorToken } from '../utils/cookie'
-import Cookies from 'js-cookie'
-import { titleStringUrlRegex, urlRegex } from '../utils/regex'
+import Header from '../components/Includes/HomeCategory/DetailCategory/Header';
+import Carousel from '../components/Includes/Gallery/Carousel_v2';
+import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
+import Stories from '../components/Includes/Gallery/Stories_v2';
+import StickyAds from '../components/Includes/Banner/StickyAds';
+import { client } from '../graphql/client';
+import { GET_LINEUPS } from '../graphql/queries/homepage';
+import adsActions from '../redux/actions/adsActions';
+import { setVisitorToken } from '../utils/cookie';
+import Cookies from 'js-cookie';
+import { titleStringUrlRegex } from '../utils/regex';
 
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
 const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
@@ -44,6 +44,7 @@ const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_li
 function Category (props) {
     const [ isShimmer, setIsShimmer ] = useState(false)
     const [ lineups, setLineups ] = useState([])
+    const [ gpt, setGpt ] = useState([])
     const [ meta, setMeta ] = useState({})
     const [ openComingSoonModal, setOpenComingSoonModal ] = useState(false)
     const [ contentComingSoonModal, setContentComingSoonModal ] = useState({})
@@ -67,26 +68,27 @@ function Category (props) {
     useEffect(() => {
         const { category_id, category_title} = props.router.query
         let href, as
-        
+
         href = `/category?category_id=${category_id}&category_title=${(category_title)}`;
         as = `/category/${category_id}/${titleStringUrlRegex(category_title).toLowerCase()}`;
-        
+
         router.push(href, as, { shallow: true });
     },[])
 
     const getCategoryLineups = async (page = 1, pageSize = 5) => {
         await setVisitorToken()
-        if (page === 1 ) setIsShimmer(true)
         if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
+        if (page === 1) setIsShimmer(true)
             client
                 .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
                 .then(({ data }) => {
                     let newLineups = data.lineups.data
-                    
+
+
                     if (page > 1) {
                         newLineups = lineups.concat(newLineups)
                     }
-    
+
                     const mappedContents = new Map()
                     newLineups.forEach(content => {
                         if (content.lineup_type_detail.detail) {
@@ -95,6 +97,7 @@ function Category (props) {
                     })
                     setLineups([ ...mappedContents.values() ])
                     setMeta(data.lineups.meta)
+                    setGpt(data.gpt.data)
                 })
                 .catch(_ => {})
                 .finally(_ => {
@@ -106,7 +109,8 @@ function Category (props) {
     const setComingSoonModalState = (open, content) => {
         setOpenComingSoonModal(open)
         setContentComingSoonModal(content)
-    }    
+    }
+
 
     const renderLineups = () => {
         return lineups.map((lineup, index) => {
@@ -194,24 +198,68 @@ function Category (props) {
                     )
                 case 'tag':
                   return (
-                    <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+                    <HorizontalHastags
+                      key={lineup.id}
+                      title={lineup.title}
+                      indexTag={index}
+                      data={lineup}
+                      id={lineup.id} />
                   )
                 case 'landscape_news':
                   return (
-                    <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+                    <NewsHorizontalLandscape
+                      key={lineup.id}
+                      title={lineup.title}
+                      indexTag={index}
+                      data={lineup}
+                      id={lineup.id} />
                   )
                 case "square_list_news":
                   return (
-                    <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+                    <HorizontalMutipleLandscape
+                      key={lineup.id}
+                      title={lineup.title}
+                      indexTag={index}
+                      data={lineup}
+                      id={lineup.id} />
                   )
                 case "landscape_hot_competition":
                   return(
-                    <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+                    <LandscapeHotCompetition
+                      key={lineup.id}
+                      title={lineup.title}
+                      indexTag={index}
+                      id={lineup.id}
+                      data={lineup} />
                   )
                 case "portrait_hot":
                   return(
-                    <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+                    <LandscapeHotVideo
+                      key={lineup.id}
+                      title={lineup.title}
+                      indexTag={index}
+                      id={lineup.id}
+                      data={lineup} />
                   )
+                case "square_list_audio":
+                  return(
+                    <AudioHorizontalList
+                      key={lineup.id}
+                      title={lineup.title}
+                      indexTag={index}
+                      id={lineup.id}
+                      data={lineup} />
+                  );
+                case "portrait_disc":
+                  return(
+                    <AudioHorizontalDisc
+                      title={lineup.title}
+                      key={lineup.id}
+                      data={lineup}
+                      indexTag={index}
+                      id={lineup.id}
+                    />
+                  );
             }
         })
     }
@@ -238,7 +286,7 @@ function Category (props) {
                             <div style={{marginTop: -3}}>
                                 <Carousel category />
                             </div>
-                           
+
                             <GridMenu />
 
                             <Stories />
@@ -247,18 +295,26 @@ function Category (props) {
                                 <Sticky disableHardwareAcceleration>
                                     { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
                                         const topDistance = 40;
+
                                         if (distanceFromTop < topDistance) {
                                             if (!props.ads.ads_displayed) {
                                                 return (
                                                     <div {...rest} >
-                                                        <StickyAds/>
+                                                      <StickyAds
+                                                        path={gpt.path}
+                                                        id={gpt.div_gpt}
+                                                        targettingAdsData={gpt.cust_params}
+                                                      />
                                                     </div>
                                                 );
                                             }
-                                            const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
+
+
+                                            const adsContents = document.getElementById(gpt.div_gpt).childNodes;
+
                                             if (adsContents.length > 0) {
                                                 if (adsContents[0].tagName == 'SCRIPT') {
-                                                    const stickyAds = document.getElementById('sticky-ads-container');
+                                                    const stickyAds = gpt.div_gpt.childNodes;
                                                     if (stickyAds) {
                                                         stickyAds.style.display = 'none'
                                                     }
@@ -266,7 +322,11 @@ function Category (props) {
                                             }
                                             return (
                                                 <div {...rest} >
-                                                    <StickyAds sticky/>
+                                                  <StickyAds
+                                                    path={gpt.path}
+                                                    id={gpt.div_gpt}
+                                                    targettingAdsData={gpt.cust_params}
+                                                    sticky/>
                                                 </div>
                                             );
                                         }
@@ -275,7 +335,11 @@ function Category (props) {
                                         }
                                         return (
                                             <div {...rest} >
-                                                <StickyAds id='div-gpt-ad-1584677577539-0'/>
+                                              <StickyAds
+                                                path={gpt.path}
+                                                id={gpt.div_gpt}
+                                                targettingAdsData={gpt.cust_params}
+                                              />
                                             </div>
                                         );
                                     } }
