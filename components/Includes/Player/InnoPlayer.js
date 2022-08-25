@@ -44,7 +44,7 @@ const InnoPlayer = (props) => {
   const idPlayer = 'innoplayer-rctiplus';
   const options = {
     id: idPlayer,
-    key: "bc67d9c0037202635cd1bdbe6e8446cce1221d04f2a8f982effff19830771003",
+    key: process.env.KEY_INNOPLAYER,
     file: props.data && props.data.url,
     displayTitle: false,
     controls: true,
