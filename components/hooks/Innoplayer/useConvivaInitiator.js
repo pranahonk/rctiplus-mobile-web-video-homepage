@@ -35,8 +35,7 @@ export default function useConvivaInitiator(props) {
       genre: genreTags,
       is_login: props.customData && props.customData.isLogin ? 'login' : 'not login',
       program_type: props.customData && props.customData.programType ? props.customData.programType : 'N/A',
-      conviva_params: props?.data?.conviva_params,
-      cluster_name: 'N/A'
+      cluster_name: 'N/A',
     };
 
     const isLive = /^live/i.test(props.type)
