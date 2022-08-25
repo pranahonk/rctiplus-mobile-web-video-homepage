@@ -25,16 +25,16 @@ export default function useCustomPlayerButton (props) {
   ])
   
   const onAdsActive = () => {
-    const playerContainer = ConvertStringToHTML(props.player.getContainer())
-    const overlayButtonContainer = playerContainer.querySelector(".jw-display.jw-reset")
+    const playerContainer = props.player.getContainer()
+    const overlayButtonContainer = playerContainer.querySelector(".inno-display.inno-reset")
     overlayButtonContainer.style.display = hideBtns ? "none" : "flex"
   }
 
   const setUpCustomBtns = ({ type }) => {
     if (!props.player) return
-    const playerContainer = ConvertStringToHTML(props.player.getContainer())
-    const overlayButtonContainer = playerContainer.querySelector(".jw-display.jw-reset")
-    const customBtnSlots = playerContainer.querySelector(".jw-display-controls.jw-reset")
+    const playerContainer = props.player.getContainer()
+    const overlayButtonContainer = playerContainer.querySelector(".inno-display.inno-reset")
+    const customBtnSlots = playerContainer.querySelector(".inno-display-controls.inno-reset")
 
     if (!overlayButtonContainer || !customBtnSlots) return
 
@@ -44,7 +44,7 @@ export default function useCustomPlayerButton (props) {
     customBtnSlots.style.justifyContent = "center"
    
     // Setup the margin of each controls to zero to prevent overlapping per element
-    Array.from(playerContainer.querySelectorAll(".jw-display-icon-container.jw-reset"))
+    Array.from(playerContainer.querySelectorAll(".inno-display-icon-container.inno-reset"))
       .forEach(iconContainer => {
         iconContainer.style.margin = 0
         iconContainer.style.display = "flex"
@@ -73,7 +73,7 @@ export default function useCustomPlayerButton (props) {
       // <figure
       //   key={`${index}-skipbtn`}
       //   ref={skipPosIconContainer}
-      //   className={`jwplayer-action jw-icon ${direction}`}
+      //   className={`innoplayer-action inno-icon ${direction}`}
       //   role="button"
       //   onDoubleClick={() => fastForwardBackwardClicked(direction)}>
       //   <img
@@ -88,7 +88,7 @@ export default function useCustomPlayerButton (props) {
     const navBtn = (
       <div
         key={`${index}-navbtn`}
-        className={`jw-icon jw-${className} jw-button-color jw-reset`}
+        className={`inno-icon inno-${className} inno-button-color inno-reset`}
         role="button"
         onClick={() => handleClick(direction)}>
         <img
@@ -98,7 +98,7 @@ export default function useCustomPlayerButton (props) {
     )
     const disabledNavBtn = (
       <div 
-        className={`jw-icon jw-${className} jw-button-color jw-reset`} 
+        className={`inno-icon inno-${className} inno-button-color inno-reset`} 
         key={`${index}-navbtn`}></div>
     )
 
@@ -109,7 +109,7 @@ export default function useCustomPlayerButton (props) {
   }
 
   const injectCustomBtns = (buttonContents) => {
-    const playerContainer = ConvertStringToHTML(props.player.getContainer())
+    const playerContainer = props.player.getContainer()
 
     let disabledDirection = ""
     if (props.videoIndexing) {
@@ -124,7 +124,7 @@ export default function useCustomPlayerButton (props) {
       
       const contents = createButtonContents(buttonContent, i, disabledDirection)
       const parentIconsContainer = playerContainer
-        .querySelector(`.jw-display-icon-container.jw-display-${className}.jw-reset`)
+        .querySelector(`.inno-display-icon-container.inno-display-${className}.inno-reset`)
 
       if (!parentIconsContainer) return
       hydrate(
@@ -137,9 +137,9 @@ export default function useCustomPlayerButton (props) {
 
   const onButtonMounted = () => {
     // Undisplay and empty the container
-    const playerContainer = ConvertStringToHTML(props.player.getContainer())
-    const nextContainer = playerContainer.querySelector(".jw-display-icon-next.jw-reset")
-    const prevContainer = playerContainer.querySelector(".jw-display-icon-rewind.jw-reset")
+    const playerContainer = props.player.getContainer()
+    const nextContainer = playerContainer.querySelector(".inno-display-icon-next.inno-reset")
+    const prevContainer = playerContainer.querySelector(".inno-display-icon-rewind.inno-reset")
     
     if (!nextContainer || !prevContainer) return
 
@@ -150,8 +150,8 @@ export default function useCustomPlayerButton (props) {
         break
       }
       case "live event": {
-        const fastBackward = prevContainer.querySelector(".jwplayer-action.jw-icon.backward")
-        const fastForward = nextContainer.querySelector(".jwplayer-action.jw-icon.forward")
+        const fastBackward = prevContainer.querySelector(".innoplayer-action.inno-icon.backward")
+        const fastForward = nextContainer.querySelector(".innoplayer-action.inno-icon.forward")
 
         if (!fastForward || !fastBackward) return
         fastBackward.style.display = "none"
@@ -194,9 +194,3 @@ export default function useCustomPlayerButton (props) {
     setHideBtns
   }
 }
-
-let ConvertStringToHTML = function (str) {
-  let parser = new DOMParser();
-  let doc = parser.parseFromString(str, 'text/html');
-  return doc.body;
-};

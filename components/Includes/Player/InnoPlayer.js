@@ -4,11 +4,12 @@ import { isIOS } from 'react-device-detect';
 
 import { convivaInnoPlayer} from '../../../utils/conviva';
 import Wrench from '../Common/Wrench';
-import '../../../assets/scss/jwplayer.scss';
+import '../../../assets/scss/innoplayer.scss';
 
 import useCustomPlayerButton from "../../hooks/Innoplayer/useCustomPlayerButton"
 import useSetupBitrate from "../../hooks/Innoplayer/useSetupBitrate"
 import useConvivaInitiator from "../../hooks/Innoplayer/useConvivaInitiator"
+import { FlashOnTwoTone } from '@material-ui/icons';
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -45,22 +46,22 @@ const InnoPlayer = (props) => {
   const options = {
     id: idPlayer,
     key: "bc67d9c0037202635cd1bdbe6e8446cce1221d04f2a8f982effff19830771003",
-    autoplay: true,
-    mute: true,
-    floating: true,
     file: props.data && props.data.url,
-    width: '100%',
-    aspectratio: '16:9',
-    displayTitle: true,
-    stretch: 'stretch',
-    height: 180,
-    controls: true,
-    chromecast: true,
     displayTitle: false,
+    controls: true,
+    autoplay: true,
+    chromecast: true,
     advertising: {
       client: process.env.ADVERTISING_CLIENT_INNOPLAYER,
       tag: props.data && props.data.vmap_ima,
+      locale: 'ID',
+      preloadAds: true,
     },
+    mute: true,
+    floating: true,
+    width: '100%',
+    aspectRatio: '16:9',
+    stretch: 'stretch',
     position: {
       topControlLeft: [],
       topControlRight: [
@@ -133,8 +134,8 @@ const InnoPlayer = (props) => {
         setPlayerFullscreen(props.isFullscreen);
         // setIsPlayerReady(true)
 
-        const playerContainer = ConvertStringToHTML(player.getContainer())
-        const isForward = playerContainer.querySelector('.jw-rplus-forward');
+        const playerContainer = document.querySelector('#innoplayer-rctiplus')
+        const isForward = playerContainer.querySelector('.inno-rplus-forward');
 
         if (props.type.includes("live")) {
           const data = props.data
@@ -177,7 +178,7 @@ const InnoPlayer = (props) => {
 
         if(isForward) {
           const forwardElement = document.createElement('div');
-          forwardElement.classList.add('jw-rplus-forward');
+          forwardElement.classList.add('inno-rplus-forward');
           forwardElement.innerHTML = foward10;
           forwardElement.addEventListener('dblclick', (ev) => {
             setTimeout(() => {
@@ -198,12 +199,12 @@ const InnoPlayer = (props) => {
             playerContainer.appendChild(elementCreateMute);
             elementCreateMute.appendChild(elementMuteIcon);
           }
-          const elementJwplayer = document.getElementsByClassName('innoplayer-vol-off');
+          const elementInnoplayer = document.getElementsByClassName('innoplayer-vol-off');
           elementCreateMute.addEventListener('click', () => {
             if (elementCreateMute === null) {
               player.setMute(true);
-              elementJwplayer[0].classList.add('innoplayer-mute');
-              elementJwplayer[0].classList.remove('innoplayer-full');
+              elementInnoplayer[0].classList.add('innoplayer-mute');
+              elementInnoplayer[0].classList.remove('innoplayer-full');
             }
             else {
               player.setMute(false);
@@ -214,16 +215,17 @@ const InnoPlayer = (props) => {
         }
         player.seek(props.data.last_duration);
       })
+      
 
       player.on('mute', function() {
-        const elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
-        if (elementJwplayer[0] !== undefined) {
+        const elementInnoplayer = document.getElementsByClassName('innoplayer-vol-off');
+        if (elementInnoplayer[0] !== undefined) {
           if (player.getMute()) {
-            elementJwplayer[0].classList.add('jwplayer-mute');
-            elementJwplayer[0].classList.remove('jwplayer-full');
+            elementInnoplayer[0].classList.add('innoplayer-mute');
+            elementInnoplayer[0].classList.remove('innoplayer-full');
           } else {
-            elementJwplayer[0].classList.add('jwplayer-full');
-            elementJwplayer[0].classList.remove('jwplayer-mute');
+            elementInnoplayer[0].classList.add('innoplayer-full');
+            elementInnoplayer[0].classList.remove('innoplayer-mute');
           }
         }
       })
@@ -231,7 +233,7 @@ const InnoPlayer = (props) => {
       player.on('play', () => {
         // setBitrateLevels(player.getQualityLevels())
         setInitConviva(true)
-        player.setMute(false);
+        // player.setMute(false);
 
         convivaInnoPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
@@ -270,7 +272,7 @@ const InnoPlayer = (props) => {
       // ads event
       player.on('adImpression', (event) => {
         player.pause();
-        player.setMute(false);
+        // player.setMute(false);
         if (document.querySelector('.ads_wrapper')) {
           setAdStatus('none');
         }
@@ -301,11 +303,11 @@ const InnoPlayer = (props) => {
         }
 
         player.play();
-        if (document.querySelector('.jw-display')) {
-          document.querySelector('.jw-display').style.display = 'flex'
+        if (document.querySelector('.inno-display')) {
+          document.querySelector('.inno-display').style.display = 'flex'
         }
-        if (document.querySelector('.jw-controlbar')) {
-          document.querySelector('.jw-controlbar').style.display = 'flex'
+        if (document.querySelector('.inno-controlbar')) {
+          document.querySelector('.inno-controlbar').style.display = 'flex'
         }
       });
 
@@ -324,7 +326,7 @@ const InnoPlayer = (props) => {
   });
 
   useEffect(() => {
-    const containerElement = document.getElementsByClassName('rplus-jw-container');
+    const containerElement = document.getElementsByClassName('rplus-inno-container');
     if (player !== null) {
       player.on('error', (event) => {
         const convivaTracker = convivaInnoPlayer();
@@ -629,7 +631,7 @@ const InnoPlayer = (props) => {
 
   return (
     <>
-      <div className="rplus-jw-container" style={{position: "relative"}}>
+      <div className="rplus-inno-container" style={{position: "relative"}}>
         { getPlayer(status.isError01 , status.isError02 ) }
       </div>
     </>
