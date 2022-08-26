@@ -10,6 +10,7 @@ import {
 
 import {
   contentTypeAudioRadio,
+  contentTypeAudioPodcast,
   contentTypeCatchupFragment,
   contentTypeClipFragment,
   contentTypeEpisodeFragment,
@@ -18,8 +19,7 @@ import {
   contentTypeLiveEventFragment,
   contentTypeProgramFragment,
   contentTypeSeasonFragment,
-  contentTypeSpecialFragment,
-  contentTypeAudioPodcast
+  contentTypeSpecialFragment
 } from "../fragments/content_types"
 
 function getQueryParams(args) {
