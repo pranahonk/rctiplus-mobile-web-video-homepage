@@ -1,0 +1,213 @@
+// .inno-icon-rewind {
+//   opacity: 0 !important;
+// }
+.animated {
+  -webkit-animation-duration: 800ms;
+  animation-duration: 800ms;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+.rplus-inno-container {
+  min-height: 180px;
+  background-color: #000000;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+}
+
+.innoplayer {
+  &.inno-skin-rplus_player {
+    text-align: left;
+    .inno-display-icon-next {
+      visibility: visible !important;
+    }
+    .inno-controlbar {
+      .inno-buffer {
+        background: #c50000;
+        opacity: 0.5;
+      }
+      .inno-progress {
+        background-color: #c50000;
+        position: relative;
+        &::after {
+          content: '';
+          position: absolute;
+          width: 15px;
+          height: 15px;
+          background-color: #c50000;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          border-radius: 100%;
+        }
+      }
+      .inno-icon-tooltip {
+        position: relative;
+      }
+    }
+    .innoplayer-vol-off {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      margin-left: 14px !important;
+      margin-top: 55px !important;
+      background: rgba(0, 0, 0, 0.5) !important;
+      font-size: 12px !important;
+      padding: 5px 10px !important;
+      border-radius: 3px !important;
+    }
+
+    .innoplayer-full {
+      display: none !important;
+    }
+
+    .innoplayer-mute {
+      display: block !important;
+    }
+  }
+
+  &.inno-flag-live {
+    .inno-display-icon-rewind {
+      visibility: unset !important;
+    }
+  }
+}
+
+/*************
+* FadeInRight *
+*************/
+
+@-webkit-keyframes fadeInRight {
+  0% {
+      opacity: 1;
+      -webkit-transform: translateX(0);
+  }
+  50%{
+     opacity: 0.3;
+  }
+  100% {
+      opacity: 0;
+      -webkit-transform: translateX(50px);
+  }
+}
+@keyframes fadeInRight {
+  0% {
+      opacity: 1;
+      transform: translateX(0);
+  }
+  50%{
+     opacity: 0.3;
+  }
+  100% {
+      opacity: 0;
+      transform: translateX(50px);
+  }
+}
+.fadeInRight{
+  opacity: 0;
+  -webkit-transform: translateX(0);
+  transform: translateX(0);
+}
+.fadeInRight.go {
+  -webkit-animation-name: fadeInRight;
+  animation-name: fadeInRight;
+}
+
+.ads_wrapper{
+    width:100%;
+    height:auto;
+    z-index: 999999;
+    display: none;
+    position: absolute;
+    bottom: 70px;
+
+    .adsStyling{
+        width: 320px;
+        height: 50px;
+        margin: 0 auto;
+        position: relative;
+
+        .close_button{
+            border-radius: 180px;
+            // width: 25px;
+            // height: 25px;
+            background: black;
+            position: absolute;
+            top: -12.5px;
+            right: -12.5px;
+            // padding: 0px 8px 0px 8px;
+            color: white;
+            text-align: center;
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    .adsStylingLandscape{
+      width: 468px;
+      height: 60px;
+      margin: 0 auto;
+      position: relative;
+
+      .close_button{
+          border-radius: 180px;
+          // width: 25px;
+          // height: 25px;
+          background: black;
+          position: absolute;
+          top: -12.5px;
+          right: -12.5px;
+          // padding: 0px 8px 0px 8px;
+          color: white;
+          text-align: center;
+          display: flex;
+          align-items: center;
+      }
+  }
+
+    /* &.adsBigBox {
+        .adsStyling {
+            width: 468px;
+            height: 60px;
+        }
+    } */
+
+    &.fullscreen-player{
+        position: fixed;
+        z-index: 2147483647;
+
+        // .adsStyling {
+        //   width: 468px;
+        //   height: 60px;
+        // }
+    }
+}
+
+.innoplayer-action {
+  background: #0000006e !important;
+  animation: none;
+  border-radius: 100%;
+  margin: 0;
+  height: 300px !important;
+  width: 180px !important;
+  padding: 1rem;
+  opacity: 0;
+  
+  &.forward {
+    justify-content: flex-start !important;
+  }
+  
+  &.backward {
+    justify-content: flex-end !important;
+  }
+
+  &.fading {
+    animation: opacity 2s;
+    animation-play-state: running;
+  }
+}
+
+@keyframes opacity {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
