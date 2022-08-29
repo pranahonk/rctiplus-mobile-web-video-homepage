@@ -15,6 +15,11 @@
   position: relative;
 }
 
+.inno-player #adContainer{
+  z-index: 13;
+  pointer-events: auto;
+}
+
 .innoplayer {
   &.inno-skin-rplus_player {
     text-align: left;
