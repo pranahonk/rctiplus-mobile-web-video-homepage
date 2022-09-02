@@ -141,6 +141,30 @@
         }
     }
 
+    .story-left{
+        position: absolute;
+        top: 21px;
+        left: 0;
+        width: 30%;
+        padding: 0 5px;
+        display: flex;
+        justify-content: space-between;
+        z-index: 1030;
+        height: 50%;
+    }
+
+    .story-right{
+        position: absolute;
+        top: 21px;
+        right: 0;
+        width: 30%;
+        padding: 0 5px;
+        display: flex;
+        justify-content: space-between;
+        z-index: 1030;
+        height: 100%;
+    }
+
     .progressbar-stories {
         display: flex;
         position: absolute;
