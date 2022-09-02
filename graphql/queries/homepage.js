@@ -10,6 +10,7 @@ import {
 
 import {
   contentTypeAudioRadio,
+  contentTypeAudioPodcast,
   contentTypeCatchupFragment,
   contentTypeClipFragment,
   contentTypeEpisodeFragment,
@@ -18,8 +19,8 @@ import {
   contentTypeLiveEventFragment,
   contentTypeProgramFragment,
   contentTypeSeasonFragment,
-  contentTypeSpecialFragment,
-} from '../fragments/content_types';
+  contentTypeSpecialFragment
+} from "../fragments/content_types"
 
 function getQueryParams(args) {
   let output = []
@@ -213,6 +214,7 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 5, lineup_id = 0)
             ${contentTypeLiveEPGFragment}
             ${contentTypeSpecialFragment}
             ${contentTypeSeasonFragment}
+            ${contentTypeAudioPodcast}
             ${contentTypeAudioRadio}
           }
         }
