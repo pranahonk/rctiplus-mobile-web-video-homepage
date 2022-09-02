@@ -1,13 +1,15 @@
 import React from 'react';
 import { Modal, ModalBody, Row, Button } from 'reactstrap';
 import { homeGeneralClicked } from '../../utils/appier';
-import { gaVideoInteractive } from '../../utils/ga-360';
+import { gaVideoInteraction, gaVideoInteractive } from '../../utils/ga-360';
 
 const InteractiveModal = (props) => {
 
   const closeButton = (x) => {
-    x.toggle(false)
-    gaVideoInteractive("video_interaction", x.source === "live-event" ? "video_click_go_to_close" : "videotv_click_go_to_close+", "redirect_to_visionplus", "click_go_to_close")
+    x.toggle(false);
+    console.log(x, props);
+    gaVideoInteractive("video_interaction", x.source === "live-event" ? "video_click_go_to_close" : "videotv_click_go_to_close+", "redirect_to_visionplus", "click_go_to_close");
+    gaVideoInteraction()
   }
 
   return (
