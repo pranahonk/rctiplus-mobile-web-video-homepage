@@ -70,13 +70,14 @@ class Index extends React.Component {
   }
   getLink(data, params = 'live-event') {
     gaVideoInteraction(data?.content_id, data?.content_title,
-      'not_available', data?.content_type,
+      "video | live event", data?.content_type ,
       "not_available", "not_available",
       data?.id, data?.assets_name, "not_available",
       "not_available", "not_available",
       data?.channel_code, "not_available", "not_available",
       "not_available", "not_available", "not_available",
-      "no");
+      "no", "homepage_liveevent _clicked", "video_interaction",
+      "video_click_content_list", data?.content_title);
      Router.push(`/${params}/${data.content_id}/${data.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`);
   }
 

@@ -1124,7 +1124,8 @@ class LiveEvent extends React.Component {
                                "not_available", "not_available",
                                le?.channel_code, "not_available", "not_available",
                                "not_available", "not_available", "not_available",
-                               "no");
+                               "no", "homepage_liveevent _clicked", "video_interaction",
+                               "video_click_content_list", le?.content_title);
                              Router.push(`/live-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`, undefined, { shallow: true })
                            }
                       }>
@@ -1148,13 +1149,14 @@ class LiveEvent extends React.Component {
 									{this.state.missed_event.length > 0 ? this.state.missed_event.map((le, i) => (
 											<Col xs={6} key={i} onClick={() => {
                         gaVideoInteraction(le?.content_id, le?.content_title,
-                          'not_available', le?.content_type,
+                          "video | live event", le?.content_type,
                           "not_available", "not_available",
                           le?.id, le?.assets_name, "not_available",
                           "not_available", "not_available",
                           le?.channel_code, "not_available", "not_available",
                           "not_available", "not_available", "not_available",
-                          "no");
+                          "no", "homepage_liveevent _clicked", "video_interaction",
+                          "video_click_content_list", le?.content_title);
                          Router.push(`/missed-event/${le.content_id}/${le.content_title.replace(/[\/ !@#$%^&*(),.?":{}|<>-]/g, '-').replace(/(-+)/g, '-').toLowerCase()}`)
                       }}>
 												<Thumbnail
