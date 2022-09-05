@@ -260,8 +260,6 @@ class Tv extends React.Component {
 
 	componentDidMount() {
 		initGA();
-    console.log(this.props);
-    console.log(this.stat)
 
 		this.props.setPageLoader();
 		Promise.all([
