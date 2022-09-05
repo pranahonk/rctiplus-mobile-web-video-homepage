@@ -38,7 +38,7 @@ class StoryAds extends React.Component {
 
     window.googletag = window.googletag || {cmd: []}
     googletag.cmd.push(function() {
-      googletag.defineSlot(slotName, [320, 50], gptID).addService(googletag.pubads())
+      googletag.defineSlot(slotName, ['fluid'], gptID).addService(googletag.pubads())
 
       targettingAdsData.forEach(({ name, value }) => {
         googletag.pubads().setTargeting(name, value)

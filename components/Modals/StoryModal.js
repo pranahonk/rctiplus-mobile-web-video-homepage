@@ -172,11 +172,12 @@ function storyModal(props) {
     document.getElementById("stories-content").style.display = "none"
     document.getElementById("loading-stories").style.removeProperty("display")
     document.getElementById("close-stories").style.display = "none"
+    document.querySelector(".content-no-link").style.removeProperty("display")
+    document.querySelector(".placeholder-story").style.removeProperty("display")
 
     window.googletag = window.googletag || {cmd: []};
 
     googletag.cmd.push(function() {
-
       // Define the first slot
       setSlot(googletag.defineSlot(props.story.story[activeIndex].path,['fluid'],props.story.story[activeIndex].div_gpt)
           .addService(googletag.pubads()))
@@ -185,8 +186,6 @@ function storyModal(props) {
       var countSlotResponseReceived = 0
       var countSlotRequested = 0
       var countImpressionViewable = 0
-
-      const videoContentId = document.getElementById(props.story.story[activeIndex].div_gpt)
 
 
       googletag.pubads().addEventListener('slotRenderEnded', function(event) {
@@ -208,6 +207,10 @@ function storyModal(props) {
       googletag.pubads().addEventListener('slotRequested', function(event) {
         if(countSlotRequested == 0){
           document.getElementById("stories-content").style.removeProperty("display")
+          document.querySelector(".content-no-link").style.display = "none"
+          document.querySelector(".placeholder-story").style.display = "none"
+          document.querySelector(".story-left").style.removeProperty("display")
+          document.querySelector(".story-right").style.removeProperty("display")
 
           progressBars[activeIndex].classList.add("active")
           progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${timesec}s`
@@ -280,6 +283,8 @@ function storyModal(props) {
     const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
 
     document.getElementById("mute-toggler").style.display = "none"
+    document.querySelector(".story-left").style.display = "none"
+    document.querySelector(".story-right").style.display = "none"
 
     // close function immediately when it is not a video
     // then activate the image story
@@ -395,6 +400,47 @@ function storyModal(props) {
     }, 100)
   }
 
+  const divideComponentOnClickAds = (e) => {
+    const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
+    const componentWidth = e.target.offsetWidth
+    const isBackward = e.clientX < ( componentWidth / 4 )
+    const isForward = e.clientX > ((componentWidth / 4) * 3)
+
+    let targetIndex = activeIndex
+
+    if (!isForward && !isBackward) return
+
+    if (isForward) targetIndex = activeIndex + 1
+    if (isBackward) targetIndex = activeIndex - 1
+
+    googletag.destroySlots();
+
+    if (isBackward) {
+      progressBars[activeIndex].classList.remove("active")
+      if (activeIndex - 1 >= 0 && props.story.story[activeIndex - 1].seen) {
+        props.story.story[activeIndex - 1].seen = false
+      }
+    }
+
+    googletag.cmd.push(function() {
+      googletag.pubads().refresh();
+    });
+
+
+    if (targetIndex < 0) {
+      navigateStory(progressBars, "left")
+      targetIndex = 0
+    }
+    if (targetIndex > props.story.story.length - 1) {
+      navigateStory(progressBars, "right")
+      targetIndex = 0
+    }
+    setActiveIndex(targetIndex)
+    setTimeout(() => {
+      progressBars[activeIndex].children[0].style.animation = "unset"
+    }, 100)
+  }
+
   const renderCTAButton = _ => {
     const { type, external_link, permalink } = props.story.story[activeIndex]
     let href = (/^http:|^https:/.test(permalink)) ? permalink : "",
@@ -461,7 +507,8 @@ function storyModal(props) {
         </div>
 
         <div id="mute-toggler" onClick={_ => player.setMute(false)}></div>
-
+        <div className="story-left" onClick={e => divideComponentOnClickAds(e)}></div>
+        <div className="story-right" onClick={e => divideComponentOnClickAds(e)}></div>
         <div className="story-head">
           {
             props.story.__typename == 'StoryData' ?
