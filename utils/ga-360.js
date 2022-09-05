@@ -244,7 +244,16 @@ export const gaTrackerNavbarTrack = (event_category = 'string', event_action = '
 };
 
 
-export const gaVideoInteraction = (content_id, content_name, content_type, content_category, classification_id, classification, program_id, program_name, cluster_id, cluster_name, channel_owner_id, channel_owner, genre_level_1, genre_level_2, content_duration, episode_number, season_number, is_premium) => {
+export const gaVideoInteraction = (content_id, content_name,
+                                   content_type, content_category,
+                                   classification_id, classification,
+                                   program_id, program_name, cluster_id,
+                                   cluster_name, channel_owner_id,
+                                   channel_owner, genre_level_1,
+                                   genre_level_2, content_duration,
+                                   episode_number, season_number,
+                                   is_premium, event_name, event_category,
+                                   event_action, event_label) => {
   if (typeof window !== 'undefined') {
     window.dataLayer.push({
       "user_id" :getUserId(),
@@ -269,6 +278,10 @@ export const gaVideoInteraction = (content_id, content_name, content_type, conte
       "season_number" : season_number,
       "is_premium" :is_premium,
       "date_time" :  new Date().toISOString(),
+      "event_name": event_name,
+      "event_category": event_category,
+      "event_action": event_action,
+      "event_label": event_label
     });
   }
 }
