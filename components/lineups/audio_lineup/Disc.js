@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import '../../../assets/scss/components/audio-disc.scss';
-import { getTruncate, truncateString } from '../../../utils/helpers';
+import { truncateString } from '../../../utils/helpers';
 
 //import bottom screen listener
 import BottomScrollListener from 'react-bottom-scroll-listener';
