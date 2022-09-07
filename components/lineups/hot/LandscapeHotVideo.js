@@ -115,21 +115,19 @@ const LandscapeHotVideo = ({title, indexTag, id, data}) => {
                         <div className="hot-videos_card-profile__image">
                           <img src="/static/HOT+ White-01.png" alt="Gambar HOT+"/>
                         </div>
-                        <div className="row">
-                          <div className="hot-videos_card-profile__photo col-3 pr-0">
-                            {
-                              imageHotProfile(item?.content_type_detail?.detail?.data?.id, item?.content_type_detail?.detail?.data?.contestant?.thumbnail, assetUrl, 20, 152, assetUrl, '')
-                            }
-                          </div>
-                          <div className="hot-videos_card-profile__name col">
-                            {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.display_name || item?.content_type_detail?.detail?.data?.contestant?.nick_name || item?.content_type_detail?.detail?.data?.contestant?.email || item?.content_type_detail?.detail?.data?.contestant?.phone_number, '...', '15')}
-                          </div>
+                      </div>
+                      <div className="hot-videos_card-profile">
+                        <p className="hot-videos_card-profile__title">
+                          {item?.content_type_detail?.detail?.data?.video_title}
+                        </p>
+                        <div className="hot-videos_card-profile__name">
+                          {getTruncate(item?.content_type_detail?.detail?.data?.contestant?.display_name || item?.content_type_detail?.detail?.data?.contestant?.nick_name || item?.content_type_detail?.detail?.data?.contestant?.email || item?.content_type_detail?.detail?.data?.contestant?.phone_number, '...', '17')}
                         </div>
-                        <div className="row">
-                          <div className="hot-videos_card-profile__views col-3">
+                        <div className="hot-videos_card-profile__viewsCountWrapper row">
+                          <div className="hot-videos_card-profile__viewsCountWrapper_viewsIcon col-3">
                             <Views style={{fontSize: '1.5rem', color: 'white'}}/>
                           </div>
-                          <div className="hot-videos_card-profile__viewsCount col">
+                          <div className="hot-videos_card-profile__viewsCountWrapper_viewsCount col pl-0">
                             {item?.content_type_detail?.detail?.data?.views}
                           </div>
                         </div>

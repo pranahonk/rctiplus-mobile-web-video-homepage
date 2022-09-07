@@ -67,10 +67,10 @@ function Category (props) {
     useEffect(() => {
         const { category_id, category_title} = props.router.query
         let href, as
-        
+
         href = `/category?category_id=${category_id}&category_title=${(category_title)}`;
         as = `/category/${category_id}/${titleStringUrlRegex(category_title).toLowerCase()}`;
-        
+
         router.push(href, as, { shallow: true });
     },[])
 
@@ -82,11 +82,11 @@ function Category (props) {
                 .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
                 .then(({ data }) => {
                     let newLineups = data.lineups.data
-                    
+
                     if (page > 1) {
                         newLineups = lineups.concat(newLineups)
                     }
-    
+
                     const mappedContents = new Map()
                     newLineups.forEach(content => {
                         if (content.lineup_type_detail.detail) {
@@ -106,7 +106,7 @@ function Category (props) {
     const setComingSoonModalState = (open, content) => {
         setOpenComingSoonModal(open)
         setContentComingSoonModal(content)
-    }    
+    }
 
     const renderLineups = () => {
         return lineups.map((lineup, index) => {
@@ -212,6 +212,20 @@ function Category (props) {
                   return(
                     <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
                   )
+                case "square_list_audio":
+                  return(
+                    <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+                  );
+                case "portrait_disc":
+                  return(
+                    <AudioHorizontalDisc
+                      title={lineup.title}
+                      key={lineup.id}
+                      data={lineup}
+                      indexTag={index}
+                      id={lineup.id}
+                    />
+                  );
             }
         })
     }
@@ -238,7 +252,7 @@ function Category (props) {
                             <div style={{marginTop: -3}}>
                                 <Carousel category />
                             </div>
-                           
+
                             <GridMenu />
 
                             <Stories />

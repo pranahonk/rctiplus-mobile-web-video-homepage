@@ -20,6 +20,8 @@ import ReactCodeInput from 'react-verification-code-input';
 import '../../../assets/scss/components/otp_steps.scss';
 
 import Countdown, { zeroPad } from 'react-countdown-now';
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { RE_CAPTCHA_SITE_KEY } from '../../../config';
 
 class Step2 extends Component {
 
@@ -34,37 +36,51 @@ class Step2 extends Component {
 			current_time: Date.now(),
 			submit_message: '',
 			is_submitting: false,
-			req_otp_status: 0
+			req_otp_status: 0,
+			token: null
 		};
 
 		this.otpInput = null;
 	}
 
 	componentDidMount() {
-		this.setState({ username: this.props.registration.username }, () => {
+		this.setState({ username: this.props.registration.username, token: this.props.registration.token}, () => {
 			let username = this.state.username;
+			let token = this.state.token;
 			if (this.props.registration.username_type === 'PHONE_NUMBER') {
 				username = this.props.registration.phone_code + username;
 			}
-			this.props.getOtp(username)
+			
+			this.props.getOtp(username, 'registration', null, token)
 				.then(response => {
 					if (response.status === 200) {
 						this.setState({ 
 							alert_message: response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client),
-							req_otp_status: response.data.status.code 
+							req_otp_status: response.data.status.code,
+							token: null
 						});
+						this.props.setToken(null);
 					}
 				})
-				.catch(error => console.log(error));
+				.catch(error => {
+					console.log(error)
+					Router.back()
+				});
 		});
 	}
 
 	onChangeOtp(otp) {
 		this.setState({ otp: otp }, () => {
-			if (this.state.otp.length >= 4) {
+			if (this.state.otp.length >= 6) {
 				this.submitOtp();
 			}
 		});
+	}
+
+	handleChangeToken(token) {
+		if(this.props.registration.token) return
+		
+		this.props.setToken(token);
 	}
 
 	submitOtp() {
@@ -131,7 +147,7 @@ class Step2 extends Component {
 			}
 
 			if (message.indexOf('You have 0') != -1) {
-				attempts = 'You have reached maximum attempts. please, try again later after 1 hours';
+				attempts = 'You have reached maximum attempts. please, try again later after 23 hour(s) and 59 minute(s)';
 				this.setState({ req_otp_status: 1 });
 			}
 		}
@@ -143,13 +159,14 @@ class Step2 extends Component {
 
 	showAlert() {
 		let username = this.state.username;
+		const {token} = this.props.registration;
 		if (this.props.registration.username_type === 'PHONE_NUMBER') {
 			username = this.props.registration.phone_code + username;
 		}
 
 		showConfirmAlert(this.state.alert_message, 'OTP Limits', () => {
 			// code = 1 (please try again later (after 1 minute))
-			this.props.getOtp(username)
+			this.props.getOtp(username, 'registration', null, token)
 				.then(response => {
 					let newState = {};
 					if (response.status === 200 && response.data.status.message_client != 'You have reached maximum attempts. please, try again later after 1 hours') {
@@ -157,6 +174,7 @@ class Step2 extends Component {
 							current_time: Date.now(),
 							countdown_key: this.state.countdown_key + 1
 						};
+						this.props.setToken(null);
 					}
 
 					newState['alert_message'] = response.data.status.code !== 0 ? response.data.status.message_client : this.generateAlertMessage(response.data.status.message_client);
@@ -227,18 +245,29 @@ class Step2 extends Component {
 				<div className="wrapper-content" style={{ width: '100%', marginTop: 50 }}>
 					<div className="login-box" style={{ width: '100%' }}>
 						<p style={{ fontSize: 14 }} className="text-default-rcti" dangerouslySetInnerHTML={{__html: text}}></p>
+						<GoogleReCaptchaProvider
+						language="id"
+						reCaptchaKey={RE_CAPTCHA_SITE_KEY}
+						
+					>
 						<Form onSubmit={this.submitOtp.bind(this)}>{/*<span style={{ color: 'white' }}>{username}</span>*/}
 							<FormGroup>
 								<ReactCodeInput
-									fields={4}
+									fields={6}
 									onChange={this.onChangeOtp.bind(this)}
 									ref={node => this.otpInput = node}
 									values={this.state.otp.toString().split('')}
+									fieldWidth={40}
 									className="otp-input" />
 							</FormGroup>
-							
+							<FormGroup>
+								<GoogleReCaptcha
+									onVerify={this.handleChangeToken.bind(this)}
+								/>
+							</FormGroup>
 							{actionElement}
 						</Form>
+					</GoogleReCaptchaProvider>
 					</div>
 				</div>
 			</Layout>

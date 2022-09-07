@@ -23,6 +23,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../../../assets/scss/components/form-field.scss';
 
 import { accountGeneralEvent } from '../../../utils/appier';
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { RE_CAPTCHA_SITE_KEY } from '../../../config';
 
 const CountryList = dynamic(() => import('../../../components/Modals/CountryList'));
 
@@ -37,6 +39,7 @@ class FormField extends React.Component {
             status: false,
 			codeCountry: 'ID',
 			phone_code: '62',
+            token: null,
         };
 
         this.subject = new Subject();
@@ -119,6 +122,12 @@ class FormField extends React.Component {
         });
     }
 
+    handleChangeToken(token) {
+        if(this.props.registration.token) return
+		this.props.setToken(token);
+	}
+
+
     onSubmit(e) {
         e.preventDefault();
         // this.props.showNotification('*Checking nickname availability...');
@@ -173,10 +182,10 @@ class FormField extends React.Component {
     }
     componentDidMount() {
         // console.log(this.props)
-        this.setState({ codeCountry: (this.props.user && this.props.user.data && this.props.user.data.country_code === '') ||
-                                    (this.props.user && this.props.user.data && this.props.user.data.country_code === null) ? this.state.codeCountry : this.props.user.data.country_code,
-                        phone_code: (this.props.user && this.props.user.data && this.props.user.data.phone_code === '') ||
-                                    (this.props.user && this.props.user.data && this.props.user.data.phone_code === null) ? this.state.phone_code : this.props.user.data.phone_code});
+        this.setState({ codeCountry: (this.props.user && this.props.user.data && this.props.user.data?.country_code === '') ||
+                                    (this.props.user && this.props.user.data && this.props.user.data?.country_code === null) ? this.state.codeCountry : this.props?.user?.data?.country_code,
+                        phone_code: (this.props.user && this.props.user.data && this.props.user.data?.phone_code === '') ||
+                                    (this.props.user && this.props.user.data && this.props.user.data?.phone_code === null) ? this.state.phone_code : this.props.user.data?.phone_code});
         console.log(this.props.user && this.props.user.data)
         this.ref = queryString.parse(location.search).ref
         this.props.getListCountry();
@@ -232,23 +241,51 @@ class FormField extends React.Component {
         // console.log(this.props.others)
         switch (this.props.others.field_type) {
             case 'text':
-            case 'email':
                 formField = (
                     <FormGroup>
-                        <Label for={this.props.others.label}>{this.props.others.label}</Label>
-                        <InputGroup>
-                            <Input
-                                id="form-field"
-                                value={this.state.value}
-                                onChange={this.onChange.bind(this)}
-                                valid={false && !this.state.value_invalid && !!this.state.value}
-                                // invalid={this.state.value_invalid}
-                                placeholder={this.props.others.placeholder}
-                                className="form-control-ff" />
-                            <FormFeedback valid={false && !this.state.value_invalid && !!this.state.value}>{this.state.text_data_invalid_message}</FormFeedback>
-                        </InputGroup>
-                        <div id="notes" dangerouslySetInnerHTML={{ __html: this.props.others.notes }}></div>
-                    </FormGroup>
+                            <Label for={this.props.others.label}>{this.props.others.label}</Label>
+                            <InputGroup>
+                                <Input
+                                    id="form-field"
+                                    value={this.state.value}
+                                    onChange={this.onChange.bind(this)}
+                                    valid={false && !this.state.value_invalid && !!this.state.value}
+                                    // invalid={this.state.value_invalid}
+                                    placeholder={this.props.others.placeholder}
+                                    className="form-control-ff" />
+                                <FormFeedback valid={false && !this.state.value_invalid && !!this.state.value}>{this.state.text_data_invalid_message}</FormFeedback>
+                            </InputGroup>
+                            <div id="notes" dangerouslySetInnerHTML={{ __html: this.props.others.notes }}></div>
+                        </FormGroup>
+                )
+                break;
+            case 'email':
+                formField = (
+                    <GoogleReCaptchaProvider
+                    language="id"
+                    reCaptchaKey={RE_CAPTCHA_SITE_KEY}
+                    >
+                        <FormGroup>
+                            <Label for={this.props.others.label}>{this.props.others.label}</Label>
+                            <InputGroup>
+                                <Input
+                                    id="form-field"
+                                    value={this.state.value}
+                                    onChange={this.onChange.bind(this)}
+                                    valid={false && !this.state.value_invalid && !!this.state.value}
+                                    // invalid={this.state.value_invalid}
+                                    placeholder={this.props.others.placeholder}
+                                    className="form-control-ff" />
+                                <FormFeedback valid={false && !this.state.value_invalid && !!this.state.value}>{this.state.text_data_invalid_message}</FormFeedback>
+                            </InputGroup>
+                            <div id="notes" dangerouslySetInnerHTML={{ __html: this.props.others.notes }}></div>
+                            <FormGroup>
+                                <GoogleReCaptcha
+                                    onVerify={this.handleChangeToken.bind(this)}
+                                />
+                            </FormGroup>
+                        </FormGroup>
+                    </GoogleReCaptchaProvider>
                 );
                 break;
 
@@ -273,31 +310,41 @@ class FormField extends React.Component {
 
             case 'phone':
                 formField = (
-                    <FormGroup className="frmInput1">
-                        <Label for={this.props.others.label}>{this.props.others.label}</Label>
-                        <InputGroup>
-                            {/* <InputGroupAddon addonType="prepend">
-                                <InputGroupText className={'form-control-ff addon-left'}>+62</InputGroupText>
-                            </InputGroupAddon> */}
-                            <Input
-                                className="form-control-ff none-border-radius"
-                                type="number"
-                                name="text"
-                                id="phone_number"
-                                value={this.state.value}
-                                placeholder={this.props.others.placeholder}
-                                onChange={this.onChange.bind(this)}
-                                invalid={this.state.value_invalid} 
-                                />
-                                <InputGroupAddon onClick={ () => this.setState({ status: !state.status }) } addonType="append" id="action-country-code">
-                                    <InputGroupText className={'append-input rplus-border-bottom ' + (state.is_username_invalid ? 'invalid-border-color' : '')}>
-                                        {this.state.codeCountry}<KeyboardArrowDownIcon/>
-                                    </InputGroupText>
-                                </InputGroupAddon>
-                            <FormFeedback>{this.state.value_invalid_message}</FormFeedback>
-                        </InputGroup>
-                        <div id="notes" dangerouslySetInnerHTML={{ __html: this.props.others.notes }}></div>
-                    </FormGroup>
+                    <GoogleReCaptchaProvider
+                    language="id"
+                    reCaptchaKey={RE_CAPTCHA_SITE_KEY}
+                    >
+                        <FormGroup className="frmInput1">
+                            <Label for={this.props.others.label}>{this.props.others.label}</Label>
+                            <InputGroup>
+                                {/* <InputGroupAddon addonType="prepend">
+                                    <InputGroupText className={'form-control-ff addon-left'}>+62</InputGroupText>
+                                </InputGroupAddon> */}
+                                <Input
+                                    className="form-control-ff none-border-radius"
+                                    type="number"
+                                    name="text"
+                                    id="phone_number"
+                                    value={this.state.value}
+                                    placeholder={this.props.others.placeholder}
+                                    onChange={this.onChange.bind(this)}
+                                    invalid={this.state.value_invalid} 
+                                    />
+                                    <InputGroupAddon onClick={ () => this.setState({ status: !state.status }) } addonType="append" id="action-country-code">
+                                        <InputGroupText className={'append-input rplus-border-bottom ' + (state.is_username_invalid ? 'invalid-border-color' : '')}>
+                                            {this.state.codeCountry}<KeyboardArrowDownIcon/>
+                                        </InputGroupText>
+                                    </InputGroupAddon>
+                                <FormFeedback>{this.state.value_invalid_message}</FormFeedback>
+                            </InputGroup>
+                            <div id="notes" dangerouslySetInnerHTML={{ __html: this.props.others.notes }}></div>
+                        </FormGroup>
+                        <FormGroup>
+                            <GoogleReCaptcha
+                                onVerify={this.handleChangeToken.bind(this)}
+                            />
+                        </FormGroup>
+                    </GoogleReCaptchaProvider>
                 );
                 break;
 
