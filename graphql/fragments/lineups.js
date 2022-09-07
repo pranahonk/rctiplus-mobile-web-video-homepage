@@ -1,19 +1,18 @@
 import {
+  contentTypeAudioRadio,
   contentTypeCatchupFragment,
   contentTypeClipFragment,
   contentTypeEpisodeFragment,
   contentTypeExtraFragment,
+  contentTypeHotCompetitions,
+  contentTypeHotVideo,
   contentTypeLiveEPGFragment,
   contentTypeLiveEventFragment,
   contentTypeProgramFragment,
   contentTypeSeasonFragment,
   contentTypeSpecialFragment,
-  contentTypeHotCompetitions,
-  contentTypeHotVideo,
-  contentTypeAudioPodcast,
-  contentTypeAudioRadio,
-}
-  from './content_types';
+  contentTypeAudioPodcast
+} from './content_types';
 
 export const lineupTypeStoryFragment = (queryParams) => {
   return `
@@ -96,6 +95,7 @@ export const lineupDefaultFragment = (queryParams) => {
           ${contentTypeHotCompetitions}
           ${contentTypeHotVideo}
           ${contentTypeAudioRadio}
+          ${contentTypeAudioPodcast}
         }
       }
      meta {
