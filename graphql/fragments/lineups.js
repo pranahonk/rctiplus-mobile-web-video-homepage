@@ -12,8 +12,7 @@ import {
   contentTypeHotVideo,
   contentTypeAudioPodcast,
   contentTypeAudioRadio,
-}
-  from './content_types';
+} from './content_types';
 
 export const lineupTypeStoryFragment = (queryParams) => {
   return `
