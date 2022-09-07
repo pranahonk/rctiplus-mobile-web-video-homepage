@@ -56,6 +56,7 @@ class Index_v2 extends React.Component {
 
   state = {
     lineups: [],
+    gpt: {},
     meta: {},
     length: 5,
     show_sticky_install: false,
@@ -114,7 +115,8 @@ class Index_v2 extends React.Component {
         })
         this.setState({
           lineups: [ ...mappedContents.values() ],
-          meta: data.lineups.meta
+          meta: data.lineups.meta,
+          gpt: data.gpt.data
         })
       })
       .finally(_ => {
@@ -228,27 +230,57 @@ class Index_v2 extends React.Component {
           )
         case 'tag':
           return (
-            <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+            <HorizontalHastags
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              data={lineup}
+              id={lineup.id} />
           )
         case 'landscape_news':
           return (
-            <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+            <NewsHorizontalLandscape
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              data={lineup}
+              id={lineup.id} />
           )
         case "square_list_news":
           return (
-            <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
+            <HorizontalMutipleLandscape
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              data={lineup}
+              id={lineup.id} />
           )
         case "landscape_hot_competition":
           return(
-            <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+            <LandscapeHotCompetition
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              id={lineup.id}
+              data={lineup} />
           )
         case "portrait_hot":
           return(
-            <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+            <LandscapeHotVideo
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              id={lineup.id}
+              data={lineup} />
           )
         case "square_list_audio":
           return(
-            <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
+            <AudioHorizontalList
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              id={lineup.id}
+              data={lineup} />
           );
         case "portrait_disc":
           return(
@@ -300,78 +332,94 @@ class Index_v2 extends React.Component {
           color="#05B5F5"
           onRef={ref => (this.LoadingBar = ref)} />
 
-          {this.state.isShimmer
-            ? (<HomeLoader/>)
-            : (
-              <>
-                <div>
-                  <Nav
-                    parent={this}
-                    closeStickyInstallFunction={this.closeStickyInstall}
-                    showStickyInstall={this.state.show_sticky_install}/>
+        {this.state.isShimmer
+          ? (<HomeLoader/>)
+          : (
+            <>
+              <div>
+                <Nav
+                  parent={this}
+                  closeStickyInstallFunction={this.closeStickyInstall}
+                  showStickyInstall={this.state.show_sticky_install}/>
 
-                  <Carousel showStickyInstall={this.state.show_sticky_install} />
+                <Carousel showStickyInstall={this.state.show_sticky_install} />
 
-                  <GridMenu />
+                <GridMenu />
 
-                  <Stories />
+                <Stories />
 
-                  <StickyContainer>
-                    <Sticky disableHardwareAcceleration>
-                      { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
-                        const topDistance = this.state.show_sticky_install ? 120 : 40;
-                        if (distanceFromTop < topDistance) {
-                          if (!this.props.ads.ads_displayed) {
-                            return (
-                              <div {...rest} >
-                                <StickyAds/>
-                              </div>
-                            );
-                          }
-                          const adsContents = document.getElementById(this.state.gpt.div_gpt).childNodes;
-                          if (adsContents.length > 0) {
-                            if (adsContents[0].tagName == 'SCRIPT') {
-                              const stickyAds = document.getElementById('sticky-ads-container');
-                              if (stickyAds) {
-                                stickyAds.style.display = 'none'
-                              }
-                            }
-                          }
+
+                {/* <StoryAds sticky id='div-gpt-ad-1596100147181-0' path='/21865661642/RC_DESKTOP_INSERTION-STORIES_0'/> */}
+                {/* <StoryAds sticky id='div-gpt-ad-1596100730972-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES'/> */}
+                {/* <StoryAds sticky id='div-gpt-ad-1596100733667-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES-2'/>
+                  <StoryAds sticky id='div-gpt-ad-1596100737011-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES-3'/> */}
+
+
+                <StickyContainer>
+                  <Sticky disableHardwareAcceleration>
+                    { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
+                      const topDistance = this.state.show_sticky_install ? 120 : 40;
+                      if (distanceFromTop < topDistance) {
+                        if (!this.props.ads.ads_displayed) {
                           return (
                             <div {...rest} >
-                              <StickyAds sticky/>
+                              <StickyAds
+                                path={this.state.gpt.path}
+                                id={this.state.gpt.div_gpt}
+                                targettingAdsData={this.state.gpt.cust_params}/>
                             </div>
                           );
                         }
-                        else if (!this.props.ads.ads_displayed) {
-                          this.props.toggleAds(true)
+                        const adsContents = document.getElementById(this.state.gpt.div_gpt).childNodes;
+                        if (adsContents.length > 0) {
+                          if (adsContents[0].tagName == 'SCRIPT') {
+                            const stickyAds = document.getElementById('sticky-ads-container');
+                            if (stickyAds) {
+                              stickyAds.style.display = 'none'
+                            }
+                          }
                         }
                         return (
                           <div {...rest} >
-                            <StickyAds id='div-gpt-ad-1584677577539-0'/>
+                            <StickyAds
+                              path={this.state.gpt.path}
+                              id={this.state.gpt.div_gpt} sticky
+                              targettingAdsData={this.state.gpt.cust_params} />
                           </div>
                         );
-                      }}
-                    </Sticky>
-                  </StickyContainer>
-                </div>
+                      }
+                      else if (!this.props.ads.ads_displayed) {
+                        this.props.toggleAds(true)
+                      }
+                      return (
+                        <div {...rest} >
+                          <StickyAds
+                            path={this.state.gpt.path}
+                            id={this.state.gpt.div_gpt}
+                            targettingAdsData={this.state.gpt.cust_params} />
+                        </div>
+                      );
+                    }}
+                  </Sticky>
+                </StickyContainer>
+              </div>
 
-                <div
-                  style={{marginBottom: this.props.ads.ads_displayed ? 80 : 45, paddingTop: 10}}
-                  onTouchStart={this.onTouchStart.bind(this)}
-                  onTouchEnd={this.onTouchEnd.bind(this)}>
-                  { this.renderLineup(this.state.lineups, this.state.meta) }
-                </div>
-                <ComingSoonModal
-                  open={this.state.openComingSoonModal}
-                  onClose={_ => this.setState({ openComingSoonModal: false })}
-                  content={this.state.contentComingSoonModal} />
-              </>
-            )
-          }
-        </Layout>
-      );
-    }
+              <div
+                style={{marginBottom: this.props.ads.ads_displayed ? 80 : 45, paddingTop: 10}}
+                onTouchStart={this.onTouchStart.bind(this)}
+                onTouchEnd={this.onTouchEnd.bind(this)}>
+                { this.renderLineup(this.state.lineups, this.state.meta) }
+              </div>
+              <ComingSoonModal
+                open={this.state.openComingSoonModal}
+                onClose={_ => this.setState({ openComingSoonModal: false })}
+                content={this.state.contentComingSoonModal} />
+            </>
+          )
+        }
+      </Layout>
+    );
+  }
 
 }
 
