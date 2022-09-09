@@ -113,6 +113,7 @@ class Index extends React.Component {
     return (
       <Layout title={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.title : SITEMAP.live_event_index.title}>
         <Head>
+					  <meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
             <meta name="description" content={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.description : SITEMAP.live_event_index.description} />
             <meta name="keywords" content={SITEMAP.live_event_index.keywords} />
             <meta property="og:title" content={this.props.router.asPath.includes('/missed-event') ? SITEMAP.missed_event_index.title : SITEMAP.live_event_index.title} />

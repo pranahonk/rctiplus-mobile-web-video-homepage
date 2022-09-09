@@ -987,6 +987,7 @@ class LiveEvent extends React.Component {
 			<Layout title={this.getMeta().title}>
 				<Head>
 					<JsonLDVideo content={contentData} />
+					<meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
 					<meta name="description" content={this.getMeta().description} />
 					<meta name="keywords" content={this.getMeta().title} />
 					<meta property="og:title" content={this.getMeta().title} />
