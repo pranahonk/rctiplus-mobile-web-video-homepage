@@ -27,6 +27,7 @@ const HeadMeta = (props) => {
       <Head>
         <JsonLDVideo content={contentData} isProgram/>
         <title>{props.seoData?.data?.title ?? seo.title}</title>
+				<meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="keywords" content={props.seoData?.data?.title ?? keyword.toString() ?? 'rctiplus'} />
         <meta name="apple-mobile-web-app-capable " content="yes" />
@@ -64,7 +65,7 @@ export const convert = (value, tv_name, valueDetail, router, meta) => {
   if (router.query.id && !router.query.content_id) {
     // if (router.query.content_type === 'episode') {
     //   return  {
-    //     title: `Nonton Streaming ${valueDetail?.title} Sub Indo - ${SITE_NAME}`, 
+    //     title: `Nonton Streaming ${valueDetail?.title} Sub Indo - ${SITE_NAME}`,
     //     description: `Nonton ${value && value.title} Online - Season ${valueDetail && valueDetail.season} - Episode ${valueDetail && valueDetail.episode} - ${SITE_NAME}`,
     //     imagePath: `${meta && meta.image_path}140${valueDetail && valueDetail.portrait_image}`,
     //   };
@@ -113,8 +114,8 @@ export const convert = (value, tv_name, valueDetail, router, meta) => {
       default:
           return  {
             title: `Nonton Streaming ${value && value.title} Online Sub Indo - ${SITE_NAME}`,
-            description: `Nonton streaming online ${value && value.title} ${tv_name} 
-              full episode lengkap dengan cuplikan video menarik lainnya hanya di ${SITE_NAME}. 
+            description: `Nonton streaming online ${value && value.title} ${tv_name}
+              full episode lengkap dengan cuplikan video menarik lainnya hanya di ${SITE_NAME}.
               Lihat selengkapnya disini`,
               imagePath: `${meta && meta.image_path}140${value && value.portrait_image}`,
           };
