@@ -3,7 +3,7 @@ import '../../../assets/scss/components/toast.scss';
 import Close from '@material-ui/icons/Close';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 import Countdown from 'react-countdown-now';
-import { getCountdown, getTruncate } from '../../../utils/helpers';
+import { getCountdown } from '../../../utils/helpers';
 import { appierAdsClicked } from '../../../utils/appier';
 import { RPLUSAdsClicked } from '../../../utils/internalTracking';
 import { SHARE_BASE_URL } from '../../../config';
@@ -96,11 +96,11 @@ class Toast extends React.Component {
                     appierAdsClicked(data, 'sticky_ads_clicked', 'clicked');
                     RPLUSAdsClicked(data, 'click', 'sticky_ads_clicked', 'clicked')
                     window.open(this.getUrl(data),'_blank');
-                    }}>{ getTruncate(data.description) }</p>
+                    }}>{ data.description }</p>
                 </div>
               </div>
               </div>)
-             }
+            }
       </div>
     );
   }

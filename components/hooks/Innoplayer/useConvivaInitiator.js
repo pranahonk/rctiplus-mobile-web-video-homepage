@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { convivaJwPlayer} from '../../../utils/conviva';
+import { convivaInnoPlayer} from '../../../utils/conviva';
 
 export default function useConvivaInitiator(props) {
   const [ initConviva, setInitConviva ] = useState(false)
@@ -13,7 +13,7 @@ export default function useConvivaInitiator(props) {
     if (Array.isArray(props.data.genre)) {
       genreTags = props.data.genre.map(({name}) => name).join(",")
     }
-    const optionsConviva = generateOptionConviva(props.type);
+    const optionsConviva = generateOptionConviva(props.type)
 
     const customTags = {
       app_version: process.env.APP_VERSION,
@@ -38,12 +38,8 @@ export default function useConvivaInitiator(props) {
       cluster_name: 'N/A',
     };
 
-    for (const convivaParam of props?.data?.conviva_params) {
-      customTags[convivaParam.key] = convivaParam.value;
-    }
-
     const isLive = /^live/i.test(props.type)
-    const convivaTracker = convivaJwPlayer(
+    const convivaTracker = convivaInnoPlayer(
       optionsConviva.assetName,
       props.player,
       props.player.getDuration(),
@@ -56,7 +52,6 @@ export default function useConvivaInitiator(props) {
       convivaTracker.cleanUpSession();
     }
     convivaTracker.createSession();
-    setInitConviva(false);
   }
 
   const generateOptionConviva = (type) => {

@@ -1,6 +1,6 @@
 
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Router from 'next/router';
 
 import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../../utils/appier'
@@ -8,7 +8,6 @@ import { GET_LINEUP_CONTENT_VIDEO, GET_CONTINUE_WATCHING } from "../../../graphq
 import { client } from "../../../graphql/client"
 import { getUserAccessToken } from "../../../utils/cookie"
 import { showSignInAlert } from "../../../utils/helpers"
-import { GET_AUDIO_LIST_PAGINATION } from '../../../graphql/queries/audio-list';
 
 export default function useVideoLineups(props) {
   const [ contents, setContents ] = useState([])
@@ -42,9 +41,8 @@ export default function useVideoLineups(props) {
   }
 
   const setInitialContents = () => {
-    const { data, meta } = props.lineup.lineup_type_detail.detail;
-    const mappedContents = new Map();
-
+    const { data, meta } = props.lineup.lineup_type_detail.detail
+    const mappedContents = new Map()
 
     switch (props.lineup.lineup_type) {
       case "custom":
@@ -64,10 +62,9 @@ export default function useVideoLineups(props) {
         break
     }
     setContents([ ...mappedContents.values() ])
-    setEndPage(meta?.pagination?.current_page === meta?.pagination?.total_page)
-    setNextPage(meta?.pagination?.current_page + 1)
+    setEndPage(meta.pagination.current_page === meta.pagination.total_page)
+    setNextPage(meta.pagination.current_page + 1)
   }
-
 
   const getContinueWatching = () => {
     props.loadingBar.continuousStart()
@@ -125,6 +122,9 @@ export default function useVideoLineups(props) {
         break;
       default:
         if (content.content_type.includes("live")) {
+          if (content.content_type.includes("radio")|| content.content_type.includes("music")){
+            Router.push( content?.permalink )
+          }
           const started = content.countdown === 0
 
           if (started) Router.push(url)
@@ -134,6 +134,7 @@ export default function useVideoLineups(props) {
               : "../static/placeholders/placeholder_landscape.png"
 
             props.showComingSoonModal(true, {
+              is_interactive: content.is_interactive,
               countdown: content.countdown,
               start: content.start_ts || content.live_at,
               title: content.title,

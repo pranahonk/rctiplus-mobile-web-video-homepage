@@ -1,5 +1,3 @@
-import { isIOS, isAndroid } from "react-device-detect";
-
 export const BASE_URL = process.env.BASE_URL;
 export const MODE = process.env.MODE
 export const APPIER_ID = process.env.APPIER_ID
@@ -14,6 +12,7 @@ export const GTM = process.env.GTM;
 export const GTM_AUTH = process.env.GTM_AUTH;
 
 export const DEV_API = process.env.DEV_API;
+export const MONETIZATION_API = process.env.MONETIZATION_API;
 
 export const API_V2 = process.env.API_V2 ? process.env.API_V2 : process.env.DEV_API;
 
@@ -63,6 +62,9 @@ export const GPT_ID_SEARCH = process.env.GPT_ID_SEARCH
 
 export const GPT_ID_DETAIL = process.env.GPT_ID_DETAIL
 
+export const GPT_MOBILE_STICKY_BANNER_HC = process.env.GPT_MOBILE_STICKY_BANNER_HC
+export const GPT_MOBILE_STICKY_BANNER_HC_DIV = process.env.GPT_MOBILE_STICKY_BANNER_HC_DIV
+
 export const REDIRECT_SSR = process.env.REDIRECT_SSR;
 export const API_TIMEOUT = process.env.API_TIMEOUT;
 
@@ -75,6 +77,8 @@ export const RE_CAPTCHA_SECRET_KEY = process.env.RE_CAPTCHA_SECRET_KEY;
 export const VISITOR_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjAsInRva2VuIjoiNWRhNmE2ODY2ZTg5N2Q0MSIsInBsIjoibXdlYiIsImRldmljZV9pZCI6IjY5NDIwIn0.rOdLG9s4KFcKcQT8n58RaD8MgnAclnS13z4GOcJaJ5I';
 export const NEWS_TOKEN = '';
 export const IS_SHOWN = true;
+
+export const WS_SECRET_KEY = process.env.WS_SECRET_KEY;
 
 
 // SEO CONSTANTS
@@ -354,12 +358,6 @@ export const SITEMAP = {
         title: `Berita Travel, Pariwisata, Kuliner Kekinian Hari Ini - ${SITE_NAME_NEWS}`,
         description: `Kumpulan berita travel, wisata, liburan, promosi, pesawat, hotel, dan kuliner terbaru hari ini dari berbagai sumber terpercaya`,
         keywords: `berita travel, berita wisata, berita pariwisata, destinasi wisata, tempat liburan, promosi, pesawat, hotel, wisata kuliner`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
-    },
-    trending_gaya_hidup: {
-        title: `Informasi Gaya Hidup, Lifestyle, dan Fashion Terkini - ${SITE_NAME_NEWS}`,
-        description: `Kumpulan berita dan artikel gaya hidup, lifestyle, dan fashional dari artis serta publik figure nasional dan internasional terkini di Indonesia`,
-        keywords: `berita lifestyle, berita gaya hidup, lifestyle`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
     trending_olahraga: {
