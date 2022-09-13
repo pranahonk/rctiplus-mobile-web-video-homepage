@@ -1,13 +1,11 @@
-
-
 import { useState } from 'react';
 import Router from 'next/router';
 
-import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../../utils/appier'
-import { GET_LINEUP_CONTENT_VIDEO, GET_CONTINUE_WATCHING } from "../../../graphql/queries/homepage"
-import { client } from "../../../graphql/client"
-import { getUserAccessToken } from "../../../utils/cookie"
-import { showSignInAlert } from "../../../utils/helpers"
+import { homeGeneralClicked } from '../../../utils/appier';
+import { GET_CONTINUE_WATCHING, GET_LINEUP_CONTENT_VIDEO } from '../../../graphql/queries/homepage';
+import { client } from '../../../graphql/client';
+import { getUserAccessToken } from '../../../utils/cookie';
+import { showSignInAlert } from '../../../utils/helpers';
 
 export default function useVideoLineups(props) {
   const [ contents, setContents ] = useState([])
@@ -41,8 +39,9 @@ export default function useVideoLineups(props) {
   }
 
   const setInitialContents = () => {
-    const { data, meta } = props.lineup.lineup_type_detail.detail
-    const mappedContents = new Map()
+    const { data, meta } = props.lineup.lineup_type_detail.detail;
+    const mappedContents = new Map();
+
 
     switch (props.lineup.lineup_type) {
       case "custom":
@@ -62,9 +61,10 @@ export default function useVideoLineups(props) {
         break
     }
     setContents([ ...mappedContents.values() ])
-    setEndPage(meta.pagination.current_page === meta.pagination.total_page)
-    setNextPage(meta.pagination.current_page + 1)
+    setEndPage(meta?.pagination?.current_page === meta?.pagination?.total_page)
+    setNextPage(meta?.pagination?.current_page + 1)
   }
+
 
   const getContinueWatching = () => {
     props.loadingBar.continuousStart()
@@ -121,10 +121,9 @@ export default function useVideoLineups(props) {
         else Router.push(url)
         break;
       default:
-        if (content.content_type.includes("live")) {
-          if (content.content_type.includes("radio")|| content.content_type.includes("music")){
-            Router.push( content?.permalink )
-          }
+        if (content.content_type.includes("live")
+          && content.content_type !== "live_radio"
+          && content.content_type !== "live_music") {
           const started = content.countdown === 0
 
           if (started) Router.push(url)
@@ -134,7 +133,6 @@ export default function useVideoLineups(props) {
               : "../static/placeholders/placeholder_landscape.png"
 
             props.showComingSoonModal(true, {
-              is_interactive: content.is_interactive,
               countdown: content.countdown,
               start: content.start_ts || content.live_at,
               title: content.title,
@@ -159,6 +157,10 @@ export default function useVideoLineups(props) {
           else if (!content.mandatory_login) url = content.external_link
 
           Router.push(url)
+        }
+        else if (content.content_type === "podcast" || content.content_type === "spiritual"
+        || content.content_type === "live_radio" || content.content_type === "live_music"){
+          Router.push(content.permalink)
         }
         else Router.push(url)
         break

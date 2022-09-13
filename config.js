@@ -80,9 +80,6 @@ export const IS_SHOWN = true;
 
 export const WS_SECRET_KEY = process.env.WS_SECRET_KEY;
 
-
-// SEO CONSTANTS
-
 export const AUTHOR = 'RCTI+';
 export const VIEWPORT = 'initial-scale=1.0, width=device-width, user-scalable=no';
 export const MAIN_DESCRIPTION = 'Live Streaming Program RCTI, MNCTV, GTV & iNews. Menyajikan konten ekslusif yang tidak tayang di TV & Informasi Trending Terupdate. Nonton Gak Monoton di RCTI+.';

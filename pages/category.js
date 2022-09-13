@@ -106,10 +106,10 @@ function Category (props) {
         }
     }
 
-    const setComingSoonModalState = (open, content) => {
-        setOpenComingSoonModal(open)
-        setContentComingSoonModal(content)
-    }
+  const setComingSoonModalState = (open, content) => {
+    setOpenComingSoonModal(open)
+    setContentComingSoonModal(content)
+  }
 
 
     const renderLineups = () => {
@@ -264,13 +264,13 @@ function Category (props) {
         })
     }
 
-    return (
-        <Layout >
-            <LoadingBar
-                progress={0}
-                height={3}
-                color={'#fff'}
-                ref={loadingBar} />
+  return (
+    <Layout >
+      <LoadingBar
+        progress={0}
+        height={3}
+        color={'#fff'}
+        ref={loadingBar} />
 
             <BottomScrollListener
                 offset={150}
@@ -346,23 +346,23 @@ function Category (props) {
                                 </Sticky>
                             </StickyContainer>
 
-                            <div style={{ marginBottom: 45}}>
-                                <div style={{marginTop: 10}}>
-                                    { renderLineups() }
-                                </div>
-                            </div>
-                        </div>
-                        <ComingSoonModal
-                            open={openComingSoonModal}
-                            onClose={_ => setOpenComingSoonModal(false)}
-                            content={contentComingSoonModal} />
-                    </>
-                )
-            }
-        </Layout>
-    )
+              <div style={{ marginBottom: 45}}>
+                <div style={{marginTop: 10}}>
+                  { renderLineups() }
+                </div>
+              </div>
+            </div>
+            <ComingSoonModal
+              open={openComingSoonModal}
+              onClose={_ => setOpenComingSoonModal(false)}
+              content={contentComingSoonModal} />
+          </>
+        )
+      }
+    </Layout>
+  )
 }
 
 export default connect(state => state, {
-    ...adsActions,
+  ...adsActions,
 })(withRouter(Category))

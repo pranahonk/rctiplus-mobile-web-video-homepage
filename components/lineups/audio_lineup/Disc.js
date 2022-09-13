@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import '../../../assets/scss/components/audio-disc.scss';
-import { truncateString } from '../../../utils/helpers';
+import { getImage, truncateString } from '../../../utils/helpers';
 
 //import bottom screen listener
 import BottomScrollListener from 'react-bottom-scroll-listener';
@@ -57,14 +57,6 @@ function AudioDisc ({title, indexTag, id, data}) {
       return window.location.href = article?.permalink;
     };
 
-    const getImage = (url, staticPath) => {
-      if (url){
-        return  `${staticPath}/200/${url}`
-      }
-      else{
-        return "http://www.roov.id/image/logo.png"
-      }
-    }
 
     return (
       disc === undefined || disc.length  < 1 ?   (<div />) :
