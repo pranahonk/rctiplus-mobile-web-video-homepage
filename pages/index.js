@@ -115,7 +115,6 @@ class Index_v2 extends React.Component {
             mappedContents.set(content.id, content)
           }
         })
-        console.log(data)
         this.setState({
           lineups: [ ...mappedContents.values() ],
           meta: data.lineups.meta,
@@ -335,28 +334,28 @@ class Index_v2 extends React.Component {
           color="#05B5F5"
           onRef={ref => (this.LoadingBar = ref)} />
 
-          {this.state.isShimmer
-            ? (<HomeLoader/>)
-            : (
-              <>
-                <div>
-                  <Nav
-                    parent={this}
-                    closeStickyInstallFunction={this.closeStickyInstall}
-                    showStickyInstall={this.state.show_sticky_install}/>
+        {this.state.isShimmer
+          ? (<HomeLoader/>)
+          : (
+            <>
+              <div>
+                <Nav
+                  parent={this}
+                  closeStickyInstallFunction={this.closeStickyInstall}
+                  showStickyInstall={this.state.show_sticky_install}/>
 
-                  <Carousel showStickyInstall={this.state.show_sticky_install} />
+                <Carousel showStickyInstall={this.state.show_sticky_install} />
 
-                  <GridMenu />
+                <GridMenu />
 
-                  <Stories />
+                <Stories />
 
-                  
+
                   {/* <StoryAds sticky id='div-gpt-ad-1596100147181-0' path='/21865661642/RC_DESKTOP_INSERTION-STORIES_0'/> */}
                   {/* <StoryAds sticky id='div-gpt-ad-1596100730972-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES'/> */}
                   {/* <StoryAds sticky id='div-gpt-ad-1596100733667-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES-2'/>
                   <StoryAds sticky id='div-gpt-ad-1596100737011-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES-3'/> */}
-                  
+
 
                   <StickyContainer>
                     <Sticky disableHardwareAcceleration>

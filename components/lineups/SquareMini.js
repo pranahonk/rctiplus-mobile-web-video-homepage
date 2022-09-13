@@ -37,11 +37,9 @@ function squareMiniView (props) {
       case "square_list_audio":
         return `${props.imagePath}${content.image_banner}`;
       case "square_mini":
-        if(content?.content_type === "live_music"){
-          return `https://static.roov.id/upload/200/${content.portrait_image}`;
-        }
-        else if(content?.content_type === "live_radio"){
-          return `https://static.roov.id/upload/200/${content.portrait_image}`;
+        if(content?.content_type === "live_music" || content?.content_type === "live_radio"
+          || content?.content_type === "podcast" || content?.content_type === "spiritual"){
+          return `${content?.content_type_detail?.detail?.meta?.assets_url}/${content.portrait_image}`;
         }
         else{
           return `${rootImageUrl}${content.square_image}`;

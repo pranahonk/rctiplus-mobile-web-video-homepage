@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import '../../../assets/scss/components/audio-list.scss';
-import { getTruncate, truncateString } from '../../../utils/helpers';
+import { getImage, getTruncate, truncateString } from '../../../utils/helpers';
 import Router from 'next/router';
 import ActionSheet from '../../Modals/ActionSheet';
 
@@ -73,15 +73,6 @@ function AudioList ({title, indexTag, id, data}) {
     const toggleActionSheet = (program = null, caption = '', url = '', hashtags = []) => {
       setActionSheet((e) => !e);
       setShareURL(url)
-    }
-
-    const getImage = (url, staticPath) => {
-      if (url){
-        return  `${staticPath}/200/${url}`
-      }
-      else{
-        return "http://www.roov.id/image/logo.png"
-      }
     }
 
 

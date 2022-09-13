@@ -318,26 +318,168 @@ export const contentTypeHotVideo = `
 export const contentTypeAudioPodcast = `
   ... on ContentTypeAudioPodcast {
       detail(page: 1, page_size: 6){
-        data{
-            categoryPodcasts_id
-            create_date
-            created_by
-            deeplink
-            description
-            id
-            image_banner
-            image_name
-            moderation_status
-            modified_by
-            permalink
-            radios_id
-            sort
-            sort_all
-            sso_id
-            status
-            title
-            total_plays
+          data{
+              author
+              deeplink
+              expired_at
+              expired_in
+              id
+              label
+              landscape_image
+              medium_landscape_image
+              permalink
+              portrait_image
+              premium
+              portrait_image
+              premium
+              product_id
+              square_image
+              summary
+              title
+              total_plays
+              type
+              __typename
+        }
+        meta{
+          assets_url
+          image_path
+          pagination{
+            current_page
+            per_page
+            total
+            total_page
+          }
+          video_path
+        }
+         status{
+            code
+            message_client
+            message_server
+        }
+      }
+  }
+`
 
+export const contentTypeAudioPodcastContent = `
+     ... on ContentTypeAudioPodcastContent{
+         detail(page: 1, page_size: 6) {
+         data {
+              author
+              deeplink
+              expired_at
+              expired_in
+              id
+              label
+              landscape_image
+              medium_landscape_image
+              permalink
+              portrait_image
+              premium
+              portrait_image
+              premium
+              product_id
+              square_image
+              summary
+              title
+              total_plays
+              type
+              __typename
+                    }
+                    meta {
+                      assets_url
+                      image_path
+                      pagination {
+                        current_page
+                        per_page
+                        total
+                        total_page
+                        __typename
+                      }
+                      video_path
+                      __typename
+                    }
+                    status {
+                      code
+                      message_client
+                      message_server
+                      __typename
+                    }
+                    __typename
+                  }
+                  __typename
+
+                  }
+`
+
+
+export const contentTypeAudioSpiritual = `
+  ... on ContentTypeAudioSpiritual {
+      detail(page: 1, page_size: 6){
+          data{
+              author
+              deeplink
+              expired_at
+              expired_in
+              id
+              label
+              landscape_image
+              medium_landscape_image
+              permalink
+              portrait_image
+              premium
+              portrait_image
+              premium
+              product_id
+              square_image
+              summary
+              title
+              total_plays
+              type
+              __typename
+        }
+        meta{
+          assets_url
+          image_path
+          pagination{
+            current_page
+            per_page
+            total
+            total_page
+          }
+          video_path
+        }
+         status{
+            code
+            message_client
+            message_server
+        }
+      }
+  }
+`
+
+export const contentTypeAudioSpiritualContent = `
+  ... on ContentTypeAudioSpiritualContent {
+      detail(page: 1, page_size: 6){
+          data{
+               author
+               deeplink
+               expired_at
+               expired_in
+               id
+               label
+               landscape_image
+               medium_landscape_image
+               permalink
+               portrait_image
+               premium
+               portrait_image
+               premium
+               product_id
+               square_image
+               summary
+               title
+               total_plays
+               type
         }
         meta{
           assets_url

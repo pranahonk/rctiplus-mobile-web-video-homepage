@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { connect } from "react-redux"
 
-import { RESOLUTION_IMG } from '../../config'
-import newsCountView from "../../redux/actions/newsCountView"
+import '../../assets/scss/components/stories.scss';
 
 import "../../assets/scss/components/stories.scss"
 

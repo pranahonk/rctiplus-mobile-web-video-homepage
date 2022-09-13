@@ -27,18 +27,20 @@
             align-items: center;
             justify-content: center;
             margin-right: 10px;
+            position: relative;
             &:last-child {
                 margin-right: 0;
             }
             .background-disc {
                 width: 80px;
                 height: 80px;
-                background: linear-gradient(146.31deg, #05B5F5 14.04%, #0079FF 88.41%);
+                background: linear-gradient(146.31deg, #0188bb 14.04%, #0059bcba 88.41%);
                 border-radius: 50%;
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                position: relative;
+                position: absolute;
+                top: 11px;
                 .disc-img {
                     width: 70px;
                     height: 70px;
@@ -51,9 +53,9 @@
                 }
                 .disc-hole-background {
                     position: absolute;
-                    width: 17px;
-                    height: 17px;
-                    background: linear-gradient(146.31deg, #05B5F5 14.04%, #0079FF 88.41%);
+                    width: 20px;
+                    height: 20px;
+                    background: linear-gradient(146.31deg, #0188bb 14.04%, #0059bcba 88.41%);
                     opacity: 0.47;
                     border-radius: 50%;
                     display: flex;
@@ -62,9 +64,9 @@
                 }
                 .disc-hole {
                     position: absolute;
-                    width: 12px;
-                    height: 12px;
-                    background: linear-gradient(146.31deg, #05B5F5 14.04%, #0079FF 88.41%);
+                    width: 15px;
+                    height: 15px;
+                    background: linear-gradient(146.31deg, #0188bb 14.04%, #0059bcba 88.41%);
                     border-radius: 50%;
                     opacity: 1 !important;
                 }
@@ -89,6 +91,8 @@
                 margin-top: 16px;
                 color: #E3E3E3;
                 text-align: center;
+                position: absolute;
+                top: 93px;
             }
         }
     }
