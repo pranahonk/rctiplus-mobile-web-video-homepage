@@ -14,6 +14,7 @@ export const GTM = process.env.GTM;
 export const GTM_AUTH = process.env.GTM_AUTH;
 
 export const DEV_API = process.env.DEV_API;
+export const MONETIZATION_API = process.env.MONETIZATION_API;
 
 export const API_V2 = process.env.API_V2 ? process.env.API_V2 : process.env.DEV_API;
 
@@ -76,8 +77,7 @@ export const VISITOR_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2aWQiOjAsI
 export const NEWS_TOKEN = '';
 export const IS_SHOWN = true;
 
-
-// SEO CONSTANTS
+export const WS_SECRET_KEY = process.env.WS_SECRET_KEY;
 
 export const AUTHOR = 'RCTI+';
 export const VIEWPORT = 'initial-scale=1.0, width=device-width, user-scalable=no';
@@ -354,12 +354,6 @@ export const SITEMAP = {
         title: `Berita Travel, Pariwisata, Kuliner Kekinian Hari Ini - ${SITE_NAME_NEWS}`,
         description: `Kumpulan berita travel, wisata, liburan, promosi, pesawat, hotel, dan kuliner terbaru hari ini dari berbagai sumber terpercaya`,
         keywords: `berita travel, berita wisata, berita pariwisata, destinasi wisata, tempat liburan, promosi, pesawat, hotel, wisata kuliner`,
-        image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
-    },
-    trending_gaya_hidup: {
-        title: `Informasi Gaya Hidup, Lifestyle, dan Fashion Terkini - ${SITE_NAME_NEWS}`,
-        description: `Kumpulan berita dan artikel gaya hidup, lifestyle, dan fashional dari artis serta publik figure nasional dan internasional terkini di Indonesia`,
-        keywords: `berita lifestyle, berita gaya hidup, lifestyle`,
         image: `https://static.rctiplus.id/assets/metaimages/MetaCover_NEWS-min.png`
     },
     trending_olahraga: {

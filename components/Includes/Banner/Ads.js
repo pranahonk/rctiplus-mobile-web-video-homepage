@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { GPT_NEWS_LINK_LIST, GPT_NEWS_LINK_DETAIL, API_V2 } from '../../../config';
-import {connect} from 'react-redux';
-import adsActions from '../../../redux/actions/adsActions';
-import ax from "axios";
+import { API_V2, GPT_NEWS_LINK_DETAIL, GPT_NEWS_LINK_LIST } from '../../../config';
+import ax from 'axios';
 import { getUidAppier } from '../../../utils/appier';
 // import $ from 'jquery';
 // import { useSelector, useDispatch } from 'react-redux';

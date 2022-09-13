@@ -1,26 +1,26 @@
-import React, {useEffect, useRef, useState } from 'react'
-import router, { Router, useRouter, withRouter } from 'next/router'
-import { connect } from "react-redux"
-import BottomScrollListener from 'react-bottom-scroll-listener'
-import LoadingBar from 'react-top-loading-bar'
-import { StickyContainer, Sticky } from 'react-sticky'
-import dynamic from 'next/dynamic'
+import React, { useEffect, useRef, useState } from 'react';
+import { useRouter, withRouter } from 'next/router';
+import { connect } from 'react-redux';
+import BottomScrollListener from 'react-bottom-scroll-listener';
+import LoadingBar from 'react-top-loading-bar';
+import { Sticky, StickyContainer } from 'react-sticky';
+import dynamic from 'next/dynamic';
 
-import HomeLoader from '../components/Includes/Shimmer/HomeLoader'
-import Layout from '../components/Layouts/Default_v2'
-import { gaTrackerScreenView } from '../utils/ga-360'
+import HomeLoader from '../components/Includes/Shimmer/HomeLoader';
+import Layout from '../components/Layouts/Default_v2';
+import { gaTrackerScreenView } from '../utils/ga-360';
 
-import Header from "../components/Includes/HomeCategory/DetailCategory/Header"
-import Carousel from '../components/Includes/Gallery/Carousel_v2'
-import GridMenu from '../components/Includes/Common/HomeCategoryMenu'
-import Stories from '../components/Includes/Gallery/Stories_v2'
-import StickyAds from '../components/Includes/Banner/StickyAds'
-import { client } from "../graphql/client"
-import { GET_LINEUPS } from "../graphql/queries/homepage"
-import adsActions from '../redux/actions/adsActions'
-import { setVisitorToken } from '../utils/cookie'
-import Cookies from 'js-cookie'
-import { titleStringUrlRegex, urlRegex } from '../utils/regex'
+import Header from '../components/Includes/HomeCategory/DetailCategory/Header';
+import Carousel from '../components/Includes/Gallery/Carousel_v2';
+import GridMenu from '../components/Includes/Common/HomeCategoryMenu';
+import Stories from '../components/Includes/Gallery/Stories_v2';
+import StickyAds from '../components/Includes/Banner/StickyAds';
+import { client } from '../graphql/client';
+import { GET_LINEUPS } from '../graphql/queries/homepage';
+import adsActions from '../redux/actions/adsActions';
+import { setVisitorToken } from '../utils/cookie';
+import Cookies from 'js-cookie';
+import { titleStringUrlRegex } from '../utils/regex';
 
 const VideoLandscapeMiniWtView = dynamic(() => import("../components/lineups/LandscapeMiniWt"))
 const VideoLandscapeMiniView = dynamic(() => import("../components/lineups/LandscapeMini"))
@@ -42,277 +42,327 @@ const AudioHorizontalDisc = dynamic(() => import("../components/lineups/audio_li
 const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"))
 
 function Category (props) {
-    const [ isShimmer, setIsShimmer ] = useState(false)
-    const [ lineups, setLineups ] = useState([])
-    const [ meta, setMeta ] = useState({})
-    const [ openComingSoonModal, setOpenComingSoonModal ] = useState(false)
-    const [ contentComingSoonModal, setContentComingSoonModal ] = useState({})
-    const router = useRouter();
-    const loadingBar = useRef(null)
+  const [ isShimmer, setIsShimmer ] = useState(false)
+  const [ lineups, setLineups ] = useState([])
+  const [ gpt, setGpt ] = useState([])
+  const [ meta, setMeta ] = useState({})
+  const [ openComingSoonModal, setOpenComingSoonModal ] = useState(false)
+  const [ contentComingSoonModal, setContentComingSoonModal ] = useState({})
+  const router = useRouter();
+  const loadingBar = useRef(null)
 
-    const bottomScrollFetch = () => {
-        if (!meta.pagination) return
+  const bottomScrollFetch = () => {
+    if (!meta.pagination) return
 
-        const { total_page, current_page } = meta.pagination
-        if (total_page === current_page) return
+    const { total_page, current_page } = meta.pagination
+    if (total_page === current_page) return
 
-        getCategoryLineups(current_page + 1)
-    }
+    getCategoryLineups(current_page + 1)
+  }
 
-    useEffect(() => {
-        getCategoryLineups()
-        gaTrackerScreenView()
-    }, [ props.router.query.category_id ])
+  useEffect(() => {
+    getCategoryLineups()
+    gaTrackerScreenView()
+  }, [ props.router.query.category_id ])
 
-    useEffect(() => {
-        const { category_id, category_title} = props.router.query
-        let href, as
+  useEffect(() => {
+    const { category_id, category_title} = props.router.query
+    let href, as
 
-        href = `/category?category_id=${category_id}&category_title=${(category_title)}`;
-        as = `/category/${category_id}/${titleStringUrlRegex(category_title).toLowerCase()}`;
+    href = `/category?category_id=${category_id}&category_title=${(category_title)}`;
+    as = `/category/${category_id}/${titleStringUrlRegex(category_title).toLowerCase()}`;
 
-        router.push(href, as, { shallow: true });
-    },[])
+    router.push(href, as, { shallow: true });
+  },[])
 
-    const getCategoryLineups = async (page = 1, pageSize = 5) => {
-        await setVisitorToken()
-        if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
-        if (page === 1) setIsShimmer(true)
-            client
-                .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
-                .then(({ data }) => {
-                    let newLineups = data.lineups.data
+  const getCategoryLineups = async (page = 1, pageSize = 5) => {
+    await setVisitorToken()
+    if(Cookies.get('VISITOR_TOKEN') || Cookies.get('ACCESS_TOKEN')) {
+      if (page === 1) setIsShimmer(true)
+      client
+        .query({ query: GET_LINEUPS(page, pageSize, props.router.query.category_id) })
+        .then(({ data }) => {
+          let newLineups = data.lineups.data
 
-                    if (page > 1) {
-                        newLineups = lineups.concat(newLineups)
-                    }
 
-                    const mappedContents = new Map()
-                    newLineups.forEach(content => {
-                        if (content.lineup_type_detail.detail) {
-                            mappedContents.set(content.id, content)
-                        }
-                    })
-                    setLineups([ ...mappedContents.values() ])
-                    setMeta(data.lineups.meta)
-                })
-                .catch(_ => {})
-                .finally(_ => {
-                    if (page === 1) setIsShimmer(false)
-            })
-        }
-    }
+          if (page > 1) {
+            newLineups = lineups.concat(newLineups)
+          }
 
-    const setComingSoonModalState = (open, content) => {
-        setOpenComingSoonModal(open)
-        setContentComingSoonModal(content)
-    }
-
-    const renderLineups = () => {
-        return lineups.map((lineup, index) => {
-            switch(lineup.display_type) {
-                case "portrait_short" :
-                    return (
-                        <PortraitShortView
-                            lineup={lineup}
-                            key={lineup.id}
-                            imagePath={meta.image_path} />
-                    )
-                case "portrait" :
-                    return (
-                        <VideoPortraitView
-                            key={lineup.id}
-                            loadingBar={loadingBar.current}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "landscape_large_ws" :
-                    return (
-                        <VideoLandscapeLgWsView
-                            key={lineup.id}
-                            loadingBar={loadingBar.current}
-                            lineup={lineup}
-                            showComingSoonModal={(open, content) => setComingSoonModalState(open, content)}
-                            imagePath={meta.image_path} />
-                    )
-                case "landscape_large" :
-                    return (
-                        <VideoLandscapeLgView
-                            key={lineup.id}
-                            loadingBar={loadingBar.current}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "landscape_219" :
-                    return (
-                        <VideoLandscape219View
-                            key={lineup.id}
-                            loadingBar={loadingBar.current}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "landscape_mini_wt" :
-                    return (
-                        <VideoLandscapeMiniWtView
-                            key={lineup.id}
-                            loadingBar={loadingBar.current}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "landscape_mini" :
-                    return (
-                        <VideoLandscapeMiniView
-                            key={lineup.id}
-                            loadingBar={loadingBar.current}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "square_mini" :
-                    return (
-                        <VideoSquareMiniView
-                            key={lineup.id}
-                            loadingBar={loadingBar.current}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "square" :
-                    return (
-                        <VideoSquareView
-                            key={lineup.id}
-                            loadingBar={loadingBar.current}
-                            lineup={lineup}
-                            imagePath={meta.image_path} />
-                    )
-                case "landscape_mini_live" :
-                    return (
-                        <VideoLandscapeMiniLiveView
-                            key={lineup.id}
-                            loadingBar={loadingBar.current}
-                            lineup={lineup}
-                            showComingSoonModal={(open, content) => setComingSoonModalState(open, content)}
-                            imagePath={meta.image_path} />
-                    )
-                case 'tag':
-                  return (
-                    <HorizontalHastags key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
-                  )
-                case 'landscape_news':
-                  return (
-                    <NewsHorizontalLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
-                  )
-                case "square_list_news":
-                  return (
-                    <HorizontalMutipleLandscape key={lineup.id} title={lineup.title} indexTag={index} data={lineup} id={lineup.id} />
-                  )
-                case "landscape_hot_competition":
-                  return(
-                    <LandscapeHotCompetition key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
-                  )
-                case "portrait_hot":
-                  return(
-                    <LandscapeHotVideo key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
-                  )
-                case "square_list_audio":
-                  return(
-                    <AudioHorizontalList  key={lineup.id} title={lineup.title} indexTag={index} id={lineup.id} data={lineup} />
-                  );
-                case "portrait_disc":
-                  return(
-                    <AudioHorizontalDisc
-                      title={lineup.title}
-                      key={lineup.id}
-                      data={lineup}
-                      indexTag={index}
-                      id={lineup.id}
-                    />
-                  );
+          const mappedContents = new Map()
+          newLineups.forEach(content => {
+            if (content.lineup_type_detail.detail) {
+              mappedContents.set(content.id, content)
             }
+          })
+          setLineups([ ...mappedContents.values() ])
+          setMeta(data.lineups.meta)
+          setGpt(data.gpt.data)
+        })
+        .catch(_ => {})
+        .finally(_ => {
+          if (page === 1) setIsShimmer(false)
         })
     }
+  }
 
-    return (
-        <Layout >
-            <LoadingBar
-                progress={0}
-                height={3}
-                color={'#fff'}
-                ref={loadingBar} />
+  const setComingSoonModalState = (open, content) => {
+    setOpenComingSoonModal(open)
+    setContentComingSoonModal(content)
+  }
 
-            <BottomScrollListener
-                offset={150}
-                onBottom={bottomScrollFetch} />
 
-            { isShimmer
-                ? <HomeLoader />
-                : (
-                    <>
-                        <div style={{marginTop: "56px"}}>
-                            <Header title={ props.router.query.category_title.replace(/[^a-z0-9A-Z]/g, ' ')} />
+  const renderLineups = () => {
+    return lineups.map((lineup, index) => {
+      switch(lineup.display_type) {
+        case "portrait_short" :
+          return (
+            <PortraitShortView
+              lineup={lineup}
+              key={lineup.id}
+              imagePath={meta.image_path} />
+          )
+        case "portrait" :
+          return (
+            <VideoPortraitView
+              key={lineup.id}
+              loadingBar={loadingBar.current}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "landscape_large_ws" :
+          return (
+            <VideoLandscapeLgWsView
+              key={lineup.id}
+              loadingBar={loadingBar.current}
+              lineup={lineup}
+              showComingSoonModal={(open, content) => setComingSoonModalState(open, content)}
+              imagePath={meta.image_path} />
+          )
+        case "landscape_large" :
+          return (
+            <VideoLandscapeLgView
+              key={lineup.id}
+              loadingBar={loadingBar.current}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "landscape_219" :
+          return (
+            <VideoLandscape219View
+              key={lineup.id}
+              loadingBar={loadingBar.current}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "landscape_mini_wt" :
+          return (
+            <VideoLandscapeMiniWtView
+              key={lineup.id}
+              loadingBar={loadingBar.current}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "landscape_mini" :
+          return (
+            <VideoLandscapeMiniView
+              key={lineup.id}
+              loadingBar={loadingBar.current}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "square_mini" :
+          return (
+            <VideoSquareMiniView
+              key={lineup.id}
+              loadingBar={loadingBar.current}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "square" :
+          return (
+            <VideoSquareView
+              key={lineup.id}
+              loadingBar={loadingBar.current}
+              lineup={lineup}
+              imagePath={meta.image_path} />
+          )
+        case "landscape_mini_live" :
+          return (
+            <VideoLandscapeMiniLiveView
+              key={lineup.id}
+              loadingBar={loadingBar.current}
+              lineup={lineup}
+              showComingSoonModal={(open, content) => setComingSoonModalState(open, content)}
+              imagePath={meta.image_path} />
+          )
+        case 'tag':
+          return (
+            <HorizontalHastags
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              data={lineup}
+              id={lineup.id} />
+          )
+        case 'landscape_news':
+          return (
+            <NewsHorizontalLandscape
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              data={lineup}
+              id={lineup.id} />
+          )
+        case "square_list_news":
+          return (
+            <HorizontalMutipleLandscape
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              data={lineup}
+              id={lineup.id} />
+          )
+        case "landscape_hot_competition":
+          return(
+            <LandscapeHotCompetition
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              id={lineup.id}
+              data={lineup} />
+          )
+        case "portrait_hot":
+          return(
+            <LandscapeHotVideo
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              id={lineup.id}
+              data={lineup} />
+          )
+        case "square_list_audio":
+          return(
+            <AudioHorizontalList
+              key={lineup.id}
+              title={lineup.title}
+              indexTag={index}
+              id={lineup.id}
+              data={lineup} />
+          );
+        case "portrait_disc":
+          return(
+            <AudioHorizontalDisc
+              title={lineup.title}
+              key={lineup.id}
+              data={lineup}
+              indexTag={index}
+              id={lineup.id}
+            />
+          );
+      }
+    })
+  }
 
-                            <div style={{marginTop: -3}}>
-                                <Carousel category />
-                            </div>
+  return (
+    <Layout >
+      <LoadingBar
+        progress={0}
+        height={3}
+        color={'#fff'}
+        ref={loadingBar} />
 
-                            <GridMenu />
+      <BottomScrollListener
+        offset={150}
+        onBottom={bottomScrollFetch} />
 
-                            <Stories />
+      { isShimmer
+        ? <HomeLoader />
+        : (
+          <>
+            <div style={{marginTop: "56px"}}>
+              <Header title={ props.router.query.category_title.replace(/[^a-z0-9A-Z]/g, ' ')} />
 
-                            <StickyContainer>
-                                <Sticky disableHardwareAcceleration>
-                                    { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
-                                        const topDistance = 40;
-                                        if (distanceFromTop < topDistance) {
-                                            if (!props.ads.ads_displayed) {
-                                                return (
-                                                    <div {...rest} >
-                                                        <StickyAds/>
-                                                    </div>
-                                                );
-                                            }
-                                            const adsContents = document.getElementById(process.env.MODE === 'PRODUCTION' ? 'div-gpt-ad-1584677487159-0' : 'div-gpt-ad-1584677577539-0').childNodes;
-                                            if (adsContents.length > 0) {
-                                                if (adsContents[0].tagName == 'SCRIPT') {
-                                                    const stickyAds = document.getElementById('sticky-ads-container');
-                                                    if (stickyAds) {
-                                                        stickyAds.style.display = 'none'
-                                                    }
-                                                }
-                                            }
-                                            return (
-                                                <div {...rest} >
-                                                    <StickyAds sticky/>
-                                                </div>
-                                            );
-                                        }
-                                        else if (!props.ads.ads_displayed) {
-                                          props.toggleAds(true)
-                                        }
-                                        return (
-                                            <div {...rest} >
-                                                <StickyAds id='div-gpt-ad-1584677577539-0'/>
-                                            </div>
-                                        );
-                                    } }
-                                </Sticky>
-                            </StickyContainer>
+              <div style={{marginTop: -3}}>
+                <Carousel category />
+              </div>
 
-                            <div style={{ marginBottom: 45}}>
-                                <div style={{marginTop: 10}}>
-                                    { renderLineups() }
-                                </div>
-                            </div>
+              <GridMenu />
+
+              <Stories />
+
+              <StickyContainer>
+                <Sticky disableHardwareAcceleration>
+                  { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
+                    const topDistance = 40;
+
+                    if (distanceFromTop < topDistance) {
+                      if (!props.ads.ads_displayed) {
+                        return (
+                          <div {...rest} >
+                            <StickyAds
+                              path={gpt.path}
+                              id={gpt.div_gpt}
+                              targettingAdsData={gpt.cust_params}
+                            />
+                          </div>
+                        );
+                      }
+
+
+                      const adsContents = document.getElementById(gpt.div_gpt)?.childNodes;
+
+                      if (adsContents?.length > 0) {
+                        if (adsContents[0].tagName == 'SCRIPT') {
+                          const stickyAds = gpt.div_gpt.childNodes;
+                          if (stickyAds) {
+                            stickyAds.style.display = 'none'
+                          }
+                        }
+                      }
+                      return (
+                        <div {...rest} >
+                          <StickyAds
+                            path={gpt.path}
+                            id={gpt.div_gpt}
+                            targettingAdsData={gpt.cust_params}
+                            sticky/>
                         </div>
-                        <ComingSoonModal
-                            open={openComingSoonModal}
-                            onClose={_ => setOpenComingSoonModal(false)}
-                            content={contentComingSoonModal} />
-                    </>
-                )
-            }
-        </Layout>
-    )
+                      );
+                    }
+                    else if (!props.ads.ads_displayed) {
+                      props.toggleAds(true)
+                    }
+                    return (
+                      <div {...rest} >
+                        <StickyAds
+                          path={gpt.path}
+                          id={gpt.div_gpt}
+                          targettingAdsData={gpt.cust_params}
+                        />
+                      </div>
+                    );
+                  } }
+                </Sticky>
+              </StickyContainer>
+
+              <div style={{ marginBottom: 45}}>
+                <div style={{marginTop: 10}}>
+                  { renderLineups() }
+                </div>
+              </div>
+            </div>
+            <ComingSoonModal
+              open={openComingSoonModal}
+              onClose={_ => setOpenComingSoonModal(false)}
+              content={contentComingSoonModal} />
+          </>
+        )
+      }
+    </Layout>
+  )
 }
 
 export default connect(state => state, {
-    ...adsActions,
+  ...adsActions,
 })(withRouter(Category))

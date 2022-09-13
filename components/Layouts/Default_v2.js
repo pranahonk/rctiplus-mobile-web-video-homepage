@@ -223,7 +223,7 @@ class Default_v2 extends React.Component {
                     `}}>
                     </script> */}
                 </Head>
-                <script async type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+                <script async type="text/javascript" src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
                 {/* <script src="//dl.conviva.com/mnc-test/jwplayer/stable/conviva.js"></script> */}
 
                 {/* <!-- DO NOT touch the following DIV --> */}
