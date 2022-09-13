@@ -1,14 +1,11 @@
-
-
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Router from 'next/router';
 
-import { contentGeneralEvent, homeGeneralClicked, homeProgramClicked } from '../../../utils/appier'
-import { GET_LINEUP_CONTENT_VIDEO, GET_CONTINUE_WATCHING } from "../../../graphql/queries/homepage"
-import { client } from "../../../graphql/client"
-import { getUserAccessToken } from "../../../utils/cookie"
-import { showSignInAlert } from "../../../utils/helpers"
-import { GET_AUDIO_LIST_PAGINATION } from '../../../graphql/queries/audio-list';
+import { homeGeneralClicked } from '../../../utils/appier';
+import { GET_CONTINUE_WATCHING, GET_LINEUP_CONTENT_VIDEO } from '../../../graphql/queries/homepage';
+import { client } from '../../../graphql/client';
+import { getUserAccessToken } from '../../../utils/cookie';
+import { showSignInAlert } from '../../../utils/helpers';
 
 export default function useVideoLineups(props) {
   const [ contents, setContents ] = useState([])
@@ -124,7 +121,9 @@ export default function useVideoLineups(props) {
         else Router.push(url)
         break;
       default:
-        if (content.content_type.includes("live")) {
+        if (content.content_type.includes("live")
+          && content.content_type !== "live_radio"
+          && content.content_type !== "live_music") {
           const started = content.countdown === 0
 
           if (started) Router.push(url)
@@ -158,6 +157,10 @@ export default function useVideoLineups(props) {
           else if (!content.mandatory_login) url = content.external_link
 
           Router.push(url)
+        }
+        else if (content.content_type === "podcast" || content.content_type === "spiritual"
+        || content.content_type === "live_radio" || content.content_type === "live_music"){
+          Router.push(content.permalink)
         }
         else Router.push(url)
         break

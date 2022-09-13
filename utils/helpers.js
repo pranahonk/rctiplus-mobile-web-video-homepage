@@ -309,3 +309,17 @@ export function parseDateObject(dateObject) {
     time: new Date(dateObject).toLocaleTimeString("en-GB").split(":").slice(0, 2).join(":")
   }
 }
+
+export const getImage = (url, staticPath) => {
+  if (url){
+    if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
+      return `${url}`
+    }
+    else{
+      return `${staticPath}/200/${url}`
+    }
+  }
+  else{
+    return "http://www.roov.id/image/logo.png"
+  }
+}
