@@ -87,9 +87,6 @@ class Index_v2 extends React.Component {
     RPLUSAppVisit();
     gaTrackerScreenView();
 
-
-    console.log(this.props.ads);
-
     window.onbeforeunload = _ => {
       homeGeneralClicked('mweb_homepage_refresh');
     };
