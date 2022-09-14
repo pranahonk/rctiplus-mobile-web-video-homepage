@@ -87,6 +87,9 @@ class Index_v2 extends React.Component {
     RPLUSAppVisit();
     gaTrackerScreenView();
 
+
+    console.log(this.props.ads);
+
     window.onbeforeunload = _ => {
       homeGeneralClicked('mweb_homepage_refresh');
     };
@@ -99,6 +102,10 @@ class Index_v2 extends React.Component {
     else {
       this.setState({ show_sticky_install: true });
     }
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if(document.getElementById(this.state.gpt.path)?.childNodes[0]?.style?.height === '0px') this.props.toggleAds(true);
   }
 
   async getHomePageLineups(page = 1, pageSize = 5) {
