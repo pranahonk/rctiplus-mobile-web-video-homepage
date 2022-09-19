@@ -42,7 +42,8 @@ function squareMiniView (props) {
           return `${content?.content_type_detail?.detail?.meta?.assets_url}/${content.portrait_image}`;
         }
         else{
-          return `${rootImageUrl}${content.square_image}`;
+          // return `${rootImageUrl}${content.square_image}`;
+          return `${content.square_image}`
         }
         return false;
       default:
@@ -51,7 +52,6 @@ function squareMiniView (props) {
   }
 
   if (contents.length === 0) return null
-
   return (
     <div
       onTouchStart={e => onTouchStart(e)}
