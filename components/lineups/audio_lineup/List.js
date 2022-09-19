@@ -52,7 +52,7 @@ function AudioList ({title, indexTag, id, data}) {
     }, [show]);
 
   const getPaginationPotraitDisc = async (page, page_size, id) =>{
-    client.query({query: (page, page_size, id)})
+    client.query({query: GET_AUDIO_LIST_PAGINATION(page, page_size, id)})
       .then((res)=>{
         setMeta(res?.data?.lineup_contents?.meta);
         setPodcast((list) => ([...list, ...res?.data?.lineup_contents?.data]));
