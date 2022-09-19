@@ -42,7 +42,6 @@ export default function useVideoLineups(props) {
     const { data, meta } = props.lineup.lineup_type_detail.detail;
     const mappedContents = new Map();
 
-
     switch (props.lineup.lineup_type) {
       case "custom":
         contents.concat(data)
@@ -60,13 +59,15 @@ export default function useVideoLineups(props) {
         })
         break
     }
+    
     setContents([ ...mappedContents.values() ])
     setEndPage(meta?.pagination?.current_page === meta?.pagination?.total_page)
     setNextPage(meta?.pagination?.current_page + 1)
   }
 
 
-  const getContinueWatching = () => {
+
+  const  getContinueWatching = () => {
     props.loadingBar.continuousStart()
 
     client.query({ query: GET_CONTINUE_WATCHING(nextPage, 5, props.lineup.id)})
@@ -91,7 +92,6 @@ export default function useVideoLineups(props) {
     client.query({ query: GET_LINEUP_CONTENT_VIDEO(nextPage, 5, props.lineup.id)})
       .then(({ data }) => {
         const { pagination } = data.lineup_contents.meta
-
         const mappedContents = new Map()
         contents.concat(data.lineup_contents.data).forEach(content => {
           if (content.content_type_detail.detail && content.content_type_detail.detail.status.code === 0) {
@@ -101,7 +101,7 @@ export default function useVideoLineups(props) {
             )
           }
         })
-
+        
         setContents([ ...mappedContents.values() ])
         setEndPage(pagination.current_page >= pagination.total_page)
         setNextPage(pagination.current_page + 1)

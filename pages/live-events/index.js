@@ -88,6 +88,7 @@ class Index extends React.Component {
           statusTimer="1"
           src={`${this.state.meta.image_path}${RESOLUTION_IMG}${list.landscape_image}`} alt={list.content_title}/>
         </Col>
+
       );
     });
     let missedEvent = this.state.missed_event.map((list, i) => {

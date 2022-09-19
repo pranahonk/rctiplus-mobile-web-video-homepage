@@ -10,6 +10,9 @@ import {
 
 import {
   contentTypeAudioRadio,
+  contentTypeAudioSpiritual,
+  contentTypeAudioSpiritualContent,
+  contentTypeAudioPodcastContent,
   contentTypeAudioPodcast,
   contentTypeCatchupFragment,
   contentTypeClipFragment,
@@ -214,8 +217,11 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 5, lineup_id = 0)
           ${contentTypeLiveEPGFragment}
           ${contentTypeSpecialFragment}
           ${contentTypeSeasonFragment}
-          ${contentTypeAudioPodcast}
           ${contentTypeAudioRadio}
+          ${contentTypeAudioPodcast}
+          ${contentTypeAudioSpiritual}
+          ${contentTypeAudioSpiritualContent}
+          ${contentTypeAudioPodcastContent}
         }
       }
       meta {

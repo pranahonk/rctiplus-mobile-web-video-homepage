@@ -57,7 +57,6 @@ function AudioDisc ({title, indexTag, id, data}) {
       return window.location.href = article?.permalink;
     };
 
-
     return (
       disc === undefined || disc.length  < 1 ?   (<div />) :
         <div className="pnl-audio-disc">
