@@ -110,7 +110,7 @@ function AudioList ({title, indexTag, id, data}) {
                                   <div className='col-4 my-auto'>
                                     <Img className="podcast-img"
                                          alt={content?.content_type_detail?.detail?.data.name}
-                                         unloader={<img src={`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`} />}
+                                         unloader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
                                          loader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
                                          src={[`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`]}
                                          width="76"
