@@ -33,8 +33,10 @@ function squareMiniView (props) {
   }
 
   const getImageLink = (content) => {
+    
     switch (props.lineup.display_type) {
       case "square_list_audio":
+       
         return `${props.imagePath}${content.image_banner}`;
       case "square_mini":
         if(content?.content_type === "live_music" || content?.content_type === "live_radio"
@@ -42,12 +44,16 @@ function squareMiniView (props) {
           return `${content?.content_type_detail?.detail?.meta?.assets_url}/${content.portrait_image}`;
         }
         else{
-          // return `${rootImageUrl}${content.square_image}`;
-          return `${content.square_image}`
+          if (content.square_image?.indexOf("http://") === 0 || content.square_image?.indexOf("https://") === 0){
+            return `${content.square_image}`
+          }else{
+            return `${content?.content_type_detail?.detail?.meta?.assets_url}/${content.square_image}`
+          }
         }
         return false;
       default:
         return `${rootImageUrl}${content.square_image}`;
+        // return `${content.square_image}`
     }
   }
 
