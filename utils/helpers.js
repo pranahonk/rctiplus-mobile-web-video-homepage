@@ -313,17 +313,13 @@ export function parseDateObject(dateObject) {
 export const getImage = (url, staticPath) => {
   if (url){
     if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
-      console.log("aaaa")
       return `${url}`
     }
     else{
-      console.log("bbb")
-      console.log(`${staticPath}/200/${url}`,"staticPath")
       return `${staticPath}/200/${url}`
     }
   }
   else{
-    console.log("cccc")
     return "http://www.roov.id/image/logo.png"
   }
 }
