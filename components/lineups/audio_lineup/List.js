@@ -30,8 +30,8 @@ function AudioList ({title, indexTag, id, data}) {
 
     useEffect(()=>{
       const result = [];
-      for (let i = 0; i < podcast?.length; i += 3) {
-        result.push(podcast?.slice(i, i + 3));
+      for (let i = 0; i < podcast?.length-1; i += 3) {
+        result.push(podcast?.slice(i, i+3));
       }
       setMultiplePodcast(result);
 
@@ -42,7 +42,7 @@ function AudioList ({title, indexTag, id, data}) {
         setLoadingMore(true);
 
         if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-          getPaginationPotraitDisc(meta?.pagination?.current_page + 1, 5, id);
+          getPaginationPotraitDisc(meta?.pagination?.current_page + 1, 7, id);
         }
         else{
           setLoadingMore(false);
@@ -110,7 +110,7 @@ function AudioList ({title, indexTag, id, data}) {
                                   <div className='col-4 my-auto'>
                                     <Img className="podcast-img"
                                          alt={content?.content_type_detail?.detail?.data.name}
-                                         unloader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
+                                         unloader={<img src={`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`} />}
                                          loader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
                                          src={[`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`]}
                                          width="76"

@@ -56,7 +56,7 @@ export const GET_AUDIO_LIST_PAGINATION = ( page_lineups = 1, pageSize_lineups = 
                 __typename
               }
               ... on ContentTypeAudioPodcast {
-                detail(page: 1, page_size: 6) {
+                detail(page: 1, page_size: 5) {
                   data {
                     author
                     deeplink
@@ -150,7 +150,7 @@ export const GET_AUDIO_LIST_PAGINATION = ( page_lineups = 1, pageSize_lineups = 
                 __typename
               }
               ... on ContentTypeAudioPodcastContent{
-                detail(page: 1, page_size: 6) {
+                detail(page: 1, page_size: 5) {
                   data {
                     author
                     deeplink
