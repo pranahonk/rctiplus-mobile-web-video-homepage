@@ -33,7 +33,6 @@ function AudioList ({title, indexTag, id, data}) {
       for (let i = 0; i < podcast?.length-1; i += 3) {
         result.push(podcast?.slice(i, i+3));
       }
-      console.log(result, "<< yayay")
       setMultiplePodcast(result);
 
     }, [podcast]);
@@ -99,7 +98,6 @@ function AudioList ({title, indexTag, id, data}) {
                     <div key={index} id={`square-list-${index}`}>
                       {
                         list.map((content, index2) =>{
-                          console.log(content.content_type, content?.content_type_detail?.detail?.data?.title, "aien", content?.content_type_detail?.detail?.data?.author, content?.content_type_detail?.detail?.data?.frequency)
                           indexId++;
                           if(content?.content_type_detail?.detail?.status?.code !== 0){
                             setShow(false)
