@@ -31,7 +31,7 @@ function AudioDisc ({title, indexTag, id, data}) {
         setLoadingMore(true);
 
         if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-          getPaginationSquareListMini(meta?.pagination?.current_page + 1, 5, id);
+          getPaginationSquareListMini(meta?.pagination?.current_page + 1, 6, id);
         }
         else{
           setLoadingMore(false);
@@ -42,9 +42,9 @@ function AudioDisc ({title, indexTag, id, data}) {
 
   const getPaginationSquareListMini = (page, page_size, id) =>{
     client.query({query: GET_AUDIO_LIST_PAGINATION(page, page_size, id)})
-      .then((res)=>{
+    .then((res)=>{
         setMeta(res?.data?.lineup_contents?.meta);
-        setDisc((list) => ([...list, ...res?.data?.lineup_contents?.data]));
+        setDisc((list) => ([...list,...res?.data?.lineup_contents?.data]));
         setLoadingMore(false);
         setShow(null);
       })
@@ -73,7 +73,7 @@ function AudioDisc ({title, indexTag, id, data}) {
                       <div className="background-disc">
                         <Img className="disc-img"
                              alt={content?.content_type_detail?.detail?.data?.title}
-                             unloader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
+                             unloader={<img src={`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`} />}
                              loader={<img src={[`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`]} />}
                              src={[`${getImage(content?.content_type_detail?.detail?.data?.portrait_image, content?.content_type_detail?.detail?.meta?.assets_url)}`]}/>
                         <div className="disc-hole-background"></div>

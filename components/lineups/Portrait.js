@@ -33,7 +33,6 @@ function PortraitView (props) {
   }
 
   if (contents.length === 0) return null
-  
   return (
     <div
       onTouchStart={e => onTouchStart(e)}
