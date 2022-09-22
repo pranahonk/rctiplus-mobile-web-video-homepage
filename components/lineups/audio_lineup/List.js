@@ -120,7 +120,14 @@ function AudioList ({title, indexTag, id, data}) {
                                   <div className='col-5 px-0'>
                                     <div className="desc-menu-wrapper">
                                       <span className="podcast-title" dangerouslySetInnerHTML={{ __html: truncateString(content?.content_type_detail?.detail?.data?.title, 15)}}></span>
-                                      <span className="podcaster-name" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.frequency, '...', 40)}}></span>
+                                      {
+                                        content.content_type === "live_music" ||content.content_type === "live_radio" ? (<>
+                                          <span className="podcaster-name" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.frequency, '...', 40)}}></span>
+                                        </>):(<>
+                                          <span className="podcaster-name" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.author, '...', 40)}}></span>
+                                        </>)
+                                      }
+                                      
                                       <div className="buttons-wrapper">
                                         <img src="audio-icons/share-icon.svg" className="mr-3" onClick={()=> toggleActionSheet(this, null, content?.content_type_detail?.detail?.data?.permalink, '', ['rcti'])} />
                                         {/*<img src="audio-icons/bookmark-icon.svg" className="mx-3" />*/}
