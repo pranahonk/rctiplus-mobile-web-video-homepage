@@ -30,7 +30,7 @@ function AudioList ({title, indexTag, id, data}) {
 
     useEffect(()=>{
       const result = [];
-      for (let i = 0; i < podcast?.length-1; i += 3) {
+      for (let i = 0; i < podcast?.length; i += 3) {
         result.push(podcast?.slice(i, i+3));
       }
       setMultiplePodcast(result);
@@ -42,7 +42,7 @@ function AudioList ({title, indexTag, id, data}) {
         setLoadingMore(true);
 
         if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-          getPaginationPotraitDisc(meta?.pagination?.current_page + 1, 7, id);
+          getPaginationPotraitDisc(meta?.pagination?.current_page+1,6, id);
         }
         else{
           setLoadingMore(false);
