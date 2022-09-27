@@ -121,9 +121,13 @@ export default function useVideoLineups(props) {
         else Router.push(url)
         break;
       default:
+<<<<<<< HEAD
         if (content.content_type.includes("live")
           && content.content_type !== "live_radio"
           && content.content_type !== "live_music") {
+=======
+        if (content.content_type.includes("live")) {
+>>>>>>> fc579c4874a8d7a441ea7c2a557d04efaeeae355
           const started = content.countdown === 0
 
           if (started) Router.push(url)
@@ -137,8 +141,7 @@ export default function useVideoLineups(props) {
               countdown: content.countdown,
               start: content.start_ts || content.live_at,
               title: content.title,
-              start_time: content.start,
-              image
+              start_time: content.start
             })
           }
         }

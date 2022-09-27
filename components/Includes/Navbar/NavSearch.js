@@ -22,6 +22,7 @@ import _debounce from "lodash/debounce";
 // import { debounceTime } from 'rxjs/operators';
 
 import { libraryGeneralEvent, searchKeywordEvent, searchBackClicked } from '../../../utils/appier';
+import { gaTrackerSearch } from '../../../utils/ga-360';
 
 const NavbarSearch = ({...props}) => {
     const router = useRouter()

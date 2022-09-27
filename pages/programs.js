@@ -34,7 +34,6 @@ import VisionPlusProgram from '../components/Includes/program-detail/visionplus_
 
 // const Player = dynamic(() => import('../components/Includes/Player/Player'));
 const JwPlayer = dynamic(() => import('../components/Includes/Player/JwPlayer'));
-const InnoPlayer = dynamic(() => import('../components/Includes/Player/InnoPlayer'));
 const HeadMeta = dynamic(() => import('../components/Seo/HeadMeta'));
 const MainLoader = dynamic(() => import('../components/Includes/Shimmer/detailProgramLoader').then((mod) => mod.MainLoader));
 const TabListLoader = dynamic(() => import('../components/Includes/Shimmer/detailProgramLoader').then((mod) => mod.TabListLoader));
@@ -826,86 +825,45 @@ class Index extends React.Component {
     }
 
     const dataPlayer = this.props.data['data-player'];
-    if(this.props.router.query.content_type == 'clip'){
-      return (
-        <div className="program-detail-player-wrapper">
-          <InnoPlayer
-            data={dataPlayer && dataPlayer.data } 
-            isFullscreen={ dataPlayer && dataPlayer.isFullscreen } 
-            ref={this.ref} 
-            onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
-            isResume={true} 
-            geoblockStatus={ dataPlayer && dataPlayer.status && dataPlayer.status.code === 12 ? true : false }
-            customData= {{
-              isLogin: this.props.auth.isAuth, 
-              programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
-              sectionPage: 'VOD',
-            }}
-            actionBtn={(e) => this.handleActionBtn(e)}
-            videoIndexing={this.state.videoIndexing}
-          />
-        </div>
-      )
-    }else{
-      return (
-        <div className="program-detail-player-wrapper">
-          <JwPlayer
-            data={dataPlayer && dataPlayer.data } 
-            isFullscreen={ dataPlayer && dataPlayer.isFullscreen } 
-            ref={this.ref} 
-            onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }} 
-            isResume={true} 
-            geoblockStatus={ dataPlayer && dataPlayer.status && dataPlayer.status.code === 12 ? true : false }
-            customData= {{
-              isLogin: this.props.auth.isAuth, 
-              programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
-              sectionPage: 'VOD',
-            }}
-            actionBtn={(e) => this.handleActionBtn(e)}
-            videoIndexing={this.state.videoIndexing}
-          />
-        </div>
-      )
-    }
+    return (
+      <div className="program-detail-player-wrapper">
+        <JwPlayer
+          data={dataPlayer && dataPlayer.data }
+          isFullscreen={ dataPlayer && dataPlayer.isFullscreen }
+          ref={this.ref}
+          onResume={(content_id, type, position) => { postContinueWatching(content_id, type, position) }}
+          isResume={true}
+          geoblockStatus={ dataPlayer && dataPlayer.status && dataPlayer.status.code === 12 ? true : false }
+          customData= {{
+            isLogin: this.props.auth.isAuth,
+            programType: this.props.server && this.props.server[this.type] && this.props.server[this.type].data && this.props.server[this.type].data.program_type_name,
+            sectionPage: 'VOD',
+          }}
+          actionBtn={(e) => this.handleActionBtn(e)}
+          videoIndexing={this.state.videoIndexing}
+        />
+      </div>
+    );
   }
+  
   trailer() {
     if (this.props.server && this.props.server[this.type] && this.props.server[this.type]) {
       const data = this.props.server && this.props.server[this.type];
 
-      if(this.props.router.query.content_type == 'clip'){
-        return (
-          <div className="program-detail-player-wrapper trailer">
-            <InnoPlayer 
-              data={ data.data } 
-              ref={this.ref} isFullscreen={ true }
-              isResume={true} 
-              geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
-              customData= {{
-                isLogin: this.props.auth.isAuth, 
-                programType: data.program_type_name,
-                sectionPage: 'VOD',
-                }}
-              />
-          </div>
-        );
-      }else{
-        return (
-          <div className="program-detail-player-wrapper trailer">
-            <JwPlayer 
-              data={ data.data } 
-              ref={this.ref} isFullscreen={ true }
-              isResume={true} 
-              geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
-              customData= {{
-                isLogin: this.props.auth.isAuth, 
-                programType: data.program_type_name,
-                sectionPage: 'VOD',
-                }}
-              />
-          </div>
-        );
-      }
-      
+      <div className="program-detail-player-wrapper trailer">
+        <JwPlayer
+          data={ data.data }
+          ref={this.ref} isFullscreen={ true }
+          isResume={true}
+          geoblockStatus={ data && data.status && data.status.code === 12 ? true : false }
+          customData= {{
+            isLogin: this.props.auth.isAuth,
+            programType: data.program_type_name,
+            sectionPage: 'VOD',
+            }}
+          />
+      </div>
+
     }
     return (
       <div className="program-detail-player-wrapper animated fadeInDown go">
@@ -990,7 +948,7 @@ class Index extends React.Component {
                 text="Share"
                 onclick={this.toggleActionSheet.bind(this, 'program', 'program_share', props.data.programDetail.data)}/>
               { this.props.router.query.content_id ? (
-                  <>
+                  <>y
                     <ButtonPrimary
                       className="button-20"
                       icon={ <GetApp/> }
@@ -1123,12 +1081,12 @@ export async function getServerSideProps(ctx) {
       'Authorization': accessToken ? accessToken : VISITOR_TOKEN,
     },
   });
-  
+
   // getseo
   let seoData = null;
   const contentType = ctx.query?.content_type === "episode" ? "episode" : "program"
   const id = ctx.query?.content_type === "episode" ? ctx.query.content_id : programId
-  
+
   const response_seo = await fetch(`${DEV_API}/api/v1/seo/content/${contentType}/${id}`, {
     method: 'GET',
     headers: {
@@ -1154,7 +1112,7 @@ export async function getServerSideProps(ctx) {
   }
 
   const error_code = res.statusCode > 200 ? res.statusCode : false;
-  
+
   if (error_code) {
       return { props: {server: false, seo_content: false, seo_content_detail: false} };
   }
@@ -1178,12 +1136,12 @@ export async function getServerSideProps(ctx) {
 //     return { server: false, seo_content: false, seo_content_detail: false };
 // }
 
-  return { 
+  return {
     props: {
       server: {'program-detail': data},
       seo: seoData,
-      seo_content: data, 
-      seo_content_detail: data_2,  
+      seo_content: data,
+      seo_content_detail: data_2,
     }
   };
 }

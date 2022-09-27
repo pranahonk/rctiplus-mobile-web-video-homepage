@@ -18,6 +18,7 @@ import StatusNotification from './StatusNotification';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import {LINK_RADIO, LINK_GAMES, LINK_HOT, LINK_NEWS} from '../../../config';
+import { gaTrackerNavbarTrack, gaTracker, gaTrackerSearch } from '../../../utils/ga-360';
 
 
 class NavbarDef_v2 extends Component {
@@ -60,6 +61,7 @@ class NavbarDef_v2 extends Component {
         } else {
             Router.push('/explores/search');
         }
+        gaTrackerSearch('menu_navbar_tracking','click_go_to_search','search_bar')
     }
 
     signOut() {
@@ -102,6 +104,10 @@ class NavbarDef_v2 extends Component {
         return accessToken ? accessToken : visitorToken;
     }
 
+    sendTracker(pilar){
+      gaTracker('pillar_menu', 'click_pillar_menu', pilar, pilar)
+    }
+
     navMenuIcons() {
         const iconData = [
             {
@@ -111,7 +117,7 @@ class NavbarDef_v2 extends Component {
                 newPage: false
             },
             {
-                href: "https://m.rctiplus.com/news",
+                href: LINK_NEWS,
                 service: "news",
                 isActive: false,
                 newPage: false
@@ -138,15 +144,18 @@ class NavbarDef_v2 extends Component {
         return iconData.map(({ href, service, isActive, newPage }, i) => {
             const activeSrcSuffix = isActive ? "_active" : ""
             return (
-                <Link href={href} key={i} passHref>
-                    <a href={href} target={newPage ? "_blank" : "_self"} className={`icon-lima-pilar${activeSrcSuffix}`}>
-                      <img src={`/icons-menu/${service}plus${activeSrcSuffix}.png`}
-                              alt={`${service}+`}
-                              width="auto"
-                              height="12"
-                      />
-                    </a>
-                </Link>
+                <a 
+                    key={i} 
+                    onClick={()=> this.sendTracker(service)} 
+                    href={href} 
+                    target={newPage ? "_blank" : "_self"}
+                    className={`icon-lima-pilar${activeSrcSuffix}`}>
+                    <img 
+                        src={`/icons-menu/${service}plus${activeSrcSuffix}.png`}
+                        alt={`${service}+`}
+                        width="auto"
+                        height="12"/>
+                </a>
             )
         })
     }
@@ -186,7 +195,10 @@ class NavbarDef_v2 extends Component {
                         <div
                             id="search-input"
                             className="search-input"
-                            onClick={this.goToExplore.bind(this, this.props.router.asPath)}>
+                            onClick={()=>{
+                              this.goToExplore.bind(this, this.props.router.asPath)
+                              gaTrackerSearch("menu_navbar_tracking", "click_go_to_search", "search_bar")
+                            }}>
                             <div className="search-input-placeholder">rctiplus.com</div> <SearchIcon style={{ fontSize: '1.5rem' }} />
                         </div>
                     </div>
