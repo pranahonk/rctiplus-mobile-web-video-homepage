@@ -102,7 +102,7 @@ class Index_v2 extends React.Component {
   }
 
   async getHomePageLineups(page = 1, pageSize = 5) {
-    this.LoadingBar.continuousStart();
+    this.LoadingBar?.continuousStart();
     await setVisitorToken()
 
     client.query({ query: GET_LINEUPS(page, pageSize) })
@@ -370,7 +370,7 @@ class Index_v2 extends React.Component {
                             </div>
                           );
                         }
-                        const adsContents = document.getElementById(this.state.gpt.div_gpt).childNodes;
+                        const adsContents = document.getElementById(this.state.gpt?.div_gpt)?.childNodes;
                         if (adsContents.length > 0) {
                           if (adsContents[0].tagName == 'SCRIPT') {
                             const stickyAds = document.getElementById('sticky-ads-container');

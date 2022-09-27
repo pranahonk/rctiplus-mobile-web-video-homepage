@@ -310,11 +310,11 @@ function Category (props) {
                       }
 
 
-                      const adsContents = document.getElementById(gpt.div_gpt)?.childNodes;
+                      const adsContents = document.getElementById(gpt?.div_gpt)?.childNodes;
 
                       if (adsContents?.length > 0) {
                         if (adsContents[0].tagName == 'SCRIPT') {
-                          const stickyAds = gpt.div_gpt.childNodes;
+                          const stickyAds = gpt.div_gpt?.childNodes;
                           if (stickyAds) {
                             stickyAds.style.display = 'none'
                           }
