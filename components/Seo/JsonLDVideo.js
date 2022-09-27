@@ -1,23 +1,24 @@
 
 // import { BASE_URL, SHARE_BASE_URL } from '../../config'
-const oneSegment = 'm.rctiplus.com';
+const oneSegment = 'https://m.rctiplus.com';
 export default function JsonLDVideo ({content}) {
 const structurData = {
   "@context": "https://schema.org",
   "@type": "VideoObject",
-  "contentURL": `${oneSegment}${content?.asPath}`,
-  "description": `${content?.description}`,
   "name": `${content?.title} `,
   "thumbnailUrl": `${content?.thumbnailUrl}`,
-  "sameAs": `${content?.sameAs}`,
   "uploadDate": content?.startDate || "2018-12-23T11:16:07+07:00",
+  "contentURL": `${oneSegment}${content?.asPath}`,
+  "description": `${content?.description}`,
+  "duration": "PT00H30M5S",
+  "embedUrl": `${oneSegment}${content?.asPath}`,
+  "expires": content?.endDate || "3018-12-23T11:16:07+07:00",
   "publication":
     {
       "@type": "BroadcastEvent",
       "isLiveBroadcast": true,
       "startDate": content?.startDate || "2018-12-23T11:16:07+07:00",
       "endDate": content?.endDate || "3018-12-23T11:16:07+07:00",
-      "sameAs": `${content?.sameAs_arr}`,
     }
 
 }
