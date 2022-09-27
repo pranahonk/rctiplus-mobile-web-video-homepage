@@ -10,6 +10,9 @@ import {
 
 import {
   contentTypeAudioRadio,
+  contentTypeAudioSpiritual,
+  contentTypeAudioSpiritualContent,
+  contentTypeAudioPodcastContent,
   contentTypeAudioPodcast,
   contentTypeCatchupFragment,
   contentTypeClipFragment,
@@ -61,22 +64,22 @@ export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
   return gql`
     query {
       gpt (category_id: ${category_id}) {
-        data {
-          id
-          path
-          div_gpt
-          size_width_1
-          size_width_2
-          size_height_1
-          size_height_2
-          cust_params{
-            value
-            name
-          }
-          size_height_2
-          size_width_2
+      data {
+        id
+        path
+        div_gpt
+        size_width_1
+        size_width_2
+        size_height_1
+        size_height_2
+        cust_params{
+          value
+          name
         }
+        size_height_2
+        size_width_2
       }
+    }
       lineups(${queryParams}) {
       data {
         id
@@ -119,28 +122,28 @@ export const GET_LINEUP_STORIES = (page = 1, page_size = 5, lineup_id = 0) => {
   return gql`
     query {
       lineup_stories(${queryParams}) {
-      data {
-        program_img
-        program_id
-        title
-        story {
-          id
-          permalink
-          story_img
-          link_video
+        data {
+          program_img
+          program_id
           title
-          type
-          external_link
+          story {
+            id
+            permalink
+            story_img
+            link_video
+            title
+            type
+            external_link
+          }
+        }
+        meta {
+          pagination {
+            current_page
+            total_page
+          }
+          image_path
         }
       }
-      meta {
-        pagination {
-          current_page
-          total_page
-        }
-        image_path
-      }
-    }
     }
   `
 }
@@ -151,46 +154,46 @@ export const GET_HOME_STORIES = (category_id = 0, page = 1, page_size = 10) => {
   return gql`
     query {
       stories(${queryParams}) {
-      data {
-        program_img
-        program_id
-        title
-        gpt {
-          id
-          div_gpt
-          path
-          size_height_1
-          size_height_2
-          size_width_1
-          size_width_2
-          cust_params{
-            name
-            value
+        data {
+          program_img
+          program_id
+          title
+          gpt {
+            id
+            div_gpt
+            path
+            size_height_1
+            size_height_2
+            size_width_1
+            size_width_2
+            cust_params{
+              name
+              value
+            }
+          }
+          story {
+            id
+            permalink
+            story_img
+            link_video
+            title
+            type
+            external_link
           }
         }
-        story {
-          id
-          permalink
-          story_img
-          link_video
-          title
-          type
-          external_link
+        meta {
+          image_path
+          pagination {
+            current_page
+            total_page
+          }
+        }
+        status {
+          code
+          message_client
+          message_server
         }
       }
-      meta {
-        image_path
-        pagination {
-          current_page
-          total_page
-        }
-      }
-      status {
-        code
-        message_client
-        message_server
-      }
-    }
     }
   `
 }
@@ -214,8 +217,11 @@ export const GET_LINEUP_CONTENT_VIDEO = (page = 1, page_size = 5, lineup_id = 0)
           ${contentTypeLiveEPGFragment}
           ${contentTypeSpecialFragment}
           ${contentTypeSeasonFragment}
-          ${contentTypeAudioPodcast}
           ${contentTypeAudioRadio}
+          ${contentTypeAudioPodcast}
+          ${contentTypeAudioSpiritual}
+          ${contentTypeAudioSpiritualContent}
+          ${contentTypeAudioPodcastContent}
         }
       }
       meta {

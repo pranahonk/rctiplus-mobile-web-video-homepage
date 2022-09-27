@@ -1,4 +1,4 @@
-// .jw-icon-rewind {
+// .inno-icon-rewind {
 //   opacity: 0 !important;
 // }
 .animated {
@@ -7,7 +7,7 @@
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
 }
-.rplus-jw-container {
+.rplus-inno-container {
   min-height: 180px;
   background-color: #000000;
   background-repeat: no-repeat;
@@ -15,18 +15,23 @@
   position: relative;
 }
 
-.jwplayer {
-  &.jw-skin-rplus_player {
+.inno-player #adContainer{
+  z-index: 13;
+  pointer-events: auto;
+}
+
+.innoplayer {
+  &.inno-skin-rplus_player {
     text-align: left;
-    .jw-display-icon-next {
+    .inno-display-icon-next {
       visibility: visible !important;
     }
-    .jw-controlbar {
-      .jw-buffer {
+    .inno-controlbar {
+      .inno-buffer {
         background: #c50000;
         opacity: 0.5;
       }
-      .jw-progress {
+      .inno-progress {
         background-color: #c50000;
         position: relative;
         &::after {
@@ -41,11 +46,11 @@
           border-radius: 100%;
         }
       }
-      .jw-icon-tooltip {
+      .inno-icon-tooltip {
         position: relative;
       }
     }
-    .jwplayer-vol-off {
+    .innoplayer-vol-off {
       position: absolute !important;
       top: 0 !important;
       left: 0 !important;
@@ -57,17 +62,17 @@
       border-radius: 3px !important;
     }
 
-    .jwplayer-full {
+    .innoplayer-full {
       display: none !important;
     }
 
-    .jwplayer-mute {
+    .innoplayer-mute {
       display: block !important;
     }
   }
 
-  &.jw-flag-live {
-    .jw-display-icon-rewind {
+  &.inno-flag-live {
+    .inno-display-icon-rewind {
       visibility: unset !important;
     }
   }
@@ -183,7 +188,7 @@
     }
 }
 
-.jwplayer-action {
+.innoplayer-action {
   background: #0000006e !important;
   animation: none;
   border-radius: 100%;

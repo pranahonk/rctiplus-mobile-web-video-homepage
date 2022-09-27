@@ -18,9 +18,7 @@ export default withRedux(initStore, { debug: false })(
   class MyApp extends App {
     static async getInitialProps({ Component, ctx }) {
       return {
-        pageProps: {
-          ...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {})
-        }
+          initialProps: {...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {})},
       }
     }
 
@@ -37,6 +35,9 @@ export default withRedux(initStore, { debug: false })(
           params = {...queryString.parse(row)}
         })
       }
+      
+      var isPrerender = navigator.userAgent.toLowerCase().indexOf('prerender') !== -1;
+
       let condition = (
         screen.width < 500 || (
           navigator.userAgent.match(/Android/i) ||
@@ -55,8 +56,11 @@ export default withRedux(initStore, { debug: false })(
           params.platform === 'ios'
         )
       )
-      if(!condition) {
-        window.location.href = process.env.REDIRECT_WEB_DESKTOP + window.location.pathname + window.location.search
+
+      if(!isPrerender){
+        if(!condition) {
+          window.location.href = process.env.REDIRECT_WEB_DESKTOP + window.location.pathname + window.location.search
+        }
       }
 
       const visitorToken = getVisitorToken()
@@ -72,12 +76,11 @@ export default withRedux(initStore, { debug: false })(
     }
 
     render() {
-      const { Component, pageProps, store } = this.props
-
+      const { Component, pageProps, store, initialProps } = this.props
       return (
         <ApolloProvider client={client}>
           <Provider store={store}>
-            <Component history={this.state.history} {...pageProps} />
+            <Component history={this.state.history} {...pageProps} {...initialProps} />
           </Provider>
         </ApolloProvider>
       )

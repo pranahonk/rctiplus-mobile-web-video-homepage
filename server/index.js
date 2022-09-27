@@ -26,7 +26,9 @@ const UIVersion = '2.0';
 
     const server = express();
 
-    if(process.env.NODE_ENV === 'production') server.use(prerender.set('prerenderToken', process.env.PRERENDER_TOKEN));
+
+    if(process.env.PRERENDER_ENABLE) server.use(prerender.set('prerenderToken', process.env.PRERENDER_TOKEN));
+    
     // server.use(device.capture());
     // https://codeforgeek.com/how-to-detect-device-type-in-nodejs/
     // example of custom request handlers:

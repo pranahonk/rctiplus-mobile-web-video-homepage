@@ -131,7 +131,7 @@ function carouselBanner(props) {
         )
       }
       {props.children}
-      <div style={{ position: 'absolute', bottom: -1.5, background: 'linear-gradient(180deg, #282828 9.89%, rgba(0, 0, 0, 0.0001) 100%)', transform: 'matrix(1, 0, 0, -1, 0, 0)', width: '100%', height: 136 }}></div>
+      <div style={{ position: 'absolute', bottom: 0, background: 'linear-gradient(180deg, #282828 9.89%, rgba(0, 0, 0, 0.0001) 100%)', transform: 'matrix(1, 0, 0, -1, 0, 0)', width: '100%', height: 164 }}></div>
     </div>
   );
 }

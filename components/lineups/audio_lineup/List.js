@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Img from 'react-image';
 import '../../../assets/scss/components/audio-list.scss';
-import { getTruncate, truncateString } from '../../../utils/helpers';
+import { getImage, getTruncate, truncateString } from '../../../utils/helpers';
 import Router from 'next/router';
 import ActionSheet from '../../Modals/ActionSheet';
 
@@ -31,7 +31,7 @@ function AudioList ({title, indexTag, id, data}) {
     useEffect(()=>{
       const result = [];
       for (let i = 0; i < podcast?.length; i += 3) {
-        result.push(podcast?.slice(i, i + 3));
+        result.push(podcast?.slice(i, i+3));
       }
       setMultiplePodcast(result);
 
@@ -42,7 +42,7 @@ function AudioList ({title, indexTag, id, data}) {
         setLoadingMore(true);
 
         if(meta?.pagination?.current_page < meta?.pagination?.total_page){
-          getPaginationPotraitDisc(meta?.pagination?.current_page + 1, 5, id);
+          getPaginationPotraitDisc(meta?.pagination?.current_page+1,6, id);
         }
         else{
           setLoadingMore(false);
@@ -73,15 +73,6 @@ function AudioList ({title, indexTag, id, data}) {
     const toggleActionSheet = (program = null, caption = '', url = '', hashtags = []) => {
       setActionSheet((e) => !e);
       setShareURL(url)
-    }
-
-    const getImage = (url, staticPath) => {
-      if (url){
-        return  `${staticPath}/200/${url}`
-      }
-      else{
-        return "http://www.roov.id/image/logo.png"
-      }
     }
 
 
@@ -129,12 +120,18 @@ function AudioList ({title, indexTag, id, data}) {
                                   <div className='col-5 px-0'>
                                     <div className="desc-menu-wrapper">
                                       <span className="podcast-title" dangerouslySetInnerHTML={{ __html: truncateString(content?.content_type_detail?.detail?.data?.title, 15)}}></span>
-                                      <span className="podcaster-name" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.frequency, '...', 40)}}></span>
+                                      {
+                                        content.content_type === "live_music" ||content.content_type === "live_radio" ? (<>
+                                          <span className="podcaster-name" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.frequency, '...', 40)}}></span>
+                                        </>):(<>
+                                          <span className="podcaster-name" dangerouslySetInnerHTML={{ __html: getTruncate(content?.content_type_detail?.detail?.data?.author, '...', 40)}}></span>
+                                        </>)
+                                      }
+                                      
                                       <div className="buttons-wrapper">
                                         <img src="audio-icons/share-icon.svg" className="mr-3" onClick={()=> toggleActionSheet(this, null, content?.content_type_detail?.detail?.data?.permalink, '', ['rcti'])} />
                                         {/*<img src="audio-icons/bookmark-icon.svg" className="mx-3" />*/}
                                         {/*<img src="audio-icons/download-icon.svg" onClick={() => alertDownload(null, 'extra', null, null, null)}/>*/}
-                                        (
                                       </div>
                                     </div>
                                   </div>

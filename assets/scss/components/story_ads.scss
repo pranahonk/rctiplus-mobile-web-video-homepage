@@ -9,24 +9,24 @@ and open the template in the editor.
 */
 
 .story-ads{
-  color:#fff;
+    color:#fff;
 }
 
 .story-ads-off {
-  display: none;
+    display: none;
 }
 
 .story-ads-on {
-  width: 100%;
-  position: fixed;
-  z-index: 1029;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 1029;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
 
-  $close-button-height: 12px;
+    $close-button-height: 12px;
 }
 
 #video-wrapper{
-  display: none;
+    display: none;
 }

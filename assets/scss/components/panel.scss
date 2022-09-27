@@ -140,6 +140,19 @@
                 }
             }
 
+            .interactive {
+                position: absolute;
+                min-width: 120px;
+                height: 25px;
+                border-radius: 7px;
+                background-image: linear-gradient(135deg, #483593, #305A8B);
+                bottom: 75px;
+                right: 6px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
             .desc-wrapper {
                 background: #1A1A1A;
                 padding: 0 10px 10px 20px;

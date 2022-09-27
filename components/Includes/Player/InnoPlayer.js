@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { isIOS } from 'react-device-detect';
 
-import { convivaJwPlayer} from '../../../utils/conviva';
+import { convivaInnoPlayer} from '../../../utils/conviva';
 import Wrench from '../Common/Wrench';
-import '../../../assets/scss/jwplayer.scss';
+import '../../../assets/scss/innoplayer.scss';
 
-import useCustomPlayerButton from "../../hooks/Jwplayer/useCustomPlayerButton"
-import useSetupBitrate from "../../hooks/Jwplayer/useSetupBitrate"
-import useConvivaInitiator from "../../hooks/Jwplayer/useConvivaInitiator"
+import useCustomPlayerButton from "../../hooks/Innoplayer/useCustomPlayerButton"
+import useSetupBitrate from "../../hooks/Innoplayer/useSetupBitrate"
+import useConvivaInitiator from "../../hooks/Innoplayer/useConvivaInitiator"
 
 const pubAdsRefreshInterval = {
   timeObject: null,
@@ -17,7 +17,7 @@ const pubAdsRefreshInterval = {
 
 let refreshCounter = 0;
 
-const JwPlayer = (props) => {
+const InnoPlayer = (props) => {
   const [player, setPlayer] = useState(null);
   const [ currentContent, setCurrentContent ] = useState({})
   const [status, setStatus] = useState({
@@ -41,23 +41,32 @@ const JwPlayer = (props) => {
   const { setInitConviva } = useConvivaInitiator({ ...props, player })
 
   // Supporting Variables
-  const idPlayer = 'jwplayer-rctiplus';
+  const idPlayer = 'innoplayer-rctiplus';
   const options = {
-    autostart: 'viewable',
-    mute: false,
-    floating: false,
+    id: idPlayer,
+    key: process.env.KEY_INNOPLAYER,
     file: props.data && props.data.url,
-    primary: 'html5',
-    width: '100%',
-    hlsjsdefault: true,
-    aspectratio: '16:9',
-    displaytitle: true,
-    stretching: 'uniform',
-    height: 180,
+    displayTitle: false,
+    controls: true,
+    autoplay: true,
+    chromecast: true,
     advertising: {
-      client: process.env.ADVERTISING_CLIENT,
+      client: process.env.ADVERTISING_CLIENT_INNOPLAYER,
       tag: props.data && props.data.vmap_ima,
-
+      locale: navigator.language,
+      preloadAds: true,
+    },
+    mute: true,
+    floating: true,
+    width: '100%',
+    aspectRatio: '16:9',
+    stretch: 'stretch',
+    position: {
+      topControlLeft: [],
+      topControlRight: [
+        'm_setting',
+        'm_volume'
+      ]
     },
     skin: {
       name: 'rplus_player',
@@ -66,31 +75,32 @@ const JwPlayer = (props) => {
       hide: true,
     },
   };
-
+  
   // player initial setup
   useEffect(() => {
-    const jwplayer = window.jwplayer(idPlayer);
+    const innoPlayer = inno;
+
     if (props.geoblockStatus) {
       setStatus({
         isPlayer: false,
         isError01: true,
       });
     }
-    setPlayer(jwplayer);
+    setPlayer(innoPlayer);
     if (props.data && props.data.url) {
       setCurrentContent(props.data)
-      jwplayer.setup(options);
+      inno.setup(options);
     }
 
     // shall trigger only when content is not changed on player but immediately destroyed
-    jwplayer.on("remove", _ => {
+    inno.on("remove", _ => {
       if (!props.isResume || !props.data.id) return
-      props.onResume(props.data.id, props.data.content_type, jwplayer.getPosition());
+      props.onResume(props.data.id, props.data.content_type, inno.getPosition());
     })
 
-    // return () => {
-    //   jwplayer.remove();
-    // };
+    return () => {
+      inno.remove();
+    };
   }, []);
 
   // listen data update on player
@@ -101,12 +111,14 @@ const JwPlayer = (props) => {
       if (props.customData && props.customData.isLogin && props.isResume && (currentContent.id)) {
         props.onResume(currentContent.id, currentContent.content_type, player.getPosition());
       }
-
+      
       player.setup(options);
       setIsPlayerReady(false)
+
       setCurrentContent(props.data)
 
       // shall trigger when there are content change on player before being destroyed
+      player.remove()
       player.on("remove", _ => {
         if (!props.isResume || !props.data.id) return
         props.onResume(props.data.id, props.data.content_type, player.getPosition());
@@ -119,11 +131,10 @@ const JwPlayer = (props) => {
     if (player !== null) {
       player.on('ready', (event) => {
         setPlayerFullscreen(props.isFullscreen);
-        setIsPlayerReady(true)
+        // setIsPlayerReady(true)
 
-        const playerContainer = player.getContainer()
-        const isLiveContainer = playerContainer.querySelector('.jw-dvr-live');
-        const isForward = playerContainer.querySelector('.jw-rplus-forward');
+        const playerContainer = document.querySelector('#innoplayer-rctiplus')
+        const isForward = playerContainer.querySelector('.inno-rplus-forward');
 
         if (props.type.includes("live")) {
           const data = props.data
@@ -134,34 +145,29 @@ const JwPlayer = (props) => {
               const adsOverlayElement = document.createElement('div');
               adsOverlayElement.classList.add('ads_wrapper');
               adsOverlayElement.style.display = 'none';
-
+    
               const adsOverlayBox = document.createElement('div');
-              if (screen.orientation.type === "portrait-primary") {
-                adsOverlayBox.classList.add('adsStyling');
-              }
-              if (screen.orientation.type === "landscape-primary") {
-                adsOverlayBox.classList.add('adsStylingLandscape');
-              }
-
+              adsOverlayBox.classList.add('adsStyling');
+    
               const adsOverlayCloseButton = document.createElement('div');
               adsOverlayCloseButton.classList.add('close_button');
               adsOverlayCloseButton.innerHTML = closeIcon;
-
+    
               const adsOverlayContainer = document.createElement('div');
               const divGPTString = (data && data.gpt && data.gpt.div_gpt != null) && (data && data.gpt && data.gpt.div_gpt != undefined) ? data.gpt.div_gpt : type === 'live tv' ? process.env.GPT_MOBILE_OVERLAY_LIVE_TV_DIV : process.env.GPT_MOBILE_OVERLAY_LIVE_EVENT_DIV;
               adsOverlayContainer.classList.add('adsContainer');
               adsOverlayContainer.id = divGPTString;
               adsOverlayContainer.innerHTML = `<script>googletag.cmd.push(function() { googletag.display('${divGPTString}'); });</script>`;
-
+    
               playerContainer.appendChild(adsOverlayElement);
               adsOverlayElement.appendChild(adsOverlayBox);
               adsOverlayBox.appendChild(adsOverlayCloseButton);
               adsOverlayBox.appendChild(adsOverlayContainer);
-
+    
               adsOverlayCloseButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-
+    
                 pubAdsRefreshInterval.timeStart = 0;
                 setAdStatus('close');
               });
@@ -171,7 +177,7 @@ const JwPlayer = (props) => {
 
         if(isForward) {
           const forwardElement = document.createElement('div');
-          forwardElement.classList.add('jw-rplus-forward');
+          forwardElement.classList.add('inno-rplus-forward');
           forwardElement.innerHTML = foward10;
           forwardElement.addEventListener('dblclick', (ev) => {
             setTimeout(() => {
@@ -184,25 +190,25 @@ const JwPlayer = (props) => {
         if (isIOS) {
           const elementCreateMute = document.createElement('btn');
           const elementMuteIcon = document.createElement('span');
-          elementCreateMute.classList.add('jwplayer-vol-off');
+          elementCreateMute.classList.add('innoplayer-vol-off');
           elementCreateMute.innerText = 'Tap to unmute ';
 
           player.setMute(true);
-          if(document.getElementsByClassName('jwplayer-vol-off').length === 0) {
+          if(document.getElementsByClassName('innoplayer-vol-off').length === 0) {
             playerContainer.appendChild(elementCreateMute);
             elementCreateMute.appendChild(elementMuteIcon);
           }
-          const elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
+          const elementInnoplayer = document.getElementsByClassName('innoplayer-vol-off');
           elementCreateMute.addEventListener('click', () => {
             if (elementCreateMute === null) {
               player.setMute(true);
-              elementJwplayer[0].classList.add('jwplayer-mute');
-              elementJwplayer[0].classList.remove('jwplayer-full');
+              elementInnoplayer[0].classList.add('innoplayer-mute');
+              elementInnoplayer[0].classList.remove('innoplayer-full');
             }
             else {
               player.setMute(false);
-              elementCreateMute.classList.add('jwplayer-full');
-              elementCreateMute.classList.remove('jwplayer-mute');
+              elementCreateMute.classList.add('innoplayer-full');
+              elementCreateMute.classList.remove('innoplayer-mute');
             }
           });
         }
@@ -210,23 +216,24 @@ const JwPlayer = (props) => {
       })
 
       player.on('mute', function() {
-        const elementJwplayer = document.getElementsByClassName('jwplayer-vol-off');
-        if (elementJwplayer[0] !== undefined) {
+        const elementInnoplayer = document.getElementsByClassName('innoplayer-vol-off');
+        if (elementInnoplayer[0] !== undefined) {
           if (player.getMute()) {
-            elementJwplayer[0].classList.add('jwplayer-mute');
-            elementJwplayer[0].classList.remove('jwplayer-full');
+            elementInnoplayer[0].classList.add('innoplayer-mute');
+            elementInnoplayer[0].classList.remove('innoplayer-full');
           } else {
-            elementJwplayer[0].classList.add('jwplayer-full');
-            elementJwplayer[0].classList.remove('jwplayer-mute');
+            elementInnoplayer[0].classList.add('innoplayer-full');
+            elementInnoplayer[0].classList.remove('innoplayer-mute');
           }
         }
       })
 
       player.on('play', () => {
-        setBitrateLevels(player.getQualityLevels())
-        setInitConviva(true);
+        // setBitrateLevels(player.getQualityLevels())
+        setInitConviva(true)
+        player.setMute(false);
 
-        convivaJwPlayer().playing();
+        convivaInnoPlayer().playing();
         if (document.querySelector('.ads_wrapper')) {
           if (document.querySelector('.ads_wrapper').style.display == 'none') {
             if (adsStatus === 'prestart') {
@@ -237,20 +244,20 @@ const JwPlayer = (props) => {
           }
         }
       })
-
+      
       player.on('pause', () =>{
-        convivaJwPlayer().pause();
+        convivaInnoPlayer().pause();
       });
 
       player.on('buffer', (event) =>{
-        convivaJwPlayer().buffer();
+        convivaInnoPlayer().buffer();
       });
 
       player.on('adError', (event) => {
       });
 
       player.on('complete', (event) => {
-        const convivaTracker = convivaJwPlayer();
+        const convivaTracker = convivaInnoPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
@@ -262,42 +269,31 @@ const JwPlayer = (props) => {
 
       // ads event
       player.on('adImpression', (event) => {
-        if(adsQue > 0){
-          player.pause();
-        }
-        if (document.querySelector('.jw-display')) {
-          document.querySelector('.jw-display').style.display = 'none'
-        }
-        if (document.querySelector('.jw-controlbar')) {
-          document.querySelector('.jw-controlbar').style.display = 'none'
-        }
+        player.pause();
+        player.setMute(false);
         if (document.querySelector('.ads_wrapper')) {
           setAdStatus('none');
         }
-        setAdsQue(adsQue + 1)
       });
-
-      player.on('firstFrame', (event) => {
-        setAdsQue(adsQue + 1)
-      });
-
-      player.on("adComplete", _ => {
-        player.play();
-        if (document.querySelector('.jw-display')) {
-          document.querySelector('.jw-display').style.display = 'flex'
-        }
-        if (document.querySelector('.jw-controlbar')) {
-          document.querySelector('.jw-controlbar').style.display = 'flex'
-        }
-      })
 
       player.on("adPlay", _ => {
         setHideBtns(true)
       })
-
+      
       player.on('adSkipped', (event) => {
         setHideBtns(false)
-
+        
+        if (document.querySelector('.ads_wrapper')) {
+          if (adsStatus === 'none') {
+            setAdStatus('prestart');
+          }
+        }
+      });
+      
+      player.on('adComplete', (event) => {
+        player.play();
+        setHideBtns(false)
+        
         if (document.querySelector('.ads_wrapper')) {
           if (adsStatus === 'none') {
             setAdStatus('prestart');
@@ -305,22 +301,11 @@ const JwPlayer = (props) => {
         }
 
         player.play();
-        if (document.querySelector('.jw-display')) {
-          document.querySelector('.jw-display').style.display = 'flex'
+        if (document.querySelector('.inno-display')) {
+          document.querySelector('.inno-display').style.display = 'flex'
         }
-        if (document.querySelector('.jw-controlbar')) {
-          document.querySelector('.jw-controlbar').style.display = 'flex'
-        }
-        
-      });
-
-      player.on('adComplete', (event) => {
-        setHideBtns(false)
-
-        if (document.querySelector('.ads_wrapper')) {
-          if (adsStatus === 'none') {
-            setAdStatus('prestart');
-          }
+        if (document.querySelector('.inno-controlbar')) {
+          document.querySelector('.inno-controlbar').style.display = 'flex'
         }
       });
 
@@ -339,10 +324,10 @@ const JwPlayer = (props) => {
   });
 
   useEffect(() => {
-    const containerElement = document.getElementsByClassName('rplus-jw-container');
+    const containerElement = document.getElementsByClassName('rplus-inno-container');
     if (player !== null) {
       player.on('error', (event) => {
-        const convivaTracker = convivaJwPlayer();
+        const convivaTracker = convivaInnoPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
@@ -362,7 +347,7 @@ const JwPlayer = (props) => {
         player.remove();
       });
       player.on('setupError', (event) => {
-        const convivaTracker = convivaJwPlayer();
+        const convivaTracker = convivaInnoPlayer();
         if (window.convivaVideoAnalytics) {
           convivaTracker.cleanUpSession();
         }
@@ -388,7 +373,7 @@ const JwPlayer = (props) => {
   useEffect(() => {
     return () => {
       if (window.convivaVideoAnalytics) {
-        const convivaTracker = convivaJwPlayer();
+        const convivaTracker = convivaInnoPlayer();
         convivaTracker.cleanUpSession();
       }
     };
@@ -544,13 +529,7 @@ const JwPlayer = (props) => {
                       adsOverlayBoxLink.style.position = 'absolute';
 
 
-                      if (screen.orientation.type === "portrait-primary") {
-                        document.querySelector('.adsStyling')?.appendChild(adsOverlayBoxLink);
-                      }
-                      if (screen.orientation.type === "landscape-primary") {
-                        document.querySelector('.adsStylingLandscape')?.appendChild(adsOverlayBoxLink);
-                      }
-
+                      document.querySelector('.adsStyling')?.appendChild(adsOverlayBoxLink);
                       const elementAds = document.querySelector('.adsURLLink')
                       if (elementAds) {
                         elementAds.addEventListener('click', function(e) {
@@ -607,14 +586,14 @@ const JwPlayer = (props) => {
     }
     return (
       <>
-        <div id="jwplayer-rctiplus" />
+        <div id="innoplayer-rctiplus" />
       </>
     )
   }
-
+  
   const error = (msg = msgError02, icon = (<Wrench />)) => {
     return (
-      <div id="jwplayer-rctiplus" style={{
+      <div id="innoplayer-rctiplus" style={{
         textAlign: 'center',
         padding: 30,
         minHeight: 180,
@@ -630,7 +609,7 @@ const JwPlayer = (props) => {
       </div>
     );
   };
-
+  
   const msgError01 = () => {
     return(
       <div>
@@ -650,16 +629,16 @@ const JwPlayer = (props) => {
 
   return (
     <>
-      <div className="rplus-jw-container" style={{position: "relative"}}>
+      <div className="rplus-inno-container" style={{position: "relative"}}>
         { getPlayer(status.isError01 , status.isError02 ) }
       </div>
     </>
   );
 };
 
-export default JwPlayer;
+export default InnoPlayer;
 
-JwPlayer.propTypes = {
+InnoPlayer.propTypes = {
   data: PropTypes.object,
   isLive: PropTypes.bool,
   isFullscreen: PropTypes.bool,
@@ -670,7 +649,7 @@ JwPlayer.propTypes = {
   statusError: PropTypes.number,
 };
 
-JwPlayer.defaultProps = {
+InnoPlayer.defaultProps = {
   data: {
     content_type: 'N/A',
     content_id: 'N/A',
@@ -690,6 +669,12 @@ JwPlayer.defaultProps = {
   isResume: false,
   geoblockStatus: false,
   statusError: 0,
+};
+
+let ConvertStringToHTML = function (str) {
+  let parser = new DOMParser();
+  let doc = parser.parseFromString(str, 'text/html');
+  return doc.body;
 };
 
 const foward10 = `
