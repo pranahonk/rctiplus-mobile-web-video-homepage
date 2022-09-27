@@ -102,6 +102,10 @@ class Index_v2 extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if(document.getElementById(this.state.gpt.path)?.childNodes[0]?.style?.height === '0px') this.props.toggleAds(true);
+  }
+
   async getHomePageLineups(page = 1, pageSize = 5) {
     this.LoadingBar.continuousStart();
     await setVisitorToken()
@@ -334,94 +338,94 @@ class Index_v2 extends React.Component {
           color="#05B5F5"
           onRef={ref => (this.LoadingBar = ref)} />
 
-          {this.state.isShimmer
-            ? (<HomeLoader/>)
-            : (
-              <>
-                <div>
-                  <Nav
-                    parent={this}
-                    closeStickyInstallFunction={this.closeStickyInstall}
-                    showStickyInstall={this.state.show_sticky_install}/>
+        {this.state.isShimmer
+          ? (<HomeLoader/>)
+          : (
+            <>
+              <div>
+                <Nav
+                  parent={this}
+                  closeStickyInstallFunction={this.closeStickyInstall}
+                  showStickyInstall={this.state.show_sticky_install}/>
 
-                  <Carousel showStickyInstall={this.state.show_sticky_install} />
+                <Carousel showStickyInstall={this.state.show_sticky_install} />
 
-                  <GridMenu />
+                <GridMenu />
 
-                  <Stories />
+                <Stories />
 
 
-                  {/* <StoryAds sticky id='div-gpt-ad-1596100147181-0' path='/21865661642/RC_DESKTOP_INSERTION-STORIES_0'/> */}
-                  {/* <StoryAds sticky id='div-gpt-ad-1596100730972-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES'/> */}
-                  {/* <StoryAds sticky id='div-gpt-ad-1596100733667-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES-2'/>
+                {/* <StoryAds sticky id='div-gpt-ad-1596100147181-0' path='/21865661642/RC_DESKTOP_INSERTION-STORIES_0'/> */}
+                {/* <StoryAds sticky id='div-gpt-ad-1596100730972-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES'/> */}
+                {/* <StoryAds sticky id='div-gpt-ad-1596100733667-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES-2'/>
                   <StoryAds sticky id='div-gpt-ad-1596100737011-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES-3'/> */}
 
 
-                  <StickyContainer>
-                    <Sticky disableHardwareAcceleration>
-                      { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
-                        const topDistance = this.state.show_sticky_install ? 120 : 40;
-                        if (distanceFromTop < topDistance) {
-                          if (!this.props.ads.ads_displayed) {
-                            return (
-                              <div {...rest} >
-                                <StickyAds
-                                  path={this.state.gpt.path}
-                                  id={this.state.gpt.div_gpt}
-                                  targettingAdsData={this.state.gpt.cust_params}/>
-                              </div>
-                            );
-                          }
-                          const adsContents = document.getElementById(this.state.gpt.div_gpt).childNodes;
-                          if (adsContents.length > 0) {
-                            if (adsContents[0].tagName == 'SCRIPT') {
-                              const stickyAds = document.getElementById('sticky-ads-container');
-                              if (stickyAds) {
-                                stickyAds.style.display = 'none'
-                              }
-                            }
-                          }
+                <StickyContainer>
+                  <Sticky disableHardwareAcceleration>
+                    { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
+                      const topDistance = this.state.show_sticky_install ? 120 : 40;
+                      if (distanceFromTop < topDistance) {
+                        if (!this.props.ads.ads_displayed) {
                           return (
                             <div {...rest} >
                               <StickyAds
                                 path={this.state.gpt.path}
-                                id={this.state.gpt.div_gpt} sticky
-                                targettingAdsData={this.state.gpt.cust_params} />
+                                id={this.state.gpt.div_gpt}
+                                targettingAdsData={this.state.gpt.cust_params}/>
                             </div>
                           );
                         }
-                        else if (!this.props.ads.ads_displayed) {
-                          this.props.toggleAds(true)
+                        const adsContents = document.getElementById(this.state.gpt.div_gpt).childNodes;
+                        if (adsContents.length > 0) {
+                          if (adsContents[0].tagName == 'SCRIPT') {
+                            const stickyAds = document.getElementById('sticky-ads-container');
+                            if (stickyAds) {
+                              stickyAds.style.display = 'none'
+                            }
+                          }
                         }
                         return (
                           <div {...rest} >
                             <StickyAds
                               path={this.state.gpt.path}
-                              id={this.state.gpt.div_gpt}
+                              id={this.state.gpt.div_gpt} sticky
                               targettingAdsData={this.state.gpt.cust_params} />
                           </div>
                         );
-                      }}
-                    </Sticky>
-                  </StickyContainer>
-                </div>
+                      }
+                      else if (!this.props.ads.ads_displayed) {
+                        this.props.toggleAds(true)
+                      }
+                      return (
+                        <div {...rest} >
+                          <StickyAds
+                            path={this.state.gpt.path}
+                            id={this.state.gpt.div_gpt}
+                            targettingAdsData={this.state.gpt.cust_params} />
+                        </div>
+                      );
+                    }}
+                  </Sticky>
+                </StickyContainer>
+              </div>
 
-                <div
-                  style={{marginBottom: this.props.ads.ads_displayed ? 80 : 45, paddingTop: 10}}
-                  onTouchStart={this.onTouchStart.bind(this)}
-                  onTouchEnd={this.onTouchEnd.bind(this)}>
-                  { this.renderLineup(this.state.lineups, this.state.meta) }
-                </div>
-                <ComingSoonModal
-                  open={this.state.openComingSoonModal}
-                  onClose={_ => this.setState({ openComingSoonModal: false })}
-                  content={this.state.contentComingSoonModal} />
-              </>
-            )
-          }
-        </Layout>
-      );
-    }
+              <div
+                style={{marginBottom: this.props.ads.ads_displayed ? 80 : 45, paddingTop: 10}}
+                onTouchStart={this.onTouchStart.bind(this)}
+                onTouchEnd={this.onTouchEnd.bind(this)}>
+                { this.renderLineup(this.state.lineups, this.state.meta) }
+              </div>
+              <ComingSoonModal
+                open={this.state.openComingSoonModal}
+                onClose={_ => this.setState({ openComingSoonModal: false })}
+                content={this.state.contentComingSoonModal} />
+            </>
+          )
+        }
+      </Layout>
+    );
+  }
 
 }
 

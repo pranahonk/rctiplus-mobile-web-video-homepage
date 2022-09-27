@@ -1,14 +1,12 @@
-import React, { useEffect, useRef, useState } from "react"
-import { connect } from "react-redux"
+import React, { useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
 
-import { RESOLUTION_IMG } from '../../config'
-import newsCountView from "../../redux/actions/newsCountView"
+import { RESOLUTION_IMG } from '../../config';
+import newsCountView from '../../redux/actions/newsCountView';
 
-import "../../assets/scss/components/stories.scss"
+import '../../assets/scss/components/stories.scss';
 
 import StoryAds from '../../components/Includes/Banner/StoryAds';
-import Alert from "reactstrap/lib/Alert"
-import { set } from "lodash"
 
 
 function storyModal(props) {
@@ -62,7 +60,27 @@ function storyModal(props) {
         return
       }
 
-      mountJwplayer()
+        mountJwplayer()
+
+    }else if(props.story.__typename == 'StoryGPT'){
+      // function to listen between switching of story contents
+      if (!progressBarWrapper.current) return
+      if (activeIndex > props.story.story.length - 1) return
+      document.getElementById("nav-footer").style.display = "none"
+
+      const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
+
+      if (props.story.story[activeIndex].seen) {
+        progressBars[activeIndex].classList.add("active")
+        progressBars[activeIndex].children[0].style.animation = `unset`
+        setActiveIndex(activeIndex + 1)
+        return
+      }
+
+      mountGpt()
+    }
+
+
 
     }else if(props.story.__typename == 'StoryGPT'){
       // function to listen between switching of story contents
@@ -178,7 +196,7 @@ function storyModal(props) {
 
       // Define the first slot
       setSlot(googletag.defineSlot(props.story.story[activeIndex].path,['fluid'],props.story.story[activeIndex].div_gpt)
-          .addService(googletag.pubads()))
+        .addService(googletag.pubads()))
 
       var countSlotRendeEnded = 0
       var countSlotResponseReceived = 0
@@ -227,37 +245,37 @@ function storyModal(props) {
 
           window.addEventListener("message", (event) => {
             if (!event.data) return
-              switch(event.data.state) {
-                case "adContentLoaded": {
-                  if(countWindow == 0){
-                    const duration = event.data.videoDuration;
-                    progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${duration}s`
-                    runProgressBar()
-                  }
-                  countWindow = countWindow + 1
-                }
-              }
-              switch(event.data.state) {
-                case "AD_VIDEO_PAUSE": {
-                  pauseProgressBar()
-                }
-              }
-              switch(event.data.state) {
-                case "AD_VIDEO_PLAY": {
+            switch(event.data.state) {
+              case "adContentLoaded": {
+                if(countWindow == 0){
+                  const duration = event.data.videoDuration;
+                  progressBars[activeIndex].children[0].style.animation = `story-progress-bar ${duration}s`
                   runProgressBar()
                 }
+                countWindow = countWindow + 1
               }
-              switch(event.data.state) {
-                case "AD_CTA_CLICK": {
-                  const videoIframe = document.querySelector('#'+props.story.story[activeIndex].div_gpt).querySelector('iframe')
-                  if(!!videoIframe) {
-                    const videoGptDocument = videoIframe.contentDocument || videoIframe.contentWindow.document;
-                    const videoGpt = videoGptDocument.getElementById("google-native-video-media");
-                    videoGpt.pause()
-                  }
-                  pauseProgressBar()
+            }
+            switch(event.data.state) {
+              case "AD_VIDEO_PAUSE": {
+                pauseProgressBar()
+              }
+            }
+            switch(event.data.state) {
+              case "AD_VIDEO_PLAY": {
+                runProgressBar()
+              }
+            }
+            switch(event.data.state) {
+              case "AD_CTA_CLICK": {
+                const videoIframe = document.querySelector('#'+props.story.story[activeIndex].div_gpt).querySelector('iframe')
+                if(!!videoIframe) {
+                  const videoGptDocument = videoIframe.contentDocument || videoIframe.contentWindow.document;
+                  const videoGpt = videoGptDocument.getElementById("google-native-video-media");
+                  videoGpt.pause()
                 }
+                pauseProgressBar()
               }
+            }
           });
           countSlotResponseReceived = countSlotResponseReceived + 1
         }
@@ -410,16 +428,16 @@ function storyModal(props) {
         href = "/qrcode"
         break
       case "news_tags":
-        {
-          const tag = permalink.split("/").reverse()[0]
-          onClick =  () => props.newsCountViewTag(tag)
-        }
+      {
+        const tag = permalink.split("/").reverse()[0]
+        onClick =  () => props.newsCountViewTag(tag)
+      }
         break
       case "news_detail":
-        {
-          const detailId = +(permalink.split("/").reverse()[1])
-          onClick = () => props.newsCountViewDetail(new DeviceUUID().get(), detailId)
-        }
+      {
+        const detailId = +(permalink.split("/").reverse()[1])
+        onClick = () => props.newsCountViewDetail(new DeviceUUID().get(), detailId)
+      }
         break
     }
 
@@ -435,8 +453,8 @@ function storyModal(props) {
 
 
   const storyImageSrc = props.story.story[activeIndex].story_img
-  ? `${props.story.image_path}${RESOLUTION_IMG}${props.story.story[activeIndex].story_img}`
-  : ""
+    ? `${props.story.image_path}${RESOLUTION_IMG}${props.story.story[activeIndex].story_img}`
+    : ""
   const storyVideoUrl = props.story.story[activeIndex].link_video
 
 
@@ -464,30 +482,30 @@ function storyModal(props) {
         <div className="story-head">
           {
             props.story.__typename == 'StoryData' ?
-            <>
-              <div>
-                <img
-                  src={`${props.story.image_path}${RESOLUTION_IMG}${props.story.program_img}`}
-                  alt="story-avatar"
-                  width="50"
-                  height="50" />
-                <label>
-                  { props.story.story[activeIndex].title }
-                </label>
-              </div>
-              <button
-                id="close-stories"
-                className="close-stories"
-                onClick={_ => closeModal()}>X</button>
-            </>
-            :
-            <>
-              <div></div>
-              <button
-                id="close-stories"
-                className="close-stories"
-                onClick={_ => closeModal()}>X</button>
-            </>
+              <>
+                <div>
+                  <img
+                    src={`${props.story.image_path}${RESOLUTION_IMG}${props.story.program_img}`}
+                    alt="story-avatar"
+                    width="50"
+                    height="50" />
+                  <label>
+                    { props.story.story[activeIndex].title }
+                  </label>
+                </div>
+                <button
+                  id="close-stories"
+                  className="close-stories"
+                  onClick={_ => closeModal()}>X</button>
+              </>
+              :
+              <>
+                <div></div>
+                <button
+                  id="close-stories"
+                  className="close-stories"
+                  onClick={_ => closeModal()}>X</button>
+              </>
 
           }
 
@@ -510,13 +528,13 @@ function storyModal(props) {
             style={{ display: storyVideoUrl ? "" : "none" }}/>
           {
             props.story.__typename == 'StoryGPT' ?
-            <StoryAds
-              id={props.story.story[activeIndex].div_gpt}
-              path={props.story.story[activeIndex].path}
-              targettingAdsData={props.story.story[activeIndex].cust_params}
-            />
-            :
-            null
+              <StoryAds
+                id={props.story.story[activeIndex].div_gpt}
+                path={props.story.story[activeIndex].path}
+                targettingAdsData={props.story.story[activeIndex].cust_params}
+              />
+              :
+              null
           }
           <div
             className="content-no-link"

@@ -28,7 +28,7 @@ class MyDocument extends Document {
 					<script src="/static/js/device-uuid.min.js" type="text/javascript"></script>
         	<script src=" https://je-es.rctiplus.com/vendor/jwplayer-8.25.1/jwplayer.js"></script>
 					<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet"></link>
-					<script src="https://je-es.rctiplus.com/dist/assets/js/conviva-core-sdk.js"></script>
+          <script src="https://je-es.rctiplus.com/dist/assets/js/conviva-core-sdk.js"></script>
 				</Head>
 				<body style={{ height: '100%' }}>
 					<Main style={{ height: '100%' }}/>
