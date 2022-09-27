@@ -80,27 +80,6 @@ function storyModal(props) {
       mountGpt()
     }
 
-
-
-    }else if(props.story.__typename == 'StoryGPT'){
-      // function to listen between switching of story contents
-      if (!progressBarWrapper.current) return
-      if (activeIndex > props.story.story.length - 1) return
-      document.getElementById("nav-footer").style.display = "none"
-
-      const progressBars = progressBarWrapper.current.querySelectorAll(".progressbars")
-
-      if (props.story.story[activeIndex].seen) {
-        progressBars[activeIndex].classList.add("active")
-        progressBars[activeIndex].children[0].style.animation = `unset`
-        setActiveIndex(activeIndex + 1)
-        return
-      }
-
-      mountGpt()
-    }
-
-
   }
 
   const handleAnimationEnd = _ => {
