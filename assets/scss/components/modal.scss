@@ -40,15 +40,15 @@
             bottom: 80px;
             transform: scale(2);
         }
-    
+
         .vjs-seek-button:hover {
             display: block;
         }
-    
+
         // .skip-back {
         //     left: 30%;
         // }
-    
+
         // .skip-forward {
         //     left: 60%;
         // }
@@ -113,7 +113,7 @@
                 overflow-y:scroll;
                 overflow-x:hidden;
                 overflow: -moz-scrollbars-none;
-                &::-webkit-scrollbar { 
+                &::-webkit-scrollbar {
                   display: none; /* Chrome Safari */
                   width: 0;
                   height: 0;
@@ -165,26 +165,39 @@
             padding: 0 20px;
             border-radius: 20px 20px 0 0;
             box-shadow: 0 0 1rem 0.5rem #000000d1;
-        
+
             .close-bar {
                 padding: 20px;
                 display: flex;
                 justify-content: center;
-        
+
                 & > div {
                     height: 3px;
                     background: white;
                     width: 80px;
                 }
             }
-        
+
             .img-comingsoon {
                 background: linear-gradient(45deg, #181818, transparent);
                 margin: 0 auto;
                 display: block;
                 border-radius: 10px;
             }
-        
+
+          .interactive {
+            position: relative;
+            min-width: 120px;
+            height: 25px;
+            border-radius: 7px;
+            background-image: linear-gradient(135deg, #483593, #305A8B);
+            bottom: 40px;
+            right: -90px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
             .desc-comingsoon {
                 & > p, span {
                     color: white;
@@ -193,8 +206,8 @@
                         margin: 0;
                     }
                 }
-        
-                & > p:first-child {    
+
+                & > p:first-child {
                     font-size: 14px;
                     font-weight: bold;
                     margin: 10px 0;
@@ -203,12 +216,12 @@
                     -webkit-box-orient: vertical;
                     overflow: hidden;
                 }
-        
+
                 & > div {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-        
+
                     & > span {
                         text-align: right;
                         color: #8F8F8F;

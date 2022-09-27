@@ -26,15 +26,19 @@ const HeadMeta = (props) => {
     return (
       <Head>
         <JsonLDVideo content={contentData} isProgram/>
+<<<<<<< HEAD
         <title>{seo.title}</title>
 				<meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
+=======
+        <title>{props.seoData?.data?.title ?? seo.title}</title>
+>>>>>>> 7e3015432191d530c95ff3344c717d3552f5080d
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="keywords" content={keyword.toString() || 'rctiplus'} />
+        <meta name="keywords" content={props.seoData?.data?.title ?? keyword.toString() ?? 'rctiplus'} />
         <meta name="apple-mobile-web-app-capable " content="yes" />
-        <meta name="title" content={seo.title} />
-        <meta name="description" content={seo.description} />
-        <meta property="og:description" content={seo.description} />
-        <meta property="og:title" content={seo.title} />
+        <meta name="title" content={props.seoData?.data?.title ?? seo.title} />
+        <meta name="description" content={props.seoData?.data?.description ?? seo.description} />
+        <meta property="og:description" content={props.seoData?.data?.description ?? seo.description} />
+        <meta property="og:title" content={props.seoData?.data?.title ?? seo.title} />
         <meta property="og:image" itemProp="image" content={seo.imagePath} />
         <meta property="og:url" content={SHARE_BASE_URL + router.asPath}/>
         <meta property="og:image:type" content="image/jpeg" />
@@ -42,13 +46,15 @@ const HeadMeta = (props) => {
         <meta property="og:image:height" content="315" />
         <meta property="og:type" content={props.ogType || 'website'}/>
         <meta property="og:site_name" content="RCTI+"/>
-        <meta name="twitter:title" content={seo.title} />
-        <meta name="twitter:description" content={seo.description} />
+        <meta property="og:keywords" content={props.seoData?.data?.title ?? keyword.toString() ?? 'rctiplus'} />
+        <meta name="twitter:title" content={props.seoData?.data?.title ?? seo.title} />
+        <meta name="twitter:description" content={props.seoData?.data?.description ?? seo.description} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content={seo.imagePath} />
         <meta name="twitter:image:alt" content={data && data.title} />
         <meta name="twitter:url" content={REDIRECT_WEB_DESKTOP + router.asPath} />
         <meta name="twitter:creator" content="@RCTIPlus" />
+        <meta name="twitter:keywords" content={props.seoData?.data?.title ?? keyword.toString() ?? 'rctiplus'} />
         <meta property="fb:app_id" content="211272363627736" />
         <meta name="twitter:site" content="@RCTIPlus" />
       </Head>

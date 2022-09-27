@@ -1,30 +1,30 @@
 .pnl-audio-list {
-    margin: 10px 10px 0 0;
-    .content-title {
-        font-stretch: normal;
-        font-style: normal;
-        line-height: normal;
-        letter-spacing: normal;
-        font-weight: bold;
-        font-size: 16px;
-        padding-left: 14px !important;
-        color: #FFFFFF;
-    }
-    .swipe-wrapper {
-      margin-left: auto;
-      margin-right: auto;
-      overflow: auto;
-      list-style: none;
-      padding: 0 0 12px 12px;
-      position: relative;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      display: flex;
-      transition-property: transform;
-      box-sizing: content-box;
-      overflow-x: scroll;
-      overflow-y: hidden;
+  margin: 10px 10px 0 0;
+  .content-title {
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    font-weight: bold;
+    font-size: 16px;
+    padding-left: 14px !important;
+    color: #FFFFFF;
+  }
+  .swipe-wrapper {
+    margin-left: auto;
+    margin-right: auto;
+    overflow: auto;
+    list-style: none;
+    padding: 0 0 12px 12px;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    transition-property: transform;
+    box-sizing: content-box;
+    overflow-x: scroll;
+    overflow-y: hidden;
 
         .background-horizontal {
             margin-right: 10px;
@@ -77,8 +77,24 @@
                 }
             }
         }
+        .podcaster-name {
+          font-family: Open Sans;
+          font-style: normal;
+          font-weight: 300;
+          font-size: 10px;
+          line-height: 14px;
+          color: #E3E3E3;
+          margin: 4px 0;
+        }
+        .buttons-wrapper {
+          width: 60%;
+          display: flex;
+          justify-content: space-between;
+        }
+      }
     }
-}
+
+
 
 .swiper-container,
 .lineup-containers-hot {

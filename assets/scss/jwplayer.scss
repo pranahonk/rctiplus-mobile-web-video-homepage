@@ -143,6 +143,28 @@
         }
     }
 
+    .adsStylingLandscape{
+      width: 468px;
+      height: 60px;
+      margin: 0 auto;
+      position: relative;
+
+      .close_button{
+          border-radius: 180px;
+          // width: 25px;
+          // height: 25px;
+          background: black;
+          position: absolute;
+          top: -12.5px;
+          right: -12.5px;
+          // padding: 0px 8px 0px 8px;
+          color: white;
+          text-align: center;
+          display: flex;
+          align-items: center;
+      }
+  }
+
     /* &.adsBigBox {
         .adsStyling {
             width: 468px;

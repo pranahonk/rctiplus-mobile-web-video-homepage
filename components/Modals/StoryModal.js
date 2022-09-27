@@ -60,7 +60,7 @@ function storyModal(props) {
         return
       }
 
-      mountJwplayer()
+        mountJwplayer()
 
     }else if(props.story.__typename == 'StoryGPT'){
       // function to listen between switching of story contents
@@ -79,7 +79,6 @@ function storyModal(props) {
 
       mountGpt()
     }
-
 
   }
 
