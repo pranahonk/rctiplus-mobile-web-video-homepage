@@ -42,14 +42,14 @@ const AudioHorizontalDisc = dynamic(() => import("../components/lineups/audio_li
 const AudioHorizontalList = dynamic(() => import("../components/lineups/audio_lineup/List"))
 
 function Category (props) {
-  const [ isShimmer, setIsShimmer ] = useState(false)
-  const [ lineups, setLineups ] = useState([])
-  const [ gpt, setGpt ] = useState([])
-  const [ meta, setMeta ] = useState({})
-  const [ openComingSoonModal, setOpenComingSoonModal ] = useState(false)
-  const [ contentComingSoonModal, setContentComingSoonModal ] = useState({})
-  const router = useRouter();
-  const loadingBar = useRef(null)
+    const [ isShimmer, setIsShimmer ] = useState(false)
+    const [ lineups, setLineups ] = useState([])
+    const [ gpt, setGpt ] = useState([])
+    const [ meta, setMeta ] = useState({})
+    const [ openComingSoonModal, setOpenComingSoonModal ] = useState(false)
+    const [ contentComingSoonModal, setContentComingSoonModal ] = useState({})
+    const router = useRouter();
+    const loadingBar = useRef(null)
 
   const bottomScrollFetch = () => {
     if (!meta.pagination) return
@@ -97,6 +97,7 @@ function Category (props) {
           })
           setLineups([ ...mappedContents.values() ])
           setMeta(data.lineups.meta)
+                    setGpt(data.gpt.data)
           setGpt(data.gpt.data)
         })
         .catch(_ => {})

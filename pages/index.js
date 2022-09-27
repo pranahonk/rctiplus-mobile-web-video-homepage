@@ -87,6 +87,7 @@ class Index_v2 extends React.Component {
     RPLUSAppVisit();
     gaTrackerScreenView();
 
+
     window.onbeforeunload = _ => {
       homeGeneralClicked('mweb_homepage_refresh');
     };
@@ -117,6 +118,7 @@ class Index_v2 extends React.Component {
             mappedContents.set(content.id, content)
           }
         })
+        console.log(data)
         this.setState({
           lineups: [ ...mappedContents.values() ],
           meta: data.lineups.meta,

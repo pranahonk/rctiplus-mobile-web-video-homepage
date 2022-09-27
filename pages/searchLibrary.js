@@ -2,8 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Router, { withRouter } from 'next/router';
 import Head from 'next/head';
-import Link from 'next/link';
-import Img from 'react-image';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import LoadingBar from 'react-top-loading-bar';
 import fetch from 'isomorphic-unfetch';
@@ -15,19 +13,16 @@ import searchActions from '../redux/actions/searchActions';
 
 import Layout from '../components/Layouts/Default_v2';
 import NavSearch from '../components/Includes/Navbar/NavSearch';
-import NavDefault_v2 from '../components/Includes/Navbar/NavDefault_v2';
 import SearchResults from './search/result';
-
-import { Row, Col } from 'reactstrap';
 
 import '../assets/scss/components/explore.scss';
 
-import { VISITOR_TOKEN, DEV_API, SITEMAP, SITE_NAME, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG } from '../config';
+import { DEV_API, GRAPH_SITEMAP, REDIRECT_WEB_DESKTOP, RESOLUTION_IMG, SITE_NAME, VISITOR_TOKEN } from '../config';
 import { getCookie } from '../utils/cookie';
 import { libraryGeneralEvent, libraryProgramClicked } from '../utils/appier';
 
 class Explores extends React.Component {
-	
+
 	static async getInitialProps(ctx) {
 		const accessToken = getCookie('ACCESS_TOKEN');
 		const status = 'active';
@@ -38,7 +33,7 @@ class Explores extends React.Component {
             }
         });
         const error_code = res.statusCode > 200 ? res.statusCode : false;
-        
+
         if (error_code) {
             return { initial: false };
         }
@@ -47,7 +42,7 @@ class Explores extends React.Component {
         if (data.status.code === 1) {
             return { initial: false };
 		}
-		
+
 		const segments = ctx.asPath.split(/\?/);
         let genreId = null;
         if (segments.length > 1) {
@@ -95,7 +90,7 @@ class Explores extends React.Component {
 		if (first == false) {
 			libraryGeneralEvent('mweb_library_category_clicked');
 		}
-		
+
 		let recommendations = this.state.recommendations;
 		if (!recommendations[`genre-${genre.id}`]) {
 			this.props.setPageLoader();
@@ -107,7 +102,7 @@ class Explores extends React.Component {
 					.then(response => {
 						if (response.status === 200 && response.data.status.code === 0) {
 							recommendations[`genre-${genre.id}`] = response.data.data;
-							
+
 							let pages = this.state.page;
 							pages[`genre-${genre.id}`] = page;
 
@@ -119,7 +114,7 @@ class Explores extends React.Component {
 								selected_genre_id: genre.id,
 								selected_genre_name: genre.name,
 								page: pages,
-								show_more_allowed: showMoreAllowed	
+								show_more_allowed: showMoreAllowed
 							});
 						}
 						this.props.unsetPageLoader();
@@ -136,7 +131,7 @@ class Explores extends React.Component {
 					.then(response => {
 						if (response.status === 200 && response.data.status.code === 0) {
 							recommendations[`genre-${genre.id}`] = response.data.data;
-							
+
 							let pages = {};
 							pages[`genre-${genre.id}`] = page;
 
@@ -180,7 +175,7 @@ class Explores extends React.Component {
 					.then(response => {
 						if (response.status === 200 && response.data.status.code === 0) {
 							recommendations[`genre-${this.state.selected_genre_id}`].push.apply(recommendations[`genre-${this.state.selected_genre_id}`], response.data.data);
-							
+
 							let pages = this.state.page;
 							pages[`genre-${this.state.selected_genre_id}`] = page;
 
@@ -205,7 +200,7 @@ class Explores extends React.Component {
 					.then(response => {
 						if (response.status === 200 && response.data.status.code === 0) {
 							recommendations[`genre-${this.state.selected_genre_id}`].push.apply(recommendations[`genre-${this.state.selected_genre_id}`], response.data.data);
-							
+
 							let pages = this.state.page;
 							pages[`genre-${this.state.selected_genre_id}`] = page;
 
@@ -215,7 +210,7 @@ class Explores extends React.Component {
 							this.setState({
 								recommendations: recommendations,
 								page: pages,
-								show_more_allowed: showMoreAllowed	
+								show_more_allowed: showMoreAllowed
 							});
 						}
 						this.LoadingBar.complete();
@@ -226,7 +221,7 @@ class Explores extends React.Component {
 					});
 			}
 		}
-		
+
 	}
 
 	link(data) {
@@ -239,7 +234,7 @@ class Explores extends React.Component {
 
 		switch (data.type) {
 			case 'program':
-				
+
 				Router.push(`/programs/${data.id}/${data.title.replace(/ +/g, '-').replace(/#+/g, '').toLowerCase()}?ref=library`);
 				break;
 			default:

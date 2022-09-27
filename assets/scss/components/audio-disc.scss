@@ -1,95 +1,94 @@
 .pnl-audio-disc {
-    margin: 10px 0;
-    .content-title {
-        font-stretch: normal;
-        font-style: normal;
-        letter-spacing: normal;
-        font-weight: bold;
-        font-size: 16px;
-        line-height: 19px;
-        padding-left: 14px !important;
-        color: #FFFFFF;
-    }
-    .swipe-wrapper {
-        overflow: auto;
-        padding: 0 14px;
+  margin: 10px 0;
+  .content-title {
+    font-stretch: normal;
+    font-style: normal;
+    letter-spacing: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 19px;
+    padding-left: 14px !important;
+    color: #FFFFFF;
+  }
+  .swipe-wrapper {
+    overflow: auto;
+    padding: 0 14px;
+    display: flex;
+    flex-shrink: 0;
+    .background-vertical {
+      flex: 1 0 auto;
+      box-sizing: border-box;
+      width: 100px !important;
+      height: 150px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #3A3A3A 0%, #1A1A1A 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      &:last-child {
+        margin-right: 0;
+      }
+      .background-disc {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(146.31deg, #05B5F5 14.04%, #0079FF 88.41%);
+        border-radius: 50%;
         display: flex;
-        flex-shrink: 0;
-        .background-vertical {
-            flex: 1 0 auto;
-            box-sizing: border-box;
-            width: 100px !important;
-            height: 150px;
-            border-radius: 16px;
-            background: linear-gradient(180deg, #3A3A3A 0%, #1A1A1A 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            &:last-child {
-                margin-right: 0;
-            }
-            .background-disc {
-                width: 80px;
-                height: 80px;
-                background: linear-gradient(146.31deg, #05B5F5 14.04%, #0079FF 88.41%);
-                border-radius: 50%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                position: relative;
-                .disc-img {
-                    width: 70px;
-                    height: 70px;
-                    background-color: #3A3A3A;
-                    border-radius: 50%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    object-fit: cover;
-                }
-                .disc-hole-background {
-                    position: absolute;
-                    width: 17px;
-                    height: 17px;
-                    background: linear-gradient(146.31deg, #05B5F5 14.04%, #0079FF 88.41%);
-                    opacity: 0.47;
-                    border-radius: 50%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-                .disc-hole {
-                    position: absolute;
-                    width: 12px;
-                    height: 12px;
-                    background: linear-gradient(146.31deg, #05B5F5 14.04%, #0079FF 88.41%);
-                    border-radius: 50%;
-                    opacity: 1 !important;
-                }
-            }
-            .listener-wrapper {
-                .total-listener {
-                    font-family: inherit;
-                    font-style: normal;
-                    font-weight: 600;
-                    font-size: 10px;
-                    line-height: 14px;
-                    color: #8F8F8F;
-                    margin: 0 3px;
-                }
-            }
-            .playlist-name {
-                font-family: inherit;
-                font-style: normal;
-                font-weight: 600;
-                font-size: 12px;
-                line-height: 16px;
-                margin-top: 16px;
-                color: #E3E3E3;
-                text-align: center;
-            }
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        .disc-img {
+          width: 70px;
+          height: 70px;
+          background-color: #3A3A3A;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          object-fit: cover;
         }
+        .disc-hole-background {
+          position: absolute;
+          width: 17px;
+          height: 17px;
+          background: linear-gradient(146.31deg, #05B5F5 14.04%, #0079FF 88.41%);
+          opacity: 0.47;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .disc-hole {
+          position: absolute;
+          width: 12px;
+          height: 12px;
+          background: linear-gradient(146.31deg, #05B5F5 14.04%, #0079FF 88.41%);
+          border-radius: 50%;
+          opacity: 1 !important;
+        }
+      }
+      .listener-wrapper {
+        .total-listener {
+          font-family: Open Sans;
+          font-style: normal;
+          font-weight: 600;
+          font-size: 10px;
+          line-height: 14px;
+          color: #8F8F8F;
+          margin: 0 3px;
+        }
+      }
+      .playlist-name {
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 16px;
+        margin-top: 16px;
+        color: #E3E3E3;
+      }
     }
+  }
 }

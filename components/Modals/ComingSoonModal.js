@@ -36,7 +36,7 @@ export default function comingSoonModal(props) {
     ref.current.style.transform = "unset"
     const touch = e.changedTouches[0]
     const distance = touch.clientY - swipe.y
-    
+
     if (distance > 100) destroyModal()
   }
 
@@ -56,34 +56,50 @@ export default function comingSoonModal(props) {
   if (!open) return null
 
   return (
-    <div 
-      id="modal-comingsoon" 
+    <div
+      id="modal-comingsoon"
       className="modal-comingsoon">
       <div>
-        <div 
-          id="destroy-modal-area" 
+        <div
+          id="destroy-modal-area"
           onClick={_ => destroyModal()}></div>
         <div ref={ref}>
-          <div 
-            id="close-bar" 
+          <div
+            id="close-bar"
             className="close-bar"
             onTouchMove={e => listenTouchModalComingSoon(e)}
             onTouchStart={e => onTouchStart(e)}
             onTouchEnd={e => closeComingSoonModal(e)}>
             <div></div>
           </div>
-          <img
-            className="img-comingsoon"
-            src={ props.content.image } 
-            alt="modal coming soon"
-            width="328"
-            height="185" />
+            <img
+              className="img-comingsoon"
+              src={ props.content.image }
+              alt="modal coming soon"
+              width="328"
+              height="185" />
+            {props.content.is_interactive && (
+              <div className="row justify-content-center">
+                <span className='interactive'>
+                  <div className='row align-items-center'>
+                    <img
+                      src='/static/player_icons/quiz_icon.svg	'
+                      width={20}
+                      height={20}
+                      alt="desc"
+                      />
+                    <p className='ml-2 text-white' style={{fontSize: '12px'}}>INTERACTIVE</p>
+                  </div>
+                </span>
+              </div>
+            )}
+
           <div className="desc-comingsoon">
             <p>{ props.content.title }</p>
             <p>{ renderDateDetail() }</p>
             <div>
-              <CountdownTimer 
-                time={props.content.countdown} 
+              <CountdownTimer
+                time={props.content.countdown}
                 name={"Live In"} />
               <span>
                 This program hasn't started yet.<br/>

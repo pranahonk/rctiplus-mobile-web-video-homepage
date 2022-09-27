@@ -157,7 +157,7 @@ class Tv extends React.Component {
 
 		this.player = window.jwplayer(playerId);
 		this.player.setup({
-			autostart: true,
+			autostart: 'viewable',
 			floating: false,
 			file: this.state.player_url,
 			primary: 'html5',

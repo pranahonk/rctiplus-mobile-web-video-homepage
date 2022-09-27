@@ -446,7 +446,7 @@ class PlayerModal extends React.Component {
     initVOD() {
       this.player = window.jwplayer(this.props.playerId);
 		  this.player.setup({
-			autostart: true,
+			autostart: 'viewable',
 			file: this.props.videoUrl,
 			primary: 'html5',
 			width: '100%',

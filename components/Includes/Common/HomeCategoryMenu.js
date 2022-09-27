@@ -9,6 +9,7 @@ import { GET_HOME_CATEGORY_LIST, GET_SUB_CATEGORY_LIST } from "../../../graphql/
 import '../../../assets/scss/components/home-category-menu.scss';
 import Cookies from 'js-cookie'
 import { urlRegex } from '../../../utils/regex'
+import { gaTrackerCategory } from '../../../utils/ga-360';
 
 function categoryMenu (props) {
   const imgSize = 150
@@ -41,7 +42,7 @@ function categoryMenu (props) {
       const query = props.router.query.category_id
       ? GET_SUB_CATEGORY_LIST(props.router.query.category_id, page, 10)
       : GET_HOME_CATEGORY_LIST(page, 10)
-  
+
       client
         .query({ query })
         .then(({ data }) => {
@@ -52,7 +53,7 @@ function categoryMenu (props) {
         })
         .catch(_ => {})
     }
-  } 
+  }
 
   if (categories.length === 0) return null
 
@@ -71,15 +72,17 @@ function categoryMenu (props) {
             {categories.map((category, index) => (
               <div
                 key={index}
-                className="menu-item-cat" 
+                className="menu-item-cat"
                 id={`category-${index}`}>
-                <Link 
+                <Link
                   href={`/category?category_id=${category.id}&category_title=${urlRegex(category.name)}`}
                   as={`/category/${category.id}/${urlRegex(category.name)}`}
                   shallow
                   >
                   <a>
-                    <div className="container-menu-icon-cat">
+                    <div className="container-menu-icon-cat" onClick={()=>{
+                      gaTrackerCategory("video_interaction", "click_category_list", category.name, category.id)
+                    }}>
                       <img
                         alt={category.name}
                         className="menu-icon-cat"
