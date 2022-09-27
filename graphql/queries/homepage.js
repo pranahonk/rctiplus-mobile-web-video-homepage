@@ -64,22 +64,22 @@ export const GET_LINEUPS = (page = 1, page_size = 5, category_id = 0) => {
   return gql`
     query {
       gpt (category_id: ${category_id}) {
-      data {
-        id
-        path
-        div_gpt
-        size_width_1
-        size_width_2
-        size_height_1
-        size_height_2
-        cust_params{
-          value
-          name
+        data {
+          id
+          path
+          div_gpt
+          size_width_1
+          size_width_2
+          size_height_1
+          size_height_2
+          cust_params{
+            value
+            name
+          }
+          size_height_2
+          size_width_2
         }
-        size_height_2
-        size_width_2
       }
-    }
       lineups(${queryParams}) {
       data {
         id
@@ -158,40 +158,8 @@ export const GET_HOME_STORIES = (category_id = 0, page = 1, page_size = 10) => {
           program_img
           program_id
           title
-          gpt {
-            id
-            div_gpt
-            path
-            size_height_1
-            size_height_2
-            size_width_1
-            size_width_2
-            cust_params{
-              name
-              value
-            }
-          }
-          story {
-            id
-            permalink
-            story_img
-            link_video
-            title
-            type
-            external_link
-          }
-        }
-        meta {
-          image_path
-          pagination {
-            current_page
-            total_page
-          }
-        }
-        status {
-          code
-          message_client
-          message_server
+          type
+          external_link
         }
       }
     }

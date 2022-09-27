@@ -353,47 +353,18 @@ class Index_v2 extends React.Component {
 
                 <Stories />
 
-
-<<<<<<< HEAD
-=======
-
->>>>>>> fc579c4874a8d7a441ea7c2a557d04efaeeae355
-                  {/* <StoryAds sticky id='div-gpt-ad-1596100147181-0' path='/21865661642/RC_DESKTOP_INSERTION-STORIES_0'/> */}
-                  {/* <StoryAds sticky id='div-gpt-ad-1596100730972-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES'/> */}
-                  {/* <StoryAds sticky id='div-gpt-ad-1596100733667-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES-2'/>
-                  <StoryAds sticky id='div-gpt-ad-1596100737011-0' path='/21865661642/RC_MOBILE_INSERTION-STORIES-3'/> */}
-
-
-                  <StickyContainer>
-                    <Sticky disableHardwareAcceleration>
-                      { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
-                        const topDistance = this.state.show_sticky_install ? 120 : 40;
-                        if (distanceFromTop < topDistance) {
-                          if (!this.props.ads.ads_displayed) {
-                            return (
-                              <div {...rest} >
-                                <StickyAds
-                                  path={this.state.gpt.path}
-                                  id={this.state.gpt.div_gpt}
-                                  targettingAdsData={this.state.gpt.cust_params}/>
-                              </div>
-                            );
-                          }
-                          const adsContents = document.getElementById(this.state.gpt.div_gpt).childNodes;
-                          if (adsContents.length > 0) {
-                            if (adsContents[0].tagName == 'SCRIPT') {
-                              const stickyAds = document.getElementById('sticky-ads-container');
-                              if (stickyAds) {
-                                stickyAds.style.display = 'none'
-                              }
-                            }
-                          }
+                <StickyContainer>
+                  <Sticky disableHardwareAcceleration>
+                    { ({ distanceFromTop, isSticky, wasSticky, distanceFromBottom, calculatedHeight, ...rest }) => {
+                      const topDistance = this.state.show_sticky_install ? 120 : 40;
+                      if (distanceFromTop < topDistance) {
+                        if (!this.props.ads.ads_displayed) {
                           return (
                             <div {...rest} >
                               <StickyAds
                                 path={this.state.gpt.path}
-                                id={this.state.gpt.div_gpt} sticky
-                                targettingAdsData={this.state.gpt.cust_params} />
+                                id={this.state.gpt.div_gpt}
+                                targettingAdsData={this.state.gpt.cust_params}/>
                             </div>
                           );
                         }
@@ -404,11 +375,12 @@ class Index_v2 extends React.Component {
                           <div {...rest} >
                             <StickyAds
                               path={this.state.gpt.path}
-                              id={this.state.gpt.div_gpt}
+                              id={this.state.gpt.div_gpt} sticky
                               targettingAdsData={this.state.gpt.cust_params} />
                           </div>
                         );
                       }}
+                    }
                     </Sticky>
                   </StickyContainer>
                 </div>
